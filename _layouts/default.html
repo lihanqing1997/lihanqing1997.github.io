@@ -16,6 +16,57 @@
     {% endif %}
     
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script>
+        (function () {
+            var language = 'en';
+            try {
+                language = localStorage.getItem('siteLanguage') || 'en';
+            } catch (error) {}
+            if (language !== 'zh') {
+                language = 'en';
+            }
+            document.documentElement.classList.add('lang-' + language);
+            document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
+        }());
+    </script>
+    <style>
+        [data-lang="zh"] {
+            display: none;
+        }
+
+        html.lang-zh [data-lang="en"] {
+            display: none;
+        }
+
+        html.lang-zh [data-lang="zh"] {
+            display: revert;
+        }
+
+        html.lang-en [data-lang="zh"] {
+            display: none;
+        }
+
+        .language-choice {
+            margin-left: 12px;
+            white-space: nowrap;
+        }
+
+        .language-choice button {
+            background: none;
+            border: 0;
+            color: #00e;
+            cursor: pointer;
+            font: inherit;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        .language-choice button[aria-pressed="true"] {
+            color: inherit;
+            cursor: default;
+            text-decoration: none;
+        }
+    </style>
 
 </head>
 
@@ -23,5 +74,38 @@
     {% include header.html %}
 
     {{ content }}
+
+    <script>
+        (function () {
+            function setLanguage(language) {
+                if (language !== 'zh') {
+                    language = 'en';
+                }
+
+                document.documentElement.classList.remove('lang-en', 'lang-zh');
+                document.documentElement.classList.add('lang-' + language);
+                document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
+
+                try {
+                    localStorage.setItem('siteLanguage', language);
+                } catch (error) {}
+
+                var choices = document.querySelectorAll('[data-language-choice]');
+                for (var index = 0; index < choices.length; index += 1) {
+                    var choice = choices[index];
+                    choice.setAttribute('aria-pressed', choice.getAttribute('data-language-choice') === language ? 'true' : 'false');
+                }
+            }
+
+            var activeLanguage = document.documentElement.classList.contains('lang-zh') ? 'zh' : 'en';
+            var choices = document.querySelectorAll('[data-language-choice]');
+            for (var index = 0; index < choices.length; index += 1) {
+                choices[index].addEventListener('click', function () {
+                    setLanguage(this.getAttribute('data-language-choice'));
+                });
+            }
+            setLanguage(activeLanguage);
+        }());
+    </script>
 </body>
 </html>
