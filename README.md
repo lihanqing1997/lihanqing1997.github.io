@@ -1,3 +1,3 @@
-# jekyll-true-minimal
-Minimal and ascetic theme for jekyll.
-Live demo: https://cyevgeniy.github.io/jekyll-true-minimal/
+# Hanqing Li's Homepage
+
+Source files for [Hanqing Li's personal academic homepage](https://lihanqing1997.github.io/).
