@@ -4,65 +4,92 @@ layout: default
 
 <div class="note-page" data-lang="en">
     <h2>Central Limit Theorem</h2>
+    {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/strong-law-of-large-numbers/" %}
 
-    <p>The central limit theorem gives the universal first approximation to fluctuations of sums.</p>
+    <p>The central limit theorem describes the scale and shape of the random fluctuations left after centering a sum.</p>
 
-    <h3>Statement</h3>
-    <ul>
-        <li>Let X<sub>1</sub>,X<sub>2</sub>,... be i.i.d. with E X<sub>1</sub> = &mu; and 0 &lt; Var(X<sub>1</sub>) = &sigma;<sup>2</sup> &lt; &infin;.</li>
-        <li>With S<sub>n</sub> = X<sub>1</sub> + ... + X<sub>n</sub>, (S<sub>n</sub> - n&mu;) / (&sigma;&radic;n) converges in distribution to N(0,1).</li>
-    </ul>
+    <h3>Definition</h3>
+    <p>\(Y_n\to Y\) <strong>in distribution</strong> if \(P(Y_n\le x)\to P(Y\le x)\) at every continuity point \(x\) of the distribution function of \(Y\).</p>
 
-    <h3>How to read it</h3>
-    <ul>
-        <li>LLN gives the center: S<sub>n</sub> is near n&mu;.</li>
-        <li>CLT gives the scale and shape: fluctuations are of order &radic;n and approximately normal.</li>
-        <li>For continuity points x, P((S<sub>n</sub> - n&mu;) / (&sigma;&radic;n) &le; x) &rarr; &Phi;(x).</li>
-    </ul>
+    <h3>Theorem</h3>
+    <p>Let \(X_1,X_2,\ldots\) be i.i.d. with \(EX_1=\mu\) and \(0<\operatorname{Var}(X_1)=\sigma^2<\infty\). If \(S_n=\sum_{i=1}^nX_i\), then</p>
+    <p>\[\frac{S_n-n\mu}{\sigma\sqrt n}\Rightarrow N(0,1).\]</p>
+
+    <h3>Proof</h3>
+    <div class="note-proof">
+        <p>Set \(Y_i=(X_i-\mu)/\sigma\). Then \(EY_i=0\), \(EY_i^2=1\), and the target variable is \(T_n=n^{-1/2}\sum_{i=1}^nY_i\).</p>
+        <p>Let \(\varphi(t)=Ee^{itY_1}\). Since \(EY_1=0\) and \(EY_1^2=1\), Taylor's formula with dominated convergence gives</p>
+        <p>\[\varphi(u)=1-\frac{u^2}{2}+o(u^2)\quad (u\to0).\]</p>
+        <p>By independence, the characteristic function of \(T_n\) is</p>
+        <p>\[E e^{itT_n}=\left[\varphi\left(\frac{t}{\sqrt n}\right)\right]^n=\left[1-\frac{t^2}{2n}+o\left(\frac1n\right)\right]^n\to e^{-t^2/2}.\]</p>
+        <p>The function \(e^{-t^2/2}\) is the characteristic function of \(N(0,1)\). Lévy's continuity theorem therefore gives \(T_n\Rightarrow N(0,1)\).</p>
+    </div>
+
+    <h3>Intuition</h3>
+    <p>The law of large numbers says \(S_n\) is near \(n\mu\). The central limit theorem says the remaining error is typically of order \(\sqrt n\), and after scaling it looks Gaussian.</p>
 
     <p class="note-source">Durrett guide: Chapter 3, especially Section 3.4.</p>
+    {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/strong-law-of-large-numbers/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
     <h2>Théorème central limite</h2>
+    {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/strong-law-of-large-numbers/" %}
 
-    <p>Le théorème central limite donne la première approximation universelle des fluctuations de sommes.</p>
+    <p>Le théorème central limite décrit l'échelle et la forme des fluctuations aléatoires après centrage d'une somme.</p>
 
-    <h3>Énoncé</h3>
-    <ul>
-        <li>Soient X<sub>1</sub>,X<sub>2</sub>,... i.i.d. avec E X<sub>1</sub> = &mu; et 0 &lt; Var(X<sub>1</sub>) = &sigma;<sup>2</sup> &lt; &infin;.</li>
-        <li>Avec S<sub>n</sub> = X<sub>1</sub> + ... + X<sub>n</sub>, (S<sub>n</sub> - n&mu;) / (&sigma;&radic;n) converge en loi vers N(0,1).</li>
-    </ul>
+    <h3>Définition</h3>
+    <p>\(Y_n\to Y\) <strong>en loi</strong> si \(P(Y_n\le x)\to P(Y\le x)\) en tout point de continuité \(x\) de la fonction de répartition de \(Y\).</p>
 
-    <h3>Lecture</h3>
-    <ul>
-        <li>La loi des grands nombres donne le centre : S<sub>n</sub> est proche de n&mu;.</li>
-        <li>Le TCL donne l'échelle et la forme : les fluctuations sont d'ordre &radic;n et approximativement normales.</li>
-        <li>Aux points de continuité x, P((S<sub>n</sub> - n&mu;) / (&sigma;&radic;n) &le; x) &rarr; &Phi;(x).</li>
-    </ul>
+    <h3>Théorème</h3>
+    <p>Soient \(X_1,X_2,\ldots\) i.i.d. avec \(EX_1=\mu\) et \(0<\operatorname{Var}(X_1)=\sigma^2<\infty\). Si \(S_n=\sum_{i=1}^nX_i\), alors</p>
+    <p>\[\frac{S_n-n\mu}{\sigma\sqrt n}\Rightarrow N(0,1).\]</p>
+
+    <h3>Preuve</h3>
+    <div class="note-proof">
+        <p>Poser \(Y_i=(X_i-\mu)/\sigma\). Alors \(EY_i=0\), \(EY_i^2=1\), et la variable étudiée est \(T_n=n^{-1/2}\sum_{i=1}^nY_i\).</p>
+        <p>Soit \(\varphi(t)=Ee^{itY_1}\). Comme \(EY_1=0\) et \(EY_1^2=1\), la formule de Taylor et la convergence dominée donnent</p>
+        <p>\[\varphi(u)=1-\frac{u^2}{2}+o(u^2)\quad (u\to0).\]</p>
+        <p>Par indépendance, la fonction caractéristique de \(T_n\) est</p>
+        <p>\[E e^{itT_n}=\left[\varphi\left(\frac{t}{\sqrt n}\right)\right]^n=\left[1-\frac{t^2}{2n}+o\left(\frac1n\right)\right]^n\to e^{-t^2/2}.\]</p>
+        <p>La fonction \(e^{-t^2/2}\) est la fonction caractéristique de \(N(0,1)\). Le théorème de continuité de Lévy donne donc \(T_n\Rightarrow N(0,1)\).</p>
+    </div>
+
+    <h3>Intuition</h3>
+    <p>La loi des grands nombres dit que \(S_n\) est proche de \(n\mu\). Le théorème central limite dit que l'erreur restante est typiquement d'ordre \(\sqrt n\), et qu'après normalisation elle paraît gaussienne.</p>
 
     <p class="note-source">Guide Durrett : chapitre 3, surtout section 3.4.</p>
+    {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/strong-law-of-large-numbers/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
     <h2>中心极限定理</h2>
+    {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/strong-law-of-large-numbers/" %}
 
-    <p>中心极限定理给出和的波动的最基本、最普遍的近似。</p>
+    <p>中心极限定理描述和在中心化以后剩余随机波动的尺度与形状。</p>
 
-    <h3>定理表述</h3>
-    <ul>
-        <li>设 X<sub>1</sub>,X<sub>2</sub>,... 独立同分布，E X<sub>1</sub> = &mu;，且 0 &lt; Var(X<sub>1</sub>) = &sigma;<sup>2</sup> &lt; &infin;。</li>
-        <li>令 S<sub>n</sub> = X<sub>1</sub> + ... + X<sub>n</sub>，则 (S<sub>n</sub> - n&mu;) / (&sigma;&radic;n) 依分布收敛到 N(0,1)。</li>
-    </ul>
+    <h3>定义</h3>
+    <p>若在 \(Y\) 的分布函数的每个连续点 \(x\) 上都有 \(P(Y_n\le x)\to P(Y\le x)\)，则称 \(Y_n\to Y\) <strong>依分布收敛</strong>。</p>
 
-    <h3>如何理解</h3>
-    <ul>
-        <li>大数定律给出中心位置：S<sub>n</sub> 接近 n&mu;。</li>
-        <li>中心极限定理给出尺度和形状：波动量级为 &radic;n，形状近似正态。</li>
-        <li>对连续点 x，P((S<sub>n</sub> - n&mu;) / (&sigma;&radic;n) &le; x) &rarr; &Phi;(x)。</li>
-    </ul>
+    <h3>定理</h3>
+    <p>设 \(X_1,X_2,\ldots\) 独立同分布，\(EX_1=\mu\)，且 \(0<\operatorname{Var}(X_1)=\sigma^2<\infty\)。若 \(S_n=\sum_{i=1}^nX_i\)，则</p>
+    <p>\[\frac{S_n-n\mu}{\sigma\sqrt n}\Rightarrow N(0,1).\]</p>
+
+    <h3>证明</h3>
+    <div class="note-proof">
+        <p>令 \(Y_i=(X_i-\mu)/\sigma\)。则 \(EY_i=0\)、\(EY_i^2=1\)，目标变量为 \(T_n=n^{-1/2}\sum_{i=1}^nY_i\)。</p>
+        <p>令 \(\varphi(t)=Ee^{itY_1}\)。由于 \(EY_1=0\)、\(EY_1^2=1\)，Taylor 公式和支配收敛定理给出</p>
+        <p>\[\varphi(u)=1-\frac{u^2}{2}+o(u^2)\quad (u\to0).\]</p>
+        <p>由独立性，\(T_n\) 的特征函数为</p>
+        <p>\[E e^{itT_n}=\left[\varphi\left(\frac{t}{\sqrt n}\right)\right]^n=\left[1-\frac{t^2}{2n}+o\left(\frac1n\right)\right]^n\to e^{-t^2/2}.\]</p>
+        <p>\(e^{-t^2/2}\) 是标准正态分布 \(N(0,1)\) 的特征函数。由 Lévy 连续性定理，\(T_n\Rightarrow N(0,1)\)。</p>
+    </div>
+
+    <h3>直观解释</h3>
+    <p>大数定律说明 \(S_n\) 接近 \(n\mu\)。中心极限定理说明剩余误差通常是 \(\sqrt n\) 量级，并且标准化后近似正态。</p>
 
     <p class="note-source">Durrett 参考：第 3 章，尤其第 3.4 节。</p>
+    {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/strong-law-of-large-numbers/" %}
 </div>
 
 <hr>
