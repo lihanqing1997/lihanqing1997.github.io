@@ -2,16 +2,85 @@
 layout: default
 ---
 
-<div data-lang="en">
+<div class="note-page" data-lang="en">
     <h2>Density-Ratio Learning</h2>
+    {% include research-topic-nav.html back_label="Back" back_url="/research/machine-learning/" %}
+
+    <p>Density-ratio learning estimates the ratio \(r(x)=p(x)/q(x)\) directly, without separately estimating the two densities \(p\) and \(q\).</p>
+
+    <h3>Definition</h3>
+    <p>Let \(P\) and \(Q\) have densities \(p\) and \(q\) with respect to a common measure, and assume \(p\ll q\). The density ratio is the Radon-Nikodym derivative</p>
+    <p>\[r(x)=\frac{dP}{dQ}(x)=\frac{p(x)}{q(x)}.\]</p>
+    <p>It satisfies \(r(x)\ge0\) and \(E_Q r(X)=1\).</p>
+
+    <h3>Classification view</h3>
+    <p>If samples come from \(P\) with prior probability \(\pi\) and from \(Q\) with prior probability \(1-\pi\), then</p>
+    <p>\[\log\frac{p(x)}{q(x)}=\log\frac{\Pr(Y=1\mid X=x)}{\Pr(Y=0\mid X=x)}-\log\frac{\pi}{1-\pi}.\]</p>
+    <p>Thus a calibrated probabilistic classifier can estimate the log density ratio.</p>
+
+    <h3>Moment view</h3>
+    <p>For any integrable \(f\),</p>
+    <p>\[E_P f(X)=E_Q\{r(X)f(X)\}.\]</p>
+    <p>This identity is the basis of covariate-shift correction, importance sampling, and two-sample testing.</p>
+
+    <h3>Core challenge</h3>
+    <p>The ratio can be unstable where \(q(x)\) is small. Good methods regularize \(r\), enforce nonnegativity or normalization, and avoid extrapolating far outside the support of \(Q\).</p>
+
+    {% include research-topic-nav.html back_label="Back" back_url="/research/machine-learning/" %}
 </div>
 
-<div data-lang="fr">
+<div class="note-page" data-lang="fr">
     <h2>Apprentissage par ratio de densités</h2>
+    {% include research-topic-nav.html back_label="Retour" back_url="/research/machine-learning/" %}
+
+    <p>L'apprentissage par ratio de densités estime directement \(r(x)=p(x)/q(x)\), sans estimer séparément les deux densités \(p\) et \(q\).</p>
+
+    <h3>Définition</h3>
+    <p>Soient \(P\) et \(Q\) de densités \(p\) et \(q\) par rapport à une même mesure, avec \(p\ll q\). Le ratio de densités est la dérivée de Radon-Nikodym</p>
+    <p>\[r(x)=\frac{dP}{dQ}(x)=\frac{p(x)}{q(x)}.\]</p>
+    <p>Il vérifie \(r(x)\ge0\) et \(E_Q r(X)=1\).</p>
+
+    <h3>Vue par classification</h3>
+    <p>Si les observations viennent de \(P\) avec probabilité a priori \(\pi\), et de \(Q\) avec probabilité \(1-\pi\), alors</p>
+    <p>\[\log\frac{p(x)}{q(x)}=\log\frac{\Pr(Y=1\mid X=x)}{\Pr(Y=0\mid X=x)}-\log\frac{\pi}{1-\pi}.\]</p>
+    <p>Un classifieur probabiliste calibré peut donc estimer le log-ratio de densités.</p>
+
+    <h3>Vue par moments</h3>
+    <p>Pour toute fonction intégrable \(f\),</p>
+    <p>\[E_P f(X)=E_Q\{r(X)f(X)\}.\]</p>
+    <p>Cette identité fonde la correction du covariate shift, l'échantillonnage d'importance et les tests à deux échantillons.</p>
+
+    <h3>Difficulté centrale</h3>
+    <p>Le ratio peut être instable là où \(q(x)\) est petit. Les bonnes méthodes régularisent \(r\), imposent non-négativité ou normalisation, et évitent d'extrapoler loin du support de \(Q\).</p>
+
+    {% include research-topic-nav.html back_label="Retour" back_url="/research/machine-learning/" %}
 </div>
 
-<div data-lang="zh">
+<div class="note-page" data-lang="zh">
     <h2>密度比学习</h2>
+    {% include research-topic-nav.html back_label="返回" back_url="/research/machine-learning/" %}
+
+    <p>密度比学习直接估计 \(r(x)=p(x)/q(x)\)，而不分别估计两个密度 \(p\) 与 \(q\)。</p>
+
+    <h3>定义</h3>
+    <p>设 \(P\) 与 \(Q\) 相对于同一测度有密度 \(p\) 与 \(q\)，并假设 \(p\ll q\)。密度比就是 Radon-Nikodym 导数</p>
+    <p>\[r(x)=\frac{dP}{dQ}(x)=\frac{p(x)}{q(x)}.\]</p>
+    <p>它满足 \(r(x)\ge0\) 且 \(E_Q r(X)=1\)。</p>
+
+    <h3>分类视角</h3>
+    <p>若样本以先验概率 \(\pi\) 来自 \(P\)，以概率 \(1-\pi\) 来自 \(Q\)，则</p>
+    <p>\[\log\frac{p(x)}{q(x)}=\log\frac{\Pr(Y=1\mid X=x)}{\Pr(Y=0\mid X=x)}-\log\frac{\pi}{1-\pi}.\]</p>
+    <p>因此，校准良好的概率分类器可以估计 log 密度比。</p>
+
+    <h3>矩视角</h3>
+    <p>对任何可积函数 \(f\)，有</p>
+    <p>\[E_P f(X)=E_Q\{r(X)f(X)\}.\]</p>
+    <p>这个恒等式是 covariate shift 校正、重要性抽样和两样本检验的基础。</p>
+
+    <h3>核心难点</h3>
+    <p>当 \(q(x)\) 很小时，密度比可能不稳定。好的方法需要正则化 \(r\)，保证非负性或归一化，并避免在 \(Q\) 的支撑之外过度外推。</p>
+
+    {% include research-topic-nav.html back_label="返回" back_url="/research/machine-learning/" %}
 </div>
 
 <hr>
