@@ -25,11 +25,11 @@
             try {
                 language = localStorage.getItem('siteLanguage') || 'en';
             } catch (error) {}
-            if (language !== 'zh') {
+            if (language !== 'fr' && language !== 'zh') {
                 language = 'en';
             }
             document.documentElement.classList.add('lang-' + language);
-            document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
+            document.documentElement.lang = language === 'zh' ? 'zh-Hans' : (language === 'fr' ? 'fr' : 'en');
         }());
     </script>
     <style>
@@ -64,20 +64,14 @@
             overflow-wrap: break-word;
         }
 
-        [data-lang="zh"] {
+        [data-lang] {
             display: none;
         }
 
-        html.lang-zh [data-lang="en"] {
-            display: none;
-        }
-
+        html.lang-en [data-lang="en"],
+        html.lang-fr [data-lang="fr"],
         html.lang-zh [data-lang="zh"] {
             display: revert;
-        }
-
-        html.lang-en [data-lang="zh"] {
-            display: none;
         }
 
         nav {
@@ -181,13 +175,13 @@
     <script>
         (function () {
             function setLanguage(language) {
-                if (language !== 'zh') {
+                if (language !== 'fr' && language !== 'zh') {
                     language = 'en';
                 }
 
-                document.documentElement.classList.remove('lang-en', 'lang-zh');
+                document.documentElement.classList.remove('lang-en', 'lang-fr', 'lang-zh');
                 document.documentElement.classList.add('lang-' + language);
-                document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
+                document.documentElement.lang = language === 'zh' ? 'zh-Hans' : (language === 'fr' ? 'fr' : 'en');
 
                 try {
                     localStorage.setItem('siteLanguage', language);
@@ -200,7 +194,7 @@
                 }
             }
 
-            var activeLanguage = document.documentElement.classList.contains('lang-zh') ? 'zh' : 'en';
+            var activeLanguage = document.documentElement.classList.contains('lang-zh') ? 'zh' : (document.documentElement.classList.contains('lang-fr') ? 'fr' : 'en');
             var choices = document.querySelectorAll('[data-language-choice]');
             for (var index = 0; index < choices.length; index += 1) {
                 choices[index].addEventListener('click', function () {
