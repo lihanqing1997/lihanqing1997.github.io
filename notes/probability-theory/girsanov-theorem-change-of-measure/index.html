@@ -2,28 +2,51 @@
 layout: default
 breadcrumb_child_label_en: "Girsanov theorem and change of measure"
 breadcrumb_child_label_fr: "Théorème de Girsanov et changement de mesure"
-breadcrumb_child_label_zh: "Girsanov 定理与换测度"
+breadcrumb_child_label_zh: "Girsanov 定理与测度变换"
 ---
 
 <div class="note-page" data-lang="en">
     <h2>Girsanov theorem and change of measure</h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/applications-ito-formula/" next_label="Next page" next_url="/notes/probability-theory/stochastic-differential-equations/" %}
 
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Girsanov's theorem describes how Brownian drift changes under an equivalent probability measure. Let \(\theta_t\) be adapted and satisfy a condition such as Novikov's criterion. Define \(Z_t=\exp\{-\int_0^t\theta_sdB_s-\frac12\int_0^t\theta_s^2ds\}\).</p>
+        <p><span class="statement-title">Definition.</span> For a progressively measurable process \(\theta\) with \(\int_0^T\theta_s^2ds\lt \infty\), define the stochastic exponential
+        \[
+        Z_t=\mathcal E\left(\int_0^\cdot \theta_s\,dB_s\right)_t
+        =\exp\left\{\int_0^t\theta_s\,dB_s-\frac12\int_0^t\theta_s^2\,ds\right\}.
+        \]
+        If \(\mathbb E Z_T=1\), then \(Q\) defined by \(dQ=Z_T\,dP\) is a probability measure equivalent to \(P\) on \(\mathcal F_T\).</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Result.</span> If \((Z_t)\) is a martingale and \(dQ=Z_TdP\) on \(\mathcal F_T\), then \[\widetilde B_t=B_t+\int_0^t\theta_sds\] is a Brownian motion under \(Q\) on \([0,T]\).</p>
+        <p><span class="statement-title">Girsanov theorem.</span> Under the above assumptions, if \(Z\) is a true martingale, then
+        \[
+        \widetilde B_t=B_t-\int_0^t\theta_s\,ds,\qquad 0\le t\le T,
+        \]
+        is a Brownian motion under \(Q\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span></p>
-        <p>Use exponential martingales to compute conditional characteristic functions of increments under \(Q\). The density tilts the Gaussian increment by a linear exponential factor, shifting its mean while preserving its variance. Localization and approximation extend the argument to adapted \(\theta\).</p>
+        <p><span class="statement-title">Proof.</span> The density process \(Z_t=\mathbb E_P(Z_T\mid\mathcal F_t)\) satisfies \(dZ_t=Z_t\theta_t\,dB_t\). For bounded predictable \(H\), Bayes’ rule gives
+        \[
+        \mathbb E_Q\left(\int_s^tH_u\,d\widetilde B_u\mid\mathcal F_s\right)
+        =\frac1{Z_s}\mathbb E_P\left[Z_t\int_s^tH_u(dB_u-\theta_u\,du)\mid\mathcal F_s\right]=0,
+        \]
+        where the last equality follows from integration by parts applied to \(Z\int H\,d\widetilde B\). Hence \(\widetilde B\) is a continuous \(Q\)-local martingale. Its quadratic variation is unchanged by adding a finite-variation drift:
+        \[
+        [\widetilde B]_t=[B]_t=t.
+        \]
+        Lévy’s characterization then implies that \(\widetilde B\) is \(Q\)-Brownian motion.</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Girsanov is the continuous-time likelihood-ratio theorem. It is indispensable for diffusion statistics and stochastic control.</p>
+    <h3>Novikov condition</h3>
+
+    <p>A common sufficient condition for \(\mathbb E Z_T=1\) is
+    \[
+    \mathbb E\exp\left\{\frac12\int_0^T\theta_s^2ds\right\}\lt \infty.
+    \]
+    Girsanov says that an absolutely continuous change of measure can turn drift into a likelihood ratio.</p>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/applications-ito-formula/" next_label="Next page" next_url="/notes/probability-theory/stochastic-differential-equations/" %}
 </div>
@@ -34,43 +57,88 @@ breadcrumb_child_label_zh: "Girsanov 定理与换测度"
 
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Girsanov's theorem describes how Brownian drift changes under an equivalent probability measure. Let \(\theta_t\) be adapted and satisfy a condition such as Novikov's criterion. Define \(Z_t=\exp\{-\int_0^t\theta_sdB_s-\frac12\int_0^t\theta_s^2ds\}\).</p>
+        <p><span class="statement-title">Définition.</span> Pour un processus progressivement mesurable \(\theta\) tel que \(\int_0^T\theta_s^2ds\lt \infty\), on définit l’exponentielle stochastique
+        \[
+        Z_t=\mathcal E\left(\int_0^\cdot \theta_s\,dB_s\right)_t
+        =\exp\left\{\int_0^t\theta_s\,dB_s-\frac12\int_0^t\theta_s^2\,ds\right\}.
+        \]
+        Si \(\mathbb E Z_T=1\), alors \(Q\) défini par \(dQ=Z_T\,dP\) est une probabilité équivalente à \(P\) sur \(\mathcal F_T\).</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Résultat.</span> If \((Z_t)\) is a martingale and \(dQ=Z_TdP\) on \(\mathcal F_T\), then \[\widetilde B_t=B_t+\int_0^t\theta_sds\] is a Brownian motion under \(Q\) on \([0,T]\).</p>
+        <p><span class="statement-title">Théorème de Girsanov.</span> Sous les hypothèses précédentes, si \(Z\) est une vraie martingale, alors
+        \[
+        \widetilde B_t=B_t-\int_0^t\theta_s\,ds,\qquad 0\le t\le T,
+        \]
+        est un mouvement brownien sous \(Q\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span></p>
-        <p>Use exponential martingales to compute conditional characteristic functions of increments under \(Q\). The density tilts the Gaussian increment by a linear exponential factor, shifting its mean while preserving its variance. Localization and approximation extend the argument to adapted \(\theta\).</p>
+        <p><span class="statement-title">Preuve.</span> Le processus de densité \(Z_t=\mathbb E_P(Z_T\mid\mathcal F_t)\) vérifie \(dZ_t=Z_t\theta_t\,dB_t\). Pour \(H\) prévisible borné, la règle de Bayes donne
+        \[
+        \mathbb E_Q\left(\int_s^tH_u\,d\widetilde B_u\mid\mathcal F_s\right)
+        =\frac1{Z_s}\mathbb E_P\left[Z_t\int_s^tH_u(dB_u-\theta_u\,du)\mid\mathcal F_s\right]=0,
+        \]
+        la dernière égalité venant de l’intégration par parties appliquée à \(Z\int H\,d\widetilde B\). Donc \(\widetilde B\) est une martingale locale continue sous \(Q\). Sa variation quadratique ne change pas lorsqu’on ajoute une dérive à variation finie :
+        \[
+        [\widetilde B]_t=[B]_t=t.
+        \]
+        La caractérisation de Lévy implique alors que \(\widetilde B\) est un mouvement brownien sous \(Q\).</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Girsanov is the continuous-time likelihood-ratio theorem. It is indispensable for diffusion statistics and stochastic control.</p>
+    <h3>Condition de Novikov</h3>
+
+    <p>Une condition suffisante courante pour \(\mathbb E Z_T=1\) est
+    \[
+    \mathbb E\exp\left\{\frac12\int_0^T\theta_s^2ds\right\}\lt \infty.
+    \]
+    Le théorème de Girsanov dit qu’un changement de mesure absolument continu peut transformer une dérive en rapport de vraisemblance.</p>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/applications-ito-formula/" next_label="Page suivante" next_url="/notes/probability-theory/stochastic-differential-equations/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>Girsanov 定理与换测度</h2>
+    <h2>Girsanov 定理与测度变换</h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/applications-ito-formula/" next_label="下一页" next_url="/notes/probability-theory/stochastic-differential-equations/" %}
 
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Girsanov's theorem describes how Brownian drift changes under an equivalent probability measure. Let \(\theta_t\) be adapted and satisfy a condition such as Novikov's criterion. Define \(Z_t=\exp\{-\int_0^t\theta_sdB_s-\frac12\int_0^t\theta_s^2ds\}\).</p>
+        <p><span class="statement-title">定义.</span> 对渐进可测过程 \(\theta\)，若 \(\int_0^T\theta_s^2ds\lt \infty\)，定义随机指数
+        \[
+        Z_t=\mathcal E\left(\int_0^\cdot \theta_s\,dB_s\right)_t
+        =\exp\left\{\int_0^t\theta_s\,dB_s-\frac12\int_0^t\theta_s^2\,ds\right\}.
+        \]
+        若 \(\mathbb E Z_T=1\)，则由 \(dQ=Z_T\,dP\) 定义的 \(Q\) 是 \(\mathcal F_T\) 上与 \(P\) 等价的概率测度。</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">结果.</span> If \((Z_t)\) is a martingale and \(dQ=Z_TdP\) on \(\mathcal F_T\), then \[\widetilde B_t=B_t+\int_0^t\theta_sds\] is a Brownian motion under \(Q\) on \([0,T]\).</p>
+        <p><span class="statement-title">Girsanov 定理.</span> 在上述假设下，若 \(Z\) 是真鞅，则
+        \[
+        \widetilde B_t=B_t-\int_0^t\theta_s\,ds,\qquad 0\le t\le T,
+        \]
+        在 \(Q\) 下是 Brownian motion。</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span></p>
-        <p>Use exponential martingales to compute conditional characteristic functions of increments under \(Q\). The density tilts the Gaussian increment by a linear exponential factor, shifting its mean while preserving its variance. Localization and approximation extend the argument to adapted \(\theta\).</p>
+        <p><span class="statement-title">证明.</span> 密度过程 \(Z_t=\mathbb E_P(Z_T\mid\mathcal F_t)\) 满足 \(dZ_t=Z_t\theta_t\,dB_t\)。对有界可预测 \(H\)，Bayes 公式给出
+        \[
+        \mathbb E_Q\left(\int_s^tH_u\,d\widetilde B_u\mid\mathcal F_s\right)
+        =\frac1{Z_s}\mathbb E_P\left[Z_t\int_s^tH_u(dB_u-\theta_u\,du)\mid\mathcal F_s\right]=0,
+        \]
+        最后一步来自对 \(Z\int H\,d\widetilde B\) 做分部积分。因此 \(\widetilde B\) 在 \(Q\) 下是连续局部鞅。加入有限变差漂移不改变二次变差：
+        \[
+        [\widetilde B]_t=[B]_t=t.
+        \]
+        由 Lévy 表征，\(\widetilde B\) 是 \(Q\)-Brownian motion。</p>
     </div>
 
-    <h3>说明</h3>
-    <p>Girsanov is the continuous-time likelihood-ratio theorem. It is indispensable for diffusion statistics and stochastic control.</p>
+    <h3>Novikov 条件</h3>
+
+    <p>保证 \(\mathbb E Z_T=1\) 的常用充分条件是
+    \[
+    \mathbb E\exp\left\{\frac12\int_0^T\theta_s^2ds\right\}\lt \infty.
+    \]
+    Girsanov 定理说明：绝对连续测度变换可以把漂移转化为似然比。</p>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/applications-ito-formula/" next_label="下一页" next_url="/notes/probability-theory/stochastic-differential-equations/" %}
 </div>

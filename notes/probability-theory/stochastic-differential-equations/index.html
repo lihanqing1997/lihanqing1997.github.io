@@ -9,21 +9,52 @@ breadcrumb_child_label_zh: "随机微分方程"
     <h2>Stochastic differential equations</h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/girsanov-theorem-change-of-measure/" next_label="Next page" next_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An SDE has the form \(dX_t=b(t,X_t)dt+\sigma(t,X_t)dB_t\), with integral meaning \(X_t=X_0+\int_0^tb(s,X_s)ds+\int_0^t\sigma(s,X_s)dB_s\). A strong solution is adapted to the Brownian filtration and uses the given Brownian motion.</p>
+        <p><span class="statement-title">Definition.</span> A strong solution of
+        \[
+        dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dB_t,\qquad X_0=\xi,
+        \]
+        is an adapted continuous process satisfying, for every \(t\),
+        \[
+        X_t=\xi+\int_0^tb(s,X_s)\,ds+\int_0^t\sigma(s,X_s)\,dB_s
+        \quad\text{a.s.}
+        \]
+        Pathwise uniqueness means that two solutions driven by the same Brownian motion and same initial value are indistinguishable.</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Result.</span> If \(b\) and \(\sigma\) are globally Lipschitz in \(x\) and have linear growth, then the SDE has a unique strong solution. Moreover, solutions depend continuously on initial data in suitable \(L^p\) norms.</p>
+        <p><span class="statement-title">Existence and uniqueness.</span> Suppose there is \(L\lt \infty\) such that
+        \[
+        |b(t,x)-b(t,y)|+|\sigma(t,x)-\sigma(t,y)|\le L|x-y|,
+        \]
+        and
+        \[
+        |b(t,x)|+|\sigma(t,x)|\le L(1+|x|).
+        \]
+        If \(\mathbb E|\xi|^2\lt \infty\), then the SDE has a unique strong solution on every finite time interval.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span></p>
-        <p>Picard iteration defines \(X^{(m+1)}_t=X_0+\int_0^tb(s,X^{(m)}_s)ds+\int_0^t\sigma(s,X^{(m)}_s)dB_s\). Burkholder-Davis-Gundy, Itô isometry, Lipschitz bounds, and Gronwall's inequality show the iterates are Cauchy on small intervals; concatenation gives all times. The same estimates give pathwise uniqueness.</p>
+        <p><span class="statement-title">Proof.</span> Define Picard iterates by \(X^0_t=\xi\) and
+        \[
+        X^{n+1}_t=\xi+\int_0^tb(s,X^n_s)ds+\int_0^t\sigma(s,X^n_s)dB_s.
+        \]
+        By Cauchy-Schwarz and the Burkholder-Davis-Gundy inequality,
+        \[
+        \mathbb E\sup_{u\le t}|X^{n+1}_u-X^n_u|^2
+        \le C_L\int_0^t\mathbb E\sup_{r\le s}|X^n_r-X^{n-1}_r|^2ds.
+        \]
+        Iterating this estimate gives a factorial bound, so \((X^n)\) is Cauchy in \(L^2(\Omega;C[0,T])\). The limit satisfies the integral equation by the same estimates and continuity of the integral maps. If \(X,Y\) are two solutions, the same inequality applied to \(X-Y\) gives
+        \[
+        \mathbb E\sup_{u\le t}|X_u-Y_u|^2\le C_L\int_0^t\mathbb E\sup_{r\le s}|X_r-Y_r|^2ds,
+        \]
+        and Gronwall’s lemma forces the left side to be \(0\). Hence the solution is unique.</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>SDEs are random dynamical systems whose infinitesimal noise is Brownian. Existence is a fixed-point theorem in a space of adapted processes.</p>
+    <h3>Generator</h3>
+
+    <p>The SDE links pathwise dynamics to PDE through the generator \(L=b\cdot\nabla+\frac12\sigma\sigma^\top:D^2\). This is the bridge behind diffusion models, hitting probabilities, and Feynman-Kac formulas.</p>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/girsanov-theorem-change-of-measure/" next_label="Next page" next_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
@@ -34,20 +65,50 @@ breadcrumb_child_label_zh: "随机微分方程"
 
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> An SDE has the form \(dX_t=b(t,X_t)dt+\sigma(t,X_t)dB_t\), with integral meaning \(X_t=X_0+\int_0^tb(s,X_s)ds+\int_0^t\sigma(s,X_s)dB_s\). A strong solution is adapted to the Brownian filtration and uses the given Brownian motion.</p>
+        <p><span class="statement-title">Définition.</span> Une solution forte de
+        \[
+        dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dB_t,\qquad X_0=\xi,
+        \]
+        est un processus adapté continu tel que, pour tout \(t\),
+        \[
+        X_t=\xi+\int_0^tb(s,X_s)\,ds+\int_0^t\sigma(s,X_s)\,dB_s
+        \quad\text{p.s.}
+        \]
+        L’unicité trajectorielle signifie que deux solutions conduites par le même mouvement brownien et la même condition initiale sont indistinguables.</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Résultat.</span> If \(b\) and \(\sigma\) are globally Lipschitz in \(x\) and have linear growth, then the SDE has a unique strong solution. Moreover, solutions depend continuously on initial data in suitable \(L^p\) norms.</p>
+        <p><span class="statement-title">Existence et unicité.</span> Supposons qu’il existe \(L\lt \infty\) tel que
+        \[
+        |b(t,x)-b(t,y)|+|\sigma(t,x)-\sigma(t,y)|\le L|x-y|,
+        \]
+        et
+        \[
+        |b(t,x)|+|\sigma(t,x)|\le L(1+|x|).
+        \]
+        Si \(\mathbb E|\xi|^2\lt \infty\), l’EDS admet une unique solution forte sur tout intervalle de temps fini.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span></p>
-        <p>Picard iteration defines \(X^{(m+1)}_t=X_0+\int_0^tb(s,X^{(m)}_s)ds+\int_0^t\sigma(s,X^{(m)}_s)dB_s\). Burkholder-Davis-Gundy, Itô isometry, Lipschitz bounds, and Gronwall's inequality show the iterates are Cauchy on small intervals; concatenation gives all times. The same estimates give pathwise uniqueness.</p>
+        <p><span class="statement-title">Preuve.</span> Posons \(X^0_t=\xi\) et définissons les itérations de Picard par
+        \[
+        X^{n+1}_t=\xi+\int_0^tb(s,X^n_s)ds+\int_0^t\sigma(s,X^n_s)dB_s.
+        \]
+        Par Cauchy-Schwarz et l’inégalité de Burkholder-Davis-Gundy,
+        \[
+        \mathbb E\sup_{u\le t}|X^{n+1}_u-X^n_u|^2
+        \le C_L\int_0^t\mathbb E\sup_{r\le s}|X^n_r-X^{n-1}_r|^2ds.
+        \]
+        L’itération de cette estimation donne une borne avec facteur \(1/n!\), donc \((X^n)\) est de Cauchy dans \(L^2(\Omega;C[0,T])\). La limite satisfait l’équation intégrale par continuité des deux intégrales. Si \(X,Y\) sont deux solutions, la même inégalité appliquée à \(X-Y\) donne
+        \[
+        \mathbb E\sup_{u\le t}|X_u-Y_u|^2\le C_L\int_0^t\mathbb E\sup_{r\le s}|X_r-Y_r|^2ds,
+        \]
+        et le lemme de Gronwall force le membre gauche à être nul. L’unicité suit.</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>SDEs are random dynamical systems whose infinitesimal noise is Brownian. Existence is a fixed-point theorem in a space of adapted processes.</p>
+    <h3>Générateur</h3>
+
+    <p>L’EDS relie les dynamiques trajectorielles aux EDP par le générateur \(L=b\cdot\nabla+\frac12\sigma\sigma^\top:D^2\). C’est le lien derrière les diffusions, les probabilités d’atteinte et les formules de Feynman-Kac.</p>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/girsanov-theorem-change-of-measure/" next_label="Page suivante" next_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
@@ -56,21 +117,52 @@ breadcrumb_child_label_zh: "随机微分方程"
     <h2>随机微分方程</h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/girsanov-theorem-change-of-measure/" next_label="下一页" next_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> An SDE has the form \(dX_t=b(t,X_t)dt+\sigma(t,X_t)dB_t\), with integral meaning \(X_t=X_0+\int_0^tb(s,X_s)ds+\int_0^t\sigma(s,X_s)dB_s\). A strong solution is adapted to the Brownian filtration and uses the given Brownian motion.</p>
+        <p><span class="statement-title">定义.</span> 方程
+        \[
+        dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dB_t,\qquad X_0=\xi
+        \]
+        的强解是适应连续过程，且对每个 \(t\) 满足
+        \[
+        X_t=\xi+\int_0^tb(s,X_s)\,ds+\int_0^t\sigma(s,X_s)\,dB_s
+        \quad\text{a.s.}
+        \]
+        路径唯一性指：由同一个 Brownian motion 和同一个初值驱动的两个解 indistinguishable。</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">结果.</span> If \(b\) and \(\sigma\) are globally Lipschitz in \(x\) and have linear growth, then the SDE has a unique strong solution. Moreover, solutions depend continuously on initial data in suitable \(L^p\) norms.</p>
+        <p><span class="statement-title">存在唯一性.</span> 假设存在 \(L\lt \infty\)，使得
+        \[
+        |b(t,x)-b(t,y)|+|\sigma(t,x)-\sigma(t,y)|\le L|x-y|,
+        \]
+        且
+        \[
+        |b(t,x)|+|\sigma(t,x)|\le L(1+|x|).
+        \]
+        若 \(\mathbb E|\xi|^2\lt \infty\)，则该 SDE 在任意有限时间区间上存在唯一强解。</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span></p>
-        <p>Picard iteration defines \(X^{(m+1)}_t=X_0+\int_0^tb(s,X^{(m)}_s)ds+\int_0^t\sigma(s,X^{(m)}_s)dB_s\). Burkholder-Davis-Gundy, Itô isometry, Lipschitz bounds, and Gronwall's inequality show the iterates are Cauchy on small intervals; concatenation gives all times. The same estimates give pathwise uniqueness.</p>
+        <p><span class="statement-title">证明.</span> 定义 Picard 迭代：\(X^0_t=\xi\)，且
+        \[
+        X^{n+1}_t=\xi+\int_0^tb(s,X^n_s)ds+\int_0^t\sigma(s,X^n_s)dB_s.
+        \]
+        由 Cauchy-Schwarz 和 Burkholder-Davis-Gundy 不等式，
+        \[
+        \mathbb E\sup_{u\le t}|X^{n+1}_u-X^n_u|^2
+        \le C_L\int_0^t\mathbb E\sup_{r\le s}|X^n_r-X^{n-1}_r|^2ds.
+        \]
+        迭代该估计得到带 \(1/n!\) 的界，因此 \((X^n)\) 在 \(L^2(\Omega;C[0,T])\) 中是 Cauchy。极限由积分映射连续性满足积分方程。若 \(X,Y\) 是两个解，对 \(X-Y\) 使用同一估计得
+        \[
+        \mathbb E\sup_{u\le t}|X_u-Y_u|^2\le C_L\int_0^t\mathbb E\sup_{r\le s}|X_r-Y_r|^2ds,
+        \]
+        Gronwall 引理迫使左边为 \(0\)，所以解唯一。</p>
     </div>
 
-    <h3>说明</h3>
-    <p>SDEs are random dynamical systems whose infinitesimal noise is Brownian. Existence is a fixed-point theorem in a space of adapted processes.</p>
+    <h3>生成元</h3>
+
+    <p>SDE 通过生成元 \(L=b\cdot\nabla+\frac12\sigma\sigma^\top:D^2\) 把路径动力学与 PDE 联系起来。这是扩散过程、击中概率和 Feynman-Kac 公式背后的桥梁。</p>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/girsanov-theorem-change-of-measure/" next_label="下一页" next_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
