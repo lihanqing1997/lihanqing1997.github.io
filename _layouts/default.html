@@ -3,13 +3,7 @@
 
 <head>
     <meta charset='utf-8'>
-    <title>
-        {% if page.title %}
-            {{ page.title }}
-        {% else %} 
-            {{ site.name }} &mdash; {{ site.description }}
-        {% endif %}
-    </title>
+    <title>{{ site.name }}</title>
 
     {% if site.highlighter %}
         <link rel='stylesheet' href='{{ site.url }}/assets/css/syntax.css' type='text/css'>
@@ -30,6 +24,12 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <script>
         (function () {
+            window.siteTitles = {
+                en: "Hanqing Li's homepage",
+                fr: "Page d'accueil de Hanqing Li",
+                zh: "李汉青的主页"
+            };
+
             var language = 'en';
             try {
                 language = localStorage.getItem('siteLanguage') || 'en';
@@ -39,6 +39,7 @@
             }
             document.documentElement.classList.add('lang-' + language);
             document.documentElement.lang = language === 'zh' ? 'zh-Hans' : (language === 'fr' ? 'fr' : 'en');
+            document.title = window.siteTitles[language] || window.siteTitles.en;
         }());
     </script>
     <style>
@@ -293,6 +294,7 @@
                 document.documentElement.classList.remove('lang-en', 'lang-fr', 'lang-zh');
                 document.documentElement.classList.add('lang-' + language);
                 document.documentElement.lang = language === 'zh' ? 'zh-Hans' : (language === 'fr' ? 'fr' : 'en');
+                document.title = (window.siteTitles && window.siteTitles[language]) || "Hanqing Li's homepage";
 
                 try {
                     localStorage.setItem('siteLanguage', language);
