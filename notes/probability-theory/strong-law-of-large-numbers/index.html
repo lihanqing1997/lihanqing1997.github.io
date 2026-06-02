@@ -6,26 +6,27 @@ layout: default
     <h2>Strong Law of Large Numbers</h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="Next page" next_url="/notes/probability-theory/central-limit-theorem/" %}
 
-    <p>The strong law strengthens convergence in probability to pathwise convergence outside a null set.</p>
+    <p>The strong law upgrades convergence in probability to convergence of the whole sample path outside a null set.</p>
 
     <h3>Definition</h3>
     <p>\(X_n\to X\) <strong>almost surely</strong> if \(P(\{\omega:X_n(\omega)\to X(\omega)\})=1\).</p>
 
-    <h3>Theorem: finite-variance strong law</h3>
-    <p>Let \(X_1,X_2,\ldots\) be i.i.d. with \(EX_1=\mu\) and \(\operatorname{Var}(X_1)=\sigma^2<\infty\). If \(S_n=\sum_{i=1}^nX_i\), then \(S_n/n\to\mu\) almost surely.</p>
+    <h3>Theorem: i.i.d. strong law</h3>
+    <p>Let \(X_1,X_2,\ldots\) be i.i.d. with \(E|X_1|<\infty\) and \(EX_1=\mu\). If \(S_n=\sum_{i=1}^nX_i\), then \(S_n/n\to\mu\) almost surely.</p>
 
     <h3>Proof</h3>
     <div class="note-proof">
-        <p>It is enough to prove the result for \(EX_i=0\); apply that to \(X_i-\mu\). Write \(S_n=\sum_{i=1}^nX_i\).</p>
-        <p>First prove a maximal estimate. For independent mean-zero variables and \(M_n=\max_{1\le k\le n}|S_k|\), define \(B_k=\{M_{k-1}<\lambda,\ |S_k|\ge\lambda\}\). The \(B_k\) are disjoint and \(\{M_n\ge\lambda\}=\bigcup_{k=1}^nB_k\). Since \(B_k\in\sigma(X_1,\ldots,X_k)\) and \(E(S_n-S_k\mid X_1,\ldots,X_k)=0\),</p>
-        <p>\[E[S_n^2 1_{B_k}]\ge E[S_k^2 1_{B_k}]\ge \lambda^2P(B_k).\]</p>
-        <p>Summing in \(k\) gives \(P(M_n\ge\lambda)\le ES_n^2/\lambda^2=n\sigma^2/\lambda^2\).</p>
-        <p>Now use dyadic blocks. By Chebyshev, \(\sum_mP(|S_{2^m}|>\varepsilon 2^m)\le\sum_m\sigma^2/(\varepsilon^2 2^m)<\infty\), so \(S_{2^m}/2^m\to0\) almost surely by Borel-Cantelli.</p>
-        <p>The maximal estimate gives</p>
-        <p>\[\sum_mP\left(\max_{2^m<k\le2^{m+1}}|S_k-S_{2^m}|>\varepsilon 2^m\right)\le\sum_m\frac{\sigma^2}{\varepsilon^2 2^m}<\infty.\]</p>
-        <p>Again by Borel-Cantelli, the block maximum divided by \(2^m\) tends to \(0\). If \(2^m<k\le2^{m+1}\), then</p>
-        <p>\[\frac{|S_k|}{k}\le \frac{|S_{2^m}|}{2^m}+\frac{\max_{2^m<j\le2^{m+1}}|S_j-S_{2^m}|}{2^m}\to0.\]</p>
-        <p>Thus \(S_n/n\to0\) almost surely in the centered case, and \(S_n/n\to\mu\) in general.</p>
+        <p><strong>Tool.</strong> If independent centered variables \(Z_n\) satisfy \(\sum_n\operatorname{Var}(Z_n)<\infty\), then \(\sum_n Z_n\) converges almost surely. Indeed, Kolmogorov's maximal inequality gives, for \(N\ge m\),</p>
+        <p>\[P\left(\max_{m\le k\le N}\left|\sum_{n=m}^kZ_n\right|>\varepsilon\right)\le \varepsilon^{-2}\sum_{n=m}^N\operatorname{Var}(Z_n).\]</p>
+        <p>Letting \(N\to\infty\), choosing \(m_j\) with tail variance at most \(2^{-j}\varepsilon^2\), and applying Borel-Cantelli shows that the tails are eventually \(\varepsilon\)-small. Taking rational \(\varepsilon>0\), the partial sums are Cauchy almost surely.</p>
+        <p><strong>Kronecker's lemma.</strong> If \(\sum_na_n/n\) converges, then \(n^{-1}\sum_{k=1}^na_k\to0\). Let \(t_n=\sum_{k=1}^na_k/k\). Since \(a_k=k(t_k-t_{k-1})\), summation by parts gives \(\sum_{k=1}^na_k=nt_n-\sum_{k=1}^{n-1}t_k\). Dividing by \(n\), both terms tend to the same limit by Cesàro averaging.</p>
+        <p>Set \(Y_n=X_n1_{\{|X_n|\le n\}}\). Since</p>
+        <p>\[\sum_{n=1}^{\infty}P(X_n\ne Y_n)=\sum_{n=1}^{\infty}P(|X_1|>n)\le E|X_1|<\infty,\]</p>
+        <p>Borel-Cantelli gives \(X_n=Y_n\) eventually almost surely. Hence \(n^{-1}\sum_{k=1}^n(X_k-Y_k)\to0\) almost surely.</p>
+        <p>Also,</p>
+        <p>\[\sum_{n=1}^{\infty}\frac{\operatorname{Var}(Y_n)}{n^2}\le \sum_{n=1}^{\infty}\frac{E[Y_n^2]}{n^2}=E\left[X_1^2\sum_{n\ge |X_1|}\frac1{n^2}\right]<\infty.\]</p>
+        <p>Apply the tool to \(Z_n=(Y_n-EY_n)/n\). Then \(\sum_n(Y_n-EY_n)/n\) converges almost surely, and Kronecker's lemma gives \(n^{-1}\sum_{k=1}^n(Y_k-EY_k)\to0\) almost surely.</p>
+        <p>Finally, \(EY_n\to EX_1=\mu\) by dominated convergence, so \(n^{-1}\sum_{k=1}^nEY_k\to\mu\) by Cesàro averaging. Combining the three terms yields \(S_n/n\to\mu\) almost surely.</p>
     </div>
 
     <p class="note-source">Durrett guide: Section 2.4.</p>
@@ -36,26 +37,27 @@ layout: default
     <h2>Loi forte des grands nombres</h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="Page suivante" next_url="/notes/probability-theory/central-limit-theorem/" %}
 
-    <p>La loi forte renforce la convergence en probabilité en convergence trajectorielle hors d'un ensemble nul.</p>
+    <p>La loi forte transforme une convergence en probabilité en convergence de toute la trajectoire hors d'un ensemble nul.</p>
 
     <h3>Définition</h3>
     <p>\(X_n\to X\) <strong>presque sûrement</strong> si \(P(\{\omega:X_n(\omega)\to X(\omega)\})=1\).</p>
 
-    <h3>Théorème : loi forte avec variance finie</h3>
-    <p>Soient \(X_1,X_2,\ldots\) i.i.d. avec \(EX_1=\mu\) et \(\operatorname{Var}(X_1)=\sigma^2<\infty\). Si \(S_n=\sum_{i=1}^nX_i\), alors \(S_n/n\to\mu\) presque sûrement.</p>
+    <h3>Théorème : loi forte i.i.d.</h3>
+    <p>Soient \(X_1,X_2,\ldots\) i.i.d. avec \(E|X_1|<\infty\) et \(EX_1=\mu\). Si \(S_n=\sum_{i=1}^nX_i\), alors \(S_n/n\to\mu\) presque sûrement.</p>
 
     <h3>Preuve</h3>
     <div class="note-proof">
-        <p>Il suffit de traiter le cas \(EX_i=0\), puis d'appliquer le résultat à \(X_i-\mu\). Écrire \(S_n=\sum_{i=1}^nX_i\).</p>
-        <p>Établissons d'abord une inégalité maximale. Pour \(M_n=\max_{1\le k\le n}|S_k|\), poser \(B_k=\{M_{k-1}<\lambda,\ |S_k|\ge\lambda\}\). Les \(B_k\) sont disjoints et \(\{M_n\ge\lambda\}=\bigcup_{k=1}^nB_k\). Comme \(B_k\in\sigma(X_1,\ldots,X_k)\) et \(E(S_n-S_k\mid X_1,\ldots,X_k)=0\),</p>
-        <p>\[E[S_n^2 1_{B_k}]\ge E[S_k^2 1_{B_k}]\ge \lambda^2P(B_k).\]</p>
-        <p>En sommant, \(P(M_n\ge\lambda)\le ES_n^2/\lambda^2=n\sigma^2/\lambda^2\).</p>
-        <p>Utilisons les blocs dyadiques. Par Chebyshev, \(\sum_mP(|S_{2^m}|>\varepsilon 2^m)\le\sum_m\sigma^2/(\varepsilon^2 2^m)<\infty\), donc \(S_{2^m}/2^m\to0\) p.s. par Borel-Cantelli.</p>
-        <p>L'inégalité maximale donne</p>
-        <p>\[\sum_mP\left(\max_{2^m<k\le2^{m+1}}|S_k-S_{2^m}|>\varepsilon 2^m\right)\le\sum_m\frac{\sigma^2}{\varepsilon^2 2^m}<\infty.\]</p>
-        <p>Par Borel-Cantelli, le maximum de bloc divisé par \(2^m\) tend vers \(0\). Si \(2^m<k\le2^{m+1}\), alors</p>
-        <p>\[\frac{|S_k|}{k}\le \frac{|S_{2^m}|}{2^m}+\frac{\max_{2^m<j\le2^{m+1}}|S_j-S_{2^m}|}{2^m}\to0.\]</p>
-        <p>Donc \(S_n/n\to0\) p.s. dans le cas centré, puis \(S_n/n\to\mu\) en général.</p>
+        <p><strong>Outil.</strong> Si des variables indépendantes centrées \(Z_n\) vérifient \(\sum_n\operatorname{Var}(Z_n)<\infty\), alors \(\sum_nZ_n\) converge presque sûrement. En effet, l'inégalité maximale de Kolmogorov donne, pour \(N\ge m\),</p>
+        <p>\[P\left(\max_{m\le k\le N}\left|\sum_{n=m}^kZ_n\right|>\varepsilon\right)\le \varepsilon^{-2}\sum_{n=m}^N\operatorname{Var}(Z_n).\]</p>
+        <p>En faisant tendre \(N\) vers l'infini, puis en choisissant \(m_j\) tel que la variance de queue soit au plus \(2^{-j}\varepsilon^2\), le lemme de Borel-Cantelli montre que les queues sont finalement plus petites que \(\varepsilon\). Pour les \(\varepsilon\) rationnels positifs, les sommes partielles sont donc de Cauchy p.s.</p>
+        <p><strong>Lemme de Kronecker.</strong> Si \(\sum_na_n/n\) converge, alors \(n^{-1}\sum_{k=1}^na_k\to0\). Posons \(t_n=\sum_{k=1}^na_k/k\). Comme \(a_k=k(t_k-t_{k-1})\), une sommation par parties donne \(\sum_{k=1}^na_k=nt_n-\sum_{k=1}^{n-1}t_k\). Après division par \(n\), les deux termes tendent vers la même limite par moyenne de Cesàro.</p>
+        <p>Posons \(Y_n=X_n1_{\{|X_n|\le n\}}\). Comme</p>
+        <p>\[\sum_{n=1}^{\infty}P(X_n\ne Y_n)=\sum_{n=1}^{\infty}P(|X_1|>n)\le E|X_1|<\infty,\]</p>
+        <p>Borel-Cantelli donne \(X_n=Y_n\) finalement p.s. Ainsi \(n^{-1}\sum_{k=1}^n(X_k-Y_k)\to0\) p.s.</p>
+        <p>De plus,</p>
+        <p>\[\sum_{n=1}^{\infty}\frac{\operatorname{Var}(Y_n)}{n^2}\le \sum_{n=1}^{\infty}\frac{E[Y_n^2]}{n^2}=E\left[X_1^2\sum_{n\ge |X_1|}\frac1{n^2}\right]<\infty.\]</p>
+        <p>Appliquons l'outil à \(Z_n=(Y_n-EY_n)/n\). Alors \(\sum_n(Y_n-EY_n)/n\) converge p.s., et le lemme de Kronecker donne \(n^{-1}\sum_{k=1}^n(Y_k-EY_k)\to0\) p.s.</p>
+        <p>Enfin, \(EY_n\to EX_1=\mu\) par convergence dominée, donc \(n^{-1}\sum_{k=1}^nEY_k\to\mu\) par moyenne de Cesàro. En combinant les trois termes, \(S_n/n\to\mu\) p.s.</p>
     </div>
 
     <p class="note-source">Guide Durrett : section 2.4.</p>
@@ -66,26 +68,27 @@ layout: default
     <h2>强大数定律</h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="下一页" next_url="/notes/probability-theory/central-limit-theorem/" %}
 
-    <p>强大数定律把依概率收敛加强为除去零概率集合后的逐点收敛。</p>
+    <p>强大数定律把依概率收敛加强为：除去一个零概率集合后，整条样本路径都收敛。</p>
 
     <h3>定义</h3>
-    <p>若 \(P(\{\omega:X_n(\omega)\to X(\omega)\})=1\)，则称 \(X_n\to X\) <strong>几乎处处收敛</strong>。</p>
+    <p>若 \(P(\{\omega:X_n(\omega)\to X(\omega)\})=1\)，则称 \(X_n\to X\) <strong>几乎必然收敛</strong>。</p>
 
-    <h3>定理：有限方差形式</h3>
-    <p>设 \(X_1,X_2,\ldots\) 独立同分布，\(EX_1=\mu\)，\(\operatorname{Var}(X_1)=\sigma^2<\infty\)。若 \(S_n=\sum_{i=1}^nX_i\)，则 \(S_n/n\to\mu\) 几乎处处。</p>
+    <h3>定理：独立同分布强大数定律</h3>
+    <p>设 \(X_1,X_2,\ldots\) 独立同分布，\(E|X_1|<\infty\)，且 \(EX_1=\mu\)。若 \(S_n=\sum_{i=1}^nX_i\)，则 \(S_n/n\to\mu\) 几乎必然。</p>
 
     <h3>证明</h3>
     <div class="note-proof">
-        <p>只需证明 \(EX_i=0\) 的情形；一般情形对 \(X_i-\mu\) 应用即可。记 \(S_n=\sum_{i=1}^nX_i\)。</p>
-        <p>先证明一个最大不等式。令 \(M_n=\max_{1\le k\le n}|S_k|\)，并定义 \(B_k=\{M_{k-1}<\lambda,\ |S_k|\ge\lambda\}\)。则 \(B_k\) 两两不交且 \(\{M_n\ge\lambda\}=\bigcup_{k=1}^nB_k\)。由于 \(B_k\in\sigma(X_1,\ldots,X_k)\)，且 \(E(S_n-S_k\mid X_1,\ldots,X_k)=0\)，</p>
-        <p>\[E[S_n^2 1_{B_k}]\ge E[S_k^2 1_{B_k}]\ge \lambda^2P(B_k).\]</p>
-        <p>对 \(k\) 求和得到 \(P(M_n\ge\lambda)\le ES_n^2/\lambda^2=n\sigma^2/\lambda^2\)。</p>
-        <p>现在使用二进制分块。由 Chebyshev 不等式，\(\sum_mP(|S_{2^m}|>\varepsilon 2^m)\le\sum_m\sigma^2/(\varepsilon^2 2^m)<\infty\)，故由 Borel-Cantelli 引理，\(S_{2^m}/2^m\to0\) 几乎处处。</p>
-        <p>最大不等式给出</p>
-        <p>\[\sum_mP\left(\max_{2^m<k\le2^{m+1}}|S_k-S_{2^m}|>\varepsilon 2^m\right)\le\sum_m\frac{\sigma^2}{\varepsilon^2 2^m}<\infty.\]</p>
-        <p>再由 Borel-Cantelli，该分块最大值除以 \(2^m\) 趋于 \(0\)。若 \(2^m<k\le2^{m+1}\)，则</p>
-        <p>\[\frac{|S_k|}{k}\le \frac{|S_{2^m}|}{2^m}+\frac{\max_{2^m<j\le2^{m+1}}|S_j-S_{2^m}|}{2^m}\to0.\]</p>
-        <p>因此中心化情形 \(S_n/n\to0\) 几乎处处，一般情形得到 \(S_n/n\to\mu\)。</p>
+        <p><strong>工具。</strong> 若独立中心化随机变量 \(Z_n\) 满足 \(\sum_n\operatorname{Var}(Z_n)<\infty\)，则 \(\sum_nZ_n\) 几乎必然收敛。事实上，由 Kolmogorov 最大不等式，对 \(N\ge m\)，</p>
+        <p>\[P\left(\max_{m\le k\le N}\left|\sum_{n=m}^kZ_n\right|>\varepsilon\right)\le \varepsilon^{-2}\sum_{n=m}^N\operatorname{Var}(Z_n).\]</p>
+        <p>令 \(N\to\infty\)，再取 \(m_j\) 使尾部方差不超过 \(2^{-j}\varepsilon^2\)，由 Borel-Cantelli 引理可知尾部最终都小于 \(\varepsilon\)。令 \(\varepsilon\) 取遍正有理数，部分和几乎必然为 Cauchy 列。</p>
+        <p><strong>Kronecker 引理。</strong> 若 \(\sum_na_n/n\) 收敛，则 \(n^{-1}\sum_{k=1}^na_k\to0\)。令 \(t_n=\sum_{k=1}^na_k/k\)。由于 \(a_k=k(t_k-t_{k-1})\)，分部求和给出 \(\sum_{k=1}^na_k=nt_n-\sum_{k=1}^{n-1}t_k\)。两边除以 \(n\)，由 Cesàro 平均可知两项趋于同一极限。</p>
+        <p>令 \(Y_n=X_n1_{\{|X_n|\le n\}}\)。因为</p>
+        <p>\[\sum_{n=1}^{\infty}P(X_n\ne Y_n)=\sum_{n=1}^{\infty}P(|X_1|>n)\le E|X_1|<\infty,\]</p>
+        <p>由 Borel-Cantelli 引理，\(X_n=Y_n\) 最终几乎必然成立。因此 \(n^{-1}\sum_{k=1}^n(X_k-Y_k)\to0\) 几乎必然。</p>
+        <p>另一方面，</p>
+        <p>\[\sum_{n=1}^{\infty}\frac{\operatorname{Var}(Y_n)}{n^2}\le \sum_{n=1}^{\infty}\frac{E[Y_n^2]}{n^2}=E\left[X_1^2\sum_{n\ge |X_1|}\frac1{n^2}\right]<\infty.\]</p>
+        <p>对 \(Z_n=(Y_n-EY_n)/n\) 应用上面的工具，得到 \(\sum_n(Y_n-EY_n)/n\) 几乎必然收敛。由 Kronecker 引理，\(n^{-1}\sum_{k=1}^n(Y_k-EY_k)\to0\) 几乎必然。</p>
+        <p>最后，由控制收敛定理 \(EY_n\to EX_1=\mu\)，所以 Cesàro 平均给出 \(n^{-1}\sum_{k=1}^nEY_k\to\mu\)。合并这三部分，得到 \(S_n/n\to\mu\) 几乎必然。</p>
     </div>
 
     <p class="note-source">Durrett 参考：第 2.4 节。</p>
