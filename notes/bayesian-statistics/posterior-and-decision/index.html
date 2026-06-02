@@ -1,0 +1,185 @@
+---
+layout: default
+breadcrumb_child_label_en: "Posterior and decision"
+breadcrumb_child_label_fr: "Postérieur et décision"
+breadcrumb_child_label_zh: "后验与决策"
+---
+
+<div class="note-page" data-lang="en">
+    <h2>Posterior and Decision</h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" next_label="Next page" next_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" %}
+
+    <h3>Bayesian model</h3>
+    <p>A Bayesian model consists of a sampling distribution \(P_\theta\), \(\theta\in\Theta\), and a prior probability measure \(\Pi\) on \(\Theta\). For dominated models with density \(p_\theta\), independent data \(X^{(n)}=(X_1,\ldots,X_n)\) have likelihood \(L_n(\theta)=\prod_{i=1}^np_\theta(X_i)\).</p>
+    <p>For a measurable set \(B\subset\Theta\), the posterior is</p>
+    <p>\[
+    \Pi(B\mid X^{(n)})
+    =
+    \frac{\int_B L_n(\theta)\,d\Pi(\theta)}
+    {\int_\Theta L_n(\theta)\,d\Pi(\theta)}.
+    \]</p>
+    <p>The denominator \(m(X^{(n)})=\int_\Theta L_n(\theta)\,d\Pi(\theta)\) is the marginal likelihood. It is the normalizing constant for the posterior and the predictive density of the observed sample under the prior.</p>
+
+    <h3>Posterior as updated uncertainty</h3>
+    <p>Bayes' formula can be read as</p>
+    <p>\[
+    d\Pi(\theta\mid X^{(n)})\propto L_n(\theta)\,d\Pi(\theta).
+    \]</p>
+    <p>The prior says which parameter values were plausible before seeing the data. The likelihood reweights those values by how well they explain the observation. If the likelihood is nearly flat, the posterior remains close to the prior; if the likelihood is sharply peaked, the posterior concentrates around high-likelihood regions.</p>
+
+    <h3>Bayes actions</h3>
+    <p>A decision problem has an action space \(\mathcal A\) and loss \(L(\theta,a)\). After observing data, the Bayes action minimizes posterior expected loss:</p>
+    <p>\[
+    a_\Pi(X^{(n)})\in\arg\min_{a\in\mathcal A}
+    \int_\Theta L(\theta,a)\,d\Pi(\theta\mid X^{(n)}).
+    \]</p>
+    <p>Thus the posterior distribution is not only a summary of uncertainty. It is the object from which optimal actions are computed once a loss function is chosen.</p>
+
+    <h3>Common losses</h3>
+    <p>For scalar \(\theta\), squared error loss \(L(\theta,a)=(\theta-a)^2\) gives \(a=E(\theta\mid X^{(n)})\), because</p>
+    <p>\[
+    E\{(\theta-a)^2\mid X^{(n)}\}
+    =
+    \operatorname{Var}(\theta\mid X^{(n)})+
+    \{E(\theta\mid X^{(n)})-a\}^2.
+    \]</p>
+    <p>Absolute loss \(L(\theta,a)=|\theta-a|\) gives a posterior median. Zero-one loss for a finite parameter space gives a posterior mode. The loss determines which posterior feature matters.</p>
+
+    <h3>Credible sets</h3>
+    <p>A \(1-\alpha\) credible set \(C_n\) satisfies \(\Pi(C_n\mid X^{(n)})\ge 1-\alpha\). A highest posterior density set has the form</p>
+    <p>\[
+    C_n=\{\theta:\pi(\theta\mid X^{(n)})\ge c_\alpha\},
+    \]</p>
+    <p>with \(c_\alpha\) chosen to give posterior probability \(1-\alpha\). A credible set is a posterior probability statement. Its frequentist coverage is a separate property and usually requires asymptotic or model-specific analysis.</p>
+
+    <h3>Posterior predictive distribution</h3>
+    <p>For a future observation \(X_{\mathrm{new}}\), the posterior predictive distribution is</p>
+    <p>\[
+    p(x_{\mathrm{new}}\mid X^{(n)})
+    =
+    \int_\Theta p_\theta(x_{\mathrm{new}})\,d\Pi(\theta\mid X^{(n)}).
+    \]</p>
+    <p>This averages the sampling model over posterior uncertainty. It includes both intrinsic sampling variability and uncertainty about \(\theta\), which is why predictive intervals are usually wider than plug-in intervals based only on \(\hat\theta\).</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" next_label="Next page" next_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2>Postérieur et Décision</h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" next_label="Page suivante" next_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" %}
+
+    <h3>Modèle bayésien</h3>
+    <p>Un modèle bayésien comprend une loi d'échantillonnage \(P_\theta\), \(\theta\in\Theta\), et une loi a priori \(\Pi\) sur \(\Theta\). Dans un modèle dominé de densité \(p_\theta\), des données indépendantes ont pour vraisemblance \(L_n(\theta)=\prod_{i=1}^np_\theta(X_i)\).</p>
+    <p>Pour un ensemble mesurable \(B\subset\Theta\), le postérieur est</p>
+    <p>\[
+    \Pi(B\mid X^{(n)})
+    =
+    \frac{\int_B L_n(\theta)\,d\Pi(\theta)}
+    {\int_\Theta L_n(\theta)\,d\Pi(\theta)}.
+    \]</p>
+    <p>Le dénominateur est la vraisemblance marginale. Il normalise le postérieur et donne aussi la densité prédictive des données observées sous l'a priori.</p>
+
+    <h3>Incertitude mise à jour</h3>
+    <p>La formule de Bayes s'écrit</p>
+    <p>\[
+    d\Pi(\theta\mid X^{(n)})\propto L_n(\theta)\,d\Pi(\theta).
+    \]</p>
+    <p>L'a priori décrit les valeurs plausibles avant les données. La vraisemblance les repondère selon leur accord avec l'observation. Si la vraisemblance est peu informative, le postérieur reste proche de l'a priori; si elle est très concentrée, le postérieur se concentre dans les régions de forte vraisemblance.</p>
+
+    <h3>Actions bayésiennes</h3>
+    <p>Avec un espace d'actions \(\mathcal A\) et une perte \(L(\theta,a)\), l'action bayésienne minimise la perte postérieure moyenne :</p>
+    <p>\[
+    a_\Pi(X^{(n)})\in\arg\min_{a\in\mathcal A}
+    \int_\Theta L(\theta,a)\,d\Pi(\theta\mid X^{(n)}).
+    \]</p>
+    <p>Le postérieur n'est donc pas seulement un résumé d'incertitude; c'est l'objet qui permet de calculer une action optimale après choix de la perte.</p>
+
+    <h3>Pertes usuelles</h3>
+    <p>Sous perte quadratique, \(L(\theta,a)=(\theta-a)^2\), l'action est \(E(\theta\mid X^{(n)})\), car</p>
+    <p>\[
+    E\{(\theta-a)^2\mid X^{(n)}\}
+    =
+    \operatorname{Var}(\theta\mid X^{(n)})+
+    \{E(\theta\mid X^{(n)})-a\}^2.
+    \]</p>
+    <p>Sous perte absolue, l'action est une médiane postérieure. Sous perte zéro-un avec un espace fini, c'est un mode postérieur. La perte choisit donc le résumé pertinent.</p>
+
+    <h3>Ensembles crédibles</h3>
+    <p>Un ensemble crédible de niveau \(1-\alpha\) vérifie \(\Pi(C_n\mid X^{(n)})\ge 1-\alpha\). Un ensemble de plus haute densité postérieure a la forme</p>
+    <p>\[
+    C_n=\{\theta:\pi(\theta\mid X^{(n)})\ge c_\alpha\}.
+    \]</p>
+    <p>C'est un énoncé de probabilité postérieure. Sa couverture fréquentiste est une propriété différente, souvent asymptotique.</p>
+
+    <h3>Loi prédictive postérieure</h3>
+    <p>Pour une observation future,</p>
+    <p>\[
+    p(x_{\mathrm{new}}\mid X^{(n)})
+    =
+    \int_\Theta p_\theta(x_{\mathrm{new}})\,d\Pi(\theta\mid X^{(n)}).
+    \]</p>
+    <p>Cette loi mélange le modèle d'échantillonnage selon l'incertitude postérieure sur \(\theta\). Elle contient donc à la fois la variabilité de l'observation future et l'incertitude sur le paramètre.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" next_label="Page suivante" next_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2>后验与决策</h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" next_label="下一页" next_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" %}
+
+    <h3>贝叶斯模型</h3>
+    <p>一个贝叶斯模型由抽样分布 \(P_\theta\)、参数 \(\theta\in\Theta\)，以及 \(\Theta\) 上的先验概率测度 \(\Pi\) 组成。若模型被某个测度控制，密度为 \(p_\theta\)，独立数据 \(X^{(n)}=(X_1,\ldots,X_n)\) 的似然为 \(L_n(\theta)=\prod_{i=1}^np_\theta(X_i)\)。</p>
+    <p>对可测集 \(B\subset\Theta\)，后验分布为</p>
+    <p>\[
+    \Pi(B\mid X^{(n)})
+    =
+    \frac{\int_B L_n(\theta)\,d\Pi(\theta)}
+    {\int_\Theta L_n(\theta)\,d\Pi(\theta)}.
+    \]</p>
+    <p>分母 \(m(X^{(n)})=\int_\Theta L_n(\theta)\,d\Pi(\theta)\) 是边际似然，它使后验归一化，也是先验下观测样本的预测密度。</p>
+
+    <h3>后验作为更新后的不确定性</h3>
+    <p>Bayes 公式可以写成</p>
+    <p>\[
+    d\Pi(\theta\mid X^{(n)})\propto L_n(\theta)\,d\Pi(\theta).
+    \]</p>
+    <p>先验描述观测数据前哪些参数值比较可信；似然根据这些参数对数据的解释能力重新加权。若似然较平坦，后验仍接近先验；若似然高度集中，后验会集中到高似然区域。</p>
+
+    <h3>Bayes 行动</h3>
+    <p>一个决策问题包含行动空间 \(\mathcal A\) 和损失函数 \(L(\theta,a)\)。观测数据后，Bayes 行动最小化后验期望损失：</p>
+    <p>\[
+    a_\Pi(X^{(n)})\in\arg\min_{a\in\mathcal A}
+    \int_\Theta L(\theta,a)\,d\Pi(\theta\mid X^{(n)}).
+    \]</p>
+    <p>因此后验不仅是不确定性的总结；一旦选择损失函数，它就是计算最优行动的对象。</p>
+
+    <h3>常见损失</h3>
+    <p>对标量 \(\theta\)，平方损失 \(L(\theta,a)=(\theta-a)^2\) 下的 Bayes 行动是 \(E(\theta\mid X^{(n)})\)，因为</p>
+    <p>\[
+    E\{(\theta-a)^2\mid X^{(n)}\}
+    =
+    \operatorname{Var}(\theta\mid X^{(n)})+
+    \{E(\theta\mid X^{(n)})-a\}^2.
+    \]</p>
+    <p>绝对损失下是后验中位数；有限参数空间的零一损失下是后验众数。损失函数决定了后验中哪一个特征最重要。</p>
+
+    <h3>可信集</h3>
+    <p>一个 \(1-\alpha\) 可信集 \(C_n\) 满足 \(\Pi(C_n\mid X^{(n)})\ge 1-\alpha\)。最高后验密度集常写成</p>
+    <p>\[
+    C_n=\{\theta:\pi(\theta\mid X^{(n)})\ge c_\alpha\},
+    \]</p>
+    <p>其中 \(c_\alpha\) 使后验概率等于 \(1-\alpha\)。可信集是后验概率陈述；它的频率覆盖率是另一个性质，通常需要渐近或模型特定分析。</p>
+
+    <h3>后验预测分布</h3>
+    <p>对未来观测 \(X_{\mathrm{new}}\)，后验预测分布为</p>
+    <p>\[
+    p(x_{\mathrm{new}}\mid X^{(n)})
+    =
+    \int_\Theta p_\theta(x_{\mathrm{new}})\,d\Pi(\theta\mid X^{(n)}).
+    \]</p>
+    <p>它把抽样模型按参数的后验不确定性进行平均，因此同时包含未来观测本身的随机性和参数不确定性。正因如此，后验预测区间通常比只使用 \(\hat\theta\) 的 plug-in 区间更宽。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" next_label="下一页" next_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" %}
+</div>
+
+<hr>

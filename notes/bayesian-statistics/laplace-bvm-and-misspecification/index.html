@@ -1,0 +1,203 @@
+---
+layout: default
+breadcrumb_child_label_en: "Laplace, BvM, and misspecification"
+breadcrumb_child_label_fr: "Laplace, BvM et mauvaise spécification"
+breadcrumb_child_label_zh: "Laplace、BvM 与误指定"
+---
+
+<div class="note-page" data-lang="en">
+    <h2>Laplace, BvM, and Misspecification</h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+
+    <h3>Local quadratic likelihood</h3>
+    <p>In a regular finite-dimensional model, the log-likelihood near the maximum likelihood estimator \(\hat\theta_n\) is approximately quadratic:</p>
+    <p>\[
+    \ell_n(\theta)
+    =
+    \ell_n(\hat\theta_n)
+    -\frac{n}{2}(\theta-\hat\theta_n)^\top I(\theta_0)(\theta-\hat\theta_n)
+    +o_{P_{\theta_0}}(1)
+    \]</p>
+    <p>uniformly for \(\theta\) in \(n^{-1/2}\)-neighborhoods. This is the likelihood geometry behind normal approximation.</p>
+
+    <h3>Laplace approximation</h3>
+    <p>For an integral \(I_n=\int e^{n h(\theta)}a(\theta)d\theta\), where \(h\) has a unique maximizer \(\hat\theta\) and negative Hessian \(J=-h''(\hat\theta)\), Laplace's method gives</p>
+    <p>\[
+    I_n\approx
+    e^{n h(\hat\theta)}a(\hat\theta)(2\pi/n)^{d/2}|J|^{-1/2}.
+    \]</p>
+    <p>Applied to marginal likelihoods, it explains why the posterior is close to a normal distribution centered at the likelihood maximizer, with covariance of order \(n^{-1}\).</p>
+
+    <h3>Bernstein-von Mises theorem</h3>
+    <p>If the model is regular, identifiable, correctly specified, and the prior density is positive and continuous at \(\theta_0\), then</p>
+    <p>\[
+    \sup_B\left|
+    \Pi\{\sqrt n(\theta-\hat\theta_n)\in B\mid X^{(n)}\}
+    -
+    N\{0,I(\theta_0)^{-1}\}(B)
+    \right|\to0
+    \]</p>
+    <p>in \(P_{\theta_0}\)-probability. This is the Bernstein-von Mises theorem. It says the posterior has the same first-order distribution as the frequentist distribution of the MLE.</p>
+
+    <h3>Meaning for uncertainty</h3>
+    <p>The theorem implies that, in regular finite-dimensional problems, the prior disappears at first order. Bayesian credible ellipsoids based on the posterior covariance \(I(\theta_0)^{-1}/n\) have asymptotically correct frequentist coverage.</p>
+    <p>This does not mean the prior is irrelevant. It can affect finite samples, nonregular models, high-dimensional regimes, and infinite-dimensional problems.</p>
+
+    <h3>Misspecified models</h3>
+    <p>If the true distribution \(P_0\) is outside the model, the posterior often concentrates near the pseudo-true value</p>
+    <p>\[
+    \theta^\star=\arg\max_{\theta}P_0\log p_\theta
+    =
+    \arg\min_{\theta}P_0\log\frac{p_0}{p_\theta}.
+    \]</p>
+    <p>The curvature matrix and score variance are no longer the same. Let</p>
+    <p>\[
+    J=-P_0\partial_\theta^2\log p_{\theta^\star}(X),
+    \qquad
+    K=P_0\{s_{\theta^\star}(X)s_{\theta^\star}(X)^\top\}.
+    \]</p>
+    <p>The M-estimator has sandwich covariance \(J^{-1}KJ^{-1}\), while a usual Bayesian posterior based on the likelihood has covariance \(J^{-1}/n\). Hence credible sets can be miscalibrated under misspecification.</p>
+
+    <h3>Generalized Bayes</h3>
+    <p>For a loss \(\ell_\theta(x)\), a generalized posterior is</p>
+    <p>\[
+    d\Pi_\eta(\theta\mid X^{(n)})
+    \propto
+    \exp\left\{-\eta\sum_{i=1}^n\ell_\theta(X_i)\right\}d\Pi(\theta),
+    \]</p>
+    <p>where \(\eta>0\) is a learning rate. This includes ordinary Bayes when \(\ell_\theta=-\log p_\theta\) and \(\eta=1\). Choosing or calibrating \(\eta\) is important for uncertainty under misspecification.</p>
+
+    <h3>Where BvM can fail</h3>
+    <p>Bernstein-von Mises can fail in infinite-dimensional models, at boundary points, under weak identification, for irregular likelihoods, and when dimension grows too quickly with \(n\). In those settings, posterior shape is influenced by prior geometry and may not agree with frequentist confidence sets.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2>Laplace, BvM et Mauvaise Spécification</h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+
+    <h3>Vraisemblance localement quadratique</h3>
+    <p>Dans un modèle régulier de dimension finie, la log-vraisemblance près du MLE \(\hat\theta_n\) est approximativement quadratique :</p>
+    <p>\[
+    \ell_n(\theta)
+    =
+    \ell_n(\hat\theta_n)
+    -\frac{n}{2}(\theta-\hat\theta_n)^\top I(\theta_0)(\theta-\hat\theta_n)
+    +o_{P_{\theta_0}}(1).
+    \]</p>
+    <p>C'est la géométrie de vraisemblance qui mène à l'approximation normale.</p>
+
+    <h3>Approximation de Laplace</h3>
+    <p>Pour \(I_n=\int e^{n h(\theta)}a(\theta)d\theta\), si \(h\) a un unique maximiseur \(\hat\theta\) et Hessienne négative \(J=-h''(\hat\theta)\),</p>
+    <p>\[
+    I_n\approx
+    e^{n h(\hat\theta)}a(\hat\theta)(2\pi/n)^{d/2}|J|^{-1/2}.
+    \]</p>
+    <p>Appliquée à la vraisemblance marginale, cette approximation explique la forme normale du postérieur.</p>
+
+    <h3>Théorème de Bernstein-von Mises</h3>
+    <p>Sous régularité, identifiabilité, bonne spécification et densité a priori positive en \(\theta_0\),</p>
+    <p>\[
+    \sup_B\left|
+    \Pi\{\sqrt n(\theta-\hat\theta_n)\in B\mid X^{(n)}\}
+    -
+    N\{0,I(\theta_0)^{-1}\}(B)
+    \right|\to0.
+    \]</p>
+    <p>Le postérieur a donc la même approximation du premier ordre que la distribution fréquentiste du MLE.</p>
+
+    <h3>Conséquence pour l'incertitude</h3>
+    <p>En dimension finie régulière, l'a priori disparaît au premier ordre et les ellipsoïdes crédibles ont une couverture fréquentiste asymptotiquement correcte. En petits échantillons, en haute dimension ou dans les modèles irréguliers, cette conclusion peut échouer.</p>
+
+    <h3>Modèles mal spécifiés</h3>
+    <p>Si \(P_0\) n'appartient pas au modèle, le postérieur se concentre près de</p>
+    <p>\[
+    \theta^\star=\arg\max_{\theta}P_0\log p_\theta.
+    \]</p>
+    <p>Alors la courbure \(J=-P_0\partial_\theta^2\log p_{\theta^\star}\) et la variance du score \(K=P_0(s_{\theta^\star}s_{\theta^\star}^\top)\) diffèrent. L'estimateur a covariance sandwich \(J^{-1}KJ^{-1}\), tandis que le postérieur usuel utilise souvent \(J^{-1}\).</p>
+
+    <h3>Bayes généralisé</h3>
+    <p>Pour une perte \(\ell_\theta\), un postérieur généralisé est</p>
+    <p>\[
+    d\Pi_\eta(\theta\mid X^{(n)})
+    \propto
+    \exp\left\{-\eta\sum_{i=1}^n\ell_\theta(X_i)\right\}d\Pi(\theta).
+    \]</p>
+    <p>Le paramètre \(\eta\) règle la force d'apprentissage et peut aider à calibrer l'incertitude.</p>
+
+    <h3>Échecs possibles de BvM</h3>
+    <p>BvM peut échouer en dimension infinie, aux frontières, sous identification faible, dans les modèles irréguliers ou lorsque la dimension croît trop vite avec \(n\). La géométrie de l'a priori devient alors essentielle.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2>Laplace、BvM 与误指定</h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+
+    <h3>局部二次似然</h3>
+    <p>在正则有限维模型中，log-likelihood 在 MLE \(\hat\theta_n\) 附近近似二次：</p>
+    <p>\[
+    \ell_n(\theta)
+    =
+    \ell_n(\hat\theta_n)
+    -\frac{n}{2}(\theta-\hat\theta_n)^\top I(\theta_0)(\theta-\hat\theta_n)
+    +o_{P_{\theta_0}}(1)
+    \]</p>
+    <p>在 \(n^{-1/2}\) 邻域内一致成立。这是正态近似背后的似然几何。</p>
+
+    <h3>Laplace 近似</h3>
+    <p>对积分 \(I_n=\int e^{n h(\theta)}a(\theta)d\theta\)，若 \(h\) 有唯一最大点 \(\hat\theta\)，且 \(J=-h''(\hat\theta)\) 正定，则</p>
+    <p>\[
+    I_n\approx
+    e^{n h(\hat\theta)}a(\hat\theta)(2\pi/n)^{d/2}|J|^{-1/2}.
+    \]</p>
+    <p>用于边际似然时，它解释了为什么后验近似为以似然最大点为中心、协方差为 \(n^{-1}\) 量级的正态分布。</p>
+
+    <h3>Bernstein-von Mises 定理</h3>
+    <p>若模型正则、可识别、正确设定，且先验密度在 \(\theta_0\) 处正且连续，则</p>
+    <p>\[
+    \sup_B\left|
+    \Pi\{\sqrt n(\theta-\hat\theta_n)\in B\mid X^{(n)}\}
+    -
+    N\{0,I(\theta_0)^{-1}\}(B)
+    \right|\to0
+    \]</p>
+    <p>在 \(P_{\theta_0}\)-概率下成立。这就是 Bernstein-von Mises 定理。它说明后验的一阶形状与 MLE 的频率分布相同。</p>
+
+    <h3>对不确定性的含义</h3>
+    <p>该定理说明，在正则有限维问题中，先验一阶消失。基于后验协方差 \(I(\theta_0)^{-1}/n\) 的 Bayes 可信椭球具有渐近正确的频率覆盖率。</p>
+    <p>这并不表示先验永远无关。有限样本、不正则模型、高维情形和无限维问题中，先验可能非常重要。</p>
+
+    <h3>误指定模型</h3>
+    <p>若真实分布 \(P_0\) 不在模型内，后验通常集中到 pseudo-true value</p>
+    <p>\[
+    \theta^\star=\arg\max_{\theta}P_0\log p_\theta
+    =
+    \arg\min_{\theta}P_0\log\frac{p_0}{p_\theta}.
+    \]</p>
+    <p>此时曲率矩阵与 score 方差不再相同。令</p>
+    <p>\[
+    J=-P_0\partial_\theta^2\log p_{\theta^\star}(X),
+    \qquad
+    K=P_0\{s_{\theta^\star}(X)s_{\theta^\star}(X)^\top\}.
+    \]</p>
+    <p>M-estimator 的协方差为 sandwich 形式 \(J^{-1}KJ^{-1}\)，而通常 Bayes 后验基于似然给出 \(J^{-1}/n\) 的协方差。因此误指定下可信集可能校准不准。</p>
+
+    <h3>广义 Bayes</h3>
+    <p>对损失 \(\ell_\theta(x)\)，广义后验定义为</p>
+    <p>\[
+    d\Pi_\eta(\theta\mid X^{(n)})
+    \propto
+    \exp\left\{-\eta\sum_{i=1}^n\ell_\theta(X_i)\right\}d\Pi(\theta),
+    \]</p>
+    <p>其中 \(\eta>0\) 是学习率。当 \(\ell_\theta=-\log p_\theta\)、\(\eta=1\) 时就是普通 Bayes。误指定下如何选择或校准 \(\eta\) 对不确定性非常重要。</p>
+
+    <h3>BvM 可能失败的地方</h3>
+    <p>在无限维模型、边界点、弱识别、不正则似然，或维数随 \(n\) 增长过快时，Bernstein-von Mises 可能失败。在这些情形中，后验形状会受到先验几何影响，也可能与频率置信集不一致。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+</div>
+
+<hr>

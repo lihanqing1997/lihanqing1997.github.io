@@ -2,229 +2,47 @@
 layout: default
 ---
 
-<div class="note-page" data-lang="en">
+<style>
+.note-links li {
+    margin-bottom: 0.7em;
+}
+
+.note-links li:last-child {
+    margin-bottom: 0;
+}
+</style>
+
+<div data-lang="en">
     <h2>Bayesian Statistics</h2>
 
-    <p>Bayesian statistics combines a sampling model \(p_\theta(x)\) with a prior distribution \(\Pi\) on the unknown quantity \(\theta\). After observing data, uncertainty is represented by the posterior distribution. The posterior is both a probability statement about unknowns and the input to optimal decisions under posterior expected loss.</p>
-
-    <h3>Bayes formula</h3>
-    <p>For data \(X^{(n)}=(X_1,\ldots,X_n)\) with likelihood \(p_\theta^{(n)}(X^{(n)})\), the posterior is</p>
-    <p>\[
-    \Pi(B\mid X^{(n)})
-    =
-    \frac{\int_B p_\theta^{(n)}(X^{(n)})\,d\Pi(\theta)}
-    {\int_\Theta p_\theta^{(n)}(X^{(n)})\,d\Pi(\theta)}.
-    \]</p>
-    <p>The denominator is the marginal likelihood. It normalizes the posterior and is also used in Bayesian model comparison.</p>
-
-    <h3>Posterior summaries and decisions</h3>
-    <p>A posterior distribution is richer than a point estimate. Under squared error loss, the optimal Bayes estimate is \(E(\theta\mid X^{(n)})\). Under absolute error loss, it is a posterior median. A \(1-\alpha\) credible set \(C_n\) satisfies \(\Pi(C_n\mid X^{(n)})\ge1-\alpha\).</p>
-
-    <p>Bayesian inference is therefore naturally decision-theoretic: choose the action \(a\) minimizing</p>
-    <p>\[
-    \int L(\theta,a)\,d\Pi(\theta\mid X^{(n)}).
-    \]</p>
-
-    <h3>Conjugacy and exponential families</h3>
-    <p>Conjugate priors make posterior updating algebraic. If \(X_i\mid\theta\sim N(\theta,\sigma^2)\) with known \(\sigma^2\), and \(\theta\sim N(m_0,v_0)\), then</p>
-    <p>\[
-    \theta\mid X^{(n)}\sim N(m_n,v_n),
-    \qquad
-    v_n^{-1}=v_0^{-1}+n\sigma^{-2},
-    \quad
-    m_n=v_n(v_0^{-1}m_0+n\sigma^{-2}\bar X).
-    \]</p>
-    <p>The posterior mean is a precision-weighted average of the prior mean and the sample mean. As \(n\) grows, the data precision dominates if the prior is fixed.</p>
-
-    <h3>Posterior consistency</h3>
-    <p>If the true distribution is \(P_{\theta_0}\), posterior consistency means that for every neighborhood \(U\) of \(\theta_0\),</p>
-    <p>\[
-    \Pi(U^c\mid X^{(n)})\to0
-    \]</p>
-    <p>in \(P_{\theta_0}\)-probability, or almost surely. A basic mechanism is: the prior must put positive mass near the truth, and the model must contain tests that distinguish \(\theta_0\) from parameters outside \(U\). Likelihood ratios then suppress false regions exponentially.</p>
-
-    <h3>Posterior contraction</h3>
-    <p>Consistency only says the posterior concentrates; contraction theory measures the rate. For a distance \(d\), a rate \(\varepsilon_n\to0\) is achieved if for large \(M\),</p>
-    <p>\[
-    \Pi\{\theta:d(\theta,\theta_0)>M\varepsilon_n\mid X^{(n)}\}\to0.
-    \]</p>
-    <p>Rates are usually controlled by three forces: prior mass near \(\theta_0\), entropy of the model, and tests separating \(d(\theta,\theta_0)\gtrsim\varepsilon_n\). In nonparametric problems, optimal rates often balance approximation and complexity.</p>
-
-    <h3>Laplace approximation and Bernstein-von Mises</h3>
-    <p>In regular finite-dimensional models, the log-likelihood is locally quadratic around the MLE. If the prior density is positive and continuous at \(\theta_0\), then the posterior is approximately normal:</p>
-    <p>\[
-    \Pi\left(\sqrt n(\theta-\hat\theta_n)\in\cdot\mid X^{(n)}\right)
-    \approx
-    N(0,I(\theta_0)^{-1}).
-    \]</p>
-    <p>This is the Bernstein-von Mises phenomenon. It says that, first order, the prior disappears and Bayesian credible ellipsoids agree with frequentist confidence ellipsoids. In infinite-dimensional or irregular models, this can fail, so prior geometry matters much more.</p>
-
-    <h3>Computation</h3>
-    <p>Most posteriors cannot be computed in closed form. Markov chain Monte Carlo constructs a Markov chain with stationary distribution equal to the posterior. Variational inference approximates the posterior by a simpler distribution \(q\) by minimizing a divergence, often equivalent to maximizing an evidence lower bound.</p>
-
-    <p>Computation is part of the statistical method: a theoretically good posterior is not useful unless it can be approximated accurately enough for the target decision or uncertainty statement.</p>
-
-    <h3>Model checking and prediction</h3>
-    <p>The posterior predictive distribution is</p>
-    <p>\[
-    p(x_{\mathrm{new}}\mid X^{(n)})
-    =
-    \int p_\theta(x_{\mathrm{new}})\,d\Pi(\theta\mid X^{(n)}).
-    \]</p>
-    <p>Posterior predictive checks compare replicated data from this distribution to observed data. They are not a proof that the model is true; they are a way to find visible discrepancies between model and data.</p>
-
-    <h3>Advanced directions</h3>
-    <p>Advanced Bayesian statistics includes Bayesian nonparametrics, Gaussian process priors, Dirichlet process mixtures, hierarchical models, empirical Bayes, misspecified posteriors, PAC-Bayes bounds, scalable MCMC, variational approximations, and frequentist analysis of Bayesian procedures. The central tension is between prior structure, likelihood information, computation, and uncertainty calibration.</p>
+    <ol class="note-links">
+        <li><a href="{{ '/notes/bayesian-statistics/posterior-and-decision/' | relative_url }}">Posterior and decision</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/' | relative_url }}">Conjugacy, hierarchical models, and computation</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/consistency-and-contraction/' | relative_url }}">Consistency and contraction</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/laplace-bvm-and-misspecification/' | relative_url }}">Laplace, BvM, and misspecification</a></li>
+    </ol>
 </div>
 
-<div class="note-page" data-lang="fr">
-    <h2>Statistique Bayésienne</h2>
+<div data-lang="fr">
+    <h2>Statistique bayésienne</h2>
 
-    <p>La statistique bayésienne combine un modèle d'échantillonnage \(p_\theta(x)\) avec une loi a priori \(\Pi\) sur la quantité inconnue \(\theta\). Après observation des données, l'incertitude est représentée par la loi a posteriori. Le postérieur est à la fois un énoncé probabiliste sur l'inconnu et l'entrée des décisions optimales sous perte postérieure moyenne.</p>
-
-    <h3>Formule de Bayes</h3>
-    <p>Pour les données \(X^{(n)}=(X_1,\ldots,X_n)\), de vraisemblance \(p_\theta^{(n)}(X^{(n)})\), le postérieur est</p>
-    <p>\[
-    \Pi(B\mid X^{(n)})
-    =
-    \frac{\int_B p_\theta^{(n)}(X^{(n)})\,d\Pi(\theta)}
-    {\int_\Theta p_\theta^{(n)}(X^{(n)})\,d\Pi(\theta)}.
-    \]</p>
-    <p>Le dénominateur est la vraisemblance marginale. Il normalise le postérieur et sert aussi à comparer des modèles.</p>
-
-    <h3>Résumé postérieur et décisions</h3>
-    <p>Une loi postérieure contient plus qu'une estimation ponctuelle. Sous perte quadratique, l'estimateur bayésien optimal est \(E(\theta\mid X^{(n)})\). Sous perte absolue, c'est une médiane postérieure. Un ensemble crédible de niveau \(1-\alpha\) vérifie \(\Pi(C_n\mid X^{(n)})\ge1-\alpha\).</p>
-
-    <p>L'inférence bayésienne est donc naturellement décisionnelle : choisir l'action \(a\) qui minimise</p>
-    <p>\[
-    \int L(\theta,a)\,d\Pi(\theta\mid X^{(n)}).
-    \]</p>
-
-    <h3>Conjugaison et familles exponentielles</h3>
-    <p>Les a priori conjugués rendent la mise à jour algébrique. Si \(X_i\mid\theta\sim N(\theta,\sigma^2)\), avec \(\sigma^2\) connu, et \(\theta\sim N(m_0,v_0)\), alors</p>
-    <p>\[
-    \theta\mid X^{(n)}\sim N(m_n,v_n),
-    \qquad
-    v_n^{-1}=v_0^{-1}+n\sigma^{-2},
-    \quad
-    m_n=v_n(v_0^{-1}m_0+n\sigma^{-2}\bar X).
-    \]</p>
-    <p>La moyenne postérieure est une moyenne pondérée par les précisions entre l'a priori et la moyenne empirique.</p>
-
-    <h3>Consistance postérieure</h3>
-    <p>Si la vraie loi est \(P_{\theta_0}\), la consistance postérieure signifie que pour tout voisinage \(U\) de \(\theta_0\),</p>
-    <p>\[
-    \Pi(U^c\mid X^{(n)})\to0
-    \]</p>
-    <p>en probabilité sous \(P_{\theta_0}\), ou presque sûrement. Le mécanisme de base est le suivant : l'a priori doit mettre de la masse près de la vérité, et le modèle doit permettre des tests distinguant \(\theta_0\) des paramètres hors de \(U\).</p>
-
-    <h3>Contraction postérieure</h3>
-    <p>La consistance dit seulement que le postérieur se concentre; la théorie de contraction mesure la vitesse. Pour une distance \(d\), un taux \(\varepsilon_n\to0\) est atteint si, pour \(M\) assez grand,</p>
-    <p>\[
-    \Pi\{\theta:d(\theta,\theta_0)>M\varepsilon_n\mid X^{(n)}\}\to0.
-    \]</p>
-    <p>Les taux sont contrôlés par la masse a priori près de \(\theta_0\), l'entropie du modèle, et les tests séparant \(d(\theta,\theta_0)\gtrsim\varepsilon_n\).</p>
-
-    <h3>Approximation de Laplace et Bernstein-von Mises</h3>
-    <p>Dans les modèles réguliers de dimension finie, la log-vraisemblance est localement quadratique autour du MLE. Si la densité a priori est positive et continue en \(\theta_0\), le postérieur est approximativement normal :</p>
-    <p>\[
-    \Pi\left(\sqrt n(\theta-\hat\theta_n)\in\cdot\mid X^{(n)}\right)
-    \approx
-    N(0,I(\theta_0)^{-1}).
-    \]</p>
-    <p>C'est le phénomène de Bernstein-von Mises. Au premier ordre, l'a priori disparaît et les ensembles crédibles bayésiens coïncident avec les régions de confiance fréquentistes. En dimension infinie ou dans les modèles irréguliers, cela peut échouer.</p>
-
-    <h3>Calcul</h3>
-    <p>La plupart des postérieurs n'ont pas de forme fermée. Les méthodes MCMC construisent une chaîne de Markov dont la loi stationnaire est le postérieur. L'inférence variationnelle approxime le postérieur par une distribution plus simple \(q\), souvent en maximisant une borne inférieure de l'évidence.</p>
-
-    <p>Le calcul fait partie de la méthode statistique : un postérieur théoriquement bon doit pouvoir être approximé avec assez de précision pour la décision ou l'énoncé d'incertitude visé.</p>
-
-    <h3>Vérification du modèle et prédiction</h3>
-    <p>La loi prédictive postérieure est</p>
-    <p>\[
-    p(x_{\mathrm{new}}\mid X^{(n)})
-    =
-    \int p_\theta(x_{\mathrm{new}})\,d\Pi(\theta\mid X^{(n)}).
-    \]</p>
-    <p>Les vérifications prédictives comparent des données répliquées issues de cette loi aux données observées. Elles ne prouvent pas que le modèle est vrai; elles révèlent des désaccords visibles entre modèle et données.</p>
-
-    <h3>Directions avancées</h3>
-    <p>Les thèmes avancés incluent le Bayes non paramétrique, les processus gaussiens, les mélanges de processus de Dirichlet, les modèles hiérarchiques, l'empirical Bayes, les postérieurs sous mauvaise spécification, les bornes PAC-Bayes, le MCMC scalable et les approximations variationnelles.</p>
+    <ol class="note-links">
+        <li><a href="{{ '/notes/bayesian-statistics/posterior-and-decision/' | relative_url }}">Postérieur et décision</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/' | relative_url }}">Conjugaison, modèles hiérarchiques et calcul</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/consistency-and-contraction/' | relative_url }}">Consistance et contraction</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/laplace-bvm-and-misspecification/' | relative_url }}">Laplace, BvM et mauvaise spécification</a></li>
+    </ol>
 </div>
 
-<div class="note-page" data-lang="zh">
+<div data-lang="zh">
     <h2>贝叶斯统计</h2>
 
-    <p>贝叶斯统计把抽样模型 \(p_\theta(x)\) 与未知量 \(\theta\) 上的先验分布 \(\Pi\) 结合起来。观察数据后，不确定性由后验分布表示。后验既是关于未知量的概率陈述，也是后验期望损失下最优决策的输入。</p>
-
-    <h3>Bayes 公式</h3>
-    <p>对数据 \(X^{(n)}=(X_1,\ldots,X_n)\)，似然为 \(p_\theta^{(n)}(X^{(n)})\)，后验为</p>
-    <p>\[
-    \Pi(B\mid X^{(n)})
-    =
-    \frac{\int_B p_\theta^{(n)}(X^{(n)})\,d\Pi(\theta)}
-    {\int_\Theta p_\theta^{(n)}(X^{(n)})\,d\Pi(\theta)}.
-    \]</p>
-    <p>分母称为边际似然，它使后验归一化，也用于 Bayes 模型比较。</p>
-
-    <h3>后验总结与决策</h3>
-    <p>后验分布比点估计更丰富。平方损失下，最优 Bayes 估计是 \(E(\theta\mid X^{(n)})\)。绝对损失下，它是后验中位数。一个 \(1-\alpha\) 可信集 \(C_n\) 满足 \(\Pi(C_n\mid X^{(n)})\ge1-\alpha\)。</p>
-
-    <p>因此贝叶斯推断天然带有决策论含义：选择行动 \(a\) 来最小化</p>
-    <p>\[
-    \int L(\theta,a)\,d\Pi(\theta\mid X^{(n)}).
-    \]</p>
-
-    <h3>共轭与指数族</h3>
-    <p>共轭先验使后验更新具有代数形式。若 \(X_i\mid\theta\sim N(\theta,\sigma^2)\)，其中 \(\sigma^2\) 已知，且 \(\theta\sim N(m_0,v_0)\)，则</p>
-    <p>\[
-    \theta\mid X^{(n)}\sim N(m_n,v_n),
-    \qquad
-    v_n^{-1}=v_0^{-1}+n\sigma^{-2},
-    \quad
-    m_n=v_n(v_0^{-1}m_0+n\sigma^{-2}\bar X).
-    \]</p>
-    <p>后验均值是先验均值和样本均值按精度加权的平均。若先验固定，随着 \(n\) 增大，数据精度会占主导。</p>
-
-    <h3>后验一致性</h3>
-    <p>若真实分布为 \(P_{\theta_0}\)，后验一致性表示对 \(\theta_0\) 的任意邻域 \(U\)，</p>
-    <p>\[
-    \Pi(U^c\mid X^{(n)})\to0
-    \]</p>
-    <p>在 \(P_{\theta_0}\)-概率下成立，或几乎必然成立。基本机制是：先验必须在真值附近给正质量，并且模型中要存在能把 \(\theta_0\) 与 \(U^c\) 中参数区分开的检验。似然比随后会指数地压低错误区域。</p>
-
-    <h3>后验收缩</h3>
-    <p>一致性只说明后验集中；收缩理论度量集中速度。对距离 \(d\)，若存在 \(\varepsilon_n\to0\)，使得对足够大的 \(M\)，</p>
-    <p>\[
-    \Pi\{\theta:d(\theta,\theta_0)>M\varepsilon_n\mid X^{(n)}\}\to0,
-    \]</p>
-    <p>则称后验以 \(\varepsilon_n\) 速度收缩。速度通常由三部分控制：真值附近的先验质量、模型熵，以及区分 \(d(\theta,\theta_0)\gtrsim\varepsilon_n\) 的检验。在非参数问题中，最优速度常由逼近误差和复杂度平衡决定。</p>
-
-    <h3>Laplace 近似与 Bernstein-von Mises</h3>
-    <p>在正则有限维模型中，log-likelihood 在 MLE 附近局部二次。若先验密度在 \(\theta_0\) 处正且连续，则后验近似正态：</p>
-    <p>\[
-    \Pi\left(\sqrt n(\theta-\hat\theta_n)\in\cdot\mid X^{(n)}\right)
-    \approx
-    N(0,I(\theta_0)^{-1}).
-    \]</p>
-    <p>这就是 Bernstein-von Mises 现象。它说明一阶意义下先验消失，Bayes 可信椭球与频率学派置信椭球一致。在无限维或不正则模型中，该结论可能失败，因此先验几何会变得重要得多。</p>
-
-    <h3>计算</h3>
-    <p>多数后验没有闭式表达。MCMC 构造以后验为平稳分布的 Markov 链。变分推断用一个更简单的分布 \(q\) 近似后验，通常等价于最大化 evidence lower bound。</p>
-
-    <p>计算本身也是统计方法的一部分：理论上好的后验，必须能被足够准确地近似，才能服务于目标决策或不确定性陈述。</p>
-
-    <h3>模型检查与预测</h3>
-    <p>后验预测分布为</p>
-    <p>\[
-    p(x_{\mathrm{new}}\mid X^{(n)})
-    =
-    \int p_\theta(x_{\mathrm{new}})\,d\Pi(\theta\mid X^{(n)}).
-    \]</p>
-    <p>后验预测检查把从该分布生成的复制数据与观测数据比较。它不是模型为真的证明，而是发现模型与数据之间可见差异的方法。</p>
-
-    <h3>高级方向</h3>
-    <p>高级贝叶斯统计包括 Bayes 非参数、高斯过程先验、Dirichlet 过程混合、层级模型、经验 Bayes、误指定后验、PAC-Bayes 界、可扩展 MCMC、变分近似，以及 Bayes 程序的频率性质分析。核心张力在于先验结构、似然信息、计算和不确定性校准之间的平衡。</p>
+    <ol class="note-links">
+        <li><a href="{{ '/notes/bayesian-statistics/posterior-and-decision/' | relative_url }}">后验与决策</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/' | relative_url }}">共轭、层级模型与计算</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/consistency-and-contraction/' | relative_url }}">一致性与收缩</a></li>
+        <li><a href="{{ '/notes/bayesian-statistics/laplace-bvm-and-misspecification/' | relative_url }}">Laplace、BvM 与误指定</a></li>
+    </ol>
 </div>
 
 <hr>
