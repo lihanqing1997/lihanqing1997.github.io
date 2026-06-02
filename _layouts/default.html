@@ -120,6 +120,29 @@
             display: none;
         }
 
+        .breadcrumb-title {
+            font-size: 1.45em;
+            font-weight: bold;
+            line-height: 1.35;
+            margin: 0.15em 0 0.85em;
+        }
+
+        .breadcrumb-title a {
+            overflow-wrap: anywhere;
+        }
+
+        .breadcrumb-separator {
+            color: #666;
+            font-size: 0.8em;
+            font-weight: normal;
+            margin: 0 0.35em;
+        }
+
+        .site-main.has-breadcrumb > div[data-lang] > h2:first-child,
+        .site-main.has-breadcrumb > .note-page > h2:first-child {
+            display: none;
+        }
+
         .site-contact {
             margin-top: 1em;
         }
@@ -229,7 +252,15 @@
 <body>
     {% include header.html %}
 
-    <main class="site-main">
+    {% assign show_breadcrumbs = false %}
+    {% if page.url contains "/research/" and page.url != "/research/" %}
+        {% assign show_breadcrumbs = true %}
+    {% elsif page.url contains "/notes/" and page.url != "/notes/" %}
+        {% assign show_breadcrumbs = true %}
+    {% endif %}
+
+    <main class="site-main{% if show_breadcrumbs %} has-breadcrumb{% endif %}">
+        {% include breadcrumbs.html %}
         {{ content }}
     </main>
 
