@@ -1,3 +1,344 @@
 ---
 layout: default
 ---
+
+<div class="note-page" data-lang="en">
+    <h2>Statistical Inference</h2>
+
+    <p>Statistical inference studies how a law \(P\) or a parameter \(\theta\) can be learned from data \(X_1,\ldots,X_n\). The central questions are: what does an estimator target, why does it converge, what is its limiting distribution, and how do we turn that distribution into uncertainty statements?</p>
+
+    <h3>Asymptotic language</h3>
+    <p>A sequence \(Y_n=o_p(1)\) means \(Y_n\to0\) in probability. A sequence \(Y_n=O_p(1)\) means it is tight: for every \(\varepsilon>0\), there is \(M<\infty\) such that \(\sup_nP(|Y_n|>M)<\varepsilon\). If \(Y_n\rightsquigarrow Y\) and \(Z_n\to c\) in probability, Slutsky's lemma gives \(Y_n+Z_n\rightsquigarrow Y+c\) and \(Z_nY_n\rightsquigarrow cY\).</p>
+
+    <p>The delta method is the main transfer rule. If \(\sqrt n(T_n-\theta)\rightsquigarrow N(0,V)\) and \(g\) is differentiable at \(\theta\), then</p>
+    <p>\[
+    \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow
+    N\{0,\dot g(\theta)V\dot g(\theta)^\top\}.
+    \]</p>
+    <p>This follows from \(g(T_n)-g(\theta)=\dot g(\theta)(T_n-\theta)+o(\|T_n-\theta\|)\) and Slutsky's lemma.</p>
+
+    <h3>Likelihood, score, and information</h3>
+    <p>In a parametric model \(\{p_\theta:\theta\in\Theta\subset\mathbb R^d\}\), the log-likelihood is</p>
+    <p>\[
+    \ell_n(\theta)=\sum_{i=1}^n\log p_\theta(X_i).
+    \]</p>
+    <p>The score and Hessian are \(S_n(\theta)=\partial_\theta\ell_n(\theta)\) and \(H_n(\theta)=\partial_\theta^2\ell_n(\theta)\). For one observation write \(s_\theta(X)=\partial_\theta\log p_\theta(X)\).</p>
+
+    <p>Under regularity allowing differentiation under the integral sign,</p>
+    <p>\[
+    E_\theta s_\theta(X)=\int \partial_\theta\log p_\theta(x)p_\theta(x)\,dx
+    =\int \partial_\theta p_\theta(x)\,dx
+    =\partial_\theta1=0.
+    \]</p>
+    <p>Differentiating this identity once more gives</p>
+    <p>\[
+    0=\partial_\theta E_\theta s_\theta(X)
+    =E_\theta\{\partial_\theta s_\theta(X)\}+E_\theta\{s_\theta(X)s_\theta(X)^\top\}.
+    \]</p>
+    <p>Thus the Fisher information is equivalently</p>
+    <p>\[
+    I(\theta)=E_\theta\{s_\theta(X)s_\theta(X)^\top\}
+    =-E_\theta\{\partial_\theta^2\log p_\theta(X)\}.
+    \]</p>
+    <p>Intuitively, the score is the local slope of the log-likelihood, while the information is the average curvature. More curvature means the likelihood peak is sharper and the parameter is easier to estimate.</p>
+
+    <h3>Consistency</h3>
+    <p>The maximum likelihood estimator is \(\hat\theta_n\in\arg\max_\theta\ell_n(\theta)\). For \(X_i\sim p_{\theta_0}\),</p>
+    <p>\[
+    n^{-1}\ell_n(\theta)\to E_{\theta_0}\log p_\theta(X)
+    \]</p>
+    <p>pointwise by the law of large numbers. The expected log-likelihood is maximized at \(\theta_0\), since</p>
+    <p>\[
+    E_{\theta_0}\log p_{\theta_0}(X)-E_{\theta_0}\log p_\theta(X)
+    =\operatorname{KL}(p_{\theta_0},p_\theta)\ge0.
+    \]</p>
+    <p>If the convergence is uniform and the model is identifiable, the argmax theorem gives \(\hat\theta_n\to\theta_0\) in probability.</p>
+
+    <h3>Asymptotic normality of the MLE</h3>
+    <p>Assume \(\hat\theta_n\to\theta_0\), \(I(\theta_0)\) is nonsingular, and the Hessian is well behaved near \(\theta_0\). Since \(S_n(\hat\theta_n)=0\), Taylor expansion gives</p>
+    <p>\[
+    0=S_n(\theta_0)+H_n(\tilde\theta_n)(\hat\theta_n-\theta_0)
+    \]</p>
+    <p>for some intermediate point \(\tilde\theta_n\) between \(\hat\theta_n\) and \(\theta_0\). Rearranging,</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)
+    =
+    \left\{-n^{-1}H_n(\tilde\theta_n)\right\}^{-1}
+    n^{-1/2}S_n(\theta_0).
+    \]</p>
+    <p>By the multivariate CLT,</p>
+    <p>\[
+    n^{-1/2}S_n(\theta_0)
+    =n^{-1/2}\sum_{i=1}^ns_{\theta_0}(X_i)
+    \rightsquigarrow N(0,I(\theta_0)).
+    \]</p>
+    <p>By a uniform law of large numbers and consistency, \(-n^{-1}H_n(\tilde\theta_n)\to I(\theta_0)\) in probability. Slutsky's lemma yields</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)\rightsquigarrow
+    N(0,I(\theta_0)^{-1}).
+    \]</p>
+
+    <h3>Tests and confidence sets</h3>
+    <p>For testing \(H_0:\theta=\theta_0\), the Wald statistic uses the distance between \(\hat\theta_n\) and \(\theta_0\):</p>
+    <p>\[
+    W_n=n(\hat\theta_n-\theta_0)^\top I(\hat\theta_n)(\hat\theta_n-\theta_0)
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>The score test evaluates the score at the null:</p>
+    <p>\[
+    R_n=n^{-1}S_n(\theta_0)^\top I(\theta_0)^{-1}S_n(\theta_0)
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>The likelihood ratio statistic compares the constrained and unconstrained likelihoods:</p>
+    <p>\[
+    \Lambda_n=2\{\ell_n(\hat\theta_n)-\ell_n(\theta_0)\}
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>All three arise from the same local quadratic approximation to the likelihood. Confidence intervals and ellipsoids invert these tests or use the normal approximation directly.</p>
+
+    <h3>Estimating equations and sandwich variance</h3>
+    <p>Many estimators solve equations \(P_n\psi_\theta=n^{-1}\sum_i\psi(X_i,\theta)=0\). If \(P\psi_{\theta_0}=0\), \(A=\partial_\theta P\psi_\theta|_{\theta_0}\), and \(B=P(\psi_{\theta_0}\psi_{\theta_0}^\top)\), then</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)\rightsquigarrow
+    N(0,A^{-1}B A^{-T}).
+    \]</p>
+    <p>The covariance \(A^{-1}BA^{-T}\) is called sandwich variance. For correctly specified likelihood scores, \(A=-I\) and \(B=I\), so the sandwich reduces to \(I^{-1}\). Under misspecification, it remains the right first-order covariance around the pseudo-true parameter.</p>
+
+    <h3>Advanced viewpoint: LAN and efficiency</h3>
+    <p>Local asymptotic normality states that for local alternatives \(\theta=\theta_0+h/\sqrt n\),</p>
+    <p>\[
+    \ell_n(\theta_0+h/\sqrt n)-\ell_n(\theta_0)
+    =
+    h^\top\Delta_n-\frac12h^\top I(\theta_0)h+o_p(1),
+    \qquad \Delta_n\rightsquigarrow N(0,I(\theta_0)).
+    \]</p>
+    <p>This says that, locally, a regular statistical model behaves like a Gaussian shift experiment. It explains why \(I(\theta_0)^{-1}\) is the best possible covariance for regular estimators and why likelihood methods are asymptotically efficient.</p>
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2>Inférence Statistique</h2>
+
+    <p>L'inférence statistique étudie comment une loi \(P\) ou un paramètre \(\theta\) peut être appris à partir de données \(X_1,\ldots,X_n\). Les questions centrales sont : quelle quantité vise un estimateur, pourquoi converge-t-il, quelle est sa loi limite, et comment transforme-t-on cette loi en énoncés d'incertitude ?</p>
+
+    <h3>Langage asymptotique</h3>
+    <p>Dire que \(Y_n=o_p(1)\) signifie \(Y_n\to0\) en probabilité. Dire que \(Y_n=O_p(1)\) signifie que la suite est tendue : pour tout \(\varepsilon>0\), il existe \(M<\infty\) tel que \(\sup_nP(|Y_n|>M)<\varepsilon\). Si \(Y_n\rightsquigarrow Y\) et \(Z_n\to c\) en probabilité, le lemme de Slutsky donne \(Y_n+Z_n\rightsquigarrow Y+c\) et \(Z_nY_n\rightsquigarrow cY\).</p>
+
+    <p>La méthode delta est la règle principale de transfert. Si \(\sqrt n(T_n-\theta)\rightsquigarrow N(0,V)\) et si \(g\) est différentiable en \(\theta\), alors</p>
+    <p>\[
+    \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow
+    N\{0,\dot g(\theta)V\dot g(\theta)^\top\}.
+    \]</p>
+    <p>Cela vient du développement \(g(T_n)-g(\theta)=\dot g(\theta)(T_n-\theta)+o(\|T_n-\theta\|)\), puis de Slutsky.</p>
+
+    <h3>Vraisemblance, score et information</h3>
+    <p>Dans un modèle paramétrique \(\{p_\theta:\theta\in\Theta\subset\mathbb R^d\}\), la log-vraisemblance est</p>
+    <p>\[
+    \ell_n(\theta)=\sum_{i=1}^n\log p_\theta(X_i).
+    \]</p>
+    <p>Le score et la Hessienne sont \(S_n(\theta)=\partial_\theta\ell_n(\theta)\) et \(H_n(\theta)=\partial_\theta^2\ell_n(\theta)\). Pour une observation, écrire \(s_\theta(X)=\partial_\theta\log p_\theta(X)\).</p>
+
+    <p>Sous les conditions de régularité permettant de dériver sous le signe intégral,</p>
+    <p>\[
+    E_\theta s_\theta(X)=\int \partial_\theta\log p_\theta(x)p_\theta(x)\,dx
+    =\int \partial_\theta p_\theta(x)\,dx
+    =\partial_\theta1=0.
+    \]</p>
+    <p>En dérivant cette identité une seconde fois,</p>
+    <p>\[
+    0=\partial_\theta E_\theta s_\theta(X)
+    =E_\theta\{\partial_\theta s_\theta(X)\}+E_\theta\{s_\theta(X)s_\theta(X)^\top\}.
+    \]</p>
+    <p>L'information de Fisher s'écrit donc</p>
+    <p>\[
+    I(\theta)=E_\theta\{s_\theta(X)s_\theta(X)^\top\}
+    =-E_\theta\{\partial_\theta^2\log p_\theta(X)\}.
+    \]</p>
+    <p>Le score est la pente locale de la log-vraisemblance, tandis que l'information est sa courbure moyenne. Une plus grande courbure signifie un pic plus net et un paramètre plus facile à estimer.</p>
+
+    <h3>Consistance</h3>
+    <p>L'estimateur du maximum de vraisemblance est \(\hat\theta_n\in\arg\max_\theta\ell_n(\theta)\). Si \(X_i\sim p_{\theta_0}\), alors</p>
+    <p>\[
+    n^{-1}\ell_n(\theta)\to E_{\theta_0}\log p_\theta(X)
+    \]</p>
+    <p>ponctuellement par la loi des grands nombres. La log-vraisemblance moyenne est maximisée en \(\theta_0\), car</p>
+    <p>\[
+    E_{\theta_0}\log p_{\theta_0}(X)-E_{\theta_0}\log p_\theta(X)
+    =\operatorname{KL}(p_{\theta_0},p_\theta)\ge0.
+    \]</p>
+    <p>Si la convergence est uniforme et si le modèle est identifiable, le théorème d'argmax donne \(\hat\theta_n\to\theta_0\) en probabilité.</p>
+
+    <h3>Normalité asymptotique du maximum de vraisemblance</h3>
+    <p>Supposons \(\hat\theta_n\to\theta_0\), \(I(\theta_0)\) non singulière, et la Hessienne régulière près de \(\theta_0\). Comme \(S_n(\hat\theta_n)=0\), un développement de Taylor donne</p>
+    <p>\[
+    0=S_n(\theta_0)+H_n(\tilde\theta_n)(\hat\theta_n-\theta_0),
+    \]</p>
+    <p>où \(\tilde\theta_n\) est entre \(\hat\theta_n\) et \(\theta_0\). Donc</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)
+    =
+    \left\{-n^{-1}H_n(\tilde\theta_n)\right\}^{-1}
+    n^{-1/2}S_n(\theta_0).
+    \]</p>
+    <p>Par le TCL multivarié,</p>
+    <p>\[
+    n^{-1/2}S_n(\theta_0)
+    =n^{-1/2}\sum_{i=1}^ns_{\theta_0}(X_i)
+    \rightsquigarrow N(0,I(\theta_0)).
+    \]</p>
+    <p>Par une loi uniforme des grands nombres et la consistance, \(-n^{-1}H_n(\tilde\theta_n)\to I(\theta_0)\) en probabilité. Slutsky donne alors</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)\rightsquigarrow
+    N(0,I(\theta_0)^{-1}).
+    \]</p>
+
+    <h3>Tests et régions de confiance</h3>
+    <p>Pour tester \(H_0:\theta=\theta_0\), le test de Wald mesure la distance entre \(\hat\theta_n\) et \(\theta_0\) :</p>
+    <p>\[
+    W_n=n(\hat\theta_n-\theta_0)^\top I(\hat\theta_n)(\hat\theta_n-\theta_0)
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>Le test du score évalue le score sous l'hypothèse nulle :</p>
+    <p>\[
+    R_n=n^{-1}S_n(\theta_0)^\top I(\theta_0)^{-1}S_n(\theta_0)
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>Le rapport de vraisemblance compare les vraisemblances contrainte et non contrainte :</p>
+    <p>\[
+    \Lambda_n=2\{\ell_n(\hat\theta_n)-\ell_n(\theta_0)\}
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>Ces trois tests viennent de la même approximation quadratique locale. Les intervalles et ellipsoïdes de confiance inversent ces tests ou utilisent directement l'approximation normale.</p>
+
+    <h3>Équations d'estimation et variance sandwich</h3>
+    <p>Beaucoup d'estimateurs résolvent \(P_n\psi_\theta=n^{-1}\sum_i\psi(X_i,\theta)=0\). Si \(P\psi_{\theta_0}=0\), \(A=\partial_\theta P\psi_\theta|_{\theta_0}\), et \(B=P(\psi_{\theta_0}\psi_{\theta_0}^\top)\), alors</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)\rightsquigarrow
+    N(0,A^{-1}B A^{-T}).
+    \]</p>
+    <p>La covariance \(A^{-1}BA^{-T}\) est la variance sandwich. Pour un score de vraisemblance correctement spécifié, \(A=-I\) et \(B=I\), donc elle devient \(I^{-1}\). Sous mauvaise spécification, elle reste la covariance de premier ordre autour du paramètre pseudo-vrai.</p>
+
+    <h3>Point de vue avancé : LAN et efficacité</h3>
+    <p>La normalité locale asymptotique dit que pour \(\theta=\theta_0+h/\sqrt n\),</p>
+    <p>\[
+    \ell_n(\theta_0+h/\sqrt n)-\ell_n(\theta_0)
+    =
+    h^\top\Delta_n-\frac12h^\top I(\theta_0)h+o_p(1),
+    \qquad \Delta_n\rightsquigarrow N(0,I(\theta_0)).
+    \]</p>
+    <p>Localement, un modèle régulier ressemble donc à une expérience gaussienne de translation. Cela explique pourquoi \(I(\theta_0)^{-1}\) est la meilleure covariance possible pour les estimateurs réguliers et pourquoi les méthodes de vraisemblance sont asymptotiquement efficaces.</p>
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2>统计推断</h2>
+
+    <p>统计推断研究如何从数据 \(X_1,\ldots,X_n\) 学习概率律 \(P\) 或参数 \(\theta\)。核心问题是：估计量瞄准什么量、为什么会收敛、极限分布是什么，以及如何把极限分布转化为不确定性陈述。</p>
+
+    <h3>渐近语言</h3>
+    <p>\(Y_n=o_p(1)\) 表示 \(Y_n\) 依概率收敛到 \(0\)。\(Y_n=O_p(1)\) 表示它是紧的：对任意 \(\varepsilon>0\)，存在 \(M<\infty\)，使得 \(\sup_nP(|Y_n|>M)<\varepsilon\)。若 \(Y_n\rightsquigarrow Y\)，且 \(Z_n\to c\) 依概率，则 Slutsky 引理给出 \(Y_n+Z_n\rightsquigarrow Y+c\)，以及 \(Z_nY_n\rightsquigarrow cY\)。</p>
+
+    <p>Delta 方法是最常用的传递规则。若 \(\sqrt n(T_n-\theta)\rightsquigarrow N(0,V)\)，且 \(g\) 在 \(\theta\) 处可微，则</p>
+    <p>\[
+    \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow
+    N\{0,\dot g(\theta)V\dot g(\theta)^\top\}.
+    \]</p>
+    <p>证明来自展开 \(g(T_n)-g(\theta)=\dot g(\theta)(T_n-\theta)+o(\|T_n-\theta\|)\)，再用 Slutsky 引理。</p>
+
+    <h3>似然、score 与 Fisher 信息</h3>
+    <p>在参数模型 \(\{p_\theta:\theta\in\Theta\subset\mathbb R^d\}\) 中，log-likelihood 为</p>
+    <p>\[
+    \ell_n(\theta)=\sum_{i=1}^n\log p_\theta(X_i).
+    \]</p>
+    <p>score 与 Hessian 分别是 \(S_n(\theta)=\partial_\theta\ell_n(\theta)\) 和 \(H_n(\theta)=\partial_\theta^2\ell_n(\theta)\)。对单个观测，记 \(s_\theta(X)=\partial_\theta\log p_\theta(X)\)。</p>
+
+    <p>在允许积分号下求导的正则条件下，</p>
+    <p>\[
+    E_\theta s_\theta(X)=\int \partial_\theta\log p_\theta(x)p_\theta(x)\,dx
+    =\int \partial_\theta p_\theta(x)\,dx
+    =\partial_\theta1=0.
+    \]</p>
+    <p>再对这个恒等式求导，得到</p>
+    <p>\[
+    0=\partial_\theta E_\theta s_\theta(X)
+    =E_\theta\{\partial_\theta s_\theta(X)\}+E_\theta\{s_\theta(X)s_\theta(X)^\top\}.
+    \]</p>
+    <p>因此 Fisher 信息可以写成</p>
+    <p>\[
+    I(\theta)=E_\theta\{s_\theta(X)s_\theta(X)^\top\}
+    =-E_\theta\{\partial_\theta^2\log p_\theta(X)\}.
+    \]</p>
+    <p>直观上，score 是 log-likelihood 的局部斜率，Fisher 信息是平均曲率。曲率越大，似然峰越尖，参数越容易估计。</p>
+
+    <h3>一致性</h3>
+    <p>最大似然估计为 \(\hat\theta_n\in\arg\max_\theta\ell_n(\theta)\)。若 \(X_i\sim p_{\theta_0}\)，则由大数定律，</p>
+    <p>\[
+    n^{-1}\ell_n(\theta)\to E_{\theta_0}\log p_\theta(X)
+    \]</p>
+    <p>逐点成立。期望 log-likelihood 在 \(\theta_0\) 处最大，因为</p>
+    <p>\[
+    E_{\theta_0}\log p_{\theta_0}(X)-E_{\theta_0}\log p_\theta(X)
+    =\operatorname{KL}(p_{\theta_0},p_\theta)\ge0.
+    \]</p>
+    <p>若该收敛是一致的，且模型可识别，则 argmax 定理给出 \(\hat\theta_n\to\theta_0\) 依概率成立。</p>
+
+    <h3>最大似然估计的渐近正态性</h3>
+    <p>设 \(\hat\theta_n\to\theta_0\)，\(I(\theta_0)\) 非奇异，且 Hessian 在 \(\theta_0\) 附近表现良好。由于 \(S_n(\hat\theta_n)=0\)，Taylor 展开给出</p>
+    <p>\[
+    0=S_n(\theta_0)+H_n(\tilde\theta_n)(\hat\theta_n-\theta_0),
+    \]</p>
+    <p>其中 \(\tilde\theta_n\) 介于 \(\hat\theta_n\) 与 \(\theta_0\) 之间。整理得</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)
+    =
+    \left\{-n^{-1}H_n(\tilde\theta_n)\right\}^{-1}
+    n^{-1/2}S_n(\theta_0).
+    \]</p>
+    <p>由多元中心极限定理，</p>
+    <p>\[
+    n^{-1/2}S_n(\theta_0)
+    =n^{-1/2}\sum_{i=1}^ns_{\theta_0}(X_i)
+    \rightsquigarrow N(0,I(\theta_0)).
+    \]</p>
+    <p>由一致大数定律和一致性，\(-n^{-1}H_n(\tilde\theta_n)\to I(\theta_0)\) 依概率成立。Slutsky 引理给出</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)\rightsquigarrow
+    N(0,I(\theta_0)^{-1}).
+    \]</p>
+
+    <h3>检验与置信集</h3>
+    <p>检验 \(H_0:\theta=\theta_0\) 时，Wald 统计量使用 \(\hat\theta_n\) 与 \(\theta_0\) 的距离：</p>
+    <p>\[
+    W_n=n(\hat\theta_n-\theta_0)^\top I(\hat\theta_n)(\hat\theta_n-\theta_0)
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>score 检验在原假设下评价 score：</p>
+    <p>\[
+    R_n=n^{-1}S_n(\theta_0)^\top I(\theta_0)^{-1}S_n(\theta_0)
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>似然比统计量比较受限与不受限似然：</p>
+    <p>\[
+    \Lambda_n=2\{\ell_n(\hat\theta_n)-\ell_n(\theta_0)\}
+    \rightsquigarrow\chi_d^2.
+    \]</p>
+    <p>这三类检验都来自似然的局部二次近似。置信区间和置信椭球可以通过反演检验得到，也可以直接使用正态近似。</p>
+
+    <h3>估计方程与 sandwich 方差</h3>
+    <p>许多估计量由方程 \(P_n\psi_\theta=n^{-1}\sum_i\psi(X_i,\theta)=0\) 定义。若 \(P\psi_{\theta_0}=0\)，\(A=\partial_\theta P\psi_\theta|_{\theta_0}\)，\(B=P(\psi_{\theta_0}\psi_{\theta_0}^\top)\)，则</p>
+    <p>\[
+    \sqrt n(\hat\theta_n-\theta_0)\rightsquigarrow
+    N(0,A^{-1}B A^{-T}).
+    \]</p>
+    <p>\(A^{-1}BA^{-T}\) 称为 sandwich 方差。对正确指定的似然 score，有 \(A=-I\)、\(B=I\)，所以它退化为 \(I^{-1}\)。在模型误指定下，它仍然给出伪真参数附近的一阶协方差。</p>
+
+    <h3>高级观点：LAN 与效率</h3>
+    <p>局部渐近正态性说明，对局部备择 \(\theta=\theta_0+h/\sqrt n\)，</p>
+    <p>\[
+    \ell_n(\theta_0+h/\sqrt n)-\ell_n(\theta_0)
+    =
+    h^\top\Delta_n-\frac12h^\top I(\theta_0)h+o_p(1),
+    \qquad \Delta_n\rightsquigarrow N(0,I(\theta_0)).
+    \]</p>
+    <p>这说明正则统计模型在局部看起来像高斯平移实验。它解释了为什么 \(I(\theta_0)^{-1}\) 是正则估计量能达到的最优协方差，也解释了为什么似然方法渐近有效。</p>
+</div>
+
+<hr>
