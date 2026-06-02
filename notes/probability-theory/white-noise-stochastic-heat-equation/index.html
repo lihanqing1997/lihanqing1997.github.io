@@ -1,31 +1,62 @@
 ---
 layout: default
-breadcrumb_child_label_en: "White Noise and Stochastic Heat Equation"
+breadcrumb_child_label_en: "White noise and stochastic heat equation"
 breadcrumb_child_label_fr: "Bruit blanc et équation de la chaleur stochastique"
 breadcrumb_child_label_zh: "白噪声与随机热方程"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>White Noise and Stochastic Heat Equation</h2>
+    <h2>White noise and stochastic heat equation</h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
-    <p>This page records the core mathematical facts for <strong>White Noise and Stochastic Heat Equation</strong>.</p>
+    <p>White noise is the continuous-time analogue of an independent Gaussian error at every point. The phrase is useful, but it is also dangerous: there are too many space-time points for white noise to be an ordinary random function. The right way to read it is as a random linear functional on test functions.</p>
+    <p>The stochastic heat equation then does something very natural. It takes this extremely rough input and smooths it by the heat kernel. The mild formulation is the clean way to write that smoothing without pretending that \(\xi(t,x)\) is pointwise defined.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Space-time white noise \(\xi\) is a centered Gaussian generalized field with covariance \(\mathbb E\xi(\varphi)\xi(\psi)=\int\varphi(t,x)\psi(t,x)dtdx\). It is not an ordinary function.</p>
+        <p><span class="statement-title">Definition.</span> Space-time white noise on \(\mathbb R_+\times\mathbb R^d\) is an isonormal Gaussian process over \(L^2(\mathbb R_+\times\mathbb R^d)\). Thus, for each \(\varphi\in L^2\), \(\xi(\varphi)\) is centered Gaussian and
+        \[
+        \mathbb E\{\xi(\varphi)\xi(\psi)\}
+        =\int_0^\infty\int_{\mathbb R^d}\varphi(t,x)\psi(t,x)\,dx\,dt.
+        \]
+        One often writes \(\xi=\dot W\), where \(W(ds,dy)\) is a Gaussian martingale measure.</p>
     </div>
 
+    <p>The notation \(\xi(t,x)\) is only symbolic. What is rigorous is the pairing \(\xi(\varphi)\), or the stochastic integral of a square-integrable deterministic or predictable function against \(W\).</p>
+    <p>For the heat equation, the deterministic heat kernel is</p>
+    <p>\[
+    p_t(x)=(2\pi t)^{-d/2}\exp\{-\|x\|^2/(2t)\},\qquad t>0.
+    \]</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Central result.</span> For the additive stochastic heat equation \(\partial_tu=\frac12\Delta u+\xi\), the mild solution is \[u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)W(ds,dy),\] whenever the stochastic convolution is square-integrable.</p>
+        <p><span class="statement-title">Result.</span> For the additive stochastic heat equation
+        \[
+        \partial_tu=\frac12\Delta u+\xi,\qquad u(0,x)=0,
+        \]
+        the mild solution at a fixed point is
+        \[
+        u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)\,W(ds,dy),
+        \]
+        whenever
+        \[
+        \int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,dy\,ds\lt\infty.
+        \]
+        For pointwise solutions driven by space-time white noise on \(\mathbb R^d\), this square-integrability condition holds in dimension \(d=1\). In higher dimensions, one usually weakens the meaning of the solution or smooths the noise in space.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The heat-kernel formulation solves the deterministic part by variation of constants. Itô isometry for the martingale measure gives \(\mathbb E|u(t,x)|^2=\int_0^t\int p_{t-s}(x-y)^2dyds\). Finite variance is the condition for the stochastic integral to exist.</p>
+        <p><span class="statement-title">Proof.</span></p>
+        <p>First ignore the randomness. The deterministic heat equation with a forcing term is solved by Duhamel's principle: a force inserted at time \(s\) contributes at time \(t\) through the kernel \(p_{t-s}\). Replacing the ordinary forcing term by white noise gives the stochastic convolution above.</p>
+        <p>The rigorous existence check is the Itô isometry for Gaussian martingale measures:
+        \[
+        \mathbb E|u(t,x)|^2
+        =\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,dy\,ds.
+        \]
+        Hence the stochastic integral is a well-defined \(L^2\) random variable exactly when this integral is finite.</p>
+        <p>Finally, the heat-kernel semigroup identity shows that the mild expression solves the equation in integrated form. The word <em>mild</em> means that the equation is interpreted through this heat-kernel representation, not through pointwise derivatives of white noise.</p>
     </div>
 
-    <h3>How to read it</h3>
-    <p>White noise forces probability theory to treat random distributions, not only random functions. This is the entrance to modern SPDE theory.</p>
-    <p>The point is not to memorize the displayed formulas separately, but to understand how the definition, the result, and the proof mechanism fit together.</p>
+    <h3>Remarks</h3>
+    <p>The main intuition is smoothing. White noise is rougher than a function, but the heat kernel averages nearby space-time noise. Dimension matters because the heat kernel becomes too singular near \(s=t\) in high dimensions.</p>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
@@ -34,23 +65,54 @@ breadcrumb_child_label_zh: "白噪声与随机热方程"
     <h2>Bruit blanc et équation de la chaleur stochastique</h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
-    <p>Cette page rassemble les faits mathématiques essentiels pour <strong>Bruit blanc et équation de la chaleur stochastique</strong>.</p>
+    <p>Le bruit blanc est l’analogue continu d’une erreur gaussienne indépendante en chaque point. Cette image est utile, mais elle peut être trompeuse : il y a trop de points espace-temps pour que le bruit blanc soit une fonction aléatoire ordinaire. Il faut le lire comme une fonctionnelle linéaire aléatoire sur des fonctions tests.</p>
+    <p>L’équation de la chaleur stochastique lisse ensuite cette entrée très irrégulière par le noyau de chaleur. La formulation mild permet d’écrire ce lissage sans prétendre que \(\xi(t,x)\) est défini point par point.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Space-time white noise \(\xi\) is a centered Gaussian generalized field with covariance \(\mathbb E\xi(\varphi)\xi(\psi)=\int\varphi(t,x)\psi(t,x)dtdx\). It is not an ordinary function.</p>
+        <p><span class="statement-title">Définition.</span> Le bruit blanc espace-temps sur \(\mathbb R_+\times\mathbb R^d\) est un processus gaussien isonormal sur \(L^2(\mathbb R_+\times\mathbb R^d)\). Pour chaque \(\varphi\in L^2\), \(\xi(\varphi)\) est gaussienne centrée et
+        \[
+        \mathbb E\{\xi(\varphi)\xi(\psi)\}
+        =\int_0^\infty\int_{\mathbb R^d}\varphi(t,x)\psi(t,x)\,dx\,dt.
+        \]
+        On écrit aussi \(\xi=\dot W\), où \(W(ds,dy)\) est une mesure martingale gaussienne.</p>
     </div>
 
+    <p>La notation \(\xi(t,x)\) est symbolique. Les objets rigoureux sont le couplage \(\xi(\varphi)\) et les intégrales stochastiques contre \(W\).</p>
+    <p>Pour l’équation de la chaleur, le noyau déterministe est</p>
+    <p>\[
+    p_t(x)=(2\pi t)^{-d/2}\exp\{-\|x\|^2/(2t)\},\qquad t>0.
+    \]</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Résultat central.</span> For the additive stochastic heat equation \(\partial_tu=\frac12\Delta u+\xi\), the mild solution is \[u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)W(ds,dy),\] whenever the stochastic convolution is square-integrable.</p>
+        <p><span class="statement-title">Résultat.</span> Pour l’équation de la chaleur stochastique additive
+        \[
+        \partial_tu=\frac12\Delta u+\xi,\qquad u(0,x)=0,
+        \]
+        la solution mild en un point est
+        \[
+        u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)\,W(ds,dy),
+        \]
+        dès que
+        \[
+        \int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,dy\,ds\lt\infty.
+        \]
+        Pour une solution ponctuelle sur \(\mathbb R^d\) avec bruit blanc espace-temps, cette condition vaut en dimension \(d=1\). En dimension plus grande, on utilise souvent une interprétation plus faible ou un bruit spatialement régularisé.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The heat-kernel formulation solves the deterministic part by variation of constants. Itô isometry for the martingale measure gives \(\mathbb E|u(t,x)|^2=\int_0^t\int p_{t-s}(x-y)^2dyds\). Finite variance is the condition for the stochastic integral to exist.</p>
+        <p><span class="statement-title">Preuve.</span></p>
+        <p>On commence par oublier l’aléa. L’équation de la chaleur déterministe avec terme source est résolue par le principe de Duhamel : une force ajoutée au temps \(s\) contribue au temps \(t\) par le noyau \(p_{t-s}\). En remplaçant cette force par le bruit blanc, on obtient la convolution stochastique.</p>
+        <p>La vérification rigoureuse est l’isométrie d’Itô pour les mesures martingales gaussiennes :
+        \[
+        \mathbb E|u(t,x)|^2
+        =\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,dy\,ds.
+        \]
+        L’intégrale stochastique existe donc comme variable aléatoire \(L^2\) exactement lorsque cette quantité est finie.</p>
+        <p>Enfin, l’identité de semi-groupe du noyau de chaleur montre que cette expression résout l’équation sous forme intégrée. Le mot <em>mild</em> signifie que l’équation est comprise par cette représentation, et non par des dérivées ponctuelles du bruit blanc.</p>
     </div>
 
-    <h3>Comment le lire</h3>
-    <p>White noise forces probability theory to treat random distributions, not only random functions. This is the entrance to modern SPDE theory.</p>
-    <p>Le but n’est pas de mémoriser les formules séparément, mais de comprendre comment la définition, le résultat et le mécanisme de preuve s’articulent.</p>
+    <h3>Remarques</h3>
+    <p>L’intuition principale est le lissage. Le bruit blanc est plus irrégulier qu’une fonction, mais le noyau de chaleur moyenne le bruit autour du point observé. La dimension compte parce que le noyau devient trop singulier près de \(s=t\).</p>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
@@ -59,23 +121,54 @@ breadcrumb_child_label_zh: "白噪声与随机热方程"
     <h2>白噪声与随机热方程</h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
-    <p>这一页整理以下主题的核心数学内容： <strong>白噪声与随机热方程</strong>.</p>
+    <p>白噪声可以理解为“每个时空点都有一个独立 Gaussian 误差”的连续版本。这个图像有用，但也容易误导：时空点太多，白噪声不可能是普通随机函数。正确理解方式是把它看成作用在测试函数上的随机线性泛函。</p>
+    <p>随机热方程随后用热核来平滑这种非常粗糙的输入。mild formulation 的作用，就是在不假装 \(\xi(t,x)\) 可以逐点定义的情况下，严格写出这种平滑。</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Space-time white noise \(\xi\) is a centered Gaussian generalized field with covariance \(\mathbb E\xi(\varphi)\xi(\psi)=\int\varphi(t,x)\psi(t,x)dtdx\). It is not an ordinary function.</p>
+        <p><span class="statement-title">定义.</span> 在 \(\mathbb R_+\times\mathbb R^d\) 上，时空白噪声是 \(L^2(\mathbb R_+\times\mathbb R^d)\) 上的等距 Gaussian 过程。也就是说，对每个 \(\varphi\in L^2\)，\(\xi(\varphi)\) 是中心 Gaussian，并且
+        \[
+        \mathbb E\{\xi(\varphi)\xi(\psi)\}
+        =\int_0^\infty\int_{\mathbb R^d}\varphi(t,x)\psi(t,x)\,dx\,dt.
+        \]
+        等价地，常写作 \(\xi=\dot W\)，其中 \(W(ds,dy)\) 是 Gaussian martingale measure。</p>
     </div>
 
+    <p>记号 \(\xi(t,x)\) 只是形式性的。严格对象是配对 \(\xi(\varphi)\)，或者是关于 \(W\) 的随机积分。</p>
+    <p>对热方程，确定性热核为</p>
+    <p>\[
+    p_t(x)=(2\pi t)^{-d/2}\exp\{-\|x\|^2/(2t)\},\qquad t>0.
+    \]</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">核心结果.</span> For the additive stochastic heat equation \(\partial_tu=\frac12\Delta u+\xi\), the mild solution is \[u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)W(ds,dy),\] whenever the stochastic convolution is square-integrable.</p>
+        <p><span class="statement-title">结果.</span> 对加性随机热方程
+        \[
+        \partial_tu=\frac12\Delta u+\xi,\qquad u(0,x)=0,
+        \]
+        固定点处的 mild solution 为
+        \[
+        u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)\,W(ds,dy),
+        \]
+        只要
+        \[
+        \int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,dy\,ds\lt\infty.
+        \]
+        在 \(\mathbb R^d\) 上若要求由时空白噪声驱动的逐点解，这个平方可积条件在 \(d=1\) 成立；更高维通常需要更弱的解概念，或者把噪声在空间上平滑。</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The heat-kernel formulation solves the deterministic part by variation of constants. Itô isometry for the martingale measure gives \(\mathbb E|u(t,x)|^2=\int_0^t\int p_{t-s}(x-y)^2dyds\). Finite variance is the condition for the stochastic integral to exist.</p>
+        <p><span class="statement-title">证明.</span></p>
+        <p>先忽略随机性。带外力项的确定性热方程由 Duhamel 原理求解：时间 \(s\) 加入的外力，到时间 \(t\) 的贡献由热核 \(p_{t-s}\) 给出。把普通外力替换成白噪声，就得到上面的随机卷积。</p>
+        <p>严格存在性来自 Gaussian martingale measure 的 Itô isometry：
+        \[
+        \mathbb E|u(t,x)|^2
+        =\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,dy\,ds.
+        \]
+        因此，当且仅当这个积分有限时，该随机积分作为 \(L^2\) 随机变量有定义。</p>
+        <p>最后，热核半群恒等式说明这个积分形式确实对应热方程加噪声的解。这里 mild 的意思是：方程通过热核积分表示来理解，而不是通过白噪声的逐点导数来理解。</p>
     </div>
 
-    <h3>阅读方式</h3>
-    <p>White noise forces probability theory to treat random distributions, not only random functions. This is the entrance to modern SPDE theory.</p>
-    <p>重点不是孤立地记住公式，而是理解定义、核心结果和证明机制怎样连在一起。</p>
+    <h3>说明</h3>
+    <p>核心直觉是平滑。白噪声比函数还粗糙，但热核会对附近的时空噪声做平均。维数很重要，因为当 \(s\) 接近 \(t\) 时，热核平方的奇性在高维会变得不可积。</p>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
