@@ -1,246 +1,129 @@
 ---
 layout: default
-breadcrumb_child_label_en: "Asymptotic tools"
-breadcrumb_child_label_fr: "Outils asymptotiques"
-breadcrumb_child_label_zh: "渐近工具"
+breadcrumb_child_label_en: "Asymptotic tools for inference"
+breadcrumb_child_label_fr: "Outils asymptotiques pour l’inférence"
+breadcrumb_child_label_zh: "推断中的渐近工具"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>Asymptotic Tools</h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-inference/" next_label="Next page" next_url="/notes/statistical-inference/likelihood-and-mle/" %}
+    <h2>Asymptotic tools for inference</h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-inference/" prev_label="Last page" prev_url="/notes/statistical-inference/maximum-likelihood-estimation/" next_label="Next page" next_url="/notes/statistical-inference/m-estimators-z-estimators/" %}
 
-    <p>Asymptotic inference studies approximations as \(n\to\infty\). The goal is not that \(n\) is literally infinite, but that large-sample limits reveal the first-order behavior of estimators, tests, and confidence sets.</p>
-
-    <h3>Modes of convergence</h3>
-    <p>\(X_n\to X\) <strong>in probability</strong> if, for every \(\varepsilon>0\), \(P(|X_n-X|>\varepsilon)\to0\). It means random error becomes negligible.</p>
-    <p>\(X_n\rightsquigarrow X\) <strong>in distribution</strong> if \(E f(X_n)\to E f(X)\) for every bounded continuous \(f\). It means the laws of \(X_n\) converge, not necessarily the variables on the same sample space.</p>
-    <p>\(X_n\to X\) <strong>almost surely</strong> if \(P(X_n\to X)=1\). This is pathwise convergence and is stronger than convergence in probability.</p>
-
-    <h3>Stochastic orders</h3>
-    <p>\(X_n=o_p(a_n)\) means \(X_n/a_n\to0\) in probability. \(X_n=O_p(a_n)\) means \(X_n/a_n\) is tight: for every \(\varepsilon>0\), there is \(M<\infty\) such that \(\sup_nP(|X_n/a_n|>M)<\varepsilon\).</p>
-    <p>These symbols let us write Taylor expansions with random remainders. For example, if \(R_n=o_p(n^{-1/2})\), then \(\sqrt n R_n=o_p(1)\), so \(R_n\) does not affect a \(\sqrt n\)-limit.</p>
+<p>This page collects only the asymptotic tools used repeatedly in inference. Detailed probability limit theory belongs to the <a href="{{ '/notes/probability-theory/' | relative_url }}">probability theory</a> note.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A sequence \(T_n\) is asymptotically linear for \(\theta_0\) with influence function \(\phi\) if \(P\phi=0\), \(P\|\phi\|^2<\infty\), and</p>
-        <p>\[
-        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}).
+        <p><span class="statement-title">Definition.</span> \(X_n=o_p(a_n)\) means \(X_n/a_n\to0\) in probability. \(X_n=O_p(a_n)\) means \(X_n/a_n\) is tight. An estimator is asymptotically linear with influence function \(\phi\) if
+        \[
+        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}),\qquad P\phi=0,\quad P\|\phi\|^2\lt\infty.
         \]</p>
-        <p>Equivalently, \(\sqrt n(T_n-\theta_0)=n^{-1/2}\sum_{i=1}^n\phi(X_i)+o_p(1)\).</p>
     </div>
 
-    <h3>Continuous mapping and Slutsky</h3>
-    <p>If \(X_n\rightsquigarrow X\) and \(g\) is continuous, then \(g(X_n)\rightsquigarrow g(X)\). This is the continuous mapping theorem.</p>
-    <p>If \(X_n\rightsquigarrow X\) and \(Y_n\to c\) in probability, then</p>
-    <p>\[
-    X_n+Y_n\rightsquigarrow X+c,\qquad
-    X_nY_n\rightsquigarrow cX.
-    \]</p>
-    <p>This is Slutsky's lemma. It justifies replacing unknown deterministic limits by consistent random estimates in asymptotic distributions.</p>
-
-    <h3>Central limit theorem</h3>
-    <p>If \(X_1,X_2,\ldots\) are i.i.d. with \(EX_1=\mu\) and \(\operatorname{Var}(X_1)=\sigma^2<\infty\), then</p>
-    <p>\[
-    \sqrt n(\bar X_n-\mu)\rightsquigarrow N(0,\sigma^2).
-    \]</p>
-    <p>For vectors, if \(E X_i=\mu\) and \(\operatorname{Var}(X_i)=\Sigma\), then \(\sqrt n(\bar X_n-\mu)\rightsquigarrow N(0,\Sigma)\). Statistical asymptotic normality usually comes from applying this vector CLT to scores, estimating equations, or influence functions.</p>
-
-    <h3>Delta method</h3>
-    <p>Let \(T_n\) estimate \(\theta\in\mathbb R^d\) and suppose</p>
-    <p>\[
-    \sqrt n(T_n-\theta)\rightsquigarrow Z.
-    \]</p>
-    <p>If \(g:\mathbb R^d\to\mathbb R^k\) is differentiable at \(\theta\), with derivative matrix \(\dot g_\theta\), then</p>
-    <p>\[
+    <h3>Slutsky and delta method</h3>
+    <p>If \(X_n\rightsquigarrow X\) and \(Y_n\to c\) in probability, then \(X_n+Y_n\rightsquigarrow X+c\) and \(X_nY_n\rightsquigarrow cX\). If \(\sqrt n(T_n-\theta)\rightsquigarrow Z\) and \(g\) is differentiable at \(\theta\), then
+    \[
     \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow \dot g_\theta Z.
     \]</p>
-    <p>In particular, if \(Z\sim N(0,V)\), then \(\dot g_\theta Z\sim N(0,\dot g_\theta V\dot g_\theta^\top)\).</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(T_n\) is asymptotically linear with influence function \(\phi\), then</p>
-        <p>\[
+        <p><span class="statement-title">Asymptotic linearity implies normality.</span> If \(T_n\) is asymptotically linear with influence function \(\phi\), then
+        \[
         \sqrt n(T_n-\theta_0)\rightsquigarrow N(0,P\phi\phi^\top).
         \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> By asymptotic linearity, \(\sqrt n(T_n-\theta_0)=n^{-1/2}\sum_i\phi(X_i)+o_p(1)\). The vector CLT gives \(n^{-1/2}\sum_i\phi(X_i)\rightsquigarrow N(0,P\phi\phi^\top)\). Slutsky's lemma removes the \(o_p(1)\) remainder.</p>
+        <p><span class="statement-title">Proof.</span> Multiply the linear expansion by \(\sqrt n\):
+        \[
+        \sqrt n(T_n-\theta_0)=n^{-1/2}\sum_{i=1}^n\phi(X_i)+o_p(1).
+        \]
+        The vector CLT gives the Gaussian limit for the sum, and Slutsky removes the negligible remainder.</p>
     </div>
 
-    <h3>Why the delta method is true</h3>
-    <p>Differentiability gives</p>
-    <p>\[
-    g(T_n)-g(\theta)=\dot g_\theta(T_n-\theta)+r(T_n),
-    \qquad
-    \frac{\|r(T_n)\|}{\|T_n-\theta\|}\to0
-    \]</p>
-    <p>whenever \(T_n\to\theta\). Since \(\sqrt n(T_n-\theta)=O_p(1)\), we have \(T_n-\theta=O_p(n^{-1/2})\) and \(\sqrt n r(T_n)=o_p(1)\). Slutsky then gives the result.</p>
+    <h3>Argmax and continuous mapping</h3>
+    <p>The argmax theorem turns uniform convergence of random criteria into consistency of optimizers. The continuous mapping theorem turns convergence of estimators into convergence of transformed estimators. These two tools explain a large fraction of large-sample statistical inference.</p>
 
-    <h3>How these tools are used</h3>
-    <p>The common pattern is: find a linear expansion</p>
-    <p>\[
-    \sqrt n(T_n-\theta_0)=\frac1{\sqrt n}\sum_{i=1}^n\phi(X_i)+o_p(1),
-    \]</p>
-    <p>then apply the CLT to the sum and Slutsky to the negligible term. The function \(\phi\) is often called an influence function.</p>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-inference/" next_label="Next page" next_url="/notes/statistical-inference/likelihood-and-mle/" %}
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-inference/" prev_label="Last page" prev_url="/notes/statistical-inference/maximum-likelihood-estimation/" next_label="Next page" next_url="/notes/statistical-inference/m-estimators-z-estimators/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>Outils Asymptotiques</h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-inference/" next_label="Page suivante" next_url="/notes/statistical-inference/likelihood-and-mle/" %}
+    <h2>Outils asymptotiques pour l’inférence</h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-inference/" prev_label="Page précédente" prev_url="/notes/statistical-inference/maximum-likelihood-estimation/" next_label="Page suivante" next_url="/notes/statistical-inference/m-estimators-z-estimators/" %}
 
-    <p>L'inférence asymptotique étudie les approximations quand \(n\to\infty\). L'idée n'est pas que \(n\) soit infini, mais que la limite révèle le comportement de premier ordre des estimateurs, tests et régions de confiance.</p>
-
-    <h3>Modes de convergence</h3>
-    <p>\(X_n\to X\) <strong>en probabilité</strong> si, pour tout \(\varepsilon>0\), \(P(|X_n-X|>\varepsilon)\to0\). L'erreur aléatoire devient négligeable.</p>
-    <p>\(X_n\rightsquigarrow X\) <strong>en loi</strong> si \(E f(X_n)\to E f(X)\) pour toute fonction continue bornée \(f\). Les lois convergent, même si les variables ne convergent pas point par point.</p>
-    <p>\(X_n\to X\) <strong>presque sûrement</strong> si \(P(X_n\to X)=1\). Cette convergence trajectorielle implique la convergence en probabilité.</p>
-
-    <h3>Ordres stochastiques</h3>
-    <p>\(X_n=o_p(a_n)\) signifie \(X_n/a_n\to0\) en probabilité. \(X_n=O_p(a_n)\) signifie que \(X_n/a_n\) est tendue : pour tout \(\varepsilon>0\), il existe \(M<\infty\) tel que \(\sup_nP(|X_n/a_n|>M)<\varepsilon\).</p>
-    <p>Ces notations permettent d'écrire des développements de Taylor avec des restes aléatoires. Si \(R_n=o_p(n^{-1/2})\), alors \(\sqrt nR_n=o_p(1)\).</p>
+<p>Cette page rassemble seulement les outils asymptotiques utilisés constamment en inférence. La théorie probabiliste détaillée appartient à la note de probabilité.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Une suite \(T_n\) est asymptotiquement linéaire pour \(\theta_0\), de fonction d'influence \(\phi\), si \(P\phi=0\), \(P\|\phi\|^2<\infty\), et</p>
-        <p>\[
-        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}).
+        <p><span class="statement-title">Définition.</span> \(X_n=o_p(a_n)\) signifie \(X_n/a_n\to0\) en probabilité. \(X_n=O_p(a_n)\) signifie que \(X_n/a_n\) est tendue. Un estimateur est asymptotiquement linéaire de fonction d’influence \(\phi\) si
+        \[
+        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}),\qquad P\phi=0,\quad P\|\phi\|^2\lt\infty.
         \]</p>
     </div>
 
-    <h3>Application continue et Slutsky</h3>
-    <p>Si \(X_n\rightsquigarrow X\) et si \(g\) est continue, alors \(g(X_n)\rightsquigarrow g(X)\). C'est le théorème de l'application continue.</p>
-    <p>Si \(X_n\rightsquigarrow X\) et \(Y_n\to c\) en probabilité, alors</p>
-    <p>\[
-    X_n+Y_n\rightsquigarrow X+c,\qquad
-    X_nY_n\rightsquigarrow cX.
-    \]</p>
-    <p>Le lemme de Slutsky justifie le remplacement de limites déterministes inconnues par des estimateurs consistants.</p>
-
-    <h3>Théorème central limite</h3>
-    <p>Si \(X_1,X_2,\ldots\) sont i.i.d., \(EX_1=\mu\), et \(\operatorname{Var}(X_1)=\sigma^2<\infty\), alors</p>
-    <p>\[
-    \sqrt n(\bar X_n-\mu)\rightsquigarrow N(0,\sigma^2).
-    \]</p>
-    <p>Pour des vecteurs, \(\sqrt n(\bar X_n-\mu)\rightsquigarrow N(0,\Sigma)\). La normalité asymptotique vient souvent de ce TCL appliqué aux scores, équations d'estimation ou fonctions d'influence.</p>
-
-    <h3>Méthode delta</h3>
-    <p>Supposons que \(T_n\) estime \(\theta\in\mathbb R^d\) et que</p>
-    <p>\[
-    \sqrt n(T_n-\theta)\rightsquigarrow Z.
-    \]</p>
-    <p>Si \(g:\mathbb R^d\to\mathbb R^k\) est différentiable en \(\theta\), de dérivée \(\dot g_\theta\), alors</p>
-    <p>\[
+    <h3>Slutsky et méthode delta</h3>
+    <p>Si \(X_n\rightsquigarrow X\) et \(Y_n\to c\) en probabilité, alors \(X_n+Y_n\rightsquigarrow X+c\) et \(X_nY_n\rightsquigarrow cX\). Si \(\sqrt n(T_n-\theta)\rightsquigarrow Z\) et si \(g\) est différentiable en \(\theta\), alors
+    \[
     \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow \dot g_\theta Z.
     \]</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Si \(T_n\) est asymptotiquement linéaire avec fonction d'influence \(\phi\), alors</p>
-        <p>\[
+        <p><span class="statement-title">Linéarité asymptotique.</span> Si \(T_n\) est asymptotiquement linéaire de fonction d’influence \(\phi\), alors
+        \[
         \sqrt n(T_n-\theta_0)\rightsquigarrow N(0,P\phi\phi^\top).
         \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> L'expansion linéaire donne \(\sqrt n(T_n-\theta_0)=n^{-1/2}\sum_i\phi(X_i)+o_p(1)\). Le TCL vectoriel donne la limite normale de la somme, puis Slutsky élimine le reste.</p>
+        <p><span class="statement-title">Preuve.</span> En multipliant l’expansion par \(\sqrt n\),
+        \[
+        \sqrt n(T_n-\theta_0)=n^{-1/2}\sum_{i=1}^n\phi(X_i)+o_p(1).
+        \]
+        Le TCL vectoriel donne la limite normale de la somme, et Slutsky élimine le reste.</p>
     </div>
 
-    <h3>Preuve de l'idée</h3>
-    <p>La différentiabilité donne</p>
-    <p>\[
-    g(T_n)-g(\theta)=\dot g_\theta(T_n-\theta)+r(T_n),
-    \qquad
-    \frac{\|r(T_n)\|}{\|T_n-\theta\|}\to0.
-    \]</p>
-    <p>Comme \(\sqrt n(T_n-\theta)=O_p(1)\), on obtient \(\sqrt n r(T_n)=o_p(1)\). Slutsky donne la limite.</p>
+    <h3>Argmax et application continue</h3>
+    <p>Le théorème d’argmax transforme la convergence uniforme de critères aléatoires en consistance d’optimiseurs. Le théorème de l’application continue transporte la convergence à travers les transformations lisses.</p>
 
-    <h3>Usage typique</h3>
-    <p>On cherche souvent une expansion linéaire</p>
-    <p>\[
-    \sqrt n(T_n-\theta_0)=\frac1{\sqrt n}\sum_{i=1}^n\phi(X_i)+o_p(1).
-    \]</p>
-    <p>Le TCL traite la somme, et Slutsky élimine le terme négligeable. La fonction \(\phi\) est souvent une fonction d'influence.</p>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-inference/" next_label="Page suivante" next_url="/notes/statistical-inference/likelihood-and-mle/" %}
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-inference/" prev_label="Page précédente" prev_url="/notes/statistical-inference/maximum-likelihood-estimation/" next_label="Page suivante" next_url="/notes/statistical-inference/m-estimators-z-estimators/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>渐近工具</h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-inference/" next_label="下一页" next_url="/notes/statistical-inference/likelihood-and-mle/" %}
+    <h2>推断中的渐近工具</h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-inference/" prev_label="上一页" prev_url="/notes/statistical-inference/maximum-likelihood-estimation/" next_label="下一页" next_url="/notes/statistical-inference/m-estimators-z-estimators/" %}
 
-    <p>渐近推断研究 \(n\to\infty\) 时的近似。这里并不是说样本量真的无限大，而是用极限揭示估计量、检验和置信集的一阶行为。</p>
-
-    <h3>收敛方式</h3>
-    <p>若对任意 \(\varepsilon>0\)，\(P(|X_n-X|>\varepsilon)\to0\)，则 \(X_n\to X\) <strong>依概率收敛</strong>。它表示随机误差变得可以忽略。</p>
-    <p>若对任意有界连续函数 \(f\)，有 \(E f(X_n)\to E f(X)\)，则 \(X_n\rightsquigarrow X\) <strong>依分布收敛</strong>。它描述的是分布收敛，而不要求同一样本空间上的逐点收敛。</p>
-    <p>若 \(P(X_n\to X)=1\)，则称 \(X_n\to X\) <strong>几乎必然收敛</strong>。这比依概率收敛更强。</p>
-
-    <h3>随机阶</h3>
-    <p>\(X_n=o_p(a_n)\) 表示 \(X_n/a_n\to0\) 依概率成立。\(X_n=O_p(a_n)\) 表示 \(X_n/a_n\) 是紧的：对任意 \(\varepsilon>0\)，存在 \(M<\infty\)，使得 \(\sup_nP(|X_n/a_n|>M)<\varepsilon\)。</p>
-    <p>这些符号使我们能够写带随机余项的 Taylor 展开。若 \(R_n=o_p(n^{-1/2})\)，则 \(\sqrt nR_n=o_p(1)\)，所以它不影响 \(\sqrt n\)-极限。</p>
+<p>本页只收集统计推断中反复使用的渐近工具。更完整的概率极限理论放在 probability theory 笔记中。</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 若 \(P\phi=0\)、\(P\|\phi\|^2<\infty\)，并且</p>
-        <p>\[
-        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}),
-        \]</p>
-        <p>则称 \(T_n\) 在 \(\theta_0\) 处渐近线性，\(\phi\) 称为影响函数。</p>
+        <p><span class="statement-title">定义.</span> \(X_n=o_p(a_n)\) 指 \(X_n/a_n\to0\) 依概率成立。\(X_n=O_p(a_n)\) 指 \(X_n/a_n\) 紧。若
+        \[
+        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}),\qquad P\phi=0,\quad P\|\phi\|^2\lt\infty,
+        \]
+        则称 \(T_n\) 以影响函数 \(\phi\) 渐近线性。</p>
     </div>
 
-    <h3>连续映射与 Slutsky</h3>
-    <p>若 \(X_n\rightsquigarrow X\)，且 \(g\) 连续，则 \(g(X_n)\rightsquigarrow g(X)\)。这就是连续映射定理。</p>
-    <p>若 \(X_n\rightsquigarrow X\)，且 \(Y_n\to c\) 依概率，则</p>
-    <p>\[
-    X_n+Y_n\rightsquigarrow X+c,\qquad
-    X_nY_n\rightsquigarrow cX.
-    \]</p>
-    <p>这就是 Slutsky 引理。它允许我们在渐近分布中用一致估计量替换未知常数。</p>
-
-    <h3>中心极限定理</h3>
-    <p>若 \(X_1,X_2,\ldots\) 独立同分布，\(EX_1=\mu\)，\(\operatorname{Var}(X_1)=\sigma^2<\infty\)，则</p>
-    <p>\[
-    \sqrt n(\bar X_n-\mu)\rightsquigarrow N(0,\sigma^2).
-    \]</p>
-    <p>向量版本中，若方差矩阵为 \(\Sigma\)，则 \(\sqrt n(\bar X_n-\mu)\rightsquigarrow N(0,\Sigma)\)。统计中的渐近正态性通常来自把这个向量 CLT 用在 score、估计方程或影响函数上。</p>
-
-    <h3>Delta 方法</h3>
-    <p>设 \(T_n\) 估计 \(\theta\in\mathbb R^d\)，且</p>
-    <p>\[
-    \sqrt n(T_n-\theta)\rightsquigarrow Z.
-    \]</p>
-    <p>若 \(g:\mathbb R^d\to\mathbb R^k\) 在 \(\theta\) 处可微，导数矩阵为 \(\dot g_\theta\)，则</p>
-    <p>\[
+    <h3>Slutsky 与 delta method</h3>
+    <p>若 \(X_n\rightsquigarrow X\)，且 \(Y_n\to c\) 依概率，则 \(X_n+Y_n\rightsquigarrow X+c\)、\(X_nY_n\rightsquigarrow cX\)。若 \(\sqrt n(T_n-\theta)\rightsquigarrow Z\)，且 \(g\) 在 \(\theta\) 可微，则
+    \[
     \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow \dot g_\theta Z.
     \]</p>
-    <p>若 \(Z\sim N(0,V)\)，则极限为 \(N(0,\dot g_\theta V\dot g_\theta^\top)\)。</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 若 \(T_n\) 具有影响函数 \(\phi\) 的渐近线性展开，则</p>
-        <p>\[
+        <p><span class="statement-title">渐近线性推出正态性.</span> 若 \(T_n\) 以影响函数 \(\phi\) 渐近线性，则
+        \[
         \sqrt n(T_n-\theta_0)\rightsquigarrow N(0,P\phi\phi^\top).
         \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 渐近线性给出 \(\sqrt n(T_n-\theta_0)=n^{-1/2}\sum_i\phi(X_i)+o_p(1)\)。向量 CLT 给出求和项收敛到 \(N(0,P\phi\phi^\top)\)，再由 Slutsky 引理去掉 \(o_p(1)\) 余项。</p>
+        <p><span class="statement-title">证明.</span> 将线性展开乘以 \(\sqrt n\)：
+        \[
+        \sqrt n(T_n-\theta_0)=n^{-1/2}\sum_{i=1}^n\phi(X_i)+o_p(1).
+        \]
+        向量 CLT 给出和的 Gaussian 极限，Slutsky 引理去掉 \(o_p(1)\) 余项。</p>
     </div>
 
-    <h3>为什么成立</h3>
-    <p>可微性给出</p>
-    <p>\[
-    g(T_n)-g(\theta)=\dot g_\theta(T_n-\theta)+r(T_n),
-    \qquad
-    \frac{\|r(T_n)\|}{\|T_n-\theta\|}\to0.
-    \]</p>
-    <p>由于 \(\sqrt n(T_n-\theta)=O_p(1)\)，有 \(T_n-\theta=O_p(n^{-1/2})\)，从而 \(\sqrt n r(T_n)=o_p(1)\)。再用 Slutsky 即可。</p>
+    <h3>Argmax 与连续映射</h3>
+    <p>Argmax theorem 把随机准则函数的一致收敛转化为优化点的一致性。Continuous mapping theorem 把估计量的收敛传递到变换后的估计量。这两个工具解释了大部分大样本推断。</p>
 
-    <h3>典型用法</h3>
-    <p>常见目标是找到线性展开</p>
-    <p>\[
-    \sqrt n(T_n-\theta_0)=\frac1{\sqrt n}\sum_{i=1}^n\phi(X_i)+o_p(1).
-    \]</p>
-    <p>然后对求和项使用 CLT，对可忽略项使用 Slutsky。函数 \(\phi\) 通常称为影响函数。</p>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-inference/" next_label="下一页" next_url="/notes/statistical-inference/likelihood-and-mle/" %}
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-inference/" prev_label="上一页" prev_url="/notes/statistical-inference/maximum-likelihood-estimation/" next_label="下一页" next_url="/notes/statistical-inference/m-estimators-z-estimators/" %}
 </div>
 
 <hr>
