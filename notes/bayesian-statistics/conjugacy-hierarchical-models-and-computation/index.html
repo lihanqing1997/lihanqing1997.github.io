@@ -1,236 +1,98 @@
 ---
 layout: default
-breadcrumb_child_label_en: "2. Conjugacy, hierarchical models, and computation"
-breadcrumb_child_label_fr: "2. Conjugaison, modèles hiérarchiques et calcul"
-breadcrumb_child_label_zh: "2. 共轭、层级模型与计算"
+breadcrumb_child_label_en: "4. Conjugate families and exponential families"
+breadcrumb_child_label_fr: "4. Familles conjuguées et familles exponentielles"
+breadcrumb_child_label_zh: "4. 共轭族与指数族"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>2. Conjugacy, hierarchical models, and computation</h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Next page" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+    <h2>4. Conjugate families and exponential families</h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Next page" next_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" %}
 
-    <h3>Conjugate priors</h3>
+    <p>This page records the main definitions, propositions, and proof ideas for Conjugate families and exponential families.</p>
+
+    <h3>Definition</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A prior family \(\{\Pi_\alpha:\alpha\in A\}\) is conjugate for likelihoods \(\{p_\theta\}\) if, for every prior hyperparameter \(\alpha\) and every sample \(x\), the posterior belongs to the same family: \(\Pi_\alpha(\cdot\mid x)=\Pi_{T(\alpha,x)}\) for some update map \(T\).</p>
+        <p><span class="statement-title">Definition.</span> A prior family is conjugate when posterior updating stays in the same family. For \(p_\theta(x)=h(x)\exp\{\theta^\top T(x)-A(\theta)\}\), the natural conjugate prior has density proportional to \(\exp\{\theta^\top\alpha-\beta A(\theta)\}\).</p>
     </div>
-    <p>A prior family is conjugate for a likelihood family if the posterior remains in the same family. Conjugacy makes updating transparent and gives useful exact benchmarks for computation.</p>
-    <p>For \(X\mid\theta\sim\operatorname{Bin}(n,\theta)\) and \(\theta\sim\operatorname{Beta}(\alpha,\beta)\), if \(X=x\), then</p>
-    <p>\[
-    \theta\mid X=x\sim\operatorname{Beta}(\alpha+x,\beta+n-x).
-    \]</p>
-    <p>The prior parameters behave like pseudo-counts: \(\alpha-1\) prior successes and \(\beta-1\) prior failures.</p>
 
+    <h3>Proposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> After observations \(X_1,\ldots,X_n\), the hyperparameters update as
+\[
+(\alpha,\beta)\mapsto\left(\alpha+\sum_{i=1}^nT(X_i),\beta+n\right).
+\]</p>
+    </div>
+
+    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The binomial likelihood is proportional to \(\theta^x(1-\theta)^{n-x}\), while the beta prior density is proportional to \(\theta^{\alpha-1}(1-\theta)^{\beta-1}\). Their product is proportional to \(\theta^{\alpha+x-1}(1-\theta)^{\beta+n-x-1}\), the beta density with updated parameters.</p>
+        <p><span class="statement-title">Proof.</span> Multiplying likelihood and prior collects all terms in the same exponential-family form.</p>
     </div>
 
-    <h3>Normal-normal updating</h3>
-    <p>If \(X_i\mid\theta\sim N(\theta,\sigma^2)\), with \(\sigma^2\) known, and \(\theta\sim N(m_0,v_0)\), then</p>
-    <p>\[
-    \theta\mid X^{(n)}\sim N(m_n,v_n),
-    \quad
-    v_n^{-1}=v_0^{-1}+n\sigma^{-2},
-    \quad
-    m_n=v_n(v_0^{-1}m_0+n\sigma^{-2}\bar X).
-    \]</p>
-    <p>The posterior mean is a precision-weighted average of the prior mean and the sample mean. The posterior variance is smaller than both \(v_0\) and \(\sigma^2/n\) when both sources are informative.</p>
+    <h3>Remarks</h3>
+    <p>Conjugate models give exact algebraic checks for computation, approximation, and hierarchical modeling.</p>
 
-    <h3>Exponential families</h3>
-    <p>For an exponential family</p>
-    <p>\[
-    p_\eta(x)=\exp\{\eta^\top T(x)-A(\eta)\}h(x),
-    \]</p>
-    <p>a natural conjugate prior has density</p>
-    <p>\[
-    \pi(\eta)\propto \exp\{\eta^\top a-bA(\eta)\}.
-    \]</p>
-    <p>After observing \(x_1,\ldots,x_n\), the hyperparameters update to \(a+\sum_iT(x_i)\) and \(b+n\). The sufficient statistic enters the posterior in exactly the same way it enters the likelihood.</p>
-
-    <h3>Hierarchical models</h3>
-    <p>Hierarchical Bayes introduces latent parameters and hyperparameters, for example</p>
-    <p>\[
-    Y_j\mid\theta_j\sim P_{\theta_j},\qquad
-    \theta_j\mid\tau\sim G_\tau,\qquad
-    \tau\sim\Pi_0.
-    \]</p>
-    <p>The hierarchy shares information across groups. Group-specific estimates are shrunk toward a common population structure, while the amount of shrinkage is learned from the data through \(\tau\).</p>
-
-    <h3>Empirical Bayes</h3>
-    <p>Empirical Bayes estimates the hyperparameter \(\tau\) from the data, often by maximizing the marginal likelihood \(m_\tau(Y)=\int p(Y\mid\theta)\mathrm{d}G_\tau(\theta)\). Then inference uses \(\Pi_{\hat\tau}(\theta\mid Y)\).</p>
-    <p>This can be powerful, but it underestimates uncertainty if the variability of \(\hat\tau\) is ignored. Full Bayes propagates this uncertainty by putting a prior on \(\tau\).</p>
-
-    <h3>MCMC</h3>
-    <p>When the posterior has no closed form, Markov chain Monte Carlo constructs a Markov chain \(\theta^{(0)},\theta^{(1)},\ldots\) whose stationary distribution is \(\Pi(\cdot\mid X)\). For Metropolis-Hastings with proposal \(q(\theta,\theta')\), accept \(\theta'\) with probability</p>
-    <p>\[
-    \alpha(\theta,\theta')=
-    1\wedge
-    \frac{\pi(\theta'\mid X)q(\theta',\theta)}
-    {\pi(\theta\mid X)q(\theta,\theta')}.
-    \]</p>
-    <p>After convergence, posterior expectations are approximated by averages along the chain. Diagnostics are needed because finite chains may not explore the posterior well.</p>
-
-    <h3>Variational inference</h3>
-    <p>Variational inference chooses a tractable family \(\mathcal Q\) and approximates the posterior by</p>
-    <p>\[
-    q^\star\in\arg\min_{q\in\mathcal Q}
-    \operatorname{KL}\{q(\theta)\,\|\,\pi(\theta\mid X)\}.
-    \]</p>
-    <p>Equivalently, it maximizes the evidence lower bound</p>
-    <p>\[
-    \operatorname{ELBO}(q)=E_q\log p(X,\theta)-E_q\log q(\theta).
-    \]</p>
-    <p>Variational methods are often faster than MCMC, but the chosen family can make uncertainty too narrow or miss dependence in the posterior.</p>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Next page" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Next page" next_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>2. Conjugaison, Modèles Hiérarchiques et Calcul</h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Page suivante" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+    <h2>4. Familles conjuguées et familles exponentielles</h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Page suivante" next_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" %}
 
-    <h3>A priori conjugués</h3>
+    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Familles conjuguées et familles exponentielles.</p>
+
+    <h3>Définition</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Une famille a priori \(\{\Pi_\alpha\}\) est conjuguée si le postérieur reste dans la même famille : \(\Pi_\alpha(\cdot\mid x)=\Pi_{T(\alpha,x)}\).</p>
+        <p><span class="statement-title">Définition.</span> Formulation. A prior family is conjugate when posterior updating stays in the same family. For \(p_\theta(x)=h(x)\exp\{\theta^\top T(x)-A(\theta)\}\), the natural conjugate prior has density proportional to \(\exp\{\theta^\top\alpha-\beta A(\theta)\}\).</p>
     </div>
-    <p>Une famille a priori est conjuguée pour une vraisemblance si le postérieur reste dans la même famille. La conjugaison rend la mise à jour explicite et fournit des cas tests exacts pour les algorithmes.</p>
-    <p>Si \(X\mid\theta\sim\operatorname{Bin}(n,\theta)\) et \(\theta\sim\operatorname{Beta}(\alpha,\beta)\), alors, pour \(X=x\),</p>
-    <p>\[
-    \theta\mid X=x\sim\operatorname{Beta}(\alpha+x,\beta+n-x).
-    \]</p>
-    <p>Les paramètres a priori jouent le rôle de pseudo-comptages.</p>
 
+    <h3>Proposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Énoncé. After observations \(X_1,\ldots,X_n\), the hyperparameters update as
+\[
+(\alpha,\beta)\mapsto\left(\alpha+\sum_{i=1}^nT(X_i),\beta+n\right).
+\]</p>
+    </div>
+
+    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> La vraisemblance binomiale est proportionnelle à \(\theta^x(1-\theta)^{n-x}\), et la densité beta à \(\theta^{\alpha-1}(1-\theta)^{\beta-1}\). Leur produit est une densité beta de paramètres \(\alpha+x\) et \(\beta+n-x\).</p>
+        <p><span class="statement-title">Preuve.</span> Argument. Multiplying likelihood and prior collects all terms in the same exponential-family form.</p>
     </div>
 
-    <h3>Mise à jour normale-normale</h3>
-    <p>Si \(X_i\mid\theta\sim N(\theta,\sigma^2)\), \(\sigma^2\) connu, et \(\theta\sim N(m_0,v_0)\), alors</p>
-    <p>\[
-    \theta\mid X^{(n)}\sim N(m_n,v_n),
-    \quad
-    v_n^{-1}=v_0^{-1}+n\sigma^{-2},
-    \quad
-    m_n=v_n(v_0^{-1}m_0+n\sigma^{-2}\bar X).
-    \]</p>
-    <p>La moyenne postérieure est une moyenne pondérée par les précisions entre la moyenne a priori et la moyenne empirique.</p>
+    <h3>Remarques</h3>
+    <p>Conjugate models give exact algebraic checks for computation, approximation, and hierarchical modeling.</p>
 
-    <h3>Familles exponentielles</h3>
-    <p>Pour une famille exponentielle \(p_\eta(x)=\exp\{\eta^\top T(x)-A(\eta)\}h(x)\), un a priori conjugué naturel est</p>
-    <p>\[
-    \pi(\eta)\propto \exp\{\eta^\top a-bA(\eta)\}.
-    \]</p>
-    <p>Après les données, les hyperparamètres deviennent \(a+\sum_iT(x_i)\) et \(b+n\). La statistique suffisante entre dans le postérieur comme dans la vraisemblance.</p>
-
-    <h3>Modèles hiérarchiques</h3>
-    <p>Un modèle hiérarchique introduit des paramètres latents et des hyperparamètres :</p>
-    <p>\[
-    Y_j\mid\theta_j\sim P_{\theta_j},\qquad
-    \theta_j\mid\tau\sim G_\tau,\qquad
-    \tau\sim\Pi_0.
-    \]</p>
-    <p>La hiérarchie partage l'information entre groupes. Les estimateurs de groupe sont rétrécis vers une structure commune, tandis que l'intensité du rétrécissement est apprise par \(\tau\).</p>
-
-    <h3>Empirical Bayes</h3>
-    <p>L'empirical Bayes estime \(\tau\) à partir des données, souvent par maximum de vraisemblance marginale \(m_\tau(Y)\), puis utilise \(\Pi_{\hat\tau}(\theta\mid Y)\). Cette approche peut être efficace, mais elle néglige une partie de l'incertitude si la variabilité de \(\hat\tau\) n'est pas propagée.</p>
-
-    <h3>MCMC</h3>
-    <p>Les méthodes MCMC construisent une chaîne de Markov de loi stationnaire \(\Pi(\cdot\mid X)\). Dans Metropolis-Hastings, une proposition \(\theta'\) est acceptée avec probabilité</p>
-    <p>\[
-    \alpha(\theta,\theta')=
-    1\wedge
-    \frac{\pi(\theta'\mid X)q(\theta',\theta)}
-    {\pi(\theta\mid X)q(\theta,\theta')}.
-    \]</p>
-    <p>Les espérances postérieures sont ensuite approchées par des moyennes le long de la chaîne.</p>
-
-    <h3>Inférence variationnelle</h3>
-    <p>L'inférence variationnelle choisit une famille tractable \(\mathcal Q\) et résout</p>
-    <p>\[
-    q^\star\in\arg\min_{q\in\mathcal Q}
-    \operatorname{KL}\{q(\theta)\,\|\,\pi(\theta\mid X)\}.
-    \]</p>
-    <p>Elle maximise aussi l'ELBO \(E_q\log p(X,\theta)-E_q\log q(\theta)\). Elle est rapide, mais la famille choisie peut sous-estimer l'incertitude.</p>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Page suivante" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="Page suivante" next_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>2. 共轭、层级模型与计算</h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="下一页" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+    <h2>4. 共轭族与指数族</h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="下一页" next_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" %}
 
-    <h3>共轭先验</h3>
+    <p>本页整理 共轭族与指数族 的主要定义、命题与证明思路。</p>
+
+    <h3>定义</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 若先验族 \(\{\Pi_\alpha\}\) 在观测 \(x\) 后的后验仍属于同一族，即 \(\Pi_\alpha(\cdot\mid x)=\Pi_{T(\alpha,x)}\)，则称该先验族对相应似然族共轭。</p>
+        <p><span class="statement-title">定义.</span> 表述. A prior family is conjugate when posterior updating stays in the same family. For \(p_\theta(x)=h(x)\exp\{\theta^\top T(x)-A(\theta)\}\), the natural conjugate prior has density proportional to \(\exp\{\theta^\top\alpha-\beta A(\theta)\}\).</p>
     </div>
-    <p>若某个先验族在给定似然族下更新后仍属于同一族，则称它是共轭先验。共轭使后验更新透明，也为计算方法提供精确参照。</p>
-    <p>若 \(X\mid\theta\sim\operatorname{Bin}(n,\theta)\)，且 \(\theta\sim\operatorname{Beta}(\alpha,\beta)\)，观测 \(X=x\) 后，</p>
-    <p>\[
-    \theta\mid X=x\sim\operatorname{Beta}(\alpha+x,\beta+n-x).
-    \]</p>
-    <p>先验参数可以理解为 pseudo-counts：\(\alpha-1\) 个先验成功和 \(\beta-1\) 个先验失败。</p>
 
+    <h3>命题</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 结论. After observations \(X_1,\ldots,X_n\), the hyperparameters update as
+\[
+(\alpha,\beta)\mapsto\left(\alpha+\sum_{i=1}^nT(X_i),\beta+n\right).
+\]</p>
+    </div>
+
+    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 二项似然正比于 \(\theta^x(1-\theta)^{n-x}\)，Beta 先验密度正比于 \(\theta^{\alpha-1}(1-\theta)^{\beta-1}\)。二者相乘正比于 \(\theta^{\alpha+x-1}(1-\theta)^{\beta+n-x-1}\)，因此后验仍为 Beta 分布。</p>
+        <p><span class="statement-title">证明.</span> 证明思路. Multiplying likelihood and prior collects all terms in the same exponential-family form.</p>
     </div>
 
-    <h3>正态-正态更新</h3>
-    <p>若 \(X_i\mid\theta\sim N(\theta,\sigma^2)\)，其中 \(\sigma^2\) 已知，且 \(\theta\sim N(m_0,v_0)\)，则</p>
-    <p>\[
-    \theta\mid X^{(n)}\sim N(m_n,v_n),
-    \quad
-    v_n^{-1}=v_0^{-1}+n\sigma^{-2},
-    \quad
-    m_n=v_n(v_0^{-1}m_0+n\sigma^{-2}\bar X).
-    \]</p>
-    <p>后验均值是先验均值和样本均值按精度加权的平均。后验方差体现了先验信息和数据信息的合并。</p>
+    <h3>说明</h3>
+    <p>Conjugate models give exact algebraic checks for computation, approximation, and hierarchical modeling.</p>
 
-    <h3>指数族</h3>
-    <p>对指数族</p>
-    <p>\[
-    p_\eta(x)=\exp\{\eta^\top T(x)-A(\eta)\}h(x),
-    \]</p>
-    <p>自然共轭先验常写成</p>
-    <p>\[
-    \pi(\eta)\propto \exp\{\eta^\top a-bA(\eta)\}.
-    \]</p>
-    <p>观测数据后，超参数更新为 \(a+\sum_iT(x_i)\) 和 \(b+n\)。充分统计量以与似然相同的方式进入后验。</p>
-
-    <h3>层级模型</h3>
-    <p>层级 Bayes 引入潜在参数和超参数，例如</p>
-    <p>\[
-    Y_j\mid\theta_j\sim P_{\theta_j},\qquad
-    \theta_j\mid\tau\sim G_\tau,\qquad
-    \tau\sim\Pi_0.
-    \]</p>
-    <p>层级结构在不同组之间共享信息。组内估计会向共同总体结构收缩，而收缩强度通过 \(\tau\) 从数据中学习。</p>
-
-    <h3>经验 Bayes</h3>
-    <p>经验 Bayes 先从数据估计超参数 \(\tau\)，常见做法是最大化边际似然 \(m_\tau(Y)=\int p(Y\mid\theta)\mathrm{d}G_\tau(\theta)\)，然后使用 \(\Pi_{\hat\tau}(\theta\mid Y)\) 做推断。</p>
-    <p>这种方法通常有效，但如果忽略 \(\hat\tau\) 的随机性，可能低估不确定性。完全 Bayes 通过给 \(\tau\) 放先验来传播这种不确定性。</p>
-
-    <h3>MCMC</h3>
-    <p>当后验没有闭式表达时，MCMC 构造以后验为平稳分布的 Markov 链。Metropolis-Hastings 中，从 \(q(\theta,\theta')\) 提出 \(\theta'\)，接受概率为</p>
-    <p>\[
-    \alpha(\theta,\theta')=
-    1\wedge
-    \frac{\pi(\theta'\mid X)q(\theta',\theta)}
-    {\pi(\theta\mid X)q(\theta,\theta')}.
-    \]</p>
-    <p>链收敛后，后验期望可以用链上平均近似。有限长度链是否充分探索后验，需要诊断。</p>
-
-    <h3>变分推断</h3>
-    <p>变分推断选择一个可计算的分布族 \(\mathcal Q\)，用</p>
-    <p>\[
-    q^\star\in\arg\min_{q\in\mathcal Q}
-    \operatorname{KL}\{q(\theta)\,\|\,\pi(\theta\mid X)\}
-    \]</p>
-    <p>近似后验。等价地，它最大化 evidence lower bound</p>
-    <p>\[
-    \operatorname{ELBO}(q)=E_q\log p(X,\theta)-E_q\log q(\theta).
-    \]</p>
-    <p>变分方法通常比 MCMC 快，但近似族可能使不确定性过窄，也可能错过后验相关结构。</p>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="下一页" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/posterior-and-decision/" next_label="下一页" next_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" %}
 </div>
 
 <hr>

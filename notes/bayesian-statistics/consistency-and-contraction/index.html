@@ -1,197 +1,89 @@
 ---
 layout: default
-breadcrumb_child_label_en: "3. Consistency and contraction"
-breadcrumb_child_label_fr: "3. Consistance et contraction"
-breadcrumb_child_label_zh: "3. 一致性与收缩"
+breadcrumb_child_label_en: "27. Doob, Schwartz, and posterior consistency"
+breadcrumb_child_label_fr: "27. Doob, Schwartz et consistance postérieure"
+breadcrumb_child_label_zh: "27. Doob、Schwartz 与后验一致性"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>3. Consistency and contraction</h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" next_label="Next page" next_url="/notes/bayesian-statistics/laplace-bvm-and-misspecification/" %}
+    <h2>27. Doob, Schwartz, and posterior consistency</h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" next_label="Next page" next_url="/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/" %}
 
-    <h3>Posterior consistency</h3>
-    <p>Suppose data are generated from \(P_0\). In a well-specified model, \(P_0=P_{\theta_0}\). The posterior is consistent at \(\theta_0\) if for every neighborhood \(U\) of \(\theta_0\),</p>
-    <p>\[
-    \Pi(U^c\mid X^{(n)})\to0
-    \]</p>
-    <p>in \(P_{\theta_0}\)-probability, or almost surely. Consistency means the posterior eventually assigns nearly all mass to every fixed neighborhood of the truth.</p>
+    <p>This page records the main definitions, propositions, and proof ideas for Doob, Schwartz, and posterior consistency.</p>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem (Schwartz, informal form).</span> In an identifiable dominated model, if every KL neighborhood of \(\theta_0\) has positive prior mass and if the complement of each ordinary neighborhood can be separated from \(\theta_0\) by exponentially consistent tests, then the posterior is consistent at \(\theta_0\).</p>
+    <h3>Definition</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A prior has the KL property at \(P_0\) if every set \(\{P:P_0\log(p_0/p)<\varepsilon\}\) has positive prior mass.</p>
     </div>
 
+    <h3>Proposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Schwartz theorem: KL support plus uniform tests for the complement of a neighborhood imply posterior consistency.</p>
+    </div>
+
+    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof sketch.</span> Write posterior mass of \(U^c\) as numerator divided by denominator. KL prior mass gives a denominator that is not exponentially too small with high \(P_{\theta_0}\)-probability. The tests split the numerator into the event where the test rejects the truth and the event where alternatives fail to pass the test; both terms vanish. The ratio therefore converges to zero.</p>
+        <p><span class="statement-title">Proof.</span> KL support lower-bounds the denominator; tests upper-bound the numerator on the bad set.</p>
     </div>
 
-    <h3>KL support</h3>
-    <p>The Kullback-Leibler neighborhood of \(\theta_0\) is</p>
-    <p>\[
-    K(\theta_0,\theta)=P_{\theta_0}\log\frac{p_{\theta_0}}{p_\theta},
-    \qquad
-    \{\theta:K(\theta_0,\theta)<\varepsilon\}.
-    \]</p>
-    <p>A necessary idea is that the prior must not exclude the truth: every KL neighborhood should have positive prior mass. If the prior puts zero mass near \(\theta_0\), no amount of data can put posterior mass there.</p>
+    <h3>Remarks</h3>
+    <p>Doob consistency is prior-almost-sure; Schwartz consistency is useful for fixed frequentist truths.</p>
 
-    <h3>Testing mechanism</h3>
-    <p>Posterior consistency is often proved by combining KL prior mass with tests. If for \(U^c\) there are tests \(\phi_n\) such that</p>
-    <p>\[
-    P_{\theta_0}\phi_n\to0,\qquad
-    \sup_{\theta\in U^c}P_\theta(1-\phi_n)\to0,
-    \]</p>
-    <p>then the likelihood can separate the truth from \(U^c\). The posterior numerator over \(U^c\) is controlled by the test, while the denominator is protected by prior mass near the truth.</p>
-
-    <h3>Contraction rates</h3>
-    <p>Consistency is qualitative. A contraction rate \(\varepsilon_n\to0\) in a distance \(d\) satisfies, for a large constant \(M\),</p>
-    <p>\[
-    \Pi\{\theta:d(\theta,\theta_0)>M\varepsilon_n\mid X^{(n)}\}\to0.
-    \]</p>
-    <p>The rate tells how quickly the posterior concentrates. In regular \(d\)-dimensional parametric models, \(\varepsilon_n=n^{-1/2}\). In nonparametric models, the rate is usually slower and depends on smoothness and dimension.</p>
-
-    <h3>Prior mass, entropy, and tests</h3>
-    <p>A typical contraction theorem requires three ingredients. First, the prior puts enough mass in a KL ball:</p>
-    <p>\[
-    \Pi\{K(\theta_0,\theta)\lesssim\varepsilon_n^2,\,
-    V(\theta_0,\theta)\lesssim\varepsilon_n^2\}
-    \ge e^{-Cn\varepsilon_n^2},
-    \]</p>
-    <p>where \(V\) is a second moment of the log-likelihood ratio. Second, the relevant parameter set has entropy at most order \(n\varepsilon_n^2\). Third, tests separate \(d(\theta,\theta_0)\gtrsim\varepsilon_n\) with exponentially small errors.</p>
-
-    <h3>Bias-complexity balance</h3>
-    <p>For a smooth function \(f_0\) in \(s\) dimensions, a nonparametric prior often behaves like a sieve of complexity \(k\). Approximation error decreases with \(k\), while stochastic complexity increases with \(k\). The optimal posterior rate is obtained by balancing these terms. This is the Bayesian analogue of bias-variance tradeoff.</p>
-
-    <h3>Misspecification</h3>
-    <p>If \(P_0\) is not in the model, the posterior typically concentrates near the KL projection</p>
-    <p>\[
-    \theta^\star\in\arg\min_{\theta\in\Theta}P_0\log\frac{p_0}{p_\theta}.
-    \]</p>
-    <p>Consistency then means concentration around the best approximation inside the model, not around a true model parameter. This distinction is central in modern Bayesian theory.</p>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" next_label="Next page" next_url="/notes/bayesian-statistics/laplace-bvm-and-misspecification/" %}
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" next_label="Next page" next_url="/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>3. Consistance et Contraction</h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" next_label="Page suivante" next_url="/notes/bayesian-statistics/laplace-bvm-and-misspecification/" %}
+    <h2>27. Doob, Schwartz et consistance postérieure</h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" next_label="Page suivante" next_url="/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/" %}
 
-    <h3>Consistance postérieure</h3>
-    <p>Supposons que les données viennent de \(P_0\). Dans un modèle bien spécifié, \(P_0=P_{\theta_0}\). Le postérieur est consistant en \(\theta_0\) si, pour tout voisinage \(U\),</p>
-    <p>\[
-    \Pi(U^c\mid X^{(n)})\to0
-    \]</p>
-    <p>en probabilité sous \(P_{\theta_0}\), ou presque sûrement. Le postérieur finit alors par placer presque toute sa masse près de la vérité.</p>
+    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Doob, Schwartz et consistance postérieure.</p>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème (Schwartz, forme informelle).</span> Si tout voisinage KL de \(\theta_0\) reçoit une masse a priori positive et si le complément de chaque voisinage ordinaire est séparé par des tests exponentiellement consistants, alors le postérieur est consistant en \(\theta_0\).</p>
+    <h3>Définition</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Formulation. A prior has the KL property at \(P_0\) if every set \(\{P:P_0\log(p_0/p)<\varepsilon\}\) has positive prior mass.</p>
     </div>
 
+    <h3>Proposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Énoncé. Schwartz theorem: KL support plus uniform tests for the complement of a neighborhood imply posterior consistency.</p>
+    </div>
+
+    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve esquissée.</span> La masse KL protège le dénominateur du postérieur. Les tests contrôlent le numérateur sur \(U^c\) en séparant la vérité des alternatives. Le rapport tend donc vers zéro.</p>
+        <p><span class="statement-title">Preuve.</span> Argument. KL support lower-bounds the denominator; tests upper-bound the numerator on the bad set.</p>
     </div>
 
-    <h3>Support KL</h3>
-    <p>Un voisinage de Kullback-Leibler est</p>
-    <p>\[
-    K(\theta_0,\theta)=P_{\theta_0}\log\frac{p_{\theta_0}}{p_\theta},
-    \qquad
-    \{\theta:K(\theta_0,\theta)<\varepsilon\}.
-    \]</p>
-    <p>L'a priori doit mettre une masse positive dans ces voisinages. S'il exclut la vérité, les données ne peuvent pas créer de masse postérieure près d'elle.</p>
+    <h3>Remarques</h3>
+    <p>Doob consistency is prior-almost-sure; Schwartz consistency is useful for fixed frequentist truths.</p>
 
-    <h3>Mécanisme par tests</h3>
-    <p>On combine souvent la masse a priori KL avec des tests \(\phi_n\) tels que</p>
-    <p>\[
-    P_{\theta_0}\phi_n\to0,\qquad
-    \sup_{\theta\in U^c}P_\theta(1-\phi_n)\to0.
-    \]</p>
-    <p>Les tests contrôlent le numérateur postérieur sur \(U^c\), tandis que la masse KL protège le dénominateur.</p>
-
-    <h3>Taux de contraction</h3>
-    <p>Un taux \(\varepsilon_n\to0\) pour une distance \(d\) vérifie, pour \(M\) assez grand,</p>
-    <p>\[
-    \Pi\{\theta:d(\theta,\theta_0)>M\varepsilon_n\mid X^{(n)}\}\to0.
-    \]</p>
-    <p>En dimension finie régulière, \(\varepsilon_n=n^{-1/2}\). En non paramétrique, le taux dépend de la régularité et de la dimension.</p>
-
-    <h3>Masse a priori, entropie et tests</h3>
-    <p>Un théorème type demande une masse a priori au moins \(e^{-Cn\varepsilon_n^2}\) dans une boule KL, une entropie du modèle d'ordre au plus \(n\varepsilon_n^2\), et des tests exponentiellement puissants pour séparer \(d(\theta,\theta_0)\gtrsim\varepsilon_n\).</p>
-
-    <h3>Équilibre biais-complexité</h3>
-    <p>Dans un modèle de fonctions lisses, une complexité plus grande diminue l'erreur d'approximation mais augmente l'erreur stochastique. Le taux optimal équilibre ces deux forces, comme un compromis biais-variance.</p>
-
-    <h3>Mauvaise spécification</h3>
-    <p>Si \(P_0\) n'appartient pas au modèle, le postérieur se concentre souvent près de la projection KL</p>
-    <p>\[
-    \theta^\star\in\arg\min_{\theta\in\Theta}P_0\log\frac{p_0}{p_\theta}.
-    \]</p>
-    <p>La consistance signifie alors concentration autour de la meilleure approximation dans le modèle.</p>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" next_label="Page suivante" next_url="/notes/bayesian-statistics/laplace-bvm-and-misspecification/" %}
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" next_label="Page suivante" next_url="/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>3. 一致性与收缩</h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" next_label="下一页" next_url="/notes/bayesian-statistics/laplace-bvm-and-misspecification/" %}
+    <h2>27. Doob、Schwartz 与后验一致性</h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" next_label="下一页" next_url="/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/" %}
 
-    <h3>后验一致性</h3>
-    <p>设数据由 \(P_0\) 生成。在模型正确设定时，\(P_0=P_{\theta_0}\)。若对 \(\theta_0\) 的任意邻域 \(U\)，</p>
-    <p>\[
-    \Pi(U^c\mid X^{(n)})\to0
-    \]</p>
-    <p>在 \(P_{\theta_0}\)-概率下成立，或几乎必然成立，则称后验在 \(\theta_0\) 一致。一致性表示后验最终把几乎全部质量放到真值的任意固定邻域中。</p>
+    <p>本页整理 Doob、Schwartz 与后验一致性 的主要定义、命题与证明思路。</p>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理（Schwartz，非正式形式）.</span> 在可识别 dominated 模型中，若 \(\theta_0\) 的每个 KL 邻域都有正先验质量，并且每个普通邻域的补集都能被指数一致检验与 \(\theta_0\) 区分开，则后验在 \(\theta_0\) 一致。</p>
+    <h3>定义</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 表述. A prior has the KL property at \(P_0\) if every set \(\{P:P_0\log(p_0/p)<\varepsilon\}\) has positive prior mass.</p>
     </div>
 
+    <h3>命题</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 结论. Schwartz theorem: KL support plus uniform tests for the complement of a neighborhood imply posterior consistency.</p>
+    </div>
+
+    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明思路.</span> 将 \(U^c\) 的后验质量写成分子除以分母。KL 先验质量保证分母不会以过快的指数速度变小；检验把分子控制为真值下错误拒绝和备择下错误接受两部分，二者都趋于零。因此比值趋于零。</p>
+        <p><span class="statement-title">证明.</span> 证明思路. KL support lower-bounds the denominator; tests upper-bound the numerator on the bad set.</p>
     </div>
 
-    <h3>KL 支持</h3>
-    <p>Kullback-Leibler 邻域为</p>
-    <p>\[
-    K(\theta_0,\theta)=P_{\theta_0}\log\frac{p_{\theta_0}}{p_\theta},
-    \qquad
-    \{\theta:K(\theta_0,\theta)<\varepsilon\}.
-    \]</p>
-    <p>关键要求是先验不能排除真值：每个 KL 邻域都应有正先验质量。如果先验在真值附近质量为零，再多数据也无法把后验质量放到那里。</p>
+    <h3>说明</h3>
+    <p>Doob consistency is prior-almost-sure; Schwartz consistency is useful for fixed frequentist truths.</p>
 
-    <h3>检验机制</h3>
-    <p>后验一致性常由 KL 先验质量和检验共同证明。若存在检验 \(\phi_n\) 使得</p>
-    <p>\[
-    P_{\theta_0}\phi_n\to0,\qquad
-    \sup_{\theta\in U^c}P_\theta(1-\phi_n)\to0,
-    \]</p>
-    <p>则似然可以把真值与 \(U^c\) 区分开。检验控制 \(U^c\) 上的后验分子，而真值附近的先验质量保护分母。</p>
-
-    <h3>收缩速度</h3>
-    <p>一致性是定性结论。对距离 \(d\)，收缩速度 \(\varepsilon_n\to0\) 满足：对足够大的常数 \(M\)，</p>
-    <p>\[
-    \Pi\{\theta:d(\theta,\theta_0)>M\varepsilon_n\mid X^{(n)}\}\to0.
-    \]</p>
-    <p>该速度描述后验集中有多快。正则有限维参数模型中通常是 \(n^{-1/2}\)；非参数模型中通常更慢，并依赖光滑度和维数。</p>
-
-    <h3>先验质量、熵与检验</h3>
-    <p>典型收缩定理需要三部分。第一，先验在 KL 球中给出足够质量：</p>
-    <p>\[
-    \Pi\{K(\theta_0,\theta)\lesssim\varepsilon_n^2,\,
-    V(\theta_0,\theta)\lesssim\varepsilon_n^2\}
-    \ge e^{-Cn\varepsilon_n^2}.
-    \]</p>
-    <p>第二，相关参数集合的熵不超过 \(n\varepsilon_n^2\) 的量级。第三，存在能以指数小错误概率区分 \(d(\theta,\theta_0)\gtrsim\varepsilon_n\) 的检验。</p>
-
-    <h3>偏差-复杂度平衡</h3>
-    <p>对光滑函数 \(f_0\)，非参数先验常像一个复杂度为 \(k\) 的 sieve。复杂度增加会降低逼近误差，但增加随机复杂度。最优后验速度来自二者平衡，这是 Bayes 版本的 bias-variance tradeoff。</p>
-
-    <h3>误指定</h3>
-    <p>若 \(P_0\) 不在模型中，后验通常集中到 KL 投影</p>
-    <p>\[
-    \theta^\star\in\arg\min_{\theta\in\Theta}P_0\log\frac{p_0}{p_\theta}.
-    \]</p>
-    <p>此时一致性表示集中到模型内部的最佳近似，而不是真实模型参数。这一区分在现代 Bayes 理论中非常重要。</p>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/conjugacy-hierarchical-models-and-computation/" next_label="下一页" next_url="/notes/bayesian-statistics/laplace-bvm-and-misspecification/" %}
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" next_label="下一页" next_url="/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/" %}
 </div>
 
 <hr>
