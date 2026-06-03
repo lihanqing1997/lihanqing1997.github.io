@@ -1,140 +1,89 @@
 ---
 layout: default
-breadcrumb_child_label_en: "Shrinkage and invariance"
-breadcrumb_child_label_fr: "Shrinkage et invariance"
-breadcrumb_child_label_zh: "Shrinkage 与不变性"
+breadcrumb_child_label_en: "17. Invariance, Equivariance, and Shrinkage"
+breadcrumb_child_label_fr: "17. Invariance, équivariance et shrinkage"
+breadcrumb_child_label_zh: "17. 不变性、等变性与 Shrinkage"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>Shrinkage and Invariance</h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-decision-theory/" prev_label="Last page" prev_url="/notes/statistical-decision-theory/admissibility-and-complete-classes/" next_label="Next page" next_url="/notes/statistical-decision-theory/lower-bounds/" %}
+    <h2>17. Invariance, Equivariance, and Shrinkage</h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-decision-theory/" prev_label="Last page" prev_url="/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/" next_label="Next page" next_url="/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/" %}
 
-    <h3>Normal mean model</h3>
-    <p>If \(X\sim N(\theta,\sigma^2)\) and \(L(\theta,a)=(a-\theta)^2\), the estimator \(X\) has constant risk \(\sigma^2\). With prior \(\theta\sim N(0,\tau^2)\), the Bayes estimator is</p>
-    <p>\[
-    \delta(X)=\frac{\tau^2}{\tau^2+\sigma^2}X.
-    \]</p>
-    <p>This shrinks toward zero. It lowers variance but introduces bias. Risk analysis decides whether the tradeoff is worthwhile.</p>
+    <p>Invariance reduces decision problems by symmetry. Shrinkage shows that symmetry alone does not always imply admissibility, especially in multivariate normal means.</p>
+
+    <h3>Invariant experiment and equivariant rule</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A group \(G\) acts on parameters, observations, and actions. A rule \(\delta\) is equivariant if \(\delta(gx)=g\delta(x)\). Its risk satisfies \(R(g\theta,\delta)=R(\theta,\delta)\).</p>
+    </div>
 
     <h3>James-Stein phenomenon</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem (James-Stein).</span> If \(X\sim N_p(\theta,\sigma^2I)\) and loss is \(\|\delta-\theta\|^2\), then the usual estimator \(\delta_0(X)=X\) is inadmissible for \(p\ge3\).</p>
+        <p><span class="statement-title">Theorem.</span> If \(X\sim N_p(\theta,\sigma^2I)\) and loss is \(\|\delta-\theta\|^2\), the usual estimator \(\delta_0(X)=X\) is inadmissible for \(p\ge3\).</p>
     </div>
-    <p>For \(X\sim N_p(\theta,\sigma^2I)\) and squared error loss \(\|\delta-\theta\|^2\), the usual estimator \(X\) is inadmissible when \(p\ge3\). Shrinkage estimators can dominate it. This surprising result shows that coordinatewise intuition can fail in multivariate decision problems.</p>
 
-    <h3>James-Stein estimator</h3>
-    <p>The classical James-Stein estimator is</p>
-    <p>\[
-    \delta_{\mathrm{JS}}(X)=
-    \left(1-\frac{(p-2)\sigma^2}{\|X\|^2}\right)X.
-    \]</p>
-    <p>For \(p\ge3\), it has strictly smaller risk than \(X\) for every \(\theta\). The positive-part version replaces the shrinkage factor by its positive part and improves the estimator further, though it is no longer exactly generalized Bayes in the same simple way.</p>
-
+    <h3>Stein identity calculation</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof sketch.</span> Stein's identity evaluates the risk difference between \(X\) and estimators of the form \(X+g(X)\). Taking \(g(x)=-(p-2)\sigma^2x/\|x\|^2\) yields a negative risk difference for every \(\theta\) when \(p\ge3\).</p>
+        <p><span class="statement-title">Proof.</span> For estimators \(X+g(X)\), Stein's identity expresses the risk difference by a divergence term. Taking \(g(x)=-(p-2)\sigma^2x/\|x\|^2\) yields uniformly smaller risk when \(p\ge3\).</p>
     </div>
 
-    <h3>Bias-variance accounting</h3>
-    <p>Shrinkage improves total risk because risk is not coordinatewise. Pulling all coordinates toward a center adds squared bias, but it can reduce variance by more than the added bias. The gain is visible only when the loss aggregates several coordinates.</p>
+    <h3>Hunt-Stein reduction</h3>
+    <p>In testing problems with group symmetry, invariant or nearly invariant rules can often be taken as minimax candidates. The decision problem is then solved on orbits rather than the full space.</p>
 
-    <h3>Invariance</h3>
-    <p>If a problem is unchanged under a group of transformations, it is natural to restrict attention to equivariant rules. Invariance can reduce the decision problem and often produces minimax rules. But invariance is a modeling judgment: it encodes which transformations should not matter.</p>
-
-    <h3>Equivariant rules</h3>
-    <p>If a group \(G\) acts on samples, parameters, and actions, a rule is equivariant when \(\delta(gX)=g\delta(X)\). Equivariance forces the risk to be constant on orbits of the group. In location problems, translation equivariance often leads to estimators of the form \(X+c\) or residual-based rules.</p>
-
-    <h3>Geometry</h3>
-    <p>Shrinkage works because high-dimensional noise spreads in many directions. Pulling the estimator toward a reasonable center can reduce total squared error even if it creates bias in every coordinate.</p>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-decision-theory/" prev_label="Last page" prev_url="/notes/statistical-decision-theory/admissibility-and-complete-classes/" next_label="Next page" next_url="/notes/statistical-decision-theory/lower-bounds/" %}
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-decision-theory/" prev_label="Last page" prev_url="/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/" next_label="Next page" next_url="/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>Shrinkage et Invariance</h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-decision-theory/" prev_label="Page précédente" prev_url="/notes/statistical-decision-theory/admissibility-and-complete-classes/" next_label="Page suivante" next_url="/notes/statistical-decision-theory/lower-bounds/" %}
+    <h2>17. Invariance, équivariance et shrinkage</h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-decision-theory/" prev_label="Page précédente" prev_url="/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/" next_label="Page suivante" next_url="/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/" %}
 
-    <h3>Modèle de moyenne normale</h3>
-    <p>Si \(X\sim N(\theta,\sigma^2)\) et \(L(\theta,a)=(a-\theta)^2\), l'estimateur \(X\) a risque constant \(\sigma^2\). Avec \(\theta\sim N(0,\tau^2)\), l'estimateur bayésien est</p>
-    <p>\[
-    \delta(X)=\frac{\tau^2}{\tau^2+\sigma^2}X.
-    \]</p>
-    <p>Il rétrécit l'estimation vers zéro, réduisant la variance mais ajoutant un biais.</p>
+    <p>L'invariance réduit les problèmes de décision par symétrie. Le shrinkage montre que la symétrie ne garantit pas toujours l'admissibilité.</p>
+
+    <h3>Expérience invariante et règle équivariante</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Un groupe \(G\) agit sur paramètres, observations et actions. Une règle est équivariante si \(\delta(gx)=g\delta(x)\).</p>
+    </div>
 
     <h3>Phénomène de James-Stein</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème (James-Stein).</span> Si \(X\sim N_p(\theta,\sigma^2I)\), sous perte \(\|\delta-\theta\|^2\), l'estimateur \(X\) est inadmissible pour \(p\ge3\).</p>
+        <p><span class="statement-title">Théorème.</span> Si \(X\sim N_p(\theta,\sigma^2I)\) et la perte est \(\|\delta-\theta\|^2\), l'estimateur \(X\) est inadmissible pour \(p\ge3\).</p>
     </div>
-    <p>Pour \(X\sim N_p(\theta,\sigma^2I)\), sous perte quadratique, l'estimateur \(X\) est inadmissible lorsque \(p\ge3\). Des estimateurs de shrinkage peuvent le dominer.</p>
 
-    <h3>Estimateur de James-Stein</h3>
-    <p>L'estimateur classique est</p>
-    <p>\[
-    \delta_{\mathrm{JS}}(X)=
-    \left(1-\frac{(p-2)\sigma^2}{\|X\|^2}\right)X.
-    \]</p>
-    <p>Pour \(p\ge3\), son risque est strictement plus petit que celui de \(X\) pour tout \(\theta\). La version positive-part améliore encore le risque.</p>
-
+    <h3>Calcul par l'identité de Stein</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve esquissée.</span> L'identité de Stein calcule la différence de risque pour les estimateurs \(X+g(X)\). Avec \(g(x)=-(p-2)\sigma^2x/\|x\|^2\), cette différence est négative pour tout \(\theta\) lorsque \(p\ge3\).</p>
+        <p><span class="statement-title">Preuve.</span> L'identité de Stein calcule la différence de risque pour \(X+g(X)\). Le choix \(g(x)=-(p-2)\sigma^2x/\|x\|^2\) l'améliore uniformément.</p>
     </div>
 
-    <h3>Biais et variance</h3>
-    <p>Le shrinkage ajoute du biais mais peut réduire la variance totale davantage. Le gain apparaît lorsque la perte agrège plusieurs coordonnées.</p>
+    <h3>Réduction de Hunt-Stein</h3>
+    <p>Dans les tests avec symétrie de groupe, on peut souvent chercher des règles minimax parmi les règles invariantes.</p>
 
-    <h3>Invariance</h3>
-    <p>Si le problème est inchangé par un groupe de transformations, on peut se restreindre aux règles équivariantes. L'invariance simplifie le problème et produit souvent des règles minimax.</p>
-
-    <h3>Règles équivariantes</h3>
-    <p>Si un groupe \(G\) agit sur les données, les paramètres et les actions, une règle est équivariante lorsque \(\delta(gX)=g\delta(X)\). Le risque est alors constant sur les orbites du groupe.</p>
-
-    <h3>Géométrie</h3>
-    <p>En grande dimension, le bruit se répartit dans de nombreuses directions. Tirer l'estimateur vers un centre plausible peut réduire l'erreur quadratique totale.</p>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-decision-theory/" prev_label="Page précédente" prev_url="/notes/statistical-decision-theory/admissibility-and-complete-classes/" next_label="Page suivante" next_url="/notes/statistical-decision-theory/lower-bounds/" %}
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-decision-theory/" prev_label="Page précédente" prev_url="/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/" next_label="Page suivante" next_url="/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>Shrinkage 与不变性</h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-decision-theory/" prev_label="上一页" prev_url="/notes/statistical-decision-theory/admissibility-and-complete-classes/" next_label="下一页" next_url="/notes/statistical-decision-theory/lower-bounds/" %}
+    <h2>17. 不变性、等变性与 Shrinkage</h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-decision-theory/" prev_label="上一页" prev_url="/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/" next_label="下一页" next_url="/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/" %}
 
-    <h3>正态均值模型</h3>
-    <p>若 \(X\sim N(\theta,\sigma^2)\)，平方损失为 \(L(\theta,a)=(a-\theta)^2\)，通常估计 \(X\) 风险恒为 \(\sigma^2\)。若 \(\theta\sim N(0,\tau^2)\)，Bayes 估计为</p>
-    <p>\[
-    \delta(X)=\frac{\tau^2}{\tau^2+\sigma^2}X.
-    \]</p>
-    <p>它向零收缩，降低方差但引入偏差。风险分析决定这种权衡是否值得。</p>
+    <p>不变性利用对称性归约决策问题。Shrinkage 表明，仅有对称性并不总保证可容许性，特别是在多元正态均值问题中。</p>
+
+    <h3>不变实验与等变规则</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 群 \(G\) 作用在参数、观测和行动上。若 \(\delta(gx)=g\delta(x)\)，则规则等变，并满足 \(R(g\theta,\delta)=R(\theta,\delta)\)。</p>
+    </div>
 
     <h3>James-Stein 现象</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理（James-Stein）.</span> 若 \(X\sim N_p(\theta,\sigma^2I)\)，损失为 \(\|\delta-\theta\|^2\)，则通常估计量 \(\delta_0(X)=X\) 在 \(p\ge3\) 时不可容许。</p>
+        <p><span class="statement-title">定理.</span> 若 \(X\sim N_p(\theta,\sigma^2I)\)，损失为 \(\|\delta-\theta\|^2\)，则通常估计量 \(\delta_0(X)=X\) 在 \(p\ge3\) 时不可容许。</p>
     </div>
-    <p>若 \(X\sim N_p(\theta,\sigma^2I)\)，平方损失为 \(\|\delta-\theta\|^2\)，当 \(p\ge3\) 时，通常估计 \(X\) 不可容许。Shrinkage 估计量可以支配它。</p>
 
-    <h3>James-Stein 估计量</h3>
-    <p>经典 James-Stein 估计量为</p>
-    <p>\[
-    \delta_{\mathrm{JS}}(X)=
-    \left(1-\frac{(p-2)\sigma^2}{\|X\|^2}\right)X.
-    \]</p>
-    <p>当 \(p\ge3\) 时，它在每个 \(\theta\) 上的风险都严格小于 \(X\)。positive-part 版本把收缩因子替换成其正部，并进一步改进风险。</p>
-
+    <h3>Stein 恒等式计算</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明思路.</span> Stein 恒等式可以计算形如 \(X+g(X)\) 的估计量与 \(X\) 的风险差。取 \(g(x)=-(p-2)\sigma^2x/\|x\|^2\) 时，当 \(p\ge3\)，风险差对所有 \(\theta\) 都为负。</p>
+        <p><span class="statement-title">证明.</span> 对 \(X+g(X)\) 型估计量，Stein 恒等式把风险差写成散度项。取 \(g(x)=-(p-2)\sigma^2x/\|x\|^2\) 得到一致改进。</p>
     </div>
 
-    <h3>偏差-方差计算</h3>
-    <p>shrinkage 之所以能改善总风险，是因为风险不是逐坐标判断的。向中心拉动会增加平方偏差，但可能更大幅度降低方差。当损失聚合多个坐标时，这种收益才会显现。</p>
+    <h3>Hunt-Stein 归约</h3>
+    <p>有群对称性的检验问题中，常可把 minimax 候选限制在不变或近似不变规则上，从而在轨道空间上求解。</p>
 
-    <h3>不变性</h3>
-    <p>若一个问题在某个变换群下不变，自然可以考虑等变规则。不变性可以降低问题复杂度，并常常产生 minimax 规则。但它也是建模判断：它说明哪些变换不应改变问题。</p>
-
-    <h3>等变规则</h3>
-    <p>若群 \(G\) 同时作用在样本、参数和行动上，规则满足 \(\delta(gX)=g\delta(X)\) 时称为等变。等变性使风险在群轨道上恒定，从而显著简化决策问题。</p>
-
-    <h3>几何直觉</h3>
-    <p>高维噪声分散在许多方向上。把估计量拉向合理中心，即使每个坐标都有偏差，也可能降低总平方误差。</p>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-decision-theory/" prev_label="上一页" prev_url="/notes/statistical-decision-theory/admissibility-and-complete-classes/" next_label="下一页" next_url="/notes/statistical-decision-theory/lower-bounds/" %}
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-decision-theory/" prev_label="上一页" prev_url="/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/" next_label="下一页" next_url="/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/" %}
 </div>
 
 <hr>
