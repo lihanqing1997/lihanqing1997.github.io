@@ -9,27 +9,84 @@ breadcrumb_child_label_zh: "4. 群作用与轨道-稳定子"
     <h2><a href="{{ '/notes/abstract-algebra/group-actions-and-orbit-stabilizer/' | relative_url }}">4. Group actions and orbit-stabilizer</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/abstract-algebra/" prev_label="Last page" prev_url="/notes/abstract-algebra/isomorphism-theorems/" next_label="Next page" next_url="/notes/abstract-algebra/sylow-theory/" %}
 
-    <p>Group actions and orbit-stabilizer records the objects, main results, proof mechanisms, and boundary cases needed for the abstract algebra note.</p>
+    <p>A group action is a way for an abstract group to act as symmetries of a set. It is the bridge from group structure to counting, geometry, conjugacy, and representation theory.</p>
 
-    <h3>Definition</h3>
+    <h3>Actions as homomorphisms into symmetric groups</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A group action of \(G\) on \(X\) is a homomorphism from \(G\) to permutations of \(X\). Each point has an orbit \(Gx\) and stabilizer \(G_x\).</p>
+        <p><span class="statement-title">Definition.</span> A left action of \(G\) on a set \(X\) is a map \(G\times X\to X\), \((g,x)\mapsto g\cdot x\), such that \(e\cdot x=x\) and \((gh)\cdot x=g\cdot(h\cdot x)\). Equivalently, it is a homomorphism \(G\to\operatorname{Sym}(X)\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> \(S_n\) acts on \(\{1,\ldots,n\}\). A group \(G\) acts on itself by left multiplication, and also by conjugation \(g\cdot x=gxg^{-1}\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Orbits and stabilizers</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The orbit and stabilizer of \(x\in X\) are
+        \[
+        Gx=\{g\cdot x:g\in G\},
+        \qquad
+        G_x=\{g\in G:g\cdot x=x\}.
+        \]</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a finite group action, \(|Gx|=[G:G_x]\). Thus orbit size times stabilizer size equals \(|G|\).</p>
+        <p><span class="statement-title">Proposition.</span> The orbits partition \(X\), and \(G_x\le G\) for every \(x\in X\).</p>
     </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The map \(G/G_x\to Gx\), \(gG_x\mapsto gx\), is well-defined and bijective. Counting cosets gives the formula.</p>
+        <p><span class="statement-title">Proof.</span> The relation \(x\sim y\) if \(y=g\cdot x\) is reflexive, symmetric, and transitive, so its equivalence classes are the orbits. The stabilizer subgroup test follows from \((gh^{-1})\cdot x=g\cdot(h^{-1}\cdot x)=x\) when \(g,h\) fix \(x\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Actions let a group be studied through what it does. Counting orbits is the path to class equations, Sylow theory, and representation theory.</p>
+    <h3>Orbit-stabilizer theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(G\) is finite and acts on \(X\), then for every \(x\in X\),
+        \[
+        |Gx|=[G:G_x],
+        \qquad
+        |G|=|Gx|\,|G_x|.
+        \]</p>
     </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The map \(G/G_x\to Gx\), \(gG_x\mapsto g\cdot x\), is well-defined and bijective. Well-definedness and injectivity both use exactly the condition that elements differ by something stabilizing \(x\).</p>
+    </div>
+
+    <h3>Conjugation and the class equation</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(G\) is finite, conjugation gives the class equation
+        \[
+        |G|=|Z(G)|+\sum_i [G:C_G(x_i)],
+        \]
+        where the sum runs over representatives of noncentral conjugacy classes and \(C_G(x_i)\) is the centralizer of \(x_i\).</p>
+    </div>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> Every finite \(p\)-group has nontrivial center.</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> In a \(p\)-group, every noncentral conjugacy class has size divisible by \(p\). The class equation gives \(|Z(G)|\equiv |G|\equiv0\pmod p\), so the center has at least \(p\) elements.</p>
+    </div>
+
+    <h3>Burnside counting</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If a finite group \(G\) acts on a finite set \(X\), then the number of orbits is
+        \[
+        |X/G|=\frac{1}{|G|}\sum_{g\in G}|X^g|,
+        \]
+        where \(X^g=\{x\in X:g\cdot x=x\}\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The rotations of a square act on colorings of its vertices with two colors. Burnside counting averages the number of colorings fixed by rotations of angles \(0,90,180,270\) degrees, giving \((16+2+4+2)/4=6\) rotational colorings.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 210" role="img" aria-label="A group action decomposes a set into orbits with stabilizers.">
+            <defs><marker id="arrow-aa-act" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <ellipse cx="150" cy="105" rx="110" ry="62" fill="#f4f6f8" stroke="#496d8a" />
+            <circle cx="115" cy="95" r="8" fill="#496d8a" /><circle cx="150" cy="125" r="8" fill="#496d8a" /><circle cx="190" cy="88" r="8" fill="#496d8a" />
+            <ellipse cx="390" cy="82" rx="58" ry="34" fill="#f8f5fb" stroke="#5f4b86" />
+            <ellipse cx="392" cy="150" rx="72" ry="36" fill="#f8f5fb" stroke="#5f4b86" />
+            <line x1="225" y1="105" x2="315" y2="85" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-act)" />
+            <text x="125" y="45">set X</text><text x="350" y="86">orbit Gx</text><text x="335" y="154">stabilizer G_x</text>
+        </svg>
+        <figcaption>Actions decompose a set into orbits, while stabilizers remember what fixes a point.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/abstract-algebra/" prev_label="Last page" prev_url="/notes/abstract-algebra/isomorphism-theorems/" next_label="Next page" next_url="/notes/abstract-algebra/sylow-theory/" %}
 </div>
@@ -38,27 +95,84 @@ breadcrumb_child_label_zh: "4. 群作用与轨道-稳定子"
     <h2><a href="{{ '/notes/abstract-algebra/group-actions-and-orbit-stabilizer/' | relative_url }}">4. Actions de groupes et orbite-stabilisateur</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/abstract-algebra/" prev_label="Page précédente" prev_url="/notes/abstract-algebra/isomorphism-theorems/" next_label="Page suivante" next_url="/notes/abstract-algebra/sylow-theory/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Actions de groupes et orbite-stabilisateur.</p>
+    <p>A group action is a way for an abstract group to act as symmetries of a set. It is the bridge from group structure to counting, geometry, conjugacy, and representation theory.</p>
 
-    <h3>Définition</h3>
+    <h3>Actions as homomorphisms into symmetric groups</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A group action of \(G\) on \(X\) is a homomorphism from \(G\) to permutations of \(X\). Each point has an orbit \(Gx\) and stabilizer \(G_x\).</p>
+        <p><span class="statement-title">Définition.</span> A left action of \(G\) on a set \(X\) is a map \(G\times X\to X\), \((g,x)\mapsto g\cdot x\), such that \(e\cdot x=x\) and \((gh)\cdot x=g\cdot(h\cdot x)\). Equivalently, it is a homomorphism \(G\to\operatorname{Sym}(X)\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> \(S_n\) acts on \(\{1,\ldots,n\}\). A group \(G\) acts on itself by left multiplication, and also by conjugation \(g\cdot x=gxg^{-1}\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Orbits and stabilizers</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> The orbit and stabilizer of \(x\in X\) are
+        \[
+        Gx=\{g\cdot x:g\in G\},
+        \qquad
+        G_x=\{g\in G:g\cdot x=x\}.
+        \]</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a finite group action, \(|Gx|=[G:G_x]\). Thus orbit size times stabilizer size equals \(|G|\).</p>
+        <p><span class="statement-title">Proposition.</span> The orbits partition \(X\), and \(G_x\le G\) for every \(x\in X\).</p>
     </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The map \(G/G_x\to Gx\), \(gG_x\mapsto gx\), is well-defined and bijective. Counting cosets gives the formula.</p>
+        <p><span class="statement-title">Preuve.</span> The relation \(x\sim y\) if \(y=g\cdot x\) is reflexive, symmetric, and transitive, so its equivalence classes are the orbits. The stabilizer subgroup test follows from \((gh^{-1})\cdot x=g\cdot(h^{-1}\cdot x)=x\) when \(g,h\) fix \(x\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Actions let a group be studied through what it does. Counting orbits is the path to class equations, Sylow theory, and representation theory.</p>
+    <h3>Orbit-stabilizer theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(G\) is finite and acts on \(X\), then for every \(x\in X\),
+        \[
+        |Gx|=[G:G_x],
+        \qquad
+        |G|=|Gx|\,|G_x|.
+        \]</p>
     </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The map \(G/G_x\to Gx\), \(gG_x\mapsto g\cdot x\), is well-defined and bijective. Well-definedness and injectivity both use exactly the condition that elements differ by something stabilizing \(x\).</p>
+    </div>
+
+    <h3>Conjugation and the class equation</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(G\) is finite, conjugation gives the class equation
+        \[
+        |G|=|Z(G)|+\sum_i [G:C_G(x_i)],
+        \]
+        where the sum runs over representatives of noncentral conjugacy classes and \(C_G(x_i)\) is the centralizer of \(x_i\).</p>
+    </div>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> Every finite \(p\)-group has nontrivial center.</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> In a \(p\)-group, every noncentral conjugacy class has size divisible by \(p\). The class equation gives \(|Z(G)|\equiv |G|\equiv0\pmod p\), so the center has at least \(p\) elements.</p>
+    </div>
+
+    <h3>Burnside counting</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If a finite group \(G\) acts on a finite set \(X\), then the number of orbits is
+        \[
+        |X/G|=\frac{1}{|G|}\sum_{g\in G}|X^g|,
+        \]
+        where \(X^g=\{x\in X:g\cdot x=x\}\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The rotations of a square act on colorings of its vertices with two colors. Burnside counting averages the number of colorings fixed by rotations of angles \(0,90,180,270\) degrees, giving \((16+2+4+2)/4=6\) rotational colorings.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 210" role="img" aria-label="A group action decomposes a set into orbits with stabilizers.">
+            <defs><marker id="arrow-aa-act" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <ellipse cx="150" cy="105" rx="110" ry="62" fill="#f4f6f8" stroke="#496d8a" />
+            <circle cx="115" cy="95" r="8" fill="#496d8a" /><circle cx="150" cy="125" r="8" fill="#496d8a" /><circle cx="190" cy="88" r="8" fill="#496d8a" />
+            <ellipse cx="390" cy="82" rx="58" ry="34" fill="#f8f5fb" stroke="#5f4b86" />
+            <ellipse cx="392" cy="150" rx="72" ry="36" fill="#f8f5fb" stroke="#5f4b86" />
+            <line x1="225" y1="105" x2="315" y2="85" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-act)" />
+            <text x="125" y="45">set X</text><text x="350" y="86">orbit Gx</text><text x="335" y="154">stabilizer G_x</text>
+        </svg>
+        <figcaption>Actions decompose a set into orbits, while stabilizers remember what fixes a point.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/abstract-algebra/" prev_label="Page précédente" prev_url="/notes/abstract-algebra/isomorphism-theorems/" next_label="Page suivante" next_url="/notes/abstract-algebra/sylow-theory/" %}
 </div>
@@ -67,27 +181,84 @@ breadcrumb_child_label_zh: "4. 群作用与轨道-稳定子"
     <h2><a href="{{ '/notes/abstract-algebra/group-actions-and-orbit-stabilizer/' | relative_url }}">4. 群作用与轨道-稳定子</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/abstract-algebra/" prev_label="上一页" prev_url="/notes/abstract-algebra/isomorphism-theorems/" next_label="下一页" next_url="/notes/abstract-algebra/sylow-theory/" %}
 
-    <p>本页整理关于“群作用与轨道-稳定子”的主要定义、命题、定理与证明思路。</p>
+    <p>A group action is a way for an abstract group to act as symmetries of a set. It is the bridge from group structure to counting, geometry, conjugacy, and representation theory.</p>
 
-    <h3>定义</h3>
+    <h3>Actions as homomorphisms into symmetric groups</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A group action of \(G\) on \(X\) is a homomorphism from \(G\) to permutations of \(X\). Each point has an orbit \(Gx\) and stabilizer \(G_x\).</p>
+        <p><span class="statement-title">定义.</span> A left action of \(G\) on a set \(X\) is a map \(G\times X\to X\), \((g,x)\mapsto g\cdot x\), such that \(e\cdot x=x\) and \((gh)\cdot x=g\cdot(h\cdot x)\). Equivalently, it is a homomorphism \(G\to\operatorname{Sym}(X)\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> \(S_n\) acts on \(\{1,\ldots,n\}\). A group \(G\) acts on itself by left multiplication, and also by conjugation \(g\cdot x=gxg^{-1}\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Orbits and stabilizers</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> The orbit and stabilizer of \(x\in X\) are
+        \[
+        Gx=\{g\cdot x:g\in G\},
+        \qquad
+        G_x=\{g\in G:g\cdot x=x\}.
+        \]</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> For a finite group action, \(|Gx|=[G:G_x]\). Thus orbit size times stabilizer size equals \(|G|\).</p>
+        <p><span class="statement-title">命题.</span> The orbits partition \(X\), and \(G_x\le G\) for every \(x\in X\).</p>
     </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The map \(G/G_x\to Gx\), \(gG_x\mapsto gx\), is well-defined and bijective. Counting cosets gives the formula.</p>
+        <p><span class="statement-title">证明.</span> The relation \(x\sim y\) if \(y=g\cdot x\) is reflexive, symmetric, and transitive, so its equivalence classes are the orbits. The stabilizer subgroup test follows from \((gh^{-1})\cdot x=g\cdot(h^{-1}\cdot x)=x\) when \(g,h\) fix \(x\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Actions let a group be studied through what it does. Counting orbits is the path to class equations, Sylow theory, and representation theory.</p>
+    <h3>Orbit-stabilizer theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(G\) is finite and acts on \(X\), then for every \(x\in X\),
+        \[
+        |Gx|=[G:G_x],
+        \qquad
+        |G|=|Gx|\,|G_x|.
+        \]</p>
     </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The map \(G/G_x\to Gx\), \(gG_x\mapsto g\cdot x\), is well-defined and bijective. Well-definedness and injectivity both use exactly the condition that elements differ by something stabilizing \(x\).</p>
+    </div>
+
+    <h3>Conjugation and the class equation</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(G\) is finite, conjugation gives the class equation
+        \[
+        |G|=|Z(G)|+\sum_i [G:C_G(x_i)],
+        \]
+        where the sum runs over representatives of noncentral conjugacy classes and \(C_G(x_i)\) is the centralizer of \(x_i\).</p>
+    </div>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> Every finite \(p\)-group has nontrivial center.</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> In a \(p\)-group, every noncentral conjugacy class has size divisible by \(p\). The class equation gives \(|Z(G)|\equiv |G|\equiv0\pmod p\), so the center has at least \(p\) elements.</p>
+    </div>
+
+    <h3>Burnside counting</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If a finite group \(G\) acts on a finite set \(X\), then the number of orbits is
+        \[
+        |X/G|=\frac{1}{|G|}\sum_{g\in G}|X^g|,
+        \]
+        where \(X^g=\{x\in X:g\cdot x=x\}\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The rotations of a square act on colorings of its vertices with two colors. Burnside counting averages the number of colorings fixed by rotations of angles \(0,90,180,270\) degrees, giving \((16+2+4+2)/4=6\) rotational colorings.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 210" role="img" aria-label="A group action decomposes a set into orbits with stabilizers.">
+            <defs><marker id="arrow-aa-act" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <ellipse cx="150" cy="105" rx="110" ry="62" fill="#f4f6f8" stroke="#496d8a" />
+            <circle cx="115" cy="95" r="8" fill="#496d8a" /><circle cx="150" cy="125" r="8" fill="#496d8a" /><circle cx="190" cy="88" r="8" fill="#496d8a" />
+            <ellipse cx="390" cy="82" rx="58" ry="34" fill="#f8f5fb" stroke="#5f4b86" />
+            <ellipse cx="392" cy="150" rx="72" ry="36" fill="#f8f5fb" stroke="#5f4b86" />
+            <line x1="225" y1="105" x2="315" y2="85" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-act)" />
+            <text x="125" y="45">set X</text><text x="350" y="86">orbit Gx</text><text x="335" y="154">stabilizer G_x</text>
+        </svg>
+        <figcaption>Actions decompose a set into orbits, while stabilizers remember what fixes a point.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/abstract-algebra/" prev_label="上一页" prev_url="/notes/abstract-algebra/isomorphism-theorems/" next_label="下一页" next_url="/notes/abstract-algebra/sylow-theory/" %}
 </div>

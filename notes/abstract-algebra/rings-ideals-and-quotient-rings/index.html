@@ -9,27 +9,66 @@ breadcrumb_child_label_zh: "6. 环、理想与商环"
     <h2><a href="{{ '/notes/abstract-algebra/rings-ideals-and-quotient-rings/' | relative_url }}">6. Rings, ideals, and quotient rings</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/abstract-algebra/" prev_label="Last page" prev_url="/notes/abstract-algebra/sylow-theory/" next_label="Next page" next_url="/notes/abstract-algebra/prime-and-maximal-ideals/" %}
 
-    <p>Rings, ideals, and quotient rings records the objects, main results, proof mechanisms, and boundary cases needed for the abstract algebra note.</p>
+    <p>Rings add multiplication to abelian groups. Ideals are the correct kernels for ring homomorphisms, and quotient rings are the basic way to impose algebraic relations.</p>
 
-    <h3>Definition</h3>
+    <h3>Rings and ring homomorphisms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A ring has addition, multiplication, distributivity, and usually a multiplicative identity. An ideal \(I\) absorbs multiplication by ring elements, allowing quotient multiplication on \(R/I\).</p>
+        <p><span class="statement-title">Definition.</span> A ring \(R\) is an abelian group under addition with an associative multiplication distributing over addition. In these notes rings are assumed unital unless stated otherwise. A ring homomorphism \(f:R\to S\) preserves addition, multiplication, and \(1\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The rings \(\mathbb Z\), \(F[x]\), \(M_n(F)\), and \(\mathbb Z/n\mathbb Z\) are basic. The matrix ring is usually noncommutative, while \(F[x]\) is commutative.</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Ideals as kernels</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A two-sided ideal \(I\trianglelefteq R\) is an additive subgroup such that \(rI\subset I\) and \(Ir\subset I\) for all \(r\in R\). For commutative rings, one simply says ideal.</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The kernel of a ring homomorphism is an ideal, and every ideal is the kernel of the quotient map \(R\to R/I\).</p>
+        <p><span class="statement-title">Proposition.</span> The kernel of a ring homomorphism is an ideal, and the image is a subring. Conversely, every ideal \(I\trianglelefteq R\) is the kernel of the quotient map \(R\to R/I\).</p>
     </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Absorption follows because homomorphisms preserve products. Conversely, quotienting by an ideal makes two elements equal exactly when their difference lies in the ideal.</p>
+        <p><span class="statement-title">Proof.</span> If \(a,b\in\ker f\), then \(f(a-b)=0\). If \(r\in R\), then \(f(ra)=f(r)f(a)=0\) and similarly \(f(ar)=0\). The quotient map sends \(r\) to \(r+I\), whose zero coset is exactly \(I\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Ideals are the ring-theoretic analogue of normal subgroups. They encode equations, congruences, and algebraic sets.</p>
+    <h3>Quotient rings</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(I\trianglelefteq R\), then the additive quotient \(R/I\) is a ring under
+        \[
+        (r+I)(s+I)=rs+I.
+        \]
+        The projection \(\pi:R\to R/I\) is a surjective ring homomorphism with kernel \(I\).</p>
     </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(r-r'\in I\) and \(s-s'\in I\), then \(rs-r's'=r(s-s')+(r-r')s'\in I\), using ideal absorption. Hence multiplication is well-defined; the ring axioms descend from \(R\).</p>
+    </div>
+
+    <h3>Polynomial quotient rings</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> In \(F[x]/(x^2+1)\), the class \(\alpha=x+(x^2+1)\) satisfies \(\alpha^2=-1\). If \(F=\mathbb R\), this quotient is isomorphic to \(\mathbb C\). If \(F=\mathbb C\), then \(x^2+1\) factors, and the quotient is not a field.</p>
+    </div>
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> Every class in \(F[x]/(f)\) has a representative of degree less than \(\deg f\), by division with remainder. Thus \(F[x]/(f)\) is finite-dimensional over \(F\) with basis \(1,x,\ldots,x^{d-1}\) when \(f\) is monic of degree \(d\).</p>
+    </div>
+
+    <h3>The universal property of quotients</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f:R\to S\) is a ring homomorphism and \(I\subset\ker f\), then there is a unique homomorphism \(\overline f:R/I\to S\) such that \(f=\overline f\circ\pi\). It is given by \(\overline f(r+I)=f(r)\).</p>
+    </div>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Quotient rings are not merely sets of congruence classes. They are the universal way of forcing all elements of \(I\) to become zero.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 210" role="img" aria-label="Universal property of a quotient ring.">
+            <defs><marker id="arrow-aa-ring" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <text x="100" y="55">R</text><text x="305" y="55">S</text><text x="95" y="160">R/I</text>
+            <line x1="120" y1="58" x2="285" y2="58" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-ring)" />
+            <line x1="112" y1="70" x2="112" y2="135" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-ring)" />
+            <line x1="142" y1="145" x2="285" y2="70" stroke="#333" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-aa-ring)" />
+            <text x="195" y="48">f</text><text x="82" y="105">pi</text><text x="218" y="125">unique</text>
+        </svg>
+        <figcaption>A map killing an ideal factors uniquely through the quotient by that ideal.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/abstract-algebra/" prev_label="Last page" prev_url="/notes/abstract-algebra/sylow-theory/" next_label="Next page" next_url="/notes/abstract-algebra/prime-and-maximal-ideals/" %}
 </div>
@@ -38,27 +77,66 @@ breadcrumb_child_label_zh: "6. 环、理想与商环"
     <h2><a href="{{ '/notes/abstract-algebra/rings-ideals-and-quotient-rings/' | relative_url }}">6. Anneaux, idéaux et anneaux quotients</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/abstract-algebra/" prev_label="Page précédente" prev_url="/notes/abstract-algebra/sylow-theory/" next_label="Page suivante" next_url="/notes/abstract-algebra/prime-and-maximal-ideals/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Anneaux, idéaux et anneaux quotients.</p>
+    <p>Rings add multiplication to abelian groups. Ideals are the correct kernels for ring homomorphisms, and quotient rings are the basic way to impose algebraic relations.</p>
 
-    <h3>Définition</h3>
+    <h3>Rings and ring homomorphisms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A ring has addition, multiplication, distributivity, and usually a multiplicative identity. An ideal \(I\) absorbs multiplication by ring elements, allowing quotient multiplication on \(R/I\).</p>
+        <p><span class="statement-title">Définition.</span> A ring \(R\) is an abelian group under addition with an associative multiplication distributing over addition. In these notes rings are assumed unital unless stated otherwise. A ring homomorphism \(f:R\to S\) preserves addition, multiplication, and \(1\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The rings \(\mathbb Z\), \(F[x]\), \(M_n(F)\), and \(\mathbb Z/n\mathbb Z\) are basic. The matrix ring is usually noncommutative, while \(F[x]\) is commutative.</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Ideals as kernels</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A two-sided ideal \(I\trianglelefteq R\) is an additive subgroup such that \(rI\subset I\) and \(Ir\subset I\) for all \(r\in R\). For commutative rings, one simply says ideal.</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The kernel of a ring homomorphism is an ideal, and every ideal is the kernel of the quotient map \(R\to R/I\).</p>
+        <p><span class="statement-title">Proposition.</span> The kernel of a ring homomorphism is an ideal, and the image is a subring. Conversely, every ideal \(I\trianglelefteq R\) is the kernel of the quotient map \(R\to R/I\).</p>
     </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Absorption follows because homomorphisms preserve products. Conversely, quotienting by an ideal makes two elements equal exactly when their difference lies in the ideal.</p>
+        <p><span class="statement-title">Preuve.</span> If \(a,b\in\ker f\), then \(f(a-b)=0\). If \(r\in R\), then \(f(ra)=f(r)f(a)=0\) and similarly \(f(ar)=0\). The quotient map sends \(r\) to \(r+I\), whose zero coset is exactly \(I\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Ideals are the ring-theoretic analogue of normal subgroups. They encode equations, congruences, and algebraic sets.</p>
+    <h3>Quotient rings</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(I\trianglelefteq R\), then the additive quotient \(R/I\) is a ring under
+        \[
+        (r+I)(s+I)=rs+I.
+        \]
+        The projection \(\pi:R\to R/I\) is a surjective ring homomorphism with kernel \(I\).</p>
     </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(r-r'\in I\) and \(s-s'\in I\), then \(rs-r's'=r(s-s')+(r-r')s'\in I\), using ideal absorption. Hence multiplication is well-defined; the ring axioms descend from \(R\).</p>
+    </div>
+
+    <h3>Polynomial quotient rings</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> In \(F[x]/(x^2+1)\), the class \(\alpha=x+(x^2+1)\) satisfies \(\alpha^2=-1\). If \(F=\mathbb R\), this quotient is isomorphic to \(\mathbb C\). If \(F=\mathbb C\), then \(x^2+1\) factors, and the quotient is not a field.</p>
+    </div>
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> Every class in \(F[x]/(f)\) has a representative of degree less than \(\deg f\), by division with remainder. Thus \(F[x]/(f)\) is finite-dimensional over \(F\) with basis \(1,x,\ldots,x^{d-1}\) when \(f\) is monic of degree \(d\).</p>
+    </div>
+
+    <h3>The universal property of quotients</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f:R\to S\) is a ring homomorphism and \(I\subset\ker f\), then there is a unique homomorphism \(\overline f:R/I\to S\) such that \(f=\overline f\circ\pi\). It is given by \(\overline f(r+I)=f(r)\).</p>
+    </div>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Quotient rings are not merely sets of congruence classes. They are the universal way of forcing all elements of \(I\) to become zero.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 210" role="img" aria-label="Universal property of a quotient ring.">
+            <defs><marker id="arrow-aa-ring" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <text x="100" y="55">R</text><text x="305" y="55">S</text><text x="95" y="160">R/I</text>
+            <line x1="120" y1="58" x2="285" y2="58" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-ring)" />
+            <line x1="112" y1="70" x2="112" y2="135" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-ring)" />
+            <line x1="142" y1="145" x2="285" y2="70" stroke="#333" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-aa-ring)" />
+            <text x="195" y="48">f</text><text x="82" y="105">pi</text><text x="218" y="125">unique</text>
+        </svg>
+        <figcaption>A map killing an ideal factors uniquely through the quotient by that ideal.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/abstract-algebra/" prev_label="Page précédente" prev_url="/notes/abstract-algebra/sylow-theory/" next_label="Page suivante" next_url="/notes/abstract-algebra/prime-and-maximal-ideals/" %}
 </div>
@@ -67,27 +145,66 @@ breadcrumb_child_label_zh: "6. 环、理想与商环"
     <h2><a href="{{ '/notes/abstract-algebra/rings-ideals-and-quotient-rings/' | relative_url }}">6. 环、理想与商环</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/abstract-algebra/" prev_label="上一页" prev_url="/notes/abstract-algebra/sylow-theory/" next_label="下一页" next_url="/notes/abstract-algebra/prime-and-maximal-ideals/" %}
 
-    <p>本页整理关于“环、理想与商环”的主要定义、命题、定理与证明思路。</p>
+    <p>Rings add multiplication to abelian groups. Ideals are the correct kernels for ring homomorphisms, and quotient rings are the basic way to impose algebraic relations.</p>
 
-    <h3>定义</h3>
+    <h3>Rings and ring homomorphisms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A ring has addition, multiplication, distributivity, and usually a multiplicative identity. An ideal \(I\) absorbs multiplication by ring elements, allowing quotient multiplication on \(R/I\).</p>
+        <p><span class="statement-title">定义.</span> A ring \(R\) is an abelian group under addition with an associative multiplication distributing over addition. In these notes rings are assumed unital unless stated otherwise. A ring homomorphism \(f:R\to S\) preserves addition, multiplication, and \(1\).</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The rings \(\mathbb Z\), \(F[x]\), \(M_n(F)\), and \(\mathbb Z/n\mathbb Z\) are basic. The matrix ring is usually noncommutative, while \(F[x]\) is commutative.</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Ideals as kernels</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A two-sided ideal \(I\trianglelefteq R\) is an additive subgroup such that \(rI\subset I\) and \(Ir\subset I\) for all \(r\in R\). For commutative rings, one simply says ideal.</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The kernel of a ring homomorphism is an ideal, and every ideal is the kernel of the quotient map \(R\to R/I\).</p>
+        <p><span class="statement-title">命题.</span> The kernel of a ring homomorphism is an ideal, and the image is a subring. Conversely, every ideal \(I\trianglelefteq R\) is the kernel of the quotient map \(R\to R/I\).</p>
     </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Absorption follows because homomorphisms preserve products. Conversely, quotienting by an ideal makes two elements equal exactly when their difference lies in the ideal.</p>
+        <p><span class="statement-title">证明.</span> If \(a,b\in\ker f\), then \(f(a-b)=0\). If \(r\in R\), then \(f(ra)=f(r)f(a)=0\) and similarly \(f(ar)=0\). The quotient map sends \(r\) to \(r+I\), whose zero coset is exactly \(I\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Ideals are the ring-theoretic analogue of normal subgroups. They encode equations, congruences, and algebraic sets.</p>
+    <h3>Quotient rings</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(I\trianglelefteq R\), then the additive quotient \(R/I\) is a ring under
+        \[
+        (r+I)(s+I)=rs+I.
+        \]
+        The projection \(\pi:R\to R/I\) is a surjective ring homomorphism with kernel \(I\).</p>
     </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(r-r'\in I\) and \(s-s'\in I\), then \(rs-r's'=r(s-s')+(r-r')s'\in I\), using ideal absorption. Hence multiplication is well-defined; the ring axioms descend from \(R\).</p>
+    </div>
+
+    <h3>Polynomial quotient rings</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> In \(F[x]/(x^2+1)\), the class \(\alpha=x+(x^2+1)\) satisfies \(\alpha^2=-1\). If \(F=\mathbb R\), this quotient is isomorphic to \(\mathbb C\). If \(F=\mathbb C\), then \(x^2+1\) factors, and the quotient is not a field.</p>
+    </div>
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> Every class in \(F[x]/(f)\) has a representative of degree less than \(\deg f\), by division with remainder. Thus \(F[x]/(f)\) is finite-dimensional over \(F\) with basis \(1,x,\ldots,x^{d-1}\) when \(f\) is monic of degree \(d\).</p>
+    </div>
+
+    <h3>The universal property of quotients</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f:R\to S\) is a ring homomorphism and \(I\subset\ker f\), then there is a unique homomorphism \(\overline f:R/I\to S\) such that \(f=\overline f\circ\pi\). It is given by \(\overline f(r+I)=f(r)\).</p>
+    </div>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Quotient rings are not merely sets of congruence classes. They are the universal way of forcing all elements of \(I\) to become zero.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 210" role="img" aria-label="Universal property of a quotient ring.">
+            <defs><marker id="arrow-aa-ring" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <text x="100" y="55">R</text><text x="305" y="55">S</text><text x="95" y="160">R/I</text>
+            <line x1="120" y1="58" x2="285" y2="58" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-ring)" />
+            <line x1="112" y1="70" x2="112" y2="135" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-ring)" />
+            <line x1="142" y1="145" x2="285" y2="70" stroke="#333" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-aa-ring)" />
+            <text x="195" y="48">f</text><text x="82" y="105">pi</text><text x="218" y="125">unique</text>
+        </svg>
+        <figcaption>A map killing an ideal factors uniquely through the quotient by that ideal.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/abstract-algebra/" prev_label="上一页" prev_url="/notes/abstract-algebra/sylow-theory/" next_label="下一页" next_url="/notes/abstract-algebra/prime-and-maximal-ideals/" %}
 </div>

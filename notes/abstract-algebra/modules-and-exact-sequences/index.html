@@ -9,27 +9,78 @@ breadcrumb_child_label_zh: "9. 模与正合列"
     <h2><a href="{{ '/notes/abstract-algebra/modules-and-exact-sequences/' | relative_url }}">9. Modules and exact sequences</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/abstract-algebra/" prev_label="Last page" prev_url="/notes/abstract-algebra/euclidean-domains-pids-and-ufds/" next_label="Next page" next_url="/notes/abstract-algebra/structure-theorem-over-a-pid/" %}
 
-    <p>Modules and exact sequences records the objects, main results, proof mechanisms, and boundary cases needed for the abstract algebra note.</p>
+    <p>Modules are linear algebra over rings. They keep the language of vectors and linear maps, but bases and dimension may fail, so exact sequences become essential bookkeeping.</p>
 
-    <h3>Definition</h3>
+    <h3>Modules and module homomorphisms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A module over a ring is an abelian group with scalar multiplication by ring elements. Exact sequences record kernels and images of module homomorphisms.</p>
+        <p><span class="statement-title">Definition.</span> Let \(R\) be a ring. A left \(R\)-module \(M\) is an abelian group with scalar multiplication \(R\times M\to M\) satisfying the usual associativity, distributivity, and identity axioms. An \(R\)-linear map \(f:M\to N\) preserves addition and scalar multiplication.</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Vector spaces are modules over fields. Abelian groups are exactly \(\mathbb Z\)-modules. Ideals of a ring \(R\) are \(R\)-submodules of \(R\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Submodules and quotient modules</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A submodule \(N\subset M\) is an additive subgroup closed under scalar multiplication. The quotient abelian group \(M/N\) becomes an \(R\)-module by \(r(m+N)=rm+N\).</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Over a field, modules are vector spaces and short exact sequences split. Over general rings, short exact sequences need not split, and this failure is structural information.</p>
+        <p><span class="statement-title">Proposition.</span> Kernels and images of module homomorphisms are submodules, and \(M/\ker f\cong\operatorname{im}f\).</p>
     </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> A splitting requires a compatible choice of representatives for quotient classes. Fields allow basis extension; general rings may lack bases or complements.</p>
+        <p><span class="statement-title">Proof.</span> The subgroup and scalar-closure checks are direct from linearity. The isomorphism theorem is proved exactly as for groups: send \(m+\ker f\) to \(f(m)\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Modules are linear algebra over rings. The price of greater generality is that dimension is replaced by subtler invariants.</p>
+    <h3>Exact sequences</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A sequence of modules and linear maps
+        \[
+        \cdots\to M_{i-1}\xrightarrow{f_{i-1}}M_i\xrightarrow{f_i}M_{i+1}\to\cdots
+        \]
+        is exact at \(M_i\) if \(\operatorname{im}f_{i-1}=\ker f_i\). It is exact if it is exact at every term.</p>
     </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> For a submodule \(N\subset M\), the sequence
+        \[
+        0\to N\to M\to M/N\to0
+        \]
+        is exact. It says that \(N\) is embedded in \(M\), and quotienting by its image gives \(M/N\).</p>
+    </div>
+
+    <h3>Short exact sequences and splitting</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A short exact sequence is an exact sequence \(0\to A\xrightarrow{i}B\xrightarrow{p}C\to0\). It splits if there exists \(s:C\to B\) with \(p\circ s=\operatorname{id}_C\), or equivalently \(r:B\to A\) with \(r\circ i=\operatorname{id}_A\).</p>
+    </div>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> A short exact sequence \(0\to A\to B\to C\to0\) splits iff \(B\cong A\oplus C\) in a way compatible with the maps.</p>
+    </div>
+    <div class="math-statement counterexample">
+        <p><span class="statement-title">Counterexample.</span> The sequence
+        \[
+        0\to\mathbb Z\xrightarrow{\times 2}\mathbb Z\to\mathbb Z/2\mathbb Z\to0
+        \]
+        is exact as a sequence of \(\mathbb Z\)-modules but does not split, because \(\mathbb Z\) has no element of order \(2\).</p>
+    </div>
+
+    <h3>Free, torsion, and finitely generated modules</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> An \(R\)-module is free if it has a basis, finitely generated if finitely many elements span it, and torsion over a domain if every element is killed by some nonzero scalar.</p>
+    </div>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Over a field, every module is free. Over a general ring this is false: \(\mathbb Z/2\mathbb Z\) is a finitely generated \(\mathbb Z\)-module, but it is not free.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 560 160" role="img" aria-label="Short exact sequence 0 to A to B to C to 0.">
+            <defs><marker id="arrow-aa-exact" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <text x="30" y="85">0</text><text x="120" y="85">A</text><text x="250" y="85">B</text><text x="380" y="85">C</text><text x="505" y="85">0</text>
+            <line x1="50" y1="80" x2="105" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="140" y1="80" x2="235" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="270" y1="80" x2="365" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="400" y1="80" x2="490" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <text x="174" y="65">inject</text><text x="300" y="65">surject</text>
+        </svg>
+        <figcaption>Exactness means each image is exactly the next kernel.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/abstract-algebra/" prev_label="Last page" prev_url="/notes/abstract-algebra/euclidean-domains-pids-and-ufds/" next_label="Next page" next_url="/notes/abstract-algebra/structure-theorem-over-a-pid/" %}
 </div>
@@ -38,27 +89,78 @@ breadcrumb_child_label_zh: "9. 模与正合列"
     <h2><a href="{{ '/notes/abstract-algebra/modules-and-exact-sequences/' | relative_url }}">9. Modules et suites exactes</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/abstract-algebra/" prev_label="Page précédente" prev_url="/notes/abstract-algebra/euclidean-domains-pids-and-ufds/" next_label="Page suivante" next_url="/notes/abstract-algebra/structure-theorem-over-a-pid/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Modules et suites exactes.</p>
+    <p>Modules are linear algebra over rings. They keep the language of vectors and linear maps, but bases and dimension may fail, so exact sequences become essential bookkeeping.</p>
 
-    <h3>Définition</h3>
+    <h3>Modules and module homomorphisms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A module over a ring is an abelian group with scalar multiplication by ring elements. Exact sequences record kernels and images of module homomorphisms.</p>
+        <p><span class="statement-title">Définition.</span> Let \(R\) be a ring. A left \(R\)-module \(M\) is an abelian group with scalar multiplication \(R\times M\to M\) satisfying the usual associativity, distributivity, and identity axioms. An \(R\)-linear map \(f:M\to N\) preserves addition and scalar multiplication.</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Vector spaces are modules over fields. Abelian groups are exactly \(\mathbb Z\)-modules. Ideals of a ring \(R\) are \(R\)-submodules of \(R\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Submodules and quotient modules</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A submodule \(N\subset M\) is an additive subgroup closed under scalar multiplication. The quotient abelian group \(M/N\) becomes an \(R\)-module by \(r(m+N)=rm+N\).</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Over a field, modules are vector spaces and short exact sequences split. Over general rings, short exact sequences need not split, and this failure is structural information.</p>
+        <p><span class="statement-title">Proposition.</span> Kernels and images of module homomorphisms are submodules, and \(M/\ker f\cong\operatorname{im}f\).</p>
     </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> A splitting requires a compatible choice of representatives for quotient classes. Fields allow basis extension; general rings may lack bases or complements.</p>
+        <p><span class="statement-title">Preuve.</span> The subgroup and scalar-closure checks are direct from linearity. The isomorphism theorem is proved exactly as for groups: send \(m+\ker f\) to \(f(m)\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Modules are linear algebra over rings. The price of greater generality is that dimension is replaced by subtler invariants.</p>
+    <h3>Exact sequences</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A sequence of modules and linear maps
+        \[
+        \cdots\to M_{i-1}\xrightarrow{f_{i-1}}M_i\xrightarrow{f_i}M_{i+1}\to\cdots
+        \]
+        is exact at \(M_i\) if \(\operatorname{im}f_{i-1}=\ker f_i\). It is exact if it is exact at every term.</p>
     </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> For a submodule \(N\subset M\), the sequence
+        \[
+        0\to N\to M\to M/N\to0
+        \]
+        is exact. It says that \(N\) is embedded in \(M\), and quotienting by its image gives \(M/N\).</p>
+    </div>
+
+    <h3>Short exact sequences and splitting</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A short exact sequence is an exact sequence \(0\to A\xrightarrow{i}B\xrightarrow{p}C\to0\). It splits if there exists \(s:C\to B\) with \(p\circ s=\operatorname{id}_C\), or equivalently \(r:B\to A\) with \(r\circ i=\operatorname{id}_A\).</p>
+    </div>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> A short exact sequence \(0\to A\to B\to C\to0\) splits iff \(B\cong A\oplus C\) in a way compatible with the maps.</p>
+    </div>
+    <div class="math-statement counterexample">
+        <p><span class="statement-title">Contre-exemple.</span> The sequence
+        \[
+        0\to\mathbb Z\xrightarrow{\times 2}\mathbb Z\to\mathbb Z/2\mathbb Z\to0
+        \]
+        is exact as a sequence of \(\mathbb Z\)-modules but does not split, because \(\mathbb Z\) has no element of order \(2\).</p>
+    </div>
+
+    <h3>Free, torsion, and finitely generated modules</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> An \(R\)-module is free if it has a basis, finitely generated if finitely many elements span it, and torsion over a domain if every element is killed by some nonzero scalar.</p>
+    </div>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Over a field, every module is free. Over a general ring this is false: \(\mathbb Z/2\mathbb Z\) is a finitely generated \(\mathbb Z\)-module, but it is not free.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 560 160" role="img" aria-label="Short exact sequence 0 to A to B to C to 0.">
+            <defs><marker id="arrow-aa-exact" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <text x="30" y="85">0</text><text x="120" y="85">A</text><text x="250" y="85">B</text><text x="380" y="85">C</text><text x="505" y="85">0</text>
+            <line x1="50" y1="80" x2="105" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="140" y1="80" x2="235" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="270" y1="80" x2="365" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="400" y1="80" x2="490" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <text x="174" y="65">inject</text><text x="300" y="65">surject</text>
+        </svg>
+        <figcaption>Exactness means each image is exactly the next kernel.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/abstract-algebra/" prev_label="Page précédente" prev_url="/notes/abstract-algebra/euclidean-domains-pids-and-ufds/" next_label="Page suivante" next_url="/notes/abstract-algebra/structure-theorem-over-a-pid/" %}
 </div>
@@ -67,27 +169,78 @@ breadcrumb_child_label_zh: "9. 模与正合列"
     <h2><a href="{{ '/notes/abstract-algebra/modules-and-exact-sequences/' | relative_url }}">9. 模与正合列</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/abstract-algebra/" prev_label="上一页" prev_url="/notes/abstract-algebra/euclidean-domains-pids-and-ufds/" next_label="下一页" next_url="/notes/abstract-algebra/structure-theorem-over-a-pid/" %}
 
-    <p>本页整理关于“模与正合列”的主要定义、命题、定理与证明思路。</p>
+    <p>Modules are linear algebra over rings. They keep the language of vectors and linear maps, but bases and dimension may fail, so exact sequences become essential bookkeeping.</p>
 
-    <h3>定义</h3>
+    <h3>Modules and module homomorphisms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A module over a ring is an abelian group with scalar multiplication by ring elements. Exact sequences record kernels and images of module homomorphisms.</p>
+        <p><span class="statement-title">定义.</span> Let \(R\) be a ring. A left \(R\)-module \(M\) is an abelian group with scalar multiplication \(R\times M\to M\) satisfying the usual associativity, distributivity, and identity axioms. An \(R\)-linear map \(f:M\to N\) preserves addition and scalar multiplication.</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> Vector spaces are modules over fields. Abelian groups are exactly \(\mathbb Z\)-modules. Ideals of a ring \(R\) are \(R\)-submodules of \(R\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Submodules and quotient modules</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A submodule \(N\subset M\) is an additive subgroup closed under scalar multiplication. The quotient abelian group \(M/N\) becomes an \(R\)-module by \(r(m+N)=rm+N\).</p>
+    </div>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Over a field, modules are vector spaces and short exact sequences split. Over general rings, short exact sequences need not split, and this failure is structural information.</p>
+        <p><span class="statement-title">命题.</span> Kernels and images of module homomorphisms are submodules, and \(M/\ker f\cong\operatorname{im}f\).</p>
     </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> A splitting requires a compatible choice of representatives for quotient classes. Fields allow basis extension; general rings may lack bases or complements.</p>
+        <p><span class="statement-title">证明.</span> The subgroup and scalar-closure checks are direct from linearity. The isomorphism theorem is proved exactly as for groups: send \(m+\ker f\) to \(f(m)\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Modules are linear algebra over rings. The price of greater generality is that dimension is replaced by subtler invariants.</p>
+    <h3>Exact sequences</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A sequence of modules and linear maps
+        \[
+        \cdots\to M_{i-1}\xrightarrow{f_{i-1}}M_i\xrightarrow{f_i}M_{i+1}\to\cdots
+        \]
+        is exact at \(M_i\) if \(\operatorname{im}f_{i-1}=\ker f_i\). It is exact if it is exact at every term.</p>
     </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> For a submodule \(N\subset M\), the sequence
+        \[
+        0\to N\to M\to M/N\to0
+        \]
+        is exact. It says that \(N\) is embedded in \(M\), and quotienting by its image gives \(M/N\).</p>
+    </div>
+
+    <h3>Short exact sequences and splitting</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A short exact sequence is an exact sequence \(0\to A\xrightarrow{i}B\xrightarrow{p}C\to0\). It splits if there exists \(s:C\to B\) with \(p\circ s=\operatorname{id}_C\), or equivalently \(r:B\to A\) with \(r\circ i=\operatorname{id}_A\).</p>
+    </div>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> A short exact sequence \(0\to A\to B\to C\to0\) splits iff \(B\cong A\oplus C\) in a way compatible with the maps.</p>
+    </div>
+    <div class="math-statement counterexample">
+        <p><span class="statement-title">反例.</span> The sequence
+        \[
+        0\to\mathbb Z\xrightarrow{\times 2}\mathbb Z\to\mathbb Z/2\mathbb Z\to0
+        \]
+        is exact as a sequence of \(\mathbb Z\)-modules but does not split, because \(\mathbb Z\) has no element of order \(2\).</p>
+    </div>
+
+    <h3>Free, torsion, and finitely generated modules</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> An \(R\)-module is free if it has a basis, finitely generated if finitely many elements span it, and torsion over a domain if every element is killed by some nonzero scalar.</p>
+    </div>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Over a field, every module is free. Over a general ring this is false: \(\mathbb Z/2\mathbb Z\) is a finitely generated \(\mathbb Z\)-module, but it is not free.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 560 160" role="img" aria-label="Short exact sequence 0 to A to B to C to 0.">
+            <defs><marker id="arrow-aa-exact" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <text x="30" y="85">0</text><text x="120" y="85">A</text><text x="250" y="85">B</text><text x="380" y="85">C</text><text x="505" y="85">0</text>
+            <line x1="50" y1="80" x2="105" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="140" y1="80" x2="235" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="270" y1="80" x2="365" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <line x1="400" y1="80" x2="490" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow-aa-exact)" />
+            <text x="174" y="65">inject</text><text x="300" y="65">surject</text>
+        </svg>
+        <figcaption>Exactness means each image is exactly the next kernel.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/abstract-algebra/" prev_label="上一页" prev_url="/notes/abstract-algebra/euclidean-domains-pids-and-ufds/" next_label="下一页" next_url="/notes/abstract-algebra/structure-theorem-over-a-pid/" %}
 </div>
