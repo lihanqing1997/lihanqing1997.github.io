@@ -9,26 +9,112 @@ breadcrumb_child_label_zh: "17. 对偶空间与伴随"
     <h2><a href="{{ '/notes/linear-algebra/dual-spaces-and-adjoints/' | relative_url }}">17. Dual spaces and adjoints</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/matrix-norms-and-condition-numbers/" next_label="Next page" next_url="/notes/linear-algebra/tensor-products-and-multilinear-maps/" %}
 
-    <p>Dual spaces and adjoints records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>The dual space records all linear measurements of vectors. Adjoints move linear maps from vectors to measurements, or from one side of an inner product to the other.</p>
 
-    <h3>Definition</h3>
+    <h3>Linear functionals and dual bases</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The dual space \(V^*\) consists of linear functionals \(\varphi:V\to F\). With inner products, an adjoint \(T^*\) is defined by \(\langle Tv,w\rangle=\langle v,T^*w\rangle\).</p>
+        <p><span class="statement-title">Definition.</span> The dual space of \(V\) is
+        \[
+        V^*=\{\varphi:V\to F:\varphi\text{ linear}\}.
+        \]
+        If \(B=(v_1,
+        \ldots,v_n)\) is a basis of \(V\), the dual basis \((v^1,
+        \ldots,v^n)\) is defined by \(v^i(v_j)=\delta_{ij}\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In finite dimension, \(\dim V^*=\dim V\), but the isomorphism \(V\cong V^*\) is not canonical until an inner product or pairing is chosen.</p>
+        <p><span class="statement-title">Proposition.</span> If \(V\) is finite-dimensional, then \(\dim V^*=\dim V\), and every \(\varphi\in V^*\) has the unique expansion
+        \[
+        \varphi=\sum_{i=1}^n\varphi(v_i)v^i.
+        \]</p>
     </div>
 
-    <h3>Proof</h3>
+    <h3>Annihilators</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> If \(U\subset V\), its annihilator is
+        \[
+        U^\circ=\{\varphi\in V^*: \varphi(u)=0\text{ for all }u\in U\}.
+        \]
+        It is a subspace of \(V^*\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(V\) is finite-dimensional and \(U\subset V\) is a subspace, then
+        \[
+        \dim U^\circ=\dim V-
+        \dim U.
+        \]
+        Moreover, \((V/U)^*\cong U^\circ\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> A basis of \(V\) gives a dual basis of \(V^*\), proving dimension equality. Non-canonicity follows because changing the basis changes the coordinate identification.</p>
+        <p><span class="statement-title">Proof.</span> Extend a basis \((u_1,
+        \ldots,u_k)\) of \(U\) to a basis \((u_1,
+        \ldots,u_k,v_{k+1},
+        \ldots,v_n)\) of \(V\). A functional vanishes on \(U\) exactly when its first \(k\) dual coordinates are zero, giving dimension \(n-k\). A functional on \(V/U\) pulls back along \(V\to V/U\) to a functional on \(V\) that vanishes on \(U\), and this gives the isomorphism.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Transpose maps</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For a linear map \(T:V\to W\), the dual or transpose map is
+        \[
+        T^*:W^*
+        \to V^*,
+        \qquad T^*(\psi)=\psi\circ T.
+        \]
+        It reverses arrows.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In dual bases, the matrix of \(T^*:W^*\to V^*\) is the transpose of the matrix of \(T:V\to W\). Also,
+        \[
+        \ker T^*=(\operatorname{im}T)^\circ,
+        \qquad \operatorname{im}T^*=(\ker T)^\circ
+        \]
+        in finite dimension.</p>
+    </div>
+
+    <h3>Adjoints under an inner product</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> If \(V,W\) are inner product spaces, the Hilbert adjoint \(T^\dagger:W\to V\) is the unique map satisfying
+        \[
+        \langle Tv,w\rangle_W=\langle v,T^\dagger w\rangle_V.
+        \]
+        In orthonormal bases, its matrix is the conjugate transpose.</p>
+    </div>
+
+
+    <h3>Double dual</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> The evaluation map
+        \[
+        \eta:V\to V^{**},
+        \qquad \eta(v)(\varphi)=\varphi(v),
+        \]
+        is always injective. If \(V\) is finite-dimensional, it is an isomorphism.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(v\ne0\), extend \(v\) to a basis and take the dual coordinate functional that sends \(v\) to \(1\); hence \(\eta(v)\ne0\). In finite dimension, \(\dim V=\dim V^*=\dim V^{**}\), so an injective map \(V\to V^{**}\) is bijective.</p>
+    </div>
+
+    <h3>Hyperplanes and linear equations</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A proper subspace \(H\subset V\) has codimension one if and only if \(H=\ker\varphi\) for some nonzero functional \(\varphi\in V^*\). Thus nonzero linear functionals are exactly homogeneous linear equations whose solution sets are hyperplanes.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Duality organizes constraints, covectors, weak formulations, and transposes. It becomes indispensable in functional analysis and differential geometry.</p>
+        <p><span class="statement-title">Remark.</span> The algebraic dual \(V^*\) and the inner-product identification \(V\cong V^*\) should not be confused. An inner product turns covectors into vectors, but the construction depends on the chosen inner product.</p>
+    </div>
+
+
+    <h3>The coordinate dual basis</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> If \(B=(v_1,\ldots,v_n)\) is a basis of \(V\), the dual basis \(B^*=(\varepsilon^1,\ldots,\varepsilon^n)\) is defined by \(\varepsilon^i(v_j)=\delta_{ij}\). For \(v=\sum_j a_jv_j\), one has \(\varepsilon^i(v)=a_i\). Thus dual vectors are coordinate-reading functions once a basis is chosen.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> If \(T:V\to W\) has matrix \(A\) in bases \(B,C\), then \(T^*:W^*\to V^*\) has matrix \(A^\mathsf T\) in the dual bases. Indeed, the coefficient of \(\varepsilon^i\) in \(T^*\eta^j\) is \(\eta^j(Tv_i)\), the \((j,i)\)-entry of \(A\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/matrix-norms-and-condition-numbers/" next_label="Next page" next_url="/notes/linear-algebra/tensor-products-and-multilinear-maps/" %}
@@ -38,26 +124,112 @@ breadcrumb_child_label_zh: "17. 对偶空间与伴随"
     <h2><a href="{{ '/notes/linear-algebra/dual-spaces-and-adjoints/' | relative_url }}">17. Espaces duaux et adjoints</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/matrix-norms-and-condition-numbers/" next_label="Page suivante" next_url="/notes/linear-algebra/tensor-products-and-multilinear-maps/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Espaces duaux et adjoints.</p>
+    <p>The dual space records all linear measurements of vectors. Adjoints move linear maps from vectors to measurements, or from one side of an inner product to the other.</p>
 
-    <h3>Définition</h3>
+    <h3>Linear functionals and dual bases</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The dual space \(V^*\) consists of linear functionals \(\varphi:V\to F\). With inner products, an adjoint \(T^*\) is defined by \(\langle Tv,w\rangle=\langle v,T^*w\rangle\).</p>
+        <p><span class="statement-title">Définition.</span> The dual space of \(V\) is
+        \[
+        V^*=\{\varphi:V\to F:\varphi\text{ linear}\}.
+        \]
+        If \(B=(v_1,
+        \ldots,v_n)\) is a basis of \(V\), the dual basis \((v^1,
+        \ldots,v^n)\) is defined by \(v^i(v_j)=\delta_{ij}\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In finite dimension, \(\dim V^*=\dim V\), but the isomorphism \(V\cong V^*\) is not canonical until an inner product or pairing is chosen.</p>
+        <p><span class="statement-title">Proposition.</span> If \(V\) is finite-dimensional, then \(\dim V^*=\dim V\), and every \(\varphi\in V^*\) has the unique expansion
+        \[
+        \varphi=\sum_{i=1}^n\varphi(v_i)v^i.
+        \]</p>
     </div>
 
-    <h3>Preuve</h3>
+    <h3>Annihilators</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> If \(U\subset V\), its annihilator is
+        \[
+        U^\circ=\{\varphi\in V^*: \varphi(u)=0\text{ for all }u\in U\}.
+        \]
+        It is a subspace of \(V^*\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(V\) is finite-dimensional and \(U\subset V\) is a subspace, then
+        \[
+        \dim U^\circ=\dim V-
+        \dim U.
+        \]
+        Moreover, \((V/U)^*\cong U^\circ\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> A basis of \(V\) gives a dual basis of \(V^*\), proving dimension equality. Non-canonicity follows because changing the basis changes the coordinate identification.</p>
+        <p><span class="statement-title">Preuve.</span> Extend a basis \((u_1,
+        \ldots,u_k)\) of \(U\) to a basis \((u_1,
+        \ldots,u_k,v_{k+1},
+        \ldots,v_n)\) of \(V\). A functional vanishes on \(U\) exactly when its first \(k\) dual coordinates are zero, giving dimension \(n-k\). A functional on \(V/U\) pulls back along \(V\to V/U\) to a functional on \(V\) that vanishes on \(U\), and this gives the isomorphism.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Transpose maps</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For a linear map \(T:V\to W\), the dual or transpose map is
+        \[
+        T^*:W^*
+        \to V^*,
+        \qquad T^*(\psi)=\psi\circ T.
+        \]
+        It reverses arrows.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In dual bases, the matrix of \(T^*:W^*\to V^*\) is the transpose of the matrix of \(T:V\to W\). Also,
+        \[
+        \ker T^*=(\operatorname{im}T)^\circ,
+        \qquad \operatorname{im}T^*=(\ker T)^\circ
+        \]
+        in finite dimension.</p>
+    </div>
+
+    <h3>Adjoints under an inner product</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> If \(V,W\) are inner product spaces, the Hilbert adjoint \(T^\dagger:W\to V\) is the unique map satisfying
+        \[
+        \langle Tv,w\rangle_W=\langle v,T^\dagger w\rangle_V.
+        \]
+        In orthonormal bases, its matrix is the conjugate transpose.</p>
+    </div>
+
+
+    <h3>Double dual</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> The evaluation map
+        \[
+        \eta:V\to V^{**},
+        \qquad \eta(v)(\varphi)=\varphi(v),
+        \]
+        is always injective. If \(V\) is finite-dimensional, it is an isomorphism.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(v\ne0\), extend \(v\) to a basis and take the dual coordinate functional that sends \(v\) to \(1\); hence \(\eta(v)\ne0\). In finite dimension, \(\dim V=\dim V^*=\dim V^{**}\), so an injective map \(V\to V^{**}\) is bijective.</p>
+    </div>
+
+    <h3>Hyperplanes and linear equations</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A proper subspace \(H\subset V\) has codimension one if and only if \(H=\ker\varphi\) for some nonzero functional \(\varphi\in V^*\). Thus nonzero linear functionals are exactly homogeneous linear equations whose solution sets are hyperplanes.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Duality organizes constraints, covectors, weak formulations, and transposes. It becomes indispensable in functional analysis and differential geometry.</p>
+        <p><span class="statement-title">Remarque.</span> The algebraic dual \(V^*\) and the inner-product identification \(V\cong V^*\) should not be confused. An inner product turns covectors into vectors, but the construction depends on the chosen inner product.</p>
+    </div>
+
+
+    <h3>The coordinate dual basis</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> If \(B=(v_1,\ldots,v_n)\) is a basis of \(V\), the dual basis \(B^*=(\varepsilon^1,\ldots,\varepsilon^n)\) is defined by \(\varepsilon^i(v_j)=\delta_{ij}\). For \(v=\sum_j a_jv_j\), one has \(\varepsilon^i(v)=a_i\). Thus dual vectors are coordinate-reading functions once a basis is chosen.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> If \(T:V\to W\) has matrix \(A\) in bases \(B,C\), then \(T^*:W^*\to V^*\) has matrix \(A^\mathsf T\) in the dual bases. Indeed, the coefficient of \(\varepsilon^i\) in \(T^*\eta^j\) is \(\eta^j(Tv_i)\), the \((j,i)\)-entry of \(A\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/matrix-norms-and-condition-numbers/" next_label="Page suivante" next_url="/notes/linear-algebra/tensor-products-and-multilinear-maps/" %}
@@ -67,26 +239,112 @@ breadcrumb_child_label_zh: "17. 对偶空间与伴随"
     <h2><a href="{{ '/notes/linear-algebra/dual-spaces-and-adjoints/' | relative_url }}">17. 对偶空间与伴随</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/matrix-norms-and-condition-numbers/" next_label="下一页" next_url="/notes/linear-algebra/tensor-products-and-multilinear-maps/" %}
 
-    <p>本页整理关于“对偶空间与伴随”的主要定义、命题、定理与证明思路。</p>
+    <p>The dual space records all linear measurements of vectors. Adjoints move linear maps from vectors to measurements, or from one side of an inner product to the other.</p>
 
-    <h3>定义</h3>
+    <h3>Linear functionals and dual bases</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The dual space \(V^*\) consists of linear functionals \(\varphi:V\to F\). With inner products, an adjoint \(T^*\) is defined by \(\langle Tv,w\rangle=\langle v,T^*w\rangle\).</p>
+        <p><span class="statement-title">定义.</span> The dual space of \(V\) is
+        \[
+        V^*=\{\varphi:V\to F:\varphi\text{ linear}\}.
+        \]
+        If \(B=(v_1,
+        \ldots,v_n)\) is a basis of \(V\), the dual basis \((v^1,
+        \ldots,v^n)\) is defined by \(v^i(v_j)=\delta_{ij}\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> In finite dimension, \(\dim V^*=\dim V\), but the isomorphism \(V\cong V^*\) is not canonical until an inner product or pairing is chosen.</p>
+        <p><span class="statement-title">命题.</span> If \(V\) is finite-dimensional, then \(\dim V^*=\dim V\), and every \(\varphi\in V^*\) has the unique expansion
+        \[
+        \varphi=\sum_{i=1}^n\varphi(v_i)v^i.
+        \]</p>
     </div>
 
-    <h3>证明</h3>
+    <h3>Annihilators</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> If \(U\subset V\), its annihilator is
+        \[
+        U^\circ=\{\varphi\in V^*: \varphi(u)=0\text{ for all }u\in U\}.
+        \]
+        It is a subspace of \(V^*\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(V\) is finite-dimensional and \(U\subset V\) is a subspace, then
+        \[
+        \dim U^\circ=\dim V-
+        \dim U.
+        \]
+        Moreover, \((V/U)^*\cong U^\circ\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> A basis of \(V\) gives a dual basis of \(V^*\), proving dimension equality. Non-canonicity follows because changing the basis changes the coordinate identification.</p>
+        <p><span class="statement-title">证明.</span> Extend a basis \((u_1,
+        \ldots,u_k)\) of \(U\) to a basis \((u_1,
+        \ldots,u_k,v_{k+1},
+        \ldots,v_n)\) of \(V\). A functional vanishes on \(U\) exactly when its first \(k\) dual coordinates are zero, giving dimension \(n-k\). A functional on \(V/U\) pulls back along \(V\to V/U\) to a functional on \(V\) that vanishes on \(U\), and this gives the isomorphism.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Transpose maps</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For a linear map \(T:V\to W\), the dual or transpose map is
+        \[
+        T^*:W^*
+        \to V^*,
+        \qquad T^*(\psi)=\psi\circ T.
+        \]
+        It reverses arrows.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> In dual bases, the matrix of \(T^*:W^*\to V^*\) is the transpose of the matrix of \(T:V\to W\). Also,
+        \[
+        \ker T^*=(\operatorname{im}T)^\circ,
+        \qquad \operatorname{im}T^*=(\ker T)^\circ
+        \]
+        in finite dimension.</p>
+    </div>
+
+    <h3>Adjoints under an inner product</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> If \(V,W\) are inner product spaces, the Hilbert adjoint \(T^\dagger:W\to V\) is the unique map satisfying
+        \[
+        \langle Tv,w\rangle_W=\langle v,T^\dagger w\rangle_V.
+        \]
+        In orthonormal bases, its matrix is the conjugate transpose.</p>
+    </div>
+
+
+    <h3>Double dual</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> The evaluation map
+        \[
+        \eta:V\to V^{**},
+        \qquad \eta(v)(\varphi)=\varphi(v),
+        \]
+        is always injective. If \(V\) is finite-dimensional, it is an isomorphism.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(v\ne0\), extend \(v\) to a basis and take the dual coordinate functional that sends \(v\) to \(1\); hence \(\eta(v)\ne0\). In finite dimension, \(\dim V=\dim V^*=\dim V^{**}\), so an injective map \(V\to V^{**}\) is bijective.</p>
+    </div>
+
+    <h3>Hyperplanes and linear equations</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> A proper subspace \(H\subset V\) has codimension one if and only if \(H=\ker\varphi\) for some nonzero functional \(\varphi\in V^*\). Thus nonzero linear functionals are exactly homogeneous linear equations whose solution sets are hyperplanes.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Duality organizes constraints, covectors, weak formulations, and transposes. It becomes indispensable in functional analysis and differential geometry.</p>
+        <p><span class="statement-title">说明.</span> The algebraic dual \(V^*\) and the inner-product identification \(V\cong V^*\) should not be confused. An inner product turns covectors into vectors, but the construction depends on the chosen inner product.</p>
+    </div>
+
+
+    <h3>The coordinate dual basis</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> If \(B=(v_1,\ldots,v_n)\) is a basis of \(V\), the dual basis \(B^*=(\varepsilon^1,\ldots,\varepsilon^n)\) is defined by \(\varepsilon^i(v_j)=\delta_{ij}\). For \(v=\sum_j a_jv_j\), one has \(\varepsilon^i(v)=a_i\). Thus dual vectors are coordinate-reading functions once a basis is chosen.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> If \(T:V\to W\) has matrix \(A\) in bases \(B,C\), then \(T^*:W^*\to V^*\) has matrix \(A^\mathsf T\) in the dual bases. Indeed, the coefficient of \(\varepsilon^i\) in \(T^*\eta^j\) is \(\eta^j(Tv_i)\), the \((j,i)\)-entry of \(A\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/matrix-norms-and-condition-numbers/" next_label="下一页" next_url="/notes/linear-algebra/tensor-products-and-multilinear-maps/" %}

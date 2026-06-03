@@ -9,26 +9,75 @@ breadcrumb_child_label_zh: "3. 基与维数"
     <h2><a href="{{ '/notes/linear-algebra/bases-and-dimension/' | relative_url }}">3. Bases and dimension</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/linear-combinations-span-and-independence/" next_label="Next page" next_url="/notes/linear-algebra/linear-maps-and-matrices/" %}
 
-    <p>Bases and dimension records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>A basis is the point where generation and uniqueness meet. Dimension is the invariant number of degrees of freedom that survives every change of coordinates.</p>
 
-    <h3>Definition</h3>
+    <h3>Bases as coordinate systems</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A basis of \(V\) is a linearly independent spanning set. In a basis every vector has a unique coordinate representation, so \(V\) becomes algebraically identifiable with \(F^n\).</p>
+        <p><span class="statement-title">Definition.</span> A finite list \(B=(v_1,
+        \ldots,v_n)\) is a basis of \(V\) if it spans \(V\) and is linearly independent. Equivalently, every \(v\in V\) has a unique coordinate expansion
+        \[
+        v=a_1v_1+\cdots+a_nv_n.
+        \]
+        The coordinate vector relative to \(B\) is \([v]_B=(a_1,
+        \ldots,a_n)^T\in F^n\).</p>
     </div>
 
-    <h3>Dimension theorem</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The standard basis of \(F^n\) is \(e_1,
+        \ldots,e_n\). The list \((1,x,
+        \ldots,x^m)\) is a basis of \(F_m[x]\). The matrix units \(E_{ij}\) form a basis of \(M_{m,n}(F)\), so \(\dim M_{m,n}(F)=mn\).</p>
+    </div>
+
+    <h3>Existence of bases</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Any two bases of a finite-dimensional vector space have the same cardinality. This common cardinality is the dimension of the space.</p>
+        <p><span class="statement-title">Theorem.</span> In a finitely generated vector space, every spanning list contains a basis and every linearly independent list can be extended to a basis.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The exchange lemma replaces vectors in one basis by vectors from another while preserving spanning. Iterating the replacement shows neither basis can be longer than the other.</p>
+        <p><span class="statement-title">Proof.</span> Starting from a spanning list, remove any vector that lies in the span of the others. The span is unchanged, and because the list is finite the process stops at an independent spanning list. Starting from an independent list inside a finite spanning set, add spanning vectors one at a time whenever they are not already in the current span; independence is preserved and the final span is all of \(V\).</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>The dimension theorem for bases</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Any two bases of a finite-dimensional vector space have the same number of vectors. This common number is \(\dim V\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(B\) has \(n\) vectors and \(C\) has \(m\) vectors, then \(B\) is an independent list contained in the span of \(C\), so the exchange lemma gives \(n\le m\). Reversing the roles gives \(m\le n\), hence \(m=n\).</p>
+    </div>
+
+    <h3>Coordinates and change of basis</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(B=(v_1,
+        \ldots,v_n)\) is a basis, the coordinate map \(\Phi_B:V\to F^n\), \(v\mapsto [v]_B\), is an isomorphism. If \(C\) is another basis, the change-of-basis matrix \(P_{C\leftarrow B}\) is determined by
+        \[
+        [v]_C=P_{C\leftarrow B}[v]_B.
+        \]</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> To find \(P_{C\leftarrow B}\), put the \(C\)-coordinates of the \(B\)-basis vectors into the columns:
+        \[
+        P_{C\leftarrow B}=\big[[v_1]_C\ \cdots\ [v_n]_C\big].
+        \]
+        In \(F^n\) with standard coordinates, if \(S_B\) and \(S_C\) are the matrices whose columns are the basis vectors, then \(P_{C\leftarrow B}=S_C^{-1}S_B\).</p>
+    </div>
+
+    <h3>Dimension formulas</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(U,W\) are finite-dimensional subspaces of \(V\), then
+        \[
+        \dim(U+W)=\dim U+\dim W-\dim(U\cap W).
+        \]
+        In particular, \(\dim(U\oplus W)=\dim U+\dim W\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose a basis of \(U\cap W\), extend it to a basis of \(U\), and separately extend it to a basis of \(W\). The union of the two extended bases spans \(U+W\), and the only overlap has already been counted in \(U\cap W\). Linear independence follows by separating the \(U\) and \(W\) parts.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Dimension is invariant under isomorphism. It is not just a count of coordinates; it is the obstruction to compressing a vector space linearly without losing information.</p>
+        <p><span class="statement-title">Remark.</span> In infinite-dimensional spaces, bases still exist with the axiom of choice, but ordinary analysis often uses topological bases, Schauder bases, or orthonormal bases instead. This note mostly uses finite-dimensional bases, where coordinates are unambiguous and algebraic dimension behaves exactly as expected.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/linear-combinations-span-and-independence/" next_label="Next page" next_url="/notes/linear-algebra/linear-maps-and-matrices/" %}
@@ -38,26 +87,75 @@ breadcrumb_child_label_zh: "3. 基与维数"
     <h2><a href="{{ '/notes/linear-algebra/bases-and-dimension/' | relative_url }}">3. Bases et dimension</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/linear-combinations-span-and-independence/" next_label="Page suivante" next_url="/notes/linear-algebra/linear-maps-and-matrices/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Bases et dimension.</p>
+    <p>A basis is the point where generation and uniqueness meet. Dimension is the invariant number of degrees of freedom that survives every change of coordinates.</p>
 
-    <h3>Définition</h3>
+    <h3>Bases as coordinate systems</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A basis of \(V\) is a linearly independent spanning set. In a basis every vector has a unique coordinate representation, so \(V\) becomes algebraically identifiable with \(F^n\).</p>
+        <p><span class="statement-title">Définition.</span> A finite list \(B=(v_1,
+        \ldots,v_n)\) is a basis of \(V\) if it spans \(V\) and is linearly independent. Equivalently, every \(v\in V\) has a unique coordinate expansion
+        \[
+        v=a_1v_1+\cdots+a_nv_n.
+        \]
+        The coordinate vector relative to \(B\) is \([v]_B=(a_1,
+        \ldots,a_n)^T\in F^n\).</p>
     </div>
 
-    <h3>Dimension theorem</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The standard basis of \(F^n\) is \(e_1,
+        \ldots,e_n\). The list \((1,x,
+        \ldots,x^m)\) is a basis of \(F_m[x]\). The matrix units \(E_{ij}\) form a basis of \(M_{m,n}(F)\), so \(\dim M_{m,n}(F)=mn\).</p>
+    </div>
+
+    <h3>Existence of bases</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Any two bases of a finite-dimensional vector space have the same cardinality. This common cardinality is the dimension of the space.</p>
+        <p><span class="statement-title">Théorème.</span> In a finitely generated vector space, every spanning list contains a basis and every linearly independent list can be extended to a basis.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The exchange lemma replaces vectors in one basis by vectors from another while preserving spanning. Iterating the replacement shows neither basis can be longer than the other.</p>
+        <p><span class="statement-title">Preuve.</span> Starting from a spanning list, remove any vector that lies in the span of the others. The span is unchanged, and because the list is finite the process stops at an independent spanning list. Starting from an independent list inside a finite spanning set, add spanning vectors one at a time whenever they are not already in the current span; independence is preserved and the final span is all of \(V\).</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>The dimension theorem for bases</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Any two bases of a finite-dimensional vector space have the same number of vectors. This common number is \(\dim V\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(B\) has \(n\) vectors and \(C\) has \(m\) vectors, then \(B\) is an independent list contained in the span of \(C\), so the exchange lemma gives \(n\le m\). Reversing the roles gives \(m\le n\), hence \(m=n\).</p>
+    </div>
+
+    <h3>Coordinates and change of basis</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(B=(v_1,
+        \ldots,v_n)\) is a basis, the coordinate map \(\Phi_B:V\to F^n\), \(v\mapsto [v]_B\), is an isomorphism. If \(C\) is another basis, the change-of-basis matrix \(P_{C\leftarrow B}\) is determined by
+        \[
+        [v]_C=P_{C\leftarrow B}[v]_B.
+        \]</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> To find \(P_{C\leftarrow B}\), put the \(C\)-coordinates of the \(B\)-basis vectors into the columns:
+        \[
+        P_{C\leftarrow B}=\big[[v_1]_C\ \cdots\ [v_n]_C\big].
+        \]
+        In \(F^n\) with standard coordinates, if \(S_B\) and \(S_C\) are the matrices whose columns are the basis vectors, then \(P_{C\leftarrow B}=S_C^{-1}S_B\).</p>
+    </div>
+
+    <h3>Dimension formulas</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(U,W\) are finite-dimensional subspaces of \(V\), then
+        \[
+        \dim(U+W)=\dim U+\dim W-\dim(U\cap W).
+        \]
+        In particular, \(\dim(U\oplus W)=\dim U+\dim W\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose a basis of \(U\cap W\), extend it to a basis of \(U\), and separately extend it to a basis of \(W\). The union of the two extended bases spans \(U+W\), and the only overlap has already been counted in \(U\cap W\). Linear independence follows by separating the \(U\) and \(W\) parts.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Dimension is invariant under isomorphism. It is not just a count of coordinates; it is the obstruction to compressing a vector space linearly without losing information.</p>
+        <p><span class="statement-title">Remarque.</span> In infinite-dimensional spaces, bases still exist with the axiom of choice, but ordinary analysis often uses topological bases, Schauder bases, or orthonormal bases instead. This note mostly uses finite-dimensional bases, where coordinates are unambiguous and algebraic dimension behaves exactly as expected.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/linear-combinations-span-and-independence/" next_label="Page suivante" next_url="/notes/linear-algebra/linear-maps-and-matrices/" %}
@@ -67,26 +165,75 @@ breadcrumb_child_label_zh: "3. 基与维数"
     <h2><a href="{{ '/notes/linear-algebra/bases-and-dimension/' | relative_url }}">3. 基与维数</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/linear-combinations-span-and-independence/" next_label="下一页" next_url="/notes/linear-algebra/linear-maps-and-matrices/" %}
 
-    <p>本页整理关于“基与维数”的主要定义、命题、定理与证明思路。</p>
+    <p>A basis is the point where generation and uniqueness meet. Dimension is the invariant number of degrees of freedom that survives every change of coordinates.</p>
 
-    <h3>定义</h3>
+    <h3>Bases as coordinate systems</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A basis of \(V\) is a linearly independent spanning set. In a basis every vector has a unique coordinate representation, so \(V\) becomes algebraically identifiable with \(F^n\).</p>
+        <p><span class="statement-title">定义.</span> A finite list \(B=(v_1,
+        \ldots,v_n)\) is a basis of \(V\) if it spans \(V\) and is linearly independent. Equivalently, every \(v\in V\) has a unique coordinate expansion
+        \[
+        v=a_1v_1+\cdots+a_nv_n.
+        \]
+        The coordinate vector relative to \(B\) is \([v]_B=(a_1,
+        \ldots,a_n)^T\in F^n\).</p>
     </div>
 
-    <h3>Dimension theorem</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The standard basis of \(F^n\) is \(e_1,
+        \ldots,e_n\). The list \((1,x,
+        \ldots,x^m)\) is a basis of \(F_m[x]\). The matrix units \(E_{ij}\) form a basis of \(M_{m,n}(F)\), so \(\dim M_{m,n}(F)=mn\).</p>
+    </div>
+
+    <h3>Existence of bases</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Any two bases of a finite-dimensional vector space have the same cardinality. This common cardinality is the dimension of the space.</p>
+        <p><span class="statement-title">定理.</span> In a finitely generated vector space, every spanning list contains a basis and every linearly independent list can be extended to a basis.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The exchange lemma replaces vectors in one basis by vectors from another while preserving spanning. Iterating the replacement shows neither basis can be longer than the other.</p>
+        <p><span class="statement-title">证明.</span> Starting from a spanning list, remove any vector that lies in the span of the others. The span is unchanged, and because the list is finite the process stops at an independent spanning list. Starting from an independent list inside a finite spanning set, add spanning vectors one at a time whenever they are not already in the current span; independence is preserved and the final span is all of \(V\).</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>The dimension theorem for bases</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Any two bases of a finite-dimensional vector space have the same number of vectors. This common number is \(\dim V\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(B\) has \(n\) vectors and \(C\) has \(m\) vectors, then \(B\) is an independent list contained in the span of \(C\), so the exchange lemma gives \(n\le m\). Reversing the roles gives \(m\le n\), hence \(m=n\).</p>
+    </div>
+
+    <h3>Coordinates and change of basis</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(B=(v_1,
+        \ldots,v_n)\) is a basis, the coordinate map \(\Phi_B:V\to F^n\), \(v\mapsto [v]_B\), is an isomorphism. If \(C\) is another basis, the change-of-basis matrix \(P_{C\leftarrow B}\) is determined by
+        \[
+        [v]_C=P_{C\leftarrow B}[v]_B.
+        \]</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> To find \(P_{C\leftarrow B}\), put the \(C\)-coordinates of the \(B\)-basis vectors into the columns:
+        \[
+        P_{C\leftarrow B}=\big[[v_1]_C\ \cdots\ [v_n]_C\big].
+        \]
+        In \(F^n\) with standard coordinates, if \(S_B\) and \(S_C\) are the matrices whose columns are the basis vectors, then \(P_{C\leftarrow B}=S_C^{-1}S_B\).</p>
+    </div>
+
+    <h3>Dimension formulas</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(U,W\) are finite-dimensional subspaces of \(V\), then
+        \[
+        \dim(U+W)=\dim U+\dim W-\dim(U\cap W).
+        \]
+        In particular, \(\dim(U\oplus W)=\dim U+\dim W\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose a basis of \(U\cap W\), extend it to a basis of \(U\), and separately extend it to a basis of \(W\). The union of the two extended bases spans \(U+W\), and the only overlap has already been counted in \(U\cap W\). Linear independence follows by separating the \(U\) and \(W\) parts.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Dimension is invariant under isomorphism. It is not just a count of coordinates; it is the obstruction to compressing a vector space linearly without losing information.</p>
+        <p><span class="statement-title">说明.</span> In infinite-dimensional spaces, bases still exist with the axiom of choice, but ordinary analysis often uses topological bases, Schauder bases, or orthonormal bases instead. This note mostly uses finite-dimensional bases, where coordinates are unambiguous and algebraic dimension behaves exactly as expected.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/linear-combinations-span-and-independence/" next_label="下一页" next_url="/notes/linear-algebra/linear-maps-and-matrices/" %}

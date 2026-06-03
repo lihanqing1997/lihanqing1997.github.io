@@ -9,26 +9,73 @@ breadcrumb_child_label_zh: "14. 双线性型与二次型"
     <h2><a href="{{ '/notes/linear-algebra/bilinear-and-quadratic-forms/' | relative_url }}">14. Bilinear and quadratic forms</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/singular-value-decomposition/" next_label="Next page" next_url="/notes/linear-algebra/positive-definite-matrices/" %}
 
-    <p>Bilinear and quadratic forms records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>Bilinear forms pair two vectors to produce a scalar. Quadratic forms measure a vector against itself. Together they describe geometry that may not come from a fixed Euclidean inner product.</p>
 
-    <h3>Definition</h3>
+    <h3>Bilinear and sesquilinear forms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A bilinear form \(B\) assigns scalars \(B(v,w)\) linearly in each argument. A quadratic form is \(q(v)=B(v,v)\), usually for a symmetric or Hermitian form.</p>
+        <p><span class="statement-title">Definition.</span> A bilinear form on a vector space \(V\) over \(F\) is a function \(B:V\times V\to F\) that is linear in each variable. Over \(\mathbb C\), one often uses sesquilinear forms, linear in one variable and conjugate-linear in the other. A bilinear form is symmetric if \(B(u,v)=B(v,u)\) and alternating if \(B(v,v)=0\) for all \(v\).</p>
+    </div>
+
+    <h3>Matrix representation and congruence</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(B=(e_1,
+        \ldots,e_n)\) is a basis of \(V\), a bilinear form \(\beta\) has Gram matrix \(G=(\beta(e_i,e_j))\), and
+        \[
+        \beta(x,y)=[x]_B^T G [y]_B.
+        \]
+        If \(P
+        \) is a change-of-basis matrix, the Gram matrix changes by congruence:
+        \[
+        G\mapsto P^TGP.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Expand \(x=\sum_i x_ie_i\) and \(y=\sum_j y_je_j\). Bilinearity gives \(\beta(x,y)=\sum_{i,j}x_iy_j\beta(e_i,e_j)\). If the new basis vectors are columns of \(P\) in the old coordinates, substituting their coordinate vectors into the formula gives \(P^TGP\).</p>
+    </div>
+
+    <h3>Quadratic forms and polarization</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A quadratic form associated with a symmetric bilinear form is \(q(v)=\beta(v,v)\). If the field has characteristic not equal to \(2\), the symmetric bilinear form is recovered by polarization:
+        \[
+        \beta(u,v)=\frac{1}{2}\big(q(u+v)-q(u)-q(v)\big).
+        \]</p>
+    </div>
+
+    <h3>Diagonalization by congruence</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Over a field of characteristic not equal to \(2\), every symmetric bilinear form on a finite-dimensional space has a basis in which its matrix is diagonal. Equivalently, every quadratic form can be written as
+        \[
+        q(x)=a_1x_1^2+
+        \cdots+a_rx_r^2
+        \]
+        in suitable coordinates.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If some \(v\) has \(q(v)\ne0\), split \(V=Fv\oplus (Fv)^\perp\) and proceed by induction on the orthogonal complement. If \(q(v)=0\) for all \(v\), then polarization gives the zero form. This recursive orthogonalization diagonalizes the form.</p>
     </div>
 
     <h3>Sylvester law of inertia</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Over \(\mathbb R\), every symmetric bilinear form has a basis in which its matrix is diagonal with entries \(1\), \(-1\), and \(0\). The numbers of positive and negative entries are invariants.</p>
+        <p><span class="statement-title">Theorem.</span> Over \(\mathbb R\), every symmetric matrix is congruent to a diagonal matrix with entries \(1\), \(-1\), and \(0\). The numbers of positive, negative, and zero entries are invariants of the quadratic form. They are called the inertia.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Repeatedly choose a vector with nonzero value of \(q\), split off its orthogonal complement, and proceed by induction. Invariance follows from maximal positive and negative subspaces.</p>
+        <p><span class="statement-title">Proof.</span> Diagonalize the form by congruence and rescale nonzero diagonal entries to \(\pm1\). The number of positive directions is the largest dimension of a subspace on which \(q\) is positive definite; the number of negative directions is analogous. These characterizations are coordinate-free, so the counts are invariant.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Symplectic forms</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The standard alternating form on \(F^{2n}\) has matrix
+        \[
+        J=\begin{pmatrix}0&I\\-I&0\end{pmatrix}.
+        \]
+        It is nondegenerate but not symmetric. Its geometry is different from inner-product geometry: every vector satisfies \(\beta(v,v)=0\), so length is not the relevant concept.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Quadratic forms encode conics, curvature approximations, covariance matrices, and second-order optimality. Their classification is linear algebra with geometric consequences.</p>
+        <p><span class="statement-title">Remark.</span> Similarity \(P^{-1}AP\) changes the matrix of an operator. Congruence \(P^TGP\) changes the matrix of a form. Confusing the two is one of the most common mistakes in this topic.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/singular-value-decomposition/" next_label="Next page" next_url="/notes/linear-algebra/positive-definite-matrices/" %}
@@ -38,26 +85,73 @@ breadcrumb_child_label_zh: "14. 双线性型与二次型"
     <h2><a href="{{ '/notes/linear-algebra/bilinear-and-quadratic-forms/' | relative_url }}">14. Formes bilinéaires et quadratiques</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/singular-value-decomposition/" next_label="Page suivante" next_url="/notes/linear-algebra/positive-definite-matrices/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Formes bilinéaires et quadratiques.</p>
+    <p>Bilinear forms pair two vectors to produce a scalar. Quadratic forms measure a vector against itself. Together they describe geometry that may not come from a fixed Euclidean inner product.</p>
 
-    <h3>Définition</h3>
+    <h3>Bilinear and sesquilinear forms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A bilinear form \(B\) assigns scalars \(B(v,w)\) linearly in each argument. A quadratic form is \(q(v)=B(v,v)\), usually for a symmetric or Hermitian form.</p>
+        <p><span class="statement-title">Définition.</span> A bilinear form on a vector space \(V\) over \(F\) is a function \(B:V\times V\to F\) that is linear in each variable. Over \(\mathbb C\), one often uses sesquilinear forms, linear in one variable and conjugate-linear in the other. A bilinear form is symmetric if \(B(u,v)=B(v,u)\) and alternating if \(B(v,v)=0\) for all \(v\).</p>
+    </div>
+
+    <h3>Matrix representation and congruence</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(B=(e_1,
+        \ldots,e_n)\) is a basis of \(V\), a bilinear form \(\beta\) has Gram matrix \(G=(\beta(e_i,e_j))\), and
+        \[
+        \beta(x,y)=[x]_B^T G [y]_B.
+        \]
+        If \(P
+        \) is a change-of-basis matrix, the Gram matrix changes by congruence:
+        \[
+        G\mapsto P^TGP.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Expand \(x=\sum_i x_ie_i\) and \(y=\sum_j y_je_j\). Bilinearity gives \(\beta(x,y)=\sum_{i,j}x_iy_j\beta(e_i,e_j)\). If the new basis vectors are columns of \(P\) in the old coordinates, substituting their coordinate vectors into the formula gives \(P^TGP\).</p>
+    </div>
+
+    <h3>Quadratic forms and polarization</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A quadratic form associated with a symmetric bilinear form is \(q(v)=\beta(v,v)\). If the field has characteristic not equal to \(2\), the symmetric bilinear form is recovered by polarization:
+        \[
+        \beta(u,v)=\frac{1}{2}\big(q(u+v)-q(u)-q(v)\big).
+        \]</p>
+    </div>
+
+    <h3>Diagonalization by congruence</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Over a field of characteristic not equal to \(2\), every symmetric bilinear form on a finite-dimensional space has a basis in which its matrix is diagonal. Equivalently, every quadratic form can be written as
+        \[
+        q(x)=a_1x_1^2+
+        \cdots+a_rx_r^2
+        \]
+        in suitable coordinates.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If some \(v\) has \(q(v)\ne0\), split \(V=Fv\oplus (Fv)^\perp\) and proceed by induction on the orthogonal complement. If \(q(v)=0\) for all \(v\), then polarization gives the zero form. This recursive orthogonalization diagonalizes the form.</p>
     </div>
 
     <h3>Sylvester law of inertia</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Over \(\mathbb R\), every symmetric bilinear form has a basis in which its matrix is diagonal with entries \(1\), \(-1\), and \(0\). The numbers of positive and negative entries are invariants.</p>
+        <p><span class="statement-title">Théorème.</span> Over \(\mathbb R\), every symmetric matrix is congruent to a diagonal matrix with entries \(1\), \(-1\), and \(0\). The numbers of positive, negative, and zero entries are invariants of the quadratic form. They are called the inertia.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Repeatedly choose a vector with nonzero value of \(q\), split off its orthogonal complement, and proceed by induction. Invariance follows from maximal positive and negative subspaces.</p>
+        <p><span class="statement-title">Preuve.</span> Diagonalize the form by congruence and rescale nonzero diagonal entries to \(\pm1\). The number of positive directions is the largest dimension of a subspace on which \(q\) is positive definite; the number of negative directions is analogous. These characterizations are coordinate-free, so the counts are invariant.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Symplectic forms</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The standard alternating form on \(F^{2n}\) has matrix
+        \[
+        J=\begin{pmatrix}0&I\\-I&0\end{pmatrix}.
+        \]
+        It is nondegenerate but not symmetric. Its geometry is different from inner-product geometry: every vector satisfies \(\beta(v,v)=0\), so length is not the relevant concept.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Quadratic forms encode conics, curvature approximations, covariance matrices, and second-order optimality. Their classification is linear algebra with geometric consequences.</p>
+        <p><span class="statement-title">Remarque.</span> Similarity \(P^{-1}AP\) changes the matrix of an operator. Congruence \(P^TGP\) changes the matrix of a form. Confusing the two is one of the most common mistakes in this topic.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/singular-value-decomposition/" next_label="Page suivante" next_url="/notes/linear-algebra/positive-definite-matrices/" %}
@@ -67,26 +161,73 @@ breadcrumb_child_label_zh: "14. 双线性型与二次型"
     <h2><a href="{{ '/notes/linear-algebra/bilinear-and-quadratic-forms/' | relative_url }}">14. 双线性型与二次型</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/singular-value-decomposition/" next_label="下一页" next_url="/notes/linear-algebra/positive-definite-matrices/" %}
 
-    <p>本页整理关于“双线性型与二次型”的主要定义、命题、定理与证明思路。</p>
+    <p>Bilinear forms pair two vectors to produce a scalar. Quadratic forms measure a vector against itself. Together they describe geometry that may not come from a fixed Euclidean inner product.</p>
 
-    <h3>定义</h3>
+    <h3>Bilinear and sesquilinear forms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A bilinear form \(B\) assigns scalars \(B(v,w)\) linearly in each argument. A quadratic form is \(q(v)=B(v,v)\), usually for a symmetric or Hermitian form.</p>
+        <p><span class="statement-title">定义.</span> A bilinear form on a vector space \(V\) over \(F\) is a function \(B:V\times V\to F\) that is linear in each variable. Over \(\mathbb C\), one often uses sesquilinear forms, linear in one variable and conjugate-linear in the other. A bilinear form is symmetric if \(B(u,v)=B(v,u)\) and alternating if \(B(v,v)=0\) for all \(v\).</p>
+    </div>
+
+    <h3>Matrix representation and congruence</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(B=(e_1,
+        \ldots,e_n)\) is a basis of \(V\), a bilinear form \(\beta\) has Gram matrix \(G=(\beta(e_i,e_j))\), and
+        \[
+        \beta(x,y)=[x]_B^T G [y]_B.
+        \]
+        If \(P
+        \) is a change-of-basis matrix, the Gram matrix changes by congruence:
+        \[
+        G\mapsto P^TGP.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Expand \(x=\sum_i x_ie_i\) and \(y=\sum_j y_je_j\). Bilinearity gives \(\beta(x,y)=\sum_{i,j}x_iy_j\beta(e_i,e_j)\). If the new basis vectors are columns of \(P\) in the old coordinates, substituting their coordinate vectors into the formula gives \(P^TGP\).</p>
+    </div>
+
+    <h3>Quadratic forms and polarization</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A quadratic form associated with a symmetric bilinear form is \(q(v)=\beta(v,v)\). If the field has characteristic not equal to \(2\), the symmetric bilinear form is recovered by polarization:
+        \[
+        \beta(u,v)=\frac{1}{2}\big(q(u+v)-q(u)-q(v)\big).
+        \]</p>
+    </div>
+
+    <h3>Diagonalization by congruence</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Over a field of characteristic not equal to \(2\), every symmetric bilinear form on a finite-dimensional space has a basis in which its matrix is diagonal. Equivalently, every quadratic form can be written as
+        \[
+        q(x)=a_1x_1^2+
+        \cdots+a_rx_r^2
+        \]
+        in suitable coordinates.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If some \(v\) has \(q(v)\ne0\), split \(V=Fv\oplus (Fv)^\perp\) and proceed by induction on the orthogonal complement. If \(q(v)=0\) for all \(v\), then polarization gives the zero form. This recursive orthogonalization diagonalizes the form.</p>
     </div>
 
     <h3>Sylvester law of inertia</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Over \(\mathbb R\), every symmetric bilinear form has a basis in which its matrix is diagonal with entries \(1\), \(-1\), and \(0\). The numbers of positive and negative entries are invariants.</p>
+        <p><span class="statement-title">定理.</span> Over \(\mathbb R\), every symmetric matrix is congruent to a diagonal matrix with entries \(1\), \(-1\), and \(0\). The numbers of positive, negative, and zero entries are invariants of the quadratic form. They are called the inertia.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Repeatedly choose a vector with nonzero value of \(q\), split off its orthogonal complement, and proceed by induction. Invariance follows from maximal positive and negative subspaces.</p>
+        <p><span class="statement-title">证明.</span> Diagonalize the form by congruence and rescale nonzero diagonal entries to \(\pm1\). The number of positive directions is the largest dimension of a subspace on which \(q\) is positive definite; the number of negative directions is analogous. These characterizations are coordinate-free, so the counts are invariant.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Symplectic forms</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The standard alternating form on \(F^{2n}\) has matrix
+        \[
+        J=\begin{pmatrix}0&I\\-I&0\end{pmatrix}.
+        \]
+        It is nondegenerate but not symmetric. Its geometry is different from inner-product geometry: every vector satisfies \(\beta(v,v)=0\), so length is not the relevant concept.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Quadratic forms encode conics, curvature approximations, covariance matrices, and second-order optimality. Their classification is linear algebra with geometric consequences.</p>
+        <p><span class="statement-title">说明.</span> Similarity \(P^{-1}AP\) changes the matrix of an operator. Congruence \(P^TGP\) changes the matrix of a form. Confusing the two is one of the most common mistakes in this topic.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/singular-value-decomposition/" next_label="下一页" next_url="/notes/linear-algebra/positive-definite-matrices/" %}

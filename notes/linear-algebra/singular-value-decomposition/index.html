@@ -9,26 +9,98 @@ breadcrumb_child_label_zh: "13. 奇异值分解"
     <h2><a href="{{ '/notes/linear-algebra/singular-value-decomposition/' | relative_url }}">13. Singular value decomposition</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" next_label="Next page" next_url="/notes/linear-algebra/bilinear-and-quadratic-forms/" %}
 
-    <p>Singular value decomposition records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>The singular value decomposition works for every matrix, square or rectangular, diagonalizable or not. It describes how a linear map stretches orthogonal input directions into orthogonal output directions.</p>
 
-    <h3>Definition</h3>
+    <h3>Singular values and singular vectors</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The singular values of \(A:V\to W\) are the square roots of eigenvalues of \(A^*A\). They measure stretching along orthogonal input directions.</p>
+        <p><span class="statement-title">Definition.</span> For \(A:F^n\to F^m\), the singular values of \(A\) are the nonnegative square roots of the eigenvalues of \(A^*A\). A right singular vector \(v_i\) and left singular vector \(u_i\) satisfy
+        \[
+        Av_i=\sigma_i u_i,
+        \qquad A^*u_i=\sigma_i v_i.
+        \]</p>
     </div>
 
-    <h3>Singular value decomposition</h3>
+    <h3>The singular value decomposition</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Every matrix has a singular value decomposition \(A=U\Sigma V^*\), with unitary or orthogonal \(U,V\) and diagonal nonnegative \(\Sigma\).</p>
+        <p><span class="statement-title">Theorem.</span> Every \(m\times n\) matrix \(A\) over \(\mathbb R\) or \(\mathbb C\) has a decomposition
+        \[
+        A=U\Sigma V^*,
+        \]
+        where \(U\) and \(V\) are unitary or orthogonal, and \(\Sigma\) is diagonal rectangular with entries \(\sigma_1\ge\cdots\ge\sigma_r\gt0\) followed by zeros.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply the spectral theorem to \(A^*A\), use eigenvectors as right singular vectors, and normalize their images under \(A\) to obtain left singular vectors.</p>
+        <p><span class="statement-title">Proof.</span> Apply the spectral theorem to \(A^*A\), obtaining an orthonormal eigenbasis \(v_i\) with eigenvalues \(\sigma_i^2\). For \(\sigma_i\gt0\), set \(u_i=Av_i/\sigma_i\). These \(u_i\)'s are orthonormal because \(\langle Av_i,Av_j\rangle=\langle v_i,A^*Av_j\rangle=\sigma_j^2\delta_{ij}\). Extend the \(u_i\)'s to an orthonormal basis of \(F^m\). The matrix of \(A\) in these bases is \(\Sigma\).</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Geometric meaning</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The map \(A\) sends the unit sphere in \(F^n\) to an ellipsoid in \(F^m\) whose semiaxis lengths are the singular values \(\sigma_i\), in the directions \(u_i\). The largest singular value is
+        \[
+        \|A\|_2=\max_{\|x\|=1}\|Ax\|=\sigma_1.
+        \]</p>
+    </div>
+
+
+    <h3>A rectangular SVD by inspection</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Let
+        \[
+        A=\begin{pmatrix}3&0\\0&1\\0&0\end{pmatrix}:F^2\to F^3.
+        \]
+        The standard bases already give an SVD: the singular values are \(3\) and \(1\), the right singular vectors are \(e_1,e_2\), and the left singular vectors are \(e_1,e_2\) in \(F^3\), with \(e_3\) completing the left orthonormal basis. The map stretches one orthogonal direction by \(3\), another by \(1\), and embeds the result in a plane.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> Here
+        \[
+        A^*A=\begin{pmatrix}9&0\\0&1\end{pmatrix},
+        \]
+        so the singular values are the square roots of the eigenvalues of \(A^*A\). This calculation is often the quickest way to find the right singular vectors first.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 230" role="img" aria-label="The SVD maps a circle to an ellipse along orthogonal singular directions.">
+            <circle cx="135" cy="115" r="60" fill="#f4f6f8" stroke="#496d8a" stroke-width="3" />
+            <line x1="135" y1="115" x2="195" y2="115" stroke="#496d8a" stroke-width="3" />
+            <line x1="135" y1="115" x2="135" y2="55" stroke="#5f4b86" stroke-width="3" />
+            <text x="95" y="200">unit circle</text>
+            <line x1="230" y1="115" x2="305" y2="115" stroke="#333" stroke-width="2" marker-end="url(#arrow-svd)" />
+            <defs><marker id="arrow-svd" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <ellipse cx="410" cy="115" rx="88" ry="38" fill="#f3f0fa" stroke="#5f4b86" stroke-width="3" transform="rotate(-18 410 115)" />
+            <line x1="326" y1="142" x2="494" y2="88" stroke="#5f4b86" stroke-width="3" />
+            <line x1="398" y1="79" x2="422" y2="151" stroke="#496d8a" stroke-width="3" />
+            <text x="370" y="200">ellipse axes = singular values</text>
+        </svg>
+        <figcaption>The SVD separates rotation/reflection, stretching, and another rotation/reflection.</figcaption>
+    </figure>
+
+    <h3>Rank, kernel, and range</h3>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> The rank of \(A\) is the number of positive singular values. The kernel is spanned by right singular vectors with \(
+        \sigma_i=0\), and the range is spanned by left singular vectors with \(\sigma_i\gt0\).</p>
+    </div>
+
+    <h3>Pseudoinverse</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> If \(A=U\Sigma V^*\), the Moore-Penrose pseudoinverse is
+        \[
+        A^+=V\Sigma^+U^*,
+        \]
+        where \(\Sigma^+\) replaces each positive \(\sigma_i\) by \(1/\sigma_i\) and transposes the rectangular shape. The vector \(A^+b\) is the minimum-norm least-squares solution of \(Ax\approx b\).</p>
+    </div>
+
+    <h3>Best low-rank approximation</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(A=\sum_i\sigma_i u_iv_i^*\) is an SVD with \(\sigma_1\ge\cdots\), then
+        \[
+        A_k=\sum_{i=1}^k\sigma_i u_iv_i^*
+        \]
+        is a best rank-\(k\) approximation to \(A\) in spectral norm and Frobenius norm. Moreover, \(\|A-A_k\|_2=\sigma_{k+1}\) and \(\|A-A_k\|_F^2=\sum_{i>k}\sigma_i^2\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> SVD is simultaneously a structural theorem, a metric theorem, and a rank theorem. It is the safest way to discuss low-rank approximation and ill conditioning.</p>
+        <p><span class="statement-title">Remark.</span> The SVD is the most reliable coordinate system for a linear map because it uses orthonormal bases on both sides. It reveals rank, conditioning, least squares behavior, and low-dimensional structure at once.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" next_label="Next page" next_url="/notes/linear-algebra/bilinear-and-quadratic-forms/" %}
@@ -38,26 +110,98 @@ breadcrumb_child_label_zh: "13. 奇异值分解"
     <h2><a href="{{ '/notes/linear-algebra/singular-value-decomposition/' | relative_url }}">13. Décomposition en valeurs singulières</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" next_label="Page suivante" next_url="/notes/linear-algebra/bilinear-and-quadratic-forms/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Décomposition en valeurs singulières.</p>
+    <p>The singular value decomposition works for every matrix, square or rectangular, diagonalizable or not. It describes how a linear map stretches orthogonal input directions into orthogonal output directions.</p>
 
-    <h3>Définition</h3>
+    <h3>Singular values and singular vectors</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The singular values of \(A:V\to W\) are the square roots of eigenvalues of \(A^*A\). They measure stretching along orthogonal input directions.</p>
+        <p><span class="statement-title">Définition.</span> For \(A:F^n\to F^m\), the singular values of \(A\) are the nonnegative square roots of the eigenvalues of \(A^*A\). A right singular vector \(v_i\) and left singular vector \(u_i\) satisfy
+        \[
+        Av_i=\sigma_i u_i,
+        \qquad A^*u_i=\sigma_i v_i.
+        \]</p>
     </div>
 
-    <h3>Singular value decomposition</h3>
+    <h3>The singular value decomposition</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Every matrix has a singular value decomposition \(A=U\Sigma V^*\), with unitary or orthogonal \(U,V\) and diagonal nonnegative \(\Sigma\).</p>
+        <p><span class="statement-title">Théorème.</span> Every \(m\times n\) matrix \(A\) over \(\mathbb R\) or \(\mathbb C\) has a decomposition
+        \[
+        A=U\Sigma V^*,
+        \]
+        where \(U\) and \(V\) are unitary or orthogonal, and \(\Sigma\) is diagonal rectangular with entries \(\sigma_1\ge\cdots\ge\sigma_r\gt0\) followed by zeros.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Apply the spectral theorem to \(A^*A\), use eigenvectors as right singular vectors, and normalize their images under \(A\) to obtain left singular vectors.</p>
+        <p><span class="statement-title">Preuve.</span> Apply the spectral theorem to \(A^*A\), obtaining an orthonormal eigenbasis \(v_i\) with eigenvalues \(\sigma_i^2\). For \(\sigma_i\gt0\), set \(u_i=Av_i/\sigma_i\). These \(u_i\)'s are orthonormal because \(\langle Av_i,Av_j\rangle=\langle v_i,A^*Av_j\rangle=\sigma_j^2\delta_{ij}\). Extend the \(u_i\)'s to an orthonormal basis of \(F^m\). The matrix of \(A\) in these bases is \(\Sigma\).</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Geometric meaning</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The map \(A\) sends the unit sphere in \(F^n\) to an ellipsoid in \(F^m\) whose semiaxis lengths are the singular values \(\sigma_i\), in the directions \(u_i\). The largest singular value is
+        \[
+        \|A\|_2=\max_{\|x\|=1}\|Ax\|=\sigma_1.
+        \]</p>
+    </div>
+
+
+    <h3>A rectangular SVD by inspection</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Let
+        \[
+        A=\begin{pmatrix}3&0\\0&1\\0&0\end{pmatrix}:F^2\to F^3.
+        \]
+        The standard bases already give an SVD: the singular values are \(3\) and \(1\), the right singular vectors are \(e_1,e_2\), and the left singular vectors are \(e_1,e_2\) in \(F^3\), with \(e_3\) completing the left orthonormal basis. The map stretches one orthogonal direction by \(3\), another by \(1\), and embeds the result in a plane.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> Here
+        \[
+        A^*A=\begin{pmatrix}9&0\\0&1\end{pmatrix},
+        \]
+        so the singular values are the square roots of the eigenvalues of \(A^*A\). This calculation is often the quickest way to find the right singular vectors first.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 230" role="img" aria-label="The SVD maps a circle to an ellipse along orthogonal singular directions.">
+            <circle cx="135" cy="115" r="60" fill="#f4f6f8" stroke="#496d8a" stroke-width="3" />
+            <line x1="135" y1="115" x2="195" y2="115" stroke="#496d8a" stroke-width="3" />
+            <line x1="135" y1="115" x2="135" y2="55" stroke="#5f4b86" stroke-width="3" />
+            <text x="95" y="200">unit circle</text>
+            <line x1="230" y1="115" x2="305" y2="115" stroke="#333" stroke-width="2" marker-end="url(#arrow-svd)" />
+            <defs><marker id="arrow-svd" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <ellipse cx="410" cy="115" rx="88" ry="38" fill="#f3f0fa" stroke="#5f4b86" stroke-width="3" transform="rotate(-18 410 115)" />
+            <line x1="326" y1="142" x2="494" y2="88" stroke="#5f4b86" stroke-width="3" />
+            <line x1="398" y1="79" x2="422" y2="151" stroke="#496d8a" stroke-width="3" />
+            <text x="370" y="200">ellipse axes = singular values</text>
+        </svg>
+        <figcaption>The SVD separates rotation/reflection, stretching, and another rotation/reflection.</figcaption>
+    </figure>
+
+    <h3>Rank, kernel, and range</h3>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> The rank of \(A\) is the number of positive singular values. The kernel is spanned by right singular vectors with \(
+        \sigma_i=0\), and the range is spanned by left singular vectors with \(\sigma_i\gt0\).</p>
+    </div>
+
+    <h3>Pseudoinverse</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> If \(A=U\Sigma V^*\), the Moore-Penrose pseudoinverse is
+        \[
+        A^+=V\Sigma^+U^*,
+        \]
+        where \(\Sigma^+\) replaces each positive \(\sigma_i\) by \(1/\sigma_i\) and transposes the rectangular shape. The vector \(A^+b\) is the minimum-norm least-squares solution of \(Ax\approx b\).</p>
+    </div>
+
+    <h3>Best low-rank approximation</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(A=\sum_i\sigma_i u_iv_i^*\) is an SVD with \(\sigma_1\ge\cdots\), then
+        \[
+        A_k=\sum_{i=1}^k\sigma_i u_iv_i^*
+        \]
+        is a best rank-\(k\) approximation to \(A\) in spectral norm and Frobenius norm. Moreover, \(\|A-A_k\|_2=\sigma_{k+1}\) and \(\|A-A_k\|_F^2=\sum_{i>k}\sigma_i^2\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> SVD is simultaneously a structural theorem, a metric theorem, and a rank theorem. It is the safest way to discuss low-rank approximation and ill conditioning.</p>
+        <p><span class="statement-title">Remarque.</span> The SVD is the most reliable coordinate system for a linear map because it uses orthonormal bases on both sides. It reveals rank, conditioning, least squares behavior, and low-dimensional structure at once.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" next_label="Page suivante" next_url="/notes/linear-algebra/bilinear-and-quadratic-forms/" %}
@@ -67,26 +211,98 @@ breadcrumb_child_label_zh: "13. 奇异值分解"
     <h2><a href="{{ '/notes/linear-algebra/singular-value-decomposition/' | relative_url }}">13. 奇异值分解</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" next_label="下一页" next_url="/notes/linear-algebra/bilinear-and-quadratic-forms/" %}
 
-    <p>本页整理关于“奇异值分解”的主要定义、命题、定理与证明思路。</p>
+    <p>The singular value decomposition works for every matrix, square or rectangular, diagonalizable or not. It describes how a linear map stretches orthogonal input directions into orthogonal output directions.</p>
 
-    <h3>定义</h3>
+    <h3>Singular values and singular vectors</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The singular values of \(A:V\to W\) are the square roots of eigenvalues of \(A^*A\). They measure stretching along orthogonal input directions.</p>
+        <p><span class="statement-title">定义.</span> For \(A:F^n\to F^m\), the singular values of \(A\) are the nonnegative square roots of the eigenvalues of \(A^*A\). A right singular vector \(v_i\) and left singular vector \(u_i\) satisfy
+        \[
+        Av_i=\sigma_i u_i,
+        \qquad A^*u_i=\sigma_i v_i.
+        \]</p>
     </div>
 
-    <h3>Singular value decomposition</h3>
+    <h3>The singular value decomposition</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Every matrix has a singular value decomposition \(A=U\Sigma V^*\), with unitary or orthogonal \(U,V\) and diagonal nonnegative \(\Sigma\).</p>
+        <p><span class="statement-title">定理.</span> Every \(m\times n\) matrix \(A\) over \(\mathbb R\) or \(\mathbb C\) has a decomposition
+        \[
+        A=U\Sigma V^*,
+        \]
+        where \(U\) and \(V\) are unitary or orthogonal, and \(\Sigma\) is diagonal rectangular with entries \(\sigma_1\ge\cdots\ge\sigma_r\gt0\) followed by zeros.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Apply the spectral theorem to \(A^*A\), use eigenvectors as right singular vectors, and normalize their images under \(A\) to obtain left singular vectors.</p>
+        <p><span class="statement-title">证明.</span> Apply the spectral theorem to \(A^*A\), obtaining an orthonormal eigenbasis \(v_i\) with eigenvalues \(\sigma_i^2\). For \(\sigma_i\gt0\), set \(u_i=Av_i/\sigma_i\). These \(u_i\)'s are orthonormal because \(\langle Av_i,Av_j\rangle=\langle v_i,A^*Av_j\rangle=\sigma_j^2\delta_{ij}\). Extend the \(u_i\)'s to an orthonormal basis of \(F^m\). The matrix of \(A\) in these bases is \(\Sigma\).</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Geometric meaning</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The map \(A\) sends the unit sphere in \(F^n\) to an ellipsoid in \(F^m\) whose semiaxis lengths are the singular values \(\sigma_i\), in the directions \(u_i\). The largest singular value is
+        \[
+        \|A\|_2=\max_{\|x\|=1}\|Ax\|=\sigma_1.
+        \]</p>
+    </div>
+
+
+    <h3>A rectangular SVD by inspection</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> Let
+        \[
+        A=\begin{pmatrix}3&0\\0&1\\0&0\end{pmatrix}:F^2\to F^3.
+        \]
+        The standard bases already give an SVD: the singular values are \(3\) and \(1\), the right singular vectors are \(e_1,e_2\), and the left singular vectors are \(e_1,e_2\) in \(F^3\), with \(e_3\) completing the left orthonormal basis. The map stretches one orthogonal direction by \(3\), another by \(1\), and embeds the result in a plane.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> Here
+        \[
+        A^*A=\begin{pmatrix}9&0\\0&1\end{pmatrix},
+        \]
+        so the singular values are the square roots of the eigenvalues of \(A^*A\). This calculation is often the quickest way to find the right singular vectors first.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 540 230" role="img" aria-label="The SVD maps a circle to an ellipse along orthogonal singular directions.">
+            <circle cx="135" cy="115" r="60" fill="#f4f6f8" stroke="#496d8a" stroke-width="3" />
+            <line x1="135" y1="115" x2="195" y2="115" stroke="#496d8a" stroke-width="3" />
+            <line x1="135" y1="115" x2="135" y2="55" stroke="#5f4b86" stroke-width="3" />
+            <text x="95" y="200">unit circle</text>
+            <line x1="230" y1="115" x2="305" y2="115" stroke="#333" stroke-width="2" marker-end="url(#arrow-svd)" />
+            <defs><marker id="arrow-svd" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333" /></marker></defs>
+            <ellipse cx="410" cy="115" rx="88" ry="38" fill="#f3f0fa" stroke="#5f4b86" stroke-width="3" transform="rotate(-18 410 115)" />
+            <line x1="326" y1="142" x2="494" y2="88" stroke="#5f4b86" stroke-width="3" />
+            <line x1="398" y1="79" x2="422" y2="151" stroke="#496d8a" stroke-width="3" />
+            <text x="370" y="200">ellipse axes = singular values</text>
+        </svg>
+        <figcaption>The SVD separates rotation/reflection, stretching, and another rotation/reflection.</figcaption>
+    </figure>
+
+    <h3>Rank, kernel, and range</h3>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> The rank of \(A\) is the number of positive singular values. The kernel is spanned by right singular vectors with \(
+        \sigma_i=0\), and the range is spanned by left singular vectors with \(\sigma_i\gt0\).</p>
+    </div>
+
+    <h3>Pseudoinverse</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> If \(A=U\Sigma V^*\), the Moore-Penrose pseudoinverse is
+        \[
+        A^+=V\Sigma^+U^*,
+        \]
+        where \(\Sigma^+\) replaces each positive \(\sigma_i\) by \(1/\sigma_i\) and transposes the rectangular shape. The vector \(A^+b\) is the minimum-norm least-squares solution of \(Ax\approx b\).</p>
+    </div>
+
+    <h3>Best low-rank approximation</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(A=\sum_i\sigma_i u_iv_i^*\) is an SVD with \(\sigma_1\ge\cdots\), then
+        \[
+        A_k=\sum_{i=1}^k\sigma_i u_iv_i^*
+        \]
+        is a best rank-\(k\) approximation to \(A\) in spectral norm and Frobenius norm. Moreover, \(\|A-A_k\|_2=\sigma_{k+1}\) and \(\|A-A_k\|_F^2=\sum_{i>k}\sigma_i^2\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> SVD is simultaneously a structural theorem, a metric theorem, and a rank theorem. It is the safest way to discuss low-rank approximation and ill conditioning.</p>
+        <p><span class="statement-title">说明.</span> The SVD is the most reliable coordinate system for a linear map because it uses orthonormal bases on both sides. It reveals rank, conditioning, least squares behavior, and low-dimensional structure at once.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" next_label="下一页" next_url="/notes/linear-algebra/bilinear-and-quadratic-forms/" %}

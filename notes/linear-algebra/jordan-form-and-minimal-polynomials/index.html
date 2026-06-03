@@ -9,26 +9,112 @@ breadcrumb_child_label_zh: "9. Jordan 形与最小多项式"
     <h2><a href="{{ '/notes/linear-algebra/jordan-form-and-minimal-polynomials/' | relative_url }}">9. Jordan form and minimal polynomials</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/diagonalization-and-triangularization/" next_label="Next page" next_url="/notes/linear-algebra/inner-products-and-orthogonality/" %}
 
-    <p>Jordan form and minimal polynomials records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>Jordan form describes exactly how diagonalization can fail over an algebraically closed field. The failure is controlled by nilpotent chains attached to eigenvalues.</p>
 
-    <h3>Definition</h3>
+    <h3>Minimal polynomial</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The minimal polynomial of \(T\) is the monic polynomial of least degree annihilating \(T\). Jordan form decomposes an operator into generalized eigenspaces and nilpotent chains.</p>
+        <p><span class="statement-title">Definition.</span> The minimal polynomial \(m_T(t)\) of an operator \(T\) is the monic polynomial of least degree such that \(m_T(T)=0\). It divides every polynomial \(p\) with \(p(T)=0\), and it divides the characteristic polynomial.</p>
     </div>
 
-    <h3>Jordan decomposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The operator \(T\) is diagonalizable over \(F\) if and only if its minimal polynomial is a product of distinct linear factors over \(F\). The largest exponent of \((t-
+        \lambda)\) in \(m_T\) measures the largest Jordan block size for \(\lambda\).</p>
+    </div>
+
+    <h3>Generalized eigenspaces</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For an eigenvalue \(\lambda\), the generalized eigenspace is
+        \[
+        G_\lambda=\ker(T-
+        \lambda I)^N
+        \]
+        for \(N\) large enough, for example \(N=\dim V\). Vectors in \(G_\lambda\) eventually become genuine eigenvectors after repeatedly applying \(T-
+        \lambda I\).</p>
+    </div>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Over an algebraically closed field, an operator has a Jordan form. It is diagonalizable exactly when the minimal polynomial splits into distinct linear factors.</p>
+        <p><span class="statement-title">Theorem.</span> If the characteristic polynomial of \(T\) splits as \(\prod_\lambda(t-
+        \lambda)^{a_\lambda}\), then
+        \[
+        V=\bigoplus_\lambda G_\lambda,
+        \qquad \dim G_\lambda=a_\lambda.
+        \]</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Primary decomposition reduces \(V\) to kernels of powers \((T-\lambda I)^k\). On each component, nilpotent cyclic chains produce Jordan blocks.</p>
+        <p><span class="statement-title">Proof.</span> The powers \((t-
+        \lambda)^{a_\lambda}\) are pairwise coprime. Bezout identities among these factors produce polynomial projection operators whose images are the generalized eigenspaces. The direct-sum decomposition follows from coprimeness, and dimensions agree with algebraic multiplicities by triangularizing \(T\).</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Jordan chains</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A Jordan chain of length \(r\) for \(\lambda\) is a list \(v_1,
+        \ldots,v_r\) satisfying
+        \[
+        (T-
+        \lambda I)v_1=0,
+        \qquad (T-
+        \lambda I)v_j=v_{j-1}\quad (j\ge2).
+        \]
+        In this basis, the restriction of \(T\) has a Jordan block with \(\lambda\) on the diagonal and ones on the superdiagonal.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Over an algebraically closed field, every linear operator has a basis formed by Jordan chains. In that basis, the matrix is block diagonal with Jordan blocks
+        \[
+        J_r(\lambda)=
+        \begin{pmatrix}
+        \lambda&1&0&\cdots&0\\
+        0&\lambda&1&\cdots&0\\
+        \vdots&\vdots&\ddots&\ddots&\vdots\\
+        0&0&\cdots&\lambda&1\\
+        0&0&\cdots&0&\lambda
+        \end{pmatrix}.
+        \]</p>
+    </div>
+
+    <h3>Reading a Jordan form</h3>
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> The number of Jordan blocks for \(\lambda\) is \(\dim\ker(T-
+        \lambda I)\). The number of blocks of size at least \(k\) is
+        \[
+        \dim\ker(T-
+        \lambda I)^k-\dim\ker(T-
+        \lambda I)^{k-1}.
+        \]
+        These dimensions determine the block sizes.</p>
+    </div>
+
+    <h3>Powers and functions of Jordan blocks</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(J=\lambda I+N\) with \(N^r=0\), then
+        \[
+        J^m=\sum_{k=0}^{r-1}\binom{m}{k}\lambda^{m-k}N^k.
+        \]
+        This formula explains polynomial factors in powers of non-diagonalizable matrices.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Jordan form is structurally exact but numerically unstable. The theoretical invariant remains essential, even when computation prefers Schur form or invariant subspaces.</p>
+        <p><span class="statement-title">Remark.</span> Jordan form is fragile numerically: small perturbations can split repeated eigenvalues. Conceptually, however, it is the cleanest finite-dimensional classification of one operator over an algebraically closed field.</p>
+    </div>
+
+
+    <h3>A single Jordan block</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> For
+        \[
+        J=\begin{pmatrix}\lambda&1\\0&\lambda\end{pmatrix},
+        \qquad N=J-\lambda I=\begin{pmatrix}0&1\\0&0\end{pmatrix},
+        \]
+        one has \(N^2=0\) but \(N\neq0\). Hence \((J-\lambda I)^2=0\) while \(J-\lambda I\neq0\), so the minimal polynomial is \((t-\lambda)^2\). The extra superdiagonal entry is exactly the data that prevents diagonalization.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> The powers are
+        \[
+        J^k=(\lambda I+N)^k=\lambda^k I+k\lambda^{k-1}N
+        \]
+        when \(\lambda\neq0\), because all terms containing \(N^2\) vanish. This formula explains why Jordan blocks introduce polynomial factors in matrix powers and matrix exponentials.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/diagonalization-and-triangularization/" next_label="Next page" next_url="/notes/linear-algebra/inner-products-and-orthogonality/" %}
@@ -38,26 +124,112 @@ breadcrumb_child_label_zh: "9. Jordan 形与最小多项式"
     <h2><a href="{{ '/notes/linear-algebra/jordan-form-and-minimal-polynomials/' | relative_url }}">9. Forme de Jordan et polynômes minimaux</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/diagonalization-and-triangularization/" next_label="Page suivante" next_url="/notes/linear-algebra/inner-products-and-orthogonality/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Forme de Jordan et polynômes minimaux.</p>
+    <p>Jordan form describes exactly how diagonalization can fail over an algebraically closed field. The failure is controlled by nilpotent chains attached to eigenvalues.</p>
 
-    <h3>Définition</h3>
+    <h3>Minimal polynomial</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The minimal polynomial of \(T\) is the monic polynomial of least degree annihilating \(T\). Jordan form decomposes an operator into generalized eigenspaces and nilpotent chains.</p>
+        <p><span class="statement-title">Définition.</span> The minimal polynomial \(m_T(t)\) of an operator \(T\) is the monic polynomial of least degree such that \(m_T(T)=0\). It divides every polynomial \(p\) with \(p(T)=0\), and it divides the characteristic polynomial.</p>
     </div>
 
-    <h3>Jordan decomposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The operator \(T\) is diagonalizable over \(F\) if and only if its minimal polynomial is a product of distinct linear factors over \(F\). The largest exponent of \((t-
+        \lambda)\) in \(m_T\) measures the largest Jordan block size for \(\lambda\).</p>
+    </div>
+
+    <h3>Generalized eigenspaces</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For an eigenvalue \(\lambda\), the generalized eigenspace is
+        \[
+        G_\lambda=\ker(T-
+        \lambda I)^N
+        \]
+        for \(N\) large enough, for example \(N=\dim V\). Vectors in \(G_\lambda\) eventually become genuine eigenvectors after repeatedly applying \(T-
+        \lambda I\).</p>
+    </div>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Over an algebraically closed field, an operator has a Jordan form. It is diagonalizable exactly when the minimal polynomial splits into distinct linear factors.</p>
+        <p><span class="statement-title">Théorème.</span> If the characteristic polynomial of \(T\) splits as \(\prod_\lambda(t-
+        \lambda)^{a_\lambda}\), then
+        \[
+        V=\bigoplus_\lambda G_\lambda,
+        \qquad \dim G_\lambda=a_\lambda.
+        \]</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Primary decomposition reduces \(V\) to kernels of powers \((T-\lambda I)^k\). On each component, nilpotent cyclic chains produce Jordan blocks.</p>
+        <p><span class="statement-title">Preuve.</span> The powers \((t-
+        \lambda)^{a_\lambda}\) are pairwise coprime. Bezout identities among these factors produce polynomial projection operators whose images are the generalized eigenspaces. The direct-sum decomposition follows from coprimeness, and dimensions agree with algebraic multiplicities by triangularizing \(T\).</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Jordan chains</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A Jordan chain of length \(r\) for \(\lambda\) is a list \(v_1,
+        \ldots,v_r\) satisfying
+        \[
+        (T-
+        \lambda I)v_1=0,
+        \qquad (T-
+        \lambda I)v_j=v_{j-1}\quad (j\ge2).
+        \]
+        In this basis, the restriction of \(T\) has a Jordan block with \(\lambda\) on the diagonal and ones on the superdiagonal.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Over an algebraically closed field, every linear operator has a basis formed by Jordan chains. In that basis, the matrix is block diagonal with Jordan blocks
+        \[
+        J_r(\lambda)=
+        \begin{pmatrix}
+        \lambda&1&0&\cdots&0\\
+        0&\lambda&1&\cdots&0\\
+        \vdots&\vdots&\ddots&\ddots&\vdots\\
+        0&0&\cdots&\lambda&1\\
+        0&0&\cdots&0&\lambda
+        \end{pmatrix}.
+        \]</p>
+    </div>
+
+    <h3>Reading a Jordan form</h3>
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> The number of Jordan blocks for \(\lambda\) is \(\dim\ker(T-
+        \lambda I)\). The number of blocks of size at least \(k\) is
+        \[
+        \dim\ker(T-
+        \lambda I)^k-\dim\ker(T-
+        \lambda I)^{k-1}.
+        \]
+        These dimensions determine the block sizes.</p>
+    </div>
+
+    <h3>Powers and functions of Jordan blocks</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(J=\lambda I+N\) with \(N^r=0\), then
+        \[
+        J^m=\sum_{k=0}^{r-1}\binom{m}{k}\lambda^{m-k}N^k.
+        \]
+        This formula explains polynomial factors in powers of non-diagonalizable matrices.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Jordan form is structurally exact but numerically unstable. The theoretical invariant remains essential, even when computation prefers Schur form or invariant subspaces.</p>
+        <p><span class="statement-title">Remarque.</span> Jordan form is fragile numerically: small perturbations can split repeated eigenvalues. Conceptually, however, it is the cleanest finite-dimensional classification of one operator over an algebraically closed field.</p>
+    </div>
+
+
+    <h3>A single Jordan block</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> For
+        \[
+        J=\begin{pmatrix}\lambda&1\\0&\lambda\end{pmatrix},
+        \qquad N=J-\lambda I=\begin{pmatrix}0&1\\0&0\end{pmatrix},
+        \]
+        one has \(N^2=0\) but \(N\neq0\). Hence \((J-\lambda I)^2=0\) while \(J-\lambda I\neq0\), so the minimal polynomial is \((t-\lambda)^2\). The extra superdiagonal entry is exactly the data that prevents diagonalization.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> The powers are
+        \[
+        J^k=(\lambda I+N)^k=\lambda^k I+k\lambda^{k-1}N
+        \]
+        when \(\lambda\neq0\), because all terms containing \(N^2\) vanish. This formula explains why Jordan blocks introduce polynomial factors in matrix powers and matrix exponentials.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/diagonalization-and-triangularization/" next_label="Page suivante" next_url="/notes/linear-algebra/inner-products-and-orthogonality/" %}
@@ -67,26 +239,112 @@ breadcrumb_child_label_zh: "9. Jordan 形与最小多项式"
     <h2><a href="{{ '/notes/linear-algebra/jordan-form-and-minimal-polynomials/' | relative_url }}">9. Jordan 形与最小多项式</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/diagonalization-and-triangularization/" next_label="下一页" next_url="/notes/linear-algebra/inner-products-and-orthogonality/" %}
 
-    <p>本页整理关于“Jordan 形与最小多项式”的主要定义、命题、定理与证明思路。</p>
+    <p>Jordan form describes exactly how diagonalization can fail over an algebraically closed field. The failure is controlled by nilpotent chains attached to eigenvalues.</p>
 
-    <h3>定义</h3>
+    <h3>Minimal polynomial</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The minimal polynomial of \(T\) is the monic polynomial of least degree annihilating \(T\). Jordan form decomposes an operator into generalized eigenspaces and nilpotent chains.</p>
+        <p><span class="statement-title">定义.</span> The minimal polynomial \(m_T(t)\) of an operator \(T\) is the monic polynomial of least degree such that \(m_T(T)=0\). It divides every polynomial \(p\) with \(p(T)=0\), and it divides the characteristic polynomial.</p>
     </div>
 
-    <h3>Jordan decomposition</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The operator \(T\) is diagonalizable over \(F\) if and only if its minimal polynomial is a product of distinct linear factors over \(F\). The largest exponent of \((t-
+        \lambda)\) in \(m_T\) measures the largest Jordan block size for \(\lambda\).</p>
+    </div>
+
+    <h3>Generalized eigenspaces</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For an eigenvalue \(\lambda\), the generalized eigenspace is
+        \[
+        G_\lambda=\ker(T-
+        \lambda I)^N
+        \]
+        for \(N\) large enough, for example \(N=\dim V\). Vectors in \(G_\lambda\) eventually become genuine eigenvectors after repeatedly applying \(T-
+        \lambda I\).</p>
+    </div>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Over an algebraically closed field, an operator has a Jordan form. It is diagonalizable exactly when the minimal polynomial splits into distinct linear factors.</p>
+        <p><span class="statement-title">定理.</span> If the characteristic polynomial of \(T\) splits as \(\prod_\lambda(t-
+        \lambda)^{a_\lambda}\), then
+        \[
+        V=\bigoplus_\lambda G_\lambda,
+        \qquad \dim G_\lambda=a_\lambda.
+        \]</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Primary decomposition reduces \(V\) to kernels of powers \((T-\lambda I)^k\). On each component, nilpotent cyclic chains produce Jordan blocks.</p>
+        <p><span class="statement-title">证明.</span> The powers \((t-
+        \lambda)^{a_\lambda}\) are pairwise coprime. Bezout identities among these factors produce polynomial projection operators whose images are the generalized eigenspaces. The direct-sum decomposition follows from coprimeness, and dimensions agree with algebraic multiplicities by triangularizing \(T\).</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Jordan chains</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A Jordan chain of length \(r\) for \(\lambda\) is a list \(v_1,
+        \ldots,v_r\) satisfying
+        \[
+        (T-
+        \lambda I)v_1=0,
+        \qquad (T-
+        \lambda I)v_j=v_{j-1}\quad (j\ge2).
+        \]
+        In this basis, the restriction of \(T\) has a Jordan block with \(\lambda\) on the diagonal and ones on the superdiagonal.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Over an algebraically closed field, every linear operator has a basis formed by Jordan chains. In that basis, the matrix is block diagonal with Jordan blocks
+        \[
+        J_r(\lambda)=
+        \begin{pmatrix}
+        \lambda&1&0&\cdots&0\\
+        0&\lambda&1&\cdots&0\\
+        \vdots&\vdots&\ddots&\ddots&\vdots\\
+        0&0&\cdots&\lambda&1\\
+        0&0&\cdots&0&\lambda
+        \end{pmatrix}.
+        \]</p>
+    </div>
+
+    <h3>Reading a Jordan form</h3>
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> The number of Jordan blocks for \(\lambda\) is \(\dim\ker(T-
+        \lambda I)\). The number of blocks of size at least \(k\) is
+        \[
+        \dim\ker(T-
+        \lambda I)^k-\dim\ker(T-
+        \lambda I)^{k-1}.
+        \]
+        These dimensions determine the block sizes.</p>
+    </div>
+
+    <h3>Powers and functions of Jordan blocks</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(J=\lambda I+N\) with \(N^r=0\), then
+        \[
+        J^m=\sum_{k=0}^{r-1}\binom{m}{k}\lambda^{m-k}N^k.
+        \]
+        This formula explains polynomial factors in powers of non-diagonalizable matrices.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Jordan form is structurally exact but numerically unstable. The theoretical invariant remains essential, even when computation prefers Schur form or invariant subspaces.</p>
+        <p><span class="statement-title">说明.</span> Jordan form is fragile numerically: small perturbations can split repeated eigenvalues. Conceptually, however, it is the cleanest finite-dimensional classification of one operator over an algebraically closed field.</p>
+    </div>
+
+
+    <h3>A single Jordan block</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> For
+        \[
+        J=\begin{pmatrix}\lambda&1\\0&\lambda\end{pmatrix},
+        \qquad N=J-\lambda I=\begin{pmatrix}0&1\\0&0\end{pmatrix},
+        \]
+        one has \(N^2=0\) but \(N\neq0\). Hence \((J-\lambda I)^2=0\) while \(J-\lambda I\neq0\), so the minimal polynomial is \((t-\lambda)^2\). The extra superdiagonal entry is exactly the data that prevents diagonalization.</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> The powers are
+        \[
+        J^k=(\lambda I+N)^k=\lambda^k I+k\lambda^{k-1}N
+        \]
+        when \(\lambda\neq0\), because all terms containing \(N^2\) vanish. This formula explains why Jordan blocks introduce polynomial factors in matrix powers and matrix exponentials.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/diagonalization-and-triangularization/" next_label="下一页" next_url="/notes/linear-algebra/inner-products-and-orthogonality/" %}

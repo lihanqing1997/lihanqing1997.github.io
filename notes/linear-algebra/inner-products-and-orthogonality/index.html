@@ -9,26 +9,85 @@ breadcrumb_child_label_zh: "10. 内积与正交性"
     <h2><a href="{{ '/notes/linear-algebra/inner-products-and-orthogonality/' | relative_url }}">10. Inner products and orthogonality</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/jordan-form-and-minimal-polynomials/" next_label="Next page" next_url="/notes/linear-algebra/orthogonal-projections-and-least-squares/" %}
 
-    <p>Inner products and orthogonality records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>An inner product adds metric geometry to vector spaces: lengths, angles, orthogonality, best approximation, and adjoints. Many later decompositions are algebraic consequences of orthogonality.</p>
 
-    <h3>Definition</h3>
+    <h3>Inner products and norms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An inner product is a positive definite Hermitian or symmetric bilinear form. It defines lengths, angles, orthogonality, and the norm \(\|v\|=\sqrt{\langle v,v\rangle}\).</p>
+        <p><span class="statement-title">Definition.</span> An inner product on a real vector space is a map \(\langle\cdot,
+        \cdot\rangle:V\times V\to\mathbb R\) that is bilinear, symmetric, and positive definite. On a complex vector space it is linear in one variable, conjugate-linear in the other, Hermitian symmetric, and positive definite. The associated norm is
+        \[
+        \|v\|=\sqrt{\langle v,v\rangle}.
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Every finite-dimensional inner-product space has an orthonormal basis. Gram-Schmidt turns any independent list into an orthonormal list spanning the same nested subspaces.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The standard inner product on \(F^n\) is \(\langle x,y\rangle=y^*x\) or \(x^*y\), depending on convention. On \(C[a,b]\), one uses \(\langle f,g\rangle=\int_a^b f(t)\overline{g(t)}\,\mathrm{d}t\). On \(M_{m,n}(F)\), the Frobenius inner product is \(\langle A,B\rangle=\operatorname{tr}(B^*A)\).</p>
     </div>
 
-    <h3>Proof</h3>
+    <h3>Cauchy-Schwarz and triangle inequality</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For any vectors \(u,v\),
+        \[
+        |\langle u,v\rangle|\le \|u\|\|v\|.
+        \]
+        Consequently, \(\|u+v\|\le \|u\|+
+        \|v\|\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Subtract from each new vector its projections onto the previously constructed orthonormal vectors, then normalize the nonzero remainder. Orthogonality follows from the projection formula.</p>
+        <p><span class="statement-title">Proof.</span> If \(v=0\) the result is clear. Otherwise choose \(a=\langle u,v\rangle/\langle v,v\rangle\). Positivity of \(\|u-av\|^2\) gives
+        \[
+        0\le \|u\|^2-\frac{|\langle u,v\rangle|^2}{\|v\|^2},
+        \]
+        which is Cauchy-Schwarz. The triangle inequality follows by expanding \(\|u+v\|^2\) and bounding the cross term by Cauchy-Schwarz.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Orthogonal complements</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For \(S\subset V\), the orthogonal complement is
+        \[
+        S^\perp=\{v\in V:\langle v,s\rangle=0\text{ for all }s\in S\}.
+        \]
+        It is always a subspace, even when \(S\) is not.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(U\) is a finite-dimensional subspace of an inner product space \(V\), then
+        \[
+        V=U\oplus U^\perp
+        \]
+        whenever \(V\) is finite-dimensional. More generally, every \(v\in V\) has a unique best approximation from \(U\), namely its orthogonal projection.</p>
+    </div>
+
+    <h3>Gram-Schmidt orthogonalization</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Every linearly independent list \((v_1,
+        \ldots,v_n)\) in an inner product space can be converted into an orthonormal list \((q_1,
+        \ldots,q_n)\) with the same nested spans:
+        \[
+        \operatorname{span}(q_1,
+        \ldots,q_k)=\operatorname{span}(v_1,
+        \ldots,v_k).
+        \]</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calculation.</span> Define
+        \[
+        w_k=v_k-
+        \sum_{j<k}\langle v_k,q_j\rangle q_j,
+        \qquad q_k=\frac{w_k}{\|w_k\|}.
+        \]
+        Independence ensures \(w_k\ne0\). Each subtraction removes the component of \(v_k\) in the previous orthonormal directions.</p>
+    </div>
+
+    <h3>Orthogonal matrices and unitary matrices</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A square real matrix \(Q\) is orthogonal, or a complex matrix is unitary, if \(Q^*Q=I\). Its columns form an orthonormal basis, \(Q^{-1}=Q^*\), and \(\|Qx\|=\|x\|\) for every \(x\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Orthogonality is the bridge from algebraic coordinates to geometry. It is also why least squares, projections, and spectral theory behave cleanly.</p>
+        <p><span class="statement-title">Remark.</span> Orthogonality is the algebraic form of no interference. When subspaces are orthogonal, dimensions add cleanly, projections are stable, and computations avoid the amplification that appears in nearly dependent coordinate systems.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/jordan-form-and-minimal-polynomials/" next_label="Next page" next_url="/notes/linear-algebra/orthogonal-projections-and-least-squares/" %}
@@ -38,26 +97,85 @@ breadcrumb_child_label_zh: "10. 内积与正交性"
     <h2><a href="{{ '/notes/linear-algebra/inner-products-and-orthogonality/' | relative_url }}">10. Produits scalaires et orthogonalité</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/jordan-form-and-minimal-polynomials/" next_label="Page suivante" next_url="/notes/linear-algebra/orthogonal-projections-and-least-squares/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Produits scalaires et orthogonalité.</p>
+    <p>An inner product adds metric geometry to vector spaces: lengths, angles, orthogonality, best approximation, and adjoints. Many later decompositions are algebraic consequences of orthogonality.</p>
 
-    <h3>Définition</h3>
+    <h3>Inner products and norms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> An inner product is a positive definite Hermitian or symmetric bilinear form. It defines lengths, angles, orthogonality, and the norm \(\|v\|=\sqrt{\langle v,v\rangle}\).</p>
+        <p><span class="statement-title">Définition.</span> An inner product on a real vector space is a map \(\langle\cdot,
+        \cdot\rangle:V\times V\to\mathbb R\) that is bilinear, symmetric, and positive definite. On a complex vector space it is linear in one variable, conjugate-linear in the other, Hermitian symmetric, and positive definite. The associated norm is
+        \[
+        \|v\|=\sqrt{\langle v,v\rangle}.
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Every finite-dimensional inner-product space has an orthonormal basis. Gram-Schmidt turns any independent list into an orthonormal list spanning the same nested subspaces.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The standard inner product on \(F^n\) is \(\langle x,y\rangle=y^*x\) or \(x^*y\), depending on convention. On \(C[a,b]\), one uses \(\langle f,g\rangle=\int_a^b f(t)\overline{g(t)}\,\mathrm{d}t\). On \(M_{m,n}(F)\), the Frobenius inner product is \(\langle A,B\rangle=\operatorname{tr}(B^*A)\).</p>
     </div>
 
-    <h3>Preuve</h3>
+    <h3>Cauchy-Schwarz and triangle inequality</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For any vectors \(u,v\),
+        \[
+        |\langle u,v\rangle|\le \|u\|\|v\|.
+        \]
+        Consequently, \(\|u+v\|\le \|u\|+
+        \|v\|\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Subtract from each new vector its projections onto the previously constructed orthonormal vectors, then normalize the nonzero remainder. Orthogonality follows from the projection formula.</p>
+        <p><span class="statement-title">Preuve.</span> If \(v=0\) the result is clear. Otherwise choose \(a=\langle u,v\rangle/\langle v,v\rangle\). Positivity of \(\|u-av\|^2\) gives
+        \[
+        0\le \|u\|^2-\frac{|\langle u,v\rangle|^2}{\|v\|^2},
+        \]
+        which is Cauchy-Schwarz. The triangle inequality follows by expanding \(\|u+v\|^2\) and bounding the cross term by Cauchy-Schwarz.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Orthogonal complements</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For \(S\subset V\), the orthogonal complement is
+        \[
+        S^\perp=\{v\in V:\langle v,s\rangle=0\text{ for all }s\in S\}.
+        \]
+        It is always a subspace, even when \(S\) is not.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(U\) is a finite-dimensional subspace of an inner product space \(V\), then
+        \[
+        V=U\oplus U^\perp
+        \]
+        whenever \(V\) is finite-dimensional. More generally, every \(v\in V\) has a unique best approximation from \(U\), namely its orthogonal projection.</p>
+    </div>
+
+    <h3>Gram-Schmidt orthogonalization</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Every linearly independent list \((v_1,
+        \ldots,v_n)\) in an inner product space can be converted into an orthonormal list \((q_1,
+        \ldots,q_n)\) with the same nested spans:
+        \[
+        \operatorname{span}(q_1,
+        \ldots,q_k)=\operatorname{span}(v_1,
+        \ldots,v_k).
+        \]</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">Calcul.</span> Define
+        \[
+        w_k=v_k-
+        \sum_{j<k}\langle v_k,q_j\rangle q_j,
+        \qquad q_k=\frac{w_k}{\|w_k\|}.
+        \]
+        Independence ensures \(w_k\ne0\). Each subtraction removes the component of \(v_k\) in the previous orthonormal directions.</p>
+    </div>
+
+    <h3>Orthogonal matrices and unitary matrices</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A square real matrix \(Q\) is orthogonal, or a complex matrix is unitary, if \(Q^*Q=I\). Its columns form an orthonormal basis, \(Q^{-1}=Q^*\), and \(\|Qx\|=\|x\|\) for every \(x\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Orthogonality is the bridge from algebraic coordinates to geometry. It is also why least squares, projections, and spectral theory behave cleanly.</p>
+        <p><span class="statement-title">Remarque.</span> Orthogonality is the algebraic form of no interference. When subspaces are orthogonal, dimensions add cleanly, projections are stable, and computations avoid the amplification that appears in nearly dependent coordinate systems.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/jordan-form-and-minimal-polynomials/" next_label="Page suivante" next_url="/notes/linear-algebra/orthogonal-projections-and-least-squares/" %}
@@ -67,26 +185,85 @@ breadcrumb_child_label_zh: "10. 内积与正交性"
     <h2><a href="{{ '/notes/linear-algebra/inner-products-and-orthogonality/' | relative_url }}">10. 内积与正交性</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/jordan-form-and-minimal-polynomials/" next_label="下一页" next_url="/notes/linear-algebra/orthogonal-projections-and-least-squares/" %}
 
-    <p>本页整理关于“内积与正交性”的主要定义、命题、定理与证明思路。</p>
+    <p>An inner product adds metric geometry to vector spaces: lengths, angles, orthogonality, best approximation, and adjoints. Many later decompositions are algebraic consequences of orthogonality.</p>
 
-    <h3>定义</h3>
+    <h3>Inner products and norms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> An inner product is a positive definite Hermitian or symmetric bilinear form. It defines lengths, angles, orthogonality, and the norm \(\|v\|=\sqrt{\langle v,v\rangle}\).</p>
+        <p><span class="statement-title">定义.</span> An inner product on a real vector space is a map \(\langle\cdot,
+        \cdot\rangle:V\times V\to\mathbb R\) that is bilinear, symmetric, and positive definite. On a complex vector space it is linear in one variable, conjugate-linear in the other, Hermitian symmetric, and positive definite. The associated norm is
+        \[
+        \|v\|=\sqrt{\langle v,v\rangle}.
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Every finite-dimensional inner-product space has an orthonormal basis. Gram-Schmidt turns any independent list into an orthonormal list spanning the same nested subspaces.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The standard inner product on \(F^n\) is \(\langle x,y\rangle=y^*x\) or \(x^*y\), depending on convention. On \(C[a,b]\), one uses \(\langle f,g\rangle=\int_a^b f(t)\overline{g(t)}\,\mathrm{d}t\). On \(M_{m,n}(F)\), the Frobenius inner product is \(\langle A,B\rangle=\operatorname{tr}(B^*A)\).</p>
     </div>
 
-    <h3>证明</h3>
+    <h3>Cauchy-Schwarz and triangle inequality</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For any vectors \(u,v\),
+        \[
+        |\langle u,v\rangle|\le \|u\|\|v\|.
+        \]
+        Consequently, \(\|u+v\|\le \|u\|+
+        \|v\|\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Subtract from each new vector its projections onto the previously constructed orthonormal vectors, then normalize the nonzero remainder. Orthogonality follows from the projection formula.</p>
+        <p><span class="statement-title">证明.</span> If \(v=0\) the result is clear. Otherwise choose \(a=\langle u,v\rangle/\langle v,v\rangle\). Positivity of \(\|u-av\|^2\) gives
+        \[
+        0\le \|u\|^2-\frac{|\langle u,v\rangle|^2}{\|v\|^2},
+        \]
+        which is Cauchy-Schwarz. The triangle inequality follows by expanding \(\|u+v\|^2\) and bounding the cross term by Cauchy-Schwarz.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Orthogonal complements</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For \(S\subset V\), the orthogonal complement is
+        \[
+        S^\perp=\{v\in V:\langle v,s\rangle=0\text{ for all }s\in S\}.
+        \]
+        It is always a subspace, even when \(S\) is not.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(U\) is a finite-dimensional subspace of an inner product space \(V\), then
+        \[
+        V=U\oplus U^\perp
+        \]
+        whenever \(V\) is finite-dimensional. More generally, every \(v\in V\) has a unique best approximation from \(U\), namely its orthogonal projection.</p>
+    </div>
+
+    <h3>Gram-Schmidt orthogonalization</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Every linearly independent list \((v_1,
+        \ldots,v_n)\) in an inner product space can be converted into an orthonormal list \((q_1,
+        \ldots,q_n)\) with the same nested spans:
+        \[
+        \operatorname{span}(q_1,
+        \ldots,q_k)=\operatorname{span}(v_1,
+        \ldots,v_k).
+        \]</p>
+    </div>
+
+    <div class="math-statement calculation">
+        <p><span class="statement-title">计算.</span> Define
+        \[
+        w_k=v_k-
+        \sum_{j<k}\langle v_k,q_j\rangle q_j,
+        \qquad q_k=\frac{w_k}{\|w_k\|}.
+        \]
+        Independence ensures \(w_k\ne0\). Each subtraction removes the component of \(v_k\) in the previous orthonormal directions.</p>
+    </div>
+
+    <h3>Orthogonal matrices and unitary matrices</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> A square real matrix \(Q\) is orthogonal, or a complex matrix is unitary, if \(Q^*Q=I\). Its columns form an orthonormal basis, \(Q^{-1}=Q^*\), and \(\|Qx\|=\|x\|\) for every \(x\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Orthogonality is the bridge from algebraic coordinates to geometry. It is also why least squares, projections, and spectral theory behave cleanly.</p>
+        <p><span class="statement-title">说明.</span> Orthogonality is the algebraic form of no interference. When subspaces are orthogonal, dimensions add cleanly, projections are stable, and computations avoid the amplification that appears in nearly dependent coordinate systems.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/jordan-form-and-minimal-polynomials/" next_label="下一页" next_url="/notes/linear-algebra/orthogonal-projections-and-least-squares/" %}

@@ -9,26 +9,91 @@ breadcrumb_child_label_zh: "7. 特征值与不变子空间"
     <h2><a href="{{ '/notes/linear-algebra/eigenvalues-and-invariant-subspaces/' | relative_url }}">7. Eigenvalues and invariant subspaces</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/determinants-and-volume/" next_label="Next page" next_url="/notes/linear-algebra/diagonalization-and-triangularization/" %}
 
-    <p>Eigenvalues and invariant subspaces records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>Eigenvectors are directions preserved by a linear operator. Invariant subspaces are the broader objects: regions of a vector space on which the operator can be studied independently.</p>
 
-    <h3>Definition</h3>
+    <h3>Invariant subspaces</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An eigenvector of \(T\) is a nonzero vector \(v\) with \(Tv=\lambda v\). An invariant subspace \(U\) satisfies \(T(U)\subset U\), so the operator restricts to \(U\).</p>
+        <p><span class="statement-title">Definition.</span> Let \(T:V\to V\) be linear. A subspace \(U\subset V\) is \(T\)-invariant if \(T(U)\subset U\). If \(U\) is invariant, the restriction \(T|_U:U\to U\) is a linear operator, so one can study part of \(T\) inside \(U\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> For any polynomial \(p\), the kernel \(\ker p(T)\) and image \(\operatorname{im}p(T)\) are \(T\)-invariant because \(T\) commutes with \(p(T)\). Eigenspaces, generalized eigenspaces, and kernels of powers \((T-\lambda I)^k\) are all invariant.</p>
+    </div>
+
+    <h3>Eigenvalues and eigenspaces</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A scalar \(\lambda\in F\) is an eigenvalue of \(T\) if there exists \(v\ne0\) such that \(Tv=\lambda v\). Such a vector is an eigenvector. The eigenspace is
+        \[
+        E_\lambda=\ker(T-\lambda I).
+        \]</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Eigenvalues are roots of the characteristic polynomial \(\det(\lambda I-A)\). Over an algebraically closed field every finite-dimensional operator has at least one eigenvalue.</p>
+        <p><span class="statement-title">Proposition.</span> Eigenvectors belonging to distinct eigenvalues are linearly independent.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The equation \(Av=\lambda v\) is equivalent to singularity of \(\lambda I-A\). Existence over algebraically closed fields follows because a nonconstant polynomial has a root.</p>
+        <p><span class="statement-title">Proof.</span> Suppose \(v_1,
+        \ldots,v_r\) have distinct eigenvalues \(\lambda_1,
+        \ldots,
+        \lambda_r\), and choose a shortest nontrivial relation \(\sum_i a_iv_i=0\). Applying \(T-\lambda_r I\) removes the \(v_r\)-term and gives \(\sum_{i<r}a_i(\lambda_i-
+        \lambda_r)v_i=0\), a shorter nontrivial relation unless all \(a_i=0\) for \(i<r\). Then also \(a_r=0\), contradiction.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Characteristic polynomial and multiplicity</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For a matrix \(A\in M_n(F)\), the characteristic polynomial is
+        \[
+        \chi_A(t)=\det(tI-A).
+        \]
+        The algebraic multiplicity of \(\lambda\) is its multiplicity as a root of \(\chi_A\). The geometric multiplicity is \(\dim E_\lambda\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> A scalar \(\lambda\) is an eigenvalue of \(A\) if and only if \(\chi_A(\lambda)=0\). For each eigenvalue,
+        \[
+        1\le \dim E_\lambda\le \text{algebraic multiplicity of }\lambda.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The equation \(Av=\lambda v\) with \(v\ne0\) is equivalent to \((\lambda I-A)v=0\) having a nonzero solution, which is equivalent to \(\lambda I-A\) being singular, hence determinant zero. The geometric multiplicity bound follows by choosing a basis adapted to \(E_\lambda\); the matrix of \(A\) begins with a \(\lambda I\) block, so \((t-
+        \lambda)^{\dim E_\lambda}\) divides \(\chi_A(t)\).</p>
+    </div>
+
+    <h3>Real and complex fields</h3>
+    <div class="math-statement counterexample">
+        <p><span class="statement-title">Counterexample.</span> The real rotation matrix
+        \[
+        R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}
+        \]
+        has characteristic polynomial \(t^2+1\), so it has no real eigenvalue. Over \(\mathbb C\), it has eigenvalues \(i\) and \(-i\). Eigenvalue questions depend on the field.</p>
+    </div>
+
+
+    <h3>Trace and determinant through eigenvalues</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the characteristic polynomial of \(A\) splits with eigenvalues \(\lambda_1,
+        \ldots,\lambda_n\) counted with algebraic multiplicity, then
+        \[
+        \operatorname{tr}A=\sum_{i=1}^n\lambda_i,
+        \qquad
+        \det A=\prod_{i=1}^n\lambda_i.
+        \]
+        These identities hold even when \(A\) is not diagonalizable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Over a splitting field, triangularize \(A\). The diagonal entries of the triangular matrix are the eigenvalues counted with algebraic multiplicity. Trace and determinant are unchanged by similarity, and for a triangular matrix they are the sum and product of diagonal entries.</p>
+    </div>
+
+    <h3>Invariant subspaces from polynomials</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(p(T)q(T)=0\) and \(p,q\) are coprime, then \(V=\ker p(T)\oplus\ker q(T)\). This is the algebraic mechanism behind decomposing a space into spectral pieces when the characteristic polynomial factors.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Invariant subspaces are more fundamental than individual eigenvectors: they are the pieces from which canonical decompositions are assembled.</p>
+        <p><span class="statement-title">Remark.</span> Eigenvalues are not merely roots of a polynomial. They signal a decomposition problem: can the whole space be assembled from invariant one-dimensional or generalized invariant pieces?</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/determinants-and-volume/" next_label="Next page" next_url="/notes/linear-algebra/diagonalization-and-triangularization/" %}
@@ -38,26 +103,91 @@ breadcrumb_child_label_zh: "7. 特征值与不变子空间"
     <h2><a href="{{ '/notes/linear-algebra/eigenvalues-and-invariant-subspaces/' | relative_url }}">7. Valeurs propres et sous-espaces invariants</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/determinants-and-volume/" next_label="Page suivante" next_url="/notes/linear-algebra/diagonalization-and-triangularization/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Valeurs propres et sous-espaces invariants.</p>
+    <p>Eigenvectors are directions preserved by a linear operator. Invariant subspaces are the broader objects: regions of a vector space on which the operator can be studied independently.</p>
 
-    <h3>Définition</h3>
+    <h3>Invariant subspaces</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> An eigenvector of \(T\) is a nonzero vector \(v\) with \(Tv=\lambda v\). An invariant subspace \(U\) satisfies \(T(U)\subset U\), so the operator restricts to \(U\).</p>
+        <p><span class="statement-title">Définition.</span> Let \(T:V\to V\) be linear. A subspace \(U\subset V\) is \(T\)-invariant if \(T(U)\subset U\). If \(U\) is invariant, the restriction \(T|_U:U\to U\) is a linear operator, so one can study part of \(T\) inside \(U\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> For any polynomial \(p\), the kernel \(\ker p(T)\) and image \(\operatorname{im}p(T)\) are \(T\)-invariant because \(T\) commutes with \(p(T)\). Eigenspaces, generalized eigenspaces, and kernels of powers \((T-\lambda I)^k\) are all invariant.</p>
+    </div>
+
+    <h3>Eigenvalues and eigenspaces</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A scalar \(\lambda\in F\) is an eigenvalue of \(T\) if there exists \(v\ne0\) such that \(Tv=\lambda v\). Such a vector is an eigenvector. The eigenspace is
+        \[
+        E_\lambda=\ker(T-\lambda I).
+        \]</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Eigenvalues are roots of the characteristic polynomial \(\det(\lambda I-A)\). Over an algebraically closed field every finite-dimensional operator has at least one eigenvalue.</p>
+        <p><span class="statement-title">Proposition.</span> Eigenvectors belonging to distinct eigenvalues are linearly independent.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The equation \(Av=\lambda v\) is equivalent to singularity of \(\lambda I-A\). Existence over algebraically closed fields follows because a nonconstant polynomial has a root.</p>
+        <p><span class="statement-title">Preuve.</span> Suppose \(v_1,
+        \ldots,v_r\) have distinct eigenvalues \(\lambda_1,
+        \ldots,
+        \lambda_r\), and choose a shortest nontrivial relation \(\sum_i a_iv_i=0\). Applying \(T-\lambda_r I\) removes the \(v_r\)-term and gives \(\sum_{i<r}a_i(\lambda_i-
+        \lambda_r)v_i=0\), a shorter nontrivial relation unless all \(a_i=0\) for \(i<r\). Then also \(a_r=0\), contradiction.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Characteristic polynomial and multiplicity</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For a matrix \(A\in M_n(F)\), the characteristic polynomial is
+        \[
+        \chi_A(t)=\det(tI-A).
+        \]
+        The algebraic multiplicity of \(\lambda\) is its multiplicity as a root of \(\chi_A\). The geometric multiplicity is \(\dim E_\lambda\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> A scalar \(\lambda\) is an eigenvalue of \(A\) if and only if \(\chi_A(\lambda)=0\). For each eigenvalue,
+        \[
+        1\le \dim E_\lambda\le \text{algebraic multiplicity of }\lambda.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The equation \(Av=\lambda v\) with \(v\ne0\) is equivalent to \((\lambda I-A)v=0\) having a nonzero solution, which is equivalent to \(\lambda I-A\) being singular, hence determinant zero. The geometric multiplicity bound follows by choosing a basis adapted to \(E_\lambda\); the matrix of \(A\) begins with a \(\lambda I\) block, so \((t-
+        \lambda)^{\dim E_\lambda}\) divides \(\chi_A(t)\).</p>
+    </div>
+
+    <h3>Real and complex fields</h3>
+    <div class="math-statement counterexample">
+        <p><span class="statement-title">Contre-exemple.</span> The real rotation matrix
+        \[
+        R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}
+        \]
+        has characteristic polynomial \(t^2+1\), so it has no real eigenvalue. Over \(\mathbb C\), it has eigenvalues \(i\) and \(-i\). Eigenvalue questions depend on the field.</p>
+    </div>
+
+
+    <h3>Trace and determinant through eigenvalues</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the characteristic polynomial of \(A\) splits with eigenvalues \(\lambda_1,
+        \ldots,\lambda_n\) counted with algebraic multiplicity, then
+        \[
+        \operatorname{tr}A=\sum_{i=1}^n\lambda_i,
+        \qquad
+        \det A=\prod_{i=1}^n\lambda_i.
+        \]
+        These identities hold even when \(A\) is not diagonalizable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Over a splitting field, triangularize \(A\). The diagonal entries of the triangular matrix are the eigenvalues counted with algebraic multiplicity. Trace and determinant are unchanged by similarity, and for a triangular matrix they are the sum and product of diagonal entries.</p>
+    </div>
+
+    <h3>Invariant subspaces from polynomials</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(p(T)q(T)=0\) and \(p,q\) are coprime, then \(V=\ker p(T)\oplus\ker q(T)\). This is the algebraic mechanism behind decomposing a space into spectral pieces when the characteristic polynomial factors.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Invariant subspaces are more fundamental than individual eigenvectors: they are the pieces from which canonical decompositions are assembled.</p>
+        <p><span class="statement-title">Remarque.</span> Eigenvalues are not merely roots of a polynomial. They signal a decomposition problem: can the whole space be assembled from invariant one-dimensional or generalized invariant pieces?</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/determinants-and-volume/" next_label="Page suivante" next_url="/notes/linear-algebra/diagonalization-and-triangularization/" %}
@@ -67,26 +197,91 @@ breadcrumb_child_label_zh: "7. 特征值与不变子空间"
     <h2><a href="{{ '/notes/linear-algebra/eigenvalues-and-invariant-subspaces/' | relative_url }}">7. 特征值与不变子空间</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/determinants-and-volume/" next_label="下一页" next_url="/notes/linear-algebra/diagonalization-and-triangularization/" %}
 
-    <p>本页整理关于“特征值与不变子空间”的主要定义、命题、定理与证明思路。</p>
+    <p>Eigenvectors are directions preserved by a linear operator. Invariant subspaces are the broader objects: regions of a vector space on which the operator can be studied independently.</p>
 
-    <h3>定义</h3>
+    <h3>Invariant subspaces</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> An eigenvector of \(T\) is a nonzero vector \(v\) with \(Tv=\lambda v\). An invariant subspace \(U\) satisfies \(T(U)\subset U\), so the operator restricts to \(U\).</p>
+        <p><span class="statement-title">定义.</span> Let \(T:V\to V\) be linear. A subspace \(U\subset V\) is \(T\)-invariant if \(T(U)\subset U\). If \(U\) is invariant, the restriction \(T|_U:U\to U\) is a linear operator, so one can study part of \(T\) inside \(U\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> For any polynomial \(p\), the kernel \(\ker p(T)\) and image \(\operatorname{im}p(T)\) are \(T\)-invariant because \(T\) commutes with \(p(T)\). Eigenspaces, generalized eigenspaces, and kernels of powers \((T-\lambda I)^k\) are all invariant.</p>
+    </div>
+
+    <h3>Eigenvalues and eigenspaces</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A scalar \(\lambda\in F\) is an eigenvalue of \(T\) if there exists \(v\ne0\) such that \(Tv=\lambda v\). Such a vector is an eigenvector. The eigenspace is
+        \[
+        E_\lambda=\ker(T-\lambda I).
+        \]</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Eigenvalues are roots of the characteristic polynomial \(\det(\lambda I-A)\). Over an algebraically closed field every finite-dimensional operator has at least one eigenvalue.</p>
+        <p><span class="statement-title">命题.</span> Eigenvectors belonging to distinct eigenvalues are linearly independent.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The equation \(Av=\lambda v\) is equivalent to singularity of \(\lambda I-A\). Existence over algebraically closed fields follows because a nonconstant polynomial has a root.</p>
+        <p><span class="statement-title">证明.</span> Suppose \(v_1,
+        \ldots,v_r\) have distinct eigenvalues \(\lambda_1,
+        \ldots,
+        \lambda_r\), and choose a shortest nontrivial relation \(\sum_i a_iv_i=0\). Applying \(T-\lambda_r I\) removes the \(v_r\)-term and gives \(\sum_{i<r}a_i(\lambda_i-
+        \lambda_r)v_i=0\), a shorter nontrivial relation unless all \(a_i=0\) for \(i<r\). Then also \(a_r=0\), contradiction.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Characteristic polynomial and multiplicity</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For a matrix \(A\in M_n(F)\), the characteristic polynomial is
+        \[
+        \chi_A(t)=\det(tI-A).
+        \]
+        The algebraic multiplicity of \(\lambda\) is its multiplicity as a root of \(\chi_A\). The geometric multiplicity is \(\dim E_\lambda\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> A scalar \(\lambda\) is an eigenvalue of \(A\) if and only if \(\chi_A(\lambda)=0\). For each eigenvalue,
+        \[
+        1\le \dim E_\lambda\le \text{algebraic multiplicity of }\lambda.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The equation \(Av=\lambda v\) with \(v\ne0\) is equivalent to \((\lambda I-A)v=0\) having a nonzero solution, which is equivalent to \(\lambda I-A\) being singular, hence determinant zero. The geometric multiplicity bound follows by choosing a basis adapted to \(E_\lambda\); the matrix of \(A\) begins with a \(\lambda I\) block, so \((t-
+        \lambda)^{\dim E_\lambda}\) divides \(\chi_A(t)\).</p>
+    </div>
+
+    <h3>Real and complex fields</h3>
+    <div class="math-statement counterexample">
+        <p><span class="statement-title">反例.</span> The real rotation matrix
+        \[
+        R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}
+        \]
+        has characteristic polynomial \(t^2+1\), so it has no real eigenvalue. Over \(\mathbb C\), it has eigenvalues \(i\) and \(-i\). Eigenvalue questions depend on the field.</p>
+    </div>
+
+
+    <h3>Trace and determinant through eigenvalues</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If the characteristic polynomial of \(A\) splits with eigenvalues \(\lambda_1,
+        \ldots,\lambda_n\) counted with algebraic multiplicity, then
+        \[
+        \operatorname{tr}A=\sum_{i=1}^n\lambda_i,
+        \qquad
+        \det A=\prod_{i=1}^n\lambda_i.
+        \]
+        These identities hold even when \(A\) is not diagonalizable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Over a splitting field, triangularize \(A\). The diagonal entries of the triangular matrix are the eigenvalues counted with algebraic multiplicity. Trace and determinant are unchanged by similarity, and for a triangular matrix they are the sum and product of diagonal entries.</p>
+    </div>
+
+    <h3>Invariant subspaces from polynomials</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(p(T)q(T)=0\) and \(p,q\) are coprime, then \(V=\ker p(T)\oplus\ker q(T)\). This is the algebraic mechanism behind decomposing a space into spectral pieces when the characteristic polynomial factors.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Invariant subspaces are more fundamental than individual eigenvectors: they are the pieces from which canonical decompositions are assembled.</p>
+        <p><span class="statement-title">说明.</span> Eigenvalues are not merely roots of a polynomial. They signal a decomposition problem: can the whole space be assembled from invariant one-dimensional or generalized invariant pieces?</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/determinants-and-volume/" next_label="下一页" next_url="/notes/linear-algebra/diagonalization-and-triangularization/" %}

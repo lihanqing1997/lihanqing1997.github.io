@@ -9,27 +9,91 @@ breadcrumb_child_label_zh: "11. 正交投影与最小二乘"
     <h2><a href="{{ '/notes/linear-algebra/orthogonal-projections-and-least-squares/' | relative_url }}">11. Orthogonal projections and least squares</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/inner-products-and-orthogonality/" next_label="Next page" next_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" %}
 
-    <p>Orthogonal projections and least squares records the objects, main results, proof mechanisms, and boundary cases needed for the linear algebra note.</p>
+    <p>Orthogonal projection turns geometry into an optimization principle: the best approximation is characterized by an error vector perpendicular to the approximating subspace.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> If \(U\) is a finite-dimensional subspace of an inner-product space, the orthogonal projection \(P_Ux\) is the unique point in \(U\) such that \(x-P_Ux\perp U\).</p>
-    </div>
-
-    <h3>Projection theorem</h3>
+    <h3>The projection theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The projection \(P_Ux\) is the unique minimizer of \(u\mapsto\|x-u\|\) over \(U\). In coordinates this gives the normal equations for least squares.</p>
+        <p><span class="statement-title">Theorem.</span> Let \(U\) be a finite-dimensional subspace of an inner product space \(V\). For every \(v\in V\), there is a unique decomposition
+        \[
+        v=u+r,
+        \qquad u\in U,
+        \qquad r\in U^\perp.
+        \]
+        The vector \(u\) is the unique element of \(U\) minimizing \(\|v-w\|\) over \(w\in U\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Decompose \(x=u+r\) with \(r\perp U\). Pythagoras gives \(\|x-v\|^2=\|r\|^2+\|u-v\|^2\), minimized only at \(v=u\).</p>
+        <p><span class="statement-title">Proof.</span> Choose an orthonormal basis \(q_1,
+        \ldots,q_k\) of \(U\) and set \(u=\sum_j\langle v,q_j\rangle q_j\). Then \(v-u\) is orthogonal to each \(q_j\), hence to \(U\). If \(w\in U\), then \(v-w=(v-u)+(u-w)\) with orthogonal summands, so
+        \[
+        \|v-w\|^2=\|v-u\|^2+\|u-w\|^2,
+        \]
+        minimized uniquely at \(w=u\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This page supplies the geometric core of regression and approximation theory; numerical analysis then asks how to compute the projection stably.</p>
+    <h3>Projection matrices</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the columns of \(Q\in F^{m\times k}\) are orthonormal, then the orthogonal projection onto \(\operatorname{col}Q\) is
+        \[
+        P=QQ^*.
+        \]
+        The matrix \(P\) satisfies \(P^2=P\) and \(P^*=P\). Conversely, any self-adjoint idempotent matrix is an orthogonal projection.</p>
     </div>
+
+    <h3>Least squares and normal equations</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For \(A\in F^{m\times n}\) and \(b\in F^m\), a vector \(\hat x\) minimizes \(\|Ax-b\|\) if and only if
+        \[
+        A^*(A\hat x-b)=0,
+        \]
+        equivalently
+        \[
+        A^*A\hat x=A^*b.
+        \]
+        These are the normal equations.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The set \(\{Ax:x\in F^n\}\) is the column space of \(A\). The closest point \(A\hat x\) to \(b\) is the projection of \(b\) onto that column space. The residual \(b-A\hat x\) must therefore be orthogonal to every column of \(A\), which is exactly \(A^*(b-A\hat x)=0\).</p>
+    </div>
+
+    <h3>Full column rank formula</h3>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> If \(A\) has full column rank, then \(A^*A\) is invertible and the least-squares solution is unique:
+        \[
+        \hat x=(A^*A)^{-1}A^*b.
+        \]
+        The projection matrix onto \(\operatorname{col}A\) is \(P=A(A^*A)^{-1}A^*\).</p>
+    </div>
+
+    <h3>QR factorization</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(A\in F^{m\times n}\) has linearly independent columns, Gram-Schmidt gives \(A=QR\), where \(Q\) has orthonormal columns and \(R\) is upper triangular with nonzero diagonal entries. Then least squares reduces to
+        \[
+        R\hat x=Q^*b.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Fitting a line \(y=\alpha+
+        \beta t\) to data points \((t_i,y_i)\) is the least-squares problem \(Ax\approx y\) with rows \((1,t_i)\). The residual vector is orthogonal to the columns \((1,
+        \ldots,1)^T\) and \((t_1,
+        \ldots,t_m)^T\), giving the classical normal equations for linear regression.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 520 220" role="img" aria-label="The residual from an orthogonal projection is perpendicular to the subspace.">
+            <line x1="70" y1="170" x2="455" y2="115" stroke="#496d8a" stroke-width="4" />
+            <circle cx="250" cy="144" r="6" fill="#333" />
+            <circle cx="250" cy="55" r="6" fill="#5f4b86" />
+            <line x1="250" y1="55" x2="250" y2="144" stroke="#5f4b86" stroke-width="3" stroke-dasharray="6 5" />
+            <text x="258" y="55">v</text>
+            <text x="260" y="148">proj_U v</text>
+            <text x="278" y="102">v - proj_U v ⟂ U</text>
+            <text x="430" y="105">U</text>
+        </svg>
+        <figcaption>The residual is the part of the vector that the subspace cannot explain.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/linear-algebra/" prev_label="Last page" prev_url="/notes/linear-algebra/inner-products-and-orthogonality/" next_label="Next page" next_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" %}
 </div>
@@ -38,27 +102,91 @@ breadcrumb_child_label_zh: "11. 正交投影与最小二乘"
     <h2><a href="{{ '/notes/linear-algebra/orthogonal-projections-and-least-squares/' | relative_url }}">11. Projections orthogonales et moindres carrés</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/inner-products-and-orthogonality/" next_label="Page suivante" next_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Projections orthogonales et moindres carrés.</p>
+    <p>Orthogonal projection turns geometry into an optimization principle: the best approximation is characterized by an error vector perpendicular to the approximating subspace.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> If \(U\) is a finite-dimensional subspace of an inner-product space, the orthogonal projection \(P_Ux\) is the unique point in \(U\) such that \(x-P_Ux\perp U\).</p>
-    </div>
-
-    <h3>Projection theorem</h3>
+    <h3>The projection theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> The projection \(P_Ux\) is the unique minimizer of \(u\mapsto\|x-u\|\) over \(U\). In coordinates this gives the normal equations for least squares.</p>
+        <p><span class="statement-title">Théorème.</span> Let \(U\) be a finite-dimensional subspace of an inner product space \(V\). For every \(v\in V\), there is a unique decomposition
+        \[
+        v=u+r,
+        \qquad u\in U,
+        \qquad r\in U^\perp.
+        \]
+        The vector \(u\) is the unique element of \(U\) minimizing \(\|v-w\|\) over \(w\in U\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Decompose \(x=u+r\) with \(r\perp U\). Pythagoras gives \(\|x-v\|^2=\|r\|^2+\|u-v\|^2\), minimized only at \(v=u\).</p>
+        <p><span class="statement-title">Preuve.</span> Choose an orthonormal basis \(q_1,
+        \ldots,q_k\) of \(U\) and set \(u=\sum_j\langle v,q_j\rangle q_j\). Then \(v-u\) is orthogonal to each \(q_j\), hence to \(U\). If \(w\in U\), then \(v-w=(v-u)+(u-w)\) with orthogonal summands, so
+        \[
+        \|v-w\|^2=\|v-u\|^2+\|u-w\|^2,
+        \]
+        minimized uniquely at \(w=u\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> This page supplies the geometric core of regression and approximation theory; numerical analysis then asks how to compute the projection stably.</p>
+    <h3>Projection matrices</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the columns of \(Q\in F^{m\times k}\) are orthonormal, then the orthogonal projection onto \(\operatorname{col}Q\) is
+        \[
+        P=QQ^*.
+        \]
+        The matrix \(P\) satisfies \(P^2=P\) and \(P^*=P\). Conversely, any self-adjoint idempotent matrix is an orthogonal projection.</p>
     </div>
+
+    <h3>Least squares and normal equations</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For \(A\in F^{m\times n}\) and \(b\in F^m\), a vector \(\hat x\) minimizes \(\|Ax-b\|\) if and only if
+        \[
+        A^*(A\hat x-b)=0,
+        \]
+        equivalently
+        \[
+        A^*A\hat x=A^*b.
+        \]
+        These are the normal equations.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The set \(\{Ax:x\in F^n\}\) is the column space of \(A\). The closest point \(A\hat x\) to \(b\) is the projection of \(b\) onto that column space. The residual \(b-A\hat x\) must therefore be orthogonal to every column of \(A\), which is exactly \(A^*(b-A\hat x)=0\).</p>
+    </div>
+
+    <h3>Full column rank formula</h3>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> If \(A\) has full column rank, then \(A^*A\) is invertible and the least-squares solution is unique:
+        \[
+        \hat x=(A^*A)^{-1}A^*b.
+        \]
+        The projection matrix onto \(\operatorname{col}A\) is \(P=A(A^*A)^{-1}A^*\).</p>
+    </div>
+
+    <h3>QR factorization</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(A\in F^{m\times n}\) has linearly independent columns, Gram-Schmidt gives \(A=QR\), where \(Q\) has orthonormal columns and \(R\) is upper triangular with nonzero diagonal entries. Then least squares reduces to
+        \[
+        R\hat x=Q^*b.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Fitting a line \(y=\alpha+
+        \beta t\) to data points \((t_i,y_i)\) is the least-squares problem \(Ax\approx y\) with rows \((1,t_i)\). The residual vector is orthogonal to the columns \((1,
+        \ldots,1)^T\) and \((t_1,
+        \ldots,t_m)^T\), giving the classical normal equations for linear regression.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 520 220" role="img" aria-label="The residual from an orthogonal projection is perpendicular to the subspace.">
+            <line x1="70" y1="170" x2="455" y2="115" stroke="#496d8a" stroke-width="4" />
+            <circle cx="250" cy="144" r="6" fill="#333" />
+            <circle cx="250" cy="55" r="6" fill="#5f4b86" />
+            <line x1="250" y1="55" x2="250" y2="144" stroke="#5f4b86" stroke-width="3" stroke-dasharray="6 5" />
+            <text x="258" y="55">v</text>
+            <text x="260" y="148">proj_U v</text>
+            <text x="278" y="102">v - proj_U v ⟂ U</text>
+            <text x="430" y="105">U</text>
+        </svg>
+        <figcaption>The residual is the part of the vector that the subspace cannot explain.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/linear-algebra/" prev_label="Page précédente" prev_url="/notes/linear-algebra/inner-products-and-orthogonality/" next_label="Page suivante" next_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" %}
 </div>
@@ -67,27 +195,91 @@ breadcrumb_child_label_zh: "11. 正交投影与最小二乘"
     <h2><a href="{{ '/notes/linear-algebra/orthogonal-projections-and-least-squares/' | relative_url }}">11. 正交投影与最小二乘</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/inner-products-and-orthogonality/" next_label="下一页" next_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" %}
 
-    <p>本页整理关于“正交投影与最小二乘”的主要定义、命题、定理与证明思路。</p>
+    <p>Orthogonal projection turns geometry into an optimization principle: the best approximation is characterized by an error vector perpendicular to the approximating subspace.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> If \(U\) is a finite-dimensional subspace of an inner-product space, the orthogonal projection \(P_Ux\) is the unique point in \(U\) such that \(x-P_Ux\perp U\).</p>
-    </div>
-
-    <h3>Projection theorem</h3>
+    <h3>The projection theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> The projection \(P_Ux\) is the unique minimizer of \(u\mapsto\|x-u\|\) over \(U\). In coordinates this gives the normal equations for least squares.</p>
+        <p><span class="statement-title">定理.</span> Let \(U\) be a finite-dimensional subspace of an inner product space \(V\). For every \(v\in V\), there is a unique decomposition
+        \[
+        v=u+r,
+        \qquad u\in U,
+        \qquad r\in U^\perp.
+        \]
+        The vector \(u\) is the unique element of \(U\) minimizing \(\|v-w\|\) over \(w\in U\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Decompose \(x=u+r\) with \(r\perp U\). Pythagoras gives \(\|x-v\|^2=\|r\|^2+\|u-v\|^2\), minimized only at \(v=u\).</p>
+        <p><span class="statement-title">证明.</span> Choose an orthonormal basis \(q_1,
+        \ldots,q_k\) of \(U\) and set \(u=\sum_j\langle v,q_j\rangle q_j\). Then \(v-u\) is orthogonal to each \(q_j\), hence to \(U\). If \(w\in U\), then \(v-w=(v-u)+(u-w)\) with orthogonal summands, so
+        \[
+        \|v-w\|^2=\|v-u\|^2+\|u-w\|^2,
+        \]
+        minimized uniquely at \(w=u\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> This page supplies the geometric core of regression and approximation theory; numerical analysis then asks how to compute the projection stably.</p>
+    <h3>Projection matrices</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If the columns of \(Q\in F^{m\times k}\) are orthonormal, then the orthogonal projection onto \(\operatorname{col}Q\) is
+        \[
+        P=QQ^*.
+        \]
+        The matrix \(P\) satisfies \(P^2=P\) and \(P^*=P\). Conversely, any self-adjoint idempotent matrix is an orthogonal projection.</p>
     </div>
+
+    <h3>Least squares and normal equations</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For \(A\in F^{m\times n}\) and \(b\in F^m\), a vector \(\hat x\) minimizes \(\|Ax-b\|\) if and only if
+        \[
+        A^*(A\hat x-b)=0,
+        \]
+        equivalently
+        \[
+        A^*A\hat x=A^*b.
+        \]
+        These are the normal equations.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The set \(\{Ax:x\in F^n\}\) is the column space of \(A\). The closest point \(A\hat x\) to \(b\) is the projection of \(b\) onto that column space. The residual \(b-A\hat x\) must therefore be orthogonal to every column of \(A\), which is exactly \(A^*(b-A\hat x)=0\).</p>
+    </div>
+
+    <h3>Full column rank formula</h3>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> If \(A\) has full column rank, then \(A^*A\) is invertible and the least-squares solution is unique:
+        \[
+        \hat x=(A^*A)^{-1}A^*b.
+        \]
+        The projection matrix onto \(\operatorname{col}A\) is \(P=A(A^*A)^{-1}A^*\).</p>
+    </div>
+
+    <h3>QR factorization</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(A\in F^{m\times n}\) has linearly independent columns, Gram-Schmidt gives \(A=QR\), where \(Q\) has orthonormal columns and \(R\) is upper triangular with nonzero diagonal entries. Then least squares reduces to
+        \[
+        R\hat x=Q^*b.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> Fitting a line \(y=\alpha+
+        \beta t\) to data points \((t_i,y_i)\) is the least-squares problem \(Ax\approx y\) with rows \((1,t_i)\). The residual vector is orthogonal to the columns \((1,
+        \ldots,1)^T\) and \((t_1,
+        \ldots,t_m)^T\), giving the classical normal equations for linear regression.</p>
+    </div>
+
+    <figure class="research-figure">
+        <svg viewBox="0 0 520 220" role="img" aria-label="The residual from an orthogonal projection is perpendicular to the subspace.">
+            <line x1="70" y1="170" x2="455" y2="115" stroke="#496d8a" stroke-width="4" />
+            <circle cx="250" cy="144" r="6" fill="#333" />
+            <circle cx="250" cy="55" r="6" fill="#5f4b86" />
+            <line x1="250" y1="55" x2="250" y2="144" stroke="#5f4b86" stroke-width="3" stroke-dasharray="6 5" />
+            <text x="258" y="55">v</text>
+            <text x="260" y="148">proj_U v</text>
+            <text x="278" y="102">v - proj_U v ⟂ U</text>
+            <text x="430" y="105">U</text>
+        </svg>
+        <figcaption>The residual is the part of the vector that the subspace cannot explain.</figcaption>
+    </figure>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/linear-algebra/" prev_label="上一页" prev_url="/notes/linear-algebra/inner-products-and-orthogonality/" next_label="下一页" next_url="/notes/linear-algebra/spectral-theorem-for-normal-operators/" %}
 </div>
