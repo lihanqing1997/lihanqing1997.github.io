@@ -1,6 +1,6 @@
-# Math history portrait sources
+# Math history image sources
 
-Portraits were downloaded from Wikimedia Commons at a reduced display width for use in the Math history note.
+Portraits and historical images were downloaded from Wikimedia Commons at a reduced display width for use in the Math history note.
 
 - `archimedes.jpg`: https://commons.wikimedia.org/wiki/File:Domenico-Fetti_Archimedes_1620.jpg
 - `cantor.jpg`: https://commons.wikimedia.org/wiki/File:Georg_Cantor_(Portr%C3%A4t).jpg
@@ -12,5 +12,6 @@ Portraits were downloaded from Wikimedia Commons at a reduced display width for 
 - `leibniz.jpg`: https://commons.wikimedia.org/wiki/File:Gottfried_Wilhelm_Leibniz_c1700.jpg
 - `newton.jpg`: https://commons.wikimedia.org/wiki/File:Portrait_of_Sir_Isaac_Newton,_1689.jpg
 - `russell.jpg`: https://commons.wikimedia.org/wiki/File:Bertrand_Russell_in_1936.jpg
+- `school-of-athens.jpg`: https://commons.wikimedia.org/wiki/Special:FilePath/Raphael%20School%20of%20Athens.jpg
 - `turing.jpg`: https://commons.wikimedia.org/wiki/File:Alan_Turing_(1951).jpg
 - `zermelo.jpeg`: https://commons.wikimedia.org/wiki/File:Ernst_Zermelo.jpeg
