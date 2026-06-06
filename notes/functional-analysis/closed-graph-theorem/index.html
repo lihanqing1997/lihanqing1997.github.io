@@ -4,39 +4,58 @@ breadcrumb_child_label_en: "7. Closed graph theorem"
 breadcrumb_child_label_fr: "7. Théorème du graphe fermé"
 breadcrumb_child_label_zh: "7. 闭图定理"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/closed-graph-theorem/' | relative_url }}">7. Closed graph theorem</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" next_label="Next page" next_url="/notes/functional-analysis/hahn-banach-theorem/" %}
 
-
-    <h3>Closed graph</h3>
+    <h3>Closed graphs</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The graph of a linear map \(T:X\to Y\) is \(G(T)=\{(x,Tx):x\in X\}\subset X\times Y\). It is closed if \(x_n\to x\) and \(Tx_n\to y\) imply \(y=Tx\).</p>
+        <p><span class="statement-title">Definition.</span> For normed spaces \(X,Y\), the graph of a linear map \(T:D(T)\subset X\to Y\) is \(G(T)=\{(x,Tx):x\in D(T)\}\subset X\times Y\). The operator is closed if \(G(T)\) is closed in \(X\times Y\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(D(T)\) is equipped with the graph norm \(\|x\|_T=\|x\|_X+\|Tx\|_Y\), then \(T\) is closed iff \(D(T)\) is complete whenever \(X,Y\) are Banach and \(D(T)\) is viewed with this graph norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The map \(x\mapsto(x,Tx)\) is an isometry from \((D(T),\|\cdot\|_T)\) onto \(G(T)\) up to the equivalent product norm \(\|(x,y)\|=\|x\|+\|y\|\). A subspace of the Banach product \(X\times Y\) is complete iff it is closed.</p>
     </div>
 
     <h3>Closed graph theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X\) and \(Y\) are Banach spaces and \(T:X\to Y\) is linear with closed graph, then \(T\) is bounded. Thus sequential compatibility with limits is enough for continuity.</p>
+        <p><span class="statement-title">Theorem.</span> Let \(X,Y\) be Banach spaces. If \(T:X\to Y\) is linear and its graph is closed in \(X\times Y\), then \(T\in\mathcal L(X,Y)\).</p>
     </div>
 
-    <h3>Proof by inverse theorem</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The graph is a Banach space under the product norm. The projection \(G(T)\to X\) is a bijective bounded linear map. Its inverse \(x\mapsto(x,Tx)\) is bounded by the bounded inverse theorem, giving boundedness of \(T\).</p>
+        <p><span class="statement-title">Proof.</span> Since \(G(T)\) is a closed subspace of the Banach space \(X\times Y\), it is Banach. The projection \(\pi_1:G(T)\to X\), \(\pi_1(x,Tx)=x\), is bounded and bijective. By the bounded inverse theorem, \(\pi_1^{-1}:X\to G(T)\) is bounded. The second projection \(\pi_2:G(T)\to Y\) is bounded, and \(T=\pi_2\pi_1^{-1}\). Hence \(T\) is bounded.</p>
     </div>
 
-    <h3>Closed versus bounded</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> For operators defined on all of a Banach space, closedness implies boundedness. Unbounded closed operators can exist only when their domains are proper subspaces.</p>
+    <h3>Sequential closedness</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For operators between normed spaces, \(T\) is closed iff whenever \(x_n\in D(T)\), \(x_n\to x\) in \(X\), and \(Tx_n\to y\) in \(Y\), one has \(x\in D(T)\) and \(Tx=y\).</p>
     </div>
 
-    <h3>Practical criterion</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> This is exactly the sequential characterization of closed subsets in metric spaces applied to \(G(T)\subset X\times Y\). Convergence \((x_n,Tx_n)\to(x,y)\) in the product norm is equivalent to \(x_n\to x\) and \(Tx_n\to y\).</p>
+    </div>
+
+    <h3>Closable operators</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A densely defined operator \(T:D(T)\subset X\to Y\) is closable if \(\overline{G(T)}\) is the graph of an operator. Its closure is denoted \(\overline T\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A densely defined operator \(T\) is closable iff \(x_n\to0\) and \(Tx_n\to y\) imply \(y=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(\overline{G(T)}\) is a graph, it cannot contain both \((0,0)\) and \((0,y)\) with \(y\ne0\). Conversely, the stated condition gives uniqueness of the second coordinate over each first coordinate in \(\overline{G(T)}\): if \((x,y_1)\) and \((x,y_2)\) lie in the closure, subtract approximating graph sequences to get a sequence tending to \(0\) whose image tends to \(y_1-y_2\), hence \(y_1=y_2\).</p>
+    </div>
+
+    <h3>Differentiation as a closed operator</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> To prove a linear operator is bounded, it can be easier to show that whenever \(x_n\to x\) and \(Tx_n\to y\), the candidate limit must satisfy \(y=Tx\).</p>
-    </div>
-
-    <h3>Relation to analysis</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Many differential operators are closed but unbounded on their natural domains. The closed graph theorem explains why domain choice is essential.</p>
+        <p><span class="statement-title">Example.</span> On \(C[0,1]\) with the sup norm, define \(D:C^1[0,1]\to C[0,1]\) by \(Df=f'\). If \(f_n\to f\) uniformly and \(f_n'\to g\) uniformly, then \(f(t)-f(0)=\lim_n\int_0^t f_n'(s)\,\mathrm{d}s=\int_0^t g(s)\,\mathrm{d}s\). Thus \(f\in C^1\) and \(f'=g\), so \(D\) is closed. It is not bounded, because \(\|\sin(nt)\|_\infty\le1\) while \(\|n\cos(nt)\|_\infty=n\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" next_label="Next page" next_url="/notes/functional-analysis/hahn-banach-theorem/" %}
@@ -46,35 +65,53 @@ breadcrumb_child_label_zh: "7. 闭图定理"
     <h2><a href="{{ '/notes/functional-analysis/closed-graph-theorem/' | relative_url }}">7. Théorème du graphe fermé</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" next_label="Page suivante" next_url="/notes/functional-analysis/hahn-banach-theorem/" %}
 
-
-    <h3>Closed graph</h3>
+    <h3>Closed graphs</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The graph of a linear map \(T:X\to Y\) is \(G(T)=\{(x,Tx):x\in X\}\subset X\times Y\). It is closed if \(x_n\to x\) and \(Tx_n\to y\) imply \(y=Tx\).</p>
+        <p><span class="statement-title">Définition.</span> For normed spaces \(X,Y\), the graph of a linear map \(T:D(T)\subset X\to Y\) is \(G(T)=\{(x,Tx):x\in D(T)\}\subset X\times Y\). The operator is closed if \(G(T)\) is closed in \(X\times Y\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(D(T)\) is equipped with the graph norm \(\|x\|_T=\|x\|_X+\|Tx\|_Y\), then \(T\) is closed iff \(D(T)\) is complete whenever \(X,Y\) are Banach and \(D(T)\) is viewed with this graph norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The map \(x\mapsto(x,Tx)\) is an isometry from \((D(T),\|\cdot\|_T)\) onto \(G(T)\) up to the equivalent product norm \(\|(x,y)\|=\|x\|+\|y\|\). A subspace of the Banach product \(X\times Y\) is complete iff it is closed.</p>
     </div>
 
     <h3>Closed graph theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(X\) and \(Y\) are Banach spaces and \(T:X\to Y\) is linear with closed graph, then \(T\) is bounded. Thus sequential compatibility with limits is enough for continuity.</p>
+        <p><span class="statement-title">Théorème.</span> Let \(X,Y\) be Banach spaces. If \(T:X\to Y\) is linear and its graph is closed in \(X\times Y\), then \(T\in\mathcal L(X,Y)\).</p>
     </div>
 
-    <h3>Proof by inverse theorem</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The graph is a Banach space under the product norm. The projection \(G(T)\to X\) is a bijective bounded linear map. Its inverse \(x\mapsto(x,Tx)\) is bounded by the bounded inverse theorem, giving boundedness of \(T\).</p>
+        <p><span class="statement-title">Preuve.</span> Since \(G(T)\) is a closed subspace of the Banach space \(X\times Y\), it is Banach. The projection \(\pi_1:G(T)\to X\), \(\pi_1(x,Tx)=x\), is bounded and bijective. By the bounded inverse theorem, \(\pi_1^{-1}:X\to G(T)\) is bounded. The second projection \(\pi_2:G(T)\to Y\) is bounded, and \(T=\pi_2\pi_1^{-1}\). Hence \(T\) is bounded.</p>
     </div>
 
-    <h3>Closed versus bounded</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> For operators defined on all of a Banach space, closedness implies boundedness. Unbounded closed operators can exist only when their domains are proper subspaces.</p>
+    <h3>Sequential closedness</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For operators between normed spaces, \(T\) is closed iff whenever \(x_n\in D(T)\), \(x_n\to x\) in \(X\), and \(Tx_n\to y\) in \(Y\), one has \(x\in D(T)\) and \(Tx=y\).</p>
     </div>
 
-    <h3>Practical criterion</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> This is exactly the sequential characterization of closed subsets in metric spaces applied to \(G(T)\subset X\times Y\). Convergence \((x_n,Tx_n)\to(x,y)\) in the product norm is equivalent to \(x_n\to x\) and \(Tx_n\to y\).</p>
+    </div>
+
+    <h3>Closable operators</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A densely defined operator \(T:D(T)\subset X\to Y\) is closable if \(\overline{G(T)}\) is the graph of an operator. Its closure is denoted \(\overline T\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A densely defined operator \(T\) is closable iff \(x_n\to0\) and \(Tx_n\to y\) imply \(y=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(\overline{G(T)}\) is a graph, it cannot contain both \((0,0)\) and \((0,y)\) with \(y\ne0\). Conversely, the stated condition gives uniqueness of the second coordinate over each first coordinate in \(\overline{G(T)}\): if \((x,y_1)\) and \((x,y_2)\) lie in the closure, subtract approximating graph sequences to get a sequence tending to \(0\) whose image tends to \(y_1-y_2\), hence \(y_1=y_2\).</p>
+    </div>
+
+    <h3>Differentiation as a closed operator</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> To prove a linear operator is bounded, it can be easier to show that whenever \(x_n\to x\) and \(Tx_n\to y\), the candidate limit must satisfy \(y=Tx\).</p>
-    </div>
-
-    <h3>Relation to analysis</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Many differential operators are closed but unbounded on their natural domains. The closed graph theorem explains why domain choice is essential.</p>
+        <p><span class="statement-title">Exemple.</span> On \(C[0,1]\) with the sup norm, define \(D:C^1[0,1]\to C[0,1]\) by \(Df=f'\). If \(f_n\to f\) uniformly and \(f_n'\to g\) uniformly, then \(f(t)-f(0)=\lim_n\int_0^t f_n'(s)\,\mathrm{d}s=\int_0^t g(s)\,\mathrm{d}s\). Thus \(f\in C^1\) and \(f'=g\), so \(D\) is closed. It is not bounded, because \(\|\sin(nt)\|_\infty\le1\) while \(\|n\cos(nt)\|_\infty=n\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" next_label="Page suivante" next_url="/notes/functional-analysis/hahn-banach-theorem/" %}
@@ -84,35 +121,53 @@ breadcrumb_child_label_zh: "7. 闭图定理"
     <h2><a href="{{ '/notes/functional-analysis/closed-graph-theorem/' | relative_url }}">7. 闭图定理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" next_label="下一页" next_url="/notes/functional-analysis/hahn-banach-theorem/" %}
 
-
-    <h3>Closed graph</h3>
+    <h3>Closed graphs</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The graph of a linear map \(T:X\to Y\) is \(G(T)=\{(x,Tx):x\in X\}\subset X\times Y\). It is closed if \(x_n\to x\) and \(Tx_n\to y\) imply \(y=Tx\).</p>
+        <p><span class="statement-title">定义.</span> For normed spaces \(X,Y\), the graph of a linear map \(T:D(T)\subset X\to Y\) is \(G(T)=\{(x,Tx):x\in D(T)\}\subset X\times Y\). The operator is closed if \(G(T)\) is closed in \(X\times Y\).</p>
     </div>
 
-    <h3>Closed graph 定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(X\) and \(Y\) are 巴拿赫空间 and \(T:X\to Y\) is linear with closed graph, then \(T\) is 有界. Thus sequential compatibility with limits is enough for continuity.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(D(T)\) is equipped with the graph norm \(\|x\|_T=\|x\|_X+\|Tx\|_Y\), then \(T\) is closed iff \(D(T)\) is complete whenever \(X,Y\) are Banach and \(D(T)\) is viewed with this graph norm.</p>
     </div>
 
-    <h3>证明 by inverse 定理</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The graph is a 巴拿赫空间 under the product norm. The projection \(G(T)\to X\) is a bijective 有界 linear map. Its inverse \(x\mapsto(x,Tx)\) is 有界 by the 有界 inverse 定理, giving boundedness of \(T\).</p>
+        <p><span class="statement-title">证明.</span> The map \(x\mapsto(x,Tx)\) is an isometry from \((D(T),\|\cdot\|_T)\) onto \(G(T)\) up to the equivalent product norm \(\|(x,y)\|=\|x\|+\|y\|\). A subspace of the Banach product \(X\times Y\) is complete iff it is closed.</p>
     </div>
 
-    <h3>Closed versus 有界</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> For operators defined on all of a 巴拿赫空间, closedness implies boundedness. Unbounded closed operators can exist only when their domains are proper subspaces.</p>
+    <h3>Closed graph theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(X,Y\) be Banach spaces. If \(T:X\to Y\) is linear and its graph is closed in \(X\times Y\), then \(T\in\mathcal L(X,Y)\).</p>
     </div>
 
-    <h3>Practical criterion</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Since \(G(T)\) is a closed subspace of the Banach space \(X\times Y\), it is Banach. The projection \(\pi_1:G(T)\to X\), \(\pi_1(x,Tx)=x\), is bounded and bijective. By the bounded inverse theorem, \(\pi_1^{-1}:X\to G(T)\) is bounded. The second projection \(\pi_2:G(T)\to Y\) is bounded, and \(T=\pi_2\pi_1^{-1}\). Hence \(T\) is bounded.</p>
+    </div>
+
+    <h3>Sequential closedness</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For operators between normed spaces, \(T\) is closed iff whenever \(x_n\in D(T)\), \(x_n\to x\) in \(X\), and \(Tx_n\to y\) in \(Y\), one has \(x\in D(T)\) and \(Tx=y\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> This is exactly the sequential characterization of closed subsets in metric spaces applied to \(G(T)\subset X\times Y\). Convergence \((x_n,Tx_n)\to(x,y)\) in the product norm is equivalent to \(x_n\to x\) and \(Tx_n\to y\).</p>
+    </div>
+
+    <h3>Closable operators</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A densely defined operator \(T:D(T)\subset X\to Y\) is closable if \(\overline{G(T)}\) is the graph of an operator. Its closure is denoted \(\overline T\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> A densely defined operator \(T\) is closable iff \(x_n\to0\) and \(Tx_n\to y\) imply \(y=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(\overline{G(T)}\) is a graph, it cannot contain both \((0,0)\) and \((0,y)\) with \(y\ne0\). Conversely, the stated condition gives uniqueness of the second coordinate over each first coordinate in \(\overline{G(T)}\): if \((x,y_1)\) and \((x,y_2)\) lie in the closure, subtract approximating graph sequences to get a sequence tending to \(0\) whose image tends to \(y_1-y_2\), hence \(y_1=y_2\).</p>
+    </div>
+
+    <h3>Differentiation as a closed operator</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">例.</span> To prove a linear operator is 有界, it can be easier to show that whenever \(x_n\to x\) and \(Tx_n\to y\), the candidate limit must satisfy \(y=Tx\).</p>
-    </div>
-
-    <h3>Relation to analysis</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Many differential operators are closed but unbounded on their natural domains. The closed graph 定理 explains why domain choice is essential.</p>
+        <p><span class="statement-title">例.</span> On \(C[0,1]\) with the sup norm, define \(D:C^1[0,1]\to C[0,1]\) by \(Df=f'\). If \(f_n\to f\) uniformly and \(f_n'\to g\) uniformly, then \(f(t)-f(0)=\lim_n\int_0^t f_n'(s)\,\mathrm{d}s=\int_0^t g(s)\,\mathrm{d}s\). Thus \(f\in C^1\) and \(f'=g\), so \(D\) is closed. It is not bounded, because \(\|\sin(nt)\|_\infty\le1\) while \(\|n\cos(nt)\|_\infty=n\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" next_label="下一页" next_url="/notes/functional-analysis/hahn-banach-theorem/" %}

@@ -4,39 +4,56 @@ breadcrumb_child_label_en: "5. Uniform boundedness principle"
 breadcrumb_child_label_fr: "5. Principe de bornitude uniforme"
 breadcrumb_child_label_zh: "5. 一致有界原理"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/uniform-boundedness-principle/' | relative_url }}">5. Uniform boundedness principle</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/baire-category-theorem/" next_label="Next page" next_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" %}
 
-
-    <h3>Statement</h3>
+    <h3>Pointwise bounded families</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Let \(X\) be Banach and \(Y\) normed. If \(\mathcal T\subset\mathcal L(X,Y)\) is pointwise bounded, meaning \(\sup_{T\in\mathcal T}\|Tx\|<\infty\) for every \(x\in X\), then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
+        <p><span class="statement-title">Theorem.</span> Let \(X\) be Banach, \(Y\) normed, and \(\mathcal T\subset\mathcal L(X,Y)\). If \(\sup_{T\in\mathcal T}\|Tx\|<\infty\) for every \(x\in X\), then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
     </div>
 
-    <h3>Baire proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Set \(E_n=\{x:\sup_{T\in\mathcal T}\|Tx\|\le n\}\). These closed sets cover \(X\). By Baire, some \(E_n\) contains a ball. Translating and scaling that ball yields a uniform operator-norm bound.</p>
+        <p><span class="statement-title">Proof.</span> For \(n\in\mathbb N\), define \(E_n=\{x\in X:\sup_{T\in\mathcal T}\|Tx\|\le n\}\). Each \(E_n\) is closed because it is an intersection of closed sets \(\{x:\|Tx\|\le n\}\), and \(\bigcup_nE_n=X\) by pointwise boundedness.</p>
+        <p>Baire gives some \(E_N\) with nonempty interior. Thus there exist \(x_0\) and \(r>0\) such that \(B(x_0,r)\subset E_N\). Since \(x_0\in E_N\), for \(\|h\|<r\) both \(x_0+h\) and \(x_0\) lie in \(E_N\), hence \(\|Th\|\le\|T(x_0+h)\|+\|Tx_0\|\le2N\) for every \(T\). Scaling yields \(\|Tz\|\le (2N/r)\|z\|\) for \(z\ne0\). Taking the supremum over \(\|z\|\le1\) proves uniform boundedness of the operator norms.</p>
     </div>
 
-    <h3>Banach-Steinhaus theorem</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Uniform boundedness is also called Banach-Steinhaus. It upgrades infinitely many pointwise estimates into a single norm estimate, but only because the domain is complete.</p>
-    </div>
-
-    <h3>Pointwise convergence of operators</h3>
+    <h3>Banach-Steinhaus convergence theorem</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> If \(T_nx\) converges for every \(x\in X\), where \(X\) is Banach, then \(\sup_n\|T_n\|<\infty\). Pointwise convergence secretly contains uniform boundedness.</p>
+        <p><span class="statement-title">Corollary.</span> Let \(X\) be Banach and \(Y\) Banach. If \(T_n\in\mathcal L(X,Y)\), \(T_nx\) converges in \(Y\) for every \(x\in X\), then the pointwise limit \(Tx=\lim_nT_nx\) belongs to \(\mathcal L(X,Y)\) and \(\sup_n\|T_n\|<\infty\).</p>
     </div>
 
-    <h3>Fourier partial sums</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Pointwise convergence implies pointwise boundedness. Uniform boundedness gives \(M=\sup_n\|T_n\|<\infty\). The pointwise limit of linear maps is linear, and \(\|Tx\|=\lim_n\|T_nx\|\le M\|x\|\), so \(T\) is bounded.</p>
+    </div>
+
+    <h3>Weak convergence is bounded</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(x_n\to x\) weakly in a Banach space \(X\), then \(\sup_n\|x_n\|<\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> View each \(x_n\) as a bounded linear functional \(Jx_n\) on \(X^*\), where \(Jx_n(f)=f(x_n)\). For each \(f\in X^*\), the scalar sequence \(f(x_n)\) converges, hence is bounded. Uniform boundedness on the Banach space \(X^*\) gives \(\sup_n\|Jx_n\|<\infty\). Hahn-Banach gives \(\|Jx_n\|=\|x_n\|\), so the norms are bounded.</p>
+    </div>
+
+    <h3>Condensation of singularities</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \((T_n)\subset\mathcal L(X,Y)\) with \(X\) Banach satisfies \(\sup_n\|T_n\|=\infty\), then there exists \(x\in X\) such that \(\sup_n\|T_nx\|=\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> This is the contrapositive of uniform boundedness. If every orbit \(\{T_nx:n\ge1\}\) were bounded, the principle would imply \(\sup_n\|T_n\|<\infty\), contradicting the hypothesis.</p>
+    </div>
+
+    <h3>A Fourier-analysis consequence</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> Uniform boundedness explains why certain pointwise convergence phenomena fail: if Fourier partial sum operators had uniformly good convergence on all of \(C(\mathbb T)\), their norms would need to remain bounded, but the Dirichlet kernels force growth.</p>
+        <p><span class="statement-title">Example.</span> Let \(S_N:C(\mathbb T)\to C(\mathbb T)\) be the \(N\)-th Fourier partial-sum operator. Its norm is the \(L^1\)-norm of the Dirichlet kernel up to normalization, which grows like \(\log N\). By condensation of singularities, there exists a continuous function whose Fourier partial sums are not uniformly bounded in sup norm, hence do not converge uniformly.</p>
     </div>
 
-    <h3>Diagnostic use</h3>
+    <h3>Completeness is essential</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> To disprove universal convergence of a sequence of bounded linear procedures, show their norms blow up. Uniform boundedness then guarantees some input has bad behavior.</p>
+        <p><span class="statement-title">Remark.</span> The theorem fails on incomplete spaces. Completeness is used only through Baire category, but that use is decisive: it turns a countable cover by closed control sets into a genuine ball of uniform control.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/baire-category-theorem/" next_label="Next page" next_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" %}
@@ -46,35 +63,51 @@ breadcrumb_child_label_zh: "5. 一致有界原理"
     <h2><a href="{{ '/notes/functional-analysis/uniform-boundedness-principle/' | relative_url }}">5. Principe de bornitude uniforme</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/baire-category-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" %}
 
-
-    <h3>Statement</h3>
+    <h3>Pointwise bounded families</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Let \(X\) be Banach and \(Y\) normed. If \(\mathcal T\subset\mathcal L(X,Y)\) is pointwise bounded, meaning \(\sup_{T\in\mathcal T}\|Tx\|<\infty\) for every \(x\in X\), then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
+        <p><span class="statement-title">Théorème.</span> Let \(X\) be Banach, \(Y\) normed, and \(\mathcal T\subset\mathcal L(X,Y)\). If \(\sup_{T\in\mathcal T}\|Tx\|<\infty\) for every \(x\in X\), then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
     </div>
 
-    <h3>Baire proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Set \(E_n=\{x:\sup_{T\in\mathcal T}\|Tx\|\le n\}\). These closed sets cover \(X\). By Baire, some \(E_n\) contains a ball. Translating and scaling that ball yields a uniform operator-norm bound.</p>
+        <p><span class="statement-title">Preuve.</span> For \(n\in\mathbb N\), define \(E_n=\{x\in X:\sup_{T\in\mathcal T}\|Tx\|\le n\}\). Each \(E_n\) is closed because it is an intersection of closed sets \(\{x:\|Tx\|\le n\}\), and \(\bigcup_nE_n=X\) by pointwise boundedness.</p>
+        <p>Baire gives some \(E_N\) with nonempty interior. Thus there exist \(x_0\) and \(r>0\) such that \(B(x_0,r)\subset E_N\). Since \(x_0\in E_N\), for \(\|h\|<r\) both \(x_0+h\) and \(x_0\) lie in \(E_N\), hence \(\|Th\|\le\|T(x_0+h)\|+\|Tx_0\|\le2N\) for every \(T\). Scaling yields \(\|Tz\|\le (2N/r)\|z\|\) for \(z\ne0\). Taking the supremum over \(\|z\|\le1\) proves uniform boundedness of the operator norms.</p>
     </div>
 
-    <h3>Banach-Steinhaus theorem</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Uniform boundedness is also called Banach-Steinhaus. It upgrades infinitely many pointwise estimates into a single norm estimate, but only because the domain is complete.</p>
-    </div>
-
-    <h3>Pointwise convergence of operators</h3>
+    <h3>Banach-Steinhaus convergence theorem</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> If \(T_nx\) converges for every \(x\in X\), where \(X\) is Banach, then \(\sup_n\|T_n\|<\infty\). Pointwise convergence secretly contains uniform boundedness.</p>
+        <p><span class="statement-title">Corollaire.</span> Let \(X\) be Banach and \(Y\) Banach. If \(T_n\in\mathcal L(X,Y)\), \(T_nx\) converges in \(Y\) for every \(x\in X\), then the pointwise limit \(Tx=\lim_nT_nx\) belongs to \(\mathcal L(X,Y)\) and \(\sup_n\|T_n\|<\infty\).</p>
     </div>
 
-    <h3>Fourier partial sums</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Pointwise convergence implies pointwise boundedness. Uniform boundedness gives \(M=\sup_n\|T_n\|<\infty\). The pointwise limit of linear maps is linear, and \(\|Tx\|=\lim_n\|T_nx\|\le M\|x\|\), so \(T\) is bounded.</p>
+    </div>
+
+    <h3>Weak convergence is bounded</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(x_n\to x\) weakly in a Banach space \(X\), then \(\sup_n\|x_n\|<\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> View each \(x_n\) as a bounded linear functional \(Jx_n\) on \(X^*\), where \(Jx_n(f)=f(x_n)\). For each \(f\in X^*\), the scalar sequence \(f(x_n)\) converges, hence is bounded. Uniform boundedness on the Banach space \(X^*\) gives \(\sup_n\|Jx_n\|<\infty\). Hahn-Banach gives \(\|Jx_n\|=\|x_n\|\), so the norms are bounded.</p>
+    </div>
+
+    <h3>Condensation of singularities</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \((T_n)\subset\mathcal L(X,Y)\) with \(X\) Banach satisfies \(\sup_n\|T_n\|=\infty\), then there exists \(x\in X\) such that \(\sup_n\|T_nx\|=\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> This is the contrapositive of uniform boundedness. If every orbit \(\{T_nx:n\ge1\}\) were bounded, the principle would imply \(\sup_n\|T_n\|<\infty\), contradicting the hypothesis.</p>
+    </div>
+
+    <h3>A Fourier-analysis consequence</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> Uniform boundedness explains why certain pointwise convergence phenomena fail: if Fourier partial sum operators had uniformly good convergence on all of \(C(\mathbb T)\), their norms would need to remain bounded, but the Dirichlet kernels force growth.</p>
+        <p><span class="statement-title">Exemple.</span> Let \(S_N:C(\mathbb T)\to C(\mathbb T)\) be the \(N\)-th Fourier partial-sum operator. Its norm is the \(L^1\)-norm of the Dirichlet kernel up to normalization, which grows like \(\log N\). By condensation of singularities, there exists a continuous function whose Fourier partial sums are not uniformly bounded in sup norm, hence do not converge uniformly.</p>
     </div>
 
-    <h3>Diagnostic use</h3>
+    <h3>Completeness is essential</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> To disprove universal convergence of a sequence of bounded linear procedures, show their norms blow up. Uniform boundedness then guarantees some input has bad behavior.</p>
+        <p><span class="statement-title">Remarque.</span> The theorem fails on incomplete spaces. Completeness is used only through Baire category, but that use is decisive: it turns a countable cover by closed control sets into a genuine ball of uniform control.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/baire-category-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" %}
@@ -84,35 +117,51 @@ breadcrumb_child_label_zh: "5. 一致有界原理"
     <h2><a href="{{ '/notes/functional-analysis/uniform-boundedness-principle/' | relative_url }}">5. 一致有界原理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/baire-category-theorem/" next_label="下一页" next_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" %}
 
-
-    <h3>Statement</h3>
+    <h3>Pointwise bounded families</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Let \(X\) be 巴拿赫 and \(Y\) normed. If \(\mathcal T\subset\mathcal L(X,Y)\) is pointwise 有界, meaning \(\sup_{T\in\mathcal T}\|Tx\|<\infty\) for every \(x\in X\), then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
+        <p><span class="statement-title">定理.</span> Let \(X\) be Banach, \(Y\) normed, and \(\mathcal T\subset\mathcal L(X,Y)\). If \(\sup_{T\in\mathcal T}\|Tx\|<\infty\) for every \(x\in X\), then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
     </div>
 
-    <h3>贝尔证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Set \(E_n=\{x:\sup_{T\in\mathcal T}\|Tx\|\le n\}\). These closed sets cover \(X\). By 贝尔, some \(E_n\) contains a ball. Translating and scaling that ball yields a uniform operator-norm bound.</p>
+        <p><span class="statement-title">证明.</span> For \(n\in\mathbb N\), define \(E_n=\{x\in X:\sup_{T\in\mathcal T}\|Tx\|\le n\}\). Each \(E_n\) is closed because it is an intersection of closed sets \(\{x:\|Tx\|\le n\}\), and \(\bigcup_nE_n=X\) by pointwise boundedness.</p>
+        <p>Baire gives some \(E_N\) with nonempty interior. Thus there exist \(x_0\) and \(r>0\) such that \(B(x_0,r)\subset E_N\). Since \(x_0\in E_N\), for \(\|h\|<r\) both \(x_0+h\) and \(x_0\) lie in \(E_N\), hence \(\|Th\|\le\|T(x_0+h)\|+\|Tx_0\|\le2N\) for every \(T\). Scaling yields \(\|Tz\|\le (2N/r)\|z\|\) for \(z\ne0\). Taking the supremum over \(\|z\|\le1\) proves uniform boundedness of the operator norms.</p>
     </div>
 
-    <h3>巴拿赫-Steinhaus 定理</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Uniform boundedness is also called 巴拿赫-Steinhaus. It upgrades infinitely many pointwise estimates into a single norm estimate, but only because the domain is complete.</p>
-    </div>
-
-    <h3>逐点收敛 of operators</h3>
+    <h3>Banach-Steinhaus convergence theorem</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> If \(T_nx\) converges for every \(x\in X\), where \(X\) is 巴拿赫, then \(\sup_n\|T_n\|<\infty\). 逐点收敛 secretly contains uniform boundedness.</p>
+        <p><span class="statement-title">推论.</span> Let \(X\) be Banach and \(Y\) Banach. If \(T_n\in\mathcal L(X,Y)\), \(T_nx\) converges in \(Y\) for every \(x\in X\), then the pointwise limit \(Tx=\lim_nT_nx\) belongs to \(\mathcal L(X,Y)\) and \(\sup_n\|T_n\|<\infty\).</p>
     </div>
 
-    <h3>傅里叶 partial sums</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Pointwise convergence implies pointwise boundedness. Uniform boundedness gives \(M=\sup_n\|T_n\|<\infty\). The pointwise limit of linear maps is linear, and \(\|Tx\|=\lim_n\|T_nx\|\le M\|x\|\), so \(T\) is bounded.</p>
+    </div>
+
+    <h3>Weak convergence is bounded</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(x_n\to x\) weakly in a Banach space \(X\), then \(\sup_n\|x_n\|<\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> View each \(x_n\) as a bounded linear functional \(Jx_n\) on \(X^*\), where \(Jx_n(f)=f(x_n)\). For each \(f\in X^*\), the scalar sequence \(f(x_n)\) converges, hence is bounded. Uniform boundedness on the Banach space \(X^*\) gives \(\sup_n\|Jx_n\|<\infty\). Hahn-Banach gives \(\|Jx_n\|=\|x_n\|\), so the norms are bounded.</p>
+    </div>
+
+    <h3>Condensation of singularities</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \((T_n)\subset\mathcal L(X,Y)\) with \(X\) Banach satisfies \(\sup_n\|T_n\|=\infty\), then there exists \(x\in X\) such that \(\sup_n\|T_nx\|=\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> This is the contrapositive of uniform boundedness. If every orbit \(\{T_nx:n\ge1\}\) were bounded, the principle would imply \(\sup_n\|T_n\|<\infty\), contradicting the hypothesis.</p>
+    </div>
+
+    <h3>A Fourier-analysis consequence</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">例.</span> Uniform boundedness explains why certain 逐点收敛 phenomena fail: if 傅里叶 partial sum operators had uniformly good convergence on all of \(C(\mathbb T)\), their norms would need to remain 有界, but the 狄利克雷 kernels force growth.</p>
+        <p><span class="statement-title">例.</span> Let \(S_N:C(\mathbb T)\to C(\mathbb T)\) be the \(N\)-th Fourier partial-sum operator. Its norm is the \(L^1\)-norm of the Dirichlet kernel up to normalization, which grows like \(\log N\). By condensation of singularities, there exists a continuous function whose Fourier partial sums are not uniformly bounded in sup norm, hence do not converge uniformly.</p>
     </div>
 
-    <h3>Diagnostic use</h3>
+    <h3>Completeness is essential</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> To disprove universal convergence of a sequence of 有界 linear procedures, show their norms blow up. Uniform boundedness then guarantees some input has bad behavior.</p>
+        <p><span class="statement-title">说明.</span> The theorem fails on incomplete spaces. Completeness is used only through Baire category, but that use is decisive: it turns a countable cover by closed control sets into a genuine ball of uniform control.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/baire-category-theorem/" next_label="下一页" next_url="/notes/functional-analysis/open-mapping-and-inverse-theorems/" %}

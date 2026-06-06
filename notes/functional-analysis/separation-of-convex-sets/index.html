@@ -4,39 +4,65 @@ breadcrumb_child_label_en: "9. Separation of convex sets"
 breadcrumb_child_label_fr: "9. Séparation des ensembles convexes"
 breadcrumb_child_label_zh: "9. 凸集分离"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/separation-of-convex-sets/' | relative_url }}">9. Separation of convex sets</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/hahn-banach-theorem/" next_label="Next page" next_url="/notes/functional-analysis/dual-spaces-and-annihilators/" %}
 
-
-    <h3>Geometric Hahn-Banach</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Let \(C\) be a nonempty open convex subset of a real normed space and let \(x_0\notin C\). Then there exists a nonzero continuous linear functional \(f\) and a real \(\alpha\) such that \(f(x)<\alpha\le f(x_0)\) for all \(x\in C\).</p>
-    </div>
-
-    <h3>Minkowski functional</h3>
+    <h3>Minkowski functionals</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a convex absorbing set \(C\) containing \(0\), the Minkowski functional is \(p_C(x)=\inf\{t>0:x\in tC\}\). It is sublinear and converts geometry of \(C\) into a domination function for Hahn-Banach.</p>
+        <p><span class="statement-title">Definition.</span> Let \(C\) be a convex absorbing subset of a real vector space \(X\) with \(0\in C\). Its Minkowski functional is \(p_C(x)=\inf\{t>0:x\in tC\}\).</p>
     </div>
 
-    <h3>Supporting hyperplanes</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> If \(C\) is convex and absorbing, then \(p_C\) is sublinear. If \(C\) is open in a normed space and \(0\in C\), then \(C=\{x:p_C(x)<1\}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Positive homogeneity follows directly from the definition. For subadditivity, if \(x\in aC\) and \(y\in bC\), then \(x+y=(a+b)(a(a+b)^{-1}x/a+b(a+b)^{-1}y/b)\in(a+b)C\) by convexity; take infima over \(a,b\).</p>
+        <p>If \(p_C(x)<1\), then \(x\in tC\) for some \(t<1\), and since \(0\in C\), convexity gives \(tC\subset C\). Conversely, if \(x\in C\) and \(C\) is open, then \((1+\varepsilon)x\in C\) for sufficiently small \(\varepsilon>0\), so \(x\in(1+\varepsilon)^{-1}C\) and \(p_C(x)<1\).</p>
+    </div>
+
+    <h3>Separation of a point from an open convex set</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(C\) be a nonempty open convex subset of a real normed space \(X\), and let \(x_0\notin C\). Then there exist \(f\in X^*\setminus\{0\}\) and \(\alpha\in\mathbb R\) such that \(f(x)<\alpha\le f(x_0)\) for every \(x\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Translate so \(0\in C\). Let \(p=p_C\). Since \(x_0\notin C\), \(p(x_0)\ge1\). On the line \(M=\mathbb R x_0\), define \(g(tx_0)=t\). For \(t>0\), \(g(tx_0)=t\le t p(x_0)=p(tx_0)\); for \(t<0\), \(g(tx_0)=t\le p(tx_0)\) because \(p\ge0\).</p>
+        <p>Hahn-Banach gives \(f\le p\) on \(X\) and \(f(x_0)=1\). If \(x\in C\), then \(p(x)<1\), so \(f(x)\le p(x)<1=f(x_0)\). Returning from the translation gives the stated inequality with the corresponding affine level \(\alpha\). Continuity of \(f\) follows because \(C\) contains a norm ball around \(0\), so \(p\) is bounded above by a multiple of \(\|\cdot\|\).</p>
+    </div>
+
+    <h3>Closed convex sets are weakly closed</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> Closed convex sets can often be supported by continuous linear functionals at boundary points. A supporting functional exposes a linear inequality satisfied by the whole convex set.</p>
+        <p><span class="statement-title">Corollary.</span> If \(C\subset X\) is convex and norm closed, then \(C\) is weakly closed.</p>
     </div>
 
-    <h3>Strict separation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(x_0\notin C\). Since \(C\) is closed, there is an open convex neighborhood \(U=C+B(0,r)\) not containing \(x_0\) for some \(r>0\). By the separation theorem, some \(f\in X^*\) and \(\alpha\) satisfy \(f(u)<\alpha\le f(x_0)\) for all \(u\in U\). In particular \(f(c)<\alpha\le f(x_0)\) for \(c\in C\). Hence \(X\setminus C\) is a union of weakly open half-space neighborhoods, so \(C\) is weakly closed.</p>
+    </div>
+
+    <h3>Supporting functionals</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If one convex set is compact and the other is closed, disjoint, and convex in a locally convex setting, then they can be strictly separated under suitable hypotheses. Compactness supplies a positive gap after separation.</p>
+        <p><span class="statement-title">Proposition.</span> Let \(C\subset X\) be open, convex, and nonempty. If \(x_0\in\partial C\), then there exists \(f\in X^*\setminus\{0\}\) such that \(f(x)\le f(x_0)\) for all \(x\in C\).</p>
     </div>
 
-    <h3>Dual certificates</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Since \(C\) is open and \(x_0\in\partial C\), one has \(x_0\notin C\). Apply the separation theorem for a point outside an open convex set. There are \(f\in X^*\setminus\{0\}\) and \(\alpha\) such that \(f(x)<\alpha\le f(x_0)\) for all \(x\in C\). Hence \(f(x)\le f(x_0)\) on \(C\).</p>
+    </div>
+
+    <h3>Strict separation with positive distance</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(C\subset X\) is closed convex and \(\operatorname{dist}(x_0,C)>0\), then there are \(f\in X^*\), \(\|f\|=1\), and \(\alpha\in\mathbb R\) such that \(f(c)\le\alpha< f(x_0)\) for all \(c\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(r=\operatorname{dist}(x_0,C)\) and set \(U=C+B(0,r/2)\). Then \(U\) is open, convex, and \(x_0\notin U\). Separate \(x_0\) from \(U\): \(f(u)<\beta\le f(x_0)\) for all \(u\in U\). If \(c\in C\) and \(\|h\|<r/2\), then \(c+h\in U\), so \(f(c)+f(h)<\beta\). Taking the supremum over \(\|h\|<r/2\) gives \(f(c)+(r/2)\|f\|\le\beta\). After normalizing \(f\), put \(\alpha=\beta-r/2\). Then \(f(c)\le\alpha<\beta\le f(x_0)\).</p>
+    </div>
+
+    <h3>Convex dual certificates</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> Separation theorems underlie duality in optimization: infeasibility or optimality can often be certified by a continuous linear functional separating a point from a convex attainable set.</p>
-    </div>
-
-    <h3>Topology matters</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Separation depends on having enough continuous linear functionals. Hahn-Banach is exactly the theorem that supplies them in normed spaces.</p>
+        <p><span class="statement-title">Example.</span> In optimization, separation says that infeasibility of \(x_0\in C\) can be certified by a continuous linear functional. This is the geometric origin of Lagrange multipliers, Fenchel duality, supporting hyperplanes, and many minimax theorems.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/hahn-banach-theorem/" next_label="Next page" next_url="/notes/functional-analysis/dual-spaces-and-annihilators/" %}
@@ -46,35 +72,60 @@ breadcrumb_child_label_zh: "9. 凸集分离"
     <h2><a href="{{ '/notes/functional-analysis/separation-of-convex-sets/' | relative_url }}">9. Séparation des ensembles convexes</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/hahn-banach-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/dual-spaces-and-annihilators/" %}
 
-
-    <h3>Geometric Hahn-Banach</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Let \(C\) be a nonempty open convex subset of a real normed space and let \(x_0\notin C\). Then there exists a nonzero continuous linear functional \(f\) and a real \(\alpha\) such that \(f(x)<\alpha\le f(x_0)\) for all \(x\in C\).</p>
-    </div>
-
-    <h3>Minkowski functional</h3>
+    <h3>Minkowski functionals</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For a convex absorbing set \(C\) containing \(0\), the Minkowski functional is \(p_C(x)=\inf\{t>0:x\in tC\}\). It is sublinear and converts geometry of \(C\) into a domination function for Hahn-Banach.</p>
+        <p><span class="statement-title">Définition.</span> Let \(C\) be a convex absorbing subset of a real vector space \(X\) with \(0\in C\). Its Minkowski functional is \(p_C(x)=\inf\{t>0:x\in tC\}\).</p>
     </div>
 
-    <h3>Supporting hyperplanes</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> If \(C\) is convex and absorbing, then \(p_C\) is sublinear. If \(C\) is open in a normed space and \(0\in C\), then \(C=\{x:p_C(x)<1\}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Positive homogeneity follows directly from the definition. For subadditivity, if \(x\in aC\) and \(y\in bC\), then \(x+y=(a+b)(a(a+b)^{-1}x/a+b(a+b)^{-1}y/b)\in(a+b)C\) by convexity; take infima over \(a,b\).</p>
+        <p>If \(p_C(x)<1\), then \(x\in tC\) for some \(t<1\), and since \(0\in C\), convexity gives \(tC\subset C\). Conversely, if \(x\in C\) and \(C\) is open, then \((1+\varepsilon)x\in C\) for sufficiently small \(\varepsilon>0\), so \(x\in(1+\varepsilon)^{-1}C\) and \(p_C(x)<1\).</p>
+    </div>
+
+    <h3>Separation of a point from an open convex set</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \(C\) be a nonempty open convex subset of a real normed space \(X\), and let \(x_0\notin C\). Then there exist \(f\in X^*\setminus\{0\}\) and \(\alpha\in\mathbb R\) such that \(f(x)<\alpha\le f(x_0)\) for every \(x\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Translate so \(0\in C\). Let \(p=p_C\). Since \(x_0\notin C\), \(p(x_0)\ge1\). On the line \(M=\mathbb R x_0\), define \(g(tx_0)=t\). For \(t>0\), \(g(tx_0)=t\le t p(x_0)=p(tx_0)\); for \(t<0\), \(g(tx_0)=t\le p(tx_0)\) because \(p\ge0\).</p>
+        <p>Hahn-Banach gives \(f\le p\) on \(X\) and \(f(x_0)=1\). If \(x\in C\), then \(p(x)<1\), so \(f(x)\le p(x)<1=f(x_0)\). Returning from the translation gives the stated inequality with the corresponding affine level \(\alpha\). Continuity of \(f\) follows because \(C\) contains a norm ball around \(0\), so \(p\) is bounded above by a multiple of \(\|\cdot\|\).</p>
+    </div>
+
+    <h3>Closed convex sets are weakly closed</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> Closed convex sets can often be supported by continuous linear functionals at boundary points. A supporting functional exposes a linear inequality satisfied by the whole convex set.</p>
+        <p><span class="statement-title">Corollaire.</span> If \(C\subset X\) is convex and norm closed, then \(C\) is weakly closed.</p>
     </div>
 
-    <h3>Strict separation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(x_0\notin C\). Since \(C\) is closed, there is an open convex neighborhood \(U=C+B(0,r)\) not containing \(x_0\) for some \(r>0\). By the separation theorem, some \(f\in X^*\) and \(\alpha\) satisfy \(f(u)<\alpha\le f(x_0)\) for all \(u\in U\). In particular \(f(c)<\alpha\le f(x_0)\) for \(c\in C\). Hence \(X\setminus C\) is a union of weakly open half-space neighborhoods, so \(C\) is weakly closed.</p>
+    </div>
+
+    <h3>Supporting functionals</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If one convex set is compact and the other is closed, disjoint, and convex in a locally convex setting, then they can be strictly separated under suitable hypotheses. Compactness supplies a positive gap after separation.</p>
+        <p><span class="statement-title">Proposition.</span> Let \(C\subset X\) be open, convex, and nonempty. If \(x_0\in\partial C\), then there exists \(f\in X^*\setminus\{0\}\) such that \(f(x)\le f(x_0)\) for all \(x\in C\).</p>
     </div>
 
-    <h3>Dual certificates</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Since \(C\) is open and \(x_0\in\partial C\), one has \(x_0\notin C\). Apply the separation theorem for a point outside an open convex set. There are \(f\in X^*\setminus\{0\}\) and \(\alpha\) such that \(f(x)<\alpha\le f(x_0)\) for all \(x\in C\). Hence \(f(x)\le f(x_0)\) on \(C\).</p>
+    </div>
+
+    <h3>Strict separation with positive distance</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(C\subset X\) is closed convex and \(\operatorname{dist}(x_0,C)>0\), then there are \(f\in X^*\), \(\|f\|=1\), and \(\alpha\in\mathbb R\) such that \(f(c)\le\alpha< f(x_0)\) for all \(c\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(r=\operatorname{dist}(x_0,C)\) and set \(U=C+B(0,r/2)\). Then \(U\) is open, convex, and \(x_0\notin U\). Separate \(x_0\) from \(U\): \(f(u)<\beta\le f(x_0)\) for all \(u\in U\). If \(c\in C\) and \(\|h\|<r/2\), then \(c+h\in U\), so \(f(c)+f(h)<\beta\). Taking the supremum over \(\|h\|<r/2\) gives \(f(c)+(r/2)\|f\|\le\beta\). After normalizing \(f\), put \(\alpha=\beta-r/2\). Then \(f(c)\le\alpha<\beta\le f(x_0)\).</p>
+    </div>
+
+    <h3>Convex dual certificates</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> Separation theorems underlie duality in optimization: infeasibility or optimality can often be certified by a continuous linear functional separating a point from a convex attainable set.</p>
-    </div>
-
-    <h3>Topology matters</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Separation depends on having enough continuous linear functionals. Hahn-Banach is exactly the theorem that supplies them in normed spaces.</p>
+        <p><span class="statement-title">Exemple.</span> In optimization, separation says that infeasibility of \(x_0\in C\) can be certified by a continuous linear functional. This is the geometric origin of Lagrange multipliers, Fenchel duality, supporting hyperplanes, and many minimax theorems.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/hahn-banach-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/dual-spaces-and-annihilators/" %}
@@ -84,35 +135,60 @@ breadcrumb_child_label_zh: "9. 凸集分离"
     <h2><a href="{{ '/notes/functional-analysis/separation-of-convex-sets/' | relative_url }}">9. 凸集分离</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/hahn-banach-theorem/" next_label="下一页" next_url="/notes/functional-analysis/dual-spaces-and-annihilators/" %}
 
-
-    <h3>Geometric 哈恩-巴拿赫</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Let \(C\) be a nonempty open 凸 subset of a real normed space and let \(x_0\notin C\). Then there exists a nonzero continuous linear functional \(f\) and a real \(\alpha\) such that \(f(x)<\alpha\le f(x_0)\) for all \(x\in C\).</p>
-    </div>
-
-    <h3>Minkowski functional</h3>
+    <h3>Minkowski functionals</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For a 凸 absorbing set \(C\) containing \(0\), the Minkowski functional is \(p_C(x)=\inf\{t>0:x\in tC\}\). It is sublinear and converts geometry of \(C\) into a domination function for 哈恩-巴拿赫.</p>
+        <p><span class="statement-title">定义.</span> Let \(C\) be a convex absorbing subset of a real vector space \(X\) with \(0\in C\). Its Minkowski functional is \(p_C(x)=\inf\{t>0:x\in tC\}\).</p>
     </div>
 
-    <h3>Supporting hyperplanes</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> If \(C\) is convex and absorbing, then \(p_C\) is sublinear. If \(C\) is open in a normed space and \(0\in C\), then \(C=\{x:p_C(x)<1\}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Positive homogeneity follows directly from the definition. For subadditivity, if \(x\in aC\) and \(y\in bC\), then \(x+y=(a+b)(a(a+b)^{-1}x/a+b(a+b)^{-1}y/b)\in(a+b)C\) by convexity; take infima over \(a,b\).</p>
+        <p>If \(p_C(x)<1\), then \(x\in tC\) for some \(t<1\), and since \(0\in C\), convexity gives \(tC\subset C\). Conversely, if \(x\in C\) and \(C\) is open, then \((1+\varepsilon)x\in C\) for sufficiently small \(\varepsilon>0\), so \(x\in(1+\varepsilon)^{-1}C\) and \(p_C(x)<1\).</p>
+    </div>
+
+    <h3>Separation of a point from an open convex set</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(C\) be a nonempty open convex subset of a real normed space \(X\), and let \(x_0\notin C\). Then there exist \(f\in X^*\setminus\{0\}\) and \(\alpha\in\mathbb R\) such that \(f(x)<\alpha\le f(x_0)\) for every \(x\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Translate so \(0\in C\). Let \(p=p_C\). Since \(x_0\notin C\), \(p(x_0)\ge1\). On the line \(M=\mathbb R x_0\), define \(g(tx_0)=t\). For \(t>0\), \(g(tx_0)=t\le t p(x_0)=p(tx_0)\); for \(t<0\), \(g(tx_0)=t\le p(tx_0)\) because \(p\ge0\).</p>
+        <p>Hahn-Banach gives \(f\le p\) on \(X\) and \(f(x_0)=1\). If \(x\in C\), then \(p(x)<1\), so \(f(x)\le p(x)<1=f(x_0)\). Returning from the translation gives the stated inequality with the corresponding affine level \(\alpha\). Continuity of \(f\) follows because \(C\) contains a norm ball around \(0\), so \(p\) is bounded above by a multiple of \(\|\cdot\|\).</p>
+    </div>
+
+    <h3>Closed convex sets are weakly closed</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> Closed 凸集 can often be supported by continuous linear functionals at boundary points. A supporting functional exposes a linear inequality satisfied by the whole 凸集.</p>
+        <p><span class="statement-title">推论.</span> If \(C\subset X\) is convex and norm closed, then \(C\) is weakly closed.</p>
     </div>
 
-    <h3>Strict separation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(x_0\notin C\). Since \(C\) is closed, there is an open convex neighborhood \(U=C+B(0,r)\) not containing \(x_0\) for some \(r>0\). By the separation theorem, some \(f\in X^*\) and \(\alpha\) satisfy \(f(u)<\alpha\le f(x_0)\) for all \(u\in U\). In particular \(f(c)<\alpha\le f(x_0)\) for \(c\in C\). Hence \(X\setminus C\) is a union of weakly open half-space neighborhoods, so \(C\) is weakly closed.</p>
+    </div>
+
+    <h3>Supporting functionals</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If one 凸集 is 紧 and the other is closed, disjoint, and 凸 in a locally 凸 setting, then they can be strictly separated under suitable hypotheses. 紧性 supplies a positive gap after separation.</p>
+        <p><span class="statement-title">命题.</span> Let \(C\subset X\) be open, convex, and nonempty. If \(x_0\in\partial C\), then there exists \(f\in X^*\setminus\{0\}\) such that \(f(x)\le f(x_0)\) for all \(x\in C\).</p>
     </div>
 
-    <h3>Dual certificates</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Since \(C\) is open and \(x_0\in\partial C\), one has \(x_0\notin C\). Apply the separation theorem for a point outside an open convex set. There are \(f\in X^*\setminus\{0\}\) and \(\alpha\) such that \(f(x)<\alpha\le f(x_0)\) for all \(x\in C\). Hence \(f(x)\le f(x_0)\) on \(C\).</p>
+    </div>
+
+    <h3>Strict separation with positive distance</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(C\subset X\) is closed convex and \(\operatorname{dist}(x_0,C)>0\), then there are \(f\in X^*\), \(\|f\|=1\), and \(\alpha\in\mathbb R\) such that \(f(c)\le\alpha< f(x_0)\) for all \(c\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(r=\operatorname{dist}(x_0,C)\) and set \(U=C+B(0,r/2)\). Then \(U\) is open, convex, and \(x_0\notin U\). Separate \(x_0\) from \(U\): \(f(u)<\beta\le f(x_0)\) for all \(u\in U\). If \(c\in C\) and \(\|h\|<r/2\), then \(c+h\in U\), so \(f(c)+f(h)<\beta\). Taking the supremum over \(\|h\|<r/2\) gives \(f(c)+(r/2)\|f\|\le\beta\). After normalizing \(f\), put \(\alpha=\beta-r/2\). Then \(f(c)\le\alpha<\beta\le f(x_0)\).</p>
+    </div>
+
+    <h3>Convex dual certificates</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">例.</span> Separation theorems underlie 对偶性 in optimization: infeasibility or optimality can often be certified by a continuous linear functional separating a point from a 凸 attainable set.</p>
-    </div>
-
-    <h3>Topology matters</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Separation depends on having enough continuous linear functionals. 哈恩-巴拿赫 is exactly the 定理 that supplies them in normed spaces.</p>
+        <p><span class="statement-title">例.</span> In optimization, separation says that infeasibility of \(x_0\in C\) can be certified by a continuous linear functional. This is the geometric origin of Lagrange multipliers, Fenchel duality, supporting hyperplanes, and many minimax theorems.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/hahn-banach-theorem/" next_label="下一页" next_url="/notes/functional-analysis/dual-spaces-and-annihilators/" %}

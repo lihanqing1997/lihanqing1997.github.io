@@ -4,39 +4,64 @@ breadcrumb_child_label_en: "17. Adjoint operators and spectrum"
 breadcrumb_child_label_fr: "17. Opérateurs adjoints et spectre"
 breadcrumb_child_label_zh: "17. 伴随算子与谱"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/adjoint-operators-and-spectrum/' | relative_url }}">17. Adjoint operators and spectrum</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/riesz-representation-theorem/" next_label="Next page" next_url="/notes/functional-analysis/compact-operators/" %}
 
-
-    <h3>Banach-space adjoint</h3>
+    <h3>Hilbert adjoints</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(T\in\mathcal L(X,Y)\), the adjoint \(T^*:Y^*\to X^*\) is \(T^*\varphi=\varphi\circ T\). It is bounded and \(\|T^*\|=\|T\|\).</p>
+        <p><span class="statement-title">Definition.</span> For \(T\in\mathcal L(H,K)\), the Hilbert adjoint \(T^*\in\mathcal L(K,H)\) is determined by \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\). An operator on \(H\) is self-adjoint if \(T=T^*\), normal if \(TT^*=T^*T\), and unitary if \(T^*T=TT^*=I\).</p>
     </div>
 
-    <h3>Hilbert-space adjoint</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> On Hilbert spaces, the adjoint is the unique operator satisfying \(\langle Tx,y\rangle=\langle x,T^*y\rangle\). Self-adjoint means \(T=T^*\), unitary means \(T^*T=TT^*=I\), and normal means \(T^*T=TT^*\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> \((S+T)^*=S^*+T^*\), \((\alpha T)^*=\overline\alpha T^*\), \((ST)^*=T^*S^*\), and \(\|T^*T\|=\|T\|^2\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The algebraic identities follow by inserting the definitions inside inner products and using uniqueness of representing vectors. For the norm identity, \(\|T^*T\|\le\|T^*\|\|T\|=\|T\|^2\). Conversely, \(\|Tx\|^2=\langle T^*Tx,x\rangle\le\|T^*T\|\|x\|^2\), so \(\|T\|^2\le\|T^*T\|\).</p>
     </div>
 
     <h3>Spectrum and resolvent</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(T\in\mathcal L(X)\), the resolvent set consists of \(\lambda\in\mathbb C\) such that \(\lambda I-T\) is bijective with bounded inverse. The spectrum \(\sigma(T)\) is its complement.</p>
+        <p><span class="statement-title">Definition.</span> For \(T\in\mathcal L(X)\), the resolvent set is \(\rho(T)=\{\lambda\in\mathbb C:\lambda I-T\text{ is bijective with bounded inverse}\}\). The spectrum is \(\sigma(T)=\mathbb C\setminus\rho(T)\).</p>
     </div>
 
-    <h3>Basic spectral theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The spectrum of a bounded operator on a complex Banach space is nonempty compact and lies in \(\{\lambda:|\lambda|\le\|T\|\}\). The resolvent is analytic, and Liouville's theorem proves nonemptiness.</p>
+        <p><span class="statement-title">Theorem.</span> The resolvent set is open, and \(R(\lambda,T)=(\lambda I-T)^{-1}\) is analytic on \(\rho(T)\).</p>
     </div>
 
-    <h3>Spectral radius formula</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Fix \(\lambda_0\in\rho(T)\). Write \(\lambda I-T=(\lambda_0I-T)[I+(\lambda-\lambda_0)R(\lambda_0,T)]\). If \(|\lambda-\lambda_0|\,\|R(\lambda_0,T)\|<1\), the bracket is invertible by the Neumann series. Thus nearby \(\lambda\) lie in \(\rho(T)\), and the Neumann expansion gives \(R(\lambda,T)=\sum_{n\ge0}(-1)^n(\lambda-\lambda_0)^nR(\lambda_0,T)^{n+1}\), which is analytic in operator norm.</p>
+    </div>
+
+    <h3>Compactness of the spectrum</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The spectral radius satisfies \(r(T)=\sup\{|\lambda|:\lambda\in\sigma(T)\}=\lim_{n\to\infty}\|T^n\|^{1/n}\). This connects algebraic spectrum with asymptotic operator growth.</p>
+        <p><span class="statement-title">Theorem.</span> For \(T\in\mathcal L(X)\) on a complex Banach space, \(\sigma(T)\) is a nonempty compact subset of \(\{\lambda:|\lambda|\le\|T\|\}\).</p>
     </div>
 
-    <h3>Finite-dimensional analogy</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In finite dimension the spectrum is the set of eigenvalues. In infinite dimension, spectrum also includes approximate and continuous spectral behavior not represented by eigenvectors.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(|\lambda|>\|T\|\), then \(\lambda I-T=\lambda(I-\lambda^{-1}T)\) is invertible by the Neumann series, so the spectrum is bounded. It is closed because the resolvent set is open.</p>
+        <p>To prove nonemptiness, suppose \(\sigma(T)=\varnothing\). Then \(R(\lambda,T)\) is entire and \(\|R(\lambda,T)\|\le (|\lambda|-\|T\|)^{-1}\) for large \(|\lambda|\), so for every \(x\in X\) and \(f\in X^*\), the scalar function \(f(R(\lambda,T)x)\) is entire and tends to \(0\) at infinity. Liouville's theorem gives it identically \(0\). Hahn-Banach then implies \(R(\lambda,T)x=0\) for all \(x\), impossible because \(R(\lambda,T)\) is invertible.</p>
+    </div>
+
+    <h3>Self-adjoint spectrum</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(T=T^*\in\mathcal L(H)\), then \(\sigma(T)\subset\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(\lambda=a+ib\) with \(b\ne0\). For \(x\in H\), \(\|(\lambda I-T)x\|\|x\|\ge |\langle(\lambda I-T)x,x\rangle|=|a\|x\|^2-\langle Tx,x\rangle+ib\|x\|^2|\ge |b|\|x\|^2\). Thus \(\|(\lambda I-T)x\|\ge |b|\|x\|\). The range is closed and the kernel is zero.</p>
+        <p>The adjoint of \(\lambda I-T\) is \(\overline\lambda I-T\), which satisfies the same lower bound, so its kernel is zero. Hence the range of \(\lambda I-T\) is dense because its orthogonal complement is \(\ker(\overline\lambda I-T)\). Being both dense and closed, the range is all of \(H\), and the inverse is bounded by the lower bound. Thus \(\lambda\in\rho(T)\).</p>
+    </div>
+
+    <h3>Spectral radius</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For self-adjoint \(T\), \(\|T\|=\sup\{|\lambda|:\lambda\in\sigma(T)\}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The inequality \(r(T)\le\|T\|\) holds for all bounded operators by the spectral containment above. For self-adjoint \(T\), the \(C^*\)-identity gives \(\|T^2\|=\|T\|^2\), hence by induction \(\|T^{2^n}\|=\|T\|^{2^n}\). The spectral radius formula \(r(T)=\lim_n\|T^n\|^{1/n}\), proved from the resolvent expansion and submultiplicativity, yields \(r(T)=\|T\|\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/riesz-representation-theorem/" next_label="Next page" next_url="/notes/functional-analysis/compact-operators/" %}
@@ -46,35 +71,59 @@ breadcrumb_child_label_zh: "17. 伴随算子与谱"
     <h2><a href="{{ '/notes/functional-analysis/adjoint-operators-and-spectrum/' | relative_url }}">17. Opérateurs adjoints et spectre</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/riesz-representation-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/compact-operators/" %}
 
-
-    <h3>Banach-space adjoint</h3>
+    <h3>Hilbert adjoints</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For \(T\in\mathcal L(X,Y)\), the adjoint \(T^*:Y^*\to X^*\) is \(T^*\varphi=\varphi\circ T\). It is bounded and \(\|T^*\|=\|T\|\).</p>
+        <p><span class="statement-title">Définition.</span> For \(T\in\mathcal L(H,K)\), the Hilbert adjoint \(T^*\in\mathcal L(K,H)\) is determined by \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\). An operator on \(H\) is self-adjoint if \(T=T^*\), normal if \(TT^*=T^*T\), and unitary if \(T^*T=TT^*=I\).</p>
     </div>
 
-    <h3>Hilbert-space adjoint</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> On Hilbert spaces, the adjoint is the unique operator satisfying \(\langle Tx,y\rangle=\langle x,T^*y\rangle\). Self-adjoint means \(T=T^*\), unitary means \(T^*T=TT^*=I\), and normal means \(T^*T=TT^*\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> \((S+T)^*=S^*+T^*\), \((\alpha T)^*=\overline\alpha T^*\), \((ST)^*=T^*S^*\), and \(\|T^*T\|=\|T\|^2\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The algebraic identities follow by inserting the definitions inside inner products and using uniqueness of representing vectors. For the norm identity, \(\|T^*T\|\le\|T^*\|\|T\|=\|T\|^2\). Conversely, \(\|Tx\|^2=\langle T^*Tx,x\rangle\le\|T^*T\|\|x\|^2\), so \(\|T\|^2\le\|T^*T\|\).</p>
     </div>
 
     <h3>Spectrum and resolvent</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For \(T\in\mathcal L(X)\), the resolvent set consists of \(\lambda\in\mathbb C\) such that \(\lambda I-T\) is bijective with bounded inverse. The spectrum \(\sigma(T)\) is its complement.</p>
+        <p><span class="statement-title">Définition.</span> For \(T\in\mathcal L(X)\), the resolvent set is \(\rho(T)=\{\lambda\in\mathbb C:\lambda I-T\text{ is bijective with bounded inverse}\}\). The spectrum is \(\sigma(T)=\mathbb C\setminus\rho(T)\).</p>
     </div>
 
-    <h3>Basic spectral theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> The spectrum of a bounded operator on a complex Banach space is nonempty compact and lies in \(\{\lambda:|\lambda|\le\|T\|\}\). The resolvent is analytic, and Liouville's theorem proves nonemptiness.</p>
+        <p><span class="statement-title">Théorème.</span> The resolvent set is open, and \(R(\lambda,T)=(\lambda I-T)^{-1}\) is analytic on \(\rho(T)\).</p>
     </div>
 
-    <h3>Spectral radius formula</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Fix \(\lambda_0\in\rho(T)\). Write \(\lambda I-T=(\lambda_0I-T)[I+(\lambda-\lambda_0)R(\lambda_0,T)]\). If \(|\lambda-\lambda_0|\,\|R(\lambda_0,T)\|<1\), the bracket is invertible by the Neumann series. Thus nearby \(\lambda\) lie in \(\rho(T)\), and the Neumann expansion gives \(R(\lambda,T)=\sum_{n\ge0}(-1)^n(\lambda-\lambda_0)^nR(\lambda_0,T)^{n+1}\), which is analytic in operator norm.</p>
+    </div>
+
+    <h3>Compactness of the spectrum</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> The spectral radius satisfies \(r(T)=\sup\{|\lambda|:\lambda\in\sigma(T)\}=\lim_{n\to\infty}\|T^n\|^{1/n}\). This connects algebraic spectrum with asymptotic operator growth.</p>
+        <p><span class="statement-title">Théorème.</span> For \(T\in\mathcal L(X)\) on a complex Banach space, \(\sigma(T)\) is a nonempty compact subset of \(\{\lambda:|\lambda|\le\|T\|\}\).</p>
     </div>
 
-    <h3>Finite-dimensional analogy</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> In finite dimension the spectrum is the set of eigenvalues. In infinite dimension, spectrum also includes approximate and continuous spectral behavior not represented by eigenvectors.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(|\lambda|>\|T\|\), then \(\lambda I-T=\lambda(I-\lambda^{-1}T)\) is invertible by the Neumann series, so the spectrum is bounded. It is closed because the resolvent set is open.</p>
+        <p>To prove nonemptiness, suppose \(\sigma(T)=\varnothing\). Then \(R(\lambda,T)\) is entire and \(\|R(\lambda,T)\|\le (|\lambda|-\|T\|)^{-1}\) for large \(|\lambda|\), so for every \(x\in X\) and \(f\in X^*\), the scalar function \(f(R(\lambda,T)x)\) is entire and tends to \(0\) at infinity. Liouville's theorem gives it identically \(0\). Hahn-Banach then implies \(R(\lambda,T)x=0\) for all \(x\), impossible because \(R(\lambda,T)\) is invertible.</p>
+    </div>
+
+    <h3>Self-adjoint spectrum</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(T=T^*\in\mathcal L(H)\), then \(\sigma(T)\subset\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(\lambda=a+ib\) with \(b\ne0\). For \(x\in H\), \(\|(\lambda I-T)x\|\|x\|\ge |\langle(\lambda I-T)x,x\rangle|=|a\|x\|^2-\langle Tx,x\rangle+ib\|x\|^2|\ge |b|\|x\|^2\). Thus \(\|(\lambda I-T)x\|\ge |b|\|x\|\). The range is closed and the kernel is zero.</p>
+        <p>The adjoint of \(\lambda I-T\) is \(\overline\lambda I-T\), which satisfies the same lower bound, so its kernel is zero. Hence the range of \(\lambda I-T\) is dense because its orthogonal complement is \(\ker(\overline\lambda I-T)\). Being both dense and closed, the range is all of \(H\), and the inverse is bounded by the lower bound. Thus \(\lambda\in\rho(T)\).</p>
+    </div>
+
+    <h3>Spectral radius</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For self-adjoint \(T\), \(\|T\|=\sup\{|\lambda|:\lambda\in\sigma(T)\}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The inequality \(r(T)\le\|T\|\) holds for all bounded operators by the spectral containment above. For self-adjoint \(T\), the \(C^*\)-identity gives \(\|T^2\|=\|T\|^2\), hence by induction \(\|T^{2^n}\|=\|T\|^{2^n}\). The spectral radius formula \(r(T)=\lim_n\|T^n\|^{1/n}\), proved from the resolvent expansion and submultiplicativity, yields \(r(T)=\|T\|\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/riesz-representation-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/compact-operators/" %}
@@ -84,35 +133,59 @@ breadcrumb_child_label_zh: "17. 伴随算子与谱"
     <h2><a href="{{ '/notes/functional-analysis/adjoint-operators-and-spectrum/' | relative_url }}">17. 伴随算子与谱</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/riesz-representation-theorem/" next_label="下一页" next_url="/notes/functional-analysis/compact-operators/" %}
 
-
-    <h3>巴拿赫-space adjoint</h3>
+    <h3>Hilbert adjoints</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For \(T\in\mathcal L(X,Y)\), the adjoint \(T^*:Y^*\to X^*\) is \(T^*\varphi=\varphi\circ T\). It is 有界 and \(\|T^*\|=\|T\|\).</p>
+        <p><span class="statement-title">定义.</span> For \(T\in\mathcal L(H,K)\), the Hilbert adjoint \(T^*\in\mathcal L(K,H)\) is determined by \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\). An operator on \(H\) is self-adjoint if \(T=T^*\), normal if \(TT^*=T^*T\), and unitary if \(T^*T=TT^*=I\).</p>
     </div>
 
-    <h3>希尔伯特-space adjoint</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> On 希尔伯特空间, the adjoint is the unique operator satisfying \(\langle Tx,y\rangle=\langle x,T^*y\rangle\). Self-adjoint means \(T=T^*\), unitary means \(T^*T=TT^*=I\), and normal means \(T^*T=TT^*\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> \((S+T)^*=S^*+T^*\), \((\alpha T)^*=\overline\alpha T^*\), \((ST)^*=T^*S^*\), and \(\|T^*T\|=\|T\|^2\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The algebraic identities follow by inserting the definitions inside inner products and using uniqueness of representing vectors. For the norm identity, \(\|T^*T\|\le\|T^*\|\|T\|=\|T\|^2\). Conversely, \(\|Tx\|^2=\langle T^*Tx,x\rangle\le\|T^*T\|\|x\|^2\), so \(\|T\|^2\le\|T^*T\|\).</p>
     </div>
 
     <h3>Spectrum and resolvent</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For \(T\in\mathcal L(X)\), the resolvent set consists of \(\lambda\in\mathbb C\) such that \(\lambda I-T\) is bijective with 有界 inverse. The spectrum \(\sigma(T)\) is its complement.</p>
+        <p><span class="statement-title">定义.</span> For \(T\in\mathcal L(X)\), the resolvent set is \(\rho(T)=\{\lambda\in\mathbb C:\lambda I-T\text{ is bijective with bounded inverse}\}\). The spectrum is \(\sigma(T)=\mathbb C\setminus\rho(T)\).</p>
     </div>
 
-    <h3>Basic spectral 定理</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> The spectrum of a 有界 operator on a complex 巴拿赫空间 is nonempty 紧 and lies in \(\{\lambda:|\lambda|\le\|T\|\}\). The resolvent is 解析, and 刘维尔's 定理 proves nonemptiness.</p>
+        <p><span class="statement-title">定理.</span> The resolvent set is open, and \(R(\lambda,T)=(\lambda I-T)^{-1}\) is analytic on \(\rho(T)\).</p>
     </div>
 
-    <h3>Spectral radius formula</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Fix \(\lambda_0\in\rho(T)\). Write \(\lambda I-T=(\lambda_0I-T)[I+(\lambda-\lambda_0)R(\lambda_0,T)]\). If \(|\lambda-\lambda_0|\,\|R(\lambda_0,T)\|<1\), the bracket is invertible by the Neumann series. Thus nearby \(\lambda\) lie in \(\rho(T)\), and the Neumann expansion gives \(R(\lambda,T)=\sum_{n\ge0}(-1)^n(\lambda-\lambda_0)^nR(\lambda_0,T)^{n+1}\), which is analytic in operator norm.</p>
+    </div>
+
+    <h3>Compactness of the spectrum</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> The spectral radius satisfies \(r(T)=\sup\{|\lambda|:\lambda\in\sigma(T)\}=\lim_{n\to\infty}\|T^n\|^{1/n}\). This connects algebraic spectrum with asymptotic operator growth.</p>
+        <p><span class="statement-title">定理.</span> For \(T\in\mathcal L(X)\) on a complex Banach space, \(\sigma(T)\) is a nonempty compact subset of \(\{\lambda:|\lambda|\le\|T\|\}\).</p>
     </div>
 
-    <h3>Finite-dimensional analogy</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> In finite dimension the spectrum is the set of eigenvalues. In infinite dimension, spectrum also includes approximate and continuous spectral behavior not represented by eigenvectors.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(|\lambda|>\|T\|\), then \(\lambda I-T=\lambda(I-\lambda^{-1}T)\) is invertible by the Neumann series, so the spectrum is bounded. It is closed because the resolvent set is open.</p>
+        <p>To prove nonemptiness, suppose \(\sigma(T)=\varnothing\). Then \(R(\lambda,T)\) is entire and \(\|R(\lambda,T)\|\le (|\lambda|-\|T\|)^{-1}\) for large \(|\lambda|\), so for every \(x\in X\) and \(f\in X^*\), the scalar function \(f(R(\lambda,T)x)\) is entire and tends to \(0\) at infinity. Liouville's theorem gives it identically \(0\). Hahn-Banach then implies \(R(\lambda,T)x=0\) for all \(x\), impossible because \(R(\lambda,T)\) is invertible.</p>
+    </div>
+
+    <h3>Self-adjoint spectrum</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(T=T^*\in\mathcal L(H)\), then \(\sigma(T)\subset\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(\lambda=a+ib\) with \(b\ne0\). For \(x\in H\), \(\|(\lambda I-T)x\|\|x\|\ge |\langle(\lambda I-T)x,x\rangle|=|a\|x\|^2-\langle Tx,x\rangle+ib\|x\|^2|\ge |b|\|x\|^2\). Thus \(\|(\lambda I-T)x\|\ge |b|\|x\|\). The range is closed and the kernel is zero.</p>
+        <p>The adjoint of \(\lambda I-T\) is \(\overline\lambda I-T\), which satisfies the same lower bound, so its kernel is zero. Hence the range of \(\lambda I-T\) is dense because its orthogonal complement is \(\ker(\overline\lambda I-T)\). Being both dense and closed, the range is all of \(H\), and the inverse is bounded by the lower bound. Thus \(\lambda\in\rho(T)\).</p>
+    </div>
+
+    <h3>Spectral radius</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For self-adjoint \(T\), \(\|T\|=\sup\{|\lambda|:\lambda\in\sigma(T)\}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The inequality \(r(T)\le\|T\|\) holds for all bounded operators by the spectral containment above. For self-adjoint \(T\), the \(C^*\)-identity gives \(\|T^2\|=\|T\|^2\), hence by induction \(\|T^{2^n}\|=\|T\|^{2^n}\). The spectral radius formula \(r(T)=\lim_n\|T^n\|^{1/n}\), proved from the resolvent expansion and submultiplicativity, yields \(r(T)=\|T\|\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/riesz-representation-theorem/" next_label="下一页" next_url="/notes/functional-analysis/compact-operators/" %}

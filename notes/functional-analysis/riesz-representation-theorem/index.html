@@ -4,39 +4,52 @@ breadcrumb_child_label_en: "16. Riesz representation theorem"
 breadcrumb_child_label_fr: "16. Théorème de représentation de Riesz"
 breadcrumb_child_label_zh: "16. 里斯表示定理"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/riesz-representation-theorem/' | relative_url }}">16. Riesz representation theorem</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" next_label="Next page" next_url="/notes/functional-analysis/adjoint-operators-and-spectrum/" %}
 
-
-    <h3>Hilbert-space representation</h3>
+    <h3>Hilbert-space duality</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For every continuous linear functional \(\varphi\in H^*\) on a Hilbert space, there is a unique \(y\in H\) such that \(\varphi(x)=\langle x,y\rangle\) for all \(x\in H\), with \(\|\varphi\|=\|y\|\).</p>
+        <p><span class="statement-title">Theorem.</span> For every \(f\in H^*\), there is a unique \(y\in H\) such that \(f(x)=\langle x,y\rangle\) for all \(x\in H\), and \(\|f\|=\|y\|\).</p>
     </div>
 
-    <h3>Proof by projection</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(\varphi=0\), take \(y=0\). Otherwise \(\ker\varphi\) is a closed hyperplane. Choose a unit vector \(u\in(\ker\varphi)^\perp\). Then every \(x\) decomposes into a kernel part plus a scalar multiple of \(u\), giving the representing vector.</p>
+        <p><span class="statement-title">Proof.</span> If \(f=0\), take \(y=0\). Otherwise, \(\ker f\) is a closed proper subspace. Choose \(z\in(\ker f)^\perp\) with \(\|z\|=1\). Since \(z\notin\ker f\), \(f(z)\ne0\). For any \(x\), the vector \(x-(f(x)/f(z))z\) lies in \(\ker f\), so it is orthogonal to \(z\). Thus \(\langle x,z\rangle=(f(x)/f(z))\langle z,z\rangle=f(x)/f(z)\). Hence \(f(x)=\langle x,\overline{f(z)}\,z\rangle\) with the stated convention.</p>
+        <p>Uniqueness follows because if \(\langle x,y_1-y_2\rangle=0\) for all \(x\), choosing \(x=y_1-y_2\) gives zero norm. Cauchy-Schwarz gives \(\|f\|\le\|y\|\), and equality follows by evaluating at \(x=y/\|y\|\) when \(y\ne0\).</p>
     </div>
 
-    <h3>Conjugation convention</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The exact formula depends on whether the inner product is linear in the first or second variable. These notes use the linear-in-the-first convention, so functionals have the form \(x\mapsto\langle x,y\rangle\).</p>
+    <h3>Riesz map</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The map \(R:H\to H^*\), \(Ry(x)=\langle x,y\rangle\), is a conjugate-linear surjective isometry under the convention that the inner product is linear in the first variable.</p>
     </div>
 
-    <h3>Self-duality of Hilbert space</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> The Riesz map identifies \(H\) anti-linearly or linearly with \(H^*\), depending on convention. This self-duality is special to Hilbert spaces and generally fails in Banach spaces.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Conjugate linearity in \(y\) follows from conjugate-linearity of the second slot. The previous theorem gives surjectivity and norm preservation.</p>
     </div>
 
-    <h3>Adjoints</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> For \(T\in\mathcal L(H,K)\), there is a unique \(T^*\in\mathcal L(K,H)\) such that \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\). The Riesz theorem constructs \(T^*y\) from the functional \(x\mapsto\langle Tx,y\rangle\).</p>
+    <h3>Adjoints via Riesz</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(T\in\mathcal L(H,K)\) between Hilbert spaces, there is a unique \(T^*\in\mathcal L(K,H)\) such that \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\) for all \(x\in H,y\in K\). Moreover \(\|T^*\|=\|T\|\).</p>
     </div>
 
-    <h3>Integration against an \(L^2\) function</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For fixed \(y\in K\), the map \(x\mapsto\langle Tx,y\rangle\) is a bounded linear functional on \(H\). Riesz gives a unique vector \(T^*y\) representing it. Linearity of \(T^*\) follows from uniqueness of representing vectors. The estimate \(\|T^*y\|\le\|T\|\|y\|\) gives boundedness. Applying the same argument to \(T^*\) and using \(\|T\|^2=\|T^*T\|\le\|T^*\|\|T\|\) gives equality, or use the Banach-space adjoint norm equality.</p>
+    </div>
+
+    <h3>Lax-Milgram theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(a:H\times H\to\mathbb F\) be a bounded sesquilinear form, linear in the first variable, and coercive: \(\operatorname{Re}a(x,x)\ge c\|x\|^2\) for some \(c>0\). For every \(f\in H^*\), there is a unique \(u\in H\) such that \(a(u,v)=f(v)\) for all \(v\in H\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> By Riesz, for each \(u\) there is a unique \(Au\in H\) such that \(a(u,v)=\langle Au,v\rangle\). Boundedness of \(a\) makes \(A\in\mathcal L(H)\). Coercivity gives \(c\|u\|^2\le |a(u,u)|=|\langle Au,u\rangle|\le\|Au\|\|u\|\), hence \(\|Au\|\ge c\|u\|\); in particular \(A\) is injective and has closed range.</p>
+        <p>If \(w\perp\operatorname{Ran}A\), then \(0=\langle Au,w\rangle=a(u,w)\) for all \(u\). Taking \(u=w\) gives \(0=a(w,w)\), and coercivity gives \(w=0\). Thus \(\operatorname{Ran}A\) is dense; since it is also closed, it is all of \(H\). For \(f(v)=\langle y,v\rangle\), solve \(Au=y\). Uniqueness follows from injectivity.</p>
+    </div>
+
+    <h3>Dual of L2</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> On \(L^2\), every bounded linear functional is integration against a unique \(L^2\) function: \(\varphi(f)=\int f\overline g\,\mathrm{d}\mu\) under the usual complex convention.</p>
+        <p><span class="statement-title">Example.</span> For \(H=L^2(\Omega,\mu)\), Riesz says every continuous linear functional has the form \(f(g)=\int g\overline h\,\mathrm{d}\mu\) for a unique \(h\in L^2\). This is the Hilbert-space special case of \(L^p\)-duality.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" next_label="Next page" next_url="/notes/functional-analysis/adjoint-operators-and-spectrum/" %}
@@ -46,35 +59,47 @@ breadcrumb_child_label_zh: "16. 里斯表示定理"
     <h2><a href="{{ '/notes/functional-analysis/riesz-representation-theorem/' | relative_url }}">16. Théorème de représentation de Riesz</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" next_label="Page suivante" next_url="/notes/functional-analysis/adjoint-operators-and-spectrum/" %}
 
-
-    <h3>Hilbert-space representation</h3>
+    <h3>Hilbert-space duality</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> For every continuous linear functional \(\varphi\in H^*\) on a Hilbert space, there is a unique \(y\in H\) such that \(\varphi(x)=\langle x,y\rangle\) for all \(x\in H\), with \(\|\varphi\|=\|y\|\).</p>
+        <p><span class="statement-title">Théorème.</span> For every \(f\in H^*\), there is a unique \(y\in H\) such that \(f(x)=\langle x,y\rangle\) for all \(x\in H\), and \(\|f\|=\|y\|\).</p>
     </div>
 
-    <h3>Proof by projection</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> If \(\varphi=0\), take \(y=0\). Otherwise \(\ker\varphi\) is a closed hyperplane. Choose a unit vector \(u\in(\ker\varphi)^\perp\). Then every \(x\) decomposes into a kernel part plus a scalar multiple of \(u\), giving the representing vector.</p>
+        <p><span class="statement-title">Preuve.</span> If \(f=0\), take \(y=0\). Otherwise, \(\ker f\) is a closed proper subspace. Choose \(z\in(\ker f)^\perp\) with \(\|z\|=1\). Since \(z\notin\ker f\), \(f(z)\ne0\). For any \(x\), the vector \(x-(f(x)/f(z))z\) lies in \(\ker f\), so it is orthogonal to \(z\). Thus \(\langle x,z\rangle=(f(x)/f(z))\langle z,z\rangle=f(x)/f(z)\). Hence \(f(x)=\langle x,\overline{f(z)}\,z\rangle\) with the stated convention.</p>
+        <p>Uniqueness follows because if \(\langle x,y_1-y_2\rangle=0\) for all \(x\), choosing \(x=y_1-y_2\) gives zero norm. Cauchy-Schwarz gives \(\|f\|\le\|y\|\), and equality follows by evaluating at \(x=y/\|y\|\) when \(y\ne0\).</p>
     </div>
 
-    <h3>Conjugation convention</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> The exact formula depends on whether the inner product is linear in the first or second variable. These notes use the linear-in-the-first convention, so functionals have the form \(x\mapsto\langle x,y\rangle\).</p>
+    <h3>Riesz map</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The map \(R:H\to H^*\), \(Ry(x)=\langle x,y\rangle\), is a conjugate-linear surjective isometry under the convention that the inner product is linear in the first variable.</p>
     </div>
 
-    <h3>Self-duality of Hilbert space</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> The Riesz map identifies \(H\) anti-linearly or linearly with \(H^*\), depending on convention. This self-duality is special to Hilbert spaces and generally fails in Banach spaces.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Conjugate linearity in \(y\) follows from conjugate-linearity of the second slot. The previous theorem gives surjectivity and norm preservation.</p>
     </div>
 
-    <h3>Adjoints</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> For \(T\in\mathcal L(H,K)\), there is a unique \(T^*\in\mathcal L(K,H)\) such that \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\). The Riesz theorem constructs \(T^*y\) from the functional \(x\mapsto\langle Tx,y\rangle\).</p>
+    <h3>Adjoints via Riesz</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(T\in\mathcal L(H,K)\) between Hilbert spaces, there is a unique \(T^*\in\mathcal L(K,H)\) such that \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\) for all \(x\in H,y\in K\). Moreover \(\|T^*\|=\|T\|\).</p>
     </div>
 
-    <h3>Integration against an \(L^2\) function</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For fixed \(y\in K\), the map \(x\mapsto\langle Tx,y\rangle\) is a bounded linear functional on \(H\). Riesz gives a unique vector \(T^*y\) representing it. Linearity of \(T^*\) follows from uniqueness of representing vectors. The estimate \(\|T^*y\|\le\|T\|\|y\|\) gives boundedness. Applying the same argument to \(T^*\) and using \(\|T\|^2=\|T^*T\|\le\|T^*\|\|T\|\) gives equality, or use the Banach-space adjoint norm equality.</p>
+    </div>
+
+    <h3>Lax-Milgram theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \(a:H\times H\to\mathbb F\) be a bounded sesquilinear form, linear in the first variable, and coercive: \(\operatorname{Re}a(x,x)\ge c\|x\|^2\) for some \(c>0\). For every \(f\in H^*\), there is a unique \(u\in H\) such that \(a(u,v)=f(v)\) for all \(v\in H\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> By Riesz, for each \(u\) there is a unique \(Au\in H\) such that \(a(u,v)=\langle Au,v\rangle\). Boundedness of \(a\) makes \(A\in\mathcal L(H)\). Coercivity gives \(c\|u\|^2\le |a(u,u)|=|\langle Au,u\rangle|\le\|Au\|\|u\|\), hence \(\|Au\|\ge c\|u\|\); in particular \(A\) is injective and has closed range.</p>
+        <p>If \(w\perp\operatorname{Ran}A\), then \(0=\langle Au,w\rangle=a(u,w)\) for all \(u\). Taking \(u=w\) gives \(0=a(w,w)\), and coercivity gives \(w=0\). Thus \(\operatorname{Ran}A\) is dense; since it is also closed, it is all of \(H\). For \(f(v)=\langle y,v\rangle\), solve \(Au=y\). Uniqueness follows from injectivity.</p>
+    </div>
+
+    <h3>Dual of L2</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> On \(L^2\), every bounded linear functional is integration against a unique \(L^2\) function: \(\varphi(f)=\int f\overline g\,\mathrm{d}\mu\) under the usual complex convention.</p>
+        <p><span class="statement-title">Exemple.</span> For \(H=L^2(\Omega,\mu)\), Riesz says every continuous linear functional has the form \(f(g)=\int g\overline h\,\mathrm{d}\mu\) for a unique \(h\in L^2\). This is the Hilbert-space special case of \(L^p\)-duality.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" next_label="Page suivante" next_url="/notes/functional-analysis/adjoint-operators-and-spectrum/" %}
@@ -84,35 +109,47 @@ breadcrumb_child_label_zh: "16. 里斯表示定理"
     <h2><a href="{{ '/notes/functional-analysis/riesz-representation-theorem/' | relative_url }}">16. 里斯表示定理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" next_label="下一页" next_url="/notes/functional-analysis/adjoint-operators-and-spectrum/" %}
 
-
-    <h3>希尔伯特-space representation</h3>
+    <h3>Hilbert-space duality</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> For every continuous linear functional \(\varphi\in H^*\) on a 希尔伯特空间, there is a unique \(y\in H\) such that \(\varphi(x)=\langle x,y\rangle\) for all \(x\in H\), with \(\|\varphi\|=\|y\|\).</p>
+        <p><span class="statement-title">定理.</span> For every \(f\in H^*\), there is a unique \(y\in H\) such that \(f(x)=\langle x,y\rangle\) for all \(x\in H\), and \(\|f\|=\|y\|\).</p>
     </div>
 
-    <h3>证明 by projection</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> If \(\varphi=0\), take \(y=0\). Otherwise \(\ker\varphi\) is a closed hyperplane. Choose a unit vector \(u\in(\ker\varphi)^\perp\). Then every \(x\) decomposes into a 核 part plus a scalar multiple of \(u\), giving the representing vector.</p>
+        <p><span class="statement-title">证明.</span> If \(f=0\), take \(y=0\). Otherwise, \(\ker f\) is a closed proper subspace. Choose \(z\in(\ker f)^\perp\) with \(\|z\|=1\). Since \(z\notin\ker f\), \(f(z)\ne0\). For any \(x\), the vector \(x-(f(x)/f(z))z\) lies in \(\ker f\), so it is orthogonal to \(z\). Thus \(\langle x,z\rangle=(f(x)/f(z))\langle z,z\rangle=f(x)/f(z)\). Hence \(f(x)=\langle x,\overline{f(z)}\,z\rangle\) with the stated convention.</p>
+        <p>Uniqueness follows because if \(\langle x,y_1-y_2\rangle=0\) for all \(x\), choosing \(x=y_1-y_2\) gives zero norm. Cauchy-Schwarz gives \(\|f\|\le\|y\|\), and equality follows by evaluating at \(x=y/\|y\|\) when \(y\ne0\).</p>
     </div>
 
-    <h3>Conjugation convention</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> The exact formula depends on whether the inner product is linear in the first or second variable. These notes use the linear-in-the-first convention, so functionals have the form \(x\mapsto\langle x,y\rangle\).</p>
+    <h3>Riesz map</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The map \(R:H\to H^*\), \(Ry(x)=\langle x,y\rangle\), is a conjugate-linear surjective isometry under the convention that the inner product is linear in the first variable.</p>
     </div>
 
-    <h3>Self-对偶性 of 希尔伯特空间</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> The 里斯 map identifies \(H\) anti-linearly or linearly with \(H^*\), depending on convention. This self-对偶性 is special to 希尔伯特空间 and generally fails in 巴拿赫空间.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Conjugate linearity in \(y\) follows from conjugate-linearity of the second slot. The previous theorem gives surjectivity and norm preservation.</p>
     </div>
 
-    <h3>Adjoints</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> For \(T\in\mathcal L(H,K)\), there is a unique \(T^*\in\mathcal L(K,H)\) such that \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\). The 里斯定理 constructs \(T^*y\) from the functional \(x\mapsto\langle Tx,y\rangle\).</p>
+    <h3>Adjoints via Riesz</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(T\in\mathcal L(H,K)\) between Hilbert spaces, there is a unique \(T^*\in\mathcal L(K,H)\) such that \(\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H\) for all \(x\in H,y\in K\). Moreover \(\|T^*\|=\|T\|\).</p>
     </div>
 
-    <h3>Integration against an \(L^2\) function</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For fixed \(y\in K\), the map \(x\mapsto\langle Tx,y\rangle\) is a bounded linear functional on \(H\). Riesz gives a unique vector \(T^*y\) representing it. Linearity of \(T^*\) follows from uniqueness of representing vectors. The estimate \(\|T^*y\|\le\|T\|\|y\|\) gives boundedness. Applying the same argument to \(T^*\) and using \(\|T\|^2=\|T^*T\|\le\|T^*\|\|T\|\) gives equality, or use the Banach-space adjoint norm equality.</p>
+    </div>
+
+    <h3>Lax-Milgram theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(a:H\times H\to\mathbb F\) be a bounded sesquilinear form, linear in the first variable, and coercive: \(\operatorname{Re}a(x,x)\ge c\|x\|^2\) for some \(c>0\). For every \(f\in H^*\), there is a unique \(u\in H\) such that \(a(u,v)=f(v)\) for all \(v\in H\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> By Riesz, for each \(u\) there is a unique \(Au\in H\) such that \(a(u,v)=\langle Au,v\rangle\). Boundedness of \(a\) makes \(A\in\mathcal L(H)\). Coercivity gives \(c\|u\|^2\le |a(u,u)|=|\langle Au,u\rangle|\le\|Au\|\|u\|\), hence \(\|Au\|\ge c\|u\|\); in particular \(A\) is injective and has closed range.</p>
+        <p>If \(w\perp\operatorname{Ran}A\), then \(0=\langle Au,w\rangle=a(u,w)\) for all \(u\). Taking \(u=w\) gives \(0=a(w,w)\), and coercivity gives \(w=0\). Thus \(\operatorname{Ran}A\) is dense; since it is also closed, it is all of \(H\). For \(f(v)=\langle y,v\rangle\), solve \(Au=y\). Uniqueness follows from injectivity.</p>
+    </div>
+
+    <h3>Dual of L2</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">例.</span> On \(L^2\), every 有界 linear functional is integration against a unique \(L^2\) function: \(\varphi(f)=\int f\overline g\,\mathrm{d}\mu\) under the usual complex convention.</p>
+        <p><span class="statement-title">例.</span> For \(H=L^2(\Omega,\mu)\), Riesz says every continuous linear functional has the form \(f(g)=\int g\overline h\,\mathrm{d}\mu\) for a unique \(h\in L^2\). This is the Hilbert-space special case of \(L^p\)-duality.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" next_label="下一页" next_url="/notes/functional-analysis/adjoint-operators-and-spectrum/" %}

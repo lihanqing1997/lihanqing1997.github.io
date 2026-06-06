@@ -4,39 +4,84 @@ breadcrumb_child_label_en: "1. Normed spaces and bounded linear maps"
 breadcrumb_child_label_fr: "1. Espaces normés et applications linéaires bornées"
 breadcrumb_child_label_zh: "1. 赋范空间与有界线性映射"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/normed-spaces-and-bounded-linear-maps/' | relative_url }}">1. Normed spaces and bounded linear maps</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" next_label="Next page" next_url="/notes/functional-analysis/banach-spaces-and-completeness/" %}
 
-
-    <h3>Norms and metric structure</h3>
+    <h3>Normed linear spaces</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A norm on a vector space \(X\) is a function \(\|\cdot\|\) that is positive definite, homogeneous, and subadditive. It induces the metric \(d(x,y)=\|x-y\|\), so linear questions become topological questions.</p>
+        <p><span class="statement-title">Definition.</span> Let \(\mathbb F\in\{\mathbb R,\mathbb C\}\). A norm on an \(\mathbb F\)-vector space \(X\) is a map \(\|\cdot\|:X\to[0,\infty)\) such that \(\|x\|=0\) iff \(x=0\), \(\|\alpha x\|=|\alpha|\|x\|\), and \(\|x+y\|\le \|x\|+\|y\|\). The pair \((X,\|\cdot\|)\) is a normed space. The metric is \(d(x,y)=\|x-y\|\), and the open balls are \(B(x,r)=\{y:\|y-x\|<r\}\).</p>
     </div>
 
-    <h3>Bounded linear maps</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A linear map \(T:X\to Y\) is bounded if \(\|Tx\|\le C\|x\|\) for all \(x\). Its operator norm is \(\|T\|=\sup_{\|x\|\le1}\|Tx\|\). Bounded linear maps form \(\mathcal L(X,Y)\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Addition \(X\times X\to X\) and scalar multiplication \(\mathbb F\times X\to X\) are continuous. Hence every normed space is a topological vector space.</p>
     </div>
 
-    <h3>Boundedness and continuity</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a linear map between normed spaces, the following are equivalent: boundedness, continuity at \(0\), continuity everywhere, and Lipschitz continuity. Continuity at one point therefore becomes a global estimate.</p>
-    </div>
-
-    <h3>Scaling proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(T\) is continuous at \(0\), choose \(\delta>0\) so \(\|x\|<\delta\) implies \(\|Tx\|<1\). For \(x\ne0\), apply this to \(\delta x/(2\|x\|)\) and rescale to get \(\|Tx\|\le(2/\delta)\|x\|\).</p>
+        <p><span class="statement-title">Proof.</span> For addition, \(\|(x_n+y_n)-(x+y)\|\le \|x_n-x\|+\|y_n-y\|\). For scalar multiplication, \(\|\alpha_n x_n-\alpha x\|\le |\alpha_n|\|x_n-x\|+|\alpha_n-\alpha|\|x\|\), and a convergent scalar sequence is bounded. These estimates are exactly the sequential form of continuity in metric spaces.</p>
+    </div>
+
+    <h3>Operator norm</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For normed spaces \(X,Y\), a linear map \(T:X\to Y\) is bounded if there exists \(C<\infty\) such that \(\|Tx\|_Y\le C\|x\|_X\) for all \(x\in X\). The operator norm is \(\|T\|=\inf\{C:\|Tx\|\le C\|x\|\ \forall x\in X\}\). The space of bounded linear maps is denoted \(\mathcal L(X,Y)\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(T\in\mathcal L(X,Y)\), then \(\|T\|=\sup_{\|x\|\le1}\|Tx\|=\sup_{\|x\|=1}\|Tx\|\) when \(X\ne\{0\}\), and \(\|Tx\|\le \|T\|\,\|x\|\) for all \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Every admissible constant \(C\) satisfies \(\|Tx\|\le C\) on the closed unit ball, so the first supremum is at most the infimum of such \(C\). Conversely, if \(M=\sup_{\|x\|\le1}\|Tx\|\), then for \(x\ne0\), \(x/\|x\|\) belongs to the unit sphere and \(\|Tx\|=\|x\|\,\|T(x/\|x\|)\|\le M\|x\|\). Thus \(M\) is admissible. The unit ball and unit sphere suprema agree by homogeneity.</p>
+    </div>
+
+    <h3>Continuity of linear maps</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For a linear map \(T:X\to Y\) between normed spaces, the following are equivalent: \(T\) is bounded; \(T\) is continuous at \(0\); \(T\) is continuous at one point; \(T\) is continuous everywhere; \(T\) is Lipschitz.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(T\) is bounded, then \(\|Tx-Ty\|\le \|T\|\,\|x-y\|\), so \(T\) is Lipschitz and continuous everywhere. Continuity everywhere implies continuity at any point, and continuity at one point \(x_0\) implies continuity at \(0\), since \(T(h)=T(x_0+h)-T(x_0)\).</p>
+        <p>Assume \(T\) is continuous at \(0\). Choose \(\delta>0\) such that \(\|u\|<\delta\) implies \(\|Tu\|<1\). If \(x\ne0\), put \(u=\delta x/(2\|x\|)\). Then \(\|u\|=\delta/2\), hence \(\|Tu\|<1\), and by homogeneity \(\|Tx\|<(2/\delta)\|x\|\). Thus \(T\) is bounded.</p>
     </div>
 
     <h3>Equivalent norms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Two norms are equivalent if they induce the same topology, equivalently if \(c\|x\|_1\le\|x\|_2\le C\|x\|_1\). On finite-dimensional spaces all norms are equivalent; in infinite dimension this fails.</p>
+        <p><span class="statement-title">Definition.</span> Two norms \(\|\cdot\|_1,\|\cdot\|_2\) on \(X\) are equivalent if there exist constants \(0<c\le C<\infty\) such that \(c\|x\|_1\le \|x\|_2\le C\|x\|_1\) for all \(x\in X\).</p>
     </div>
 
-    <h3>Finite versus infinite dimension</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Functional analysis begins where finite-dimensional intuition stops: linear maps need not be continuous, closed bounded sets need not be compact, and dual spaces become large enough to encode topology.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Equivalent norms induce the same convergent sequences, the same open sets, and the same continuous linear maps.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The inequalities give \(B_1(0,r/C)\subset B_2(0,r)\subset B_1(0,r/c)\). Translating balls gives equality of the two metric topologies. Since continuity is a topological property, the continuous linear maps are the same.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> On a finite-dimensional vector space, all norms are equivalent.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Fix a basis \(e_1,\ldots,e_n\) and write \(x=\sum_i a_i e_i\). For any norm \(\|\cdot\|\), \(\|x\|\le(\max_i\|e_i\|)\sum_i |a_i|\), so the coordinate map from \((\mathbb F^n,\|\cdot\|_1)\) to \((X,\|\cdot\|)\) is continuous. The function \(a\mapsto\|\sum_i a_i e_i\|\) is continuous on the compact \(\ell^1\)-unit sphere and has a positive minimum, because it vanishes only at \(a=0\). This yields \(m\sum_i|a_i|\le \|x\|\le M\sum_i|a_i|\). Comparing two arbitrary norms through the coordinate \(\ell^1\)-norm proves equivalence.</p>
+    </div>
+
+    <h3>Quotient norm</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> If \(M\) is a closed linear subspace of a normed space \(X\), the quotient \(X/M\) is normed by \(\|x+M\|=\inf_{m\in M}\|x-m\|\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The quotient formula defines a norm on \(X/M\) exactly when \(M\) is closed. The quotient map \(q:X\to X/M\), \(q(x)=x+M\), is linear and bounded with \(\|q\|\le1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The formula is the distance from \(x\) to \(M\). It is homogeneous and subadditive because \(M\) is linear. If the distance is \(0\), then \(x\in\overline M\), hence \(x\in M\) when \(M\) is closed, so \(x+M=0\). Conversely, if \(M\) is not closed and \(x\in\overline M\setminus M\), then \(x+M\ne0\) but its quotient seminorm is \(0\). Finally, \(\|q(x)\|=\inf_{m\in M}\|x-m\|\le \|x\|\).</p>
+    </div>
+
+    <h3>Discontinuous linear functionals</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> In infinite-dimensional normed spaces, linearity alone does not imply continuity. If \(X\) has a countable linearly independent sequence \(e_n\) with \(\|e_n\|=1\), extend it to a Hamel basis and define \(f(e_n)=n\) on this sequence and \(f=0\) on the other basis vectors. Then \(f\) is linear on \(X\), but \(|f(e_n)|=n\) on the unit sphere, so \(f\) is unbounded and therefore discontinuous. This example uses the algebraic basis theorem and is not constructive in separable analytic coordinates.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" next_label="Next page" next_url="/notes/functional-analysis/banach-spaces-and-completeness/" %}
@@ -46,35 +91,79 @@ breadcrumb_child_label_zh: "1. 赋范空间与有界线性映射"
     <h2><a href="{{ '/notes/functional-analysis/normed-spaces-and-bounded-linear-maps/' | relative_url }}">1. Espaces normés et applications linéaires bornées</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" next_label="Page suivante" next_url="/notes/functional-analysis/banach-spaces-and-completeness/" %}
 
-
-    <h3>Norms and metric structure</h3>
+    <h3>Normed linear spaces</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A norm on a vector space \(X\) is a function \(\|\cdot\|\) that is positive definite, homogeneous, and subadditive. It induces the metric \(d(x,y)=\|x-y\|\), so linear questions become topological questions.</p>
+        <p><span class="statement-title">Définition.</span> Let \(\mathbb F\in\{\mathbb R,\mathbb C\}\). A norm on an \(\mathbb F\)-vector space \(X\) is a map \(\|\cdot\|:X\to[0,\infty)\) such that \(\|x\|=0\) iff \(x=0\), \(\|\alpha x\|=|\alpha|\|x\|\), and \(\|x+y\|\le \|x\|+\|y\|\). The pair \((X,\|\cdot\|)\) is a normed space. The metric is \(d(x,y)=\|x-y\|\), and the open balls are \(B(x,r)=\{y:\|y-x\|<r\}\).</p>
     </div>
 
-    <h3>Bounded linear maps</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A linear map \(T:X\to Y\) is bounded if \(\|Tx\|\le C\|x\|\) for all \(x\). Its operator norm is \(\|T\|=\sup_{\|x\|\le1}\|Tx\|\). Bounded linear maps form \(\mathcal L(X,Y)\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Addition \(X\times X\to X\) and scalar multiplication \(\mathbb F\times X\to X\) are continuous. Hence every normed space is a topological vector space.</p>
     </div>
 
-    <h3>Boundedness and continuity</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> For a linear map between normed spaces, the following are equivalent: boundedness, continuity at \(0\), continuity everywhere, and Lipschitz continuity. Continuity at one point therefore becomes a global estimate.</p>
-    </div>
-
-    <h3>Scaling proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> If \(T\) is continuous at \(0\), choose \(\delta>0\) so \(\|x\|<\delta\) implies \(\|Tx\|<1\). For \(x\ne0\), apply this to \(\delta x/(2\|x\|)\) and rescale to get \(\|Tx\|\le(2/\delta)\|x\|\).</p>
+        <p><span class="statement-title">Preuve.</span> For addition, \(\|(x_n+y_n)-(x+y)\|\le \|x_n-x\|+\|y_n-y\|\). For scalar multiplication, \(\|\alpha_n x_n-\alpha x\|\le |\alpha_n|\|x_n-x\|+|\alpha_n-\alpha|\|x\|\), and a convergent scalar sequence is bounded. These estimates are exactly the sequential form of continuity in metric spaces.</p>
+    </div>
+
+    <h3>Operator norm</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For normed spaces \(X,Y\), a linear map \(T:X\to Y\) is bounded if there exists \(C<\infty\) such that \(\|Tx\|_Y\le C\|x\|_X\) for all \(x\in X\). The operator norm is \(\|T\|=\inf\{C:\|Tx\|\le C\|x\|\ \forall x\in X\}\). The space of bounded linear maps is denoted \(\mathcal L(X,Y)\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(T\in\mathcal L(X,Y)\), then \(\|T\|=\sup_{\|x\|\le1}\|Tx\|=\sup_{\|x\|=1}\|Tx\|\) when \(X\ne\{0\}\), and \(\|Tx\|\le \|T\|\,\|x\|\) for all \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Every admissible constant \(C\) satisfies \(\|Tx\|\le C\) on the closed unit ball, so the first supremum is at most the infimum of such \(C\). Conversely, if \(M=\sup_{\|x\|\le1}\|Tx\|\), then for \(x\ne0\), \(x/\|x\|\) belongs to the unit sphere and \(\|Tx\|=\|x\|\,\|T(x/\|x\|)\|\le M\|x\|\). Thus \(M\) is admissible. The unit ball and unit sphere suprema agree by homogeneity.</p>
+    </div>
+
+    <h3>Continuity of linear maps</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For a linear map \(T:X\to Y\) between normed spaces, the following are equivalent: \(T\) is bounded; \(T\) is continuous at \(0\); \(T\) is continuous at one point; \(T\) is continuous everywhere; \(T\) is Lipschitz.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(T\) is bounded, then \(\|Tx-Ty\|\le \|T\|\,\|x-y\|\), so \(T\) is Lipschitz and continuous everywhere. Continuity everywhere implies continuity at any point, and continuity at one point \(x_0\) implies continuity at \(0\), since \(T(h)=T(x_0+h)-T(x_0)\).</p>
+        <p>Assume \(T\) is continuous at \(0\). Choose \(\delta>0\) such that \(\|u\|<\delta\) implies \(\|Tu\|<1\). If \(x\ne0\), put \(u=\delta x/(2\|x\|)\). Then \(\|u\|=\delta/2\), hence \(\|Tu\|<1\), and by homogeneity \(\|Tx\|<(2/\delta)\|x\|\). Thus \(T\) is bounded.</p>
     </div>
 
     <h3>Equivalent norms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Two norms are equivalent if they induce the same topology, equivalently if \(c\|x\|_1\le\|x\|_2\le C\|x\|_1\). On finite-dimensional spaces all norms are equivalent; in infinite dimension this fails.</p>
+        <p><span class="statement-title">Définition.</span> Two norms \(\|\cdot\|_1,\|\cdot\|_2\) on \(X\) are equivalent if there exist constants \(0<c\le C<\infty\) such that \(c\|x\|_1\le \|x\|_2\le C\|x\|_1\) for all \(x\in X\).</p>
     </div>
 
-    <h3>Finite versus infinite dimension</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Functional analysis begins where finite-dimensional intuition stops: linear maps need not be continuous, closed bounded sets need not be compact, and dual spaces become large enough to encode topology.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Equivalent norms induce the same convergent sequences, the same open sets, and the same continuous linear maps.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The inequalities give \(B_1(0,r/C)\subset B_2(0,r)\subset B_1(0,r/c)\). Translating balls gives equality of the two metric topologies. Since continuity is a topological property, the continuous linear maps are the same.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> On a finite-dimensional vector space, all norms are equivalent.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Fix a basis \(e_1,\ldots,e_n\) and write \(x=\sum_i a_i e_i\). For any norm \(\|\cdot\|\), \(\|x\|\le(\max_i\|e_i\|)\sum_i |a_i|\), so the coordinate map from \((\mathbb F^n,\|\cdot\|_1)\) to \((X,\|\cdot\|)\) is continuous. The function \(a\mapsto\|\sum_i a_i e_i\|\) is continuous on the compact \(\ell^1\)-unit sphere and has a positive minimum, because it vanishes only at \(a=0\). This yields \(m\sum_i|a_i|\le \|x\|\le M\sum_i|a_i|\). Comparing two arbitrary norms through the coordinate \(\ell^1\)-norm proves equivalence.</p>
+    </div>
+
+    <h3>Quotient norm</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> If \(M\) is a closed linear subspace of a normed space \(X\), the quotient \(X/M\) is normed by \(\|x+M\|=\inf_{m\in M}\|x-m\|\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The quotient formula defines a norm on \(X/M\) exactly when \(M\) is closed. The quotient map \(q:X\to X/M\), \(q(x)=x+M\), is linear and bounded with \(\|q\|\le1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The formula is the distance from \(x\) to \(M\). It is homogeneous and subadditive because \(M\) is linear. If the distance is \(0\), then \(x\in\overline M\), hence \(x\in M\) when \(M\) is closed, so \(x+M=0\). Conversely, if \(M\) is not closed and \(x\in\overline M\setminus M\), then \(x+M\ne0\) but its quotient seminorm is \(0\). Finally, \(\|q(x)\|=\inf_{m\in M}\|x-m\|\le \|x\|\).</p>
+    </div>
+
+    <h3>Discontinuous linear functionals</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> In infinite-dimensional normed spaces, linearity alone does not imply continuity. If \(X\) has a countable linearly independent sequence \(e_n\) with \(\|e_n\|=1\), extend it to a Hamel basis and define \(f(e_n)=n\) on this sequence and \(f=0\) on the other basis vectors. Then \(f\) is linear on \(X\), but \(|f(e_n)|=n\) on the unit sphere, so \(f\) is unbounded and therefore discontinuous. This example uses the algebraic basis theorem and is not constructive in separable analytic coordinates.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" next_label="Page suivante" next_url="/notes/functional-analysis/banach-spaces-and-completeness/" %}
@@ -84,35 +173,79 @@ breadcrumb_child_label_zh: "1. 赋范空间与有界线性映射"
     <h2><a href="{{ '/notes/functional-analysis/normed-spaces-and-bounded-linear-maps/' | relative_url }}">1. 赋范空间与有界线性映射</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" next_label="下一页" next_url="/notes/functional-analysis/banach-spaces-and-completeness/" %}
 
-
-    <h3>Norms and 度量 structure</h3>
+    <h3>Normed linear spaces</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A norm on a vector space \(X\) is a function \(\|\cdot\|\) that is positive definite, homogeneous, and subadditive. It induces the 度量 \(d(x,y)=\|x-y\|\), so linear questions become topological questions.</p>
+        <p><span class="statement-title">定义.</span> Let \(\mathbb F\in\{\mathbb R,\mathbb C\}\). A norm on an \(\mathbb F\)-vector space \(X\) is a map \(\|\cdot\|:X\to[0,\infty)\) such that \(\|x\|=0\) iff \(x=0\), \(\|\alpha x\|=|\alpha|\|x\|\), and \(\|x+y\|\le \|x\|+\|y\|\). The pair \((X,\|\cdot\|)\) is a normed space. The metric is \(d(x,y)=\|x-y\|\), and the open balls are \(B(x,r)=\{y:\|y-x\|<r\}\).</p>
     </div>
 
-    <h3>有界 linear maps</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A linear map \(T:X\to Y\) is 有界 if \(\|Tx\|\le C\|x\|\) for all \(x\). Its operator norm is \(\|T\|=\sup_{\|x\|\le1}\|Tx\|\). 有界 linear maps form \(\mathcal L(X,Y)\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Addition \(X\times X\to X\) and scalar multiplication \(\mathbb F\times X\to X\) are continuous. Hence every normed space is a topological vector space.</p>
     </div>
 
-    <h3>Boundedness and continuity</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> For a linear map between normed spaces, the following are equivalent: boundedness, continuity at \(0\), continuity everywhere, and Lipschitz continuity. Continuity at one point therefore becomes a global estimate.</p>
-    </div>
-
-    <h3>Scaling 证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> If \(T\) is continuous at \(0\), choose \(\delta>0\) so \(\|x\|<\delta\) implies \(\|Tx\|<1\). For \(x\ne0\), apply this to \(\delta x/(2\|x\|)\) and rescale to get \(\|Tx\|\le(2/\delta)\|x\|\).</p>
+        <p><span class="statement-title">证明.</span> For addition, \(\|(x_n+y_n)-(x+y)\|\le \|x_n-x\|+\|y_n-y\|\). For scalar multiplication, \(\|\alpha_n x_n-\alpha x\|\le |\alpha_n|\|x_n-x\|+|\alpha_n-\alpha|\|x\|\), and a convergent scalar sequence is bounded. These estimates are exactly the sequential form of continuity in metric spaces.</p>
+    </div>
+
+    <h3>Operator norm</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For normed spaces \(X,Y\), a linear map \(T:X\to Y\) is bounded if there exists \(C<\infty\) such that \(\|Tx\|_Y\le C\|x\|_X\) for all \(x\in X\). The operator norm is \(\|T\|=\inf\{C:\|Tx\|\le C\|x\|\ \forall x\in X\}\). The space of bounded linear maps is denoted \(\mathcal L(X,Y)\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(T\in\mathcal L(X,Y)\), then \(\|T\|=\sup_{\|x\|\le1}\|Tx\|=\sup_{\|x\|=1}\|Tx\|\) when \(X\ne\{0\}\), and \(\|Tx\|\le \|T\|\,\|x\|\) for all \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Every admissible constant \(C\) satisfies \(\|Tx\|\le C\) on the closed unit ball, so the first supremum is at most the infimum of such \(C\). Conversely, if \(M=\sup_{\|x\|\le1}\|Tx\|\), then for \(x\ne0\), \(x/\|x\|\) belongs to the unit sphere and \(\|Tx\|=\|x\|\,\|T(x/\|x\|)\|\le M\|x\|\). Thus \(M\) is admissible. The unit ball and unit sphere suprema agree by homogeneity.</p>
+    </div>
+
+    <h3>Continuity of linear maps</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For a linear map \(T:X\to Y\) between normed spaces, the following are equivalent: \(T\) is bounded; \(T\) is continuous at \(0\); \(T\) is continuous at one point; \(T\) is continuous everywhere; \(T\) is Lipschitz.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(T\) is bounded, then \(\|Tx-Ty\|\le \|T\|\,\|x-y\|\), so \(T\) is Lipschitz and continuous everywhere. Continuity everywhere implies continuity at any point, and continuity at one point \(x_0\) implies continuity at \(0\), since \(T(h)=T(x_0+h)-T(x_0)\).</p>
+        <p>Assume \(T\) is continuous at \(0\). Choose \(\delta>0\) such that \(\|u\|<\delta\) implies \(\|Tu\|<1\). If \(x\ne0\), put \(u=\delta x/(2\|x\|)\). Then \(\|u\|=\delta/2\), hence \(\|Tu\|<1\), and by homogeneity \(\|Tx\|<(2/\delta)\|x\|\). Thus \(T\) is bounded.</p>
     </div>
 
     <h3>Equivalent norms</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Two norms are equivalent if they induce the same topology, equivalently if \(c\|x\|_1\le\|x\|_2\le C\|x\|_1\). On finite-dimensional spaces all norms are equivalent; in infinite dimension this fails.</p>
+        <p><span class="statement-title">定义.</span> Two norms \(\|\cdot\|_1,\|\cdot\|_2\) on \(X\) are equivalent if there exist constants \(0<c\le C<\infty\) such that \(c\|x\|_1\le \|x\|_2\le C\|x\|_1\) for all \(x\in X\).</p>
     </div>
 
-    <h3>Finite versus infinite dimension</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Functional analysis begins where finite-dimensional intuition stops: linear maps need not be continuous, closed 有界 sets need not be 紧, and 对偶空间 become large enough to encode topology.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Equivalent norms induce the same convergent sequences, the same open sets, and the same continuous linear maps.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The inequalities give \(B_1(0,r/C)\subset B_2(0,r)\subset B_1(0,r/c)\). Translating balls gives equality of the two metric topologies. Since continuity is a topological property, the continuous linear maps are the same.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> On a finite-dimensional vector space, all norms are equivalent.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Fix a basis \(e_1,\ldots,e_n\) and write \(x=\sum_i a_i e_i\). For any norm \(\|\cdot\|\), \(\|x\|\le(\max_i\|e_i\|)\sum_i |a_i|\), so the coordinate map from \((\mathbb F^n,\|\cdot\|_1)\) to \((X,\|\cdot\|)\) is continuous. The function \(a\mapsto\|\sum_i a_i e_i\|\) is continuous on the compact \(\ell^1\)-unit sphere and has a positive minimum, because it vanishes only at \(a=0\). This yields \(m\sum_i|a_i|\le \|x\|\le M\sum_i|a_i|\). Comparing two arbitrary norms through the coordinate \(\ell^1\)-norm proves equivalence.</p>
+    </div>
+
+    <h3>Quotient norm</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> If \(M\) is a closed linear subspace of a normed space \(X\), the quotient \(X/M\) is normed by \(\|x+M\|=\inf_{m\in M}\|x-m\|\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The quotient formula defines a norm on \(X/M\) exactly when \(M\) is closed. The quotient map \(q:X\to X/M\), \(q(x)=x+M\), is linear and bounded with \(\|q\|\le1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The formula is the distance from \(x\) to \(M\). It is homogeneous and subadditive because \(M\) is linear. If the distance is \(0\), then \(x\in\overline M\), hence \(x\in M\) when \(M\) is closed, so \(x+M=0\). Conversely, if \(M\) is not closed and \(x\in\overline M\setminus M\), then \(x+M\ne0\) but its quotient seminorm is \(0\). Finally, \(\|q(x)\|=\inf_{m\in M}\|x-m\|\le \|x\|\).</p>
+    </div>
+
+    <h3>Discontinuous linear functionals</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> In infinite-dimensional normed spaces, linearity alone does not imply continuity. If \(X\) has a countable linearly independent sequence \(e_n\) with \(\|e_n\|=1\), extend it to a Hamel basis and define \(f(e_n)=n\) on this sequence and \(f=0\) on the other basis vectors. Then \(f\) is linear on \(X\), but \(|f(e_n)|=n\) on the unit sphere, so \(f\) is unbounded and therefore discontinuous. This example uses the algebraic basis theorem and is not constructive in separable analytic coordinates.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" next_label="下一页" next_url="/notes/functional-analysis/banach-spaces-and-completeness/" %}

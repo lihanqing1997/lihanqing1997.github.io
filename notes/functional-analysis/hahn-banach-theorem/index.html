@@ -4,39 +4,66 @@ breadcrumb_child_label_en: "8. Hahn-Banach theorem"
 breadcrumb_child_label_fr: "8. Théorème de Hahn-Banach"
 breadcrumb_child_label_zh: "8. 哈恩-巴拿赫定理"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/hahn-banach-theorem/' | relative_url }}">8. Hahn-Banach theorem</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/closed-graph-theorem/" next_label="Next page" next_url="/notes/functional-analysis/separation-of-convex-sets/" %}
 
+    <h3>Sublinear domination</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A function \(p:X\to\mathbb R\) on a real vector space is sublinear if \(p(x+y)\le p(x)+p(y)\) and \(p(\lambda x)=\lambda p(x)\) for every \(\lambda\ge0\). A linear functional \(f\) on \(M\subset X\) is dominated by \(p\) if \(f(m)\le p(m)\) for all \(m\in M\).</p>
+    </div>
 
-    <h3>Dominated extension form</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> Let \(M\subset X\) be a subspace, \(x_0\notin M\), and \(f:M\to\mathbb R\) linear with \(f\le p\). There exists \(\alpha\in\mathbb R\) such that \(F(m+tx_0)=f(m)+t\alpha\) defines a linear extension to \(M+\mathbb Rx_0\) still satisfying \(F\le p\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(m_1,m_2\in M\), sublinearity gives \(f(m_1)+f(m_2)=f(m_1+m_2)\le p(m_1+m_2)\le p(m_1+x_0)+p(m_2-x_0)\). Hence \(f(m_1)-p(m_1+x_0)\le p(m_2-x_0)-f(m_2)\).</p>
+        <p>Therefore the interval \([\sup_m(f(m)-p(m+x_0)),\inf_m(p(m-x_0)-f(m))]\) is nonempty. Choose \(\alpha\) in it. The inequalities \(\alpha\ge f(m)-p(m+x_0)\) and \(\alpha\le p(m-x_0)-f(m)\) are exactly the cases \(t>0\) and \(t<0\), after rescaling, needed to prove \(f(m)+t\alpha\le p(m+tx_0)\).</p>
+    </div>
+
+    <h3>Hahn-Banach extension theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Let \(p:X\to\mathbb R\) be sublinear and let \(f\) be linear on a subspace \(M\subset X\) with \(f(x)\le p(x)\). Then \(f\) extends to a linear functional \(F\) on \(X\) satisfying \(F(x)\le p(x)\) for all \(x\).</p>
+        <p><span class="statement-title">Theorem.</span> Let \(p:X\to\mathbb R\) be sublinear on a real vector space and let \(f:M\to\mathbb R\) be linear on a subspace \(M\) with \(f\le p\). Then there is a linear \(F:X\to\mathbb R\) extending \(f\) such that \(F\le p\) on \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Partially order all dominated linear extensions \((N,g)\), where \(M\subset N\subset X\), by extension of domains. A chain has an upper bound obtained by taking the union of the domains and defining the functional consistently on that union. By Zorn's lemma there is a maximal dominated extension \((N_0,F_0)\).</p>
+        <p>If \(N_0\ne X\), choose \(x_0\notin N_0\). The one-dimensional extension lemma extends \(F_0\) to \(N_0+\mathbb Rx_0\) without losing domination, contradicting maximality. Hence \(N_0=X\).</p>
     </div>
 
     <h3>Norm-preserving extension</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> If \(M\subset X\) is a subspace of a normed space and \(f\in M^*\), then there exists \(F\in X^*\) extending \(f\) with \(\|F\|=\|f\|\).</p>
+        <p><span class="statement-title">Corollary.</span> If \(M\subset X\) is a subspace of a real normed space and \(f\in M^*\), then there exists \(F\in X^*\) extending \(f\) with \(\|F\|=\|f\|\).</p>
     </div>
 
-    <h3>One-dimensional extension step</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> To extend from \(M\) to \(M+\mathbb R x_0\), choose \(\alpha=F(x_0)\) so that \(f(m)+t\alpha\le p(m+tx_0)\) for all \(m\in M\) and real \(t\). Sublinearity gives a nonempty interval of allowable \(\alpha\).</p>
+        <p><span class="statement-title">Proof.</span> Apply Hahn-Banach to \(p(x)=\|f\|\,\|x\|\). Since \(f(m)\le |f(m)|\le\|f\|\|m\|\), the extension \(F\) satisfies \(F(x)\le\|f\|\|x\|\). Applying this to \(-x\) gives \(|F(x)|\le\|f\|\|x\|\), so \(\|F\|\le\|f\|\). The reverse inequality holds because \(F\) extends \(f\).</p>
     </div>
 
-    <h3>Zorn lemma completion</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Partially order dominated extensions by inclusion of domains. Chains have upper bounds by union. Zorn's lemma gives a maximal dominated extension; if the domain were not all of \(X\), the one-dimensional step would extend it further, a contradiction.</p>
-    </div>
-
-    <h3>Point separation</h3>
+    <h3>Point separation and norm recovery</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> For every nonzero \(x\in X\), there exists \(f\in X^*\) with \(\|f\|=1\) and \(f(x)=\|x\|\). Thus the dual separates points and recovers the norm by \(\|x\|=\sup_{\|f\|\le1}|f(x)|\).</p>
+        <p><span class="statement-title">Corollary.</span> For every \(x_0\ne0\) in a normed space \(X\), there exists \(f\in X^*\) such that \(\|f\|=1\) and \(f(x_0)=\|x_0\|\). Consequently \(\|x\|=\sup_{\|f\|\le1}|f(x)|\).</p>
     </div>
 
-    <h3>Existence theorem</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On \(M=\mathbb F x_0\), define \(f(\alpha x_0)=\alpha\|x_0\|\) in the real case, and \(f(\alpha x_0)=\alpha\|x_0\|\) in the complex case. This functional has norm \(1\). Extend it norm-preservingly. The inequality \(\sup_{\|f\|\le1}|f(x)|\le\|x\|\) is immediate; the separating functional gives equality for each fixed \(x\).</p>
+    </div>
+
+    <h3>Complex Hahn-Banach</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> The norm-preserving extension theorem also holds for complex normed spaces.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Given a complex linear \(f\), let \(u=\operatorname{Re}f\). Then \(u\) is real linear and \(|u(m)|\le\|f\|\|m\|\). Extend \(u\) as a real linear functional \(U\) with the same norm by the real theorem. Define \(F(x)=U(x)-iU(ix)\). Then \(F\) is complex linear, extends \(f\), and \(\operatorname{Re}F=U\).</p>
+        <p>To control the norm, for \(F(x)\ne0\) choose \(\theta\) such that \(e^{i\theta}F(x)=|F(x)|\). Then \(|F(x)|=\operatorname{Re}F(e^{i\theta}x)=U(e^{i\theta}x)\le\|f\|\|x\|\). Thus \(\|F\|\le\|f\|\), and equality follows from extension.</p>
+    </div>
+
+    <h3>Dual abundance</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Hahn-Banach is not constructive in general. Its role is to guarantee enough continuous linear functionals for duality, weak topology, and separation arguments.</p>
+        <p><span class="statement-title">Remark.</span> Hahn-Banach is the theorem that prevents the continuous dual from being too small. Weak topologies, convex separation, norm recovery, adjoints, and many minimax arguments all depend on this abundance of continuous linear functionals.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/closed-graph-theorem/" next_label="Next page" next_url="/notes/functional-analysis/separation-of-convex-sets/" %}
@@ -46,35 +73,61 @@ breadcrumb_child_label_zh: "8. 哈恩-巴拿赫定理"
     <h2><a href="{{ '/notes/functional-analysis/hahn-banach-theorem/' | relative_url }}">8. Théorème de Hahn-Banach</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/closed-graph-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/separation-of-convex-sets/" %}
 
+    <h3>Sublinear domination</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A function \(p:X\to\mathbb R\) on a real vector space is sublinear if \(p(x+y)\le p(x)+p(y)\) and \(p(\lambda x)=\lambda p(x)\) for every \(\lambda\ge0\). A linear functional \(f\) on \(M\subset X\) is dominated by \(p\) if \(f(m)\le p(m)\) for all \(m\in M\).</p>
+    </div>
 
-    <h3>Dominated extension form</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> Let \(M\subset X\) be a subspace, \(x_0\notin M\), and \(f:M\to\mathbb R\) linear with \(f\le p\). There exists \(\alpha\in\mathbb R\) such that \(F(m+tx_0)=f(m)+t\alpha\) defines a linear extension to \(M+\mathbb Rx_0\) still satisfying \(F\le p\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For \(m_1,m_2\in M\), sublinearity gives \(f(m_1)+f(m_2)=f(m_1+m_2)\le p(m_1+m_2)\le p(m_1+x_0)+p(m_2-x_0)\). Hence \(f(m_1)-p(m_1+x_0)\le p(m_2-x_0)-f(m_2)\).</p>
+        <p>Therefore the interval \([\sup_m(f(m)-p(m+x_0)),\inf_m(p(m-x_0)-f(m))]\) is nonempty. Choose \(\alpha\) in it. The inequalities \(\alpha\ge f(m)-p(m+x_0)\) and \(\alpha\le p(m-x_0)-f(m)\) are exactly the cases \(t>0\) and \(t<0\), after rescaling, needed to prove \(f(m)+t\alpha\le p(m+tx_0)\).</p>
+    </div>
+
+    <h3>Hahn-Banach extension theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Let \(p:X\to\mathbb R\) be sublinear and let \(f\) be linear on a subspace \(M\subset X\) with \(f(x)\le p(x)\). Then \(f\) extends to a linear functional \(F\) on \(X\) satisfying \(F(x)\le p(x)\) for all \(x\).</p>
+        <p><span class="statement-title">Théorème.</span> Let \(p:X\to\mathbb R\) be sublinear on a real vector space and let \(f:M\to\mathbb R\) be linear on a subspace \(M\) with \(f\le p\). Then there is a linear \(F:X\to\mathbb R\) extending \(f\) such that \(F\le p\) on \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Partially order all dominated linear extensions \((N,g)\), where \(M\subset N\subset X\), by extension of domains. A chain has an upper bound obtained by taking the union of the domains and defining the functional consistently on that union. By Zorn's lemma there is a maximal dominated extension \((N_0,F_0)\).</p>
+        <p>If \(N_0\ne X\), choose \(x_0\notin N_0\). The one-dimensional extension lemma extends \(F_0\) to \(N_0+\mathbb Rx_0\) without losing domination, contradicting maximality. Hence \(N_0=X\).</p>
     </div>
 
     <h3>Norm-preserving extension</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> If \(M\subset X\) is a subspace of a normed space and \(f\in M^*\), then there exists \(F\in X^*\) extending \(f\) with \(\|F\|=\|f\|\).</p>
+        <p><span class="statement-title">Corollaire.</span> If \(M\subset X\) is a subspace of a real normed space and \(f\in M^*\), then there exists \(F\in X^*\) extending \(f\) with \(\|F\|=\|f\|\).</p>
     </div>
 
-    <h3>One-dimensional extension step</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> To extend from \(M\) to \(M+\mathbb R x_0\), choose \(\alpha=F(x_0)\) so that \(f(m)+t\alpha\le p(m+tx_0)\) for all \(m\in M\) and real \(t\). Sublinearity gives a nonempty interval of allowable \(\alpha\).</p>
+        <p><span class="statement-title">Preuve.</span> Apply Hahn-Banach to \(p(x)=\|f\|\,\|x\|\). Since \(f(m)\le |f(m)|\le\|f\|\|m\|\), the extension \(F\) satisfies \(F(x)\le\|f\|\|x\|\). Applying this to \(-x\) gives \(|F(x)|\le\|f\|\|x\|\), so \(\|F\|\le\|f\|\). The reverse inequality holds because \(F\) extends \(f\).</p>
     </div>
 
-    <h3>Zorn lemma completion</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Partially order dominated extensions by inclusion of domains. Chains have upper bounds by union. Zorn's lemma gives a maximal dominated extension; if the domain were not all of \(X\), the one-dimensional step would extend it further, a contradiction.</p>
-    </div>
-
-    <h3>Point separation</h3>
+    <h3>Point separation and norm recovery</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> For every nonzero \(x\in X\), there exists \(f\in X^*\) with \(\|f\|=1\) and \(f(x)=\|x\|\). Thus the dual separates points and recovers the norm by \(\|x\|=\sup_{\|f\|\le1}|f(x)|\).</p>
+        <p><span class="statement-title">Corollaire.</span> For every \(x_0\ne0\) in a normed space \(X\), there exists \(f\in X^*\) such that \(\|f\|=1\) and \(f(x_0)=\|x_0\|\). Consequently \(\|x\|=\sup_{\|f\|\le1}|f(x)|\).</p>
     </div>
 
-    <h3>Existence theorem</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On \(M=\mathbb F x_0\), define \(f(\alpha x_0)=\alpha\|x_0\|\) in the real case, and \(f(\alpha x_0)=\alpha\|x_0\|\) in the complex case. This functional has norm \(1\). Extend it norm-preservingly. The inequality \(\sup_{\|f\|\le1}|f(x)|\le\|x\|\) is immediate; the separating functional gives equality for each fixed \(x\).</p>
+    </div>
+
+    <h3>Complex Hahn-Banach</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> The norm-preserving extension theorem also holds for complex normed spaces.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Given a complex linear \(f\), let \(u=\operatorname{Re}f\). Then \(u\) is real linear and \(|u(m)|\le\|f\|\|m\|\). Extend \(u\) as a real linear functional \(U\) with the same norm by the real theorem. Define \(F(x)=U(x)-iU(ix)\). Then \(F\) is complex linear, extends \(f\), and \(\operatorname{Re}F=U\).</p>
+        <p>To control the norm, for \(F(x)\ne0\) choose \(\theta\) such that \(e^{i\theta}F(x)=|F(x)|\). Then \(|F(x)|=\operatorname{Re}F(e^{i\theta}x)=U(e^{i\theta}x)\le\|f\|\|x\|\). Thus \(\|F\|\le\|f\|\), and equality follows from extension.</p>
+    </div>
+
+    <h3>Dual abundance</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Hahn-Banach is not constructive in general. Its role is to guarantee enough continuous linear functionals for duality, weak topology, and separation arguments.</p>
+        <p><span class="statement-title">Remarque.</span> Hahn-Banach is the theorem that prevents the continuous dual from being too small. Weak topologies, convex separation, norm recovery, adjoints, and many minimax arguments all depend on this abundance of continuous linear functionals.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/closed-graph-theorem/" next_label="Page suivante" next_url="/notes/functional-analysis/separation-of-convex-sets/" %}
@@ -84,35 +137,61 @@ breadcrumb_child_label_zh: "8. 哈恩-巴拿赫定理"
     <h2><a href="{{ '/notes/functional-analysis/hahn-banach-theorem/' | relative_url }}">8. 哈恩-巴拿赫定理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/closed-graph-theorem/" next_label="下一页" next_url="/notes/functional-analysis/separation-of-convex-sets/" %}
 
+    <h3>Sublinear domination</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A function \(p:X\to\mathbb R\) on a real vector space is sublinear if \(p(x+y)\le p(x)+p(y)\) and \(p(\lambda x)=\lambda p(x)\) for every \(\lambda\ge0\). A linear functional \(f\) on \(M\subset X\) is dominated by \(p\) if \(f(m)\le p(m)\) for all \(m\in M\).</p>
+    </div>
 
-    <h3>Dominated extension form</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> Let \(M\subset X\) be a subspace, \(x_0\notin M\), and \(f:M\to\mathbb R\) linear with \(f\le p\). There exists \(\alpha\in\mathbb R\) such that \(F(m+tx_0)=f(m)+t\alpha\) defines a linear extension to \(M+\mathbb Rx_0\) still satisfying \(F\le p\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For \(m_1,m_2\in M\), sublinearity gives \(f(m_1)+f(m_2)=f(m_1+m_2)\le p(m_1+m_2)\le p(m_1+x_0)+p(m_2-x_0)\). Hence \(f(m_1)-p(m_1+x_0)\le p(m_2-x_0)-f(m_2)\).</p>
+        <p>Therefore the interval \([\sup_m(f(m)-p(m+x_0)),\inf_m(p(m-x_0)-f(m))]\) is nonempty. Choose \(\alpha\) in it. The inequalities \(\alpha\ge f(m)-p(m+x_0)\) and \(\alpha\le p(m-x_0)-f(m)\) are exactly the cases \(t>0\) and \(t<0\), after rescaling, needed to prove \(f(m)+t\alpha\le p(m+tx_0)\).</p>
+    </div>
+
+    <h3>Hahn-Banach extension theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Let \(p:X\to\mathbb R\) be sublinear and let \(f\) be linear on a subspace \(M\subset X\) with \(f(x)\le p(x)\). Then \(f\) extends to a linear functional \(F\) on \(X\) satisfying \(F(x)\le p(x)\) for all \(x\).</p>
+        <p><span class="statement-title">定理.</span> Let \(p:X\to\mathbb R\) be sublinear on a real vector space and let \(f:M\to\mathbb R\) be linear on a subspace \(M\) with \(f\le p\). Then there is a linear \(F:X\to\mathbb R\) extending \(f\) such that \(F\le p\) on \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Partially order all dominated linear extensions \((N,g)\), where \(M\subset N\subset X\), by extension of domains. A chain has an upper bound obtained by taking the union of the domains and defining the functional consistently on that union. By Zorn's lemma there is a maximal dominated extension \((N_0,F_0)\).</p>
+        <p>If \(N_0\ne X\), choose \(x_0\notin N_0\). The one-dimensional extension lemma extends \(F_0\) to \(N_0+\mathbb Rx_0\) without losing domination, contradicting maximality. Hence \(N_0=X\).</p>
     </div>
 
     <h3>Norm-preserving extension</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> If \(M\subset X\) is a subspace of a normed space and \(f\in M^*\), then there exists \(F\in X^*\) extending \(f\) with \(\|F\|=\|f\|\).</p>
+        <p><span class="statement-title">推论.</span> If \(M\subset X\) is a subspace of a real normed space and \(f\in M^*\), then there exists \(F\in X^*\) extending \(f\) with \(\|F\|=\|f\|\).</p>
     </div>
 
-    <h3>One-dimensional extension step</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> To extend from \(M\) to \(M+\mathbb R x_0\), choose \(\alpha=F(x_0)\) so that \(f(m)+t\alpha\le p(m+tx_0)\) for all \(m\in M\) and real \(t\). Sublinearity gives a nonempty interval of allowable \(\alpha\).</p>
+        <p><span class="statement-title">证明.</span> Apply Hahn-Banach to \(p(x)=\|f\|\,\|x\|\). Since \(f(m)\le |f(m)|\le\|f\|\|m\|\), the extension \(F\) satisfies \(F(x)\le\|f\|\|x\|\). Applying this to \(-x\) gives \(|F(x)|\le\|f\|\|x\|\), so \(\|F\|\le\|f\|\). The reverse inequality holds because \(F\) extends \(f\).</p>
     </div>
 
-    <h3>Zorn 引理完备化</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Partially order dominated extensions by inclusion of domains. Chains have upper bounds by union. Zorn's 引理 gives a maximal dominated extension; if the domain were not all of \(X\), the one-dimensional step would extend it further, a contradiction.</p>
-    </div>
-
-    <h3>Point separation</h3>
+    <h3>Point separation and norm recovery</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> For every nonzero \(x\in X\), there exists \(f\in X^*\) with \(\|f\|=1\) and \(f(x)=\|x\|\). Thus the dual separates points and recovers the norm by \(\|x\|=\sup_{\|f\|\le1}|f(x)|\).</p>
+        <p><span class="statement-title">推论.</span> For every \(x_0\ne0\) in a normed space \(X\), there exists \(f\in X^*\) such that \(\|f\|=1\) and \(f(x_0)=\|x_0\|\). Consequently \(\|x\|=\sup_{\|f\|\le1}|f(x)|\).</p>
     </div>
 
-    <h3>Existence 定理</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> On \(M=\mathbb F x_0\), define \(f(\alpha x_0)=\alpha\|x_0\|\) in the real case, and \(f(\alpha x_0)=\alpha\|x_0\|\) in the complex case. This functional has norm \(1\). Extend it norm-preservingly. The inequality \(\sup_{\|f\|\le1}|f(x)|\le\|x\|\) is immediate; the separating functional gives equality for each fixed \(x\).</p>
+    </div>
+
+    <h3>Complex Hahn-Banach</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> The norm-preserving extension theorem also holds for complex normed spaces.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Given a complex linear \(f\), let \(u=\operatorname{Re}f\). Then \(u\) is real linear and \(|u(m)|\le\|f\|\|m\|\). Extend \(u\) as a real linear functional \(U\) with the same norm by the real theorem. Define \(F(x)=U(x)-iU(ix)\). Then \(F\) is complex linear, extends \(f\), and \(\operatorname{Re}F=U\).</p>
+        <p>To control the norm, for \(F(x)\ne0\) choose \(\theta\) such that \(e^{i\theta}F(x)=|F(x)|\). Then \(|F(x)|=\operatorname{Re}F(e^{i\theta}x)=U(e^{i\theta}x)\le\|f\|\|x\|\). Thus \(\|F\|\le\|f\|\), and equality follows from extension.</p>
+    </div>
+
+    <h3>Dual abundance</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 哈恩-巴拿赫 is not constructive in general. Its role is to guarantee enough continuous linear functionals for 对偶性, weak topology, and separation arguments.</p>
+        <p><span class="statement-title">说明.</span> Hahn-Banach is the theorem that prevents the continuous dual from being too small. Weak topologies, convex separation, norm recovery, adjoints, and many minimax arguments all depend on this abundance of continuous linear functionals.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/closed-graph-theorem/" next_label="下一页" next_url="/notes/functional-analysis/separation-of-convex-sets/" %}

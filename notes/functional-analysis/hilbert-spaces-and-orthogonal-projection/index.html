@@ -4,39 +4,55 @@ breadcrumb_child_label_en: "14. Hilbert spaces and orthogonal projection"
 breadcrumb_child_label_fr: "14. Espaces de Hilbert et projection orthogonale"
 breadcrumb_child_label_zh: "14. 希尔伯特空间与正交投影"
 ---
+
 <div class="note-page" data-lang="en">
     <h2><a href="{{ '/notes/functional-analysis/hilbert-spaces-and-orthogonal-projection/' | relative_url }}">14. Hilbert spaces and orthogonal projection</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/reflexive-spaces/" next_label="Next page" next_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" %}
 
-
-    <h3>Hilbert spaces</h3>
+    <h3>Inner products</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Hilbert space is a complete inner-product space. The norm is \(\|x\|=\sqrt{\langle x,x\rangle}\), and the inner product satisfies the parallelogram identity.</p>
+        <p><span class="statement-title">Definition.</span> A Hilbert space is a complete inner-product space \(H\). We take \(\langle\cdot,\cdot\rangle\) linear in the first variable and conjugate-linear in the second. The norm is \(\|x\|=\langle x,x\rangle^{1/2}\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Cauchy-Schwarz inequality: \(|\langle x,y\rangle|\le\|x\|\|y\|\) for all \(x,y\in H\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(y=0\) there is nothing to prove. Otherwise, for any \(\lambda\in\mathbb F\), \(0\le\|x-\lambda y\|^2=\|x\|^2-2\operatorname{Re}(\lambda\langle y,x\rangle)+|\lambda|^2\|y\|^2\). Choose \(\lambda=\langle x,y\rangle/\|y\|^2\) with the convention matching the inner-product linearity. The resulting inequality is \(\|x\|^2-|\langle x,y\rangle|^2/\|y\|^2\ge0\).</p>
+    </div>
+
+    <h3>Parallelogram and polarization</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The norm of a Hilbert space satisfies \(\|x+y\|^2+\|x-y\|^2=2\|x\|^2+2\|y\|^2\). Conversely, a norm satisfying the parallelogram identity comes from an inner product by the polarization identity.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Expanding \(\langle x\pm y,x\pm y\rangle\) gives the parallelogram identity. Conversely, define the inner product by the real or complex polarization formula. The parallelogram identity is exactly the algebra needed to prove additivity; homogeneity and positivity follow from norm properties.</p>
     </div>
 
     <h3>Projection theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(C\) is a nonempty closed convex subset of a Hilbert space \(H\), then every \(x\in H\) has a unique nearest point \(P_Cx\in C\). If \(M\) is a closed subspace, then \(x-P_Mx\in M^\perp\).</p>
+        <p><span class="statement-title">Theorem.</span> Let \(C\subset H\) be nonempty, closed, and convex. For every \(x\in H\), there is a unique \(p=P_Cx\in C\) minimizing \(\|x-c\|\) over \(c\in C\). It is characterized by \(\operatorname{Re}\langle x-p,c-p\rangle\le0\) for all \(c\in C\).</p>
     </div>
 
-    <h3>Proof idea</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose a minimizing sequence in \(C\). The parallelogram identity shows it is Cauchy, hence converges to a point of \(C\). Convexity gives uniqueness by comparing two hypothetical minimizers with their midpoint.</p>
+        <p><span class="statement-title">Proof.</span> Let \(d=\inf_{c\in C}\|x-c\|\) and choose \(c_n\in C\) with \(\|x-c_n\|\to d\). Since \(C\) is convex, \((c_n+c_m)/2\in C\). The parallelogram identity applied to \(x-c_n\) and \(x-c_m\) gives \(\|c_n-c_m\|^2\le2\|x-c_n\|^2+2\|x-c_m\|^2-4d^2\), which tends to \(0\). Thus \(c_n\) is Cauchy, converges to some \(p\in C\), and \(\|x-p\|=d\).</p>
+        <p>If \(p,q\) were two minimizers, the same parallelogram argument with their midpoint gives \(\|p-q\|=0\). For the variational inequality, minimize \(\|x-(p+t(c-p))\|^2\) over \(0\le t\le1\) and take the right derivative at \(0\). Conversely, that inequality implies \(\|x-c\|^2=\|x-p\|^2+\|c-p\|^2-2\operatorname{Re}\langle x-p,c-p\rangle\ge\|x-p\|^2\).</p>
     </div>
 
-    <h3>Orthogonal decomposition</h3>
+    <h3>Closed subspaces</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> For every closed subspace \(M\subset H\), \(H=M\oplus M^\perp\). The projection \(P_M\) is linear, bounded, self-adjoint, and satisfies \(P_M^2=P_M\).</p>
+        <p><span class="statement-title">Corollary.</span> If \(M\subset H\) is a closed subspace, then \(H=M\oplus M^\perp\). The map \(P_Mx\) is linear, bounded, self-adjoint, idempotent, and \(\|P_M\|\le1\).</p>
     </div>
 
-    <h3>Best approximation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(p=P_Mx\), the variational inequality applied to \(p\pm m\) and \(p\pm im\) gives \(\langle x-p,m\rangle=0\) for all \(m\in M\). Thus \(x=p+(x-p)\in M+M^\perp\). The intersection is \(\{0\}\). Linearity follows from uniqueness of the decomposition. Boundedness follows from \(\|P_Mx\|\le\|x\|\), and self-adjointness follows from \(\langle P_Mx,y\rangle=\langle P_Mx,P_My\rangle=\langle x,P_My\rangle\).</p>
+    </div>
+
+    <h3>Normal equations</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> Least-squares problems are projection problems: approximate \(x\) by an element of a closed subspace \(M\), and the error is characterized by orthogonality to \(M\).</p>
-    </div>
-
-    <h3>Hilbert geometry</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Hilbert spaces keep enough Euclidean geometry for projections and angles, while allowing infinite-dimensional analytic limits.</p>
+        <p><span class="statement-title">Example.</span> Least squares is projection. If \(A:\mathbb F^p\to H\) has closed range \(M\), the best approximation to \(y\in H\) in \(M\) is \(A\hat\beta=P_My\), and the residual satisfies \(A^*(y-A\hat\beta)=0\). In matrix language this is \(A^*A\hat\beta=A^*y\), the normal equation.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/functional-analysis/" prev_label="Last page" prev_url="/notes/functional-analysis/reflexive-spaces/" next_label="Next page" next_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" %}
@@ -46,35 +62,50 @@ breadcrumb_child_label_zh: "14. 希尔伯特空间与正交投影"
     <h2><a href="{{ '/notes/functional-analysis/hilbert-spaces-and-orthogonal-projection/' | relative_url }}">14. Espaces de Hilbert et projection orthogonale</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/reflexive-spaces/" next_label="Page suivante" next_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" %}
 
-
-    <h3>Hilbert spaces</h3>
+    <h3>Inner products</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A Hilbert space is a complete inner-product space. The norm is \(\|x\|=\sqrt{\langle x,x\rangle}\), and the inner product satisfies the parallelogram identity.</p>
+        <p><span class="statement-title">Définition.</span> A Hilbert space is a complete inner-product space \(H\). We take \(\langle\cdot,\cdot\rangle\) linear in the first variable and conjugate-linear in the second. The norm is \(\|x\|=\langle x,x\rangle^{1/2}\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Cauchy-Schwarz inequality: \(|\langle x,y\rangle|\le\|x\|\|y\|\) for all \(x,y\in H\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(y=0\) there is nothing to prove. Otherwise, for any \(\lambda\in\mathbb F\), \(0\le\|x-\lambda y\|^2=\|x\|^2-2\operatorname{Re}(\lambda\langle y,x\rangle)+|\lambda|^2\|y\|^2\). Choose \(\lambda=\langle x,y\rangle/\|y\|^2\) with the convention matching the inner-product linearity. The resulting inequality is \(\|x\|^2-|\langle x,y\rangle|^2/\|y\|^2\ge0\).</p>
+    </div>
+
+    <h3>Parallelogram and polarization</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The norm of a Hilbert space satisfies \(\|x+y\|^2+\|x-y\|^2=2\|x\|^2+2\|y\|^2\). Conversely, a norm satisfying the parallelogram identity comes from an inner product by the polarization identity.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Expanding \(\langle x\pm y,x\pm y\rangle\) gives the parallelogram identity. Conversely, define the inner product by the real or complex polarization formula. The parallelogram identity is exactly the algebra needed to prove additivity; homogeneity and positivity follow from norm properties.</p>
     </div>
 
     <h3>Projection theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(C\) is a nonempty closed convex subset of a Hilbert space \(H\), then every \(x\in H\) has a unique nearest point \(P_Cx\in C\). If \(M\) is a closed subspace, then \(x-P_Mx\in M^\perp\).</p>
+        <p><span class="statement-title">Théorème.</span> Let \(C\subset H\) be nonempty, closed, and convex. For every \(x\in H\), there is a unique \(p=P_Cx\in C\) minimizing \(\|x-c\|\) over \(c\in C\). It is characterized by \(\operatorname{Re}\langle x-p,c-p\rangle\le0\) for all \(c\in C\).</p>
     </div>
 
-    <h3>Proof idea</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Choose a minimizing sequence in \(C\). The parallelogram identity shows it is Cauchy, hence converges to a point of \(C\). Convexity gives uniqueness by comparing two hypothetical minimizers with their midpoint.</p>
+        <p><span class="statement-title">Preuve.</span> Let \(d=\inf_{c\in C}\|x-c\|\) and choose \(c_n\in C\) with \(\|x-c_n\|\to d\). Since \(C\) is convex, \((c_n+c_m)/2\in C\). The parallelogram identity applied to \(x-c_n\) and \(x-c_m\) gives \(\|c_n-c_m\|^2\le2\|x-c_n\|^2+2\|x-c_m\|^2-4d^2\), which tends to \(0\). Thus \(c_n\) is Cauchy, converges to some \(p\in C\), and \(\|x-p\|=d\).</p>
+        <p>If \(p,q\) were two minimizers, the same parallelogram argument with their midpoint gives \(\|p-q\|=0\). For the variational inequality, minimize \(\|x-(p+t(c-p))\|^2\) over \(0\le t\le1\) and take the right derivative at \(0\). Conversely, that inequality implies \(\|x-c\|^2=\|x-p\|^2+\|c-p\|^2-2\operatorname{Re}\langle x-p,c-p\rangle\ge\|x-p\|^2\).</p>
     </div>
 
-    <h3>Orthogonal decomposition</h3>
+    <h3>Closed subspaces</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> For every closed subspace \(M\subset H\), \(H=M\oplus M^\perp\). The projection \(P_M\) is linear, bounded, self-adjoint, and satisfies \(P_M^2=P_M\).</p>
+        <p><span class="statement-title">Corollaire.</span> If \(M\subset H\) is a closed subspace, then \(H=M\oplus M^\perp\). The map \(P_Mx\) is linear, bounded, self-adjoint, idempotent, and \(\|P_M\|\le1\).</p>
     </div>
 
-    <h3>Best approximation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For \(p=P_Mx\), the variational inequality applied to \(p\pm m\) and \(p\pm im\) gives \(\langle x-p,m\rangle=0\) for all \(m\in M\). Thus \(x=p+(x-p)\in M+M^\perp\). The intersection is \(\{0\}\). Linearity follows from uniqueness of the decomposition. Boundedness follows from \(\|P_Mx\|\le\|x\|\), and self-adjointness follows from \(\langle P_Mx,y\rangle=\langle P_Mx,P_My\rangle=\langle x,P_My\rangle\).</p>
+    </div>
+
+    <h3>Normal equations</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> Least-squares problems are projection problems: approximate \(x\) by an element of a closed subspace \(M\), and the error is characterized by orthogonality to \(M\).</p>
-    </div>
-
-    <h3>Hilbert geometry</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Hilbert spaces keep enough Euclidean geometry for projections and angles, while allowing infinite-dimensional analytic limits.</p>
+        <p><span class="statement-title">Exemple.</span> Least squares is projection. If \(A:\mathbb F^p\to H\) has closed range \(M\), the best approximation to \(y\in H\) in \(M\) is \(A\hat\beta=P_My\), and the residual satisfies \(A^*(y-A\hat\beta)=0\). In matrix language this is \(A^*A\hat\beta=A^*y\), the normal equation.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/functional-analysis/" prev_label="Page précédente" prev_url="/notes/functional-analysis/reflexive-spaces/" next_label="Page suivante" next_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" %}
@@ -84,35 +115,50 @@ breadcrumb_child_label_zh: "14. 希尔伯特空间与正交投影"
     <h2><a href="{{ '/notes/functional-analysis/hilbert-spaces-and-orthogonal-projection/' | relative_url }}">14. 希尔伯特空间与正交投影</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/reflexive-spaces/" next_label="下一页" next_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" %}
 
-
-    <h3>希尔伯特空间</h3>
+    <h3>Inner products</h3>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A 希尔伯特空间 is a complete inner-product space. The norm is \(\|x\|=\sqrt{\langle x,x\rangle}\), and the inner product satisfies the parallelogram identity.</p>
+        <p><span class="statement-title">定义.</span> A Hilbert space is a complete inner-product space \(H\). We take \(\langle\cdot,\cdot\rangle\) linear in the first variable and conjugate-linear in the second. The norm is \(\|x\|=\langle x,x\rangle^{1/2}\).</p>
     </div>
 
-    <h3>Projection 定理</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(C\) is a nonempty closed 凸 subset of a 希尔伯特空间 \(H\), then every \(x\in H\) has a unique nearest point \(P_Cx\in C\). If \(M\) is a closed subspace, then \(x-P_Mx\in M^\perp\).</p>
+        <p><span class="statement-title">定理.</span> Cauchy-Schwarz inequality: \(|\langle x,y\rangle|\le\|x\|\|y\|\) for all \(x,y\in H\).</p>
     </div>
 
-    <h3>证明 idea</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Choose a minimizing sequence in \(C\). The parallelogram identity shows it is 柯西, hence converges to a point of \(C\). 凸性 gives uniqueness by comparing two hypothetical minimizers with their midpoint.</p>
+        <p><span class="statement-title">证明.</span> If \(y=0\) there is nothing to prove. Otherwise, for any \(\lambda\in\mathbb F\), \(0\le\|x-\lambda y\|^2=\|x\|^2-2\operatorname{Re}(\lambda\langle y,x\rangle)+|\lambda|^2\|y\|^2\). Choose \(\lambda=\langle x,y\rangle/\|y\|^2\) with the convention matching the inner-product linearity. The resulting inequality is \(\|x\|^2-|\langle x,y\rangle|^2/\|y\|^2\ge0\).</p>
     </div>
 
-    <h3>正交 decomposition</h3>
+    <h3>Parallelogram and polarization</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The norm of a Hilbert space satisfies \(\|x+y\|^2+\|x-y\|^2=2\|x\|^2+2\|y\|^2\). Conversely, a norm satisfying the parallelogram identity comes from an inner product by the polarization identity.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Expanding \(\langle x\pm y,x\pm y\rangle\) gives the parallelogram identity. Conversely, define the inner product by the real or complex polarization formula. The parallelogram identity is exactly the algebra needed to prove additivity; homogeneity and positivity follow from norm properties.</p>
+    </div>
+
+    <h3>Projection theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(C\subset H\) be nonempty, closed, and convex. For every \(x\in H\), there is a unique \(p=P_Cx\in C\) minimizing \(\|x-c\|\) over \(c\in C\). It is characterized by \(\operatorname{Re}\langle x-p,c-p\rangle\le0\) for all \(c\in C\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(d=\inf_{c\in C}\|x-c\|\) and choose \(c_n\in C\) with \(\|x-c_n\|\to d\). Since \(C\) is convex, \((c_n+c_m)/2\in C\). The parallelogram identity applied to \(x-c_n\) and \(x-c_m\) gives \(\|c_n-c_m\|^2\le2\|x-c_n\|^2+2\|x-c_m\|^2-4d^2\), which tends to \(0\). Thus \(c_n\) is Cauchy, converges to some \(p\in C\), and \(\|x-p\|=d\).</p>
+        <p>If \(p,q\) were two minimizers, the same parallelogram argument with their midpoint gives \(\|p-q\|=0\). For the variational inequality, minimize \(\|x-(p+t(c-p))\|^2\) over \(0\le t\le1\) and take the right derivative at \(0\). Conversely, that inequality implies \(\|x-c\|^2=\|x-p\|^2+\|c-p\|^2-2\operatorname{Re}\langle x-p,c-p\rangle\ge\|x-p\|^2\).</p>
+    </div>
+
+    <h3>Closed subspaces</h3>
     <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> For every closed subspace \(M\subset H\), \(H=M\oplus M^\perp\). The projection \(P_M\) is linear, 有界, self-adjoint, and satisfies \(P_M^2=P_M\).</p>
+        <p><span class="statement-title">推论.</span> If \(M\subset H\) is a closed subspace, then \(H=M\oplus M^\perp\). The map \(P_Mx\) is linear, bounded, self-adjoint, idempotent, and \(\|P_M\|\le1\).</p>
     </div>
 
-    <h3>Best approximation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For \(p=P_Mx\), the variational inequality applied to \(p\pm m\) and \(p\pm im\) gives \(\langle x-p,m\rangle=0\) for all \(m\in M\). Thus \(x=p+(x-p)\in M+M^\perp\). The intersection is \(\{0\}\). Linearity follows from uniqueness of the decomposition. Boundedness follows from \(\|P_Mx\|\le\|x\|\), and self-adjointness follows from \(\langle P_Mx,y\rangle=\langle P_Mx,P_My\rangle=\langle x,P_My\rangle\).</p>
+    </div>
+
+    <h3>Normal equations</h3>
     <div class="math-statement example">
-        <p><span class="statement-title">例.</span> Least-squares problems are projection problems: approximate \(x\) by an element of a closed subspace \(M\), and the error is characterized by orthogonality to \(M\).</p>
-    </div>
-
-    <h3>希尔伯特 geometry</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 希尔伯特空间 keep enough 欧几里得 geometry for projections and angles, while allowing infinite-dimensional 解析 limits.</p>
+        <p><span class="statement-title">例.</span> Least squares is projection. If \(A:\mathbb F^p\to H\) has closed range \(M\), the best approximation to \(y\in H\) in \(M\) is \(A\hat\beta=P_My\), and the residual satisfies \(A^*(y-A\hat\beta)=0\). In matrix language this is \(A^*A\hat\beta=A^*y\), the normal equation.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/functional-analysis/" prev_label="上一页" prev_url="/notes/functional-analysis/reflexive-spaces/" next_label="下一页" next_url="/notes/functional-analysis/orthonormal-bases-and-fourier-expansion/" %}
