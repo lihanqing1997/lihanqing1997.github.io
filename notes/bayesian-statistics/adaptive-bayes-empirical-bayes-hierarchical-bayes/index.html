@@ -9,25 +9,62 @@ breadcrumb_child_label_zh: "31. 自适应贝叶斯、经验贝叶斯与层级贝
     <h2>31. Adaptive Bayes, empirical Bayes, and hierarchical Bayes</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/contraction-rates-density-regression-white-noise/" next_label="Next page" next_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Adaptive Bayes, empirical Bayes, and hierarchical Bayes.</p>
+    <p>Adaptive Bayes tries to learn unknown regularity or sparsity while still quantifying uncertainty. Empirical Bayes and hierarchical Bayes differ in whether the hyperparameter is estimated or integrated out.</p>
 
-    <h3>Definition</h3>
+    <h3>Hierarchical adaptation</h3>
+
+    <p>A hyperprior can spread mass over models with different effective complexity.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A prior is adaptive over a scale of regularity classes if it contracts at the minimax rate for each class without knowing the class in advance.</p>
+        <p><span class="statement-title">Definition.</span> Let \(\lambda\) be a regularity, scale, bandwidth, or sparsity hyperparameter. A hierarchical prior has
+\[
+\lambda\sim H,\qquad \theta\mid\lambda\sim\Pi_\lambda.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Hierarchical Bayes mixes tuning parameters; empirical Bayes estimates them from data. Both adapt when enough mass is placed near the oracle scale.</p>
+        <p><span class="statement-title">Proposition.</span> If \(H\) assigns at least \(\exp(-C n\varepsilon_{n,\lambda}^2)\) mass near a near-optimal \(\lambda\), then the hierarchical prior can inherit the contraction rate associated with that \(\lambda\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on a good tuning value and then show the hyperprior or data-driven selector reaches that region with high probability.</p>
+        <p><span class="statement-title">Proof.</span> The prior mass condition in the general contraction theorem can be satisfied by integrating over a hyperparameter neighborhood. The likelihood tests are unchanged; the hyperprior contributes only to the denominator mass budget.</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Adaptive estimation is easier than adaptive honest uncertainty quantification.</p>
+    <h3>Empirical Bayes</h3>
+
+    <p>Empirical Bayes estimates hyperparameters from data and then plugs them into the prior.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> An empirical Bayes posterior has the form
+\[
+\Pi_{\hat\lambda(X)}(\cdot\mid X),
+\]
+where \(\hat\lambda(X)\) is often chosen by marginal likelihood or a moment estimate.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Because \(\hat\lambda\) is data-dependent, frequentist analysis must control the posterior uniformly over the likely range of \(\hat\lambda\).</p>
+    </div>
+
+    <h3>Marginal likelihood selection</h3>
+
+    <p>Marginal likelihood balances fit and prior complexity.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In many Gaussian sequence problems, marginal likelihood selects a scale or truncation level by trading off fit to observed coefficients with the prior penalty for model size.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The marginal likelihood factors over coefficients. Terms for included coefficients reward explaining signal; terms for excessive complexity pay a normalizing penalty. The maximizer balances these contributions.</p>
+    </div>
+
+    <h3>Adaptive credible sets</h3>
+
+    <p>Adaptive contraction does not automatically give adaptive honest coverage.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Credible sets may need inflation or self-similarity restrictions. Otherwise, functions with deceptive coefficient patterns can make the posterior radius too small for honest frequentist coverage.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/contraction-rates-density-regression-white-noise/" next_label="Next page" next_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 </div>
@@ -36,25 +73,62 @@ breadcrumb_child_label_zh: "31. 自适应贝叶斯、经验贝叶斯与层级贝
     <h2>31. Bayes adaptatif, Bayes empirique et Bayes hiérarchique</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/contraction-rates-density-regression-white-noise/" next_label="Page suivante" next_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Bayes adaptatif, Bayes empirique et Bayes hiérarchique.</p>
+    <p>Adaptive Bayes tries to learn unknown regularity or sparsity while still quantifying uncertainty. Empirical Bayes and hierarchical Bayes differ in whether the hyperparameter is estimated or integrated out.</p>
 
-    <h3>Définition</h3>
+    <h3>Hierarchical adaptation</h3>
+
+    <p>A hyperprior can spread mass over models with different effective complexity.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. A prior is adaptive over a scale of regularity classes if it contracts at the minimax rate for each class without knowing the class in advance.</p>
+        <p><span class="statement-title">Définition.</span> Let \(\lambda\) be a regularity, scale, bandwidth, or sparsity hyperparameter. A hierarchical prior has
+\[
+\lambda\sim H,\qquad \theta\mid\lambda\sim\Pi_\lambda.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. Hierarchical Bayes mixes tuning parameters; empirical Bayes estimates them from data. Both adapt when enough mass is placed near the oracle scale.</p>
+        <p><span class="statement-title">Proposition.</span> If \(H\) assigns at least \(\exp(-C n\varepsilon_{n,\lambda}^2)\) mass near a near-optimal \(\lambda\), then the hierarchical prior can inherit the contraction rate associated with that \(\lambda\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. Condition on a good tuning value and then show the hyperprior or data-driven selector reaches that region with high probability.</p>
+        <p><span class="statement-title">Preuve.</span> The prior mass condition in the general contraction theorem can be satisfied by integrating over a hyperparameter neighborhood. The likelihood tests are unchanged; the hyperprior contributes only to the denominator mass budget.</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Adaptive estimation is easier than adaptive honest uncertainty quantification.</p>
+    <h3>Empirical Bayes</h3>
+
+    <p>Empirical Bayes estimates hyperparameters from data and then plugs them into the prior.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> An empirical Bayes posterior has the form
+\[
+\Pi_{\hat\lambda(X)}(\cdot\mid X),
+\]
+where \(\hat\lambda(X)\) is often chosen by marginal likelihood or a moment estimate.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Because \(\hat\lambda\) is data-dependent, frequentist analysis must control the posterior uniformly over the likely range of \(\hat\lambda\).</p>
+    </div>
+
+    <h3>Marginal likelihood selection</h3>
+
+    <p>Marginal likelihood balances fit and prior complexity.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In many Gaussian sequence problems, marginal likelihood selects a scale or truncation level by trading off fit to observed coefficients with the prior penalty for model size.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The marginal likelihood factors over coefficients. Terms for included coefficients reward explaining signal; terms for excessive complexity pay a normalizing penalty. The maximizer balances these contributions.</p>
+    </div>
+
+    <h3>Adaptive credible sets</h3>
+
+    <p>Adaptive contraction does not automatically give adaptive honest coverage.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Credible sets may need inflation or self-similarity restrictions. Otherwise, functions with deceptive coefficient patterns can make the posterior radius too small for honest frequentist coverage.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/contraction-rates-density-regression-white-noise/" next_label="Page suivante" next_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 </div>
@@ -63,25 +137,62 @@ breadcrumb_child_label_zh: "31. 自适应贝叶斯、经验贝叶斯与层级贝
     <h2>31. 自适应贝叶斯、经验贝叶斯与层级贝叶斯</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/contraction-rates-density-regression-white-noise/" next_label="下一页" next_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 
-    <p>本页整理自适应贝叶斯、经验贝叶斯与层级贝叶斯的主要定义、命题与证明思路。</p>
+    <p>Adaptive Bayes tries to learn unknown regularity or sparsity while still quantifying uncertainty. Empirical Bayes and hierarchical Bayes differ in whether the hyperparameter is estimated or integrated out.</p>
 
-    <h3>定义</h3>
+    <h3>Hierarchical adaptation</h3>
+
+    <p>A hyperprior can spread mass over models with different effective complexity.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. A 先验 is adaptive over a scale of regularity classes if it contracts at the 极小极大 rate for each class without knowing the class in advance.</p>
+        <p><span class="statement-title">定义.</span> Let \(\lambda\) be a regularity, scale, bandwidth, or sparsity hyperparameter. A hierarchical prior has
+\[
+\lambda\sim H,\qquad \theta\mid\lambda\sim\Pi_\lambda.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. Hierarchical 贝叶斯 mixes tuning parameters; 经验贝叶斯 estimates them from data. Both adapt when enough mass is placed near the oracle scale.</p>
+        <p><span class="statement-title">命题.</span> If \(H\) assigns at least \(\exp(-C n\varepsilon_{n,\lambda}^2)\) mass near a near-optimal \(\lambda\), then the hierarchical prior can inherit the contraction rate associated with that \(\lambda\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. Condition on a good tuning value and then show the hyperprior or data-driven selector reaches that region with high probability.</p>
+        <p><span class="statement-title">证明.</span> The prior mass condition in the general contraction theorem can be satisfied by integrating over a hyperparameter neighborhood. The likelihood tests are unchanged; the hyperprior contributes only to the denominator mass budget.</p>
     </div>
 
-    <h3>说明</h3>
-    <p>Adaptive estimation is easier than adaptive honest uncertainty quantification.</p>
+    <h3>Empirical Bayes</h3>
+
+    <p>Empirical Bayes estimates hyperparameters from data and then plugs them into the prior.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> An empirical Bayes posterior has the form
+\[
+\Pi_{\hat\lambda(X)}(\cdot\mid X),
+\]
+where \(\hat\lambda(X)\) is often chosen by marginal likelihood or a moment estimate.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Because \(\hat\lambda\) is data-dependent, frequentist analysis must control the posterior uniformly over the likely range of \(\hat\lambda\).</p>
+    </div>
+
+    <h3>Marginal likelihood selection</h3>
+
+    <p>Marginal likelihood balances fit and prior complexity.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> In many Gaussian sequence problems, marginal likelihood selects a scale or truncation level by trading off fit to observed coefficients with the prior penalty for model size.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The marginal likelihood factors over coefficients. Terms for included coefficients reward explaining signal; terms for excessive complexity pay a normalizing penalty. The maximizer balances these contributions.</p>
+    </div>
+
+    <h3>Adaptive credible sets</h3>
+
+    <p>Adaptive contraction does not automatically give adaptive honest coverage.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Credible sets may need inflation or self-similarity restrictions. Otherwise, functions with deceptive coefficient patterns can make the posterior radius too small for honest frequentist coverage.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/contraction-rates-density-regression-white-noise/" next_label="下一页" next_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 </div>

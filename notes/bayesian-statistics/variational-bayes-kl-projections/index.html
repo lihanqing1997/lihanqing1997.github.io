@@ -9,31 +9,72 @@ breadcrumb_child_label_zh: "15. 变分贝叶斯与 KL 投影"
     <h2>15. Variational Bayes and KL projections</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" next_label="Next page" next_url="/notes/bayesian-statistics/posterior-consistency-parametric-models/" %}
 
-    <p>Variational Bayes turns posterior approximation into an optimization problem over a tractable family of probability measures.</p>
+    <p>Variational Bayes is best read as projection of the posterior onto a tractable family. The chosen KL direction determines the geometry and the typical bias of the approximation.</p>
 
-    <h3>Variational family</h3>
+    <h3>Evidence lower bound</h3>
+
+    <p>The optimization objective is an exact decomposition of the marginal likelihood.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Let \(\Pi(\mathrm{d}z|X)\) be the posterior and \(\mathcal Q\) a tractable family. A variational posterior is a minimizer of a divergence from \(\mathcal Q\) to \(\Pi(\cdot|X)\), most commonly reverse KL.</p>
+        <p><span class="statement-title">Definition.</span> For a density \(q\) on \(\Theta\), the evidence lower bound is
+\[
+\mathcal L(q)=\int q(\theta)\log\frac{p_\theta(X)\pi(\theta)}{q(\theta)}\,\mathrm{d}\theta.
+\]</p>
     </div>
 
-    <h3>ELBO identity</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(q\ll\Pi\), minimizing \(D_{\mathrm{KL}}(q\|\Pi(\cdot|X))\) is equivalent to maximizing \(\mathbb E_q\log p(X,Z)-\mathbb E_q\log q(Z)\), because the difference is the fixed log marginal likelihood.</p>
+        <p><span class="statement-title">Proposition.</span> The identity
+\[
+\log m(X)=\mathcal L(q)+\mathrm{KL}(q\,\|\,\Pi(\cdot\mid X))
+\]
+holds whenever the terms are well-defined.</p>
     </div>
 
-    <h3>Mean-field coordinate update</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use \(\pi(\theta\mid X)=p_\theta(X)\pi(\theta)/m(X)\). Then
+\[
+\mathrm{KL}(q\,\|\,\Pi)=\int q\log\frac{q\,m(X)}{p_\theta(X)\pi(\theta)}
+=\log m(X)-\mathcal L(q).
+\]</p>
+    </div>
+
+    <h3>Mean-field coordinate updates</h3>
+
+    <p>Mean-field VB turns the variational problem into a sequence of conditional expectation calculations.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(q(z)=\prod_{j=1}^mq_j(z_j)\), the coordinate optimum satisfies \(\log q_j(z_j)=\mathbb E_{q_{-j}}\log p(X,Z)+c_j\), whenever the right-hand side defines a member of the coordinate family.</p>
+        <p><span class="statement-title">Theorem.</span> If \(q(\theta)=\prod_{j=1}^k q_j(\theta_j)\), then the coordinate optimizer satisfies
+\[
+\log q_j^*(\theta_j)=\mathbb E_{-j}\log\{p_\theta(X)\pi(\theta)\}+\mathrm{constant}.
+\]</p>
     </div>
 
-    <h3>Forward KL projection</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Hold all other factors fixed and keep only terms depending on \(q_j\). The objective is a linear functional of \(q_j\) minus \(\int q_j\log q_j\), subject to normalization. The Euler equation gives the displayed exponential form.</p>
+    </div>
+
+    <h3>Reverse and forward KL</h3>
+
+    <p>The direction of KL controls whether the approximation is mode-seeking or mass-covering.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The forward projection minimizes \(D_{\mathrm{KL}}(\Pi(\cdot|X)\|q)\). It is moment-covering rather than mode-seeking and is closely related to expectation propagation and information projection geometry.</p>
+        <p><span class="statement-title">Definition.</span> Reverse KL is \(\mathrm{KL}(q\|\pi)=\int q\log(q/\pi)\). Forward KL is \(\mathrm{KL}(\pi\|q)=\int \pi\log(\pi/q)\).</p>
     </div>
 
-    <h3>Frequentist validity</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A variational posterior may contract at the right rate when \(\mathcal Q\) approximates the exact posterior well enough in KL and the exact posterior has suitable testing and entropy control. Optimization error must be kept below the statistical scale.</p>
+        <p><span class="statement-title">Remark.</span> Reverse KL heavily penalizes putting mass where the posterior density is small, so it can underestimate uncertainty in multimodal or skewed problems. Forward KL penalizes missing posterior mass but is often harder to optimize.</p>
+    </div>
+
+    <h3>Variational uncertainty</h3>
+
+    <p>A good ELBO value does not automatically imply accurate credible sets.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the variational family excludes posterior dependence, then marginal variances can be systematically underestimated even when posterior means are accurate.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Dependence contributes covariance terms to uncertainty in linear functionals. A product approximation sets cross-covariances to zero, so the induced variance of sums or contrasts may be too small unless the missing covariance happens to vanish.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" next_label="Next page" next_url="/notes/bayesian-statistics/posterior-consistency-parametric-models/" %}
@@ -43,31 +84,72 @@ breadcrumb_child_label_zh: "15. 变分贝叶斯与 KL 投影"
     <h2>15. Bayes variationnel et projections KL</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" next_label="Page suivante" next_url="/notes/bayesian-statistics/posterior-consistency-parametric-models/" %}
 
-    <p>Bayes variationnel transforme l’approximation postérieure en problème d’optimisation sur une famille tractable de mesures de probabilité.</p>
+    <p>Variational Bayes is best read as projection of the posterior onto a tractable family. The chosen KL direction determines the geometry and the typical bias of the approximation.</p>
 
-    <h3>Variational family</h3>
+    <h3>Evidence lower bound</h3>
+
+    <p>The optimization objective is an exact decomposition of the marginal likelihood.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Let \(\Pi(\mathrm{d}z|X)\) be the posterior and \(\mathcal Q\) a tractable family. A variational posterior is a minimizer of a divergence from \(\mathcal Q\) to \(\Pi(\cdot|X)\), most commonly reverse KL.</p>
+        <p><span class="statement-title">Définition.</span> For a density \(q\) on \(\Theta\), the evidence lower bound is
+\[
+\mathcal L(q)=\int q(\theta)\log\frac{p_\theta(X)\pi(\theta)}{q(\theta)}\,\mathrm{d}\theta.
+\]</p>
     </div>
 
-    <h3>ELBO identity</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(q\ll\Pi\), minimizing \(D_{\mathrm{KL}}(q\|\Pi(\cdot|X))\) is equivalent to maximizing \(\mathbb E_q\log p(X,Z)-\mathbb E_q\log q(Z)\), because the difference is the fixed log marginal likelihood.</p>
+        <p><span class="statement-title">Proposition.</span> The identity
+\[
+\log m(X)=\mathcal L(q)+\mathrm{KL}(q\,\|\,\Pi(\cdot\mid X))
+\]
+holds whenever the terms are well-defined.</p>
     </div>
 
-    <h3>Mean-field coordinate update</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use \(\pi(\theta\mid X)=p_\theta(X)\pi(\theta)/m(X)\). Then
+\[
+\mathrm{KL}(q\,\|\,\Pi)=\int q\log\frac{q\,m(X)}{p_\theta(X)\pi(\theta)}
+=\log m(X)-\mathcal L(q).
+\]</p>
+    </div>
+
+    <h3>Mean-field coordinate updates</h3>
+
+    <p>Mean-field VB turns the variational problem into a sequence of conditional expectation calculations.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(q(z)=\prod_{j=1}^mq_j(z_j)\), the coordinate optimum satisfies \(\log q_j(z_j)=\mathbb E_{q_{-j}}\log p(X,Z)+c_j\), whenever the right-hand side defines a member of the coordinate family.</p>
+        <p><span class="statement-title">Théorème.</span> If \(q(\theta)=\prod_{j=1}^k q_j(\theta_j)\), then the coordinate optimizer satisfies
+\[
+\log q_j^*(\theta_j)=\mathbb E_{-j}\log\{p_\theta(X)\pi(\theta)\}+\mathrm{constant}.
+\]</p>
     </div>
 
-    <h3>Forward KL projection</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Hold all other factors fixed and keep only terms depending on \(q_j\). The objective is a linear functional of \(q_j\) minus \(\int q_j\log q_j\), subject to normalization. The Euler equation gives the displayed exponential form.</p>
+    </div>
+
+    <h3>Reverse and forward KL</h3>
+
+    <p>The direction of KL controls whether the approximation is mode-seeking or mass-covering.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The forward projection minimizes \(D_{\mathrm{KL}}(\Pi(\cdot|X)\|q)\). It is moment-covering rather than mode-seeking and is closely related to expectation propagation and information projection geometry.</p>
+        <p><span class="statement-title">Définition.</span> Reverse KL is \(\mathrm{KL}(q\|\pi)=\int q\log(q/\pi)\). Forward KL is \(\mathrm{KL}(\pi\|q)=\int \pi\log(\pi/q)\).</p>
     </div>
 
-    <h3>Frequentist validity</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> A variational posterior may contract at the right rate when \(\mathcal Q\) approximates the exact posterior well enough in KL and the exact posterior has suitable testing and entropy control. Optimization error must be kept below the statistical scale.</p>
+        <p><span class="statement-title">Remarque.</span> Reverse KL heavily penalizes putting mass where the posterior density is small, so it can underestimate uncertainty in multimodal or skewed problems. Forward KL penalizes missing posterior mass but is often harder to optimize.</p>
+    </div>
+
+    <h3>Variational uncertainty</h3>
+
+    <p>A good ELBO value does not automatically imply accurate credible sets.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the variational family excludes posterior dependence, then marginal variances can be systematically underestimated even when posterior means are accurate.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Dependence contributes covariance terms to uncertainty in linear functionals. A product approximation sets cross-covariances to zero, so the induced variance of sums or contrasts may be too small unless the missing covariance happens to vanish.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" next_label="Page suivante" next_url="/notes/bayesian-statistics/posterior-consistency-parametric-models/" %}
@@ -77,31 +159,72 @@ breadcrumb_child_label_zh: "15. 变分贝叶斯与 KL 投影"
     <h2>15. 变分贝叶斯与 KL 投影</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" next_label="下一页" next_url="/notes/bayesian-statistics/posterior-consistency-parametric-models/" %}
 
-    <p>变分贝叶斯把后验近似转化为在可处理概率族上的优化问题。</p>
+    <p>Variational Bayes is best read as projection of the posterior onto a tractable family. The chosen KL direction determines the geometry and the typical bias of the approximation.</p>
 
-    <h3>Variational family</h3>
+    <h3>Evidence lower bound</h3>
+
+    <p>The optimization objective is an exact decomposition of the marginal likelihood.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Let \(\Pi(\mathrm{d}z|X)\) be the 后验 and \(\mathcal Q\) a tractable family. A variational 后验 is a minimizer of a 散度 from \(\mathcal Q\) to \(\Pi(\cdot|X)\), most commonly 反向 KL.</p>
+        <p><span class="statement-title">定义.</span> For a density \(q\) on \(\Theta\), the evidence lower bound is
+\[
+\mathcal L(q)=\int q(\theta)\log\frac{p_\theta(X)\pi(\theta)}{q(\theta)}\,\mathrm{d}\theta.
+\]</p>
     </div>
 
-    <h3>ELBO identity</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> For \(q\ll\Pi\), minimizing \(D_{\mathrm{KL}}(q\|\Pi(\cdot|X))\) is equivalent to maximizing \(\mathbb E_q\log p(X,Z)-\mathbb E_q\log q(Z)\), because the difference is the fixed log 边际似然.</p>
+        <p><span class="statement-title">命题.</span> The identity
+\[
+\log m(X)=\mathcal L(q)+\mathrm{KL}(q\,\|\,\Pi(\cdot\mid X))
+\]
+holds whenever the terms are well-defined.</p>
     </div>
 
-    <h3>Mean-field coordinate update</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use \(\pi(\theta\mid X)=p_\theta(X)\pi(\theta)/m(X)\). Then
+\[
+\mathrm{KL}(q\,\|\,\Pi)=\int q\log\frac{q\,m(X)}{p_\theta(X)\pi(\theta)}
+=\log m(X)-\mathcal L(q).
+\]</p>
+    </div>
+
+    <h3>Mean-field coordinate updates</h3>
+
+    <p>Mean-field VB turns the variational problem into a sequence of conditional expectation calculations.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(q(z)=\prod_{j=1}^mq_j(z_j)\), the coordinate optimum satisfies \(\log q_j(z_j)=\mathbb E_{q_{-j}}\log p(X,Z)+c_j\), whenever the right-hand side defines a member of the coordinate family.</p>
+        <p><span class="statement-title">定理.</span> If \(q(\theta)=\prod_{j=1}^k q_j(\theta_j)\), then the coordinate optimizer satisfies
+\[
+\log q_j^*(\theta_j)=\mathbb E_{-j}\log\{p_\theta(X)\pi(\theta)\}+\mathrm{constant}.
+\]</p>
     </div>
 
-    <h3>正向 KL 投影</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Hold all other factors fixed and keep only terms depending on \(q_j\). The objective is a linear functional of \(q_j\) minus \(\int q_j\log q_j\), subject to normalization. The Euler equation gives the displayed exponential form.</p>
+    </div>
+
+    <h3>Reverse and forward KL</h3>
+
+    <p>The direction of KL controls whether the approximation is mode-seeking or mass-covering.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The forward projection minimizes \(D_{\mathrm{KL}}(\Pi(\cdot|X)\|q)\). It is moment-covering rather than mode-seeking and is closely related to expectation propagation and information projection geometry.</p>
+        <p><span class="statement-title">定义.</span> Reverse KL is \(\mathrm{KL}(q\|\pi)=\int q\log(q/\pi)\). Forward KL is \(\mathrm{KL}(\pi\|q)=\int \pi\log(\pi/q)\).</p>
     </div>
 
-    <h3>Frequentist validity</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> A variational 后验 may contract at the right rate when \(\mathcal Q\) approximates the exact 后验 well enough in KL and the exact 后验 has suitable testing and 熵 control. Optimization error must be kept below the statistical scale.</p>
+        <p><span class="statement-title">说明.</span> Reverse KL heavily penalizes putting mass where the posterior density is small, so it can underestimate uncertainty in multimodal or skewed problems. Forward KL penalizes missing posterior mass but is often harder to optimize.</p>
+    </div>
+
+    <h3>Variational uncertainty</h3>
+
+    <p>A good ELBO value does not automatically imply accurate credible sets.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If the variational family excludes posterior dependence, then marginal variances can be systematically underestimated even when posterior means are accurate.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Dependence contributes covariance terms to uncertainty in linear functionals. A product approximation sets cross-covariances to zero, so the induced variance of sums or contrasts may be too small unless the missing covariance happens to vanish.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" next_label="下一页" next_url="/notes/bayesian-statistics/posterior-consistency-parametric-models/" %}

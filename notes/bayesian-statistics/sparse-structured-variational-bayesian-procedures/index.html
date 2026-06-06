@@ -9,25 +9,70 @@ breadcrumb_child_label_zh: "33. 稀疏、结构化与变分贝叶斯程序"
     <h2>33. Sparse, structured, and variational Bayesian procedures</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Sparse, structured, and variational Bayesian procedures.</p>
+    <p>Modern Bayesian procedures often combine sparsity, structure, and variational approximation. The mathematical question is whether computationally tractable posteriors still concentrate near the truth with calibrated uncertainty.</p>
 
-    <h3>Definition</h3>
+    <h3>Sparse priors</h3>
+
+    <p>Sparsity priors put most mass on low-dimensional structures inside a high-dimensional space.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Sparse Bayesian procedures use priors that put mass on low-dimensional structures, such as spike-and-slab priors for many zero coefficients.</p>
+        <p><span class="statement-title">Definition.</span> A spike-and-slab prior for \(\theta\in\mathbb R^p\) has indicators \(z_j\sim\operatorname{Bernoulli}(q)\) and
+\[
+\theta_j\mid z_j\sim (1-z_j)\delta_0+z_j G.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Variational posteriors can inherit contraction rates when the variational family contains distributions close enough to the exact posterior in KL divergence.</p>
+        <p><span class="statement-title">Proposition.</span> The prior mass of a support \(S\) is \(q^{|S|}(1-q)^{p-|S|}\), before accounting for slab density on the nonzero coefficients.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The variational optimum is controlled by the evidence lower bound; testing bounds then transfer contraction to the approximate posterior.</p>
+        <p><span class="statement-title">Proof.</span> The indicators are independent Bernoulli variables, so the probability of exactly the support \(S\) is the product of \(q\) over \(S\) and \(1-q\) over its complement.</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>The synthesis is: priors encode structure, computation approximates the posterior, and frequentist analysis checks contraction, selection, and calibration.</p>
+    <h3>Posterior contraction in sparse models</h3>
+
+    <p>Rates depend on the true sparsity and the logarithmic cost of searching over supports.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> In many sparse normal means or regression problems, the benchmark squared-error rate is of order
+\[
+s_0\log(p/s_0)/n
+\]
+for \(s_0\) nonzero coefficients.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The variance cost of estimating \(s_0\) coefficients is proportional to \(s_0/n\), and the model-selection cost is the logarithm of the number of possible supports, \(\log {p\choose s_0}\asymp s_0\log(p/s_0)\), divided by \(n\).</p>
+    </div>
+
+    <h3>Variational sparse Bayes</h3>
+
+    <p>Mean-field approximations often factorize over inclusion indicators and coefficients.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A structured variational family may use
+\[
+q(z,\theta)=\prod_{j=1}^p q_j(z_j,\theta_j),
+\]
+or richer block factorizations that preserve known dependence.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> A too-factorized family can underestimate posterior dependence and uncertainty, but may still recover support or prediction risk under suitable beta-min and design conditions.</p>
+    </div>
+
+    <h3>Computation and theory</h3>
+
+    <p>The ELBO is an optimization objective, while contraction is a statistical property. Both must be checked.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If a variational distribution is close in KL to a posterior that contracts at rate \(\varepsilon_n\), then bounded posterior functionals are close up to the variational approximation error.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Pinsker's inequality converts KL error into total variation error. Total variation controls bounded expectation differences, while posterior contraction controls the target posterior mass outside the \(\varepsilon_n\)-ball.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 </div>
@@ -36,25 +81,70 @@ breadcrumb_child_label_zh: "33. 稀疏、结构化与变分贝叶斯程序"
     <h2>33. Procédures bayésiennes parcimonieuses, structurées et variationnelles</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Procédures bayésiennes parcimonieuses, structurées et variationnelles.</p>
+    <p>Modern Bayesian procedures often combine sparsity, structure, and variational approximation. The mathematical question is whether computationally tractable posteriors still concentrate near the truth with calibrated uncertainty.</p>
 
-    <h3>Définition</h3>
+    <h3>Sparse priors</h3>
+
+    <p>Sparsity priors put most mass on low-dimensional structures inside a high-dimensional space.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. Sparse Bayesian procedures use priors that put mass on low-dimensional structures, such as spike-and-slab priors for many zero coefficients.</p>
+        <p><span class="statement-title">Définition.</span> A spike-and-slab prior for \(\theta\in\mathbb R^p\) has indicators \(z_j\sim\operatorname{Bernoulli}(q)\) and
+\[
+\theta_j\mid z_j\sim (1-z_j)\delta_0+z_j G.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. Variational posteriors can inherit contraction rates when the variational family contains distributions close enough to the exact posterior in KL divergence.</p>
+        <p><span class="statement-title">Proposition.</span> The prior mass of a support \(S\) is \(q^{|S|}(1-q)^{p-|S|}\), before accounting for slab density on the nonzero coefficients.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. The variational optimum is controlled by the evidence lower bound; testing bounds then transfer contraction to the approximate posterior.</p>
+        <p><span class="statement-title">Preuve.</span> The indicators are independent Bernoulli variables, so the probability of exactly the support \(S\) is the product of \(q\) over \(S\) and \(1-q\) over its complement.</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>The synthesis is: priors encode structure, computation approximates the posterior, and frequentist analysis checks contraction, selection, and calibration.</p>
+    <h3>Posterior contraction in sparse models</h3>
+
+    <p>Rates depend on the true sparsity and the logarithmic cost of searching over supports.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> In many sparse normal means or regression problems, the benchmark squared-error rate is of order
+\[
+s_0\log(p/s_0)/n
+\]
+for \(s_0\) nonzero coefficients.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The variance cost of estimating \(s_0\) coefficients is proportional to \(s_0/n\), and the model-selection cost is the logarithm of the number of possible supports, \(\log {p\choose s_0}\asymp s_0\log(p/s_0)\), divided by \(n\).</p>
+    </div>
+
+    <h3>Variational sparse Bayes</h3>
+
+    <p>Mean-field approximations often factorize over inclusion indicators and coefficients.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A structured variational family may use
+\[
+q(z,\theta)=\prod_{j=1}^p q_j(z_j,\theta_j),
+\]
+or richer block factorizations that preserve known dependence.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> A too-factorized family can underestimate posterior dependence and uncertainty, but may still recover support or prediction risk under suitable beta-min and design conditions.</p>
+    </div>
+
+    <h3>Computation and theory</h3>
+
+    <p>The ELBO is an optimization objective, while contraction is a statistical property. Both must be checked.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If a variational distribution is close in KL to a posterior that contracts at rate \(\varepsilon_n\), then bounded posterior functionals are close up to the variational approximation error.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Pinsker's inequality converts KL error into total variation error. Total variation controls bounded expectation differences, while posterior contraction controls the target posterior mass outside the \(\varepsilon_n\)-ball.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 </div>
@@ -63,25 +153,70 @@ breadcrumb_child_label_zh: "33. 稀疏、结构化与变分贝叶斯程序"
     <h2>33. 稀疏、结构化与变分贝叶斯程序</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 
-    <p>本页整理稀疏、结构化与变分贝叶斯程序的主要定义、命题与证明思路。</p>
+    <p>Modern Bayesian procedures often combine sparsity, structure, and variational approximation. The mathematical question is whether computationally tractable posteriors still concentrate near the truth with calibrated uncertainty.</p>
 
-    <h3>定义</h3>
+    <h3>Sparse priors</h3>
+
+    <p>Sparsity priors put most mass on low-dimensional structures inside a high-dimensional space.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. Sparse 贝叶斯 procedures use priors that put mass on low-dimensional structures, such as spike-and-slab priors for many zero coefficients.</p>
+        <p><span class="statement-title">定义.</span> A spike-and-slab prior for \(\theta\in\mathbb R^p\) has indicators \(z_j\sim\operatorname{Bernoulli}(q)\) and
+\[
+\theta_j\mid z_j\sim (1-z_j)\delta_0+z_j G.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. Variational posteriors can inherit contraction rates when the variational family contains distributions close enough to the exact 后验 in KL 散度.</p>
+        <p><span class="statement-title">命题.</span> The prior mass of a support \(S\) is \(q^{|S|}(1-q)^{p-|S|}\), before accounting for slab density on the nonzero coefficients.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. The variational optimum is controlled by the evidence lower bound; testing bounds then transfer contraction to the approximate 后验.</p>
+        <p><span class="statement-title">证明.</span> The indicators are independent Bernoulli variables, so the probability of exactly the support \(S\) is the product of \(q\) over \(S\) and \(1-q\) over its complement.</p>
     </div>
 
-    <h3>说明</h3>
-    <p>The synthesis is: priors encode structure, computation approximates the 后验, and frequentist analysis checks contraction, selection, and calibration.</p>
+    <h3>Posterior contraction in sparse models</h3>
+
+    <p>Rates depend on the true sparsity and the logarithmic cost of searching over supports.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> In many sparse normal means or regression problems, the benchmark squared-error rate is of order
+\[
+s_0\log(p/s_0)/n
+\]
+for \(s_0\) nonzero coefficients.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The variance cost of estimating \(s_0\) coefficients is proportional to \(s_0/n\), and the model-selection cost is the logarithm of the number of possible supports, \(\log {p\choose s_0}\asymp s_0\log(p/s_0)\), divided by \(n\).</p>
+    </div>
+
+    <h3>Variational sparse Bayes</h3>
+
+    <p>Mean-field approximations often factorize over inclusion indicators and coefficients.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A structured variational family may use
+\[
+q(z,\theta)=\prod_{j=1}^p q_j(z_j,\theta_j),
+\]
+or richer block factorizations that preserve known dependence.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> A too-factorized family can underestimate posterior dependence and uncertainty, but may still recover support or prediction risk under suitable beta-min and design conditions.</p>
+    </div>
+
+    <h3>Computation and theory</h3>
+
+    <p>The ELBO is an optimization objective, while contraction is a statistical property. Both must be checked.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If a variational distribution is close in KL to a posterior that contracts at rate \(\varepsilon_n\), then bounded posterior functionals are close up to the variational approximation error.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Pinsker's inequality converts KL error into total variation error. Total variation controls bounded expectation differences, while posterior contraction controls the target posterior mass outside the \(\varepsilon_n\)-ball.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/semiparametric-nonparametric-bvm/" %}
 </div>

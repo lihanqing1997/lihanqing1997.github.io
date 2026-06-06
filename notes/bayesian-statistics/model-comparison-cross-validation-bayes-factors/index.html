@@ -9,28 +9,70 @@ breadcrumb_child_label_zh: "10. 模型比较、交叉验证与贝叶斯因子"
     <h2>10. Model comparison, cross-validation, and Bayes factors</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" next_label="Next page" next_url="/notes/bayesian-statistics/monte-carlo-integration-simulation-error/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Model comparison, cross-validation, and Bayes factors.</p>
+    <p>Bayesian model comparison can be based on marginal likelihood, predictive performance, or decision loss. These criteria answer different questions and should not be conflated.</p>
 
-    <h3>Definition</h3>
+    <h3>Bayes factors and posterior model odds</h3>
+
+    <p>Bayes factors compare models through their prior predictive densities.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Leave-one-out expected log predictive density is
+        <p><span class="statement-title">Definition.</span> For models \(M_1,M_2\), the Bayes factor in favor of \(M_1\) over \(M_2\) is
 \[
-\operatorname{elpd}_{\mathrm{loo}}=\sum_{i=1}^n\log p(y_i\mid y_{-i}),\quad p(y_i\mid y_{-i})=\int p_\theta(y_i)\,\mathrm{d}\Pi(\theta\mid y_{-i}).
+B_{12}=\frac{m_1(X)}{m_2(X)}.
+\]
+Posterior odds satisfy
+\[
+\frac{\Pi(M_1\mid X)}{\Pi(M_2\mid X)}
+=B_{12}\frac{\Pi(M_1)}{\Pi(M_2)}.
 \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Bayes factors compare prior-averaged evidence; predictive criteria estimate future predictive accuracy.</p>
-    </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Marginal likelihood averages the likelihood over the prior, while cross-validation evaluates predictive density for held-out observations.</p>
+        <p><span class="statement-title">Proof.</span> Apply Bayes formula on the discrete model index. The likelihood for model \(M_j\) after integrating its parameters is precisely \(m_j(X)\).</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Diffuse priors can lower marginal likelihood even when the best-fitting likelihood value is high.</p>
+    <h3>Laplace approximation and the Occam factor</h3>
+
+    <p>Marginal likelihood automatically penalizes unused parameter volume.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If a \(d\)-dimensional regular model has posterior mode \(\hat\theta\), then formally
+\[
+m(X)\approx p_{\hat\theta}(X)\pi(\hat\theta)(2\pi)^{d/2}\det\{-\nabla^2\log[p_\theta(X)\pi(\theta)]_{\hat\theta}\}^{-1/2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Second-order Taylor expansion of the log integrand at \(\hat\theta\) gives a Gaussian integral. The determinant term is the local posterior volume and produces the Occam factor.</p>
+    </div>
+
+    <h3>Cross-validation and predictive scoring</h3>
+
+    <p>Cross-validation evaluates predictive accuracy under a chosen scoring rule rather than prior predictive evidence.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Leave-one-out expected log predictive density estimates
+\[
+\sum_{i=1}^n \log p(y_i\mid y_{-i})
+\]
+where \(p(y_i\mid y_{-i})\) is the posterior predictive density fitted without observation \(i\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Bayes factors are sensitive to prior mass on parameters; cross-validation is usually less sensitive to diffuse prior volume but targets predictive performance rather than posterior model probability.</p>
+    </div>
+
+    <h3>Stacking and model averaging</h3>
+
+    <p>When no model is true, averaging for prediction can be preferable to selecting one model.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Stacking chooses weights to maximize a cross-validated predictive score over convex combinations of predictive distributions.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The criterion is a concave optimization problem in the weights for logarithmic score because the log of a positive affine combination is concave. The resulting weights target predictive performance rather than posterior model probabilities.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" next_label="Next page" next_url="/notes/bayesian-statistics/monte-carlo-integration-simulation-error/" %}
 </div>
@@ -39,28 +81,70 @@ breadcrumb_child_label_zh: "10. 模型比较、交叉验证与贝叶斯因子"
     <h2>10. Comparaison de modèles, validation croisée et facteurs de Bayes</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" next_label="Page suivante" next_url="/notes/bayesian-statistics/monte-carlo-integration-simulation-error/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Comparaison de modèles, validation croisée et facteurs de Bayes.</p>
+    <p>Bayesian model comparison can be based on marginal likelihood, predictive performance, or decision loss. These criteria answer different questions and should not be conflated.</p>
 
-    <h3>Définition</h3>
+    <h3>Bayes factors and posterior model odds</h3>
+
+    <p>Bayes factors compare models through their prior predictive densities.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. Leave-one-out expected log predictive density is
+        <p><span class="statement-title">Définition.</span> For models \(M_1,M_2\), the Bayes factor in favor of \(M_1\) over \(M_2\) is
 \[
-\operatorname{elpd}_{\mathrm{loo}}=\sum_{i=1}^n\log p(y_i\mid y_{-i}),\quad p(y_i\mid y_{-i})=\int p_\theta(y_i)\,\mathrm{d}\Pi(\theta\mid y_{-i}).
+B_{12}=\frac{m_1(X)}{m_2(X)}.
+\]
+Posterior odds satisfy
+\[
+\frac{\Pi(M_1\mid X)}{\Pi(M_2\mid X)}
+=B_{12}\frac{\Pi(M_1)}{\Pi(M_2)}.
 \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. Bayes factors compare prior-averaged evidence; predictive criteria estimate future predictive accuracy.</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. Marginal likelihood averages the likelihood over the prior, while cross-validation evaluates predictive density for held-out observations.</p>
+        <p><span class="statement-title">Preuve.</span> Apply Bayes formula on the discrete model index. The likelihood for model \(M_j\) after integrating its parameters is precisely \(m_j(X)\).</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Diffuse priors can lower marginal likelihood even when the best-fitting likelihood value is high.</p>
+    <h3>Laplace approximation and the Occam factor</h3>
+
+    <p>Marginal likelihood automatically penalizes unused parameter volume.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If a \(d\)-dimensional regular model has posterior mode \(\hat\theta\), then formally
+\[
+m(X)\approx p_{\hat\theta}(X)\pi(\hat\theta)(2\pi)^{d/2}\det\{-\nabla^2\log[p_\theta(X)\pi(\theta)]_{\hat\theta}\}^{-1/2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Second-order Taylor expansion of the log integrand at \(\hat\theta\) gives a Gaussian integral. The determinant term is the local posterior volume and produces the Occam factor.</p>
+    </div>
+
+    <h3>Cross-validation and predictive scoring</h3>
+
+    <p>Cross-validation evaluates predictive accuracy under a chosen scoring rule rather than prior predictive evidence.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Leave-one-out expected log predictive density estimates
+\[
+\sum_{i=1}^n \log p(y_i\mid y_{-i})
+\]
+where \(p(y_i\mid y_{-i})\) is the posterior predictive density fitted without observation \(i\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Bayes factors are sensitive to prior mass on parameters; cross-validation is usually less sensitive to diffuse prior volume but targets predictive performance rather than posterior model probability.</p>
+    </div>
+
+    <h3>Stacking and model averaging</h3>
+
+    <p>When no model is true, averaging for prediction can be preferable to selecting one model.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Stacking chooses weights to maximize a cross-validated predictive score over convex combinations of predictive distributions.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The criterion is a concave optimization problem in the weights for logarithmic score because the log of a positive affine combination is concave. The resulting weights target predictive performance rather than posterior model probabilities.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" next_label="Page suivante" next_url="/notes/bayesian-statistics/monte-carlo-integration-simulation-error/" %}
 </div>
@@ -69,28 +153,70 @@ breadcrumb_child_label_zh: "10. 模型比较、交叉验证与贝叶斯因子"
     <h2>10. 模型比较、交叉验证与贝叶斯因子</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" next_label="下一页" next_url="/notes/bayesian-statistics/monte-carlo-integration-simulation-error/" %}
 
-    <p>本页整理模型比较、交叉验证与贝叶斯因子的主要定义、命题与证明思路。</p>
+    <p>Bayesian model comparison can be based on marginal likelihood, predictive performance, or decision loss. These criteria answer different questions and should not be conflated.</p>
 
-    <h3>定义</h3>
+    <h3>Bayes factors and posterior model odds</h3>
+
+    <p>Bayes factors compare models through their prior predictive densities.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. Leave-one-out expected log predictive density is
+        <p><span class="statement-title">定义.</span> For models \(M_1,M_2\), the Bayes factor in favor of \(M_1\) over \(M_2\) is
 \[
-\operatorname{elpd}_{\mathrm{loo}}=\sum_{i=1}^n\log p(y_i\mid y_{-i}),\quad p(y_i\mid y_{-i})=\int p_\theta(y_i)\,\mathrm{d}\Pi(\theta\mid y_{-i}).
+B_{12}=\frac{m_1(X)}{m_2(X)}.
+\]
+Posterior odds satisfy
+\[
+\frac{\Pi(M_1\mid X)}{\Pi(M_2\mid X)}
+=B_{12}\frac{\Pi(M_1)}{\Pi(M_2)}.
 \]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. 贝叶斯因子 compare 先验-averaged evidence; predictive criteria estimate future predictive accuracy.</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. 边际似然 averages the 似然 over the 先验, while cross-validation evaluates predictive density for held-out observations.</p>
+        <p><span class="statement-title">证明.</span> Apply Bayes formula on the discrete model index. The likelihood for model \(M_j\) after integrating its parameters is precisely \(m_j(X)\).</p>
     </div>
 
-    <h3>说明</h3>
-    <p>Diffuse priors can lower 边际似然 even when the best-fitting 似然 value is high.</p>
+    <h3>Laplace approximation and the Occam factor</h3>
+
+    <p>Marginal likelihood automatically penalizes unused parameter volume.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If a \(d\)-dimensional regular model has posterior mode \(\hat\theta\), then formally
+\[
+m(X)\approx p_{\hat\theta}(X)\pi(\hat\theta)(2\pi)^{d/2}\det\{-\nabla^2\log[p_\theta(X)\pi(\theta)]_{\hat\theta}\}^{-1/2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Second-order Taylor expansion of the log integrand at \(\hat\theta\) gives a Gaussian integral. The determinant term is the local posterior volume and produces the Occam factor.</p>
+    </div>
+
+    <h3>Cross-validation and predictive scoring</h3>
+
+    <p>Cross-validation evaluates predictive accuracy under a chosen scoring rule rather than prior predictive evidence.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Leave-one-out expected log predictive density estimates
+\[
+\sum_{i=1}^n \log p(y_i\mid y_{-i})
+\]
+where \(p(y_i\mid y_{-i})\) is the posterior predictive density fitted without observation \(i\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Bayes factors are sensitive to prior mass on parameters; cross-validation is usually less sensitive to diffuse prior volume but targets predictive performance rather than posterior model probability.</p>
+    </div>
+
+    <h3>Stacking and model averaging</h3>
+
+    <p>When no model is true, averaging for prediction can be preferable to selecting one model.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Stacking chooses weights to maximize a cross-validated predictive score over convex combinations of predictive distributions.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The criterion is a concave optimization problem in the weights for logarithmic score because the log of a positive affine combination is concave. The resulting weights target predictive performance rather than posterior model probabilities.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" next_label="下一页" next_url="/notes/bayesian-statistics/monte-carlo-integration-simulation-error/" %}
 </div>

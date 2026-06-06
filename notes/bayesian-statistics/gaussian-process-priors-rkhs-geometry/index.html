@@ -9,29 +9,64 @@ breadcrumb_child_label_zh: "26. 高斯过程先验与 RKHS 几何"
     <h2>26. Gaussian process priors and RKHS geometry</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/polya-trees-histograms-tail-free-priors/" next_label="Next page" next_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Gaussian process priors and RKHS geometry.</p>
+    <p>Gaussian process priors put Gaussian laws on function spaces. Their geometry is governed by covariance kernels, reproducing-kernel Hilbert spaces, and small-ball probabilities.</p>
 
-    <h3>Definition</h3>
+    <h3>Gaussian processes</h3>
+
+    <p>A Gaussian process is determined by its mean and covariance kernel.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Gaussian process is a random function whose finite-dimensional marginals are multivariate normal. Its RKHS describes deterministic shifts of finite Gaussian cost.</p>
+        <p><span class="statement-title">Definition.</span> A random function \(W\) on \(\mathcal X\) is a Gaussian process with mean \(m\) and covariance \(K\) if every finite vector \((W(x_1),\ldots,W(x_k))\) is multivariate normal with mean \(m(x_j)\) and covariance \(K(x_i,x_j)\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The concentration function
-\[
-\varphi_{f_0}(\varepsilon)=\inf_{\|h-f_0\|\le\varepsilon}\frac12\|h\|_{\mathbb H}^2-\log P(\|W\|\le\varepsilon)
-\]
-controls rates through \(\varphi_{f_0}(\varepsilon_n)\lesssim n\varepsilon_n^2\).</p>
+        <p><span class="statement-title">Proposition.</span> A symmetric positive semidefinite kernel \(K\) defines consistent finite-dimensional Gaussian distributions.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The first term is the RKHS approximation cost, and the second is the small-ball probability cost.</p>
+        <p><span class="statement-title">Proof.</span> Positive semidefiniteness gives valid covariance matrices on every finite set. Consistency under marginalization follows from the corresponding property of multivariate normal distributions, and Kolmogorov extension gives a stochastic process.</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Rescaling and length-scale priors adapt Gaussian-process geometry to unknown smoothness.</p>
+    <h3>RKHS and support</h3>
+
+    <p>The RKHS is not the typical sample-path space, but it controls shifts and support.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The reproducing-kernel Hilbert space \(\mathbb H\) associated with \(K\) is the Hilbert closure of finite linear combinations of \(K(x,\cdot)\), with inner product satisfying \(f(x)=\langle f,K(x,\cdot)\rangle_{\mathbb H}\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For many Gaussian measures on Banach spaces, the support is the closure of the RKHS in the Banach norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The Cameron-Martin space gives directions along which Gaussian measure can be shifted absolutely continuously. Small balls around RKHS elements have positive probability, and closure gives all support points; points outside the closure have separating neighborhoods of zero Gaussian mass.</p>
+    </div>
+
+    <h3>Concentration function</h3>
+
+    <p>Posterior contraction for Gaussian priors is often expressed through approximation plus small-ball terms.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For truth \(f_0\), the concentration function is
+\[
+\varphi_{f_0}(\varepsilon)
+=\inf_{\|h-f_0\|\le\varepsilon,h\in\mathbb H}\frac12\|h\|_{\mathbb H}^2
+-\log \mathbb P(\|W\|\le\varepsilon).
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The first term measures RKHS approximation cost; the second measures how much prior mass a small ball receives.</p>
+    </div>
+
+    <h3>Kernel scale and adaptation</h3>
+
+    <p>Length-scale hyperparameters change both smoothness and concentration.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Hierarchical Gaussian process priors place a prior on scale parameters so that the posterior can adapt to unknown regularity, but adaptation requires enough hyperprior mass near the scale that balances bias and variance.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/polya-trees-histograms-tail-free-priors/" next_label="Next page" next_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" %}
 </div>
@@ -40,29 +75,64 @@ controls rates through \(\varphi_{f_0}(\varepsilon_n)\lesssim n\varepsilon_n^2\)
     <h2>26. A priori de processus gaussiens et géométrie RKHS</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/polya-trees-histograms-tail-free-priors/" next_label="Page suivante" next_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour A priori de processus gaussiens et géométrie RKHS.</p>
+    <p>Gaussian process priors put Gaussian laws on function spaces. Their geometry is governed by covariance kernels, reproducing-kernel Hilbert spaces, and small-ball probabilities.</p>
 
-    <h3>Définition</h3>
+    <h3>Gaussian processes</h3>
+
+    <p>A Gaussian process is determined by its mean and covariance kernel.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. A Gaussian process is a random function whose finite-dimensional marginals are multivariate normal. Its RKHS describes deterministic shifts of finite Gaussian cost.</p>
+        <p><span class="statement-title">Définition.</span> A random function \(W\) on \(\mathcal X\) is a Gaussian process with mean \(m\) and covariance \(K\) if every finite vector \((W(x_1),\ldots,W(x_k))\) is multivariate normal with mean \(m(x_j)\) and covariance \(K(x_i,x_j)\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. The concentration function
-\[
-\varphi_{f_0}(\varepsilon)=\inf_{\|h-f_0\|\le\varepsilon}\frac12\|h\|_{\mathbb H}^2-\log P(\|W\|\le\varepsilon)
-\]
-controls rates through \(\varphi_{f_0}(\varepsilon_n)\lesssim n\varepsilon_n^2\).</p>
+        <p><span class="statement-title">Proposition.</span> A symmetric positive semidefinite kernel \(K\) defines consistent finite-dimensional Gaussian distributions.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. The first term is the RKHS approximation cost, and the second is the small-ball probability cost.</p>
+        <p><span class="statement-title">Preuve.</span> Positive semidefiniteness gives valid covariance matrices on every finite set. Consistency under marginalization follows from the corresponding property of multivariate normal distributions, and Kolmogorov extension gives a stochastic process.</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Rescaling and length-scale priors adapt Gaussian-process geometry to unknown smoothness.</p>
+    <h3>RKHS and support</h3>
+
+    <p>The RKHS is not the typical sample-path space, but it controls shifts and support.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> The reproducing-kernel Hilbert space \(\mathbb H\) associated with \(K\) is the Hilbert closure of finite linear combinations of \(K(x,\cdot)\), with inner product satisfying \(f(x)=\langle f,K(x,\cdot)\rangle_{\mathbb H}\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For many Gaussian measures on Banach spaces, the support is the closure of the RKHS in the Banach norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The Cameron-Martin space gives directions along which Gaussian measure can be shifted absolutely continuously. Small balls around RKHS elements have positive probability, and closure gives all support points; points outside the closure have separating neighborhoods of zero Gaussian mass.</p>
+    </div>
+
+    <h3>Concentration function</h3>
+
+    <p>Posterior contraction for Gaussian priors is often expressed through approximation plus small-ball terms.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For truth \(f_0\), the concentration function is
+\[
+\varphi_{f_0}(\varepsilon)
+=\inf_{\|h-f_0\|\le\varepsilon,h\in\mathbb H}\frac12\|h\|_{\mathbb H}^2
+-\log \mathbb P(\|W\|\le\varepsilon).
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The first term measures RKHS approximation cost; the second measures how much prior mass a small ball receives.</p>
+    </div>
+
+    <h3>Kernel scale and adaptation</h3>
+
+    <p>Length-scale hyperparameters change both smoothness and concentration.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Hierarchical Gaussian process priors place a prior on scale parameters so that the posterior can adapt to unknown regularity, but adaptation requires enough hyperprior mass near the scale that balances bias and variance.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/polya-trees-histograms-tail-free-priors/" next_label="Page suivante" next_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" %}
 </div>
@@ -71,29 +141,64 @@ controls rates through \(\varphi_{f_0}(\varepsilon_n)\lesssim n\varepsilon_n^2\)
     <h2>26. 高斯过程先验与 RKHS 几何</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/polya-trees-histograms-tail-free-priors/" next_label="下一页" next_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" %}
 
-    <p>本页整理高斯过程先验与 RKHS 几何的主要定义、命题与证明思路。</p>
+    <p>Gaussian process priors put Gaussian laws on function spaces. Their geometry is governed by covariance kernels, reproducing-kernel Hilbert spaces, and small-ball probabilities.</p>
 
-    <h3>定义</h3>
+    <h3>Gaussian processes</h3>
+
+    <p>A Gaussian process is determined by its mean and covariance kernel.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. A 高斯过程 is a random function whose finite-dimensional marginals are multivariate normal. Its RKHS describes deterministic shifts of finite 高斯 cost.</p>
+        <p><span class="statement-title">定义.</span> A random function \(W\) on \(\mathcal X\) is a Gaussian process with mean \(m\) and covariance \(K\) if every finite vector \((W(x_1),\ldots,W(x_k))\) is multivariate normal with mean \(m(x_j)\) and covariance \(K(x_i,x_j)\).</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. The concentration function
-\[
-\varphi_{f_0}(\varepsilon)=\inf_{\|h-f_0\|\le\varepsilon}\frac12\|h\|_{\mathbb H}^2-\log P(\|W\|\le\varepsilon)
-\]
-controls rates through \(\varphi_{f_0}(\varepsilon_n)\lesssim n\varepsilon_n^2\).</p>
+        <p><span class="statement-title">命题.</span> A symmetric positive semidefinite kernel \(K\) defines consistent finite-dimensional Gaussian distributions.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. The first term is the RKHS approximation cost, and the second is the small-ball probability cost.</p>
+        <p><span class="statement-title">证明.</span> Positive semidefiniteness gives valid covariance matrices on every finite set. Consistency under marginalization follows from the corresponding property of multivariate normal distributions, and Kolmogorov extension gives a stochastic process.</p>
     </div>
 
-    <h3>说明</h3>
-    <p>Rescaling and length-scale priors adapt 高斯-process geometry to unknown smoothness.</p>
+    <h3>RKHS and support</h3>
+
+    <p>The RKHS is not the typical sample-path space, but it controls shifts and support.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> The reproducing-kernel Hilbert space \(\mathbb H\) associated with \(K\) is the Hilbert closure of finite linear combinations of \(K(x,\cdot)\), with inner product satisfying \(f(x)=\langle f,K(x,\cdot)\rangle_{\mathbb H}\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For many Gaussian measures on Banach spaces, the support is the closure of the RKHS in the Banach norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The Cameron-Martin space gives directions along which Gaussian measure can be shifted absolutely continuously. Small balls around RKHS elements have positive probability, and closure gives all support points; points outside the closure have separating neighborhoods of zero Gaussian mass.</p>
+    </div>
+
+    <h3>Concentration function</h3>
+
+    <p>Posterior contraction for Gaussian priors is often expressed through approximation plus small-ball terms.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For truth \(f_0\), the concentration function is
+\[
+\varphi_{f_0}(\varepsilon)
+=\inf_{\|h-f_0\|\le\varepsilon,h\in\mathbb H}\frac12\|h\|_{\mathbb H}^2
+-\log \mathbb P(\|W\|\le\varepsilon).
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The first term measures RKHS approximation cost; the second measures how much prior mass a small ball receives.</p>
+    </div>
+
+    <h3>Kernel scale and adaptation</h3>
+
+    <p>Length-scale hyperparameters change both smoothness and concentration.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Hierarchical Gaussian process priors place a prior on scale parameters so that the posterior can adapt to unknown regularity, but adaptation requires enough hyperprior mass near the scale that balances bias and variance.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/polya-trees-histograms-tail-free-priors/" next_label="下一页" next_url="/notes/bayesian-statistics/mixture-priors-density-estimation/" %}
 </div>

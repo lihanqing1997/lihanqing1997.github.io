@@ -9,28 +9,58 @@ breadcrumb_child_label_zh: "13. 哈密顿蒙特卡罗与诊断"
     <h2>13. Hamiltonian Monte Carlo and diagnostics</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/markov-chain-monte-carlo/" next_label="Next page" next_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Hamiltonian Monte Carlo and diagnostics.</p>
+    <p>Hamiltonian Monte Carlo uses gradient information to propose distant moves with high acceptance probability. Its diagnostics reflect failures of numerical geometry.</p>
 
-    <h3>Definition</h3>
+    <h3>Hamiltonian augmentation</h3>
+
+    <p>HMC augments the parameter with momentum so that posterior simulation becomes approximate Hamiltonian flow.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For target \(\pi(q)\) and momentum \(p\sim N(0,M)\), the Hamiltonian is
+        <p><span class="statement-title">Definition.</span> Let \(U(q)=-\log\pi(q\mid X)\), choose mass matrix \(M\), and introduce momentum \(p\sim N(0,M)\). The Hamiltonian is
 \[
-H(q,p)=-\log\pi(q)+\frac12p^\top M^{-1}p.
+H(q,p)=U(q)+\frac12p^\top M^{-1}p.
 \]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Leapfrog integration is reversible and volume preserving, so a Metropolis correction based on Hamiltonian error targets the exact posterior.</p>
+        <p><span class="statement-title">Proposition.</span> The joint density proportional to \(\exp\{-H(q,p)\}\) has marginal density \(\pi(q\mid X)\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Each leapfrog substep is a determinant-one shear, and the full step is symmetric under momentum reversal.</p>
+        <p><span class="statement-title">Proof.</span> The joint density factors into \(\pi(q\mid X)\) times the Gaussian momentum density. Integrating out \(p\) leaves the posterior density of \(q\).</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Divergences, low effective sample size, and large \(\hat R\) are geometry or mixing warnings.</p>
+    <h3>Leapfrog reversibility and volume preservation</h3>
+
+    <p>The leapfrog integrator is used because it preserves the geometric properties needed for a Metropolis correction.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Leapfrog updates are reversible and volume preserving. Therefore a Metropolis correction using the Hamiltonian error leaves the joint target invariant.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Each half-step momentum update and full-step position update is a shear map with determinant one. The symmetric composition is reversible after momentum negation. Volume preservation and reversibility are exactly the conditions used in the Metropolis acceptance proof.</p>
+    </div>
+
+    <h3>Divergences</h3>
+
+    <p>Divergences indicate that the numerical trajectory has encountered geometry too sharp for the chosen step size and parameterization.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Divergences often occur near funnels, boundaries, or strong posterior curvature. Increasing target acceptance may help, but reparameterization is often the mathematical fix.</p>
+    </div>
+
+    <h3>Energy and effective sample size</h3>
+
+    <p>HMC diagnostics are geometric diagnostics of exploration.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Energy Bayesian fraction of missing information and related energy diagnostics compare variation in the Hamiltonian across transitions with marginal energy variation. Low energy exploration suggests poor movement across posterior level sets.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Large effective sample size for some scalar summaries does not guarantee that all posterior geometry has been explored. HMC should be checked on the quantities that matter for the inferential question.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/markov-chain-monte-carlo/" next_label="Next page" next_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" %}
 </div>
@@ -39,28 +69,58 @@ H(q,p)=-\log\pi(q)+\frac12p^\top M^{-1}p.
     <h2>13. Monte Carlo hamiltonien et diagnostics</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/markov-chain-monte-carlo/" next_label="Page suivante" next_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Monte Carlo hamiltonien et diagnostics.</p>
+    <p>Hamiltonian Monte Carlo uses gradient information to propose distant moves with high acceptance probability. Its diagnostics reflect failures of numerical geometry.</p>
 
-    <h3>Définition</h3>
+    <h3>Hamiltonian augmentation</h3>
+
+    <p>HMC augments the parameter with momentum so that posterior simulation becomes approximate Hamiltonian flow.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. For target \(\pi(q)\) and momentum \(p\sim N(0,M)\), the Hamiltonian is
+        <p><span class="statement-title">Définition.</span> Let \(U(q)=-\log\pi(q\mid X)\), choose mass matrix \(M\), and introduce momentum \(p\sim N(0,M)\). The Hamiltonian is
 \[
-H(q,p)=-\log\pi(q)+\frac12p^\top M^{-1}p.
+H(q,p)=U(q)+\frac12p^\top M^{-1}p.
 \]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. Leapfrog integration is reversible and volume preserving, so a Metropolis correction based on Hamiltonian error targets the exact posterior.</p>
+        <p><span class="statement-title">Proposition.</span> The joint density proportional to \(\exp\{-H(q,p)\}\) has marginal density \(\pi(q\mid X)\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. Each leapfrog substep is a determinant-one shear, and the full step is symmetric under momentum reversal.</p>
+        <p><span class="statement-title">Preuve.</span> The joint density factors into \(\pi(q\mid X)\) times the Gaussian momentum density. Integrating out \(p\) leaves the posterior density of \(q\).</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Divergences, low effective sample size, and large \(\hat R\) are geometry or mixing warnings.</p>
+    <h3>Leapfrog reversibility and volume preservation</h3>
+
+    <p>The leapfrog integrator is used because it preserves the geometric properties needed for a Metropolis correction.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Leapfrog updates are reversible and volume preserving. Therefore a Metropolis correction using the Hamiltonian error leaves the joint target invariant.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Each half-step momentum update and full-step position update is a shear map with determinant one. The symmetric composition is reversible after momentum negation. Volume preservation and reversibility are exactly the conditions used in the Metropolis acceptance proof.</p>
+    </div>
+
+    <h3>Divergences</h3>
+
+    <p>Divergences indicate that the numerical trajectory has encountered geometry too sharp for the chosen step size and parameterization.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Divergences often occur near funnels, boundaries, or strong posterior curvature. Increasing target acceptance may help, but reparameterization is often the mathematical fix.</p>
+    </div>
+
+    <h3>Energy and effective sample size</h3>
+
+    <p>HMC diagnostics are geometric diagnostics of exploration.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Energy Bayesian fraction of missing information and related energy diagnostics compare variation in the Hamiltonian across transitions with marginal energy variation. Low energy exploration suggests poor movement across posterior level sets.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Large effective sample size for some scalar summaries does not guarantee that all posterior geometry has been explored. HMC should be checked on the quantities that matter for the inferential question.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/markov-chain-monte-carlo/" next_label="Page suivante" next_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" %}
 </div>
@@ -69,28 +129,58 @@ H(q,p)=-\log\pi(q)+\frac12p^\top M^{-1}p.
     <h2>13. 哈密顿蒙特卡罗与诊断</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/markov-chain-monte-carlo/" next_label="下一页" next_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" %}
 
-    <p>本页整理哈密顿蒙特卡罗与诊断的主要定义、命题与证明思路。</p>
+    <p>Hamiltonian Monte Carlo uses gradient information to propose distant moves with high acceptance probability. Its diagnostics reflect failures of numerical geometry.</p>
 
-    <h3>定义</h3>
+    <h3>Hamiltonian augmentation</h3>
+
+    <p>HMC augments the parameter with momentum so that posterior simulation becomes approximate Hamiltonian flow.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. For target \(\pi(q)\) and momentum \(p\sim N(0,M)\), the 哈密顿 is
+        <p><span class="statement-title">定义.</span> Let \(U(q)=-\log\pi(q\mid X)\), choose mass matrix \(M\), and introduce momentum \(p\sim N(0,M)\). The Hamiltonian is
 \[
-H(q,p)=-\log\pi(q)+\frac12p^\top M^{-1}p.
+H(q,p)=U(q)+\frac12p^\top M^{-1}p.
 \]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. Leapfrog integration is reversible and volume preserving, so a Metropolis correction based on 哈密顿 error targets the exact 后验.</p>
+        <p><span class="statement-title">命题.</span> The joint density proportional to \(\exp\{-H(q,p)\}\) has marginal density \(\pi(q\mid X)\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. Each leapfrog substep is a determinant-one shear, and the full step is symmetric under momentum reversal.</p>
+        <p><span class="statement-title">证明.</span> The joint density factors into \(\pi(q\mid X)\) times the Gaussian momentum density. Integrating out \(p\) leaves the posterior density of \(q\).</p>
     </div>
 
-    <h3>说明</h3>
-    <p>散度, low effective sample size, and large \(\hat R\) are geometry or mixing warnings.</p>
+    <h3>Leapfrog reversibility and volume preservation</h3>
+
+    <p>The leapfrog integrator is used because it preserves the geometric properties needed for a Metropolis correction.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Leapfrog updates are reversible and volume preserving. Therefore a Metropolis correction using the Hamiltonian error leaves the joint target invariant.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Each half-step momentum update and full-step position update is a shear map with determinant one. The symmetric composition is reversible after momentum negation. Volume preservation and reversibility are exactly the conditions used in the Metropolis acceptance proof.</p>
+    </div>
+
+    <h3>Divergences</h3>
+
+    <p>Divergences indicate that the numerical trajectory has encountered geometry too sharp for the chosen step size and parameterization.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Divergences often occur near funnels, boundaries, or strong posterior curvature. Increasing target acceptance may help, but reparameterization is often the mathematical fix.</p>
+    </div>
+
+    <h3>Energy and effective sample size</h3>
+
+    <p>HMC diagnostics are geometric diagnostics of exploration.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Energy Bayesian fraction of missing information and related energy diagnostics compare variation in the Hamiltonian across transitions with marginal energy variation. Low energy exploration suggests poor movement across posterior level sets.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Large effective sample size for some scalar summaries does not guarantee that all posterior geometry has been explored. HMC should be checked on the quantities that matter for the inferential question.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/markov-chain-monte-carlo/" next_label="下一页" next_url="/notes/bayesian-statistics/laplace-variational-posterior-approximations/" %}
 </div>

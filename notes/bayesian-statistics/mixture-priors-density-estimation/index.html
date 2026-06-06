@@ -9,25 +9,58 @@ breadcrumb_child_label_zh: "27. 混合先验与密度估计"
     <h2>27. Mixture priors and density estimation</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/" next_label="Next page" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Mixture priors and density estimation.</p>
+    <p>Mixture priors model densities by averaging kernels against an unknown mixing distribution. They are central because they turn discrete random measures into smooth density priors.</p>
 
-    <h3>Definition</h3>
+    <h3>Kernel mixtures</h3>
+
+    <p>A mixture density is a linear smoothing of a mixing distribution.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For kernel \(k(x\mid z)\) and mixing distribution \(G\), \(f_G(x)=\int k(x\mid z)\,\mathrm{d}G(z)\).</p>
+        <p><span class="statement-title">Definition.</span> Given kernel \(k(x\mid z)\) and mixing distribution \(G\), the mixture density is
+\[
+p_G(x)=\int k(x\mid z)\,G(\mathrm{d}z).
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If good finite mixtures approximate the truth and the prior charges their neighborhoods, the induced density prior has KL support near the truth.</p>
+        <p><span class="statement-title">Proposition.</span> If \(G_n\Rightarrow G\) weakly and \(z\mapsto k(x\mid z)\) is bounded continuous for each \(x\), then \(p_{G_n}(x)\to p_G(x)\) pointwise.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Approximate first by a finite mixture, then use continuity of the mixture map.</p>
+        <p><span class="statement-title">Proof.</span> This is the definition of weak convergence applied to the bounded continuous test function \(z\mapsto k(x\mid z)\).</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Mixture-prior rates balance approximation, prior mass, and entropy of mixing distributions.</p>
+    <h3>Dirichlet process mixtures</h3>
+
+    <p>A discrete random mixing measure can still induce a continuous random density.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A Dirichlet process mixture uses \(G\sim\operatorname{DP}(\alpha G_0)\) and density \(p_G\). Even though \(G\) is discrete almost surely, \(p_G\) is smooth when \(k\) is smooth.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The mixture map \(G\mapsto p_G\) regularizes the random measure. This is why Dirichlet process mixtures are useful for density estimation.</p>
+    </div>
+
+    <h3>KL support for mixtures</h3>
+
+    <p>Consistency requires prior mass near the true density in KL neighborhoods.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the kernel family can approximate \(p_0\) in KL divergence and the prior on \(G\) assigns positive mass to weak neighborhoods of approximating mixing laws, then the induced density prior has KL support at \(p_0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose a mixing law \(G^*\) with \(K(p_0,p_{G^*})<\varepsilon\). Continuity of the mixture map in the relevant topology gives a neighborhood of \(G^*\) whose image remains in a KL neighborhood. Positive prior mass of that neighborhood gives KL support.</p>
+    </div>
+
+    <h3>Rates and kernel bandwidth</h3>
+
+    <p>Contraction rates depend on approximation by mixtures and on the complexity of the mixing distribution.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Location-scale normal mixtures can adapt to smooth densities, but the rate calculation must control tails, bandwidth, entropy of mixture classes, and prior mass near approximating mixtures.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/" next_label="Next page" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
 </div>
@@ -36,25 +69,58 @@ breadcrumb_child_label_zh: "27. 混合先验与密度估计"
     <h2>27. A priori de mélange et estimation de densité</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/" next_label="Page suivante" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour A priori de mélange et estimation de densité.</p>
+    <p>Mixture priors model densities by averaging kernels against an unknown mixing distribution. They are central because they turn discrete random measures into smooth density priors.</p>
 
-    <h3>Définition</h3>
+    <h3>Kernel mixtures</h3>
+
+    <p>A mixture density is a linear smoothing of a mixing distribution.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. For kernel \(k(x\mid z)\) and mixing distribution \(G\), \(f_G(x)=\int k(x\mid z)\,\mathrm{d}G(z)\).</p>
+        <p><span class="statement-title">Définition.</span> Given kernel \(k(x\mid z)\) and mixing distribution \(G\), the mixture density is
+\[
+p_G(x)=\int k(x\mid z)\,G(\mathrm{d}z).
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. If good finite mixtures approximate the truth and the prior charges their neighborhoods, the induced density prior has KL support near the truth.</p>
+        <p><span class="statement-title">Proposition.</span> If \(G_n\Rightarrow G\) weakly and \(z\mapsto k(x\mid z)\) is bounded continuous for each \(x\), then \(p_{G_n}(x)\to p_G(x)\) pointwise.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. Approximate first by a finite mixture, then use continuity of the mixture map.</p>
+        <p><span class="statement-title">Preuve.</span> This is the definition of weak convergence applied to the bounded continuous test function \(z\mapsto k(x\mid z)\).</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Mixture-prior rates balance approximation, prior mass, and entropy of mixing distributions.</p>
+    <h3>Dirichlet process mixtures</h3>
+
+    <p>A discrete random mixing measure can still induce a continuous random density.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A Dirichlet process mixture uses \(G\sim\operatorname{DP}(\alpha G_0)\) and density \(p_G\). Even though \(G\) is discrete almost surely, \(p_G\) is smooth when \(k\) is smooth.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The mixture map \(G\mapsto p_G\) regularizes the random measure. This is why Dirichlet process mixtures are useful for density estimation.</p>
+    </div>
+
+    <h3>KL support for mixtures</h3>
+
+    <p>Consistency requires prior mass near the true density in KL neighborhoods.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If the kernel family can approximate \(p_0\) in KL divergence and the prior on \(G\) assigns positive mass to weak neighborhoods of approximating mixing laws, then the induced density prior has KL support at \(p_0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose a mixing law \(G^*\) with \(K(p_0,p_{G^*})<\varepsilon\). Continuity of the mixture map in the relevant topology gives a neighborhood of \(G^*\) whose image remains in a KL neighborhood. Positive prior mass of that neighborhood gives KL support.</p>
+    </div>
+
+    <h3>Rates and kernel bandwidth</h3>
+
+    <p>Contraction rates depend on approximation by mixtures and on the complexity of the mixing distribution.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Location-scale normal mixtures can adapt to smooth densities, but the rate calculation must control tails, bandwidth, entropy of mixture classes, and prior mass near approximating mixtures.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/" next_label="Page suivante" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
 </div>
@@ -63,25 +129,58 @@ breadcrumb_child_label_zh: "27. 混合先验与密度估计"
     <h2>27. 混合先验与密度估计</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/" next_label="下一页" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
 
-    <p>本页整理混合先验与密度估计的主要定义、命题与证明思路。</p>
+    <p>Mixture priors model densities by averaging kernels against an unknown mixing distribution. They are central because they turn discrete random measures into smooth density priors.</p>
 
-    <h3>定义</h3>
+    <h3>Kernel mixtures</h3>
+
+    <p>A mixture density is a linear smoothing of a mixing distribution.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. For 核 \(k(x\mid z)\) and mixing distribution \(G\), \(f_G(x)=\int k(x\mid z)\,\mathrm{d}G(z)\).</p>
+        <p><span class="statement-title">定义.</span> Given kernel \(k(x\mid z)\) and mixing distribution \(G\), the mixture density is
+\[
+p_G(x)=\int k(x\mid z)\,G(\mathrm{d}z).
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. If good finite mixtures approximate the truth and the 先验 charges their neighborhoods, the induced density 先验 has KL support near the truth.</p>
+        <p><span class="statement-title">命题.</span> If \(G_n\Rightarrow G\) weakly and \(z\mapsto k(x\mid z)\) is bounded continuous for each \(x\), then \(p_{G_n}(x)\to p_G(x)\) pointwise.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. Approximate first by a finite mixture, then use continuity of the mixture map.</p>
+        <p><span class="statement-title">证明.</span> This is the definition of weak convergence applied to the bounded continuous test function \(z\mapsto k(x\mid z)\).</p>
     </div>
 
-    <h3>说明</h3>
-    <p>Mixture-先验 rates balance approximation, 先验 mass, and 熵 of mixing distributions.</p>
+    <h3>Dirichlet process mixtures</h3>
+
+    <p>A discrete random mixing measure can still induce a continuous random density.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A Dirichlet process mixture uses \(G\sim\operatorname{DP}(\alpha G_0)\) and density \(p_G\). Even though \(G\) is discrete almost surely, \(p_G\) is smooth when \(k\) is smooth.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The mixture map \(G\mapsto p_G\) regularizes the random measure. This is why Dirichlet process mixtures are useful for density estimation.</p>
+    </div>
+
+    <h3>KL support for mixtures</h3>
+
+    <p>Consistency requires prior mass near the true density in KL neighborhoods.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If the kernel family can approximate \(p_0\) in KL divergence and the prior on \(G\) assigns positive mass to weak neighborhoods of approximating mixing laws, then the induced density prior has KL support at \(p_0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose a mixing law \(G^*\) with \(K(p_0,p_{G^*})<\varepsilon\). Continuity of the mixture map in the relevant topology gives a neighborhood of \(G^*\) whose image remains in a KL neighborhood. Positive prior mass of that neighborhood gives KL support.</p>
+    </div>
+
+    <h3>Rates and kernel bandwidth</h3>
+
+    <p>Contraction rates depend on approximation by mixtures and on the complexity of the mixing distribution.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Location-scale normal mixtures can adapt to smooth densities, but the rate calculation must control tails, bandwidth, entropy of mixture classes, and prior mass near approximating mixtures.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/" next_label="下一页" next_url="/notes/bayesian-statistics/consistency-and-contraction/" %}
 </div>

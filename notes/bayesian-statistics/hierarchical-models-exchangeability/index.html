@@ -9,28 +9,66 @@ breadcrumb_child_label_zh: "6. 层级模型与可交换性"
     <h2>6. Hierarchical models and exchangeability</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" next_label="Next page" next_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" %}
 
-    <p>This page records the main definitions, propositions, and proof ideas for Hierarchical models and exchangeability.</p>
+    <p>Hierarchical Bayes introduces latent structure and shared hyperparameters. Exchangeability explains why such models are natural for repeated units that have no intrinsic ordering.</p>
 
-    <h3>Definition</h3>
+    <h3>Conditional independence and partial pooling</h3>
+
+    <p>A hierarchical model separates unit-level variation from population-level variation.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A sequence is exchangeable if each finite subvector has a distribution invariant under permutations. A hierarchical model often writes \(\theta_i\mid G\sim G\) and \(X_i\mid\theta_i\sim P_{\theta_i}\).</p>
-    </div>
-
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> De Finetti representation states that infinite exchangeable laws are mixtures of i.i.d. laws:
+        <p><span class="statement-title">Definition.</span> A basic two-level model has
 \[
-P(\theta_1\in A_1,\ldots,\theta_n\in A_n)=\int\prod_{i=1}^nG(A_i)\,\mathrm{d}\Lambda(G).
-\]</p>
+Y_i\mid\theta_i\sim P_{\theta_i},\qquad
+\theta_i\mid\eta\stackrel{\mathrm{iid}}{\sim}G_\eta,\qquad
+\eta\sim H.
+\]
+Conditional on \(\eta\), the unit parameters are independent; marginally, they are dependent.</p>
     </div>
 
-    <h3>Proof</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The posterior distribution of \(\theta_i\) uses information from both \(Y_i\) and the other observations through the hyperparameter \(\eta\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The empirical measure is a martingale object whose limit is the directing random measure; conditional on it, the coordinates become independent.</p>
+        <p><span class="statement-title">Proof.</span> The posterior factorizes as
+\[
+\pi(\eta,\theta_{1:n}\mid y)\propto h(\eta)\prod_{i=1}^n g_\eta(\theta_i)p_{\theta_i}(y_i).
+\]
+Integrating out \(\eta\) couples the conditional posterior of each \(\theta_i\) to all data \(y_{1:n}\).</p>
     </div>
 
-    <h3>Remarks</h3>
-    <p>Partial pooling is posterior shrinkage toward a group distribution, strongest when group variance is small or unit-level data are scarce.</p>
+    <h3>Normal means shrinkage</h3>
+
+    <p>The normal hierarchical model gives the clearest formula for partial pooling.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> If \(Y_i\mid\theta_i\sim N(\theta_i,\sigma^2)\) and \(\theta_i\mid\mu,\tau^2\sim N(\mu,\tau^2)\), then for fixed \((\mu,\tau^2)\),
+\[
+\mathbb E(\theta_i\mid Y_i,\mu,\tau^2)
+=\frac{\tau^2}{\tau^2+\sigma^2}Y_i+\frac{\sigma^2}{\tau^2+\sigma^2}\mu.
+\]
+The posterior mean shrinks \(Y_i\) toward the population mean \(\mu\).</p>
+    </div>
+
+    <h3>Exchangeability and de Finetti representation</h3>
+
+    <p>Exchangeability turns symmetry into a mixture representation.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For an infinite exchangeable sequence \(Y_1,Y_2,\ldots\) taking values in a standard Borel space, there exists a random probability measure \(P\) such that, conditionally on \(P\), the \(Y_i\) are iid with common law \(P\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> A full proof is a measure-theoretic theorem. The key idea is that empirical measures form a reverse martingale under the exchangeable sigma-field, and conditional distributions given that tail information become iid directing laws.</p>
+    </div>
+
+    <h3>Hyperpriors and identifiability</h3>
+
+    <p>Hyperpriors must be chosen with the same care as ordinary priors.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Weak data information about variance components can make posterior behavior sensitive to hyperprior tails near zero or infinity. In hierarchical models, prior predictive checking is especially important because hyperparameters control the scale of entire groups.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" next_label="Next page" next_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" %}
 </div>
@@ -39,28 +77,66 @@ P(\theta_1\in A_1,\ldots,\theta_n\in A_n)=\int\prod_{i=1}^nG(A_i)\,\mathrm{d}\La
     <h2>6. Modèles hiérarchiques et échangeabilité</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" next_label="Page suivante" next_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" %}
 
-    <p>Cette page rassemble les définitions, propositions et idées de preuve pour Modèles hiérarchiques et échangeabilité.</p>
+    <p>Hierarchical Bayes introduces latent structure and shared hyperparameters. Exchangeability explains why such models are natural for repeated units that have no intrinsic ordering.</p>
 
-    <h3>Définition</h3>
+    <h3>Conditional independence and partial pooling</h3>
+
+    <p>A hierarchical model separates unit-level variation from population-level variation.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Formulation. A sequence is exchangeable if each finite subvector has a distribution invariant under permutations. A hierarchical model often writes \(\theta_i\mid G\sim G\) and \(X_i\mid\theta_i\sim P_{\theta_i}\).</p>
-    </div>
-
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. De Finetti representation states that infinite exchangeable laws are mixtures of i.i.d. laws:
+        <p><span class="statement-title">Définition.</span> A basic two-level model has
 \[
-P(\theta_1\in A_1,\ldots,\theta_n\in A_n)=\int\prod_{i=1}^nG(A_i)\,\mathrm{d}\Lambda(G).
-\]</p>
+Y_i\mid\theta_i\sim P_{\theta_i},\qquad
+\theta_i\mid\eta\stackrel{\mathrm{iid}}{\sim}G_\eta,\qquad
+\eta\sim H.
+\]
+Conditional on \(\eta\), the unit parameters are independent; marginally, they are dependent.</p>
     </div>
 
-    <h3>Preuve</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The posterior distribution of \(\theta_i\) uses information from both \(Y_i\) and the other observations through the hyperparameter \(\eta\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. The empirical measure is a martingale object whose limit is the directing random measure; conditional on it, the coordinates become independent.</p>
+        <p><span class="statement-title">Preuve.</span> The posterior factorizes as
+\[
+\pi(\eta,\theta_{1:n}\mid y)\propto h(\eta)\prod_{i=1}^n g_\eta(\theta_i)p_{\theta_i}(y_i).
+\]
+Integrating out \(\eta\) couples the conditional posterior of each \(\theta_i\) to all data \(y_{1:n}\).</p>
     </div>
 
-    <h3>Remarques</h3>
-    <p>Partial pooling is posterior shrinkage toward a group distribution, strongest when group variance is small or unit-level data are scarce.</p>
+    <h3>Normal means shrinkage</h3>
+
+    <p>The normal hierarchical model gives the clearest formula for partial pooling.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> If \(Y_i\mid\theta_i\sim N(\theta_i,\sigma^2)\) and \(\theta_i\mid\mu,\tau^2\sim N(\mu,\tau^2)\), then for fixed \((\mu,\tau^2)\),
+\[
+\mathbb E(\theta_i\mid Y_i,\mu,\tau^2)
+=\frac{\tau^2}{\tau^2+\sigma^2}Y_i+\frac{\sigma^2}{\tau^2+\sigma^2}\mu.
+\]
+The posterior mean shrinks \(Y_i\) toward the population mean \(\mu\).</p>
+    </div>
+
+    <h3>Exchangeability and de Finetti representation</h3>
+
+    <p>Exchangeability turns symmetry into a mixture representation.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For an infinite exchangeable sequence \(Y_1,Y_2,\ldots\) taking values in a standard Borel space, there exists a random probability measure \(P\) such that, conditionally on \(P\), the \(Y_i\) are iid with common law \(P\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> A full proof is a measure-theoretic theorem. The key idea is that empirical measures form a reverse martingale under the exchangeable sigma-field, and conditional distributions given that tail information become iid directing laws.</p>
+    </div>
+
+    <h3>Hyperpriors and identifiability</h3>
+
+    <p>Hyperpriors must be chosen with the same care as ordinary priors.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Weak data information about variance components can make posterior behavior sensitive to hyperprior tails near zero or infinity. In hierarchical models, prior predictive checking is especially important because hyperparameters control the scale of entire groups.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" next_label="Page suivante" next_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" %}
 </div>
@@ -69,28 +145,66 @@ P(\theta_1\in A_1,\ldots,\theta_n\in A_n)=\int\prod_{i=1}^nG(A_i)\,\mathrm{d}\La
     <h2>6. 层级模型与可交换性</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" next_label="下一页" next_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" %}
 
-    <p>本页整理层级模型与可交换性的主要定义、命题与证明思路。</p>
+    <p>Hierarchical Bayes introduces latent structure and shared hyperparameters. Exchangeability explains why such models are natural for repeated units that have no intrinsic ordering.</p>
 
-    <h3>定义</h3>
+    <h3>Conditional independence and partial pooling</h3>
+
+    <p>A hierarchical model separates unit-level variation from population-level variation.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. A sequence is exchangeable if each finite subvector has a distribution invariant under permutations. A hierarchical model often writes \(\theta_i\mid G\sim G\) and \(X_i\mid\theta_i\sim P_{\theta_i}\).</p>
-    </div>
-
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 结论. De Finetti representation states that infinite exchangeable laws are mixtures of i.i.d. laws:
+        <p><span class="statement-title">定义.</span> A basic two-level model has
 \[
-P(\theta_1\in A_1,\ldots,\theta_n\in A_n)=\int\prod_{i=1}^nG(A_i)\,\mathrm{d}\Lambda(G).
-\]</p>
+Y_i\mid\theta_i\sim P_{\theta_i},\qquad
+\theta_i\mid\eta\stackrel{\mathrm{iid}}{\sim}G_\eta,\qquad
+\eta\sim H.
+\]
+Conditional on \(\eta\), the unit parameters are independent; marginally, they are dependent.</p>
     </div>
 
-    <h3>证明</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The posterior distribution of \(\theta_i\) uses information from both \(Y_i\) and the other observations through the hyperparameter \(\eta\).</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. The 经验测度 is a 鞅 object whose limit is the directing random 测度; conditional on it, the coordinates become 独立.</p>
+        <p><span class="statement-title">证明.</span> The posterior factorizes as
+\[
+\pi(\eta,\theta_{1:n}\mid y)\propto h(\eta)\prod_{i=1}^n g_\eta(\theta_i)p_{\theta_i}(y_i).
+\]
+Integrating out \(\eta\) couples the conditional posterior of each \(\theta_i\) to all data \(y_{1:n}\).</p>
     </div>
 
-    <h3>说明</h3>
-    <p>Partial pooling is 后验收缩 toward a group distribution, strongest when group variance is small or unit-level data are scarce.</p>
+    <h3>Normal means shrinkage</h3>
+
+    <p>The normal hierarchical model gives the clearest formula for partial pooling.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> If \(Y_i\mid\theta_i\sim N(\theta_i,\sigma^2)\) and \(\theta_i\mid\mu,\tau^2\sim N(\mu,\tau^2)\), then for fixed \((\mu,\tau^2)\),
+\[
+\mathbb E(\theta_i\mid Y_i,\mu,\tau^2)
+=\frac{\tau^2}{\tau^2+\sigma^2}Y_i+\frac{\sigma^2}{\tau^2+\sigma^2}\mu.
+\]
+The posterior mean shrinks \(Y_i\) toward the population mean \(\mu\).</p>
+    </div>
+
+    <h3>Exchangeability and de Finetti representation</h3>
+
+    <p>Exchangeability turns symmetry into a mixture representation.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For an infinite exchangeable sequence \(Y_1,Y_2,\ldots\) taking values in a standard Borel space, there exists a random probability measure \(P\) such that, conditionally on \(P\), the \(Y_i\) are iid with common law \(P\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> A full proof is a measure-theoretic theorem. The key idea is that empirical measures form a reverse martingale under the exchangeable sigma-field, and conditional distributions given that tail information become iid directing laws.</p>
+    </div>
+
+    <h3>Hyperpriors and identifiability</h3>
+
+    <p>Hyperpriors must be chosen with the same care as ordinary priors.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Weak data information about variance components can make posterior behavior sensitive to hyperprior tails near zero or infinity. In hierarchical models, prior predictive checking is especially important because hyperparameters control the scale of entire groups.</p>
+    </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/prior-construction-jeffreys-weak-information/" next_label="下一页" next_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" %}
 </div>
