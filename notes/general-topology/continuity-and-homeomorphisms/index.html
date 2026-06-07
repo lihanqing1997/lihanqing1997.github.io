@@ -9,87 +9,252 @@ breadcrumb_child_label_zh: "3. 连续性与同胚"
     <h2><a href="{{ '/notes/general-topology/continuity-and-homeomorphisms/' | relative_url }}">3. Continuity and homeomorphisms</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/bases-and-subbases/" next_label="Next page" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
 
-    <p>Continuity and homeomorphisms records the objects, main results, proof mechanisms, and boundary cases needed for the general topology note.</p>
+    <p>Continuity is the structure-preserving notion for topological spaces. A homeomorphism is an isomorphism of topological spaces, so all purely topological properties are invariant under it.</p>
 
-    <h3>Definition</h3>
+    <h3>Equivalent forms of continuity</h3>
+
+    <p>Continuity can be read from open sets, closed sets, closures, or neighborhoods.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A homeomorphism is a bijective continuous map with continuous inverse. Homeomorphic spaces are topologically the same.</p>
+        <p><span class="statement-title">Definition.</span> A map \(f:X\to Y\) is continuous if \(f^{-1}(V)\) is open in \(X\) for every open set \(V\subseteq Y\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Topological properties such as compactness, connectedness, separation axioms, and convergence behavior are preserved by homeomorphisms.</p>
+        <p><span class="statement-title">Proposition.</span> For \(f:X\to Y\), the following are equivalent: \(f\) is continuous; inverse images of closed sets are closed; \(f(\overline A)\subseteq\overline{f(A)}\) for every \(A\subseteq X\); and for every \(x\in X\), every neighborhood of \(f(x)\) pulls back to a neighborhood of \(x\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Translate open-cover, separation, or connectedness definitions through inverse images and images under the homeomorphism. The inverse continuity supplies the reverse implication.</p>
+        <p><span class="statement-title">Proof.</span> The closed-set version follows by complementing inverse images. If \(f\) is continuous and \(x\in\overline A\), then every neighborhood of \(f(x)\) has inverse image a neighborhood of \(x\), hence meets \(A\); its image meets \(f(A)\), so \(f(x)\in\overline{f(A)}\). The closure condition applied to \(A=f^{-1}(F)\) with \(F\) closed gives \(f(\overline A)\subseteq F\), hence \(\overline A=A\), so \(A\) is closed. The neighborhood form is just the definition localized at a point.</p>
     </div>
 
-    <h3>Remark</h3>
+
+    <h3>Composition and categorical behavior</h3>
+
+    <p>Continuous maps compose, which is why topological spaces form a category.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f:X\to Y\) and \(g:Y\to Z\) are continuous, then \(g\circ f:X\to Z\) is continuous. The identity map on every topological space is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For an open set \(W\subseteq Z\), \((g\circ f)^{-1}(W)=f^{-1}(g^{-1}(W))\). Since \(g^{-1}(W)\) is open in \(Y\) and \(f\) is continuous, this inverse image is open in \(X\). The identity case is immediate because inverse images under the identity do nothing.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Topology studies properties invariant under homeomorphism, not properties depending on coordinates, embedding, or metric formulas.</p>
+        <p><span class="statement-title">Remark.</span> This observation is modest but decisive: topological constructions are designed by universal properties involving continuous maps.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/bases-and-subbases/" next_label="Next page" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
+
+    <h3>Homeomorphisms and invariants</h3>
+
+    <p>Homeomorphic spaces may look different externally, but their open-set structures are identical.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A homeomorphism \(f:X\to Y\) is a bijection such that both \(f\) and \(f^{-1}\) are continuous. Spaces \(X\) and \(Y\) are homeomorphic if such a map exists.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A bijection \(f:X\to Y\) is a homeomorphism if and only if \(U\subseteq X\) is open exactly when \(f(U)\subseteq Y\) is open.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(f\) is a homeomorphism, open sets in \(X\) have open images because \(f(U)=(f^{-1})^{-1}(U)\), and open sets in \(Y\) have open inverse images by continuity of \(f\). Conversely, if the open-set equivalence holds, then inverse images under \(f\) and under \(f^{-1}\) preserve open sets, so both maps are continuous.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The interval \((0,1)\) is homeomorphic to \(\mathbb R\) via \(x\mapsto \tan(\pi(x-\frac12))\). Boundedness and length are not topological properties; openness, connectedness, and compactness behavior are.</p>
+    </div>
+
+
+    <h3>Open and closed maps</h3>
+
+    <p>A continuous bijection need not be a homeomorphism unless one controls images of open or closed sets.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A map \(f:X\to Y\) is open if it sends open subsets of \(X\) to open subsets of \(Y\), and closed if it sends closed subsets to closed subsets.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A continuous bijection that is open or closed is a homeomorphism.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(f:X\to Y\) be a continuous bijection. To show \(f^{-1}\) is continuous, it is enough to show inverse images of open sets under \(f^{-1}\) are open; these inverse images are exactly sets of the form \(f(U)\) with \(U\) open in \(X\). Thus an open bijection is a homeomorphism. If \(f\) is closed, apply the same argument to closed sets.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The compact-Hausdorff theorem is a major instance: a continuous bijection from a compact space to a Hausdorff space is closed, hence a homeomorphism.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/bases-and-subbases/" next_label="Next page" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
     <h2><a href="{{ '/notes/general-topology/continuity-and-homeomorphisms/' | relative_url }}">3. Continuité et homéomorphismes</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/bases-and-subbases/" next_label="Page suivante" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Continuité et homéomorphismes.</p>
+    <p>Continuity is the structure-preserving notion for topological spaces. A homeomorphism is an isomorphism of topological spaces, so all purely topological properties are invariant under it.</p>
 
-    <h3>Définition</h3>
+    <h3>Equivalent forms of continuity</h3>
+
+    <p>Continuity can be read from open sets, closed sets, closures, or neighborhoods.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A homeomorphism is a bijective continuous map with continuous inverse. Homeomorphic spaces are topologically the same.</p>
+        <p><span class="statement-title">Définition.</span> A map \(f:X\to Y\) is continuous if \(f^{-1}(V)\) is open in \(X\) for every open set \(V\subseteq Y\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Topological properties such as compactness, connectedness, separation axioms, and convergence behavior are preserved by homeomorphisms.</p>
+        <p><span class="statement-title">Proposition.</span> For \(f:X\to Y\), the following are equivalent: \(f\) is continuous; inverse images of closed sets are closed; \(f(\overline A)\subseteq\overline{f(A)}\) for every \(A\subseteq X\); and for every \(x\in X\), every neighborhood of \(f(x)\) pulls back to a neighborhood of \(x\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Translate open-cover, separation, or connectedness definitions through inverse images and images under the homeomorphism. The inverse continuity supplies the reverse implication.</p>
+        <p><span class="statement-title">Preuve.</span> The closed-set version follows by complementing inverse images. If \(f\) is continuous and \(x\in\overline A\), then every neighborhood of \(f(x)\) has inverse image a neighborhood of \(x\), hence meets \(A\); its image meets \(f(A)\), so \(f(x)\in\overline{f(A)}\). The closure condition applied to \(A=f^{-1}(F)\) with \(F\) closed gives \(f(\overline A)\subseteq F\), hence \(\overline A=A\), so \(A\) is closed. The neighborhood form is just the definition localized at a point.</p>
     </div>
 
-    <h3>Remarque</h3>
+
+    <h3>Composition and categorical behavior</h3>
+
+    <p>Continuous maps compose, which is why topological spaces form a category.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f:X\to Y\) and \(g:Y\to Z\) are continuous, then \(g\circ f:X\to Z\) is continuous. The identity map on every topological space is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For an open set \(W\subseteq Z\), \((g\circ f)^{-1}(W)=f^{-1}(g^{-1}(W))\). Since \(g^{-1}(W)\) is open in \(Y\) and \(f\) is continuous, this inverse image is open in \(X\). The identity case is immediate because inverse images under the identity do nothing.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Topology studies properties invariant under homeomorphism, not properties depending on coordinates, embedding, or metric formulas.</p>
+        <p><span class="statement-title">Remarque.</span> This observation is modest but decisive: topological constructions are designed by universal properties involving continuous maps.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/bases-and-subbases/" next_label="Page suivante" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
+
+    <h3>Homeomorphisms and invariants</h3>
+
+    <p>Homeomorphic spaces may look different externally, but their open-set structures are identical.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A homeomorphism \(f:X\to Y\) is a bijection such that both \(f\) and \(f^{-1}\) are continuous. Spaces \(X\) and \(Y\) are homeomorphic if such a map exists.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A bijection \(f:X\to Y\) is a homeomorphism if and only if \(U\subseteq X\) is open exactly when \(f(U)\subseteq Y\) is open.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(f\) is a homeomorphism, open sets in \(X\) have open images because \(f(U)=(f^{-1})^{-1}(U)\), and open sets in \(Y\) have open inverse images by continuity of \(f\). Conversely, if the open-set equivalence holds, then inverse images under \(f\) and under \(f^{-1}\) preserve open sets, so both maps are continuous.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The interval \((0,1)\) is homeomorphic to \(\mathbb R\) via \(x\mapsto \tan(\pi(x-\frac12))\). Boundedness and length are not topological properties; openness, connectedness, and compactness behavior are.</p>
+    </div>
+
+
+    <h3>Open and closed maps</h3>
+
+    <p>A continuous bijection need not be a homeomorphism unless one controls images of open or closed sets.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A map \(f:X\to Y\) is open if it sends open subsets of \(X\) to open subsets of \(Y\), and closed if it sends closed subsets to closed subsets.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A continuous bijection that is open or closed is a homeomorphism.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(f:X\to Y\) be a continuous bijection. To show \(f^{-1}\) is continuous, it is enough to show inverse images of open sets under \(f^{-1}\) are open; these inverse images are exactly sets of the form \(f(U)\) with \(U\) open in \(X\). Thus an open bijection is a homeomorphism. If \(f\) is closed, apply the same argument to closed sets.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The compact-Hausdorff theorem is a major instance: a continuous bijection from a compact space to a Hausdorff space is closed, hence a homeomorphism.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/bases-and-subbases/" next_label="Page suivante" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
     <h2><a href="{{ '/notes/general-topology/continuity-and-homeomorphisms/' | relative_url }}">3. 连续性与同胚</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/bases-and-subbases/" next_label="下一页" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
 
-    <p>本页整理关于“连续性与同胚”的主要定义、命题、定理与证明思路。</p>
+    <p>Continuity is the structure-preserving notion for topological spaces. A homeomorphism is an isomorphism of topological spaces, so all purely topological properties are invariant under it.</p>
 
-    <h3>定义</h3>
+    <h3>Equivalent forms of continuity</h3>
+
+    <p>Continuity can be read from open sets, closed sets, closures, or neighborhoods.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A 同胚 is a bijective continuous map with continuous inverse. 同胚 spaces are topologically the same.</p>
+        <p><span class="statement-title">定义.</span> A map \(f:X\to Y\) is continuous if \(f^{-1}(V)\) is open in \(X\) for every open set \(V\subseteq Y\).</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Topological properties such as 紧性, connectedness, separation axioms, and convergence behavior are preserved by 同胚.</p>
+        <p><span class="statement-title">命题.</span> For \(f:X\to Y\), the following are equivalent: \(f\) is continuous; inverse images of closed sets are closed; \(f(\overline A)\subseteq\overline{f(A)}\) for every \(A\subseteq X\); and for every \(x\in X\), every neighborhood of \(f(x)\) pulls back to a neighborhood of \(x\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Translate open-cover, separation, or connectedness definitions through inverse images and images under the 同胚. The inverse continuity supplies the reverse implication.</p>
+        <p><span class="statement-title">证明.</span> The closed-set version follows by complementing inverse images. If \(f\) is continuous and \(x\in\overline A\), then every neighborhood of \(f(x)\) has inverse image a neighborhood of \(x\), hence meets \(A\); its image meets \(f(A)\), so \(f(x)\in\overline{f(A)}\). The closure condition applied to \(A=f^{-1}(F)\) with \(F\) closed gives \(f(\overline A)\subseteq F\), hence \(\overline A=A\), so \(A\) is closed. The neighborhood form is just the definition localized at a point.</p>
     </div>
 
-    <h3>说明</h3>
+
+    <h3>Composition and categorical behavior</h3>
+
+    <p>Continuous maps compose, which is why topological spaces form a category.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(f:X\to Y\) and \(g:Y\to Z\) are continuous, then \(g\circ f:X\to Z\) is continuous. The identity map on every topological space is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For an open set \(W\subseteq Z\), \((g\circ f)^{-1}(W)=f^{-1}(g^{-1}(W))\). Since \(g^{-1}(W)\) is open in \(Y\) and \(f\) is continuous, this inverse image is open in \(X\). The identity case is immediate because inverse images under the identity do nothing.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Topology studies properties invariant under 同胚, not properties depending on coordinates, embedding, or 度量 formulas.</p>
+        <p><span class="statement-title">说明.</span> This observation is modest but decisive: topological constructions are designed by universal properties involving continuous maps.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/bases-and-subbases/" next_label="下一页" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
+
+    <h3>Homeomorphisms and invariants</h3>
+
+    <p>Homeomorphic spaces may look different externally, but their open-set structures are identical.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A homeomorphism \(f:X\to Y\) is a bijection such that both \(f\) and \(f^{-1}\) are continuous. Spaces \(X\) and \(Y\) are homeomorphic if such a map exists.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> A bijection \(f:X\to Y\) is a homeomorphism if and only if \(U\subseteq X\) is open exactly when \(f(U)\subseteq Y\) is open.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(f\) is a homeomorphism, open sets in \(X\) have open images because \(f(U)=(f^{-1})^{-1}(U)\), and open sets in \(Y\) have open inverse images by continuity of \(f\). Conversely, if the open-set equivalence holds, then inverse images under \(f\) and under \(f^{-1}\) preserve open sets, so both maps are continuous.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The interval \((0,1)\) is homeomorphic to \(\mathbb R\) via \(x\mapsto \tan(\pi(x-\frac12))\). Boundedness and length are not topological properties; openness, connectedness, and compactness behavior are.</p>
+    </div>
+
+
+    <h3>Open and closed maps</h3>
+
+    <p>A continuous bijection need not be a homeomorphism unless one controls images of open or closed sets.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A map \(f:X\to Y\) is open if it sends open subsets of \(X\) to open subsets of \(Y\), and closed if it sends closed subsets to closed subsets.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> A continuous bijection that is open or closed is a homeomorphism.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(f:X\to Y\) be a continuous bijection. To show \(f^{-1}\) is continuous, it is enough to show inverse images of open sets under \(f^{-1}\) are open; these inverse images are exactly sets of the form \(f(U)\) with \(U\) open in \(X\). Thus an open bijection is a homeomorphism. If \(f\) is closed, apply the same argument to closed sets.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The compact-Hausdorff theorem is a major instance: a continuous bijection from a compact space to a Hausdorff space is closed, hence a homeomorphism.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/bases-and-subbases/" next_label="下一页" next_url="/notes/general-topology/subspaces-and-quotient-spaces/" %}
 </div>
 
 <hr>

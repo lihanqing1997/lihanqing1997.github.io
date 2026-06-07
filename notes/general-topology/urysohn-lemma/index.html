@@ -9,87 +9,240 @@ breadcrumb_child_label_zh: "13. 乌雷松引理"
     <h2><a href="{{ '/notes/general-topology/urysohn-lemma/' | relative_url }}">13. Urysohn lemma</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="Next page" next_url="/notes/general-topology/tietze-extension-theorem/" %}
 
-    <p>Urysohn lemma records the objects, main results, proof mechanisms, and boundary cases needed for the general topology note.</p>
+    <p>Urysohn's lemma is the moment normality turns into continuous real-valued functions. It is the technical heart behind metrization and extension theorems.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Urysohn lemma separates disjoint closed sets in a normal space by a continuous real-valued function.</p>
-    </div>
+    <h3>Normal separation by functions</h3>
 
-    <h3>Urysohn lemma</h3>
+    <p>Normality separates closed sets by open neighborhoods; Urysohn upgrades that separation to a continuous function.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(A,B\) are disjoint closed subsets of a normal space \(X\), there exists continuous \(f:X\to[0,1]\) with \(f(A)=0\) and \(f(B)=1\).</p>
+        <p><span class="statement-title">Theorem.</span> If \(X\) is normal and \(A,B\subseteq X\) are disjoint closed sets, then there exists a continuous function \(f:X\to[0,1]\) such that \(f(A)=0\) and \(f(B)=1\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use normality to build nested open sets indexed by dyadic rationals, then define \(f(x)\) as an infimum of indices whose open sets contain \(x\). The nesting proves continuity.</p>
+        <p><span class="statement-title">Proof.</span> The construction in the next two sections proves the theorem. Normality first gives nested open sets \(U_r\) indexed by dyadic rationals with \(\overline{U_r}\subseteq U_s\) for \(r<s\). Defining \(f(x)=\inf\{r:x\in U_r\}\) then yields \(f(A)=0\), \(f(B)=1\), and continuity from the openness of the level sets \(\{f<a\}\) and \(\{f>a\}\).</p>
     </div>
 
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This theorem explains why normal spaces have enough continuous functions to encode separation topologically.</p>
+        <p><span class="statement-title">Remark.</span> The conclusion is false in general Hausdorff spaces. Normality is exactly the open-set supply needed to build a continuous scale between two closed sets.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="Next page" next_url="/notes/general-topology/tietze-extension-theorem/" %}
+
+    <h3>Nested open sets</h3>
+
+    <p>The proof builds open sets indexed by dyadic rationals, with closures nested in the correct order.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> If \(X\) is normal, \(F\subseteq U\), \(F\) is closed, and \(U\) is open, then there is an open set \(V\) with \(F\subseteq V\subseteq\overline V\subseteq U\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The closed sets \(F\) and \(X\setminus U\) are disjoint. Normality gives disjoint open sets \(V\supseteq F\) and \(W\supseteq X\setminus U\). Since \(W\) is disjoint from \(V\), the closure \(\overline V\) is disjoint from \(X\setminus U\), hence contained in \(U\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> There are open sets \(U_r\), indexed by dyadic rationals \(r\in[0,1]\), such that \(A\subseteq U_0\), \(X\setminus U_1\supseteq B\), and \(r<s\) implies \(\overline{U_r}\subseteq U_s\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Start with \(U_1=X\setminus B\). Use the lemma to choose \(U_0\) with \(A\subseteq U_0\subseteq\overline{U_0}\subseteq U_1\). Insert dyadic levels inductively: whenever \(r<t\) are adjacent at a finite dyadic stage, choose \(U_s\) for the midpoint \(s\) so that \(\overline{U_r}\subseteq U_s\subseteq\overline{U_s}\subseteq U_t\).</p>
+    </div>
+
+
+    <h3>The Urysohn function</h3>
+
+    <p>The function is the first dyadic level whose open set contains the point.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Define \(f(x)=\inf\{r\in\mathbb D\cap[0,1]:x\in U_r\}\), where \(\mathbb D\) denotes the dyadic rationals.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The function \(f\) is continuous, equals \(0\) on \(A\), and equals \(1\) on \(B\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The endpoint values follow from \(A\subseteq U_0\) and \(B\cap U_r=\varnothing\) for all \(r<1\). For continuity, it suffices to show \(\{f<a\}\) and \(\{f>a\}\) are open. The first is the union of \(U_r\) over dyadic \(r<a\). The second is the union of \(X\setminus\overline{U_r}\) over dyadic \(r>a\), using the nesting relation to compare levels. Both are open.</p>
+    </div>
+
+
+    <h3>Consequences</h3>
+
+    <p>Urysohn functions separate topology by scalar-valued observables.</p>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> Every normal \(T_1\) space is completely regular: points and closed sets can be separated by continuous functions into \([0,1]\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply Urysohn's lemma to the disjoint closed sets \(\{x\}\) and \(F\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> This function-separation principle is the entrance to Tychonoff embeddings and Stone-Cech compactification.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="Next page" next_url="/notes/general-topology/tietze-extension-theorem/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
     <h2><a href="{{ '/notes/general-topology/urysohn-lemma/' | relative_url }}">13. Lemme d’Urysohn</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="Page suivante" next_url="/notes/general-topology/tietze-extension-theorem/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Lemme d’Urysohn.</p>
+    <p>Urysohn's lemma is the moment normality turns into continuous real-valued functions. It is the technical heart behind metrization and extension theorems.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Urysohn lemma separates disjoint closed sets in a normal space by a continuous real-valued function.</p>
-    </div>
+    <h3>Normal separation by functions</h3>
 
-    <h3>Urysohn lemma</h3>
+    <p>Normality separates closed sets by open neighborhoods; Urysohn upgrades that separation to a continuous function.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(A,B\) are disjoint closed subsets of a normal space \(X\), there exists continuous \(f:X\to[0,1]\) with \(f(A)=0\) and \(f(B)=1\).</p>
+        <p><span class="statement-title">Théorème.</span> If \(X\) is normal and \(A,B\subseteq X\) are disjoint closed sets, then there exists a continuous function \(f:X\to[0,1]\) such that \(f(A)=0\) and \(f(B)=1\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Use normality to build nested open sets indexed by dyadic rationals, then define \(f(x)\) as an infimum of indices whose open sets contain \(x\). The nesting proves continuity.</p>
+        <p><span class="statement-title">Preuve.</span> The construction in the next two sections proves the theorem. Normality first gives nested open sets \(U_r\) indexed by dyadic rationals with \(\overline{U_r}\subseteq U_s\) for \(r<s\). Defining \(f(x)=\inf\{r:x\in U_r\}\) then yields \(f(A)=0\), \(f(B)=1\), and continuity from the openness of the level sets \(\{f<a\}\) and \(\{f>a\}\).</p>
     </div>
 
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> This theorem explains why normal spaces have enough continuous functions to encode separation topologically.</p>
+        <p><span class="statement-title">Remarque.</span> The conclusion is false in general Hausdorff spaces. Normality is exactly the open-set supply needed to build a continuous scale between two closed sets.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="Page suivante" next_url="/notes/general-topology/tietze-extension-theorem/" %}
+
+    <h3>Nested open sets</h3>
+
+    <p>The proof builds open sets indexed by dyadic rationals, with closures nested in the correct order.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> If \(X\) is normal, \(F\subseteq U\), \(F\) is closed, and \(U\) is open, then there is an open set \(V\) with \(F\subseteq V\subseteq\overline V\subseteq U\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The closed sets \(F\) and \(X\setminus U\) are disjoint. Normality gives disjoint open sets \(V\supseteq F\) and \(W\supseteq X\setminus U\). Since \(W\) is disjoint from \(V\), the closure \(\overline V\) is disjoint from \(X\setminus U\), hence contained in \(U\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> There are open sets \(U_r\), indexed by dyadic rationals \(r\in[0,1]\), such that \(A\subseteq U_0\), \(X\setminus U_1\supseteq B\), and \(r<s\) implies \(\overline{U_r}\subseteq U_s\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Start with \(U_1=X\setminus B\). Use the lemma to choose \(U_0\) with \(A\subseteq U_0\subseteq\overline{U_0}\subseteq U_1\). Insert dyadic levels inductively: whenever \(r<t\) are adjacent at a finite dyadic stage, choose \(U_s\) for the midpoint \(s\) so that \(\overline{U_r}\subseteq U_s\subseteq\overline{U_s}\subseteq U_t\).</p>
+    </div>
+
+
+    <h3>The Urysohn function</h3>
+
+    <p>The function is the first dyadic level whose open set contains the point.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Define \(f(x)=\inf\{r\in\mathbb D\cap[0,1]:x\in U_r\}\), where \(\mathbb D\) denotes the dyadic rationals.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The function \(f\) is continuous, equals \(0\) on \(A\), and equals \(1\) on \(B\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The endpoint values follow from \(A\subseteq U_0\) and \(B\cap U_r=\varnothing\) for all \(r<1\). For continuity, it suffices to show \(\{f<a\}\) and \(\{f>a\}\) are open. The first is the union of \(U_r\) over dyadic \(r<a\). The second is the union of \(X\setminus\overline{U_r}\) over dyadic \(r>a\), using the nesting relation to compare levels. Both are open.</p>
+    </div>
+
+
+    <h3>Consequences</h3>
+
+    <p>Urysohn functions separate topology by scalar-valued observables.</p>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> Every normal \(T_1\) space is completely regular: points and closed sets can be separated by continuous functions into \([0,1]\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Apply Urysohn's lemma to the disjoint closed sets \(\{x\}\) and \(F\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> This function-separation principle is the entrance to Tychonoff embeddings and Stone-Cech compactification.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="Page suivante" next_url="/notes/general-topology/tietze-extension-theorem/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
     <h2><a href="{{ '/notes/general-topology/urysohn-lemma/' | relative_url }}">13. 乌雷松引理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="下一页" next_url="/notes/general-topology/tietze-extension-theorem/" %}
 
-    <p>本页整理关于“乌雷松引理”的主要定义、命题、定理与证明思路。</p>
+    <p>Urysohn's lemma is the moment normality turns into continuous real-valued functions. It is the technical heart behind metrization and extension theorems.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 乌雷松引理 separates disjoint closed sets in a normal space by a continuous real-valued function.</p>
-    </div>
+    <h3>Normal separation by functions</h3>
 
-    <h3>乌雷松引理</h3>
+    <p>Normality separates closed sets by open neighborhoods; Urysohn upgrades that separation to a continuous function.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(A,B\) are disjoint closed subsets of a normal space \(X\), there exists continuous \(f:X\to[0,1]\) with \(f(A)=0\) and \(f(B)=1\).</p>
+        <p><span class="statement-title">定理.</span> If \(X\) is normal and \(A,B\subseteq X\) are disjoint closed sets, then there exists a continuous function \(f:X\to[0,1]\) such that \(f(A)=0\) and \(f(B)=1\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Use normality to build nested open sets indexed by dyadic rationals, then define \(f(x)\) as an infimum of indices whose open sets contain \(x\). The nesting proves continuity.</p>
+        <p><span class="statement-title">证明.</span> The construction in the next two sections proves the theorem. Normality first gives nested open sets \(U_r\) indexed by dyadic rationals with \(\overline{U_r}\subseteq U_s\) for \(r<s\). Defining \(f(x)=\inf\{r:x\in U_r\}\) then yields \(f(A)=0\), \(f(B)=1\), and continuity from the openness of the level sets \(\{f<a\}\) and \(\{f>a\}\).</p>
     </div>
 
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> This 定理 explains why normal spaces have enough continuous functions to encode separation topologically.</p>
+        <p><span class="statement-title">说明.</span> The conclusion is false in general Hausdorff spaces. Normality is exactly the open-set supply needed to build a continuous scale between two closed sets.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="下一页" next_url="/notes/general-topology/tietze-extension-theorem/" %}
+
+    <h3>Nested open sets</h3>
+
+    <p>The proof builds open sets indexed by dyadic rationals, with closures nested in the correct order.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> If \(X\) is normal, \(F\subseteq U\), \(F\) is closed, and \(U\) is open, then there is an open set \(V\) with \(F\subseteq V\subseteq\overline V\subseteq U\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The closed sets \(F\) and \(X\setminus U\) are disjoint. Normality gives disjoint open sets \(V\supseteq F\) and \(W\supseteq X\setminus U\). Since \(W\) is disjoint from \(V\), the closure \(\overline V\) is disjoint from \(X\setminus U\), hence contained in \(U\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> There are open sets \(U_r\), indexed by dyadic rationals \(r\in[0,1]\), such that \(A\subseteq U_0\), \(X\setminus U_1\supseteq B\), and \(r<s\) implies \(\overline{U_r}\subseteq U_s\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Start with \(U_1=X\setminus B\). Use the lemma to choose \(U_0\) with \(A\subseteq U_0\subseteq\overline{U_0}\subseteq U_1\). Insert dyadic levels inductively: whenever \(r<t\) are adjacent at a finite dyadic stage, choose \(U_s\) for the midpoint \(s\) so that \(\overline{U_r}\subseteq U_s\subseteq\overline{U_s}\subseteq U_t\).</p>
+    </div>
+
+
+    <h3>The Urysohn function</h3>
+
+    <p>The function is the first dyadic level whose open set contains the point.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Define \(f(x)=\inf\{r\in\mathbb D\cap[0,1]:x\in U_r\}\), where \(\mathbb D\) denotes the dyadic rationals.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The function \(f\) is continuous, equals \(0\) on \(A\), and equals \(1\) on \(B\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The endpoint values follow from \(A\subseteq U_0\) and \(B\cap U_r=\varnothing\) for all \(r<1\). For continuity, it suffices to show \(\{f<a\}\) and \(\{f>a\}\) are open. The first is the union of \(U_r\) over dyadic \(r<a\). The second is the union of \(X\setminus\overline{U_r}\) over dyadic \(r>a\), using the nesting relation to compare levels. Both are open.</p>
+    </div>
+
+
+    <h3>Consequences</h3>
+
+    <p>Urysohn functions separate topology by scalar-valued observables.</p>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> Every normal \(T_1\) space is completely regular: points and closed sets can be separated by continuous functions into \([0,1]\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Apply Urysohn's lemma to the disjoint closed sets \(\{x\}\) and \(F\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> This function-separation principle is the entrance to Tychonoff embeddings and Stone-Cech compactification.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/tychonoff-theorem/" next_label="下一页" next_url="/notes/general-topology/tietze-extension-theorem/" %}
 </div>
 
 <hr>

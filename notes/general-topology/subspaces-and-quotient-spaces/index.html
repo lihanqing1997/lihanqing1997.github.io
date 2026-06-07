@@ -9,87 +9,276 @@ breadcrumb_child_label_zh: "4. 子空间与商空间"
     <h2><a href="{{ '/notes/general-topology/subspaces-and-quotient-spaces/' | relative_url }}">4. Subspaces and quotient spaces</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="Next page" next_url="/notes/general-topology/product-topology/" %}
 
-    <p>Subspaces and quotient spaces records the objects, main results, proof mechanisms, and boundary cases needed for the general topology note.</p>
+    <p>Subspaces and quotient spaces are the two basic ways to form new topological spaces from old ones: restrict the open sets, or identify points and push the topology forward.</p>
 
-    <h3>Definition</h3>
+    <h3>Subspace topology</h3>
+
+    <p>A subspace inherits exactly the open information visible from the ambient space.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The subspace topology on \(A\subset X\) has open sets \(A\cap U\). The quotient topology for a surjection \(q:X\to Y\) declares \(V\subset Y\) open exactly when \(q^{-1}(V)\) is open.</p>
+        <p><span class="statement-title">Definition.</span> If \(A\subseteq X\), the subspace topology on \(A\) is \(\mathcal T_A=\{A\cap U:U\text{ open in }X\}\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The quotient topology is the finest topology on \(Y\) making \(q\) continuous, while the subspace topology is the coarsest topology on \(A\) making inclusion continuous.</p>
+        <p><span class="statement-title">Proposition.</span> A map \(f:Y\to A\) is continuous into the subspace \(A\) if and only if the composite \(Y\to A\hookrightarrow X\) is continuous.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Both statements follow from the direction in which inverse images are computed. Universal mapping properties characterize the constructions uniquely.</p>
+        <p><span class="statement-title">Proof.</span> If \(f:Y\to A\) is continuous, composing with the inclusion is continuous. Conversely, if the composite \(i\circ f:Y\to X\) is continuous and \(A\cap U\) is open in \(A\), then \(f^{-1}(A\cap U)=(i\circ f)^{-1}(U)\), open in \(Y\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Subspaces restrict spaces; quotients glue points. Most geometric constructions use both operations repeatedly.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For \(B\subseteq A\subseteq X\), the closure of \(B\) in \(A\) is \(A\cap\overline B^X\).</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="Next page" next_url="/notes/general-topology/product-topology/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The set \(A\cap\overline B^X\) is closed in \(A\) and contains \(B\). If \(C\) is closed in \(A\) and contains \(B\), then \(C=A\cap F\) for some closed \(F\subseteq X\) with \(B\subseteq F\), so \(\overline B^X\subseteq F\) and \(A\cap\overline B^X\subseteq C\).</p>
+    </div>
+
+
+    <h3>Quotient topology</h3>
+
+    <p>A quotient topology is the finest topology on the set of identified points that makes the projection continuous.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(q:X\to Y\) be a surjective map. The quotient topology on \(Y\) is defined by declaring \(V\subseteq Y\) open if and only if \(q^{-1}(V)\) is open in \(X\). A map with this topology is a quotient map.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The quotient topology is a topology, and \(q:X\to Y\) is continuous by construction.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The empty set and \(Y\) pull back to \(\varnothing\) and \(X\). Inverse images preserve arbitrary unions and finite intersections, so the declared open sets are closed under the topology operations. Since an open set \(V\subseteq Y\) is defined by \(q^{-1}(V)\) being open, \(q\) is continuous.</p>
+    </div>
+
+
+    <h3>Universal property of quotients</h3>
+
+    <p>The quotient topology is best understood by how maps out of the quotient are tested.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(q:X\to Y\) be a quotient map and \(Z\) a topological space. A map \(g:Y\to Z\) is continuous if and only if \(g\circ q:X\to Z\) is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(g\) is continuous, then \(g\circ q\) is continuous. Conversely, suppose \(g\circ q\) is continuous. For an open set \(W\subseteq Z\), \((g\circ q)^{-1}(W)=q^{-1}(g^{-1}(W))\) is open in \(X\). By the definition of quotient topology, \(g^{-1}(W)\) is open in \(Y\), so \(g\) is continuous.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> To define a continuous map on a quotient \(X/{\sim}\), it is enough to define a continuous map on \(X\) that is constant on equivalence classes.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Such a map factors uniquely through the quotient set. The universal property then gives continuity of the induced map.</p>
+    </div>
+
+
+    <h3>Saturated sets and common pitfalls</h3>
+
+    <p>A quotient can destroy separation properties if equivalence classes are not well behaved.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A subset \(A\subseteq X\) is saturated with respect to \(q:X\to Y\) if \(A=q^{-1}(q(A))\), equivalently if it is a union of fibers of \(q\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a quotient map \(q:X\to Y\), open subsets of \(Y\) correspond exactly to open saturated subsets of \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(V\subseteq Y\) is open, then \(q^{-1}(V)\) is open and saturated. Conversely, if \(A\subseteq X\) is open and saturated, then \(A=q^{-1}(q(A))\); by the quotient definition, \(q(A)\) is open in \(Y\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Identifying the endpoints of \([0,1]\) gives a circle. Identifying a nonclosed dense subset to a point may produce a quotient that is not Hausdorff.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="Next page" next_url="/notes/general-topology/product-topology/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
     <h2><a href="{{ '/notes/general-topology/subspaces-and-quotient-spaces/' | relative_url }}">4. Sous-espaces et espaces quotients</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="Page suivante" next_url="/notes/general-topology/product-topology/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Sous-espaces et espaces quotients.</p>
+    <p>Subspaces and quotient spaces are the two basic ways to form new topological spaces from old ones: restrict the open sets, or identify points and push the topology forward.</p>
 
-    <h3>Définition</h3>
+    <h3>Subspace topology</h3>
+
+    <p>A subspace inherits exactly the open information visible from the ambient space.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The subspace topology on \(A\subset X\) has open sets \(A\cap U\). The quotient topology for a surjection \(q:X\to Y\) declares \(V\subset Y\) open exactly when \(q^{-1}(V)\) is open.</p>
+        <p><span class="statement-title">Définition.</span> If \(A\subseteq X\), the subspace topology on \(A\) is \(\mathcal T_A=\{A\cap U:U\text{ open in }X\}\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The quotient topology is the finest topology on \(Y\) making \(q\) continuous, while the subspace topology is the coarsest topology on \(A\) making inclusion continuous.</p>
+        <p><span class="statement-title">Proposition.</span> A map \(f:Y\to A\) is continuous into the subspace \(A\) if and only if the composite \(Y\to A\hookrightarrow X\) is continuous.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Both statements follow from the direction in which inverse images are computed. Universal mapping properties characterize the constructions uniquely.</p>
+        <p><span class="statement-title">Preuve.</span> If \(f:Y\to A\) is continuous, composing with the inclusion is continuous. Conversely, if the composite \(i\circ f:Y\to X\) is continuous and \(A\cap U\) is open in \(A\), then \(f^{-1}(A\cap U)=(i\circ f)^{-1}(U)\), open in \(Y\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Subspaces restrict spaces; quotients glue points. Most geometric constructions use both operations repeatedly.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For \(B\subseteq A\subseteq X\), the closure of \(B\) in \(A\) is \(A\cap\overline B^X\).</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="Page suivante" next_url="/notes/general-topology/product-topology/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The set \(A\cap\overline B^X\) is closed in \(A\) and contains \(B\). If \(C\) is closed in \(A\) and contains \(B\), then \(C=A\cap F\) for some closed \(F\subseteq X\) with \(B\subseteq F\), so \(\overline B^X\subseteq F\) and \(A\cap\overline B^X\subseteq C\).</p>
+    </div>
+
+
+    <h3>Quotient topology</h3>
+
+    <p>A quotient topology is the finest topology on the set of identified points that makes the projection continuous.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Let \(q:X\to Y\) be a surjective map. The quotient topology on \(Y\) is defined by declaring \(V\subseteq Y\) open if and only if \(q^{-1}(V)\) is open in \(X\). A map with this topology is a quotient map.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The quotient topology is a topology, and \(q:X\to Y\) is continuous by construction.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The empty set and \(Y\) pull back to \(\varnothing\) and \(X\). Inverse images preserve arbitrary unions and finite intersections, so the declared open sets are closed under the topology operations. Since an open set \(V\subseteq Y\) is defined by \(q^{-1}(V)\) being open, \(q\) is continuous.</p>
+    </div>
+
+
+    <h3>Universal property of quotients</h3>
+
+    <p>The quotient topology is best understood by how maps out of the quotient are tested.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \(q:X\to Y\) be a quotient map and \(Z\) a topological space. A map \(g:Y\to Z\) is continuous if and only if \(g\circ q:X\to Z\) is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(g\) is continuous, then \(g\circ q\) is continuous. Conversely, suppose \(g\circ q\) is continuous. For an open set \(W\subseteq Z\), \((g\circ q)^{-1}(W)=q^{-1}(g^{-1}(W))\) is open in \(X\). By the definition of quotient topology, \(g^{-1}(W)\) is open in \(Y\), so \(g\) is continuous.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> To define a continuous map on a quotient \(X/{\sim}\), it is enough to define a continuous map on \(X\) that is constant on equivalence classes.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Such a map factors uniquely through the quotient set. The universal property then gives continuity of the induced map.</p>
+    </div>
+
+
+    <h3>Saturated sets and common pitfalls</h3>
+
+    <p>A quotient can destroy separation properties if equivalence classes are not well behaved.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A subset \(A\subseteq X\) is saturated with respect to \(q:X\to Y\) if \(A=q^{-1}(q(A))\), equivalently if it is a union of fibers of \(q\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a quotient map \(q:X\to Y\), open subsets of \(Y\) correspond exactly to open saturated subsets of \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(V\subseteq Y\) is open, then \(q^{-1}(V)\) is open and saturated. Conversely, if \(A\subseteq X\) is open and saturated, then \(A=q^{-1}(q(A))\); by the quotient definition, \(q(A)\) is open in \(Y\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Identifying the endpoints of \([0,1]\) gives a circle. Identifying a nonclosed dense subset to a point may produce a quotient that is not Hausdorff.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="Page suivante" next_url="/notes/general-topology/product-topology/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
     <h2><a href="{{ '/notes/general-topology/subspaces-and-quotient-spaces/' | relative_url }}">4. 子空间与商空间</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="下一页" next_url="/notes/general-topology/product-topology/" %}
 
-    <p>本页整理关于“子空间与商空间”的主要定义、命题、定理与证明思路。</p>
+    <p>Subspaces and quotient spaces are the two basic ways to form new topological spaces from old ones: restrict the open sets, or identify points and push the topology forward.</p>
 
-    <h3>定义</h3>
+    <h3>Subspace topology</h3>
+
+    <p>A subspace inherits exactly the open information visible from the ambient space.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The subspace topology on \(A\subset X\) has open sets \(A\cap U\). The quotient topology for a surjection \(q:X\to Y\) declares \(V\subset Y\) open exactly when \(q^{-1}(V)\) is open.</p>
+        <p><span class="statement-title">定义.</span> If \(A\subseteq X\), the subspace topology on \(A\) is \(\mathcal T_A=\{A\cap U:U\text{ open in }X\}\).</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The quotient topology is the finest topology on \(Y\) making \(q\) continuous, while the subspace topology is the coarsest topology on \(A\) making inclusion continuous.</p>
+        <p><span class="statement-title">命题.</span> A map \(f:Y\to A\) is continuous into the subspace \(A\) if and only if the composite \(Y\to A\hookrightarrow X\) is continuous.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Both statements follow from the direction in which inverse images are computed. Universal mapping properties characterize the constructions uniquely.</p>
+        <p><span class="statement-title">证明.</span> If \(f:Y\to A\) is continuous, composing with the inclusion is continuous. Conversely, if the composite \(i\circ f:Y\to X\) is continuous and \(A\cap U\) is open in \(A\), then \(f^{-1}(A\cap U)=(i\circ f)^{-1}(U)\), open in \(Y\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Subspaces restrict spaces; quotients glue points. Most geometric constructions use both operations repeatedly.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For \(B\subseteq A\subseteq X\), the closure of \(B\) in \(A\) is \(A\cap\overline B^X\).</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="下一页" next_url="/notes/general-topology/product-topology/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The set \(A\cap\overline B^X\) is closed in \(A\) and contains \(B\). If \(C\) is closed in \(A\) and contains \(B\), then \(C=A\cap F\) for some closed \(F\subseteq X\) with \(B\subseteq F\), so \(\overline B^X\subseteq F\) and \(A\cap\overline B^X\subseteq C\).</p>
+    </div>
+
+
+    <h3>Quotient topology</h3>
+
+    <p>A quotient topology is the finest topology on the set of identified points that makes the projection continuous.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Let \(q:X\to Y\) be a surjective map. The quotient topology on \(Y\) is defined by declaring \(V\subseteq Y\) open if and only if \(q^{-1}(V)\) is open in \(X\). A map with this topology is a quotient map.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The quotient topology is a topology, and \(q:X\to Y\) is continuous by construction.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The empty set and \(Y\) pull back to \(\varnothing\) and \(X\). Inverse images preserve arbitrary unions and finite intersections, so the declared open sets are closed under the topology operations. Since an open set \(V\subseteq Y\) is defined by \(q^{-1}(V)\) being open, \(q\) is continuous.</p>
+    </div>
+
+
+    <h3>Universal property of quotients</h3>
+
+    <p>The quotient topology is best understood by how maps out of the quotient are tested.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(q:X\to Y\) be a quotient map and \(Z\) a topological space. A map \(g:Y\to Z\) is continuous if and only if \(g\circ q:X\to Z\) is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(g\) is continuous, then \(g\circ q\) is continuous. Conversely, suppose \(g\circ q\) is continuous. For an open set \(W\subseteq Z\), \((g\circ q)^{-1}(W)=q^{-1}(g^{-1}(W))\) is open in \(X\). By the definition of quotient topology, \(g^{-1}(W)\) is open in \(Y\), so \(g\) is continuous.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> To define a continuous map on a quotient \(X/{\sim}\), it is enough to define a continuous map on \(X\) that is constant on equivalence classes.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Such a map factors uniquely through the quotient set. The universal property then gives continuity of the induced map.</p>
+    </div>
+
+
+    <h3>Saturated sets and common pitfalls</h3>
+
+    <p>A quotient can destroy separation properties if equivalence classes are not well behaved.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A subset \(A\subseteq X\) is saturated with respect to \(q:X\to Y\) if \(A=q^{-1}(q(A))\), equivalently if it is a union of fibers of \(q\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For a quotient map \(q:X\to Y\), open subsets of \(Y\) correspond exactly to open saturated subsets of \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(V\subseteq Y\) is open, then \(q^{-1}(V)\) is open and saturated. Conversely, if \(A\subseteq X\) is open and saturated, then \(A=q^{-1}(q(A))\); by the quotient definition, \(q(A)\) is open in \(Y\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> Identifying the endpoints of \([0,1]\) gives a circle. Identifying a nonclosed dense subset to a point may produce a quotient that is not Hausdorff.</p>
+    </div>
+
+{% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/continuity-and-homeomorphisms/" next_label="下一页" next_url="/notes/general-topology/product-topology/" %}
 </div>
 
 <hr>

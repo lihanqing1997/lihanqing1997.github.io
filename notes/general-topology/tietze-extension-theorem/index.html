@@ -9,87 +9,204 @@ breadcrumb_child_label_zh: "14. 蒂茨扩张定理"
     <h2><a href="{{ '/notes/general-topology/tietze-extension-theorem/' | relative_url }}">14. Tietze extension theorem</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/urysohn-lemma/" next_label="Next page" next_url="/notes/general-topology/metrization-theorems/" %}
 
-    <p>Tietze extension theorem records the objects, main results, proof mechanisms, and boundary cases needed for the general topology note.</p>
+    <p>Tietze's extension theorem says that normal spaces have enough room to extend bounded continuous real-valued functions from closed subspaces.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Tietze extension extends continuous real-valued functions from closed subsets of normal spaces to the whole space.</p>
-    </div>
+    <h3>Extension from closed sets</h3>
 
-    <h3>Tietze extension theorem</h3>
+    <p>The theorem strengthens Urysohn's lemma from separating two closed sets to extending an entire function.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(A\) is closed in a normal space \(X\) and \(f:A\to[-1,1]\) is continuous, then \(f\) extends to a continuous \(F:X\to[-1,1]\).</p>
+        <p><span class="statement-title">Theorem.</span> Let \(X\) be normal, let \(A\subseteq X\) be closed, and let \(f:A\to[-1,1]\) be continuous. Then there exists a continuous \(F:X\to[-1,1]\) such that \(F|_A=f\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Approximate the function by successive continuous functions built using Urysohn lemma, each reducing the remaining error geometrically. Uniform convergence gives the extension.</p>
+        <p><span class="statement-title">Proof.</span> The proof is the approximation construction below. Urysohn's lemma first extends a coarse three-level approximation to \(f\), reducing the remaining error by a factor \(2/3\). Iterating produces continuous functions \(g_n\) with uniformly summable norms, and the uniform limit \(F=\sum_n g_n\) is continuous and agrees with \(f\) on \(A\).</p>
     </div>
 
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Extension theorems show that normality is not merely separation by neighborhoods; it is separation by scalar functions.</p>
+        <p><span class="statement-title">Remark.</span> The closedness of \(A\) is essential: continuous functions on dense nonclosed subsets may force incompatible limiting values.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/urysohn-lemma/" next_label="Next page" next_url="/notes/general-topology/metrization-theorems/" %}
+
+    <h3>Approximation step</h3>
+
+    <p>The proof repeatedly extends coarse sign information and reduces the remaining error.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> If \(f:A\to[-r,r]\) is continuous on a closed subset \(A\) of a normal space \(X\), then there is a continuous \(g:X\to[-r/3,r/3]\) such that \(|f(a)-g(a)|\le 2r/3\) for all \(a\in A\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(A_-=\{a:f(a)\le -r/3\}\) and \(A_+=\{a:f(a)\ge r/3\}\). These are disjoint closed subsets of \(A\), hence closed in \(X\). By Urysohn's lemma, choose \(h:X\to[0,1]\) with \(h(A_-)=0\) and \(h(A_+)=1\). Set \(g=(2r/3)h-r/3\). Then \(g=-r/3\) on \(A_-\), \(g=r/3\) on \(A_+\), and everywhere \(g\in[-r/3,r/3]\), giving the stated error bound.</p>
+    </div>
+
+
+    <h3>Uniform convergence construction</h3>
+
+    <p>The error reduction gives a uniformly convergent series of continuous functions.</p>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Start with \(f_0=f\) and \(r_0=1\). Apply the lemma to obtain \(g_0:X\to[-1/3,1/3]\) with residual \(f_1=f_0-g_0|_A\) bounded by \(2/3\). Repeat with \(r_n=(2/3)^n\), obtaining \(g_n\) bounded by \(r_n/3\) and residual bounded by \(r_{n+1}\). The series \(F=\sum_{n=0}^\infty g_n\) converges uniformly by the Weierstrass test, hence is continuous. On \(A\), the partial sums differ from \(f\) by a residual tending uniformly to \(0\), so \(F|_A=f\). The range can be clipped to \([-1,1]\) by composing with the continuous retraction \(t\mapsto\max(-1,\min(t,1))\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> The theorem holds for any bounded interval \([a,b]\) by an affine change of scale.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Map \([a,b]\) linearly onto \([-1,1]\), extend there, and map back.</p>
+    </div>
+
+
+    <h3>Relation with normality</h3>
+
+    <p>Tietze extension is not merely a consequence of normality; it characterizes it among \(T_1\) spaces.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a \(T_1\) space \(X\), Tietze extension for all continuous maps from closed subsets into \([-1,1]\) implies normality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(A,B\subseteq X\) be disjoint closed sets. Define \(f:A\cup B\to[-1,1]\) by \(f(A)=-1\) and \(f(B)=1\). This is continuous because \(A\) and \(B\) are closed in \(A\cup B\). Extend \(f\) to \(F:X\to[-1,1]\). Then \(F^{-1}((-2,-1/2))\) and \(F^{-1}((1/2,2))\) are disjoint open neighborhoods of \(A\) and \(B\).</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/urysohn-lemma/" next_label="Next page" next_url="/notes/general-topology/metrization-theorems/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
     <h2><a href="{{ '/notes/general-topology/tietze-extension-theorem/' | relative_url }}">14. Théorème d’extension de Tietze</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/urysohn-lemma/" next_label="Page suivante" next_url="/notes/general-topology/metrization-theorems/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Théorème d’extension de Tietze.</p>
+    <p>Tietze's extension theorem says that normal spaces have enough room to extend bounded continuous real-valued functions from closed subspaces.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Tietze extension extends continuous real-valued functions from closed subsets of normal spaces to the whole space.</p>
-    </div>
+    <h3>Extension from closed sets</h3>
 
-    <h3>Tietze extension theorem</h3>
+    <p>The theorem strengthens Urysohn's lemma from separating two closed sets to extending an entire function.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(A\) is closed in a normal space \(X\) and \(f:A\to[-1,1]\) is continuous, then \(f\) extends to a continuous \(F:X\to[-1,1]\).</p>
+        <p><span class="statement-title">Théorème.</span> Let \(X\) be normal, let \(A\subseteq X\) be closed, and let \(f:A\to[-1,1]\) be continuous. Then there exists a continuous \(F:X\to[-1,1]\) such that \(F|_A=f\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Approximate the function by successive continuous functions built using Urysohn lemma, each reducing the remaining error geometrically. Uniform convergence gives the extension.</p>
+        <p><span class="statement-title">Preuve.</span> The proof is the approximation construction below. Urysohn's lemma first extends a coarse three-level approximation to \(f\), reducing the remaining error by a factor \(2/3\). Iterating produces continuous functions \(g_n\) with uniformly summable norms, and the uniform limit \(F=\sum_n g_n\) is continuous and agrees with \(f\) on \(A\).</p>
     </div>
 
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Extension theorems show that normality is not merely separation by neighborhoods; it is separation by scalar functions.</p>
+        <p><span class="statement-title">Remarque.</span> The closedness of \(A\) is essential: continuous functions on dense nonclosed subsets may force incompatible limiting values.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/urysohn-lemma/" next_label="Page suivante" next_url="/notes/general-topology/metrization-theorems/" %}
+
+    <h3>Approximation step</h3>
+
+    <p>The proof repeatedly extends coarse sign information and reduces the remaining error.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> If \(f:A\to[-r,r]\) is continuous on a closed subset \(A\) of a normal space \(X\), then there is a continuous \(g:X\to[-r/3,r/3]\) such that \(|f(a)-g(a)|\le 2r/3\) for all \(a\in A\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(A_-=\{a:f(a)\le -r/3\}\) and \(A_+=\{a:f(a)\ge r/3\}\). These are disjoint closed subsets of \(A\), hence closed in \(X\). By Urysohn's lemma, choose \(h:X\to[0,1]\) with \(h(A_-)=0\) and \(h(A_+)=1\). Set \(g=(2r/3)h-r/3\). Then \(g=-r/3\) on \(A_-\), \(g=r/3\) on \(A_+\), and everywhere \(g\in[-r/3,r/3]\), giving the stated error bound.</p>
+    </div>
+
+
+    <h3>Uniform convergence construction</h3>
+
+    <p>The error reduction gives a uniformly convergent series of continuous functions.</p>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Start with \(f_0=f\) and \(r_0=1\). Apply the lemma to obtain \(g_0:X\to[-1/3,1/3]\) with residual \(f_1=f_0-g_0|_A\) bounded by \(2/3\). Repeat with \(r_n=(2/3)^n\), obtaining \(g_n\) bounded by \(r_n/3\) and residual bounded by \(r_{n+1}\). The series \(F=\sum_{n=0}^\infty g_n\) converges uniformly by the Weierstrass test, hence is continuous. On \(A\), the partial sums differ from \(f\) by a residual tending uniformly to \(0\), so \(F|_A=f\). The range can be clipped to \([-1,1]\) by composing with the continuous retraction \(t\mapsto\max(-1,\min(t,1))\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> The theorem holds for any bounded interval \([a,b]\) by an affine change of scale.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Map \([a,b]\) linearly onto \([-1,1]\), extend there, and map back.</p>
+    </div>
+
+
+    <h3>Relation with normality</h3>
+
+    <p>Tietze extension is not merely a consequence of normality; it characterizes it among \(T_1\) spaces.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a \(T_1\) space \(X\), Tietze extension for all continuous maps from closed subsets into \([-1,1]\) implies normality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(A,B\subseteq X\) be disjoint closed sets. Define \(f:A\cup B\to[-1,1]\) by \(f(A)=-1\) and \(f(B)=1\). This is continuous because \(A\) and \(B\) are closed in \(A\cup B\). Extend \(f\) to \(F:X\to[-1,1]\). Then \(F^{-1}((-2,-1/2))\) and \(F^{-1}((1/2,2))\) are disjoint open neighborhoods of \(A\) and \(B\).</p>
+    </div>
+
+{% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/urysohn-lemma/" next_label="Page suivante" next_url="/notes/general-topology/metrization-theorems/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
     <h2><a href="{{ '/notes/general-topology/tietze-extension-theorem/' | relative_url }}">14. 蒂茨扩张定理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/urysohn-lemma/" next_label="下一页" next_url="/notes/general-topology/metrization-theorems/" %}
 
-    <p>本页整理关于“蒂茨扩张定理”的主要定义、命题、定理与证明思路。</p>
+    <p>Tietze's extension theorem says that normal spaces have enough room to extend bounded continuous real-valued functions from closed subspaces.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 蒂茨 extension extends continuous real-valued functions from closed subsets of normal spaces to the whole space.</p>
-    </div>
+    <h3>Extension from closed sets</h3>
 
-    <h3>蒂茨扩张定理</h3>
+    <p>The theorem strengthens Urysohn's lemma from separating two closed sets to extending an entire function.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(A\) is closed in a normal space \(X\) and \(f:A\to[-1,1]\) is continuous, then \(f\) extends to a continuous \(F:X\to[-1,1]\).</p>
+        <p><span class="statement-title">定理.</span> Let \(X\) be normal, let \(A\subseteq X\) be closed, and let \(f:A\to[-1,1]\) be continuous. Then there exists a continuous \(F:X\to[-1,1]\) such that \(F|_A=f\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Approximate the function by successive continuous functions built using 乌雷松引理, each reducing the remaining error geometrically. 一致收敛 gives the extension.</p>
+        <p><span class="statement-title">证明.</span> The proof is the approximation construction below. Urysohn's lemma first extends a coarse three-level approximation to \(f\), reducing the remaining error by a factor \(2/3\). Iterating produces continuous functions \(g_n\) with uniformly summable norms, and the uniform limit \(F=\sum_n g_n\) is continuous and agrees with \(f\) on \(A\).</p>
     </div>
 
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Extension theorems show that normality is not merely separation by neighborhoods; it is separation by scalar functions.</p>
+        <p><span class="statement-title">说明.</span> The closedness of \(A\) is essential: continuous functions on dense nonclosed subsets may force incompatible limiting values.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/urysohn-lemma/" next_label="下一页" next_url="/notes/general-topology/metrization-theorems/" %}
+
+    <h3>Approximation step</h3>
+
+    <p>The proof repeatedly extends coarse sign information and reduces the remaining error.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> If \(f:A\to[-r,r]\) is continuous on a closed subset \(A\) of a normal space \(X\), then there is a continuous \(g:X\to[-r/3,r/3]\) such that \(|f(a)-g(a)|\le 2r/3\) for all \(a\in A\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(A_-=\{a:f(a)\le -r/3\}\) and \(A_+=\{a:f(a)\ge r/3\}\). These are disjoint closed subsets of \(A\), hence closed in \(X\). By Urysohn's lemma, choose \(h:X\to[0,1]\) with \(h(A_-)=0\) and \(h(A_+)=1\). Set \(g=(2r/3)h-r/3\). Then \(g=-r/3\) on \(A_-\), \(g=r/3\) on \(A_+\), and everywhere \(g\in[-r/3,r/3]\), giving the stated error bound.</p>
+    </div>
+
+
+    <h3>Uniform convergence construction</h3>
+
+    <p>The error reduction gives a uniformly convergent series of continuous functions.</p>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Start with \(f_0=f\) and \(r_0=1\). Apply the lemma to obtain \(g_0:X\to[-1/3,1/3]\) with residual \(f_1=f_0-g_0|_A\) bounded by \(2/3\). Repeat with \(r_n=(2/3)^n\), obtaining \(g_n\) bounded by \(r_n/3\) and residual bounded by \(r_{n+1}\). The series \(F=\sum_{n=0}^\infty g_n\) converges uniformly by the Weierstrass test, hence is continuous. On \(A\), the partial sums differ from \(f\) by a residual tending uniformly to \(0\), so \(F|_A=f\). The range can be clipped to \([-1,1]\) by composing with the continuous retraction \(t\mapsto\max(-1,\min(t,1))\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> The theorem holds for any bounded interval \([a,b]\) by an affine change of scale.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Map \([a,b]\) linearly onto \([-1,1]\), extend there, and map back.</p>
+    </div>
+
+
+    <h3>Relation with normality</h3>
+
+    <p>Tietze extension is not merely a consequence of normality; it characterizes it among \(T_1\) spaces.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For a \(T_1\) space \(X\), Tietze extension for all continuous maps from closed subsets into \([-1,1]\) implies normality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(A,B\subseteq X\) be disjoint closed sets. Define \(f:A\cup B\to[-1,1]\) by \(f(A)=-1\) and \(f(B)=1\). This is continuous because \(A\) and \(B\) are closed in \(A\cup B\). Extend \(f\) to \(F:X\to[-1,1]\). Then \(F^{-1}((-2,-1/2))\) and \(F^{-1}((1/2,2))\) are disjoint open neighborhoods of \(A\) and \(B\).</p>
+    </div>
+
+{% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/urysohn-lemma/" next_label="下一页" next_url="/notes/general-topology/metrization-theorems/" %}
 </div>
 
 <hr>

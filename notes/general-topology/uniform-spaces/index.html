@@ -9,87 +9,252 @@ breadcrumb_child_label_zh: "20. 一致空间"
     <h2><a href="{{ '/notes/general-topology/uniform-spaces/' | relative_url }}">20. Uniform spaces</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/stone-cech-compactification/" %}
 
-    <p>Uniform spaces records the objects, main results, proof mechanisms, and boundary cases needed for the general topology note.</p>
+    <p>Uniform spaces add a global language of closeness to topology without requiring numerical distances. They are the right setting for uniform continuity, Cauchy filters, and completion.</p>
 
-    <h3>Definition</h3>
+    <h3>Entourages</h3>
+
+    <p>An entourage records which pairs of points are close at a chosen scale.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A uniform space specifies which pairs of points are uniformly close through entourages of the diagonal. It abstracts uniform continuity and Cauchy behavior without requiring a metric.</p>
+        <p><span class="statement-title">Definition.</span> A uniformity on \(X\) is a filter \(\mathcal U\) of subsets of \(X\times X\), called entourages, such that every \(U\in\mathcal U\) contains the diagonal, \(U\in\mathcal U\) implies \(U^{-1}\in\mathcal U\), and for every \(U\in\mathcal U\) there is \(V\in\mathcal U\) with \(V\circ V\subseteq U\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> A metric \(d\) defines a uniformity by entourages \(U_\varepsilon=\{(x,y):d(x,y)<\varepsilon\}\). Topological groups have natural uniformities from neighborhoods of the identity.</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Every metric space defines a uniformity, and uniform spaces support notions of Cauchy filters, completeness, and completion. A continuous map is uniformly continuous exactly when it pulls entourages back to entourages.</p>
+        <p><span class="statement-title">Proposition.</span> Every uniformity induces a topology by declaring \(U[x]=\{y:(x,y)\in U\}\) to be a neighborhood basis at \(x\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Metric entourages are sets \(\{(x,y):d(x,y)<\varepsilon\}\). The uniformity axioms encode symmetry, refinement, and triangle-like composition of entourages.</p>
+        <p><span class="statement-title">Proof.</span> The diagonal condition gives \(x\in U[x]\). Finite intersection follows from the filter property. If \(U\) is an entourage, choose symmetric \(V\) with \(V\circ V\subseteq U\). Then for \(y\in V[x]\), one has \(V[y]\subseteq U[x]\), giving the neighborhood axiom.</p>
     </div>
 
-    <h3>Remark</h3>
+
+    <h3>Uniform continuity</h3>
+
+    <p>Uniform continuity controls all points with one entourage condition, not point-by-point neighborhoods.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A map \(f:X\to Y\) between uniform spaces is uniformly continuous if for every entourage \(V\) of \(Y\), there is an entourage \(U\) of \(X\) such that \((x,x')\in U\) implies \((f(x),f(x'))\in V\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Uniformly continuous maps are continuous for the induced topologies.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(f(x)\in O\) with \(O\) open in \(Y\). Choose an entourage \(V\) such that \(V[f(x)]\subseteq O\). Uniform continuity gives \(U\) with \((f\times f)(U)\subseteq V\). Then \(U[x]\) is a neighborhood of \(x\) mapped into \(O\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The function \(x\mapsto x^2\) on \(\mathbb R\) is continuous but not uniformly continuous for the usual metric uniformity.</p>
+    </div>
+
+
+    <h3>Cauchy filters and completeness</h3>
+
+    <p>Uniform spaces support Cauchy notions even when there is no metric.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A filter \(\mathcal F\) on a uniform space \(X\) is Cauchy if for every entourage \(U\), there exists \(F\in\mathcal F\) such that \(F\times F\subseteq U\). A uniform space is complete if every Cauchy filter converges.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every convergent filter is Cauchy.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(\mathcal F\to x\) and \(U\) is an entourage, choose symmetric \(V\) with \(V\circ V\subseteq U\). Since \(V[x]\in\mathcal F\), take \(F=V[x]\). For \(y,z\in F\), \((y,x)\in V\) and \((x,z)\in V\), hence \((y,z)\in V\circ V\subseteq U\).</p>
+    </div>
+
+
+    <h3>Completion</h3>
+
+    <p>Completion adds limits for all Cauchy filters while preserving uniform structure.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Every separated uniform space admits a completion: a complete separated uniform space \(\widehat X\) and a uniformly continuous dense embedding \(X\hookrightarrow\widehat X\) with the expected universal property for uniformly continuous maps into complete separated spaces.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> One constructs \(\widehat X\) from minimal Cauchy filters, identifying filters that are eventually close in every entourage. Entourages lift by requiring representative filters to contain sets that are pairwise close. The original point \(x\) embeds as its neighborhood filter. Density follows because every Cauchy filter is approximated by its members, and completeness follows by taking limits of Cauchy filters of minimal Cauchy filters. The universal property is obtained by sending a Cauchy filter to the limit of its image filter.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Uniform spaces sit between topology and metric geometry. They explain why some topological spaces have meaningful uniform convergence and completion theories.</p>
+        <p><span class="statement-title">Remark.</span> Metric completion is the special case where Cauchy filters can be represented by Cauchy sequences in first-countable settings.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/stone-cech-compactification/" %}
+{% include note-topic-nav.html back_label="Back" back_url="/notes/general-topology/" prev_label="Last page" prev_url="/notes/general-topology/stone-cech-compactification/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
     <h2><a href="{{ '/notes/general-topology/uniform-spaces/' | relative_url }}">20. Espaces uniformes</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/stone-cech-compactification/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Espaces uniformes.</p>
+    <p>Uniform spaces add a global language of closeness to topology without requiring numerical distances. They are the right setting for uniform continuity, Cauchy filters, and completion.</p>
 
-    <h3>Définition</h3>
+    <h3>Entourages</h3>
+
+    <p>An entourage records which pairs of points are close at a chosen scale.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A uniform space specifies which pairs of points are uniformly close through entourages of the diagonal. It abstracts uniform continuity and Cauchy behavior without requiring a metric.</p>
+        <p><span class="statement-title">Définition.</span> A uniformity on \(X\) is a filter \(\mathcal U\) of subsets of \(X\times X\), called entourages, such that every \(U\in\mathcal U\) contains the diagonal, \(U\in\mathcal U\) implies \(U^{-1}\in\mathcal U\), and for every \(U\in\mathcal U\) there is \(V\in\mathcal U\) with \(V\circ V\subseteq U\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> A metric \(d\) defines a uniformity by entourages \(U_\varepsilon=\{(x,y):d(x,y)<\varepsilon\}\). Topological groups have natural uniformities from neighborhoods of the identity.</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Every metric space defines a uniformity, and uniform spaces support notions of Cauchy filters, completeness, and completion. A continuous map is uniformly continuous exactly when it pulls entourages back to entourages.</p>
+        <p><span class="statement-title">Proposition.</span> Every uniformity induces a topology by declaring \(U[x]=\{y:(x,y)\in U\}\) to be a neighborhood basis at \(x\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Metric entourages are sets \(\{(x,y):d(x,y)<\varepsilon\}\). The uniformity axioms encode symmetry, refinement, and triangle-like composition of entourages.</p>
+        <p><span class="statement-title">Preuve.</span> The diagonal condition gives \(x\in U[x]\). Finite intersection follows from the filter property. If \(U\) is an entourage, choose symmetric \(V\) with \(V\circ V\subseteq U\). Then for \(y\in V[x]\), one has \(V[y]\subseteq U[x]\), giving the neighborhood axiom.</p>
     </div>
 
-    <h3>Remarque</h3>
+
+    <h3>Uniform continuity</h3>
+
+    <p>Uniform continuity controls all points with one entourage condition, not point-by-point neighborhoods.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A map \(f:X\to Y\) between uniform spaces is uniformly continuous if for every entourage \(V\) of \(Y\), there is an entourage \(U\) of \(X\) such that \((x,x')\in U\) implies \((f(x),f(x'))\in V\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Uniformly continuous maps are continuous for the induced topologies.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(f(x)\in O\) with \(O\) open in \(Y\). Choose an entourage \(V\) such that \(V[f(x)]\subseteq O\). Uniform continuity gives \(U\) with \((f\times f)(U)\subseteq V\). Then \(U[x]\) is a neighborhood of \(x\) mapped into \(O\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The function \(x\mapsto x^2\) on \(\mathbb R\) is continuous but not uniformly continuous for the usual metric uniformity.</p>
+    </div>
+
+
+    <h3>Cauchy filters and completeness</h3>
+
+    <p>Uniform spaces support Cauchy notions even when there is no metric.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A filter \(\mathcal F\) on a uniform space \(X\) is Cauchy if for every entourage \(U\), there exists \(F\in\mathcal F\) such that \(F\times F\subseteq U\). A uniform space is complete if every Cauchy filter converges.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every convergent filter is Cauchy.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(\mathcal F\to x\) and \(U\) is an entourage, choose symmetric \(V\) with \(V\circ V\subseteq U\). Since \(V[x]\in\mathcal F\), take \(F=V[x]\). For \(y,z\in F\), \((y,x)\in V\) and \((x,z)\in V\), hence \((y,z)\in V\circ V\subseteq U\).</p>
+    </div>
+
+
+    <h3>Completion</h3>
+
+    <p>Completion adds limits for all Cauchy filters while preserving uniform structure.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Every separated uniform space admits a completion: a complete separated uniform space \(\widehat X\) and a uniformly continuous dense embedding \(X\hookrightarrow\widehat X\) with the expected universal property for uniformly continuous maps into complete separated spaces.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> One constructs \(\widehat X\) from minimal Cauchy filters, identifying filters that are eventually close in every entourage. Entourages lift by requiring representative filters to contain sets that are pairwise close. The original point \(x\) embeds as its neighborhood filter. Density follows because every Cauchy filter is approximated by its members, and completeness follows by taking limits of Cauchy filters of minimal Cauchy filters. The universal property is obtained by sending a Cauchy filter to the limit of its image filter.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Uniform spaces sit between topology and metric geometry. They explain why some topological spaces have meaningful uniform convergence and completion theories.</p>
+        <p><span class="statement-title">Remarque.</span> Metric completion is the special case where Cauchy filters can be represented by Cauchy sequences in first-countable settings.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/stone-cech-compactification/" %}
+{% include note-topic-nav.html back_label="Retour" back_url="/notes/general-topology/" prev_label="Page précédente" prev_url="/notes/general-topology/stone-cech-compactification/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
     <h2><a href="{{ '/notes/general-topology/uniform-spaces/' | relative_url }}">20. 一致空间</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/stone-cech-compactification/" %}
 
-    <p>本页整理关于“一致空间”的主要定义、命题、定理与证明思路。</p>
+    <p>Uniform spaces add a global language of closeness to topology without requiring numerical distances. They are the right setting for uniform continuity, Cauchy filters, and completion.</p>
 
-    <h3>定义</h3>
+    <h3>Entourages</h3>
+
+    <p>An entourage records which pairs of points are close at a chosen scale.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A uniform space specifies which pairs of points are uniformly close through entourages of the diagonal. It abstracts uniform continuity and 柯西 behavior without requiring a 度量.</p>
+        <p><span class="statement-title">定义.</span> A uniformity on \(X\) is a filter \(\mathcal U\) of subsets of \(X\times X\), called entourages, such that every \(U\in\mathcal U\) contains the diagonal, \(U\in\mathcal U\) implies \(U^{-1}\in\mathcal U\), and for every \(U\in\mathcal U\) there is \(V\in\mathcal U\) with \(V\circ V\subseteq U\).</p>
     </div>
 
-    <h3>命题</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> A metric \(d\) defines a uniformity by entourages \(U_\varepsilon=\{(x,y):d(x,y)<\varepsilon\}\). Topological groups have natural uniformities from neighborhoods of the identity.</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Every 度量空间 defines a uniformity, and uniform spaces support notions of 柯西 filters, 完备性, and 完备化. A continuous map is uniformly continuous exactly when it pulls entourages back to entourages.</p>
+        <p><span class="statement-title">命题.</span> Every uniformity induces a topology by declaring \(U[x]=\{y:(x,y)\in U\}\) to be a neighborhood basis at \(x\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 度量 entourages are sets \(\{(x,y):d(x,y)<\varepsilon\}\). The uniformity axioms encode symmetry, refinement, and triangle-like composition of entourages.</p>
+        <p><span class="statement-title">证明.</span> The diagonal condition gives \(x\in U[x]\). Finite intersection follows from the filter property. If \(U\) is an entourage, choose symmetric \(V\) with \(V\circ V\subseteq U\). Then for \(y\in V[x]\), one has \(V[y]\subseteq U[x]\), giving the neighborhood axiom.</p>
     </div>
 
-    <h3>说明</h3>
+
+    <h3>Uniform continuity</h3>
+
+    <p>Uniform continuity controls all points with one entourage condition, not point-by-point neighborhoods.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A map \(f:X\to Y\) between uniform spaces is uniformly continuous if for every entourage \(V\) of \(Y\), there is an entourage \(U\) of \(X\) such that \((x,x')\in U\) implies \((f(x),f(x'))\in V\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Uniformly continuous maps are continuous for the induced topologies.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(f(x)\in O\) with \(O\) open in \(Y\). Choose an entourage \(V\) such that \(V[f(x)]\subseteq O\). Uniform continuity gives \(U\) with \((f\times f)(U)\subseteq V\). Then \(U[x]\) is a neighborhood of \(x\) mapped into \(O\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The function \(x\mapsto x^2\) on \(\mathbb R\) is continuous but not uniformly continuous for the usual metric uniformity.</p>
+    </div>
+
+
+    <h3>Cauchy filters and completeness</h3>
+
+    <p>Uniform spaces support Cauchy notions even when there is no metric.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A filter \(\mathcal F\) on a uniform space \(X\) is Cauchy if for every entourage \(U\), there exists \(F\in\mathcal F\) such that \(F\times F\subseteq U\). A uniform space is complete if every Cauchy filter converges.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Every convergent filter is Cauchy.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(\mathcal F\to x\) and \(U\) is an entourage, choose symmetric \(V\) with \(V\circ V\subseteq U\). Since \(V[x]\in\mathcal F\), take \(F=V[x]\). For \(y,z\in F\), \((y,x)\in V\) and \((x,z)\in V\), hence \((y,z)\in V\circ V\subseteq U\).</p>
+    </div>
+
+
+    <h3>Completion</h3>
+
+    <p>Completion adds limits for all Cauchy filters while preserving uniform structure.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Every separated uniform space admits a completion: a complete separated uniform space \(\widehat X\) and a uniformly continuous dense embedding \(X\hookrightarrow\widehat X\) with the expected universal property for uniformly continuous maps into complete separated spaces.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> One constructs \(\widehat X\) from minimal Cauchy filters, identifying filters that are eventually close in every entourage. Entourages lift by requiring representative filters to contain sets that are pairwise close. The original point \(x\) embeds as its neighborhood filter. Density follows because every Cauchy filter is approximated by its members, and completeness follows by taking limits of Cauchy filters of minimal Cauchy filters. The universal property is obtained by sending a Cauchy filter to the limit of its image filter.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Uniform spaces sit between topology and 度量 geometry. They explain why some topological spaces have meaningful 一致收敛 and 完备化 theories.</p>
+        <p><span class="statement-title">说明.</span> Metric completion is the special case where Cauchy filters can be represented by Cauchy sequences in first-countable settings.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/stone-cech-compactification/" %}
+{% include note-topic-nav.html back_label="返回" back_url="/notes/general-topology/" prev_label="上一页" prev_url="/notes/general-topology/stone-cech-compactification/" %}
 </div>
 
 <hr>
