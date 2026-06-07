@@ -9,31 +9,74 @@ breadcrumb_child_label_zh: "18. 作为典范例子的 KL 散度"
     <h2>18. KL divergence as canonical example</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/connections-from-divergence/" next_label="Next page" next_url="/notes/information-geometry/forward-reverse-kl-projections/" %}
 
-    <p>Kullback-Leibler divergence is the canonical statistical divergence. Its local geometry is exactly Fisher geometry with exponential and mixture affine structures.</p>
-    <h3>KL divergence on a model</h3>
+    <p>KL divergence is the central example because it is both statistically operational and geometrically generative. Its second and third derivatives recover Fisher geometry and dual connections.</p>
+
+    <h3>Definition and asymmetry</h3>
+
+    <p>KL divergence is directed: its two arguments have different statistical roles.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For two model points,
+        <p><span class="statement-title">Definition.</span> For \(P\ll Q\),
 \[
-D_{\mathrm{KL}}(p_\theta:p_{\theta'})=\int p_\theta(x)\log\frac{p_\theta(x)}{p_{\theta'}(x)}\,\mathrm{d}x.
-\]</p>
+D_{\mathrm{KL}}(P\|Q)=\int \log\frac{\mathrm{d}P}{\mathrm{d}Q}\,\mathrm{d}P.
+\]
+In densities, \(D_{\mathrm{KL}}(p\|q)=\int p\log(p/q)\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>Metric recovery</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The second-order diagonal derivative of KL divergence is the Fisher metric:
+        <p><span class="statement-title">Proposition.</span> KL divergence is nonnegative and equals zero iff \(P=Q\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(Z=\mathrm{d}Q/\mathrm{d}P\). Since \(-\log\) is convex,
 \[
--\partial_i\partial'_jD_{\mathrm{KL}}(\theta:\theta')|_{\theta'=\theta}=g_{ij}(\theta).
+D_{\mathrm{KL}}(P\|Q)=\mathbb E_P[-\log Z]\ge -\log\mathbb E_PZ=0.
+\]
+Equality in Jensen requires \(Z\) to be constant \(P\)-a.s.; normalization gives \(Z=1\).</p>
+    </div>
+
+    <h3>Fisher metric from KL</h3>
+
+    <p>The local quadratic term of KL is Fisher information.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For a regular model,
+\[
+D_{\mathrm{KL}}(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac12g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
 \]</p>
     </div>
 
-    <h3>Connection recovery</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The third-order divergence construction applied to KL divergence yields the mixture and exponential dual connections, with the precise sign depending on whether one uses \(D(p:q)\) or \(D(q:p)\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Taylor expand \(\ell_{\theta+\mathrm{d}\theta}\) inside \(\mathbb E_\theta(\ell_\theta-\ell_{\theta+\mathrm{d}\theta})\). The linear score term has mean zero. The expected Hessian term is \(-g_{ij}\), producing the factor \(1/2\).</p>
     </div>
 
-    <h3>Forward and reverse roles</h3>
+    <h3>Chain rule</h3>
+
+    <p>KL has an additive decomposition under joint distributions.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For joint laws \(P_{XY},Q_{XY}\),
+\[
+D(P_{XY}\|Q_{XY})=D(P_X\|Q_X)+\mathbb E_{P_X}D(P_{Y|X}\|Q_{Y|X}).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Factor the likelihood ratio as
+\[
+\frac{\mathrm{d}P_{XY}}{\mathrm{d}Q_{XY}}
+=\frac{\mathrm{d}P_X}{\mathrm{d}Q_X}\frac{\mathrm{d}P_{Y|X}}{\mathrm{d}Q_{Y|X}}.
+\]
+Taking \(P\)-expectations of the logarithm gives the two terms.</p>
+    </div>
+
+    <h3>Projection behavior</h3>
+
+    <p>KL's asymmetry leads to different forward and reverse projection geometries.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Forward and reverse KL have the same local metric but interchange the two affine connections. This is why KL asymmetry is geometrically meaningful.</p>
+        <p><span class="statement-title">Remark.</span> Forward KL tends to cover mass under the first distribution, while reverse KL can be mode-seeking. In dually flat geometry these are tied to mixture and exponential projections.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/connections-from-divergence/" next_label="Next page" next_url="/notes/information-geometry/forward-reverse-kl-projections/" %}
@@ -43,31 +86,74 @@ D_{\mathrm{KL}}(p_\theta:p_{\theta'})=\int p_\theta(x)\log\frac{p_\theta(x)}{p_{
     <h2>18. Divergence KL comme exemple canonique</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/connections-from-divergence/" next_label="Page suivante" next_url="/notes/information-geometry/forward-reverse-kl-projections/" %}
 
-    <p>Cette page rassemble les définitions, théorèmes et mécanismes de preuve pour Divergence KL comme exemple canonique.</p>
-    <h3>Définition</h3>
+    <p>KL divergence is the central example because it is both statistically operational and geometrically generative. Its second and third derivatives recover Fisher geometry and dual connections.</p>
+
+    <h3>Definition and asymmetry</h3>
+
+    <p>KL divergence is directed: its two arguments have different statistical roles.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. For two model points,
+        <p><span class="statement-title">Définition.</span> For \(P\ll Q\),
 \[
-D_{\mathrm{KL}}(p_\theta:p_{\theta'})=\int p_\theta(x)\log\frac{p_\theta(x)}{p_{\theta'}(x)}\,\mathrm{d}x.
-\]</p>
+D_{\mathrm{KL}}(P\|Q)=\int \log\frac{\mathrm{d}P}{\mathrm{d}Q}\,\mathrm{d}P.
+\]
+In densities, \(D_{\mathrm{KL}}(p\|q)=\int p\log(p/q)\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. The second-order diagonal derivative of KL divergence is the Fisher metric:
+        <p><span class="statement-title">Proposition.</span> KL divergence is nonnegative and equals zero iff \(P=Q\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(Z=\mathrm{d}Q/\mathrm{d}P\). Since \(-\log\) is convex,
 \[
--\partial_i\partial'_jD_{\mathrm{KL}}(\theta:\theta')|_{\theta'=\theta}=g_{ij}(\theta).
+D_{\mathrm{KL}}(P\|Q)=\mathbb E_P[-\log Z]\ge -\log\mathbb E_PZ=0.
+\]
+Equality in Jensen requires \(Z\) to be constant \(P\)-a.s.; normalization gives \(Z=1\).</p>
+    </div>
+
+    <h3>Fisher metric from KL</h3>
+
+    <p>The local quadratic term of KL is Fisher information.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For a regular model,
+\[
+D_{\mathrm{KL}}(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac12g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
 \]</p>
     </div>
 
-    <h3>Théorème</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Énoncé. The third-order divergence construction applied to KL divergence yields the mixture and exponential dual connections, with the precise sign depending on whether one uses \(D(p:q)\) or \(D(q:p)\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Taylor expand \(\ell_{\theta+\mathrm{d}\theta}\) inside \(\mathbb E_\theta(\ell_\theta-\ell_{\theta+\mathrm{d}\theta})\). The linear score term has mean zero. The expected Hessian term is \(-g_{ij}\), producing the factor \(1/2\).</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Chain rule</h3>
+
+    <p>KL has an additive decomposition under joint distributions.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For joint laws \(P_{XY},Q_{XY}\),
+\[
+D(P_{XY}\|Q_{XY})=D(P_X\|Q_X)+\mathbb E_{P_X}D(P_{Y|X}\|Q_{Y|X}).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Factor the likelihood ratio as
+\[
+\frac{\mathrm{d}P_{XY}}{\mathrm{d}Q_{XY}}
+=\frac{\mathrm{d}P_X}{\mathrm{d}Q_X}\frac{\mathrm{d}P_{Y|X}}{\mathrm{d}Q_{Y|X}}.
+\]
+Taking \(P\)-expectations of the logarithm gives the two terms.</p>
+    </div>
+
+    <h3>Projection behavior</h3>
+
+    <p>KL's asymmetry leads to different forward and reverse projection geometries.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Énoncé. Forward and reverse KL have the same local metric but interchange the two affine connections. This is why KL asymmetry is geometrically meaningful.</p>
+        <p><span class="statement-title">Remarque.</span> Forward KL tends to cover mass under the first distribution, while reverse KL can be mode-seeking. In dually flat geometry these are tied to mixture and exponential projections.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/connections-from-divergence/" next_label="Page suivante" next_url="/notes/information-geometry/forward-reverse-kl-projections/" %}
@@ -77,31 +163,74 @@ D_{\mathrm{KL}}(p_\theta:p_{\theta'})=\int p_\theta(x)\log\frac{p_\theta(x)}{p_{
     <h2>18. 作为典范例子的 KL 散度</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/connections-from-divergence/" next_label="下一页" next_url="/notes/information-geometry/forward-reverse-kl-projections/" %}
 
-    <p>本页整理作为典范例子的 KL 散度的主要定义、定理与证明机制。</p>
-    <h3>定义</h3>
+    <p>KL divergence is the central example because it is both statistically operational and geometrically generative. Its second and third derivatives recover Fisher geometry and dual connections.</p>
+
+    <h3>Definition and asymmetry</h3>
+
+    <p>KL divergence is directed: its two arguments have different statistical roles.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. For two model points,
+        <p><span class="statement-title">定义.</span> For \(P\ll Q\),
 \[
-D_{\mathrm{KL}}(p_\theta:p_{\theta'})=\int p_\theta(x)\log\frac{p_\theta(x)}{p_{\theta'}(x)}\,\mathrm{d}x.
-\]</p>
+D_{\mathrm{KL}}(P\|Q)=\int \log\frac{\mathrm{d}P}{\mathrm{d}Q}\,\mathrm{d}P.
+\]
+In densities, \(D_{\mathrm{KL}}(p\|q)=\int p\log(p/q)\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 表述. The second-order diagonal derivative of KL 散度 is the 费雪度量:
+        <p><span class="statement-title">命题.</span> KL divergence is nonnegative and equals zero iff \(P=Q\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(Z=\mathrm{d}Q/\mathrm{d}P\). Since \(-\log\) is convex,
 \[
--\partial_i\partial'_jD_{\mathrm{KL}}(\theta:\theta')|_{\theta'=\theta}=g_{ij}(\theta).
+D_{\mathrm{KL}}(P\|Q)=\mathbb E_P[-\log Z]\ge -\log\mathbb E_PZ=0.
+\]
+Equality in Jensen requires \(Z\) to be constant \(P\)-a.s.; normalization gives \(Z=1\).</p>
+    </div>
+
+    <h3>Fisher metric from KL</h3>
+
+    <p>The local quadratic term of KL is Fisher information.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For a regular model,
+\[
+D_{\mathrm{KL}}(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac12g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
 \]</p>
     </div>
 
-    <h3>定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 表述. The third-order 散度 construction applied to KL 散度 yields the mixture and exponential dual connections, with the precise sign depending on whether one uses \(D(p:q)\) or \(D(q:p)\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Taylor expand \(\ell_{\theta+\mathrm{d}\theta}\) inside \(\mathbb E_\theta(\ell_\theta-\ell_{\theta+\mathrm{d}\theta})\). The linear score term has mean zero. The expected Hessian term is \(-g_{ij}\), producing the factor \(1/2\).</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Chain rule</h3>
+
+    <p>KL has an additive decomposition under joint distributions.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For joint laws \(P_{XY},Q_{XY}\),
+\[
+D(P_{XY}\|Q_{XY})=D(P_X\|Q_X)+\mathbb E_{P_X}D(P_{Y|X}\|Q_{Y|X}).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Factor the likelihood ratio as
+\[
+\frac{\mathrm{d}P_{XY}}{\mathrm{d}Q_{XY}}
+=\frac{\mathrm{d}P_X}{\mathrm{d}Q_X}\frac{\mathrm{d}P_{Y|X}}{\mathrm{d}Q_{Y|X}}.
+\]
+Taking \(P\)-expectations of the logarithm gives the two terms.</p>
+    </div>
+
+    <h3>Projection behavior</h3>
+
+    <p>KL's asymmetry leads to different forward and reverse projection geometries.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 表述. Forward and 反向 KL have the same local 度量 but interchange the two affine connections. This is why KL asymmetry is geometrically meaningful.</p>
+        <p><span class="statement-title">说明.</span> Forward KL tends to cover mass under the first distribution, while reverse KL can be mode-seeking. In dually flat geometry these are tied to mixture and exponential projections.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/connections-from-divergence/" next_label="下一页" next_url="/notes/information-geometry/forward-reverse-kl-projections/" %}

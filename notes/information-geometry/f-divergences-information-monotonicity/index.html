@@ -9,32 +9,61 @@ breadcrumb_child_label_zh: "20. f-散度与信息单调性"
     <h2>20. f-divergences and information monotonicity</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/forward-reverse-kl-projections/" next_label="Next page" next_url="/notes/information-geometry/bregman-divergences/" %}
 
-    <p>The f-divergences are the canonical separable divergences monotone under Markov maps. They connect information geometry back to the data-processing principle.</p>
-    <h3>f-divergence</h3>
+    <p>\(f\)-divergences are a large family of divergences satisfying data processing. Locally, all smooth \(f\)-divergences generate Fisher information up to scale.</p>
+
+    <h3>Convex generators</h3>
+
+    <p>An \(f\)-divergence compares likelihood ratios through a convex function.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a convex function \(f\) with \(f(1)=0\), the f-divergence is
+        <p><span class="statement-title">Definition.</span> For convex \(f\) with \(f(1)=0\),
 \[
-D_f(P:Q)=\int q(x)f\!\left(\frac{p(x)}{q(x)}\right)\,\mathrm{d}x.
+D_f(P\|Q)=\int f\left(\frac{\mathrm{d}P}{\mathrm{d}Q}\right)\,\mathrm{d}Q
+\]
+when \(P\ll Q\), with standard extensions otherwise.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> KL divergence corresponds to \(f(u)=u\log u\). Squared Hellinger distance corresponds, up to convention, to \(f(u)=(\sqrt u-1)^2\).</p>
+    </div>
+
+    <h3>Data processing</h3>
+
+    <p>Convexity gives monotonicity under Markov kernels.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For any Markov kernel \(K\),
+\[
+D_f(KP\|KQ)\le D_f(P\|Q).
 \]</p>
     </div>
 
-    <h3>Information monotonicity</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For every Markov kernel \(K\),
-\[
-D_f(PK:QK)\le D_f(P:Q).
-\]
-Thus randomized postprocessing cannot increase an f-divergence.</p>
-    </div>
-
-    <h3>Proof by Jensen</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The likelihood ratio after applying a Markov kernel is a conditional expectation of the original likelihood ratio. Convexity of \(f\) and Jensen's inequality give the contraction.</p>
+        <p><span class="statement-title">Proof.</span> The likelihood ratio after applying \(K\) is a conditional expectation of the original likelihood ratio under the \(Q\)-joint law. Jensen's inequality for convex \(f\) gives the pointwise conditional bound, and integrating with respect to \(KQ\) gives the result.</p>
     </div>
 
     <h3>Local Fisher metric</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> All smooth f-divergences induce the Fisher metric up to the scalar factor \(f''(1)\). Their higher-order terms may induce different alpha-geometric behavior.</p>
+
+    <p>All smooth \(f\)-divergences share the Fisher metric locally.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a regular model,
+\[
+D_f(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac{f''(1)}{2}g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The likelihood ratio between nearby distributions is \(1+s_i\mathrm{d}\theta^i+O(\|\mathrm{d}\theta\|^2)\). Taylor expand \(f\) at \(1\). The constant term vanishes and the linear term integrates to zero by normalization. The quadratic term gives \(f''(1)\mathbb E(s_is_j)\mathrm{d}\theta^i\mathrm{d}\theta^j/2\).</p>
+    </div>
+
+    <h3>Why KL is still special</h3>
+
+    <p>KL is not the only monotone divergence, but it has special additive and variational properties.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The chain rule, variational formulas, exponential-family projections, and likelihood asymptotics make KL especially central even though Fisher local geometry is shared by many divergences.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/forward-reverse-kl-projections/" next_label="Next page" next_url="/notes/information-geometry/bregman-divergences/" %}
@@ -44,32 +73,61 @@ Thus randomized postprocessing cannot increase an f-divergence.</p>
     <h2>20. f-divergences et monotonie de l'information</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/forward-reverse-kl-projections/" next_label="Page suivante" next_url="/notes/information-geometry/bregman-divergences/" %}
 
-    <p>Cette page rassemble les définitions, théorèmes et mécanismes de preuve pour f-divergences et monotonie de l'information.</p>
-    <h3>Définition</h3>
+    <p>\(f\)-divergences are a large family of divergences satisfying data processing. Locally, all smooth \(f\)-divergences generate Fisher information up to scale.</p>
+
+    <h3>Convex generators</h3>
+
+    <p>An \(f\)-divergence compares likelihood ratios through a convex function.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. For a convex function \(f\) with \(f(1)=0\), the f-divergence is
+        <p><span class="statement-title">Définition.</span> For convex \(f\) with \(f(1)=0\),
 \[
-D_f(P:Q)=\int q(x)f\!\left(\frac{p(x)}{q(x)}\right)\,\mathrm{d}x.
+D_f(P\|Q)=\int f\left(\frac{\mathrm{d}P}{\mathrm{d}Q}\right)\,\mathrm{d}Q
+\]
+when \(P\ll Q\), with standard extensions otherwise.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> KL divergence corresponds to \(f(u)=u\log u\). Squared Hellinger distance corresponds, up to convention, to \(f(u)=(\sqrt u-1)^2\).</p>
+    </div>
+
+    <h3>Data processing</h3>
+
+    <p>Convexity gives monotonicity under Markov kernels.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For any Markov kernel \(K\),
+\[
+D_f(KP\|KQ)\le D_f(P\|Q).
 \]</p>
     </div>
 
-    <h3>Théorème</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Énoncé. For every Markov kernel \(K\),
-\[
-D_f(PK:QK)\le D_f(P:Q).
-\]
-Thus randomized postprocessing cannot increase an f-divergence.</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. The likelihood ratio after applying a Markov kernel is a conditional expectation of the original likelihood ratio. Convexity of \(f\) and Jensen's inequality give the contraction.</p>
+        <p><span class="statement-title">Preuve.</span> The likelihood ratio after applying \(K\) is a conditional expectation of the original likelihood ratio under the \(Q\)-joint law. Jensen's inequality for convex \(f\) gives the pointwise conditional bound, and integrating with respect to \(KQ\) gives the result.</p>
     </div>
 
-    <h3>Corollaire</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> Énoncé. All smooth f-divergences induce the Fisher metric up to the scalar factor \(f''(1)\). Their higher-order terms may induce different alpha-geometric behavior.</p>
+    <h3>Local Fisher metric</h3>
+
+    <p>All smooth \(f\)-divergences share the Fisher metric locally.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a regular model,
+\[
+D_f(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac{f''(1)}{2}g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The likelihood ratio between nearby distributions is \(1+s_i\mathrm{d}\theta^i+O(\|\mathrm{d}\theta\|^2)\). Taylor expand \(f\) at \(1\). The constant term vanishes and the linear term integrates to zero by normalization. The quadratic term gives \(f''(1)\mathbb E(s_is_j)\mathrm{d}\theta^i\mathrm{d}\theta^j/2\).</p>
+    </div>
+
+    <h3>Why KL is still special</h3>
+
+    <p>KL is not the only monotone divergence, but it has special additive and variational properties.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The chain rule, variational formulas, exponential-family projections, and likelihood asymptotics make KL especially central even though Fisher local geometry is shared by many divergences.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/forward-reverse-kl-projections/" next_label="Page suivante" next_url="/notes/information-geometry/bregman-divergences/" %}
@@ -79,32 +137,61 @@ Thus randomized postprocessing cannot increase an f-divergence.</p>
     <h2>20. f-散度与信息单调性</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/forward-reverse-kl-projections/" next_label="下一页" next_url="/notes/information-geometry/bregman-divergences/" %}
 
-    <p>本页整理 f-散度与信息单调性的主要定义、定理与证明机制。</p>
-    <h3>定义</h3>
+    <p>\(f\)-divergences are a large family of divergences satisfying data processing. Locally, all smooth \(f\)-divergences generate Fisher information up to scale.</p>
+
+    <h3>Convex generators</h3>
+
+    <p>An \(f\)-divergence compares likelihood ratios through a convex function.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. For a 凸函数 \(f\) with \(f(1)=0\), the f-散度 is
+        <p><span class="statement-title">定义.</span> For convex \(f\) with \(f(1)=0\),
 \[
-D_f(P:Q)=\int q(x)f\!\left(\frac{p(x)}{q(x)}\right)\,\mathrm{d}x.
+D_f(P\|Q)=\int f\left(\frac{\mathrm{d}P}{\mathrm{d}Q}\right)\,\mathrm{d}Q
+\]
+when \(P\ll Q\), with standard extensions otherwise.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> KL divergence corresponds to \(f(u)=u\log u\). Squared Hellinger distance corresponds, up to convention, to \(f(u)=(\sqrt u-1)^2\).</p>
+    </div>
+
+    <h3>Data processing</h3>
+
+    <p>Convexity gives monotonicity under Markov kernels.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For any Markov kernel \(K\),
+\[
+D_f(KP\|KQ)\le D_f(P\|Q).
 \]</p>
     </div>
 
-    <h3>定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 表述. For every 马尔可夫核 \(K\),
-\[
-D_f(PK:QK)\le D_f(P:Q).
-\]
-Thus 随机化 postprocessing cannot increase an f-散度.</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. The 似然比 after applying a 马尔可夫核 is a conditional expectation of the original 似然比. 凸性 of \(f\) and Jensen's inequality give the contraction.</p>
+        <p><span class="statement-title">证明.</span> The likelihood ratio after applying \(K\) is a conditional expectation of the original likelihood ratio under the \(Q\)-joint law. Jensen's inequality for convex \(f\) gives the pointwise conditional bound, and integrating with respect to \(KQ\) gives the result.</p>
     </div>
 
-    <h3>推论</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> 表述. All smooth f-散度 induce the 费雪度量 up to the scalar 因子 \(f''(1)\). Their higher-order terms may induce different alpha-geometric behavior.</p>
+    <h3>Local Fisher metric</h3>
+
+    <p>All smooth \(f\)-divergences share the Fisher metric locally.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For a regular model,
+\[
+D_f(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac{f''(1)}{2}g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The likelihood ratio between nearby distributions is \(1+s_i\mathrm{d}\theta^i+O(\|\mathrm{d}\theta\|^2)\). Taylor expand \(f\) at \(1\). The constant term vanishes and the linear term integrates to zero by normalization. The quadratic term gives \(f''(1)\mathbb E(s_is_j)\mathrm{d}\theta^i\mathrm{d}\theta^j/2\).</p>
+    </div>
+
+    <h3>Why KL is still special</h3>
+
+    <p>KL is not the only monotone divergence, but it has special additive and variational properties.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The chain rule, variational formulas, exponential-family projections, and likelihood asymptotics make KL especially central even though Fisher local geometry is shared by many divergences.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/forward-reverse-kl-projections/" next_label="下一页" next_url="/notes/information-geometry/bregman-divergences/" %}

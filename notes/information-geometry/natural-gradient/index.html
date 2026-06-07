@@ -9,10 +9,14 @@ breadcrumb_child_label_zh: "29. 自然梯度"
     <h2>29. Natural gradient</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/mixture-families-mixture-geometry/" next_label="Next page" next_url="/notes/information-geometry/chernoff-information-geodesic-testing/" %}
 
-    <p>The natural gradient is the gradient defined by the Fisher metric. It corrects ordinary coordinate gradients by the local statistical geometry of the model.</p>
+    <p>The natural gradient is the Riemannian gradient under the Fisher metric. It turns an ordinary differential into an intrinsic vector field, correcting for parameter scale and statistical curvature.</p>
+
     <h3>Riemannian gradient</h3>
+
+    <p>The gradient depends on the metric used to identify covectors and vectors.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For an objective \(L(\theta)\), the natural gradient \(\widetilde\nabla L\) is the vector field satisfying
+        <p><span class="statement-title">Definition.</span> For a smooth objective \(L\), the natural gradient \(\widetilde\nabla L\) is defined by
 \[
 g_\theta(\widetilde\nabla L,v)=\mathrm{d}L_\theta(v)
 \]
@@ -22,19 +26,48 @@ for all tangent vectors \(v\). In coordinates,
 \]</p>
     </div>
 
-    <h3>Steepest descent interpretation</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The natural gradient is the steepest ascent direction when step size is measured by infinitesimal Fisher distance rather than Euclidean parameter distance.</p>
+        <p><span class="statement-title">Proposition.</span> The natural gradient transforms as a vector field under reparametrization.</p>
     </div>
 
-    <h3>Proof by constrained linearization</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Maximize the first-order gain \(\partial_iL\,v^i\) subject to \(g_{ij}v^iv^j\le\varepsilon^2\). The Lagrange multiplier equation gives \(v\propto g^{-1}\nabla L\).</p>
+        <p><span class="statement-title">Proof.</span> The differential \(\partial_jL\) is a covector and \(g^{ij}\) is the inverse metric tensor. Contracting them raises the index, so the result obeys the contravariant vector transformation law.</p>
     </div>
 
-    <h3>Relation to mirror descent</h3>
+    <h3>Steepest ascent</h3>
+
+    <p>The natural gradient is steepest when step length is measured by Fisher distance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Among directions \(v\) satisfying \(g_\theta(v,v)\le\varepsilon^2\), the first-order gain \(\mathrm{d}L_\theta(v)\) is maximized by \(v\) proportional to \(\widetilde\nabla L\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> By Cauchy-Schwarz in the Fisher inner product,
+\[
+\mathrm{d}L(v)=g(\widetilde\nabla L,v)\le \|\widetilde\nabla L\|_g\|v\|_g.
+\]
+Equality holds when \(v\) is a positive multiple of \(\widetilde\nabla L\).</p>
+    </div>
+
+    <h3>KL trust region</h3>
+
+    <p>Natural gradient is the infinitesimal solution of a KL-constrained optimization problem.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For small steps, maximizing \(L(\theta+\Delta)\) subject to \(D_{\mathrm{KL}}(p_\theta\|p_{\theta+\Delta})\le\varepsilon\) gives \(\Delta\propto g^{-1}\nabla L\) to first order.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use the expansions \(L(\theta+\Delta)=L(\theta)+\partial_iL\Delta^i+o(\|\Delta\|)\) and \(D_{\mathrm{KL}}=\frac12g_{ij}\Delta^i\Delta^j+o(\|\Delta\|^2)\). The Lagrange multiplier equation for the quadratic constraint gives \(\partial_iL=\lambda g_{ij}\Delta^j\).</p>
+    </div>
+
+    <h3>Relation with mirror descent</h3>
+
+    <p>In dually flat coordinates, natural-gradient flow and mirror descent are two descriptions of the same geometry.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> On dually flat manifolds, natural-gradient steps and mirror-descent steps are closely related through the potential function and its Legendre dual.</p>
+        <p><span class="statement-title">Remark.</span> When Fisher geometry is Hessian, the metric potential defines a mirror map. Natural-gradient steps in primal coordinates correspond to ordinary gradient-like steps in dual coordinates up to discretization choices.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/mixture-families-mixture-geometry/" next_label="Next page" next_url="/notes/information-geometry/chernoff-information-geodesic-testing/" %}
@@ -44,10 +77,14 @@ for all tangent vectors \(v\). In coordinates,
     <h2>29. Gradient naturel</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/mixture-families-mixture-geometry/" next_label="Page suivante" next_url="/notes/information-geometry/chernoff-information-geodesic-testing/" %}
 
-    <p>Cette page rassemble les définitions, théorèmes et mécanismes de preuve pour Gradient naturel.</p>
-    <h3>Définition</h3>
+    <p>The natural gradient is the Riemannian gradient under the Fisher metric. It turns an ordinary differential into an intrinsic vector field, correcting for parameter scale and statistical curvature.</p>
+
+    <h3>Riemannian gradient</h3>
+
+    <p>The gradient depends on the metric used to identify covectors and vectors.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. For an objective \(L(\theta)\), the natural gradient \(\widetilde\nabla L\) is the vector field satisfying
+        <p><span class="statement-title">Définition.</span> For a smooth objective \(L\), the natural gradient \(\widetilde\nabla L\) is defined by
 \[
 g_\theta(\widetilde\nabla L,v)=\mathrm{d}L_\theta(v)
 \]
@@ -57,19 +94,48 @@ for all tangent vectors \(v\). In coordinates,
 \]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. The natural gradient is the steepest ascent direction when step size is measured by infinitesimal Fisher distance rather than Euclidean parameter distance.</p>
+        <p><span class="statement-title">Proposition.</span> The natural gradient transforms as a vector field under reparametrization.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. Maximize the first-order gain \(\partial_iL\,v^i\) subject to \(g_{ij}v^iv^j\le\varepsilon^2\). The Lagrange multiplier equation gives \(v\propto g^{-1}\nabla L\).</p>
+        <p><span class="statement-title">Preuve.</span> The differential \(\partial_jL\) is a covector and \(g^{ij}\) is the inverse metric tensor. Contracting them raises the index, so the result obeys the contravariant vector transformation law.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Steepest ascent</h3>
+
+    <p>The natural gradient is steepest when step length is measured by Fisher distance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Among directions \(v\) satisfying \(g_\theta(v,v)\le\varepsilon^2\), the first-order gain \(\mathrm{d}L_\theta(v)\) is maximized by \(v\) proportional to \(\widetilde\nabla L\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> By Cauchy-Schwarz in the Fisher inner product,
+\[
+\mathrm{d}L(v)=g(\widetilde\nabla L,v)\le \|\widetilde\nabla L\|_g\|v\|_g.
+\]
+Equality holds when \(v\) is a positive multiple of \(\widetilde\nabla L\).</p>
+    </div>
+
+    <h3>KL trust region</h3>
+
+    <p>Natural gradient is the infinitesimal solution of a KL-constrained optimization problem.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For small steps, maximizing \(L(\theta+\Delta)\) subject to \(D_{\mathrm{KL}}(p_\theta\|p_{\theta+\Delta})\le\varepsilon\) gives \(\Delta\propto g^{-1}\nabla L\) to first order.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use the expansions \(L(\theta+\Delta)=L(\theta)+\partial_iL\Delta^i+o(\|\Delta\|)\) and \(D_{\mathrm{KL}}=\frac12g_{ij}\Delta^i\Delta^j+o(\|\Delta\|^2)\). The Lagrange multiplier equation for the quadratic constraint gives \(\partial_iL=\lambda g_{ij}\Delta^j\).</p>
+    </div>
+
+    <h3>Relation with mirror descent</h3>
+
+    <p>In dually flat coordinates, natural-gradient flow and mirror descent are two descriptions of the same geometry.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Énoncé. On dually flat manifolds, natural-gradient steps and mirror-descent steps are closely related through the potential function and its Legendre dual.</p>
+        <p><span class="statement-title">Remarque.</span> When Fisher geometry is Hessian, the metric potential defines a mirror map. Natural-gradient steps in primal coordinates correspond to ordinary gradient-like steps in dual coordinates up to discretization choices.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/mixture-families-mixture-geometry/" next_label="Page suivante" next_url="/notes/information-geometry/chernoff-information-geodesic-testing/" %}
@@ -79,10 +145,14 @@ for all tangent vectors \(v\). In coordinates,
     <h2>29. 自然梯度</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/mixture-families-mixture-geometry/" next_label="下一页" next_url="/notes/information-geometry/chernoff-information-geodesic-testing/" %}
 
-    <p>本页整理自然梯度的主要定义、定理与证明机制。</p>
-    <h3>定义</h3>
+    <p>The natural gradient is the Riemannian gradient under the Fisher metric. It turns an ordinary differential into an intrinsic vector field, correcting for parameter scale and statistical curvature.</p>
+
+    <h3>Riemannian gradient</h3>
+
+    <p>The gradient depends on the metric used to identify covectors and vectors.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. For an objective \(L(\theta)\), the natural gradient \(\widetilde\nabla L\) is the vector field satisfying
+        <p><span class="statement-title">定义.</span> For a smooth objective \(L\), the natural gradient \(\widetilde\nabla L\) is defined by
 \[
 g_\theta(\widetilde\nabla L,v)=\mathrm{d}L_\theta(v)
 \]
@@ -92,19 +162,48 @@ for all tangent vectors \(v\). In coordinates,
 \]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 表述. The natural gradient is the steepest ascent direction when step size is measured by infinitesimal 费雪 distance rather than 欧几里得 parameter distance.</p>
+        <p><span class="statement-title">命题.</span> The natural gradient transforms as a vector field under reparametrization.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. Maximize the first-order gain \(\partial_iL\,v^i\) subject to \(g_{ij}v^iv^j\le\varepsilon^2\). The 拉格朗日乘子 equation gives \(v\propto g^{-1}\nabla L\).</p>
+        <p><span class="statement-title">证明.</span> The differential \(\partial_jL\) is a covector and \(g^{ij}\) is the inverse metric tensor. Contracting them raises the index, so the result obeys the contravariant vector transformation law.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Steepest ascent</h3>
+
+    <p>The natural gradient is steepest when step length is measured by Fisher distance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Among directions \(v\) satisfying \(g_\theta(v,v)\le\varepsilon^2\), the first-order gain \(\mathrm{d}L_\theta(v)\) is maximized by \(v\) proportional to \(\widetilde\nabla L\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> By Cauchy-Schwarz in the Fisher inner product,
+\[
+\mathrm{d}L(v)=g(\widetilde\nabla L,v)\le \|\widetilde\nabla L\|_g\|v\|_g.
+\]
+Equality holds when \(v\) is a positive multiple of \(\widetilde\nabla L\).</p>
+    </div>
+
+    <h3>KL trust region</h3>
+
+    <p>Natural gradient is the infinitesimal solution of a KL-constrained optimization problem.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For small steps, maximizing \(L(\theta+\Delta)\) subject to \(D_{\mathrm{KL}}(p_\theta\|p_{\theta+\Delta})\le\varepsilon\) gives \(\Delta\propto g^{-1}\nabla L\) to first order.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use the expansions \(L(\theta+\Delta)=L(\theta)+\partial_iL\Delta^i+o(\|\Delta\|)\) and \(D_{\mathrm{KL}}=\frac12g_{ij}\Delta^i\Delta^j+o(\|\Delta\|^2)\). The Lagrange multiplier equation for the quadratic constraint gives \(\partial_iL=\lambda g_{ij}\Delta^j\).</p>
+    </div>
+
+    <h3>Relation with mirror descent</h3>
+
+    <p>In dually flat coordinates, natural-gradient flow and mirror descent are two descriptions of the same geometry.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 表述. On dually flat 流形, natural-gradient steps and mirror-descent steps are closely related through the potential function and its 勒让德 dual.</p>
+        <p><span class="statement-title">说明.</span> When Fisher geometry is Hessian, the metric potential defines a mirror map. Natural-gradient steps in primal coordinates correspond to ordinary gradient-like steps in dual coordinates up to discretization choices.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/mixture-families-mixture-geometry/" next_label="下一页" next_url="/notes/information-geometry/chernoff-information-geodesic-testing/" %}

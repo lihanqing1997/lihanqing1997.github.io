@@ -9,32 +9,69 @@ breadcrumb_child_label_zh: "7. 马尔可夫态射与单调性"
     <h2>7. Markov morphisms and monotonicity</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/reparametrization-invariance/" next_label="Next page" next_url="/notes/information-geometry/cencov-theorem/" %}
 
-    <p>A stochastic map sends distributions to distributions. Information-geometric structures are especially meaningful when they contract under such coarse-graining maps.</p>
-    <h3>Markov morphism</h3>
+    <p>Markov morphisms formalize stochastic transformations of observations. Monotonicity says that processing data cannot increase distinguishability between distributions.</p>
+
+    <h3>Markov kernels as maps</h3>
+
+    <p>A Markov kernel maps probability laws on one space to probability laws on another.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For finite alphabets, a Markov morphism is a stochastic matrix \(K(y\mid x)\) acting on probability laws by
+        <p><span class="statement-title">Definition.</span> Given a Markov kernel \(K(\mathrm{d}y\mid x)\), the pushforward of \(P\) is
 \[
-(Kp)(y)=\sum_xK(y\mid x)p(x).
+(KP)(B)=\int K(B\mid x)P(\mathrm{d}x).
 \]
-It represents randomized observation, coarse-graining, or postprocessing.</p>
+This includes deterministic statistics as the special case \(K(B\mid x)=\mathbf 1\{T(x)\in B\}\).</p>
     </div>
 
-    <h3>Monotone metric</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Riemannian metric on probability models is monotone if every Markov morphism is length-contracting on tangent vectors:
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Markov morphisms are the categorical maps of statistical experiments: they represent randomization, coarse-graining, and observation channels.</p>
+    </div>
+
+    <h3>Data processing for KL</h3>
+
+    <p>KL divergence decreases under Markov kernels.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For probability laws \(P,Q\) and a Markov kernel \(K\),
 \[
-g_{Kp}(Ku,Ku)\le g_p(u,u).
+D_{\mathrm{KL}}(KP\|KQ)\le D_{\mathrm{KL}}(P\|Q).
 \]</p>
     </div>
 
-    <h3>Fisher monotonicity</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The Fisher metric is monotone under Markov morphisms. In statistical language, observing a randomized function of the data cannot increase infinitesimal distinguishability.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> In the dominated finite case, write the likelihood ratio after applying \(K\) as a conditional expectation of the original likelihood ratio under the joint law. Jensen's inequality for \(u\log u\) gives the inequality. The general case follows by standard approximation and disintegration.</p>
     </div>
 
-    <h3>Proof idea by conditional expectation</h3>
+    <h3>Monotone metrics</h3>
+
+    <p>A metric is information monotone if stochastic maps cannot increase squared lengths of tangent vectors.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A Riemannian metric \(g\) on probability models is monotone if for every Markov kernel \(K\),
+\[
+g_{KP}(Ku,Ku)\le g_P(u,u)
+\]
+for tangent vectors \(u\) that can be pushed forward by \(K\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The Fisher metric is monotone under Markov kernels.</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The pushed-forward score is the conditional expectation of the original score given the coarser observation. The \(L^2\) norm of a conditional expectation is bounded by the original \(L^2\) norm, giving contraction of Fisher length.</p>
+        <p><span class="statement-title">Proof.</span> Represent a tangent vector by a score \(s\). After applying the channel, the pushed-forward score is the conditional expectation \(\mathbb E(s\mid Y)\). Therefore
+\[
+\mathbb E\{\mathbb E(s\mid Y)^2\}\le \mathbb E(s^2)
+\]
+by Jensen or conditional-variance decomposition.</p>
+    </div>
+
+    <h3>Sufficiency and equality</h3>
+
+    <p>Equality in monotonicity is tied to preservation of the relevant likelihood ratios.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> For sufficient statistics, no information is lost and Fisher lengths along the model are preserved. This is the geometric form of the factorization principle.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/reparametrization-invariance/" next_label="Next page" next_url="/notes/information-geometry/cencov-theorem/" %}
@@ -44,32 +81,69 @@ g_{Kp}(Ku,Ku)\le g_p(u,u).
     <h2>7. Morphismes de Markov et monotonie</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/reparametrization-invariance/" next_label="Page suivante" next_url="/notes/information-geometry/cencov-theorem/" %}
 
-    <p>Cette page rassemble les définitions, théorèmes et mécanismes de preuve pour Morphismes de Markov et monotonie.</p>
-    <h3>Définition</h3>
+    <p>Markov morphisms formalize stochastic transformations of observations. Monotonicity says that processing data cannot increase distinguishability between distributions.</p>
+
+    <h3>Markov kernels as maps</h3>
+
+    <p>A Markov kernel maps probability laws on one space to probability laws on another.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. For finite alphabets, a Markov morphism is a stochastic matrix \(K(y\mid x)\) acting on probability laws by
+        <p><span class="statement-title">Définition.</span> Given a Markov kernel \(K(\mathrm{d}y\mid x)\), the pushforward of \(P\) is
 \[
-(Kp)(y)=\sum_xK(y\mid x)p(x).
+(KP)(B)=\int K(B\mid x)P(\mathrm{d}x).
 \]
-It represents randomized observation, coarse-graining, or postprocessing.</p>
+This includes deterministic statistics as the special case \(K(B\mid x)=\mathbf 1\{T(x)\in B\}\).</p>
     </div>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. A Riemannian metric on probability models is monotone if every Markov morphism is length-contracting on tangent vectors:
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Markov morphisms are the categorical maps of statistical experiments: they represent randomization, coarse-graining, and observation channels.</p>
+    </div>
+
+    <h3>Data processing for KL</h3>
+
+    <p>KL divergence decreases under Markov kernels.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For probability laws \(P,Q\) and a Markov kernel \(K\),
 \[
-g_{Kp}(Ku,Ku)\le g_p(u,u).
+D_{\mathrm{KL}}(KP\|KQ)\le D_{\mathrm{KL}}(P\|Q).
 \]</p>
     </div>
 
-    <h3>Théorème</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Énoncé. The Fisher metric is monotone under Markov morphisms. In statistical language, observing a randomized function of the data cannot increase infinitesimal distinguishability.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> In the dominated finite case, write the likelihood ratio after applying \(K\) as a conditional expectation of the original likelihood ratio under the joint law. Jensen's inequality for \(u\log u\) gives the inequality. The general case follows by standard approximation and disintegration.</p>
     </div>
 
-    <h3>Preuve</h3>
+    <h3>Monotone metrics</h3>
+
+    <p>A metric is information monotone if stochastic maps cannot increase squared lengths of tangent vectors.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A Riemannian metric \(g\) on probability models is monotone if for every Markov kernel \(K\),
+\[
+g_{KP}(Ku,Ku)\le g_P(u,u)
+\]
+for tangent vectors \(u\) that can be pushed forward by \(K\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The Fisher metric is monotone under Markov kernels.</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. The pushed-forward score is the conditional expectation of the original score given the coarser observation. The \(L^2\) norm of a conditional expectation is bounded by the original \(L^2\) norm, giving contraction of Fisher length.</p>
+        <p><span class="statement-title">Preuve.</span> Represent a tangent vector by a score \(s\). After applying the channel, the pushed-forward score is the conditional expectation \(\mathbb E(s\mid Y)\). Therefore
+\[
+\mathbb E\{\mathbb E(s\mid Y)^2\}\le \mathbb E(s^2)
+\]
+by Jensen or conditional-variance decomposition.</p>
+    </div>
+
+    <h3>Sufficiency and equality</h3>
+
+    <p>Equality in monotonicity is tied to preservation of the relevant likelihood ratios.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> For sufficient statistics, no information is lost and Fisher lengths along the model are preserved. This is the geometric form of the factorization principle.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/reparametrization-invariance/" next_label="Page suivante" next_url="/notes/information-geometry/cencov-theorem/" %}
@@ -79,32 +153,69 @@ g_{Kp}(Ku,Ku)\le g_p(u,u).
     <h2>7. 马尔可夫态射与单调性</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/reparametrization-invariance/" next_label="下一页" next_url="/notes/information-geometry/cencov-theorem/" %}
 
-    <p>本页整理马尔可夫态射与单调性的主要定义、定理与证明机制。</p>
-    <h3>定义</h3>
+    <p>Markov morphisms formalize stochastic transformations of observations. Monotonicity says that processing data cannot increase distinguishability between distributions.</p>
+
+    <h3>Markov kernels as maps</h3>
+
+    <p>A Markov kernel maps probability laws on one space to probability laws on another.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. For finite alphabets, a 马尔可夫 morphism is a 随机 matrix \(K(y\mid x)\) acting on probability laws by
+        <p><span class="statement-title">定义.</span> Given a Markov kernel \(K(\mathrm{d}y\mid x)\), the pushforward of \(P\) is
 \[
-(Kp)(y)=\sum_xK(y\mid x)p(x).
+(KP)(B)=\int K(B\mid x)P(\mathrm{d}x).
 \]
-It represents 随机化 observation, coarse-graining, or postprocessing.</p>
+This includes deterministic statistics as the special case \(K(B\mid x)=\mathbf 1\{T(x)\in B\}\).</p>
     </div>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. A 黎曼度量 on probability models is monotone if every 马尔可夫 morphism is length-contracting on tangent vectors:
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Markov morphisms are the categorical maps of statistical experiments: they represent randomization, coarse-graining, and observation channels.</p>
+    </div>
+
+    <h3>Data processing for KL</h3>
+
+    <p>KL divergence decreases under Markov kernels.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For probability laws \(P,Q\) and a Markov kernel \(K\),
 \[
-g_{Kp}(Ku,Ku)\le g_p(u,u).
+D_{\mathrm{KL}}(KP\|KQ)\le D_{\mathrm{KL}}(P\|Q).
 \]</p>
     </div>
 
-    <h3>定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 表述. The 费雪度量 is monotone under 马尔可夫 morphisms. In statistical language, observing a 随机化 function of the data cannot increase infinitesimal distinguishability.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> In the dominated finite case, write the likelihood ratio after applying \(K\) as a conditional expectation of the original likelihood ratio under the joint law. Jensen's inequality for \(u\log u\) gives the inequality. The general case follows by standard approximation and disintegration.</p>
     </div>
 
-    <h3>证明</h3>
+    <h3>Monotone metrics</h3>
+
+    <p>A metric is information monotone if stochastic maps cannot increase squared lengths of tangent vectors.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A Riemannian metric \(g\) on probability models is monotone if for every Markov kernel \(K\),
+\[
+g_{KP}(Ku,Ku)\le g_P(u,u)
+\]
+for tangent vectors \(u\) that can be pushed forward by \(K\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The Fisher metric is monotone under Markov kernels.</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. The pushed-forward 分数 is the conditional expectation of the original 分数 given the coarser observation. The \(L^2\) norm of a conditional expectation is 有界 by the original \(L^2\) norm, giving contraction of 费雪 length.</p>
+        <p><span class="statement-title">证明.</span> Represent a tangent vector by a score \(s\). After applying the channel, the pushed-forward score is the conditional expectation \(\mathbb E(s\mid Y)\). Therefore
+\[
+\mathbb E\{\mathbb E(s\mid Y)^2\}\le \mathbb E(s^2)
+\]
+by Jensen or conditional-variance decomposition.</p>
+    </div>
+
+    <h3>Sufficiency and equality</h3>
+
+    <p>Equality in monotonicity is tied to preservation of the relevant likelihood ratios.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> For sufficient statistics, no information is lost and Fisher lengths along the model are preserved. This is the geometric form of the factorization principle.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/reparametrization-invariance/" next_label="下一页" next_url="/notes/information-geometry/cencov-theorem/" %}

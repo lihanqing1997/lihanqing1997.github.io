@@ -9,29 +9,69 @@ breadcrumb_child_label_zh: "1. 作为流形的统计模型"
     <h2>1. Statistical models as manifolds</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" next_label="Next page" next_url="/notes/information-geometry/tangent-spaces-score-representation/" %}
 
-    <p>Information geometry begins by treating a regular parametric family of probability laws as a smooth manifold whose points are distributions rather than only parameter values.</p>
-    <h3>Parametric statistical model</h3>
+    <p>Information geometry begins by treating a statistical model as a smooth space of probability laws. Parameters are coordinates; the intrinsic object is the family of distributions and the tensors that survive reparametrization.</p>
+
+    <h3>Regular statistical models</h3>
+
+    <p>A statistical manifold is a model with enough smoothness to differentiate probability laws and compare nearby distributions.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A regular parametric statistical model is a family
+        <p><span class="statement-title">Definition.</span> Let \((\mathcal X,\mathcal A,\mu)\) be a measured space. A \(d\)-dimensional regular statistical model is a family
 \[
 \mathcal P=\{p_\theta:\theta\in\Theta\subset\mathbb R^d\}
 \]
-of positive densities with respect to a common measure, such that \(\Theta\) is open and the map \(\theta\mapsto p_\theta\) is smooth enough to differentiate under the integral sign.</p>
+of positive densities such that \(\Theta\) is open, \(\theta\mapsto p_\theta(x)\) is smooth, and differentiation under \(\int p_\theta\,\mathrm{d}\mu=1\) is justified.</p>
     </div>
 
-    <h3>Identifiability and charts</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If the parametrization is identifiable, then \(\theta\mapsto p_\theta\) is a coordinate chart on the statistical model. A reparametrization \(\phi=\phi(\theta)\) changes coordinates but not the underlying point \(p\in\mathcal P\).</p>
-    </div>
-
-    <h3>Tangent vectors as model perturbations</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> At \(p_\theta\), the coordinate tangent vector \(\partial_i\) is represented by the infinitesimal perturbation \(\partial_i p_\theta\), or equivalently by the score component \(\partial_i\ell_\theta\), where \(\ell_\theta(x)=\log p_\theta(x)\).</p>
-    </div>
-
-    <h3>Geometric viewpoint</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The parameter space is only a chart. The geometry belongs to the family of distributions, and good constructions should transform tensorially under changes of coordinates.</p>
+        <p><span class="statement-title">Remark.</span> The positivity assumption avoids boundary singularities and lets every model point have the same support. Many important models with boundaries need separate treatment.</p>
+    </div>
+
+    <h3>Charts and identifiability</h3>
+
+    <p>The parameter is a chart only when different parameter values give different distributions.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\theta\mapsto p_\theta\) is injective and has full-rank differential, then \(\Theta\) is a coordinate chart for the image \(\mathcal P\). If \(\phi=\phi(\theta)\) is a smooth reparametrization, the same distribution is described by \(p_{\theta(\phi)}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Injectivity identifies each point of \(\mathcal P\) with one parameter value. Full rank gives a smooth immersed image, and a smooth inverse on the image gives a chart. A reparametrization composes the chart with a diffeomorphism, so it changes coordinates without changing the point \(p\in\mathcal P\).</p>
+    </div>
+
+    <h3>Curves and tangent vectors</h3>
+
+    <p>Tangent vectors are infinitesimal changes of distributions, not merely arrows in parameter space.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A smooth curve \(t\mapsto p_{\theta(t)}\) through \(p_\theta\) has tangent represented by
+\[
+\dot p_0=\dot\theta^i\partial_i p_\theta,
+\qquad
+\dot\ell_0=\dot\theta^i\partial_i\log p_\theta.
+\]
+The second representation is the score representation of the tangent vector.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every tangent score \(u=\dot\theta^i\partial_i\ell_\theta\) satisfies \(\mathbb E_\theta u=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Differentiate the normalization identity along the curve:
+\[
+0=\frac{\mathrm{d}}{\mathrm{d}t}\int p_{\theta(t)}\,\mathrm{d}\mu\bigg|_{t=0}
+=\int \dot p_0\,\mathrm{d}\mu
+=\int \dot\ell_0\,p_\theta\,\mathrm{d}\mu.
+\]</p>
+    </div>
+
+    <h3>Intrinsic viewpoint</h3>
+
+    <p>A construction is geometric only if it transforms tensorially under changes of chart.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> This principle is why information geometry emphasizes the Fisher metric, affine connections, duality, and divergences rather than formulas tied to one convenient parametrization.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" next_label="Next page" next_url="/notes/information-geometry/tangent-spaces-score-representation/" %}
@@ -41,29 +81,69 @@ of positive densities with respect to a common measure, such that \(\Theta\) is 
     <h2>1. Modèles statistiques comme variétés</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" next_label="Page suivante" next_url="/notes/information-geometry/tangent-spaces-score-representation/" %}
 
-    <p>Cette page rassemble les définitions, théorèmes et mécanismes de preuve pour Modèles statistiques comme variétés.</p>
-    <h3>Définition</h3>
+    <p>Information geometry begins by treating a statistical model as a smooth space of probability laws. Parameters are coordinates; the intrinsic object is the family of distributions and the tensors that survive reparametrization.</p>
+
+    <h3>Regular statistical models</h3>
+
+    <p>A statistical manifold is a model with enough smoothness to differentiate probability laws and compare nearby distributions.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. A regular parametric statistical model is a family
+        <p><span class="statement-title">Définition.</span> Let \((\mathcal X,\mathcal A,\mu)\) be a measured space. A \(d\)-dimensional regular statistical model is a family
 \[
 \mathcal P=\{p_\theta:\theta\in\Theta\subset\mathbb R^d\}
 \]
-of positive densities with respect to a common measure, such that \(\Theta\) is open and the map \(\theta\mapsto p_\theta\) is smooth enough to differentiate under the integral sign.</p>
+of positive densities such that \(\Theta\) is open, \(\theta\mapsto p_\theta(x)\) is smooth, and differentiation under \(\int p_\theta\,\mathrm{d}\mu=1\) is justified.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Énoncé. If the parametrization is identifiable, then \(\theta\mapsto p_\theta\) is a coordinate chart on the statistical model. A reparametrization \(\phi=\phi(\theta)\) changes coordinates but not the underlying point \(p\in\mathcal P\).</p>
-    </div>
-
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Énoncé. At \(p_\theta\), the coordinate tangent vector \(\partial_i\) is represented by the infinitesimal perturbation \(\partial_i p_\theta\), or equivalently by the score component \(\partial_i\ell_\theta\), where \(\ell_\theta(x)=\log p_\theta(x)\).</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Énoncé. The parameter space is only a chart. The geometry belongs to the family of distributions, and good constructions should transform tensorially under changes of coordinates.</p>
+        <p><span class="statement-title">Remarque.</span> The positivity assumption avoids boundary singularities and lets every model point have the same support. Many important models with boundaries need separate treatment.</p>
+    </div>
+
+    <h3>Charts and identifiability</h3>
+
+    <p>The parameter is a chart only when different parameter values give different distributions.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\theta\mapsto p_\theta\) is injective and has full-rank differential, then \(\Theta\) is a coordinate chart for the image \(\mathcal P\). If \(\phi=\phi(\theta)\) is a smooth reparametrization, the same distribution is described by \(p_{\theta(\phi)}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Injectivity identifies each point of \(\mathcal P\) with one parameter value. Full rank gives a smooth immersed image, and a smooth inverse on the image gives a chart. A reparametrization composes the chart with a diffeomorphism, so it changes coordinates without changing the point \(p\in\mathcal P\).</p>
+    </div>
+
+    <h3>Curves and tangent vectors</h3>
+
+    <p>Tangent vectors are infinitesimal changes of distributions, not merely arrows in parameter space.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A smooth curve \(t\mapsto p_{\theta(t)}\) through \(p_\theta\) has tangent represented by
+\[
+\dot p_0=\dot\theta^i\partial_i p_\theta,
+\qquad
+\dot\ell_0=\dot\theta^i\partial_i\log p_\theta.
+\]
+The second representation is the score representation of the tangent vector.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every tangent score \(u=\dot\theta^i\partial_i\ell_\theta\) satisfies \(\mathbb E_\theta u=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Differentiate the normalization identity along the curve:
+\[
+0=\frac{\mathrm{d}}{\mathrm{d}t}\int p_{\theta(t)}\,\mathrm{d}\mu\bigg|_{t=0}
+=\int \dot p_0\,\mathrm{d}\mu
+=\int \dot\ell_0\,p_\theta\,\mathrm{d}\mu.
+\]</p>
+    </div>
+
+    <h3>Intrinsic viewpoint</h3>
+
+    <p>A construction is geometric only if it transforms tensorially under changes of chart.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> This principle is why information geometry emphasizes the Fisher metric, affine connections, duality, and divergences rather than formulas tied to one convenient parametrization.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" next_label="Page suivante" next_url="/notes/information-geometry/tangent-spaces-score-representation/" %}
@@ -73,29 +153,69 @@ of positive densities with respect to a common measure, such that \(\Theta\) is 
     <h2>1. 作为流形的统计模型</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" next_label="下一页" next_url="/notes/information-geometry/tangent-spaces-score-representation/" %}
 
-    <p>本页整理作为流形的统计模型的主要定义、定理与证明机制。</p>
-    <h3>定义</h3>
+    <p>Information geometry begins by treating a statistical model as a smooth space of probability laws. Parameters are coordinates; the intrinsic object is the family of distributions and the tensors that survive reparametrization.</p>
+
+    <h3>Regular statistical models</h3>
+
+    <p>A statistical manifold is a model with enough smoothness to differentiate probability laws and compare nearby distributions.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. A regular parametric statistical model is a family
+        <p><span class="statement-title">定义.</span> Let \((\mathcal X,\mathcal A,\mu)\) be a measured space. A \(d\)-dimensional regular statistical model is a family
 \[
 \mathcal P=\{p_\theta:\theta\in\Theta\subset\mathbb R^d\}
 \]
-of positive densities with respect to a common 测度, such that \(\Theta\) is open and the map \(\theta\mapsto p_\theta\) is smooth enough to differentiate under the integral sign.</p>
+of positive densities such that \(\Theta\) is open, \(\theta\mapsto p_\theta(x)\) is smooth, and differentiation under \(\int p_\theta\,\mathrm{d}\mu=1\) is justified.</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 表述. If the parametrization is identifiable, then \(\theta\mapsto p_\theta\) is a coordinate chart on the statistical model. A reparametrization \(\phi=\phi(\theta)\) changes coordinates but not the underlying point \(p\in\mathcal P\).</p>
-    </div>
-
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 表述. At \(p_\theta\), the coordinate tangent vector \(\partial_i\) is represented by the infinitesimal perturbation \(\partial_i p_\theta\), or equivalently by the 分数分量 \(\partial_i\ell_\theta\), where \(\ell_\theta(x)=\log p_\theta(x)\).</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 表述. The parameter space is only a chart. The geometry belongs to the family of distributions, and good constructions should transform tensorially under changes of coordinates.</p>
+        <p><span class="statement-title">说明.</span> The positivity assumption avoids boundary singularities and lets every model point have the same support. Many important models with boundaries need separate treatment.</p>
+    </div>
+
+    <h3>Charts and identifiability</h3>
+
+    <p>The parameter is a chart only when different parameter values give different distributions.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(\theta\mapsto p_\theta\) is injective and has full-rank differential, then \(\Theta\) is a coordinate chart for the image \(\mathcal P\). If \(\phi=\phi(\theta)\) is a smooth reparametrization, the same distribution is described by \(p_{\theta(\phi)}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Injectivity identifies each point of \(\mathcal P\) with one parameter value. Full rank gives a smooth immersed image, and a smooth inverse on the image gives a chart. A reparametrization composes the chart with a diffeomorphism, so it changes coordinates without changing the point \(p\in\mathcal P\).</p>
+    </div>
+
+    <h3>Curves and tangent vectors</h3>
+
+    <p>Tangent vectors are infinitesimal changes of distributions, not merely arrows in parameter space.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A smooth curve \(t\mapsto p_{\theta(t)}\) through \(p_\theta\) has tangent represented by
+\[
+\dot p_0=\dot\theta^i\partial_i p_\theta,
+\qquad
+\dot\ell_0=\dot\theta^i\partial_i\log p_\theta.
+\]
+The second representation is the score representation of the tangent vector.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Every tangent score \(u=\dot\theta^i\partial_i\ell_\theta\) satisfies \(\mathbb E_\theta u=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Differentiate the normalization identity along the curve:
+\[
+0=\frac{\mathrm{d}}{\mathrm{d}t}\int p_{\theta(t)}\,\mathrm{d}\mu\bigg|_{t=0}
+=\int \dot p_0\,\mathrm{d}\mu
+=\int \dot\ell_0\,p_\theta\,\mathrm{d}\mu.
+\]</p>
+    </div>
+
+    <h3>Intrinsic viewpoint</h3>
+
+    <p>A construction is geometric only if it transforms tensorially under changes of chart.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> This principle is why information geometry emphasizes the Fisher metric, affine connections, duality, and divergences rather than formulas tied to one convenient parametrization.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" next_label="下一页" next_url="/notes/information-geometry/tangent-spaces-score-representation/" %}

@@ -9,29 +9,66 @@ breadcrumb_child_label_zh: "4. 费雪度量与局部可区分性"
     <h2>4. Fisher metric and local distinguishability</h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/fisher-information-metric/" next_label="Next page" next_url="/notes/information-geometry/fisher-rao-length-distance/" %}
 
-    <p>The Fisher metric is the second-order part of statistical distinguishability. Nearby distributions have KL divergence governed by the Fisher quadratic form.</p>
-    <h3>Local KL expansion</h3>
+    <p>The Fisher metric is the second-order part of several statistical divergences. It therefore quantifies local distinguishability of nearby distributions.</p>
+
+    <h3>Second-order KL expansion</h3>
+
+    <p>Nearby models are separated quadratically by Fisher information.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a regular model and small displacement \(h\),
+        <p><span class="statement-title">Theorem.</span> For a regular model,
 \[
-D(p_\theta\|p_{\theta+h})=\frac12 h^i h^j g_{ij}(\theta)+o(\|h\|^2).
-\]
-The same quadratic term appears for \(D(p_{\theta+h}\|p_\theta)\).</p>
+D_{\mathrm{KL}}(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac12 g_{ij}(\theta)\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]</p>
     </div>
 
-    <h3>Proof by Taylor expansion</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Expand \(\ell_{\theta+h}\) around \(\theta\). The first-order term has expectation zero because the score is centered. The second-order term is \(-\frac12 h^ih^j\mathbb E_\theta\partial_i\partial_j\ell_\theta\), which equals the Fisher quadratic form.</p>
+        <p><span class="statement-title">Proof.</span> Expand \(\ell_{\theta+\mathrm{d}\theta}\) around \(\theta\):
+\[
+\ell_{\theta+\mathrm{d}\theta}=\ell_\theta+s_i\mathrm{d}\theta^i+\frac12\partial_i\partial_j\ell_\theta\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]
+Taking \(\mathbb E_\theta(\ell_\theta-\ell_{\theta+\mathrm{d}\theta})\), the first-order term vanishes because \(\mathbb E_\theta s_i=0\). The expected Hessian identity gives the quadratic term.</p>
     </div>
 
-    <h3>Local alternatives</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> For \(n\) iid observations and \(h/\sqrt n\) local displacement, the accumulated local KL divergence is asymptotically \(\frac12 h^\top I_\theta h\). This is the geometric input behind LAN and local asymptotic minimax theory.</p>
+    <h3>Hellinger and chi-square geometry</h3>
+
+    <p>Different divergences share the same local metric up to scale.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The squared Hellinger distance satisfies
+\[
+H^2(p_\theta,p_{\theta+\mathrm{d}\theta})
+=\frac18 g_{ij}(\theta)\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2)
+\]
+under the convention \(H^2(p,q)=\frac12\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>Interpretation</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Differentiate \(\sqrt{p_\theta}\): \(\partial_i\sqrt p=\frac12s_i\sqrt p\). The squared \(L^2(\mu)\) norm of the first-order change is \(\frac14 g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j\). The extra factor \(1/2\) in the Hellinger convention gives \(1/8\).</p>
+    </div>
+
+    <h3>Cramer-Rao interpretation</h3>
+
+    <p>The same metric controls local estimation lower bounds.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For an unbiased estimator \(T\) of a scalar parameter \(\psi(\theta)\),
+\[
+\operatorname{Var}_\theta(T)\ge \partial_i\psi\,g^{ij}\,\partial_j\psi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Differentiate \(\mathbb E_\theta T=\psi(\theta)\) to obtain \(\partial_i\psi=\operatorname{Cov}_\theta(T,s_i)\). For any vector \(a\), \(a^i\partial_i\psi=\operatorname{Cov}(T,a^is_i)\). Cauchy-Schwarz gives \((a^i\partial_i\psi)^2\le\operatorname{Var}(T)a^ig_{ij}a^j\). Optimize over \(a\) to obtain the bound.</p>
+    </div>
+
+    <h3>Local experiments</h3>
+
+    <p>The Fisher metric is the quadratic geometry behind LAN and Gaussian local approximations.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The metric makes directions with high likelihood sensitivity longer. A small Euclidean parameter change may be statistically large if the score variance in that direction is large.</p>
+        <p><span class="statement-title">Remark.</span> For \(n\) i.i.d. observations, Fisher information scales by \(n\), so local alternatives of size \(n^{-1/2}\) have finite statistical separation. This is why Fisher geometry appears throughout asymptotic statistics.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/information-geometry/" prev_label="Last page" prev_url="/notes/information-geometry/fisher-information-metric/" next_label="Next page" next_url="/notes/information-geometry/fisher-rao-length-distance/" %}
@@ -41,29 +78,66 @@ The same quadratic term appears for \(D(p_{\theta+h}\|p_\theta)\).</p>
     <h2>4. Métrique de Fisher et distinguabilité locale</h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/fisher-information-metric/" next_label="Page suivante" next_url="/notes/information-geometry/fisher-rao-length-distance/" %}
 
-    <p>Cette page rassemble les définitions, théorèmes et mécanismes de preuve pour Métrique de Fisher et distinguabilité locale.</p>
-    <h3>Théorème</h3>
+    <p>The Fisher metric is the second-order part of several statistical divergences. It therefore quantifies local distinguishability of nearby distributions.</p>
+
+    <h3>Second-order KL expansion</h3>
+
+    <p>Nearby models are separated quadratically by Fisher information.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Énoncé. For a regular model and small displacement \(h\),
+        <p><span class="statement-title">Théorème.</span> For a regular model,
 \[
-D(p_\theta\|p_{\theta+h})=\frac12 h^i h^j g_{ij}(\theta)+o(\|h\|^2).
-\]
-The same quadratic term appears for \(D(p_{\theta+h}\|p_\theta)\).</p>
+D_{\mathrm{KL}}(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac12 g_{ij}(\theta)\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Argument. Expand \(\ell_{\theta+h}\) around \(\theta\). The first-order term has expectation zero because the score is centered. The second-order term is \(-\frac12 h^ih^j\mathbb E_\theta\partial_i\partial_j\ell_\theta\), which equals the Fisher quadratic form.</p>
+        <p><span class="statement-title">Preuve.</span> Expand \(\ell_{\theta+\mathrm{d}\theta}\) around \(\theta\):
+\[
+\ell_{\theta+\mathrm{d}\theta}=\ell_\theta+s_i\mathrm{d}\theta^i+\frac12\partial_i\partial_j\ell_\theta\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]
+Taking \(\mathbb E_\theta(\ell_\theta-\ell_{\theta+\mathrm{d}\theta})\), the first-order term vanishes because \(\mathbb E_\theta s_i=0\). The expected Hessian identity gives the quadratic term.</p>
     </div>
 
-    <h3>Corollaire</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> Énoncé. For \(n\) iid observations and \(h/\sqrt n\) local displacement, the accumulated local KL divergence is asymptotically \(\frac12 h^\top I_\theta h\). This is the geometric input behind LAN and local asymptotic minimax theory.</p>
+    <h3>Hellinger and chi-square geometry</h3>
+
+    <p>Different divergences share the same local metric up to scale.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The squared Hellinger distance satisfies
+\[
+H^2(p_\theta,p_{\theta+\mathrm{d}\theta})
+=\frac18 g_{ij}(\theta)\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2)
+\]
+under the convention \(H^2(p,q)=\frac12\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>Remarque</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Differentiate \(\sqrt{p_\theta}\): \(\partial_i\sqrt p=\frac12s_i\sqrt p\). The squared \(L^2(\mu)\) norm of the first-order change is \(\frac14 g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j\). The extra factor \(1/2\) in the Hellinger convention gives \(1/8\).</p>
+    </div>
+
+    <h3>Cramer-Rao interpretation</h3>
+
+    <p>The same metric controls local estimation lower bounds.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For an unbiased estimator \(T\) of a scalar parameter \(\psi(\theta)\),
+\[
+\operatorname{Var}_\theta(T)\ge \partial_i\psi\,g^{ij}\,\partial_j\psi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Differentiate \(\mathbb E_\theta T=\psi(\theta)\) to obtain \(\partial_i\psi=\operatorname{Cov}_\theta(T,s_i)\). For any vector \(a\), \(a^i\partial_i\psi=\operatorname{Cov}(T,a^is_i)\). Cauchy-Schwarz gives \((a^i\partial_i\psi)^2\le\operatorname{Var}(T)a^ig_{ij}a^j\). Optimize over \(a\) to obtain the bound.</p>
+    </div>
+
+    <h3>Local experiments</h3>
+
+    <p>The Fisher metric is the quadratic geometry behind LAN and Gaussian local approximations.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Énoncé. The metric makes directions with high likelihood sensitivity longer. A small Euclidean parameter change may be statistically large if the score variance in that direction is large.</p>
+        <p><span class="statement-title">Remarque.</span> For \(n\) i.i.d. observations, Fisher information scales by \(n\), so local alternatives of size \(n^{-1/2}\) have finite statistical separation. This is why Fisher geometry appears throughout asymptotic statistics.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/information-geometry/" prev_label="Page précédente" prev_url="/notes/information-geometry/fisher-information-metric/" next_label="Page suivante" next_url="/notes/information-geometry/fisher-rao-length-distance/" %}
@@ -73,29 +147,66 @@ The same quadratic term appears for \(D(p_{\theta+h}\|p_\theta)\).</p>
     <h2>4. 费雪度量与局部可区分性</h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/fisher-information-metric/" next_label="下一页" next_url="/notes/information-geometry/fisher-rao-length-distance/" %}
 
-    <p>本页整理费雪度量与局部可区分性的主要定义、定理与证明机制。</p>
-    <h3>定理</h3>
+    <p>The Fisher metric is the second-order part of several statistical divergences. It therefore quantifies local distinguishability of nearby distributions.</p>
+
+    <h3>Second-order KL expansion</h3>
+
+    <p>Nearby models are separated quadratically by Fisher information.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 表述. For a regular model and small displacement \(h\),
+        <p><span class="statement-title">定理.</span> For a regular model,
 \[
-D(p_\theta\|p_{\theta+h})=\frac12 h^i h^j g_{ij}(\theta)+o(\|h\|^2).
-\]
-The same quadratic term appears for \(D(p_{\theta+h}\|p_\theta)\).</p>
+D_{\mathrm{KL}}(p_\theta\|p_{\theta+\mathrm{d}\theta})
+=\frac12 g_{ij}(\theta)\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明思路. Expand \(\ell_{\theta+h}\) around \(\theta\). The first-order term has expectation zero because the 分数 is centered. The second-order term is \(-\frac12 h^ih^j\mathbb E_\theta\partial_i\partial_j\ell_\theta\), which equals the 费雪 quadratic form.</p>
+        <p><span class="statement-title">证明.</span> Expand \(\ell_{\theta+\mathrm{d}\theta}\) around \(\theta\):
+\[
+\ell_{\theta+\mathrm{d}\theta}=\ell_\theta+s_i\mathrm{d}\theta^i+\frac12\partial_i\partial_j\ell_\theta\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2).
+\]
+Taking \(\mathbb E_\theta(\ell_\theta-\ell_{\theta+\mathrm{d}\theta})\), the first-order term vanishes because \(\mathbb E_\theta s_i=0\). The expected Hessian identity gives the quadratic term.</p>
     </div>
 
-    <h3>推论</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> 表述. For \(n\) iid observations and \(h/\sqrt n\) local displacement, the accumulated local KL 散度 is asymptotically \(\frac12 h^\top I_\theta h\). This is the geometric input behind LAN and local asymptotic 极小极大 theory.</p>
+    <h3>Hellinger and chi-square geometry</h3>
+
+    <p>Different divergences share the same local metric up to scale.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The squared Hellinger distance satisfies
+\[
+H^2(p_\theta,p_{\theta+\mathrm{d}\theta})
+=\frac18 g_{ij}(\theta)\,\mathrm{d}\theta^i\mathrm{d}\theta^j+o(\|\mathrm{d}\theta\|^2)
+\]
+under the convention \(H^2(p,q)=\frac12\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>说明</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Differentiate \(\sqrt{p_\theta}\): \(\partial_i\sqrt p=\frac12s_i\sqrt p\). The squared \(L^2(\mu)\) norm of the first-order change is \(\frac14 g_{ij}\mathrm{d}\theta^i\mathrm{d}\theta^j\). The extra factor \(1/2\) in the Hellinger convention gives \(1/8\).</p>
+    </div>
+
+    <h3>Cramer-Rao interpretation</h3>
+
+    <p>The same metric controls local estimation lower bounds.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For an unbiased estimator \(T\) of a scalar parameter \(\psi(\theta)\),
+\[
+\operatorname{Var}_\theta(T)\ge \partial_i\psi\,g^{ij}\,\partial_j\psi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Differentiate \(\mathbb E_\theta T=\psi(\theta)\) to obtain \(\partial_i\psi=\operatorname{Cov}_\theta(T,s_i)\). For any vector \(a\), \(a^i\partial_i\psi=\operatorname{Cov}(T,a^is_i)\). Cauchy-Schwarz gives \((a^i\partial_i\psi)^2\le\operatorname{Var}(T)a^ig_{ij}a^j\). Optimize over \(a\) to obtain the bound.</p>
+    </div>
+
+    <h3>Local experiments</h3>
+
+    <p>The Fisher metric is the quadratic geometry behind LAN and Gaussian local approximations.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 表述. The 度量 makes directions with high 似然 sensitivity longer. A small 欧几里得 parameter change may be statistically large if the 分数 variance in that direction is large.</p>
+        <p><span class="statement-title">说明.</span> For \(n\) i.i.d. observations, Fisher information scales by \(n\), so local alternatives of size \(n^{-1/2}\) have finite statistical separation. This is why Fisher geometry appears throughout asymptotic statistics.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/information-geometry/" prev_label="上一页" prev_url="/notes/information-geometry/fisher-information-metric/" next_label="下一页" next_url="/notes/information-geometry/fisher-rao-length-distance/" %}
