@@ -9,26 +9,65 @@ breadcrumb_child_label_zh: "10. 替代损失与校准"
     <h2><a href="{{ '/notes/statistical-learning/surrogate-losses-and-calibration/' | relative_url }}">10. Surrogate losses and calibration</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/margins-in-classification/" next_label="Next page" next_url="/notes/statistical-learning/regularization/" %}
 
-    <p>Surrogate losses and calibration records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Surrogate losses replace discontinuous decision losses by convex or smooth objectives. Calibration is the condition that optimizing the surrogate also optimizes the target decision problem.</p>
 
-    <h3>Definition</h3>
+    <h3>Surrogate risk</h3>
+
+    <p>A surrogate is useful only if its risk remembers the original task.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Surrogate losses replace discontinuous zero-one loss by convex or smooth losses such as hinge, logistic, or exponential loss.</p>
+        <p><span class="statement-title">Definition.</span> For binary \(Y\in\{-1,1\}\), a margin surrogate has risk
+\[
+R_\phi(f)=\mathbb E\,\phi(Yf(X)).
+\]
+It is classification-calibrated if every sequence with \(R_\phi(f_n)\to\inf_f R_\phi(f)\) also has zero-one risk approaching the Bayes risk.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A surrogate loss is classification-calibrated if minimizing its conditional risk recovers the Bayes classifier for zero-one loss.</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Analyze the conditional risk as a function of the prediction score and class probability. Calibration follows when the sign of the optimal score matches the Bayes decision.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Surrogates make optimization tractable, but calibration is needed to justify their causal link to classification risk.</p>
+        <p><span class="statement-title">Remark.</span> Convexity helps computation; calibration is the statistical condition that prevents the convex problem from solving the wrong task.</p>
+    </div>
+
+    <h3>Conditional calibration</h3>
+
+    <p>Calibration can be checked pointwise through the conditional risk.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(\eta=P(Y=1\mid X=x)\). For a convex differentiable margin loss \(\phi\), classification calibration holds if \(\phi'(0)<0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The conditional surrogate risk is
+\[
+C_\eta(t)=\eta\phi(t)+(1-\eta)\phi(-t).
+\]
+At \(t=0\), \(C_\eta'(0)=(2\eta-1)\phi'(0)\). If \(\eta>1/2\), then \(C_\eta'(0)<0\), so a minimizer must prefer positive scores; if \(\eta<1/2\), the sign reverses. Thus the surrogate minimizer has the Bayes sign.</p>
+    </div>
+
+    <h3>Excess-risk transfer</h3>
+
+    <p>A calibrated surrogate gives a quantitative link between surrogate excess risk and classification excess risk.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For every classification-calibrated convex margin loss, there exists a nondecreasing function \(\psi\) with \(\psi(0)=0\) such that
+\[
+\psi(R(g_f)-R^*)\le R_\phi(f)-R_\phi^*.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Define the best conditional surrogate risk under the correct sign and under the wrong sign. The gap between these two conditional optima is positive away from \(\eta=1/2\) by calibration. Taking the convex lower envelope of the resulting conditional gap yields \(\psi\). Integrating the conditional inequality gives the displayed bound.</p>
+    </div>
+
+    <h3>Logistic and hinge losses</h3>
+
+    <p>The most common surrogates have different geometry but the same calibrated direction.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The logistic loss \(\log(1+e^{-u})\) is smooth and strictly convex in the margin. The hinge loss \((1-u)_+\) is nonsmooth and produces sparse support-vector solutions in linear RKHS formulations.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The logistic surrogate estimates conditional probabilities naturally through log-odds, while hinge loss focuses on the decision boundary and margin.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/margins-in-classification/" next_label="Next page" next_url="/notes/statistical-learning/regularization/" %}
@@ -38,26 +77,65 @@ breadcrumb_child_label_zh: "10. 替代损失与校准"
     <h2><a href="{{ '/notes/statistical-learning/surrogate-losses-and-calibration/' | relative_url }}">10. Pertes de substitution et calibration</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/margins-in-classification/" next_label="Page suivante" next_url="/notes/statistical-learning/regularization/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Pertes de substitution et calibration.</p>
+    <p>Surrogate losses replace discontinuous decision losses by convex or smooth objectives. Calibration is the condition that optimizing the surrogate also optimizes the target decision problem.</p>
 
-    <h3>Définition</h3>
+    <h3>Surrogate risk</h3>
+
+    <p>A surrogate is useful only if its risk remembers the original task.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Surrogate losses replace discontinuous zero-one loss by convex or smooth losses such as hinge, logistic, or exponential loss.</p>
+        <p><span class="statement-title">Définition.</span> For binary \(Y\in\{-1,1\}\), a margin surrogate has risk
+\[
+R_\phi(f)=\mathbb E\,\phi(Yf(X)).
+\]
+It is classification-calibrated if every sequence with \(R_\phi(f_n)\to\inf_f R_\phi(f)\) also has zero-one risk approaching the Bayes risk.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A surrogate loss is classification-calibrated if minimizing its conditional risk recovers the Bayes classifier for zero-one loss.</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Analyze the conditional risk as a function of the prediction score and class probability. Calibration follows when the sign of the optimal score matches the Bayes decision.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Surrogates make optimization tractable, but calibration is needed to justify their causal link to classification risk.</p>
+        <p><span class="statement-title">Remarque.</span> Convexity helps computation; calibration is the statistical condition that prevents the convex problem from solving the wrong task.</p>
+    </div>
+
+    <h3>Conditional calibration</h3>
+
+    <p>Calibration can be checked pointwise through the conditional risk.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \(\eta=P(Y=1\mid X=x)\). For a convex differentiable margin loss \(\phi\), classification calibration holds if \(\phi'(0)<0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The conditional surrogate risk is
+\[
+C_\eta(t)=\eta\phi(t)+(1-\eta)\phi(-t).
+\]
+At \(t=0\), \(C_\eta'(0)=(2\eta-1)\phi'(0)\). If \(\eta>1/2\), then \(C_\eta'(0)<0\), so a minimizer must prefer positive scores; if \(\eta<1/2\), the sign reverses. Thus the surrogate minimizer has the Bayes sign.</p>
+    </div>
+
+    <h3>Excess-risk transfer</h3>
+
+    <p>A calibrated surrogate gives a quantitative link between surrogate excess risk and classification excess risk.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For every classification-calibrated convex margin loss, there exists a nondecreasing function \(\psi\) with \(\psi(0)=0\) such that
+\[
+\psi(R(g_f)-R^*)\le R_\phi(f)-R_\phi^*.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Define the best conditional surrogate risk under the correct sign and under the wrong sign. The gap between these two conditional optima is positive away from \(\eta=1/2\) by calibration. Taking the convex lower envelope of the resulting conditional gap yields \(\psi\). Integrating the conditional inequality gives the displayed bound.</p>
+    </div>
+
+    <h3>Logistic and hinge losses</h3>
+
+    <p>The most common surrogates have different geometry but the same calibrated direction.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The logistic loss \(\log(1+e^{-u})\) is smooth and strictly convex in the margin. The hinge loss \((1-u)_+\) is nonsmooth and produces sparse support-vector solutions in linear RKHS formulations.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The logistic surrogate estimates conditional probabilities naturally through log-odds, while hinge loss focuses on the decision boundary and margin.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/margins-in-classification/" next_label="Page suivante" next_url="/notes/statistical-learning/regularization/" %}
@@ -67,26 +145,65 @@ breadcrumb_child_label_zh: "10. 替代损失与校准"
     <h2><a href="{{ '/notes/statistical-learning/surrogate-losses-and-calibration/' | relative_url }}">10. 替代损失与校准</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/margins-in-classification/" next_label="下一页" next_url="/notes/statistical-learning/regularization/" %}
 
-    <p>本页整理关于“替代损失与校准”的主要定义、命题、定理与证明思路。</p>
+    <p>Surrogate losses replace discontinuous decision losses by convex or smooth objectives. Calibration is the condition that optimizing the surrogate also optimizes the target decision problem.</p>
 
-    <h3>定义</h3>
+    <h3>Surrogate risk</h3>
+
+    <p>A surrogate is useful only if its risk remembers the original task.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Surrogate losses replace discontinuous zero-one loss by 凸 or smooth losses such as hinge, logistic, or exponential loss.</p>
+        <p><span class="statement-title">定义.</span> For binary \(Y\in\{-1,1\}\), a margin surrogate has risk
+\[
+R_\phi(f)=\mathbb E\,\phi(Yf(X)).
+\]
+It is classification-calibrated if every sequence with \(R_\phi(f_n)\to\inf_f R_\phi(f)\) also has zero-one risk approaching the Bayes risk.</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> A surrogate loss is classification-calibrated if minimizing its conditional risk recovers the 贝叶斯分类器 for zero-one loss.</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Analyze the conditional risk as a function of the prediction 分数 and class probability. Calibration follows when the sign of the optimal 分数 matches the 贝叶斯决策.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Surrogates make optimization tractable, but calibration is needed to justify their causal link to classification risk.</p>
+        <p><span class="statement-title">说明.</span> Convexity helps computation; calibration is the statistical condition that prevents the convex problem from solving the wrong task.</p>
+    </div>
+
+    <h3>Conditional calibration</h3>
+
+    <p>Calibration can be checked pointwise through the conditional risk.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(\eta=P(Y=1\mid X=x)\). For a convex differentiable margin loss \(\phi\), classification calibration holds if \(\phi'(0)<0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The conditional surrogate risk is
+\[
+C_\eta(t)=\eta\phi(t)+(1-\eta)\phi(-t).
+\]
+At \(t=0\), \(C_\eta'(0)=(2\eta-1)\phi'(0)\). If \(\eta>1/2\), then \(C_\eta'(0)<0\), so a minimizer must prefer positive scores; if \(\eta<1/2\), the sign reverses. Thus the surrogate minimizer has the Bayes sign.</p>
+    </div>
+
+    <h3>Excess-risk transfer</h3>
+
+    <p>A calibrated surrogate gives a quantitative link between surrogate excess risk and classification excess risk.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For every classification-calibrated convex margin loss, there exists a nondecreasing function \(\psi\) with \(\psi(0)=0\) such that
+\[
+\psi(R(g_f)-R^*)\le R_\phi(f)-R_\phi^*.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Define the best conditional surrogate risk under the correct sign and under the wrong sign. The gap between these two conditional optima is positive away from \(\eta=1/2\) by calibration. Taking the convex lower envelope of the resulting conditional gap yields \(\psi\). Integrating the conditional inequality gives the displayed bound.</p>
+    </div>
+
+    <h3>Logistic and hinge losses</h3>
+
+    <p>The most common surrogates have different geometry but the same calibrated direction.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The logistic loss \(\log(1+e^{-u})\) is smooth and strictly convex in the margin. The hinge loss \((1-u)_+\) is nonsmooth and produces sparse support-vector solutions in linear RKHS formulations.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The logistic surrogate estimates conditional probabilities naturally through log-odds, while hinge loss focuses on the decision boundary and margin.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/margins-in-classification/" next_label="下一页" next_url="/notes/statistical-learning/regularization/" %}

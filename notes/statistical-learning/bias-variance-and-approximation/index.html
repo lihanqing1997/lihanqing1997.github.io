@@ -9,26 +9,82 @@ breadcrumb_child_label_zh: "5. 偏差、方差与逼近"
     <h2><a href="{{ '/notes/statistical-learning/bias-variance-and-approximation/' | relative_url }}">5. Bias, variance, and approximation</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/concentration-inequalities/" next_label="Next page" next_url="/notes/statistical-learning/vc-dimension/" %}
 
-    <p>Bias, variance, and approximation records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Bias-variance analysis is a useful finite-dimensional identity, but in learning theory it is only one piece of the larger approximation-estimation tradeoff.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Approximation error is the gap between the Bayes rule and the best function in the class. Estimation error is the price of choosing from data.</p>
+    <h3>Squared-error decomposition</h3>
+
+    <p>For regression estimators, the mean squared error splits into noise, squared bias, and variance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(Y=m(X)+\varepsilon\), \(\mathbb E(\varepsilon\mid X)=0\), and let \(\hat m(x)\) be a random estimator trained on data independent of a fresh \((X,Y)\). Then
+\[
+\mathbb E\{Y-\hat m(X)\}^2
+=\mathbb E\sigma^2(X)
++\mathbb E\{\mathbb E\hat m(X)-m(X)\}^2
++\mathbb E\{\hat m(X)-\mathbb E\hat m(X)\}^2,
+\]
+where \(\sigma^2(X)=\mathbb E(\varepsilon^2\mid X)\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Increasing model complexity can decrease approximation error while increasing estimation error. Optimal learning balances these two terms under the sample size and noise level.</p>
-    </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write excess risk relative to the Bayes rule as a sum through the best-in-class predictor. Bound each term by approximation theory and empirical-process or concentration arguments.</p>
+        <p><span class="statement-title">Proof.</span> Condition on \(X\). Write
+\[
+Y-\hat m(X)=\varepsilon+m(X)-\mathbb E\hat m(X)+\mathbb E\hat m(X)-\hat m(X).
+\]
+The three components have zero cross terms after taking expectation: the noise has conditional mean zero, and the centered estimator has mean zero over the training randomness. The identity follows.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Approximation and estimation</h3>
+
+    <p>In function-class learning, approximation error is deterministic and estimation error is stochastic.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For a class \(\mathcal F_k\) indexed by complexity \(k\), define
+\[
+A(k)=\inf_{f\in\mathcal F_k}R(f)-R(f^*),
+\qquad
+E_n(k)=R(\hat f_{k,n})-\inf_{f\in\mathcal F_k}R(f).
+\]
+The risk is controlled by \(A(k)+E_n(k)\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(A(k)\lesssim k^{-2s/d}\) and \(E_n(k)\lesssim k/n\), then the optimized rate is
+\[
+\inf_k\{A(k)+E_n(k)\}\lesssim n^{-2s/(2s+d)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Balance \(k^{-2s/d}\) with \(k/n\). The equality \(k^{-2s/d}\asymp k/n\) gives \(k\asymp n^{d/(2s+d)}\). Substituting gives \(n^{-2s/(2s+d)}\).</p>
+    </div>
+
+    <h3>Smoothing parameters</h3>
+
+    <p>A smoothing parameter controls bias by restricting roughness and variance by averaging observations.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> For a kernel smoother with bandwidth \(h\) in \(d\) dimensions, a typical heuristic risk is
+\[
+h^{2s}+\frac{1}{nh^d}.
+\]
+The first term is squared bias for \(s\)-smooth functions; the second is variance from an effective sample size \(nh^d\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Optimizing \(h^{2s}+1/(nh^d)\) yields \(h\asymp n^{-1/(2s+d)}\) and risk \(n^{-2s/(2s+d)}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Set \(h^{2s}\asymp 1/(nh^d)\), hence \(h^{2s+d}\asymp n^{-1}\). The claimed bandwidth and risk follow.</p>
+    </div>
+
+    <h3>Beyond the classical identity</h3>
+
+    <p>Modern learning often has interpolation, implicit regularization, and nonconvex optimization. Bias-variance language remains useful only when tied back to risk.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Bias-variance language is informal unless tied to a loss and estimator, but the tradeoff is real across learning theory.</p>
+        <p><span class="statement-title">Remark.</span> A method can have zero training error and still generalize when the algorithmic bias selects a low-complexity interpolating solution. In such settings, norm, margin, stability, or compression may be more informative than the classical parameter-count variance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/concentration-inequalities/" next_label="Next page" next_url="/notes/statistical-learning/vc-dimension/" %}
@@ -38,26 +94,82 @@ breadcrumb_child_label_zh: "5. 偏差、方差与逼近"
     <h2><a href="{{ '/notes/statistical-learning/bias-variance-and-approximation/' | relative_url }}">5. Biais, variance et approximation</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/concentration-inequalities/" next_label="Page suivante" next_url="/notes/statistical-learning/vc-dimension/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Biais, variance et approximation.</p>
+    <p>Bias-variance analysis is a useful finite-dimensional identity, but in learning theory it is only one piece of the larger approximation-estimation tradeoff.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Approximation error is the gap between the Bayes rule and the best function in the class. Estimation error is the price of choosing from data.</p>
+    <h3>Squared-error decomposition</h3>
+
+    <p>For regression estimators, the mean squared error splits into noise, squared bias, and variance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \(Y=m(X)+\varepsilon\), \(\mathbb E(\varepsilon\mid X)=0\), and let \(\hat m(x)\) be a random estimator trained on data independent of a fresh \((X,Y)\). Then
+\[
+\mathbb E\{Y-\hat m(X)\}^2
+=\mathbb E\sigma^2(X)
++\mathbb E\{\mathbb E\hat m(X)-m(X)\}^2
++\mathbb E\{\hat m(X)-\mathbb E\hat m(X)\}^2,
+\]
+where \(\sigma^2(X)=\mathbb E(\varepsilon^2\mid X)\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Increasing model complexity can decrease approximation error while increasing estimation error. Optimal learning balances these two terms under the sample size and noise level.</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Write excess risk relative to the Bayes rule as a sum through the best-in-class predictor. Bound each term by approximation theory and empirical-process or concentration arguments.</p>
+        <p><span class="statement-title">Preuve.</span> Condition on \(X\). Write
+\[
+Y-\hat m(X)=\varepsilon+m(X)-\mathbb E\hat m(X)+\mathbb E\hat m(X)-\hat m(X).
+\]
+The three components have zero cross terms after taking expectation: the noise has conditional mean zero, and the centered estimator has mean zero over the training randomness. The identity follows.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Approximation and estimation</h3>
+
+    <p>In function-class learning, approximation error is deterministic and estimation error is stochastic.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For a class \(\mathcal F_k\) indexed by complexity \(k\), define
+\[
+A(k)=\inf_{f\in\mathcal F_k}R(f)-R(f^*),
+\qquad
+E_n(k)=R(\hat f_{k,n})-\inf_{f\in\mathcal F_k}R(f).
+\]
+The risk is controlled by \(A(k)+E_n(k)\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(A(k)\lesssim k^{-2s/d}\) and \(E_n(k)\lesssim k/n\), then the optimized rate is
+\[
+\inf_k\{A(k)+E_n(k)\}\lesssim n^{-2s/(2s+d)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Balance \(k^{-2s/d}\) with \(k/n\). The equality \(k^{-2s/d}\asymp k/n\) gives \(k\asymp n^{d/(2s+d)}\). Substituting gives \(n^{-2s/(2s+d)}\).</p>
+    </div>
+
+    <h3>Smoothing parameters</h3>
+
+    <p>A smoothing parameter controls bias by restricting roughness and variance by averaging observations.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> For a kernel smoother with bandwidth \(h\) in \(d\) dimensions, a typical heuristic risk is
+\[
+h^{2s}+\frac{1}{nh^d}.
+\]
+The first term is squared bias for \(s\)-smooth functions; the second is variance from an effective sample size \(nh^d\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Optimizing \(h^{2s}+1/(nh^d)\) yields \(h\asymp n^{-1/(2s+d)}\) and risk \(n^{-2s/(2s+d)}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Set \(h^{2s}\asymp 1/(nh^d)\), hence \(h^{2s+d}\asymp n^{-1}\). The claimed bandwidth and risk follow.</p>
+    </div>
+
+    <h3>Beyond the classical identity</h3>
+
+    <p>Modern learning often has interpolation, implicit regularization, and nonconvex optimization. Bias-variance language remains useful only when tied back to risk.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Bias-variance language is informal unless tied to a loss and estimator, but the tradeoff is real across learning theory.</p>
+        <p><span class="statement-title">Remarque.</span> A method can have zero training error and still generalize when the algorithmic bias selects a low-complexity interpolating solution. In such settings, norm, margin, stability, or compression may be more informative than the classical parameter-count variance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/concentration-inequalities/" next_label="Page suivante" next_url="/notes/statistical-learning/vc-dimension/" %}
@@ -67,26 +179,82 @@ breadcrumb_child_label_zh: "5. 偏差、方差与逼近"
     <h2><a href="{{ '/notes/statistical-learning/bias-variance-and-approximation/' | relative_url }}">5. 偏差、方差与逼近</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/concentration-inequalities/" next_label="下一页" next_url="/notes/statistical-learning/vc-dimension/" %}
 
-    <p>本页整理关于“偏差、方差与逼近”的主要定义、命题、定理与证明思路。</p>
+    <p>Bias-variance analysis is a useful finite-dimensional identity, but in learning theory it is only one piece of the larger approximation-estimation tradeoff.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Approximation error is the gap between the 贝叶斯规则 and the best function in the class. Estimation error is the price of choosing from data.</p>
+    <h3>Squared-error decomposition</h3>
+
+    <p>For regression estimators, the mean squared error splits into noise, squared bias, and variance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(Y=m(X)+\varepsilon\), \(\mathbb E(\varepsilon\mid X)=0\), and let \(\hat m(x)\) be a random estimator trained on data independent of a fresh \((X,Y)\). Then
+\[
+\mathbb E\{Y-\hat m(X)\}^2
+=\mathbb E\sigma^2(X)
++\mathbb E\{\mathbb E\hat m(X)-m(X)\}^2
++\mathbb E\{\hat m(X)-\mathbb E\hat m(X)\}^2,
+\]
+where \(\sigma^2(X)=\mathbb E(\varepsilon^2\mid X)\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Increasing model complexity can decrease approximation error while increasing estimation error. Optimal learning balances these two terms under the sample size and noise level.</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Write excess risk relative to the 贝叶斯规则 as a sum through the best-in-class predictor. Bound each term by approximation theory and 经验-process or concentration arguments.</p>
+        <p><span class="statement-title">证明.</span> Condition on \(X\). Write
+\[
+Y-\hat m(X)=\varepsilon+m(X)-\mathbb E\hat m(X)+\mathbb E\hat m(X)-\hat m(X).
+\]
+The three components have zero cross terms after taking expectation: the noise has conditional mean zero, and the centered estimator has mean zero over the training randomness. The identity follows.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Approximation and estimation</h3>
+
+    <p>In function-class learning, approximation error is deterministic and estimation error is stochastic.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For a class \(\mathcal F_k\) indexed by complexity \(k\), define
+\[
+A(k)=\inf_{f\in\mathcal F_k}R(f)-R(f^*),
+\qquad
+E_n(k)=R(\hat f_{k,n})-\inf_{f\in\mathcal F_k}R(f).
+\]
+The risk is controlled by \(A(k)+E_n(k)\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(A(k)\lesssim k^{-2s/d}\) and \(E_n(k)\lesssim k/n\), then the optimized rate is
+\[
+\inf_k\{A(k)+E_n(k)\}\lesssim n^{-2s/(2s+d)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Balance \(k^{-2s/d}\) with \(k/n\). The equality \(k^{-2s/d}\asymp k/n\) gives \(k\asymp n^{d/(2s+d)}\). Substituting gives \(n^{-2s/(2s+d)}\).</p>
+    </div>
+
+    <h3>Smoothing parameters</h3>
+
+    <p>A smoothing parameter controls bias by restricting roughness and variance by averaging observations.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> For a kernel smoother with bandwidth \(h\) in \(d\) dimensions, a typical heuristic risk is
+\[
+h^{2s}+\frac{1}{nh^d}.
+\]
+The first term is squared bias for \(s\)-smooth functions; the second is variance from an effective sample size \(nh^d\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Optimizing \(h^{2s}+1/(nh^d)\) yields \(h\asymp n^{-1/(2s+d)}\) and risk \(n^{-2s/(2s+d)}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Set \(h^{2s}\asymp 1/(nh^d)\), hence \(h^{2s+d}\asymp n^{-1}\). The claimed bandwidth and risk follow.</p>
+    </div>
+
+    <h3>Beyond the classical identity</h3>
+
+    <p>Modern learning often has interpolation, implicit regularization, and nonconvex optimization. Bias-variance language remains useful only when tied back to risk.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Bias-variance language is informal unless tied to a loss and estimator, but the tradeoff is real across learning theory.</p>
+        <p><span class="statement-title">说明.</span> A method can have zero training error and still generalize when the algorithmic bias selects a low-complexity interpolating solution. In such settings, norm, margin, stability, or compression may be more informative than the classical parameter-count variance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/concentration-inequalities/" next_label="下一页" next_url="/notes/statistical-learning/vc-dimension/" %}

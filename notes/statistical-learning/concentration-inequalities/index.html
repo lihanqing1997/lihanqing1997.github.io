@@ -9,26 +9,85 @@ breadcrumb_child_label_zh: "4. 集中不等式"
     <h2><a href="{{ '/notes/statistical-learning/concentration-inequalities/' | relative_url }}">4. Concentration inequalities</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/empirical-risk-minimization/" next_label="Next page" next_url="/notes/statistical-learning/bias-variance-and-approximation/" %}
 
-    <p>Concentration inequalities records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Concentration inequalities turn random empirical quantities into deterministic error bars. They are the finite-sample engine behind learning bounds.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Concentration inequalities bound random fluctuations of empirical averages around expectations. They convert independence and boundedness or variance conditions into high-probability control.</p>
+    <h3>Hoeffding inequality</h3>
+
+    <p>Bounded independent variables concentrate at a sub-Gaussian scale.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(X_1,\ldots,X_n\) are independent, \(a_i\le X_i\le b_i\), and \(S_n=\sum_i(X_i-\mathbb E X_i)\), then
+\[
+P(S_n\ge t)\le
+\exp\left\{-\frac{2t^2}{\sum_{i=1}^n(b_i-a_i)^2}\right\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Hoeffding and Bernstein inequalities show that bounded empirical means deviate from their expectations at sub-Gaussian or variance-sensitive rates.</p>
-    </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use exponential Markov inequality and factorization of moment generating functions under independence. Optimize the exponential parameter to obtain the tail bound.</p>
+        <p><span class="statement-title">Proof.</span> For each \(\lambda>0\), Hoeffding's lemma gives
+\[
+\mathbb E e^{\lambda(X_i-\mathbb E X_i)}
+\le \exp\{\lambda^2(b_i-a_i)^2/8\}.
+\]
+Independence multiplies moment generating functions. Chernoff's bound gives
+\[
+P(S_n\ge t)\le \exp\{-\lambda t+\lambda^2\sum_i(b_i-a_i)^2/8\}.
+\]
+Optimizing over \(\lambda\) yields the displayed bound.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Concentration is the finite-sample backbone of generalization theory.</p>
+    <h3>Bernstein inequality</h3>
+
+    <p>Variance-sensitive inequalities improve Hoeffding when the variance is small.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(X_i\) are independent, centered, \(|X_i|\le B\), and \(\sum_i\mathbb E X_i^2\le v\), then
+\[
+P\left(\sum_iX_i\ge t\right)
+\le \exp\left\{-\frac{t^2}{2(v+Bt/3)}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The exponential-moment estimate
+\[
+\log\mathbb E e^{\lambda X_i}\le \frac{\lambda^2\mathbb E X_i^2}{2(1-\lambda B/3)}
+\]
+holds for \(0<\lambda<3/B\). Summing over \(i\), applying Chernoff's method, and optimizing \(\lambda=t/(v+Bt/3)\) gives the inequality.</p>
+    </div>
+
+    <h3>Bounded differences</h3>
+
+    <p>Many learning statistics are not simple sums, but they are stable under replacing one observation.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(F(Z_1,\ldots,Z_n)\) satisfy
+\[
+\sup_{z_1,\ldots,z_n,z_i'}|F(z_1,\ldots,z_i,\ldots,z_n)-F(z_1,\ldots,z_i',\ldots,z_n)|\le c_i.
+\]
+Then
+\[
+P(F-\mathbb EF\ge t)\le \exp\left\{-\frac{2t^2}{\sum_i c_i^2}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(M_i=\mathbb E(F\mid Z_1,\ldots,Z_i)\). The martingale increments satisfy \(|M_i-M_{i-1}|\le c_i\). Applying Azuma-Hoeffding to this Doob martingale gives the displayed inequality.</p>
+    </div>
+
+    <h3>From fixed functions to classes</h3>
+
+    <p>A fixed-function concentration bound becomes a learning bound only after controlling the size of the class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If a tail bound \(P(|P_ng-Pg|>t)\le a(t)\) holds for every \(g\in\mathcal G\), and \(\mathcal G\) is finite, then
+\[
+P\left(\sup_{g\in\mathcal G}|P_ng-Pg|>t\right)\le |\mathcal G|a(t).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The event that the supremum exceeds \(t\) is contained in the union of the events \(\{|P_ng-Pg|>t\}\) over \(g\in\mathcal G\). Apply the union bound.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/empirical-risk-minimization/" next_label="Next page" next_url="/notes/statistical-learning/bias-variance-and-approximation/" %}
@@ -38,26 +97,85 @@ breadcrumb_child_label_zh: "4. 集中不等式"
     <h2><a href="{{ '/notes/statistical-learning/concentration-inequalities/' | relative_url }}">4. Inégalités de concentration</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/empirical-risk-minimization/" next_label="Page suivante" next_url="/notes/statistical-learning/bias-variance-and-approximation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Inégalités de concentration.</p>
+    <p>Concentration inequalities turn random empirical quantities into deterministic error bars. They are the finite-sample engine behind learning bounds.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Concentration inequalities bound random fluctuations of empirical averages around expectations. They convert independence and boundedness or variance conditions into high-probability control.</p>
+    <h3>Hoeffding inequality</h3>
+
+    <p>Bounded independent variables concentrate at a sub-Gaussian scale.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(X_1,\ldots,X_n\) are independent, \(a_i\le X_i\le b_i\), and \(S_n=\sum_i(X_i-\mathbb E X_i)\), then
+\[
+P(S_n\ge t)\le
+\exp\left\{-\frac{2t^2}{\sum_{i=1}^n(b_i-a_i)^2}\right\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Hoeffding and Bernstein inequalities show that bounded empirical means deviate from their expectations at sub-Gaussian or variance-sensitive rates.</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Use exponential Markov inequality and factorization of moment generating functions under independence. Optimize the exponential parameter to obtain the tail bound.</p>
+        <p><span class="statement-title">Preuve.</span> For each \(\lambda>0\), Hoeffding's lemma gives
+\[
+\mathbb E e^{\lambda(X_i-\mathbb E X_i)}
+\le \exp\{\lambda^2(b_i-a_i)^2/8\}.
+\]
+Independence multiplies moment generating functions. Chernoff's bound gives
+\[
+P(S_n\ge t)\le \exp\{-\lambda t+\lambda^2\sum_i(b_i-a_i)^2/8\}.
+\]
+Optimizing over \(\lambda\) yields the displayed bound.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Concentration is the finite-sample backbone of generalization theory.</p>
+    <h3>Bernstein inequality</h3>
+
+    <p>Variance-sensitive inequalities improve Hoeffding when the variance is small.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(X_i\) are independent, centered, \(|X_i|\le B\), and \(\sum_i\mathbb E X_i^2\le v\), then
+\[
+P\left(\sum_iX_i\ge t\right)
+\le \exp\left\{-\frac{t^2}{2(v+Bt/3)}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The exponential-moment estimate
+\[
+\log\mathbb E e^{\lambda X_i}\le \frac{\lambda^2\mathbb E X_i^2}{2(1-\lambda B/3)}
+\]
+holds for \(0<\lambda<3/B\). Summing over \(i\), applying Chernoff's method, and optimizing \(\lambda=t/(v+Bt/3)\) gives the inequality.</p>
+    </div>
+
+    <h3>Bounded differences</h3>
+
+    <p>Many learning statistics are not simple sums, but they are stable under replacing one observation.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \(F(Z_1,\ldots,Z_n)\) satisfy
+\[
+\sup_{z_1,\ldots,z_n,z_i'}|F(z_1,\ldots,z_i,\ldots,z_n)-F(z_1,\ldots,z_i',\ldots,z_n)|\le c_i.
+\]
+Then
+\[
+P(F-\mathbb EF\ge t)\le \exp\left\{-\frac{2t^2}{\sum_i c_i^2}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(M_i=\mathbb E(F\mid Z_1,\ldots,Z_i)\). The martingale increments satisfy \(|M_i-M_{i-1}|\le c_i\). Applying Azuma-Hoeffding to this Doob martingale gives the displayed inequality.</p>
+    </div>
+
+    <h3>From fixed functions to classes</h3>
+
+    <p>A fixed-function concentration bound becomes a learning bound only after controlling the size of the class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If a tail bound \(P(|P_ng-Pg|>t)\le a(t)\) holds for every \(g\in\mathcal G\), and \(\mathcal G\) is finite, then
+\[
+P\left(\sup_{g\in\mathcal G}|P_ng-Pg|>t\right)\le |\mathcal G|a(t).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The event that the supremum exceeds \(t\) is contained in the union of the events \(\{|P_ng-Pg|>t\}\) over \(g\in\mathcal G\). Apply the union bound.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/empirical-risk-minimization/" next_label="Page suivante" next_url="/notes/statistical-learning/bias-variance-and-approximation/" %}
@@ -67,26 +185,85 @@ breadcrumb_child_label_zh: "4. 集中不等式"
     <h2><a href="{{ '/notes/statistical-learning/concentration-inequalities/' | relative_url }}">4. 集中不等式</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/empirical-risk-minimization/" next_label="下一页" next_url="/notes/statistical-learning/bias-variance-and-approximation/" %}
 
-    <p>本页整理关于“集中不等式”的主要定义、命题、定理与证明思路。</p>
+    <p>Concentration inequalities turn random empirical quantities into deterministic error bars. They are the finite-sample engine behind learning bounds.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 集中不等式 bound random fluctuations of 经验 averages around expectations. They convert 独立性 and boundedness or variance conditions into high-probability control.</p>
+    <h3>Hoeffding inequality</h3>
+
+    <p>Bounded independent variables concentrate at a sub-Gaussian scale.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(X_1,\ldots,X_n\) are independent, \(a_i\le X_i\le b_i\), and \(S_n=\sum_i(X_i-\mathbb E X_i)\), then
+\[
+P(S_n\ge t)\le
+\exp\left\{-\frac{2t^2}{\sum_{i=1}^n(b_i-a_i)^2}\right\}.
+\]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 霍夫丁 and 伯恩斯坦 inequalities show that 有界经验 means deviate from their expectations at sub-高斯 or variance-sensitive rates.</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Use exponential 马尔可夫 inequality and 因子分解 of moment generating functions under 独立性. Optimize the exponential parameter to obtain the tail bound.</p>
+        <p><span class="statement-title">证明.</span> For each \(\lambda>0\), Hoeffding's lemma gives
+\[
+\mathbb E e^{\lambda(X_i-\mathbb E X_i)}
+\le \exp\{\lambda^2(b_i-a_i)^2/8\}.
+\]
+Independence multiplies moment generating functions. Chernoff's bound gives
+\[
+P(S_n\ge t)\le \exp\{-\lambda t+\lambda^2\sum_i(b_i-a_i)^2/8\}.
+\]
+Optimizing over \(\lambda\) yields the displayed bound.</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Concentration is the finite-sample backbone of generalization theory.</p>
+    <h3>Bernstein inequality</h3>
+
+    <p>Variance-sensitive inequalities improve Hoeffding when the variance is small.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(X_i\) are independent, centered, \(|X_i|\le B\), and \(\sum_i\mathbb E X_i^2\le v\), then
+\[
+P\left(\sum_iX_i\ge t\right)
+\le \exp\left\{-\frac{t^2}{2(v+Bt/3)}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The exponential-moment estimate
+\[
+\log\mathbb E e^{\lambda X_i}\le \frac{\lambda^2\mathbb E X_i^2}{2(1-\lambda B/3)}
+\]
+holds for \(0<\lambda<3/B\). Summing over \(i\), applying Chernoff's method, and optimizing \(\lambda=t/(v+Bt/3)\) gives the inequality.</p>
+    </div>
+
+    <h3>Bounded differences</h3>
+
+    <p>Many learning statistics are not simple sums, but they are stable under replacing one observation.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \(F(Z_1,\ldots,Z_n)\) satisfy
+\[
+\sup_{z_1,\ldots,z_n,z_i'}|F(z_1,\ldots,z_i,\ldots,z_n)-F(z_1,\ldots,z_i',\ldots,z_n)|\le c_i.
+\]
+Then
+\[
+P(F-\mathbb EF\ge t)\le \exp\left\{-\frac{2t^2}{\sum_i c_i^2}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(M_i=\mathbb E(F\mid Z_1,\ldots,Z_i)\). The martingale increments satisfy \(|M_i-M_{i-1}|\le c_i\). Applying Azuma-Hoeffding to this Doob martingale gives the displayed inequality.</p>
+    </div>
+
+    <h3>From fixed functions to classes</h3>
+
+    <p>A fixed-function concentration bound becomes a learning bound only after controlling the size of the class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If a tail bound \(P(|P_ng-Pg|>t)\le a(t)\) holds for every \(g\in\mathcal G\), and \(\mathcal G\) is finite, then
+\[
+P\left(\sup_{g\in\mathcal G}|P_ng-Pg|>t\right)\le |\mathcal G|a(t).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The event that the supremum exceeds \(t\) is contained in the union of the events \(\{|P_ng-Pg|>t\}\) over \(g\in\mathcal G\). Apply the union bound.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/empirical-risk-minimization/" next_label="下一页" next_url="/notes/statistical-learning/bias-variance-and-approximation/" %}

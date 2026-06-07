@@ -9,26 +9,86 @@ breadcrumb_child_label_zh: "13. 支持向量机"
     <h2><a href="{{ '/notes/statistical-learning/support-vector-machines/' | relative_url }}">13. Support vector machines</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/kernel-methods-and-rkhs/" next_label="Next page" next_url="/notes/statistical-learning/high-dimensional-sparsity/" %}
 
-    <p>Support vector machines records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Support vector machines combine a convex margin loss with norm regularization. Their geometry is separation by a maximum-margin hyperplane in a feature space.</p>
 
-    <h3>Definition</h3>
+    <h3>Hard-margin geometry</h3>
+
+    <p>When the data are linearly separable, the SVM chooses the separating hyperplane with largest geometric margin.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Support vector machines minimize hinge loss with norm regularization, producing large-margin linear or kernel classifiers.</p>
+        <p><span class="statement-title">Definition.</span> For \(y_i\in\{-1,1\}\), the hard-margin problem is
+\[
+\min_{w,b}\frac12\|w\|_2^2
+\quad\text{subject to}\quad
+y_i(\langle w,x_i\rangle+b)\ge1,\ i=1,\ldots,n.
+\]
+The geometric margin is \(1/\|w\|_2\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The dual SVM problem depends on data only through inner products or kernel evaluations, and support vectors correspond to active margin constraints.</p>
+        <p><span class="statement-title">Proposition.</span> Minimizing \(\|w\|_2\) under the normalized constraints maximizes the minimum geometric margin.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Form the Lagrangian for the constrained margin problem, eliminate primal variables, and read complementary slackness for active constraints.</p>
+        <p><span class="statement-title">Proof.</span> The constraints force the functional margin to be at least \(1\). The corresponding geometric margin is at least \(1/\|w\|_2\). Rescaling \((w,b)\) changes functional margins and \(\|w\|\) by the same factor, so the normalization is harmless and minimizing \(\|w\|\) maximizes the normalized geometric margin.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Soft-margin objective</h3>
+
+    <p>Nonseparable data require slack or, equivalently, hinge loss.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The soft-margin SVM solves
+\[
+\min_{w,b}\frac1n\sum_{i=1}^n(1-y_i(\langle w,x_i\rangle+b))_+
++\lambda\|w\|_2^2.
+\]</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> SVMs are a canonical example where convex optimization and statistical margin theory align.</p>
+        <p><span class="statement-title">Remark.</span> The hinge loss is zero beyond margin \(1\), linear for margin violations, and convex. This shape makes only some observations active in the optimum.</p>
+    </div>
+
+    <h3>Dual problem and support vectors</h3>
+
+    <p>The dual reveals the kernelization and the role of support vectors.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For the hard-margin linear SVM, the dual is
+\[
+\max_{\alpha_i\ge0}\sum_i\alpha_i-\frac12\sum_{i,j}\alpha_i\alpha_jy_iy_j\langle x_i,x_j\rangle
+\quad\text{subject to}\quad
+\sum_i\alpha_iy_i=0.
+\]
+At optimum, \(w=\sum_i\alpha_iy_ix_i\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Form the Lagrangian
+\[
+L(w,b,\alpha)=\frac12\|w\|^2-\sum_i\alpha_i\{y_i(\langle w,x_i\rangle+b)-1\}.
+\]
+Stationarity in \(w\) gives \(w=\sum_i\alpha_iy_ix_i\); stationarity in \(b\) gives \(\sum_i\alpha_iy_i=0\). Substituting these conditions into the Lagrangian gives the dual objective.</p>
+    </div>
+
+    <h3>Generalization through norm and margin</h3>
+
+    <p>The SVM bound is a margin bound for a norm-bounded linear class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\|x\|_2\le R\) and \(\|w\|_2\le B\), the Rademacher complexity of linear scores \(x\mapsto\langle w,x\rangle\) is at most \(BR/\sqrt n\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> By the linear-class formula,
+\[
+\widehat{\mathfrak R}_n\le \frac{B}{n}\mathbb E_\varepsilon\left\|\sum_i\varepsilon_ix_i\right\|_2.
+\]
+Jensen's inequality and independence of the signs give
+\[
+\mathbb E_\varepsilon\left\|\sum_i\varepsilon_ix_i\right\|_2
+\le \left(\sum_i\|x_i\|_2^2\right)^{1/2}\le R\sqrt n.
+\]</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/kernel-methods-and-rkhs/" next_label="Next page" next_url="/notes/statistical-learning/high-dimensional-sparsity/" %}
@@ -38,26 +98,86 @@ breadcrumb_child_label_zh: "13. 支持向量机"
     <h2><a href="{{ '/notes/statistical-learning/support-vector-machines/' | relative_url }}">13. Machines à vecteurs de support</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/kernel-methods-and-rkhs/" next_label="Page suivante" next_url="/notes/statistical-learning/high-dimensional-sparsity/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Machines à vecteurs de support.</p>
+    <p>Support vector machines combine a convex margin loss with norm regularization. Their geometry is separation by a maximum-margin hyperplane in a feature space.</p>
 
-    <h3>Définition</h3>
+    <h3>Hard-margin geometry</h3>
+
+    <p>When the data are linearly separable, the SVM chooses the separating hyperplane with largest geometric margin.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Support vector machines minimize hinge loss with norm regularization, producing large-margin linear or kernel classifiers.</p>
+        <p><span class="statement-title">Définition.</span> For \(y_i\in\{-1,1\}\), the hard-margin problem is
+\[
+\min_{w,b}\frac12\|w\|_2^2
+\quad\text{subject to}\quad
+y_i(\langle w,x_i\rangle+b)\ge1,\ i=1,\ldots,n.
+\]
+The geometric margin is \(1/\|w\|_2\).</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The dual SVM problem depends on data only through inner products or kernel evaluations, and support vectors correspond to active margin constraints.</p>
+        <p><span class="statement-title">Proposition.</span> Minimizing \(\|w\|_2\) under the normalized constraints maximizes the minimum geometric margin.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Form the Lagrangian for the constrained margin problem, eliminate primal variables, and read complementary slackness for active constraints.</p>
+        <p><span class="statement-title">Preuve.</span> The constraints force the functional margin to be at least \(1\). The corresponding geometric margin is at least \(1/\|w\|_2\). Rescaling \((w,b)\) changes functional margins and \(\|w\|\) by the same factor, so the normalization is harmless and minimizing \(\|w\|\) maximizes the normalized geometric margin.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Soft-margin objective</h3>
+
+    <p>Nonseparable data require slack or, equivalently, hinge loss.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> The soft-margin SVM solves
+\[
+\min_{w,b}\frac1n\sum_{i=1}^n(1-y_i(\langle w,x_i\rangle+b))_+
++\lambda\|w\|_2^2.
+\]</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> SVMs are a canonical example where convex optimization and statistical margin theory align.</p>
+        <p><span class="statement-title">Remarque.</span> The hinge loss is zero beyond margin \(1\), linear for margin violations, and convex. This shape makes only some observations active in the optimum.</p>
+    </div>
+
+    <h3>Dual problem and support vectors</h3>
+
+    <p>The dual reveals the kernelization and the role of support vectors.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For the hard-margin linear SVM, the dual is
+\[
+\max_{\alpha_i\ge0}\sum_i\alpha_i-\frac12\sum_{i,j}\alpha_i\alpha_jy_iy_j\langle x_i,x_j\rangle
+\quad\text{subject to}\quad
+\sum_i\alpha_iy_i=0.
+\]
+At optimum, \(w=\sum_i\alpha_iy_ix_i\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Form the Lagrangian
+\[
+L(w,b,\alpha)=\frac12\|w\|^2-\sum_i\alpha_i\{y_i(\langle w,x_i\rangle+b)-1\}.
+\]
+Stationarity in \(w\) gives \(w=\sum_i\alpha_iy_ix_i\); stationarity in \(b\) gives \(\sum_i\alpha_iy_i=0\). Substituting these conditions into the Lagrangian gives the dual objective.</p>
+    </div>
+
+    <h3>Generalization through norm and margin</h3>
+
+    <p>The SVM bound is a margin bound for a norm-bounded linear class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\|x\|_2\le R\) and \(\|w\|_2\le B\), the Rademacher complexity of linear scores \(x\mapsto\langle w,x\rangle\) is at most \(BR/\sqrt n\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> By the linear-class formula,
+\[
+\widehat{\mathfrak R}_n\le \frac{B}{n}\mathbb E_\varepsilon\left\|\sum_i\varepsilon_ix_i\right\|_2.
+\]
+Jensen's inequality and independence of the signs give
+\[
+\mathbb E_\varepsilon\left\|\sum_i\varepsilon_ix_i\right\|_2
+\le \left(\sum_i\|x_i\|_2^2\right)^{1/2}\le R\sqrt n.
+\]</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/kernel-methods-and-rkhs/" next_label="Page suivante" next_url="/notes/statistical-learning/high-dimensional-sparsity/" %}
@@ -67,26 +187,86 @@ breadcrumb_child_label_zh: "13. 支持向量机"
     <h2><a href="{{ '/notes/statistical-learning/support-vector-machines/' | relative_url }}">13. 支持向量机</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/kernel-methods-and-rkhs/" next_label="下一页" next_url="/notes/statistical-learning/high-dimensional-sparsity/" %}
 
-    <p>本页整理关于“支持向量机”的主要定义、命题、定理与证明思路。</p>
+    <p>Support vector machines combine a convex margin loss with norm regularization. Their geometry is separation by a maximum-margin hyperplane in a feature space.</p>
 
-    <h3>定义</h3>
+    <h3>Hard-margin geometry</h3>
+
+    <p>When the data are linearly separable, the SVM chooses the separating hyperplane with largest geometric margin.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Support vector machines minimize hinge loss with norm regularization, producing large-margin linear or 核 classifiers.</p>
+        <p><span class="statement-title">定义.</span> For \(y_i\in\{-1,1\}\), the hard-margin problem is
+\[
+\min_{w,b}\frac12\|w\|_2^2
+\quad\text{subject to}\quad
+y_i(\langle w,x_i\rangle+b)\ge1,\ i=1,\ldots,n.
+\]
+The geometric margin is \(1/\|w\|_2\).</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The dual SVM problem depends on data only through inner products or 核 evaluations, and support vectors correspond to active margin constraints.</p>
+        <p><span class="statement-title">命题.</span> Minimizing \(\|w\|_2\) under the normalized constraints maximizes the minimum geometric margin.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Form the Lagrangian for the constrained margin problem, eliminate primal variables, and read complementary slackness for active constraints.</p>
+        <p><span class="statement-title">证明.</span> The constraints force the functional margin to be at least \(1\). The corresponding geometric margin is at least \(1/\|w\|_2\). Rescaling \((w,b)\) changes functional margins and \(\|w\|\) by the same factor, so the normalization is harmless and minimizing \(\|w\|\) maximizes the normalized geometric margin.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Soft-margin objective</h3>
+
+    <p>Nonseparable data require slack or, equivalently, hinge loss.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> The soft-margin SVM solves
+\[
+\min_{w,b}\frac1n\sum_{i=1}^n(1-y_i(\langle w,x_i\rangle+b))_+
++\lambda\|w\|_2^2.
+\]</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> SVMs are a canonical 例 where 凸 optimization and statistical margin theory align.</p>
+        <p><span class="statement-title">说明.</span> The hinge loss is zero beyond margin \(1\), linear for margin violations, and convex. This shape makes only some observations active in the optimum.</p>
+    </div>
+
+    <h3>Dual problem and support vectors</h3>
+
+    <p>The dual reveals the kernelization and the role of support vectors.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For the hard-margin linear SVM, the dual is
+\[
+\max_{\alpha_i\ge0}\sum_i\alpha_i-\frac12\sum_{i,j}\alpha_i\alpha_jy_iy_j\langle x_i,x_j\rangle
+\quad\text{subject to}\quad
+\sum_i\alpha_iy_i=0.
+\]
+At optimum, \(w=\sum_i\alpha_iy_ix_i\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Form the Lagrangian
+\[
+L(w,b,\alpha)=\frac12\|w\|^2-\sum_i\alpha_i\{y_i(\langle w,x_i\rangle+b)-1\}.
+\]
+Stationarity in \(w\) gives \(w=\sum_i\alpha_iy_ix_i\); stationarity in \(b\) gives \(\sum_i\alpha_iy_i=0\). Substituting these conditions into the Lagrangian gives the dual objective.</p>
+    </div>
+
+    <h3>Generalization through norm and margin</h3>
+
+    <p>The SVM bound is a margin bound for a norm-bounded linear class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(\|x\|_2\le R\) and \(\|w\|_2\le B\), the Rademacher complexity of linear scores \(x\mapsto\langle w,x\rangle\) is at most \(BR/\sqrt n\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> By the linear-class formula,
+\[
+\widehat{\mathfrak R}_n\le \frac{B}{n}\mathbb E_\varepsilon\left\|\sum_i\varepsilon_ix_i\right\|_2.
+\]
+Jensen's inequality and independence of the signs give
+\[
+\mathbb E_\varepsilon\left\|\sum_i\varepsilon_ix_i\right\|_2
+\le \left(\sum_i\|x_i\|_2^2\right)^{1/2}\le R\sqrt n.
+\]</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/kernel-methods-and-rkhs/" next_label="下一页" next_url="/notes/statistical-learning/high-dimensional-sparsity/" %}

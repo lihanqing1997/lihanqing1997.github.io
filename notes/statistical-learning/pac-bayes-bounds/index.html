@@ -9,26 +9,78 @@ breadcrumb_child_label_zh: "20. PAC-贝叶斯界"
     <h2><a href="{{ '/notes/statistical-learning/pac-bayes-bounds/' | relative_url }}">20. PAC-Bayes bounds</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/distribution-shift-and-domain-adaptation/" %}
 
-    <p>PAC-Bayes bounds records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>PAC-Bayes theory gives high-probability risk bounds for randomized predictors. Its proof is an information inequality plus concentration, not ordinary Bayesian posterior consistency.</p>
 
-    <h3>Definition</h3>
+    <h3>Randomized predictors</h3>
+
+    <p>PAC-Bayes compares a data-dependent distribution over hypotheses with a prior distribution chosen before seeing the sample.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> PAC-Bayes theory bounds the risk of randomized predictors drawn from a posterior distribution over hypotheses, relative to a prior distribution chosen independently of the sample.</p>
+        <p><span class="statement-title">Definition.</span> Let \(\mathcal H\) be a hypothesis space, \(P_0\) a prior probability on \(\mathcal H\), and \(Q\) a data-dependent posterior probability on \(\mathcal H\). The Gibbs risk is
+\[
+R(Q)=\int R(h)\,Q(\mathrm{d}h),
+\qquad
+R_n(Q)=\int R_n(h)\,Q(\mathrm{d}h).
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> With high probability over the sample, many PAC-Bayes inequalities control posterior expected risk by empirical posterior risk plus a complexity term involving \(\operatorname{KL}(Q\|P)\).</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply an exponential concentration inequality to each hypothesis, integrate with respect to the prior, then change measure from the prior to the posterior using the variational form of KL divergence.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> PAC-Bayes bounds connect learning theory, information theory, and Bayesian language without requiring the posterior to be a literal Bayesian posterior.</p>
+        <p><span class="statement-title">Remark.</span> The word posterior here means any data-dependent distribution \(Q\). It need not be the Bayesian posterior from a likelihood.</p>
+    </div>
+
+    <h3>Change of measure</h3>
+
+    <p>The variational form of KL is the algebraic heart of PAC-Bayes.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> For any measurable \(\phi\) and any \(Q\ll P_0\),
+\[
+Q\phi\le \operatorname{KL}(Q\|P_0)+\log P_0e^\phi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> By the Donsker-Varadhan variational identity,
+\[
+\log P_0e^\phi=\sup_Q\{Q\phi-\operatorname{KL}(Q\|P_0)\}.
+\]
+Rearranging this inequality for the chosen \(Q\) gives the claim. Equivalently, apply Jensen's inequality to \(e^{\phi}/(\mathrm{d}Q/\mathrm{d}P_0)\) under \(Q\).</p>
+    </div>
+
+    <h3>A basic PAC-Bayes inequality</h3>
+
+    <p>The bound holds simultaneously over all posteriors because the random quantity integrated over the prior is controlled before choosing \(Q\).</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Assume \(0\le\ell(h,Z)\le1\). With probability at least \(1-\delta\), for every \(Q\ll P_0\),
+\[
+R(Q)\le R_n(Q)+
+\sqrt{\frac{\operatorname{KL}(Q\|P_0)+\log(2\sqrt n/\delta)}{2n}}
+\]
+up to standard constants depending on the chosen Bernoulli-kl relaxation.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For each fixed \(h\), concentration controls the deviation between \(R_n(h)\) and \(R(h)\) in exponential form. Integrate the exponential inequality with respect to \(P_0\) and apply Markov's inequality to obtain a high-probability bound on \(\log P_0e^\phi\). The change-of-measure lemma transfers the result from \(P_0\) to any \(Q\). Finally, relax the Bernoulli-kl form to the displayed square-root form.</p>
+    </div>
+
+    <h3>Choosing the posterior</h3>
+
+    <p>PAC-Bayes bounds can be optimized over \(Q\), giving a regularized empirical objective.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Minimizing
+\[
+Q R_n+\frac{1}{\eta n}\operatorname{KL}(Q\|P_0)
+\]
+over \(Q\) yields the Gibbs distribution
+\[
+Q_\eta(\mathrm{d}h)\propto e^{-\eta nR_n(h)}P_0(\mathrm{d}h).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use the same variational identity with \(\phi=-\eta nR_n(h)\). The minimizing distribution is the exponentially tilted prior, and the minimum value is \(-(\eta n)^{-1}\log P_0e^{-\eta nR_n}\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/distribution-shift-and-domain-adaptation/" %}
@@ -38,26 +90,78 @@ breadcrumb_child_label_zh: "20. PAC-贝叶斯界"
     <h2><a href="{{ '/notes/statistical-learning/pac-bayes-bounds/' | relative_url }}">20. Bornes PAC-Bayes</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/distribution-shift-and-domain-adaptation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Bornes PAC-Bayes.</p>
+    <p>PAC-Bayes theory gives high-probability risk bounds for randomized predictors. Its proof is an information inequality plus concentration, not ordinary Bayesian posterior consistency.</p>
 
-    <h3>Définition</h3>
+    <h3>Randomized predictors</h3>
+
+    <p>PAC-Bayes compares a data-dependent distribution over hypotheses with a prior distribution chosen before seeing the sample.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> PAC-Bayes theory bounds the risk of randomized predictors drawn from a posterior distribution over hypotheses, relative to a prior distribution chosen independently of the sample.</p>
+        <p><span class="statement-title">Définition.</span> Let \(\mathcal H\) be a hypothesis space, \(P_0\) a prior probability on \(\mathcal H\), and \(Q\) a data-dependent posterior probability on \(\mathcal H\). The Gibbs risk is
+\[
+R(Q)=\int R(h)\,Q(\mathrm{d}h),
+\qquad
+R_n(Q)=\int R_n(h)\,Q(\mathrm{d}h).
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> With high probability over the sample, many PAC-Bayes inequalities control posterior expected risk by empirical posterior risk plus a complexity term involving \(\operatorname{KL}(Q\|P)\).</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Apply an exponential concentration inequality to each hypothesis, integrate with respect to the prior, then change measure from the prior to the posterior using the variational form of KL divergence.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> PAC-Bayes bounds connect learning theory, information theory, and Bayesian language without requiring the posterior to be a literal Bayesian posterior.</p>
+        <p><span class="statement-title">Remarque.</span> The word posterior here means any data-dependent distribution \(Q\). It need not be the Bayesian posterior from a likelihood.</p>
+    </div>
+
+    <h3>Change of measure</h3>
+
+    <p>The variational form of KL is the algebraic heart of PAC-Bayes.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> For any measurable \(\phi\) and any \(Q\ll P_0\),
+\[
+Q\phi\le \operatorname{KL}(Q\|P_0)+\log P_0e^\phi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> By the Donsker-Varadhan variational identity,
+\[
+\log P_0e^\phi=\sup_Q\{Q\phi-\operatorname{KL}(Q\|P_0)\}.
+\]
+Rearranging this inequality for the chosen \(Q\) gives the claim. Equivalently, apply Jensen's inequality to \(e^{\phi}/(\mathrm{d}Q/\mathrm{d}P_0)\) under \(Q\).</p>
+    </div>
+
+    <h3>A basic PAC-Bayes inequality</h3>
+
+    <p>The bound holds simultaneously over all posteriors because the random quantity integrated over the prior is controlled before choosing \(Q\).</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Assume \(0\le\ell(h,Z)\le1\). With probability at least \(1-\delta\), for every \(Q\ll P_0\),
+\[
+R(Q)\le R_n(Q)+
+\sqrt{\frac{\operatorname{KL}(Q\|P_0)+\log(2\sqrt n/\delta)}{2n}}
+\]
+up to standard constants depending on the chosen Bernoulli-kl relaxation.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For each fixed \(h\), concentration controls the deviation between \(R_n(h)\) and \(R(h)\) in exponential form. Integrate the exponential inequality with respect to \(P_0\) and apply Markov's inequality to obtain a high-probability bound on \(\log P_0e^\phi\). The change-of-measure lemma transfers the result from \(P_0\) to any \(Q\). Finally, relax the Bernoulli-kl form to the displayed square-root form.</p>
+    </div>
+
+    <h3>Choosing the posterior</h3>
+
+    <p>PAC-Bayes bounds can be optimized over \(Q\), giving a regularized empirical objective.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Minimizing
+\[
+Q R_n+\frac{1}{\eta n}\operatorname{KL}(Q\|P_0)
+\]
+over \(Q\) yields the Gibbs distribution
+\[
+Q_\eta(\mathrm{d}h)\propto e^{-\eta nR_n(h)}P_0(\mathrm{d}h).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use the same variational identity with \(\phi=-\eta nR_n(h)\). The minimizing distribution is the exponentially tilted prior, and the minimum value is \(-(\eta n)^{-1}\log P_0e^{-\eta nR_n}\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/distribution-shift-and-domain-adaptation/" %}
@@ -67,26 +171,78 @@ breadcrumb_child_label_zh: "20. PAC-贝叶斯界"
     <h2><a href="{{ '/notes/statistical-learning/pac-bayes-bounds/' | relative_url }}">20. PAC-贝叶斯界</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/distribution-shift-and-domain-adaptation/" %}
 
-    <p>本页整理关于“PAC-贝叶斯界”的主要定义、命题、定理与证明思路。</p>
+    <p>PAC-Bayes theory gives high-probability risk bounds for randomized predictors. Its proof is an information inequality plus concentration, not ordinary Bayesian posterior consistency.</p>
 
-    <h3>定义</h3>
+    <h3>Randomized predictors</h3>
+
+    <p>PAC-Bayes compares a data-dependent distribution over hypotheses with a prior distribution chosen before seeing the sample.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> PAC-贝叶斯 theory bounds the risk of 随机化 predictors drawn from a 后验分布 over hypotheses, relative to a 先验分布 chosen independently of the sample.</p>
+        <p><span class="statement-title">定义.</span> Let \(\mathcal H\) be a hypothesis space, \(P_0\) a prior probability on \(\mathcal H\), and \(Q\) a data-dependent posterior probability on \(\mathcal H\). The Gibbs risk is
+\[
+R(Q)=\int R(h)\,Q(\mathrm{d}h),
+\qquad
+R_n(Q)=\int R_n(h)\,Q(\mathrm{d}h).
+\]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> With high probability over the sample, many PAC-贝叶斯 inequalities control 后验 expected risk by 经验后验 risk plus a complexity term involving \(\operatorname{KL}(Q\|P)\).</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Apply an exponential 集中不等式 to each hypothesis, integrate with respect to the 先验, then change 测度 from the 先验 to the 后验 using the variational form of KL 散度.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> PAC-贝叶斯 bounds connect learning theory, information theory, and 贝叶斯 language without requiring the 后验 to be a literal 贝叶斯后验.</p>
+        <p><span class="statement-title">说明.</span> The word posterior here means any data-dependent distribution \(Q\). It need not be the Bayesian posterior from a likelihood.</p>
+    </div>
+
+    <h3>Change of measure</h3>
+
+    <p>The variational form of KL is the algebraic heart of PAC-Bayes.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> For any measurable \(\phi\) and any \(Q\ll P_0\),
+\[
+Q\phi\le \operatorname{KL}(Q\|P_0)+\log P_0e^\phi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> By the Donsker-Varadhan variational identity,
+\[
+\log P_0e^\phi=\sup_Q\{Q\phi-\operatorname{KL}(Q\|P_0)\}.
+\]
+Rearranging this inequality for the chosen \(Q\) gives the claim. Equivalently, apply Jensen's inequality to \(e^{\phi}/(\mathrm{d}Q/\mathrm{d}P_0)\) under \(Q\).</p>
+    </div>
+
+    <h3>A basic PAC-Bayes inequality</h3>
+
+    <p>The bound holds simultaneously over all posteriors because the random quantity integrated over the prior is controlled before choosing \(Q\).</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Assume \(0\le\ell(h,Z)\le1\). With probability at least \(1-\delta\), for every \(Q\ll P_0\),
+\[
+R(Q)\le R_n(Q)+
+\sqrt{\frac{\operatorname{KL}(Q\|P_0)+\log(2\sqrt n/\delta)}{2n}}
+\]
+up to standard constants depending on the chosen Bernoulli-kl relaxation.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For each fixed \(h\), concentration controls the deviation between \(R_n(h)\) and \(R(h)\) in exponential form. Integrate the exponential inequality with respect to \(P_0\) and apply Markov's inequality to obtain a high-probability bound on \(\log P_0e^\phi\). The change-of-measure lemma transfers the result from \(P_0\) to any \(Q\). Finally, relax the Bernoulli-kl form to the displayed square-root form.</p>
+    </div>
+
+    <h3>Choosing the posterior</h3>
+
+    <p>PAC-Bayes bounds can be optimized over \(Q\), giving a regularized empirical objective.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Minimizing
+\[
+Q R_n+\frac{1}{\eta n}\operatorname{KL}(Q\|P_0)
+\]
+over \(Q\) yields the Gibbs distribution
+\[
+Q_\eta(\mathrm{d}h)\propto e^{-\eta nR_n(h)}P_0(\mathrm{d}h).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use the same variational identity with \(\phi=-\eta nR_n(h)\). The minimizing distribution is the exponentially tilted prior, and the minimum value is \(-(\eta n)^{-1}\log P_0e^{-\eta nR_n}\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/distribution-shift-and-domain-adaptation/" %}

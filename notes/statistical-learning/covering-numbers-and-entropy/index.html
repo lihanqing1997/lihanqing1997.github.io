@@ -9,26 +9,66 @@ breadcrumb_child_label_zh: "8. 覆盖数与熵"
     <h2><a href="{{ '/notes/statistical-learning/covering-numbers-and-entropy/' | relative_url }}">8. Covering numbers and entropy</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/rademacher-complexity/" next_label="Next page" next_url="/notes/statistical-learning/margins-in-classification/" %}
 
-    <p>Covering numbers and entropy records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Covering numbers measure metric size. In learning theory they quantify how many finite representatives are needed to approximate a loss class at a chosen accuracy.</p>
 
-    <h3>Definition</h3>
+    <h3>Metric entropy</h3>
+
+    <p>Entropy replaces an infinite class by finite nets at multiple scales.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A covering number counts how many balls of a given radius are needed to cover a function class under a metric or empirical metric. Its logarithm is metric entropy.</p>
+        <p><span class="statement-title">Definition.</span> For a metric space \((T,d)\), the covering number \(N(\varepsilon,T,d)\) is the smallest number of \(d\)-balls of radius \(\varepsilon\) needed to cover \(T\). The metric entropy is \(\log N(\varepsilon,T,d)\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Entropy integrals control suprema of empirical or Gaussian processes under suitable boundedness and sub-Gaussian assumptions.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> The Euclidean ball \(B_2^p(R)\) satisfies
+\[
+N(\varepsilon,B_2^p(R),\|\cdot\|_2)\le \left(1+\frac{2R}{\varepsilon}\right)^p.
+\]
+This is a volume comparison between a large ball and disjoint small balls centered at a maximal separated set.</p>
     </div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Chain the function class by successively finer nets. Sum the stochastic increments across scales, using concentration at each scale.</p>
+    <h3>Bracketing</h3>
+
+    <p>For function classes, brackets often give stronger integral bounds than ordinary covers.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For functions on \((\mathcal Z,P)\), an \(L^r(P)\)-bracket \([l,u]\) is the set of \(g\) satisfying \(l\le g\le u\) and \(\|u-l\|_{L^r(P)}\le\varepsilon\). The bracketing number \(N_{[]}(\varepsilon,\mathcal G,L^r(P))\) is the minimum number of such brackets covering \(\mathcal G\).</p>
     </div>
 
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Entropy connects statistical learning to empirical-process theory; the present page records the learning-theory interface only.</p>
+        <p><span class="statement-title">Remark.</span> Brackets control both approximation and order. This is why monotone and bounded-variation classes often have clean bracketing entropy bounds.</p>
+    </div>
+
+    <h3>Dudley entropy integral</h3>
+
+    <p>Chaining converts entropy at all scales into an expected supremum bound.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For a sub-Gaussian process \((X_t:t\in T)\) with canonical metric \(d(s,t)^2=\mathbb E(X_s-X_t)^2\),
+\[
+\mathbb E\sup_{t\in T}(X_t-X_{t_0})
+\le C\int_0^{\operatorname{diam}(T)}\sqrt{\log N(\varepsilon,T,d)}\,\mathrm{d}\varepsilon.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose nested \(2^{-k}\)-nets and write each \(X_t-X_{t_0}\) as a telescoping sum of increments between successive net projections. At each scale, the maximum over finitely many sub-Gaussian increments is bounded by the scale times the square root of the log covering number. Summing over scales and passing to the integral gives Dudley's bound.</p>
+    </div>
+
+    <h3>Entropy and uniform convergence</h3>
+
+    <p>Entropy bounds become learning bounds after applying them to the loss class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\mathcal G\) is uniformly bounded and
+\[
+\int_0^1\sqrt{\log N(\varepsilon,\mathcal G,L^2(P_n))}\,\mathrm{d}\varepsilon
+\]
+is bounded in probability, then \(\mathcal G\) has controlled Rademacher complexity and hence uniform deviations of order \(n^{-1/2}\) up to the entropy integral.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Conditional on the data, the Rademacher process indexed by \(\mathcal G\) is sub-Gaussian under the empirical \(L^2(P_n)\) metric. Dudley's bound controls its expected supremum. Symmetrization then transfers this control to \(\sup_g|(P_n-P)g|\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/rademacher-complexity/" next_label="Next page" next_url="/notes/statistical-learning/margins-in-classification/" %}
@@ -38,26 +78,66 @@ breadcrumb_child_label_zh: "8. 覆盖数与熵"
     <h2><a href="{{ '/notes/statistical-learning/covering-numbers-and-entropy/' | relative_url }}">8. Nombres de recouvrement et entropie</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/rademacher-complexity/" next_label="Page suivante" next_url="/notes/statistical-learning/margins-in-classification/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Nombres de recouvrement et entropie.</p>
+    <p>Covering numbers measure metric size. In learning theory they quantify how many finite representatives are needed to approximate a loss class at a chosen accuracy.</p>
 
-    <h3>Définition</h3>
+    <h3>Metric entropy</h3>
+
+    <p>Entropy replaces an infinite class by finite nets at multiple scales.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A covering number counts how many balls of a given radius are needed to cover a function class under a metric or empirical metric. Its logarithm is metric entropy.</p>
+        <p><span class="statement-title">Définition.</span> For a metric space \((T,d)\), the covering number \(N(\varepsilon,T,d)\) is the smallest number of \(d\)-balls of radius \(\varepsilon\) needed to cover \(T\). The metric entropy is \(\log N(\varepsilon,T,d)\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Entropy integrals control suprema of empirical or Gaussian processes under suitable boundedness and sub-Gaussian assumptions.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> The Euclidean ball \(B_2^p(R)\) satisfies
+\[
+N(\varepsilon,B_2^p(R),\|\cdot\|_2)\le \left(1+\frac{2R}{\varepsilon}\right)^p.
+\]
+This is a volume comparison between a large ball and disjoint small balls centered at a maximal separated set.</p>
     </div>
 
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Chain the function class by successively finer nets. Sum the stochastic increments across scales, using concentration at each scale.</p>
+    <h3>Bracketing</h3>
+
+    <p>For function classes, brackets often give stronger integral bounds than ordinary covers.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For functions on \((\mathcal Z,P)\), an \(L^r(P)\)-bracket \([l,u]\) is the set of \(g\) satisfying \(l\le g\le u\) and \(\|u-l\|_{L^r(P)}\le\varepsilon\). The bracketing number \(N_{[]}(\varepsilon,\mathcal G,L^r(P))\) is the minimum number of such brackets covering \(\mathcal G\).</p>
     </div>
 
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Entropy connects statistical learning to empirical-process theory; the present page records the learning-theory interface only.</p>
+        <p><span class="statement-title">Remarque.</span> Brackets control both approximation and order. This is why monotone and bounded-variation classes often have clean bracketing entropy bounds.</p>
+    </div>
+
+    <h3>Dudley entropy integral</h3>
+
+    <p>Chaining converts entropy at all scales into an expected supremum bound.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For a sub-Gaussian process \((X_t:t\in T)\) with canonical metric \(d(s,t)^2=\mathbb E(X_s-X_t)^2\),
+\[
+\mathbb E\sup_{t\in T}(X_t-X_{t_0})
+\le C\int_0^{\operatorname{diam}(T)}\sqrt{\log N(\varepsilon,T,d)}\,\mathrm{d}\varepsilon.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose nested \(2^{-k}\)-nets and write each \(X_t-X_{t_0}\) as a telescoping sum of increments between successive net projections. At each scale, the maximum over finitely many sub-Gaussian increments is bounded by the scale times the square root of the log covering number. Summing over scales and passing to the integral gives Dudley's bound.</p>
+    </div>
+
+    <h3>Entropy and uniform convergence</h3>
+
+    <p>Entropy bounds become learning bounds after applying them to the loss class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\mathcal G\) is uniformly bounded and
+\[
+\int_0^1\sqrt{\log N(\varepsilon,\mathcal G,L^2(P_n))}\,\mathrm{d}\varepsilon
+\]
+is bounded in probability, then \(\mathcal G\) has controlled Rademacher complexity and hence uniform deviations of order \(n^{-1/2}\) up to the entropy integral.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Conditional on the data, the Rademacher process indexed by \(\mathcal G\) is sub-Gaussian under the empirical \(L^2(P_n)\) metric. Dudley's bound controls its expected supremum. Symmetrization then transfers this control to \(\sup_g|(P_n-P)g|\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/rademacher-complexity/" next_label="Page suivante" next_url="/notes/statistical-learning/margins-in-classification/" %}
@@ -67,26 +147,66 @@ breadcrumb_child_label_zh: "8. 覆盖数与熵"
     <h2><a href="{{ '/notes/statistical-learning/covering-numbers-and-entropy/' | relative_url }}">8. 覆盖数与熵</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/rademacher-complexity/" next_label="下一页" next_url="/notes/statistical-learning/margins-in-classification/" %}
 
-    <p>本页整理关于“覆盖数与熵”的主要定义、命题、定理与证明思路。</p>
+    <p>Covering numbers measure metric size. In learning theory they quantify how many finite representatives are needed to approximate a loss class at a chosen accuracy.</p>
 
-    <h3>定义</h3>
+    <h3>Metric entropy</h3>
+
+    <p>Entropy replaces an infinite class by finite nets at multiple scales.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A 覆盖数 counts how many balls of a given radius are needed to cover a function class under a 度量 or 经验度量. Its logarithm is 度量熵.</p>
+        <p><span class="statement-title">定义.</span> For a metric space \((T,d)\), the covering number \(N(\varepsilon,T,d)\) is the smallest number of \(d\)-balls of radius \(\varepsilon\) needed to cover \(T\). The metric entropy is \(\log N(\varepsilon,T,d)\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 熵 integrals control suprema of 经验 or 高斯过程 under suitable boundedness and sub-高斯 assumptions.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> The Euclidean ball \(B_2^p(R)\) satisfies
+\[
+N(\varepsilon,B_2^p(R),\|\cdot\|_2)\le \left(1+\frac{2R}{\varepsilon}\right)^p.
+\]
+This is a volume comparison between a large ball and disjoint small balls centered at a maximal separated set.</p>
     </div>
 
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Chain the function class by successively finer nets. Sum the 随机 increments across scales, using concentration at each scale.</p>
+    <h3>Bracketing</h3>
+
+    <p>For function classes, brackets often give stronger integral bounds than ordinary covers.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For functions on \((\mathcal Z,P)\), an \(L^r(P)\)-bracket \([l,u]\) is the set of \(g\) satisfying \(l\le g\le u\) and \(\|u-l\|_{L^r(P)}\le\varepsilon\). The bracketing number \(N_{[]}(\varepsilon,\mathcal G,L^r(P))\) is the minimum number of such brackets covering \(\mathcal G\).</p>
     </div>
 
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 熵 connects statistical learning to 经验-process theory; the present page records the learning-theory interface only.</p>
+        <p><span class="statement-title">说明.</span> Brackets control both approximation and order. This is why monotone and bounded-variation classes often have clean bracketing entropy bounds.</p>
+    </div>
+
+    <h3>Dudley entropy integral</h3>
+
+    <p>Chaining converts entropy at all scales into an expected supremum bound.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For a sub-Gaussian process \((X_t:t\in T)\) with canonical metric \(d(s,t)^2=\mathbb E(X_s-X_t)^2\),
+\[
+\mathbb E\sup_{t\in T}(X_t-X_{t_0})
+\le C\int_0^{\operatorname{diam}(T)}\sqrt{\log N(\varepsilon,T,d)}\,\mathrm{d}\varepsilon.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose nested \(2^{-k}\)-nets and write each \(X_t-X_{t_0}\) as a telescoping sum of increments between successive net projections. At each scale, the maximum over finitely many sub-Gaussian increments is bounded by the scale times the square root of the log covering number. Summing over scales and passing to the integral gives Dudley's bound.</p>
+    </div>
+
+    <h3>Entropy and uniform convergence</h3>
+
+    <p>Entropy bounds become learning bounds after applying them to the loss class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(\mathcal G\) is uniformly bounded and
+\[
+\int_0^1\sqrt{\log N(\varepsilon,\mathcal G,L^2(P_n))}\,\mathrm{d}\varepsilon
+\]
+is bounded in probability, then \(\mathcal G\) has controlled Rademacher complexity and hence uniform deviations of order \(n^{-1/2}\) up to the entropy integral.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Conditional on the data, the Rademacher process indexed by \(\mathcal G\) is sub-Gaussian under the empirical \(L^2(P_n)\) metric. Dudley's bound controls its expected supremum. Symmetrization then transfers this control to \(\sup_g|(P_n-P)g|\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/rademacher-complexity/" next_label="下一页" next_url="/notes/statistical-learning/margins-in-classification/" %}

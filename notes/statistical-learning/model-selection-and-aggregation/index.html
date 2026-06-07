@@ -9,26 +9,78 @@ breadcrumb_child_label_zh: "15. 模型选择与聚合"
     <h2><a href="{{ '/notes/statistical-learning/model-selection-and-aggregation/' | relative_url }}">15. Model selection and aggregation</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/high-dimensional-sparsity/" next_label="Next page" next_url="/notes/statistical-learning/stability-and-generalization/" %}
 
-    <p>Model selection and aggregation records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Model selection chooses among candidate procedures; aggregation combines them. Both aim to mimic the best candidate while paying only a controlled complexity price.</p>
 
-    <h3>Definition</h3>
+    <h3>Penalized selection</h3>
+
+    <p>A penalty should compensate for searching over many models.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Model selection chooses among candidate classes or tuning parameters. Aggregation combines candidate predictors, often by weights.</p>
+        <p><span class="statement-title">Definition.</span> Given models \(\mathcal F_m\), a penalized selector chooses
+\[
+\hat m\in\operatorname*{argmin}_m\left\{\inf_{f\in\mathcal F_m}P_n\ell_f+\operatorname{pen}(m)\right\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Penalized criteria and exponential weighting can satisfy oracle inequalities comparing performance to the best candidate plus a complexity penalty.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\operatorname{pen}(m)\) dominates the stochastic fluctuation of model \(m\), then the selected estimator satisfies an oracle inequality of the form
+\[
+R(\hat f_{\hat m})\le C\inf_m\{\inf_{f\in\mathcal F_m}R(f)+\operatorname{pen}(m)\}
+\]
+with high probability.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use concentration to control empirical-population deviations uniformly over candidates, then choose penalties matching the deviation scale. Exponential weights are analyzed by convex duality.</p>
+        <p><span class="statement-title">Proof.</span> The penalized optimality inequality compares \(\hat m\) with an arbitrary \(m\). Add and subtract population risks in both selected and comparison models. The penalty domination absorbs the empirical-process fluctuations, leaving the population oracle expression.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Holdout and cross-validation</h3>
+
+    <p>Sample splitting estimates risk on data not used for fitting.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> In holdout selection, train candidate estimators \(\hat f_m^{\mathrm{tr}}\) on a training split and select the one minimizing validation risk on an independent validation split.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Conditional on the training data, finite-class concentration applies to validation losses and yields an oracle inequality over the trained candidates.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Once the training data are fixed, the candidates are fixed functions of the validation observations. Apply the finite-class Hoeffding union bound to their validation risks and then compare the validation minimizer with the best candidate.</p>
+    </div>
+
+    <h3>Exponential weights</h3>
+
+    <p>Aggregation can average predictors instead of selecting a single one.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For candidate predictors \(f_1,\ldots,f_M\), exponential weights take
+\[
+w_j=\frac{\exp(-\eta nR_n(f_j))}{\sum_{k=1}^M\exp(-\eta nR_n(f_k))}
+\]
+and aggregate by \(\bar f=\sum_jw_jf_j\) when the prediction space is convex.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For convex losses, exponential weighting satisfies oracle bounds of order \((\log M)/n\) under exp-concavity or related curvature conditions.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The log-sum-exp variational identity gives
+\[
+-\eta^{-1}n^{-1}\log\sum_j\pi_j e^{-\eta nR_n(f_j)}
+=\inf_Q\left\{Q R_n+\frac{\operatorname{KL}(Q\|\pi)}{\eta n}\right\}.
+\]
+Concentration or exp-concavity transfers this empirical variational inequality to population risk, producing the \(\log M/n\) term for point-mass \(Q\).</p>
+    </div>
+
+    <h3>AIC, BIC, and prediction</h3>
+
+    <p>Information criteria encode different asymptotic goals.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Model selection is learning over models. The penalty is the price of searching.</p>
+        <p><span class="statement-title">Remark.</span> AIC estimates predictive risk and tends to favor models with good out-of-sample prediction. BIC approximates marginal likelihood under fixed-dimensional parametric assumptions and is oriented toward model identification when the true model is among the candidates.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/high-dimensional-sparsity/" next_label="Next page" next_url="/notes/statistical-learning/stability-and-generalization/" %}
@@ -38,26 +90,78 @@ breadcrumb_child_label_zh: "15. 模型选择与聚合"
     <h2><a href="{{ '/notes/statistical-learning/model-selection-and-aggregation/' | relative_url }}">15. Sélection de modèles et agrégation</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/high-dimensional-sparsity/" next_label="Page suivante" next_url="/notes/statistical-learning/stability-and-generalization/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Sélection de modèles et agrégation.</p>
+    <p>Model selection chooses among candidate procedures; aggregation combines them. Both aim to mimic the best candidate while paying only a controlled complexity price.</p>
 
-    <h3>Définition</h3>
+    <h3>Penalized selection</h3>
+
+    <p>A penalty should compensate for searching over many models.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Model selection chooses among candidate classes or tuning parameters. Aggregation combines candidate predictors, often by weights.</p>
+        <p><span class="statement-title">Définition.</span> Given models \(\mathcal F_m\), a penalized selector chooses
+\[
+\hat m\in\operatorname*{argmin}_m\left\{\inf_{f\in\mathcal F_m}P_n\ell_f+\operatorname{pen}(m)\right\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Penalized criteria and exponential weighting can satisfy oracle inequalities comparing performance to the best candidate plus a complexity penalty.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\operatorname{pen}(m)\) dominates the stochastic fluctuation of model \(m\), then the selected estimator satisfies an oracle inequality of the form
+\[
+R(\hat f_{\hat m})\le C\inf_m\{\inf_{f\in\mathcal F_m}R(f)+\operatorname{pen}(m)\}
+\]
+with high probability.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Use concentration to control empirical-population deviations uniformly over candidates, then choose penalties matching the deviation scale. Exponential weights are analyzed by convex duality.</p>
+        <p><span class="statement-title">Preuve.</span> The penalized optimality inequality compares \(\hat m\) with an arbitrary \(m\). Add and subtract population risks in both selected and comparison models. The penalty domination absorbs the empirical-process fluctuations, leaving the population oracle expression.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Holdout and cross-validation</h3>
+
+    <p>Sample splitting estimates risk on data not used for fitting.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> In holdout selection, train candidate estimators \(\hat f_m^{\mathrm{tr}}\) on a training split and select the one minimizing validation risk on an independent validation split.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Conditional on the training data, finite-class concentration applies to validation losses and yields an oracle inequality over the trained candidates.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Once the training data are fixed, the candidates are fixed functions of the validation observations. Apply the finite-class Hoeffding union bound to their validation risks and then compare the validation minimizer with the best candidate.</p>
+    </div>
+
+    <h3>Exponential weights</h3>
+
+    <p>Aggregation can average predictors instead of selecting a single one.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For candidate predictors \(f_1,\ldots,f_M\), exponential weights take
+\[
+w_j=\frac{\exp(-\eta nR_n(f_j))}{\sum_{k=1}^M\exp(-\eta nR_n(f_k))}
+\]
+and aggregate by \(\bar f=\sum_jw_jf_j\) when the prediction space is convex.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For convex losses, exponential weighting satisfies oracle bounds of order \((\log M)/n\) under exp-concavity or related curvature conditions.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The log-sum-exp variational identity gives
+\[
+-\eta^{-1}n^{-1}\log\sum_j\pi_j e^{-\eta nR_n(f_j)}
+=\inf_Q\left\{Q R_n+\frac{\operatorname{KL}(Q\|\pi)}{\eta n}\right\}.
+\]
+Concentration or exp-concavity transfers this empirical variational inequality to population risk, producing the \(\log M/n\) term for point-mass \(Q\).</p>
+    </div>
+
+    <h3>AIC, BIC, and prediction</h3>
+
+    <p>Information criteria encode different asymptotic goals.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Model selection is learning over models. The penalty is the price of searching.</p>
+        <p><span class="statement-title">Remarque.</span> AIC estimates predictive risk and tends to favor models with good out-of-sample prediction. BIC approximates marginal likelihood under fixed-dimensional parametric assumptions and is oriented toward model identification when the true model is among the candidates.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/high-dimensional-sparsity/" next_label="Page suivante" next_url="/notes/statistical-learning/stability-and-generalization/" %}
@@ -67,26 +171,78 @@ breadcrumb_child_label_zh: "15. 模型选择与聚合"
     <h2><a href="{{ '/notes/statistical-learning/model-selection-and-aggregation/' | relative_url }}">15. 模型选择与聚合</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/high-dimensional-sparsity/" next_label="下一页" next_url="/notes/statistical-learning/stability-and-generalization/" %}
 
-    <p>本页整理关于“模型选择与聚合”的主要定义、命题、定理与证明思路。</p>
+    <p>Model selection chooses among candidate procedures; aggregation combines them. Both aim to mimic the best candidate while paying only a controlled complexity price.</p>
 
-    <h3>定义</h3>
+    <h3>Penalized selection</h3>
+
+    <p>A penalty should compensate for searching over many models.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Model selection chooses among candidate classes or tuning parameters. Aggregation combines candidate predictors, often by weights.</p>
+        <p><span class="statement-title">定义.</span> Given models \(\mathcal F_m\), a penalized selector chooses
+\[
+\hat m\in\operatorname*{argmin}_m\left\{\inf_{f\in\mathcal F_m}P_n\ell_f+\operatorname{pen}(m)\right\}.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Penalized criteria and exponential weighting can satisfy oracle inequalities comparing performance to the best candidate plus a complexity penalty.</p>
+        <p><span class="statement-title">命题.</span> If \(\operatorname{pen}(m)\) dominates the stochastic fluctuation of model \(m\), then the selected estimator satisfies an oracle inequality of the form
+\[
+R(\hat f_{\hat m})\le C\inf_m\{\inf_{f\in\mathcal F_m}R(f)+\operatorname{pen}(m)\}
+\]
+with high probability.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Use concentration to control 经验-population deviations uniformly over candidates, then choose penalties matching the deviation scale. Exponential weights are analyzed by 凸对偶性.</p>
+        <p><span class="statement-title">证明.</span> The penalized optimality inequality compares \(\hat m\) with an arbitrary \(m\). Add and subtract population risks in both selected and comparison models. The penalty domination absorbs the empirical-process fluctuations, leaving the population oracle expression.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Holdout and cross-validation</h3>
+
+    <p>Sample splitting estimates risk on data not used for fitting.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> In holdout selection, train candidate estimators \(\hat f_m^{\mathrm{tr}}\) on a training split and select the one minimizing validation risk on an independent validation split.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Conditional on the training data, finite-class concentration applies to validation losses and yields an oracle inequality over the trained candidates.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Once the training data are fixed, the candidates are fixed functions of the validation observations. Apply the finite-class Hoeffding union bound to their validation risks and then compare the validation minimizer with the best candidate.</p>
+    </div>
+
+    <h3>Exponential weights</h3>
+
+    <p>Aggregation can average predictors instead of selecting a single one.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For candidate predictors \(f_1,\ldots,f_M\), exponential weights take
+\[
+w_j=\frac{\exp(-\eta nR_n(f_j))}{\sum_{k=1}^M\exp(-\eta nR_n(f_k))}
+\]
+and aggregate by \(\bar f=\sum_jw_jf_j\) when the prediction space is convex.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For convex losses, exponential weighting satisfies oracle bounds of order \((\log M)/n\) under exp-concavity or related curvature conditions.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The log-sum-exp variational identity gives
+\[
+-\eta^{-1}n^{-1}\log\sum_j\pi_j e^{-\eta nR_n(f_j)}
+=\inf_Q\left\{Q R_n+\frac{\operatorname{KL}(Q\|\pi)}{\eta n}\right\}.
+\]
+Concentration or exp-concavity transfers this empirical variational inequality to population risk, producing the \(\log M/n\) term for point-mass \(Q\).</p>
+    </div>
+
+    <h3>AIC, BIC, and prediction</h3>
+
+    <p>Information criteria encode different asymptotic goals.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Model selection is learning over models. The penalty is the price of searching.</p>
+        <p><span class="statement-title">说明.</span> AIC estimates predictive risk and tends to favor models with good out-of-sample prediction. BIC approximates marginal likelihood under fixed-dimensional parametric assumptions and is oriented toward model identification when the true model is among the candidates.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/high-dimensional-sparsity/" next_label="下一页" next_url="/notes/statistical-learning/stability-and-generalization/" %}

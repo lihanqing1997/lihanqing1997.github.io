@@ -9,26 +9,90 @@ breadcrumb_child_label_zh: "2. 贝叶斯规则与超额风险"
     <h2><a href="{{ '/notes/statistical-learning/bayes-rules-and-excess-risk/' | relative_url }}">2. Bayes rules and excess risk</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/supervised-learning-setup/" next_label="Next page" next_url="/notes/statistical-learning/empirical-risk-minimization/" %}
 
-    <p>Bayes rules and excess risk records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Bayes rules identify the irreducible part of prediction. Excess risk is the mathematical scale on which a learned rule is compared with this optimal decision.</p>
 
-    <h3>Definition</h3>
+    <h3>Conditional risk and Bayes rules</h3>
+
+    <p>The Bayes rule minimizes conditional risk pointwise. This converts a global optimization problem into a family of ordinary optimization problems indexed by \(x\).</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Bayes rule minimizes population risk over all measurable predictors. Excess risk is \(R(f)-R(f^*)\), the loss relative to the Bayes rule.</p>
+        <p><span class="statement-title">Definition.</span> For a predictor \(a=f(x)\), the conditional risk is
+\[
+L(a,x)=\mathbb E\{\ell(a,Y)\mid X=x\}.
+\]
+A Bayes rule is any measurable \(f^*\) satisfying \(f^*(x)\in\operatorname*{argmin}_{a\in\mathcal A_0}L(a,x)\) for \(P_X\)-almost every \(x\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For squared-error regression, the Bayes rule is \(f^*(x)=E[Y\mid X=x]\). For classification under zero-one loss, it predicts the most likely class conditional on \(X=x\).</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If a measurable pointwise minimizer \(f^*\) exists, then \(f^*\) minimizes \(R(f)\) over all measurable predictors.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Minimize the conditional risk pointwise in \(x\). For squared loss, expand the square around the conditional mean; for classification, choose the label with largest conditional probability.</p>
+        <p><span class="statement-title">Proof.</span> By the tower property,
+\[
+R(f)=\mathbb E\,L(f(X),X).
+\]
+For almost every \(x\), \(L(f^*(x),x)\le L(f(x),x)\). Integrating over \(P_X\) gives \(R(f^*)\le R(f)\).</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Regression under squared loss</h3>
+
+    <p>Under squared loss, the Bayes rule is the regression function and excess risk is an \(L^2(P_X)\) distance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For \(\ell(a,y)=(a-y)^2\), the Bayes rule is \(m(x)=\mathbb E(Y\mid X=x)\), and
+\[
+R(f)-R(m)=\mathbb E\{f(X)-m(X)\}^2.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Write
+\[
+Y-f(X)=Y-m(X)+m(X)-f(X).
+\]
+After squaring and conditioning on \(X\), the cross term vanishes because \(\mathbb E\{Y-m(X)\mid X\}=0\). This yields the displayed identity.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The Bayes rule defines the statistical target even when it is not contained in the chosen model class.</p>
+        <p><span class="statement-title">Remark.</span> This identity explains why nonparametric regression theory is often \(L^2(P_X)\) approximation theory plus stochastic control.</p>
+    </div>
+
+    <h3>Classification under zero-one loss</h3>
+
+    <p>In binary classification, only the sign relative to \(1/2\) matters.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(Y\in\{0,1\}\) and \(\eta(x)=P(Y=1\mid X=x)\). For zero-one loss, the Bayes classifier is
+\[
+g^*(x)=\mathbf 1\{\eta(x)\ge1/2\}.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For any classifier \(g\),
+\[
+R(g)-R(g^*)=\mathbb E\left[|2\eta(X)-1|\mathbf 1\{g(X)\ne g^*(X)\}\right].
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Condition on \(X=x\). The conditional error of predicting \(1\) is \(1-\eta(x)\), and the conditional error of predicting \(0\) is \(\eta(x)\). Choosing the smaller gives the Bayes error. If \(g\) disagrees with \(g^*\), it chooses the larger conditional error, and the increase is \(|(1-\eta(x))-\eta(x)|=|2\eta(x)-1|\). Integrate over \(X\).</p>
+    </div>
+
+    <h3>Margin and noise</h3>
+
+    <p>Classification is easier when \(\eta(X)\) is usually far from \(1/2\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The Tsybakov margin condition with exponent \(\alpha>0\) is
+\[
+P_X(0<|\eta(X)-1/2|\le t)\le C t^\alpha,\qquad t>0.
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The condition says there is little probability mass near the decision boundary. It is one source of fast rates because classification mistakes near the boundary are the only mistakes that can have small excess-risk cost.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/supervised-learning-setup/" next_label="Next page" next_url="/notes/statistical-learning/empirical-risk-minimization/" %}
@@ -38,26 +102,90 @@ breadcrumb_child_label_zh: "2. 贝叶斯规则与超额风险"
     <h2><a href="{{ '/notes/statistical-learning/bayes-rules-and-excess-risk/' | relative_url }}">2. Règles de Bayes et risque excédentaire</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/supervised-learning-setup/" next_label="Page suivante" next_url="/notes/statistical-learning/empirical-risk-minimization/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Règles de Bayes et risque excédentaire.</p>
+    <p>Bayes rules identify the irreducible part of prediction. Excess risk is the mathematical scale on which a learned rule is compared with this optimal decision.</p>
 
-    <h3>Définition</h3>
+    <h3>Conditional risk and Bayes rules</h3>
+
+    <p>The Bayes rule minimizes conditional risk pointwise. This converts a global optimization problem into a family of ordinary optimization problems indexed by \(x\).</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A Bayes rule minimizes population risk over all measurable predictors. Excess risk is \(R(f)-R(f^*)\), the loss relative to the Bayes rule.</p>
+        <p><span class="statement-title">Définition.</span> For a predictor \(a=f(x)\), the conditional risk is
+\[
+L(a,x)=\mathbb E\{\ell(a,Y)\mid X=x\}.
+\]
+A Bayes rule is any measurable \(f^*\) satisfying \(f^*(x)\in\operatorname*{argmin}_{a\in\mathcal A_0}L(a,x)\) for \(P_X\)-almost every \(x\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For squared-error regression, the Bayes rule is \(f^*(x)=E[Y\mid X=x]\). For classification under zero-one loss, it predicts the most likely class conditional on \(X=x\).</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If a measurable pointwise minimizer \(f^*\) exists, then \(f^*\) minimizes \(R(f)\) over all measurable predictors.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Minimize the conditional risk pointwise in \(x\). For squared loss, expand the square around the conditional mean; for classification, choose the label with largest conditional probability.</p>
+        <p><span class="statement-title">Preuve.</span> By the tower property,
+\[
+R(f)=\mathbb E\,L(f(X),X).
+\]
+For almost every \(x\), \(L(f^*(x),x)\le L(f(x),x)\). Integrating over \(P_X\) gives \(R(f^*)\le R(f)\).</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Regression under squared loss</h3>
+
+    <p>Under squared loss, the Bayes rule is the regression function and excess risk is an \(L^2(P_X)\) distance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For \(\ell(a,y)=(a-y)^2\), the Bayes rule is \(m(x)=\mathbb E(Y\mid X=x)\), and
+\[
+R(f)-R(m)=\mathbb E\{f(X)-m(X)\}^2.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Write
+\[
+Y-f(X)=Y-m(X)+m(X)-f(X).
+\]
+After squaring and conditioning on \(X\), the cross term vanishes because \(\mathbb E\{Y-m(X)\mid X\}=0\). This yields the displayed identity.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> The Bayes rule defines the statistical target even when it is not contained in the chosen model class.</p>
+        <p><span class="statement-title">Remarque.</span> This identity explains why nonparametric regression theory is often \(L^2(P_X)\) approximation theory plus stochastic control.</p>
+    </div>
+
+    <h3>Classification under zero-one loss</h3>
+
+    <p>In binary classification, only the sign relative to \(1/2\) matters.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Let \(Y\in\{0,1\}\) and \(\eta(x)=P(Y=1\mid X=x)\). For zero-one loss, the Bayes classifier is
+\[
+g^*(x)=\mathbf 1\{\eta(x)\ge1/2\}.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For any classifier \(g\),
+\[
+R(g)-R(g^*)=\mathbb E\left[|2\eta(X)-1|\mathbf 1\{g(X)\ne g^*(X)\}\right].
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Condition on \(X=x\). The conditional error of predicting \(1\) is \(1-\eta(x)\), and the conditional error of predicting \(0\) is \(\eta(x)\). Choosing the smaller gives the Bayes error. If \(g\) disagrees with \(g^*\), it chooses the larger conditional error, and the increase is \(|(1-\eta(x))-\eta(x)|=|2\eta(x)-1|\). Integrate over \(X\).</p>
+    </div>
+
+    <h3>Margin and noise</h3>
+
+    <p>Classification is easier when \(\eta(X)\) is usually far from \(1/2\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> The Tsybakov margin condition with exponent \(\alpha>0\) is
+\[
+P_X(0<|\eta(X)-1/2|\le t)\le C t^\alpha,\qquad t>0.
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The condition says there is little probability mass near the decision boundary. It is one source of fast rates because classification mistakes near the boundary are the only mistakes that can have small excess-risk cost.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/supervised-learning-setup/" next_label="Page suivante" next_url="/notes/statistical-learning/empirical-risk-minimization/" %}
@@ -67,26 +195,90 @@ breadcrumb_child_label_zh: "2. 贝叶斯规则与超额风险"
     <h2><a href="{{ '/notes/statistical-learning/bayes-rules-and-excess-risk/' | relative_url }}">2. 贝叶斯规则与超额风险</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/supervised-learning-setup/" next_label="下一页" next_url="/notes/statistical-learning/empirical-risk-minimization/" %}
 
-    <p>本页整理关于“贝叶斯规则与超额风险”的主要定义、命题、定理与证明思路。</p>
+    <p>Bayes rules identify the irreducible part of prediction. Excess risk is the mathematical scale on which a learned rule is compared with this optimal decision.</p>
 
-    <h3>定义</h3>
+    <h3>Conditional risk and Bayes rules</h3>
+
+    <p>The Bayes rule minimizes conditional risk pointwise. This converts a global optimization problem into a family of ordinary optimization problems indexed by \(x\).</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A 贝叶斯规则 minimizes population risk over all 可测 predictors. Excess risk is \(R(f)-R(f^*)\), the loss relative to the 贝叶斯规则.</p>
+        <p><span class="statement-title">定义.</span> For a predictor \(a=f(x)\), the conditional risk is
+\[
+L(a,x)=\mathbb E\{\ell(a,Y)\mid X=x\}.
+\]
+A Bayes rule is any measurable \(f^*\) satisfying \(f^*(x)\in\operatorname*{argmin}_{a\in\mathcal A_0}L(a,x)\) for \(P_X\)-almost every \(x\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> For squared-error regression, the 贝叶斯规则 is \(f^*(x)=E[Y\mid X=x]\). For classification under zero-one loss, it predicts the most likely class conditional on \(X=x\).</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If a measurable pointwise minimizer \(f^*\) exists, then \(f^*\) minimizes \(R(f)\) over all measurable predictors.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Minimize the conditional risk pointwise in \(x\). For squared loss, expand the square around the conditional mean; for classification, choose the label with largest conditional probability.</p>
+        <p><span class="statement-title">证明.</span> By the tower property,
+\[
+R(f)=\mathbb E\,L(f(X),X).
+\]
+For almost every \(x\), \(L(f^*(x),x)\le L(f(x),x)\). Integrating over \(P_X\) gives \(R(f^*)\le R(f)\).</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Regression under squared loss</h3>
+
+    <p>Under squared loss, the Bayes rule is the regression function and excess risk is an \(L^2(P_X)\) distance.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For \(\ell(a,y)=(a-y)^2\), the Bayes rule is \(m(x)=\mathbb E(Y\mid X=x)\), and
+\[
+R(f)-R(m)=\mathbb E\{f(X)-m(X)\}^2.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Write
+\[
+Y-f(X)=Y-m(X)+m(X)-f(X).
+\]
+After squaring and conditioning on \(X\), the cross term vanishes because \(\mathbb E\{Y-m(X)\mid X\}=0\). This yields the displayed identity.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> The 贝叶斯规则 defines the statistical target even when it is not contained in the chosen model class.</p>
+        <p><span class="statement-title">说明.</span> This identity explains why nonparametric regression theory is often \(L^2(P_X)\) approximation theory plus stochastic control.</p>
+    </div>
+
+    <h3>Classification under zero-one loss</h3>
+
+    <p>In binary classification, only the sign relative to \(1/2\) matters.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Let \(Y\in\{0,1\}\) and \(\eta(x)=P(Y=1\mid X=x)\). For zero-one loss, the Bayes classifier is
+\[
+g^*(x)=\mathbf 1\{\eta(x)\ge1/2\}.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For any classifier \(g\),
+\[
+R(g)-R(g^*)=\mathbb E\left[|2\eta(X)-1|\mathbf 1\{g(X)\ne g^*(X)\}\right].
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Condition on \(X=x\). The conditional error of predicting \(1\) is \(1-\eta(x)\), and the conditional error of predicting \(0\) is \(\eta(x)\). Choosing the smaller gives the Bayes error. If \(g\) disagrees with \(g^*\), it chooses the larger conditional error, and the increase is \(|(1-\eta(x))-\eta(x)|=|2\eta(x)-1|\). Integrate over \(X\).</p>
+    </div>
+
+    <h3>Margin and noise</h3>
+
+    <p>Classification is easier when \(\eta(X)\) is usually far from \(1/2\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> The Tsybakov margin condition with exponent \(\alpha>0\) is
+\[
+P_X(0<|\eta(X)-1/2|\le t)\le C t^\alpha,\qquad t>0.
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The condition says there is little probability mass near the decision boundary. It is one source of fast rates because classification mistakes near the boundary are the only mistakes that can have small excess-risk cost.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/supervised-learning-setup/" next_label="下一页" next_url="/notes/statistical-learning/empirical-risk-minimization/" %}

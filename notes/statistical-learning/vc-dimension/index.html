@@ -9,26 +9,66 @@ breadcrumb_child_label_zh: "6. VC 维"
     <h2><a href="{{ '/notes/statistical-learning/vc-dimension/' | relative_url }}">6. VC dimension</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/bias-variance-and-approximation/" next_label="Next page" next_url="/notes/statistical-learning/rademacher-complexity/" %}
 
-    <p>VC dimension records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>VC dimension is the fundamental combinatorial measure for binary classification classes. It controls how many labelings the class can realize and therefore how severe overfitting can be.</p>
 
-    <h3>Definition</h3>
+    <h3>Shattering and growth</h3>
+
+    <p>A class is complex if it can realize all dichotomies on large finite sets.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The VC dimension of a binary class is the largest size of a set shattered by the class. Shattering means all binary labelings are realized.</p>
+        <p><span class="statement-title">Definition.</span> For a class \(\mathcal C\) of subsets of \(\mathcal X\), the growth function is
+\[
+\Pi_{\mathcal C}(n)=\max_{x_1,\ldots,x_n}\left|\{(1_C(x_1),\ldots,1_C(x_n)):C\in\mathcal C\}\right|.
+\]
+The VC dimension is the largest \(d\) such that some \(d\)-point set is shattered, meaning \(\Pi_{\mathcal C}(d)=2^d\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A class with finite VC dimension has uniform convergence of empirical classification risk to population risk at rates controlled by the VC dimension.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Intervals on \(\mathbb R\) have VC dimension \(2\). Two points can be shattered; three ordered points cannot realize the labeling \(1,0,1\).</p>
     </div>
 
-    <h3>Proof</h3>
+    <h3>Sauer-Shelah lemma</h3>
+
+    <p>Finite VC dimension forces polynomial growth of the number of labelings.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(\operatorname{VC}(\mathcal C)=d<\infty\), then for \(n\ge d\),
+\[
+\Pi_{\mathcal C}(n)\le \sum_{j=0}^d {n\choose j}\le \left(\frac{en}{d}\right)^d.
+\]</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Sauer-Shelah bounds the growth function by a polynomial in sample size when VC dimension is finite. Combine this counting bound with concentration over finite label patterns.</p>
+        <p><span class="statement-title">Proof.</span> The Sauer-Shelah induction counts traces on \(n\) points by separating sets according to whether their trace changes when the last point is removed. The changing part corresponds to subsets shattered by the class on the first \(n-1\) points, so the recursion is bounded by the binomial recursion \(\sum_{j\le d}{n-1\choose j}+\sum_{j\le d-1}{n-1\choose j}=\sum_{j\le d}{n\choose j}\). The final inequality is the standard binomial bound.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> VC dimension measures combinatorial richness, not parameter count alone. It is central for distribution-free classification theory.</p>
+    <h3>VC inequality</h3>
+
+    <p>VC classes satisfy uniform convergence for binary losses.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For a VC class \(\mathcal C\) of dimension \(d\), there is a universal constant \(K\) such that with probability at least \(1-\delta\),
+\[
+\sup_{C\in\mathcal C}|P_nC-PC|
+\le K\sqrt{\frac{d\log(en/d)+\log(1/\delta)}{n}}
+\]
+for \(n\ge d\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Symmetrization reduces the expected supremum to random signs on the sample. Conditional on the sample, only \(\Pi_{\mathcal C}(n)\) distinct label vectors occur. A finite-class maximal inequality and Sauer-Shelah bound the expected supremum by the displayed complexity scale. A bounded-differences concentration step converts expectation to a high-probability statement.</p>
+    </div>
+
+    <h3>Examples and invariances</h3>
+
+    <p>VC dimension is stable under many geometric transformations but sensitive to algebraic richness.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Halfspaces in \(\mathbb R^p\) have VC dimension \(p+1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Any \(p+1\) affinely independent points can be shattered by separating selected vertices of a simplex from the remaining vertices. Conversely, Radon's theorem says any \(p+2\) points can be partitioned into two subsets with intersecting convex hulls, so no hyperplane can separate those two labels. Hence the VC dimension is \(p+1\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/bias-variance-and-approximation/" next_label="Next page" next_url="/notes/statistical-learning/rademacher-complexity/" %}
@@ -38,26 +78,66 @@ breadcrumb_child_label_zh: "6. VC 维"
     <h2><a href="{{ '/notes/statistical-learning/vc-dimension/' | relative_url }}">6. Dimension VC</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/bias-variance-and-approximation/" next_label="Page suivante" next_url="/notes/statistical-learning/rademacher-complexity/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Dimension VC.</p>
+    <p>VC dimension is the fundamental combinatorial measure for binary classification classes. It controls how many labelings the class can realize and therefore how severe overfitting can be.</p>
 
-    <h3>Définition</h3>
+    <h3>Shattering and growth</h3>
+
+    <p>A class is complex if it can realize all dichotomies on large finite sets.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The VC dimension of a binary class is the largest size of a set shattered by the class. Shattering means all binary labelings are realized.</p>
+        <p><span class="statement-title">Définition.</span> For a class \(\mathcal C\) of subsets of \(\mathcal X\), the growth function is
+\[
+\Pi_{\mathcal C}(n)=\max_{x_1,\ldots,x_n}\left|\{(1_C(x_1),\ldots,1_C(x_n)):C\in\mathcal C\}\right|.
+\]
+The VC dimension is the largest \(d\) such that some \(d\)-point set is shattered, meaning \(\Pi_{\mathcal C}(d)=2^d\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A class with finite VC dimension has uniform convergence of empirical classification risk to population risk at rates controlled by the VC dimension.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Intervals on \(\mathbb R\) have VC dimension \(2\). Two points can be shattered; three ordered points cannot realize the labeling \(1,0,1\).</p>
     </div>
 
-    <h3>Preuve</h3>
+    <h3>Sauer-Shelah lemma</h3>
+
+    <p>Finite VC dimension forces polynomial growth of the number of labelings.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(\operatorname{VC}(\mathcal C)=d<\infty\), then for \(n\ge d\),
+\[
+\Pi_{\mathcal C}(n)\le \sum_{j=0}^d {n\choose j}\le \left(\frac{en}{d}\right)^d.
+\]</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Sauer-Shelah bounds the growth function by a polynomial in sample size when VC dimension is finite. Combine this counting bound with concentration over finite label patterns.</p>
+        <p><span class="statement-title">Preuve.</span> The Sauer-Shelah induction counts traces on \(n\) points by separating sets according to whether their trace changes when the last point is removed. The changing part corresponds to subsets shattered by the class on the first \(n-1\) points, so the recursion is bounded by the binomial recursion \(\sum_{j\le d}{n-1\choose j}+\sum_{j\le d-1}{n-1\choose j}=\sum_{j\le d}{n\choose j}\). The final inequality is the standard binomial bound.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> VC dimension measures combinatorial richness, not parameter count alone. It is central for distribution-free classification theory.</p>
+    <h3>VC inequality</h3>
+
+    <p>VC classes satisfy uniform convergence for binary losses.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For a VC class \(\mathcal C\) of dimension \(d\), there is a universal constant \(K\) such that with probability at least \(1-\delta\),
+\[
+\sup_{C\in\mathcal C}|P_nC-PC|
+\le K\sqrt{\frac{d\log(en/d)+\log(1/\delta)}{n}}
+\]
+for \(n\ge d\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Symmetrization reduces the expected supremum to random signs on the sample. Conditional on the sample, only \(\Pi_{\mathcal C}(n)\) distinct label vectors occur. A finite-class maximal inequality and Sauer-Shelah bound the expected supremum by the displayed complexity scale. A bounded-differences concentration step converts expectation to a high-probability statement.</p>
+    </div>
+
+    <h3>Examples and invariances</h3>
+
+    <p>VC dimension is stable under many geometric transformations but sensitive to algebraic richness.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Halfspaces in \(\mathbb R^p\) have VC dimension \(p+1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Any \(p+1\) affinely independent points can be shattered by separating selected vertices of a simplex from the remaining vertices. Conversely, Radon's theorem says any \(p+2\) points can be partitioned into two subsets with intersecting convex hulls, so no hyperplane can separate those two labels. Hence the VC dimension is \(p+1\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/bias-variance-and-approximation/" next_label="Page suivante" next_url="/notes/statistical-learning/rademacher-complexity/" %}
@@ -67,26 +147,66 @@ breadcrumb_child_label_zh: "6. VC 维"
     <h2><a href="{{ '/notes/statistical-learning/vc-dimension/' | relative_url }}">6. VC 维</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/bias-variance-and-approximation/" next_label="下一页" next_url="/notes/statistical-learning/rademacher-complexity/" %}
 
-    <p>本页整理关于“VC 维”的主要定义、命题、定理与证明思路。</p>
+    <p>VC dimension is the fundamental combinatorial measure for binary classification classes. It controls how many labelings the class can realize and therefore how severe overfitting can be.</p>
 
-    <h3>定义</h3>
+    <h3>Shattering and growth</h3>
+
+    <p>A class is complex if it can realize all dichotomies on large finite sets.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The VC dimension of a binary class is the largest size of a set shattered by the class. Shattering means all binary labelings are realized.</p>
+        <p><span class="statement-title">定义.</span> For a class \(\mathcal C\) of subsets of \(\mathcal X\), the growth function is
+\[
+\Pi_{\mathcal C}(n)=\max_{x_1,\ldots,x_n}\left|\{(1_C(x_1),\ldots,1_C(x_n)):C\in\mathcal C\}\right|.
+\]
+The VC dimension is the largest \(d\) such that some \(d\)-point set is shattered, meaning \(\Pi_{\mathcal C}(d)=2^d\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> A class with finite VC dimension has 一致收敛 of 经验 classification risk to population risk at rates controlled by the VC dimension.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> Intervals on \(\mathbb R\) have VC dimension \(2\). Two points can be shattered; three ordered points cannot realize the labeling \(1,0,1\).</p>
     </div>
 
-    <h3>证明</h3>
+    <h3>Sauer-Shelah lemma</h3>
+
+    <p>Finite VC dimension forces polynomial growth of the number of labelings.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(\operatorname{VC}(\mathcal C)=d<\infty\), then for \(n\ge d\),
+\[
+\Pi_{\mathcal C}(n)\le \sum_{j=0}^d {n\choose j}\le \left(\frac{en}{d}\right)^d.
+\]</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Sauer-Shelah bounds the growth function by a polynomial in sample size when VC dimension is finite. Combine this counting bound with concentration over finite label patterns.</p>
+        <p><span class="statement-title">证明.</span> The Sauer-Shelah induction counts traces on \(n\) points by separating sets according to whether their trace changes when the last point is removed. The changing part corresponds to subsets shattered by the class on the first \(n-1\) points, so the recursion is bounded by the binomial recursion \(\sum_{j\le d}{n-1\choose j}+\sum_{j\le d-1}{n-1\choose j}=\sum_{j\le d}{n\choose j}\). The final inequality is the standard binomial bound.</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> VC dimension 测度 combinatorial richness, not parameter count alone. It is central for distribution-free classification theory.</p>
+    <h3>VC inequality</h3>
+
+    <p>VC classes satisfy uniform convergence for binary losses.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For a VC class \(\mathcal C\) of dimension \(d\), there is a universal constant \(K\) such that with probability at least \(1-\delta\),
+\[
+\sup_{C\in\mathcal C}|P_nC-PC|
+\le K\sqrt{\frac{d\log(en/d)+\log(1/\delta)}{n}}
+\]
+for \(n\ge d\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Symmetrization reduces the expected supremum to random signs on the sample. Conditional on the sample, only \(\Pi_{\mathcal C}(n)\) distinct label vectors occur. A finite-class maximal inequality and Sauer-Shelah bound the expected supremum by the displayed complexity scale. A bounded-differences concentration step converts expectation to a high-probability statement.</p>
+    </div>
+
+    <h3>Examples and invariances</h3>
+
+    <p>VC dimension is stable under many geometric transformations but sensitive to algebraic richness.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Halfspaces in \(\mathbb R^p\) have VC dimension \(p+1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Any \(p+1\) affinely independent points can be shattered by separating selected vertices of a simplex from the remaining vertices. Conversely, Radon's theorem says any \(p+2\) points can be partitioned into two subsets with intersecting convex hulls, so no hyperplane can separate those two labels. Hence the VC dimension is \(p+1\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/bias-variance-and-approximation/" next_label="下一页" next_url="/notes/statistical-learning/rademacher-complexity/" %}

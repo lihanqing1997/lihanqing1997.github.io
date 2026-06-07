@@ -9,26 +9,90 @@ breadcrumb_child_label_zh: "3. 经验风险最小化"
     <h2><a href="{{ '/notes/statistical-learning/empirical-risk-minimization/' | relative_url }}">3. Empirical risk minimization</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/bayes-rules-and-excess-risk/" next_label="Next page" next_url="/notes/statistical-learning/concentration-inequalities/" %}
 
-    <p>Empirical risk minimization records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>Empirical risk minimization is the basic bridge from data to predictors. Its validity comes from uniform laws of large numbers, and its sharp forms come from localization around low-risk functions.</p>
 
-    <h3>Definition</h3>
+    <h3>Exact and approximate minimizers</h3>
+
+    <p>Optimization error should be visible in the notation. An algorithm rarely returns a mathematical exact minimizer.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Empirical risk minimization chooses \(\widehat f\in\mathcal F\) approximately minimizing observed average loss over a function class.</p>
+        <p><span class="statement-title">Definition.</span> Given a loss class \(\mathcal G=\{\ell_f:f\in\mathcal F\}\), an \(\eta_n\)-ERM satisfies
+\[
+P_n\ell_{\hat f_n}\le \inf_{f\in\mathcal F}P_n\ell_f+\eta_n.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\sup_{f\in\mathcal F}|R_n(f)-R(f)|\) is small, then the excess risk of an empirical minimizer over \(\mathcal F\) is controlled by twice this uniform deviation plus optimization error.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\mathcal G\) is \(P\)-Glivenko-Cantelli and \(\eta_n\to0\) in probability, then
+\[
+R(\hat f_n)-\inf_{f\in\mathcal F}R(f)\to0
+\]
+in probability.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Compare \(R(\widehat f)\) to \(R_n(\widehat f)\), use empirical optimality to compare with \(R_n(f)\), then return from empirical to population risk.</p>
+        <p><span class="statement-title">Proof.</span> Use the basic ERM inequality
+\[
+R(\hat f_n)-\inf_{\mathcal F}R
+\le 2\sup_{g\in\mathcal G}|P_ng-Pg|+\eta_n.
+\]
+The right side converges to zero by the Glivenko-Cantelli assumption and the optimization condition.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Finite classes</h3>
+
+    <p>For finite classes, uniform convergence is just concentration plus a union bound.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(0\le \ell_f\le1\) and \(|\mathcal F|=M<\infty\), then with probability at least \(1-\delta\),
+\[
+\sup_{f\in\mathcal F}|R_n(f)-R(f)|
+\le \sqrt{\frac{\log(2M/\delta)}{2n}}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Hoeffding's inequality gives
+\[
+P(|R_n(f)-R(f)|>t)\le2e^{-2nt^2}
+\]
+for each fixed \(f\). Taking a union bound over \(M\) functions and solving \(2Me^{-2nt^2}=\delta\) gives the bound.</p>
+    </div>
+
+    <h3>Oracle inequalities</h3>
+
+    <p>A learning bound is strongest when it compares the estimator with the best member of a reference class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> On the same event as the finite-class theorem, every ERM satisfies
+\[
+R(\hat f_n)\le \inf_{f\in\mathcal F}R(f)
++2\sqrt{\frac{\log(2M/\delta)}{2n}}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply the basic ERM inequality with \(\eta_n=0\) and the uniform deviation bound from the finite-class theorem.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> ERM is simple because one inequality separates statistical learning from computation. The hard part is bounding the uniform deviation.</p>
+        <p><span class="statement-title">Remark.</span> The phrase oracle inequality means the right side is the performance of the best inaccessible oracle choice plus an explicit price for learning it from data.</p>
+    </div>
+
+    <h3>Localization</h3>
+
+    <p>Global uniform convergence often wastes information because high-risk functions do not compete with the empirical minimizer.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For a radius \(r>0\), a localized class may be written
+\[
+\mathcal G(r)=\{g_f-g_{f^*}:P(g_f-g_{f^*})\le r\}.
+\]
+Localized analyses bound the empirical process on \(\mathcal G(r)\) and solve a fixed-point inequality for \(r\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Fast rates in least squares, classification with margin, and strongly convex regularized ERM all use this idea in different languages.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/bayes-rules-and-excess-risk/" next_label="Next page" next_url="/notes/statistical-learning/concentration-inequalities/" %}
@@ -38,26 +102,90 @@ breadcrumb_child_label_zh: "3. 经验风险最小化"
     <h2><a href="{{ '/notes/statistical-learning/empirical-risk-minimization/' | relative_url }}">3. Minimisation du risque empirique</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/bayes-rules-and-excess-risk/" next_label="Page suivante" next_url="/notes/statistical-learning/concentration-inequalities/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Minimisation du risque empirique.</p>
+    <p>Empirical risk minimization is the basic bridge from data to predictors. Its validity comes from uniform laws of large numbers, and its sharp forms come from localization around low-risk functions.</p>
 
-    <h3>Définition</h3>
+    <h3>Exact and approximate minimizers</h3>
+
+    <p>Optimization error should be visible in the notation. An algorithm rarely returns a mathematical exact minimizer.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Empirical risk minimization chooses \(\widehat f\in\mathcal F\) approximately minimizing observed average loss over a function class.</p>
+        <p><span class="statement-title">Définition.</span> Given a loss class \(\mathcal G=\{\ell_f:f\in\mathcal F\}\), an \(\eta_n\)-ERM satisfies
+\[
+P_n\ell_{\hat f_n}\le \inf_{f\in\mathcal F}P_n\ell_f+\eta_n.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\sup_{f\in\mathcal F}|R_n(f)-R(f)|\) is small, then the excess risk of an empirical minimizer over \(\mathcal F\) is controlled by twice this uniform deviation plus optimization error.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\mathcal G\) is \(P\)-Glivenko-Cantelli and \(\eta_n\to0\) in probability, then
+\[
+R(\hat f_n)-\inf_{f\in\mathcal F}R(f)\to0
+\]
+in probability.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Compare \(R(\widehat f)\) to \(R_n(\widehat f)\), use empirical optimality to compare with \(R_n(f)\), then return from empirical to population risk.</p>
+        <p><span class="statement-title">Preuve.</span> Use the basic ERM inequality
+\[
+R(\hat f_n)-\inf_{\mathcal F}R
+\le 2\sup_{g\in\mathcal G}|P_ng-Pg|+\eta_n.
+\]
+The right side converges to zero by the Glivenko-Cantelli assumption and the optimization condition.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Finite classes</h3>
+
+    <p>For finite classes, uniform convergence is just concentration plus a union bound.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(0\le \ell_f\le1\) and \(|\mathcal F|=M<\infty\), then with probability at least \(1-\delta\),
+\[
+\sup_{f\in\mathcal F}|R_n(f)-R(f)|
+\le \sqrt{\frac{\log(2M/\delta)}{2n}}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Hoeffding's inequality gives
+\[
+P(|R_n(f)-R(f)|>t)\le2e^{-2nt^2}
+\]
+for each fixed \(f\). Taking a union bound over \(M\) functions and solving \(2Me^{-2nt^2}=\delta\) gives the bound.</p>
+    </div>
+
+    <h3>Oracle inequalities</h3>
+
+    <p>A learning bound is strongest when it compares the estimator with the best member of a reference class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> On the same event as the finite-class theorem, every ERM satisfies
+\[
+R(\hat f_n)\le \inf_{f\in\mathcal F}R(f)
++2\sqrt{\frac{\log(2M/\delta)}{2n}}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Apply the basic ERM inequality with \(\eta_n=0\) and the uniform deviation bound from the finite-class theorem.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> ERM is simple because one inequality separates statistical learning from computation. The hard part is bounding the uniform deviation.</p>
+        <p><span class="statement-title">Remarque.</span> The phrase oracle inequality means the right side is the performance of the best inaccessible oracle choice plus an explicit price for learning it from data.</p>
+    </div>
+
+    <h3>Localization</h3>
+
+    <p>Global uniform convergence often wastes information because high-risk functions do not compete with the empirical minimizer.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For a radius \(r>0\), a localized class may be written
+\[
+\mathcal G(r)=\{g_f-g_{f^*}:P(g_f-g_{f^*})\le r\}.
+\]
+Localized analyses bound the empirical process on \(\mathcal G(r)\) and solve a fixed-point inequality for \(r\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Fast rates in least squares, classification with margin, and strongly convex regularized ERM all use this idea in different languages.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/bayes-rules-and-excess-risk/" next_label="Page suivante" next_url="/notes/statistical-learning/concentration-inequalities/" %}
@@ -67,26 +195,90 @@ breadcrumb_child_label_zh: "3. 经验风险最小化"
     <h2><a href="{{ '/notes/statistical-learning/empirical-risk-minimization/' | relative_url }}">3. 经验风险最小化</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/bayes-rules-and-excess-risk/" next_label="下一页" next_url="/notes/statistical-learning/concentration-inequalities/" %}
 
-    <p>本页整理关于“经验风险最小化”的主要定义、命题、定理与证明思路。</p>
+    <p>Empirical risk minimization is the basic bridge from data to predictors. Its validity comes from uniform laws of large numbers, and its sharp forms come from localization around low-risk functions.</p>
 
-    <h3>定义</h3>
+    <h3>Exact and approximate minimizers</h3>
+
+    <p>Optimization error should be visible in the notation. An algorithm rarely returns a mathematical exact minimizer.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 经验风险最小化 chooses \(\widehat f\in\mathcal F\) approximately minimizing observed average loss over a function class.</p>
+        <p><span class="statement-title">定义.</span> Given a loss class \(\mathcal G=\{\ell_f:f\in\mathcal F\}\), an \(\eta_n\)-ERM satisfies
+\[
+P_n\ell_{\hat f_n}\le \inf_{f\in\mathcal F}P_n\ell_f+\eta_n.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If \(\sup_{f\in\mathcal F}|R_n(f)-R(f)|\) is small, then the excess risk of an 经验 minimizer over \(\mathcal F\) is controlled by twice this uniform deviation plus optimization error.</p>
+        <p><span class="statement-title">命题.</span> If \(\mathcal G\) is \(P\)-Glivenko-Cantelli and \(\eta_n\to0\) in probability, then
+\[
+R(\hat f_n)-\inf_{f\in\mathcal F}R(f)\to0
+\]
+in probability.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Compare \(R(\widehat f)\) to \(R_n(\widehat f)\), use 经验 optimality to compare with \(R_n(f)\), then return from 经验 to population risk.</p>
+        <p><span class="statement-title">证明.</span> Use the basic ERM inequality
+\[
+R(\hat f_n)-\inf_{\mathcal F}R
+\le 2\sup_{g\in\mathcal G}|P_ng-Pg|+\eta_n.
+\]
+The right side converges to zero by the Glivenko-Cantelli assumption and the optimization condition.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Finite classes</h3>
+
+    <p>For finite classes, uniform convergence is just concentration plus a union bound.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(0\le \ell_f\le1\) and \(|\mathcal F|=M<\infty\), then with probability at least \(1-\delta\),
+\[
+\sup_{f\in\mathcal F}|R_n(f)-R(f)|
+\le \sqrt{\frac{\log(2M/\delta)}{2n}}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Hoeffding's inequality gives
+\[
+P(|R_n(f)-R(f)|>t)\le2e^{-2nt^2}
+\]
+for each fixed \(f\). Taking a union bound over \(M\) functions and solving \(2Me^{-2nt^2}=\delta\) gives the bound.</p>
+    </div>
+
+    <h3>Oracle inequalities</h3>
+
+    <p>A learning bound is strongest when it compares the estimator with the best member of a reference class.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> On the same event as the finite-class theorem, every ERM satisfies
+\[
+R(\hat f_n)\le \inf_{f\in\mathcal F}R(f)
++2\sqrt{\frac{\log(2M/\delta)}{2n}}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Apply the basic ERM inequality with \(\eta_n=0\) and the uniform deviation bound from the finite-class theorem.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> ERM is simple because one inequality separates statistical learning from computation. The hard part is bounding the uniform deviation.</p>
+        <p><span class="statement-title">说明.</span> The phrase oracle inequality means the right side is the performance of the best inaccessible oracle choice plus an explicit price for learning it from data.</p>
+    </div>
+
+    <h3>Localization</h3>
+
+    <p>Global uniform convergence often wastes information because high-risk functions do not compete with the empirical minimizer.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For a radius \(r>0\), a localized class may be written
+\[
+\mathcal G(r)=\{g_f-g_{f^*}:P(g_f-g_{f^*})\le r\}.
+\]
+Localized analyses bound the empirical process on \(\mathcal G(r)\) and solve a fixed-point inequality for \(r\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Fast rates in least squares, classification with margin, and strongly convex regularized ERM all use this idea in different languages.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/bayes-rules-and-excess-risk/" next_label="下一页" next_url="/notes/statistical-learning/concentration-inequalities/" %}

@@ -9,26 +9,88 @@ breadcrumb_child_label_zh: "14. 高维稀疏性"
     <h2><a href="{{ '/notes/statistical-learning/high-dimensional-sparsity/' | relative_url }}">14. High-dimensional sparsity</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/support-vector-machines/" next_label="Next page" next_url="/notes/statistical-learning/model-selection-and-aggregation/" %}
 
-    <p>High-dimensional sparsity records the objects, main results, proof mechanisms, and boundary cases needed for the statistical learning note.</p>
+    <p>High-dimensional learning is possible when the target has low effective complexity, such as sparsity, even if the ambient dimension exceeds the sample size.</p>
 
-    <h3>Definition</h3>
+    <h3>Sparse linear model</h3>
+
+    <p>The canonical example is linear regression with many covariates but few active coefficients.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> High-dimensional learning allows the number of features to be comparable to or larger than sample size. Sparsity assumes the target depends on few effective coordinates.</p>
+        <p><span class="statement-title">Definition.</span> In the linear model \(y=X\beta^*+\xi\), the vector \(\beta^*\in\mathbb R^p\) is \(s\)-sparse if \(|S|=s\) for \(S=\{j:\beta_j^*\ne0\}\). The Lasso estimator solves
+\[
+\hat\beta\in\operatorname*{argmin}_{\beta\in\mathbb R^p}
+\left\{\frac{1}{2n}\|y-X\beta\|_2^2+\lambda\|\beta\|_1\right\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under restricted eigenvalue or compatibility conditions, \(\ell_1\)-regularized estimators satisfy oracle-type bounds scaling with sparsity and logarithmic dimension.</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use the basic inequality, decomposability of the \(\ell_1\) norm, concentration of empirical correlations, and restricted curvature on sparse cones.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The theory separates dimension from effective dimension, but only under structural assumptions on the design and target.</p>
+        <p><span class="statement-title">Remark.</span> The \(\ell^1\) norm is convex but has corners aligned with coordinate sparsity. That geometry is why it can select sparse solutions.</p>
+    </div>
+
+    <h3>Basic inequality</h3>
+
+    <p>Most Lasso theory begins with one deterministic inequality.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> Let \(\Delta=\hat\beta-\beta^*\). If \(\lambda\ge 2\|X^\top\xi/n\|_\infty\), then
+\[
+\frac1{2n}\|X\Delta\|_2^2+\frac{\lambda}{2}\|\Delta_{S^c}\|_1
+\le \frac{3\lambda}{2}\|\Delta_S\|_1.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Optimality of \(\hat\beta\) compared with \(\beta^*\) gives
+\[
+\frac1{2n}\|X\Delta\|_2^2
+\le \frac{\xi^\top X\Delta}{n}+\lambda(\|\beta^*\|_1-\|\hat\beta\|_1).
+\]
+The stochastic term is bounded by \((\lambda/2)\|\Delta\|_1\). Since \(\beta^*_{S^c}=0\),
+\[
+\|\beta^*\|_1-\|\hat\beta\|_1\le \|\Delta_S\|_1-\|\Delta_{S^c}\|_1.
+\]
+Combining terms gives the displayed inequality.</p>
+    </div>
+
+    <h3>Restricted eigenvalues</h3>
+
+    <p>Prediction and estimation rates require curvature on sparse cones, not on all of \(\mathbb R^p\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A restricted eigenvalue condition holds with constant \(\kappa>0\) if
+\[
+\frac{\|X\Delta\|_2}{\sqrt n}\ge \kappa\|\Delta_S\|_2
+\]
+for all \(\Delta\) satisfying \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Under the basic-inequality event and the restricted eigenvalue condition,
+\[
+\frac1n\|X(\hat\beta-\beta^*)\|_2^2\lesssim \frac{\lambda^2s}{\kappa^2},
+\qquad
+\|\hat\beta-\beta^*\|_1\lesssim \frac{\lambda s}{\kappa^2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The basic inequality implies the cone condition \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\). Then \(\|\Delta_S\|_1\le\sqrt s\|\Delta_S\|_2\le \sqrt s\,\|X\Delta\|_2/(\sqrt n\kappa)\). Substitute this into the basic inequality and solve for \(\|X\Delta\|_2^2/n\). The \(\ell^1\) bound follows by combining the cone condition with the resulting \(\ell^2\) bound on \(\Delta_S\).</p>
+    </div>
+
+    <h3>Choice of penalty</h3>
+
+    <p>The penalty level must dominate noise correlations with all covariates.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If columns of \(X\) have empirical norm at most \(1\) and \(\xi_i\) are sub-Gaussian with scale \(\sigma\), then
+\[
+\left\|X^\top\xi/n\right\|_\infty
+=O_P\left(\sigma\sqrt{\frac{\log p}{n}}\right).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For each coordinate, \(X_j^\top\xi/n\) is sub-Gaussian with scale at most \(\sigma/\sqrt n\). A union bound over \(p\) coordinates gives the \(\sqrt{\log p/n}\) maximum scale.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/statistical-learning/" prev_label="Last page" prev_url="/notes/statistical-learning/support-vector-machines/" next_label="Next page" next_url="/notes/statistical-learning/model-selection-and-aggregation/" %}
@@ -38,26 +100,88 @@ breadcrumb_child_label_zh: "14. 高维稀疏性"
     <h2><a href="{{ '/notes/statistical-learning/high-dimensional-sparsity/' | relative_url }}">14. Parcimonie en grande dimension</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/support-vector-machines/" next_label="Page suivante" next_url="/notes/statistical-learning/model-selection-and-aggregation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Parcimonie en grande dimension.</p>
+    <p>High-dimensional learning is possible when the target has low effective complexity, such as sparsity, even if the ambient dimension exceeds the sample size.</p>
 
-    <h3>Définition</h3>
+    <h3>Sparse linear model</h3>
+
+    <p>The canonical example is linear regression with many covariates but few active coefficients.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> High-dimensional learning allows the number of features to be comparable to or larger than sample size. Sparsity assumes the target depends on few effective coordinates.</p>
+        <p><span class="statement-title">Définition.</span> In the linear model \(y=X\beta^*+\xi\), the vector \(\beta^*\in\mathbb R^p\) is \(s\)-sparse if \(|S|=s\) for \(S=\{j:\beta_j^*\ne0\}\). The Lasso estimator solves
+\[
+\hat\beta\in\operatorname*{argmin}_{\beta\in\mathbb R^p}
+\left\{\frac{1}{2n}\|y-X\beta\|_2^2+\lambda\|\beta\|_1\right\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under restricted eigenvalue or compatibility conditions, \(\ell_1\)-regularized estimators satisfy oracle-type bounds scaling with sparsity and logarithmic dimension.</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Use the basic inequality, decomposability of the \(\ell_1\) norm, concentration of empirical correlations, and restricted curvature on sparse cones.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> The theory separates dimension from effective dimension, but only under structural assumptions on the design and target.</p>
+        <p><span class="statement-title">Remarque.</span> The \(\ell^1\) norm is convex but has corners aligned with coordinate sparsity. That geometry is why it can select sparse solutions.</p>
+    </div>
+
+    <h3>Basic inequality</h3>
+
+    <p>Most Lasso theory begins with one deterministic inequality.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> Let \(\Delta=\hat\beta-\beta^*\). If \(\lambda\ge 2\|X^\top\xi/n\|_\infty\), then
+\[
+\frac1{2n}\|X\Delta\|_2^2+\frac{\lambda}{2}\|\Delta_{S^c}\|_1
+\le \frac{3\lambda}{2}\|\Delta_S\|_1.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Optimality of \(\hat\beta\) compared with \(\beta^*\) gives
+\[
+\frac1{2n}\|X\Delta\|_2^2
+\le \frac{\xi^\top X\Delta}{n}+\lambda(\|\beta^*\|_1-\|\hat\beta\|_1).
+\]
+The stochastic term is bounded by \((\lambda/2)\|\Delta\|_1\). Since \(\beta^*_{S^c}=0\),
+\[
+\|\beta^*\|_1-\|\hat\beta\|_1\le \|\Delta_S\|_1-\|\Delta_{S^c}\|_1.
+\]
+Combining terms gives the displayed inequality.</p>
+    </div>
+
+    <h3>Restricted eigenvalues</h3>
+
+    <p>Prediction and estimation rates require curvature on sparse cones, not on all of \(\mathbb R^p\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A restricted eigenvalue condition holds with constant \(\kappa>0\) if
+\[
+\frac{\|X\Delta\|_2}{\sqrt n}\ge \kappa\|\Delta_S\|_2
+\]
+for all \(\Delta\) satisfying \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Under the basic-inequality event and the restricted eigenvalue condition,
+\[
+\frac1n\|X(\hat\beta-\beta^*)\|_2^2\lesssim \frac{\lambda^2s}{\kappa^2},
+\qquad
+\|\hat\beta-\beta^*\|_1\lesssim \frac{\lambda s}{\kappa^2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The basic inequality implies the cone condition \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\). Then \(\|\Delta_S\|_1\le\sqrt s\|\Delta_S\|_2\le \sqrt s\,\|X\Delta\|_2/(\sqrt n\kappa)\). Substitute this into the basic inequality and solve for \(\|X\Delta\|_2^2/n\). The \(\ell^1\) bound follows by combining the cone condition with the resulting \(\ell^2\) bound on \(\Delta_S\).</p>
+    </div>
+
+    <h3>Choice of penalty</h3>
+
+    <p>The penalty level must dominate noise correlations with all covariates.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If columns of \(X\) have empirical norm at most \(1\) and \(\xi_i\) are sub-Gaussian with scale \(\sigma\), then
+\[
+\left\|X^\top\xi/n\right\|_\infty
+=O_P\left(\sigma\sqrt{\frac{\log p}{n}}\right).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For each coordinate, \(X_j^\top\xi/n\) is sub-Gaussian with scale at most \(\sigma/\sqrt n\). A union bound over \(p\) coordinates gives the \(\sqrt{\log p/n}\) maximum scale.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/statistical-learning/" prev_label="Page précédente" prev_url="/notes/statistical-learning/support-vector-machines/" next_label="Page suivante" next_url="/notes/statistical-learning/model-selection-and-aggregation/" %}
@@ -67,26 +191,88 @@ breadcrumb_child_label_zh: "14. 高维稀疏性"
     <h2><a href="{{ '/notes/statistical-learning/high-dimensional-sparsity/' | relative_url }}">14. 高维稀疏性</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/support-vector-machines/" next_label="下一页" next_url="/notes/statistical-learning/model-selection-and-aggregation/" %}
 
-    <p>本页整理关于“高维稀疏性”的主要定义、命题、定理与证明思路。</p>
+    <p>High-dimensional learning is possible when the target has low effective complexity, such as sparsity, even if the ambient dimension exceeds the sample size.</p>
 
-    <h3>定义</h3>
+    <h3>Sparse linear model</h3>
+
+    <p>The canonical example is linear regression with many covariates but few active coefficients.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> High-dimensional learning allows the number of features to be comparable to or larger than sample size. Sparsity assumes the target depends on few effective coordinates.</p>
+        <p><span class="statement-title">定义.</span> In the linear model \(y=X\beta^*+\xi\), the vector \(\beta^*\in\mathbb R^p\) is \(s\)-sparse if \(|S|=s\) for \(S=\{j:\beta_j^*\ne0\}\). The Lasso estimator solves
+\[
+\hat\beta\in\operatorname*{argmin}_{\beta\in\mathbb R^p}
+\left\{\frac{1}{2n}\|y-X\beta\|_2^2+\lambda\|\beta\|_1\right\}.
+\]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Under restricted eigenvalue or compatibility conditions, \(\ell_1\)-regularized estimators satisfy oracle-type bounds scaling with sparsity and logarithmic dimension.</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Use the basic inequality, decomposability of the \(\ell_1\) norm, concentration of 经验 correlations, and restricted 曲率 on sparse cones.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> The theory separates dimension from effective dimension, but only under structural assumptions on the design and target.</p>
+        <p><span class="statement-title">说明.</span> The \(\ell^1\) norm is convex but has corners aligned with coordinate sparsity. That geometry is why it can select sparse solutions.</p>
+    </div>
+
+    <h3>Basic inequality</h3>
+
+    <p>Most Lasso theory begins with one deterministic inequality.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> Let \(\Delta=\hat\beta-\beta^*\). If \(\lambda\ge 2\|X^\top\xi/n\|_\infty\), then
+\[
+\frac1{2n}\|X\Delta\|_2^2+\frac{\lambda}{2}\|\Delta_{S^c}\|_1
+\le \frac{3\lambda}{2}\|\Delta_S\|_1.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Optimality of \(\hat\beta\) compared with \(\beta^*\) gives
+\[
+\frac1{2n}\|X\Delta\|_2^2
+\le \frac{\xi^\top X\Delta}{n}+\lambda(\|\beta^*\|_1-\|\hat\beta\|_1).
+\]
+The stochastic term is bounded by \((\lambda/2)\|\Delta\|_1\). Since \(\beta^*_{S^c}=0\),
+\[
+\|\beta^*\|_1-\|\hat\beta\|_1\le \|\Delta_S\|_1-\|\Delta_{S^c}\|_1.
+\]
+Combining terms gives the displayed inequality.</p>
+    </div>
+
+    <h3>Restricted eigenvalues</h3>
+
+    <p>Prediction and estimation rates require curvature on sparse cones, not on all of \(\mathbb R^p\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A restricted eigenvalue condition holds with constant \(\kappa>0\) if
+\[
+\frac{\|X\Delta\|_2}{\sqrt n}\ge \kappa\|\Delta_S\|_2
+\]
+for all \(\Delta\) satisfying \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Under the basic-inequality event and the restricted eigenvalue condition,
+\[
+\frac1n\|X(\hat\beta-\beta^*)\|_2^2\lesssim \frac{\lambda^2s}{\kappa^2},
+\qquad
+\|\hat\beta-\beta^*\|_1\lesssim \frac{\lambda s}{\kappa^2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The basic inequality implies the cone condition \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\). Then \(\|\Delta_S\|_1\le\sqrt s\|\Delta_S\|_2\le \sqrt s\,\|X\Delta\|_2/(\sqrt n\kappa)\). Substitute this into the basic inequality and solve for \(\|X\Delta\|_2^2/n\). The \(\ell^1\) bound follows by combining the cone condition with the resulting \(\ell^2\) bound on \(\Delta_S\).</p>
+    </div>
+
+    <h3>Choice of penalty</h3>
+
+    <p>The penalty level must dominate noise correlations with all covariates.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If columns of \(X\) have empirical norm at most \(1\) and \(\xi_i\) are sub-Gaussian with scale \(\sigma\), then
+\[
+\left\|X^\top\xi/n\right\|_\infty
+=O_P\left(\sigma\sqrt{\frac{\log p}{n}}\right).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For each coordinate, \(X_j^\top\xi/n\) is sub-Gaussian with scale at most \(\sigma/\sqrt n\). A union bound over \(p\) coordinates gives the \(\sqrt{\log p/n}\) maximum scale.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/statistical-learning/" prev_label="上一页" prev_url="/notes/statistical-learning/support-vector-machines/" next_label="下一页" next_url="/notes/statistical-learning/model-selection-and-aggregation/" %}
