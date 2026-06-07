@@ -6,142 +6,172 @@ breadcrumb_child_label_zh: "53. 局部时与田中公式"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>53. Local time and Tanaka formula</h2>
+    <h2><a href="{{ '/notes/probability-theory/local-time-tanaka-formula/' | relative_url }}">53. Local time and Tanaka formula</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/stochastic-differential-equations/" next_label="Next page" next_url="/notes/probability-theory/white-noise-stochastic-heat-equation/" %}
 
+    <p>Local time measures how long a semimartingale spends at a spatial level. Tanaka's formula is Itô's formula for the nonsmooth convex function \(x\mapsto |x-a|\).</p>
+
+    <h3>Occupation density</h3>
+
+    <p>Local time is density of occupation measure with respect to space.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a continuous semimartingale \(X\), the <strong>local time</strong> \(L_t^a(X)\) at level \(a\) is the density, in the space variable, of occupation measure with respect to quadratic variation:
-        \[
-        \int_0^tg(X_s)\,\mathrm{d}[X]_s
-        =\int_{\mathbb R}g(a)L_t^a(X)\,\mathrm{d}a
-        \]
-        for bounded Borel \(g\). Thus \(L_t^a(X)\) measures how much quadratic-variation time \(X\) spends near \(a\).</p>
+        <p><span class="statement-title">Definition.</span> For Brownian motion, local time \(L_t^a\) is the jointly measurable process satisfying
+\[
+\int_0^t f(B_s)\,\mathrm{d}s=\int_{\mathbb R}f(a)L_t^a\,\mathrm{d}a
+\]
+for nonnegative measurable \(f\).</p>
     </div>
 
+
+    <h3>Tanaka formula</h3>
+
+    <p>The kink of the absolute value creates local time.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Tanaka formula.</span> For a continuous semimartingale \(X\),
-        \[
-        |X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X),
-        \]
-        where \(\operatorname{sgn}(x)=1_{\{x\gt 0\}}-1_{\{x\le0\}}\) is one common convention. Equivalently,
-        \[
-        (X_t-a)^+=(X_0-a)^++\int_0^t1_{\{X_s\gt a\}}\,\mathrm{d}X_s+\frac12L_t^a(X).
-        \]</p>
+        <p><span class="statement-title">Theorem.</span> For Brownian motion,
+\[
+|B_t-a|=|B_0-a|+\int_0^t\operatorname{sgn}(B_s-a)\,\mathrm{d}B_s+L_t^a.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Approximate \(x\mapsto |x-a|\) by smooth convex functions \(f_\varepsilon\) such that \(f_\varepsilon'\to\operatorname{sgn}(\cdot-a)\) and \(f_\varepsilon''(x)\mathrm{d}x\) converges weakly to \(2\delta_a(\mathrm{d}x)\). Itô formula gives
-        \[
-        f_\varepsilon(X_t)=f_\varepsilon(X_0)+\int_0^tf_\varepsilon'(X_s)\mathrm{d}X_s
-        +\frac12\int_0^tf_\varepsilon''(X_s)\mathrm{d}[X]_s.
-        \]
-        The first two terms converge by uniform convergence of \(f_\varepsilon\) and bounded convergence after localization. The last term converges by the occupation-density formula:
-        \[
-        \frac12\int_0^tf_\varepsilon''(X_s)\mathrm{d}[X]_s
-        =\frac12\int_{\mathbb R}f_\varepsilon''(y)L_t^y(X)\mathrm{d}y
-        \to L_t^a(X).
-        \]
-        This yields Tanaka’s formula.</p>
+        <p><span class="statement-title">Proof.</span> Approximate \(x\mapsto |x-a|\) by smooth convex functions \(f_\varepsilon\). Itô's formula gives a martingale term plus \(\frac12\int_0^t f_\varepsilon''(B_s-a)\,\mathrm{d}s\). As \(\varepsilon\downarrow0\), \(f_\varepsilon'\to\operatorname{sgn}\) and \(f_\varepsilon''\) approximates twice the Dirac mass at \(a\). The limiting second-order term is \(L_t^a\).</p>
     </div>
 
-    <h3>Occupation densities and nonsmooth Itô formulas</h3>
 
-    <p>Local time is the correction needed when the function is convex but not \(C^2\). It is the stochastic-calculus version of a second derivative concentrated at a kink.</p>
+    <h3>Semimartingale version</h3>
+
+    <p>Local time extends to continuous semimartingales with quadratic variation replacing time.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X\) is a continuous semimartingale, then
+\[
+|X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The same smoothing proof applies, but the second-order term is \(\frac12\int f_\varepsilon''(X_s-a)\,\mathrm{d}[X]_s\). Its limit defines local time relative to the quadratic variation measure.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Local time is central in reflected diffusions, one-dimensional SDEs with nonsmooth coefficients, and fine Brownian path analysis.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/stochastic-differential-equations/" next_label="Next page" next_url="/notes/probability-theory/white-noise-stochastic-heat-equation/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>53. Temps local et formule de Tanaka</h2>
+    <h2><a href="{{ '/notes/probability-theory/local-time-tanaka-formula/' | relative_url }}">53. Temps local et formule de Tanaka</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/stochastic-differential-equations/" next_label="Page suivante" next_url="/notes/probability-theory/white-noise-stochastic-heat-equation/" %}
 
+    <p>Local time measures how long a semimartingale spends at a spatial level. Tanaka's formula is Itô's formula for the nonsmooth convex function \(x\mapsto |x-a|\).</p>
+
+    <h3>Occupation density</h3>
+
+    <p>Local time is density of occupation measure with respect to space.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Pour une semimartingale continue \(X\), le <strong>temps local</strong> \(L_t^a(X)\) au niveau \(a\) est la densité, en la variable d’espace, de la mesure d’occupation par rapport à la variation quadratique :
-        \[
-        \int_0^tg(X_s)\,\mathrm{d}[X]_s
-        =\int_{\mathbb R}g(a)L_t^a(X)\,\mathrm{d}a
-        \]
-        pour tout \(g\) borélien borné. Ainsi \(L_t^a(X)\) mesure le temps de variation quadratique passé par \(X\) près de \(a\).</p>
+        <p><span class="statement-title">Définition.</span> For Brownian motion, local time \(L_t^a\) is the jointly measurable process satisfying
+\[
+\int_0^t f(B_s)\,\mathrm{d}s=\int_{\mathbb R}f(a)L_t^a\,\mathrm{d}a
+\]
+for nonnegative measurable \(f\).</p>
     </div>
 
+
+    <h3>Tanaka formula</h3>
+
+    <p>The kink of the absolute value creates local time.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Formule de Tanaka.</span> Pour une semimartingale continue \(X\),
-        \[
-        |X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X),
-        \]
-        où \(\operatorname{sgn}(x)=1_{\{x\gt 0\}}-1_{\{x\le0\}}\) est une convention courante. De façon équivalente,
-        \[
-        (X_t-a)^+=(X_0-a)^++\int_0^t1_{\{X_s\gt a\}}\,\mathrm{d}X_s+\frac12L_t^a(X).
-        \]</p>
+        <p><span class="statement-title">Théorème.</span> For Brownian motion,
+\[
+|B_t-a|=|B_0-a|+\int_0^t\operatorname{sgn}(B_s-a)\,\mathrm{d}B_s+L_t^a.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> On approxime \(x\mapsto |x-a|\) par des fonctions convexes lisses \(f_\varepsilon\) telles que \(f_\varepsilon'\to\operatorname{sgn}(\cdot-a)\) et \(f_\varepsilon''(x)\mathrm{d}x\) converge faiblement vers \(2\delta_a(\mathrm{d}x)\). La formule d’Itô donne
-        \[
-        f_\varepsilon(X_t)=f_\varepsilon(X_0)+\int_0^tf_\varepsilon'(X_s)\mathrm{d}X_s
-        +\frac12\int_0^tf_\varepsilon''(X_s)\mathrm{d}[X]_s.
-        \]
-        Les deux premiers termes convergent par convergence uniforme de \(f_\varepsilon\) et convergence dominée après localisation. Le dernier terme converge par la formule de densité d’occupation :
-        \[
-        \frac12\int_0^tf_\varepsilon''(X_s)\mathrm{d}[X]_s
-        =\frac12\int_{\mathbb R}f_\varepsilon''(y)L_t^y(X)\mathrm{d}y
-        \to L_t^a(X).
-        \]
-        On obtient la formule de Tanaka.</p>
+        <p><span class="statement-title">Preuve.</span> Approximate \(x\mapsto |x-a|\) by smooth convex functions \(f_\varepsilon\). Itô's formula gives a martingale term plus \(\frac12\int_0^t f_\varepsilon''(B_s-a)\,\mathrm{d}s\). As \(\varepsilon\downarrow0\), \(f_\varepsilon'\to\operatorname{sgn}\) and \(f_\varepsilon''\) approximates twice the Dirac mass at \(a\). The limiting second-order term is \(L_t^a\).</p>
     </div>
 
-    <h3>Densités d’occupation et formules d’Itô non lisses</h3>
 
-    <p>Le temps local est la correction nécessaire lorsque la fonction est convexe mais pas \(C^2\). C’est l’analogue, en calcul stochastique, d’une dérivée seconde concentrée au point anguleux.</p>
+    <h3>Semimartingale version</h3>
+
+    <p>Local time extends to continuous semimartingales with quadratic variation replacing time.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X\) is a continuous semimartingale, then
+\[
+|X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The same smoothing proof applies, but the second-order term is \(\frac12\int f_\varepsilon''(X_s-a)\,\mathrm{d}[X]_s\). Its limit defines local time relative to the quadratic variation measure.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Local time is central in reflected diffusions, one-dimensional SDEs with nonsmooth coefficients, and fine Brownian path analysis.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/stochastic-differential-equations/" next_label="Page suivante" next_url="/notes/probability-theory/white-noise-stochastic-heat-equation/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>53. 局部时与田中公式</h2>
+    <h2><a href="{{ '/notes/probability-theory/local-time-tanaka-formula/' | relative_url }}">53. 局部时与田中公式</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/stochastic-differential-equations/" next_label="下一页" next_url="/notes/probability-theory/white-noise-stochastic-heat-equation/" %}
 
+    <p>Local time measures how long a semimartingale spends at a spatial level. Tanaka's formula is Itô's formula for the nonsmooth convex function \(x\mapsto |x-a|\).</p>
+
+    <h3>Occupation density</h3>
+
+    <p>Local time is density of occupation measure with respect to space.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 对连续半鞅 \(X\)，水平 \(a\) 处的<strong>局部时</strong> \(L_t^a(X)\) 是关于空间变量的 occupation 测度密度：
-        \[
-        \int_0^tg(X_s)\,\mathrm{d}[X]_s
-        =\int_{\mathbb R}g(a)L_t^a(X)\,\mathrm{d}a
-        \]
-        对所有有界博雷尔函数 \(g\) 成立。因此 \(L_t^a(X)\) 衡量 \(X\) 在 \(a\) 附近花费了多少二次变差时间。</p>
+        <p><span class="statement-title">定义.</span> For Brownian motion, local time \(L_t^a\) is the jointly measurable process satisfying
+\[
+\int_0^t f(B_s)\,\mathrm{d}s=\int_{\mathbb R}f(a)L_t^a\,\mathrm{d}a
+\]
+for nonnegative measurable \(f\).</p>
     </div>
 
+
+    <h3>Tanaka formula</h3>
+
+    <p>The kink of the absolute value creates local time.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">田中公式.</span> 对连续半鞅 \(X\)，
-        \[
-        |X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X),
-        \]
-        其中 \(\operatorname{sgn}(x)=1_{\{x\gt 0\}}-1_{\{x\le0\}}\) 是一种常用约定。等价地，
-        \[
-        (X_t-a)^+=(X_0-a)^++\int_0^t1_{\{X_s\gt a\}}\,\mathrm{d}X_s+\frac12L_t^a(X).
-        \]</p>
+        <p><span class="statement-title">定理.</span> For Brownian motion,
+\[
+|B_t-a|=|B_0-a|+\int_0^t\operatorname{sgn}(B_s-a)\,\mathrm{d}B_s+L_t^a.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 用光滑凸函数 \(f_\varepsilon\) 逼近 \(x\mapsto |x-a|\)，使 \(f_\varepsilon'\to\operatorname{sgn}(\cdot-a)\)，且 \(f_\varepsilon''(x)\mathrm{d}x\) 弱收敛到 \(2\delta_a(\mathrm{d}x)\)。伊藤公式给出
-        \[
-        f_\varepsilon(X_t)=f_\varepsilon(X_0)+\int_0^tf_\varepsilon'(X_s)\mathrm{d}X_s
-        +\frac12\int_0^tf_\varepsilon''(X_s)\mathrm{d}[X]_s.
-        \]
-        前两项由 \(f_\varepsilon\) 的一致收敛以及局部化后的有界收敛得到极限。最后一项由 occupation density formula 得
-        \[
-        \frac12\int_0^tf_\varepsilon''(X_s)\mathrm{d}[X]_s
-        =\frac12\int_{\mathbb R}f_\varepsilon''(y)L_t^y(X)\mathrm{d}y
-        \to L_t^a(X).
-        \]
-        因此得到田中公式。</p>
+        <p><span class="statement-title">证明.</span> Approximate \(x\mapsto |x-a|\) by smooth convex functions \(f_\varepsilon\). Itô's formula gives a martingale term plus \(\frac12\int_0^t f_\varepsilon''(B_s-a)\,\mathrm{d}s\). As \(\varepsilon\downarrow0\), \(f_\varepsilon'\to\operatorname{sgn}\) and \(f_\varepsilon''\) approximates twice the Dirac mass at \(a\). The limiting second-order term is \(L_t^a\).</p>
     </div>
 
-    <h3>Occupation density 与非光滑伊藤公式</h3>
 
-    <p>当函数凸但不是 \(C^2\) 时，局部时就是所需的修正项。它可以理解为集中在折点处的二阶导数在随机分析中的对应物。</p>
+    <h3>Semimartingale version</h3>
+
+    <p>Local time extends to continuous semimartingales with quadratic variation replacing time.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(X\) is a continuous semimartingale, then
+\[
+|X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The same smoothing proof applies, but the second-order term is \(\frac12\int f_\varepsilon''(X_s-a)\,\mathrm{d}[X]_s\). Its limit defines local time relative to the quadratic variation measure.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Local time is central in reflected diffusions, one-dimensional SDEs with nonsmooth coefficients, and fine Brownian path analysis.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/stochastic-differential-equations/" next_label="下一页" next_url="/notes/probability-theory/white-noise-stochastic-heat-equation/" %}
 </div>

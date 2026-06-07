@@ -6,141 +6,163 @@ breadcrumb_child_label_zh: "45. 二次变差与协变差"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>45. Quadratic variation and covariation</h2>
+    <h2><a href="{{ '/notes/probability-theory/quadratic-variation-covariation/' | relative_url }}">45. Quadratic variation and covariation</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/continuous-time-martingales-local-martingales/" next_label="Next page" next_url="/notes/probability-theory/semimartingales/" %}
 
+    <p>Quadratic variation measures accumulated squared increments. It is the pathwise trace left by martingale roughness and is the source of Itô correction terms.</p>
+
+    <h3>Quadratic variation</h3>
+
+    <p>Finite variation paths have zero quadratic variation; Brownian paths do not.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a continuous process \(X\), the <strong>quadratic variation</strong> on \([0,t]\) is the limit in probability, if it exists and is independent of the refining partition,
-        \[
-        [X]_t=\lim_{|\pi|\to0}\sum_{t_i\in\pi,\ t_i\le t}(X_{t_{i+1}}-X_{t_i})^2.
-        \]
-        For two continuous processes \(X,Y\), the <strong>covariation</strong> is
-        \[
-        [X,Y]_t=\frac14\big([X+Y]_t-[X-Y]_t\big),
-        \]
-        whenever the right side is defined.</p>
+        <p><span class="statement-title">Definition.</span> For a process \(X\), quadratic variation along partitions \(\pi_n\) is the limit, when it exists,
+\[
+[X]_t=\lim_{|\pi_n|\to0}\sum_{t_i\le t}(X_{t_{i+1}}-X_{t_i})^2.
+\]</p>
     </div>
 
-    <p>Quadratic variation records the accumulated square-size of small increments. Finite-variation paths have increments whose squares are too small to accumulate; Brownian paths have increments of size \(\sqrt{\Delta t}\), so their squares accumulate like \(\Delta t\).</p>
+
+    <h3>Brownian quadratic variation</h3>
+
+    <p>Brownian motion accumulates quadratic variation at deterministic rate.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> If \(A\) is continuous and has finite variation on compact intervals, then \([A]_t=0\). For one-dimensional Brownian motion \(B\), \([B]_t=t\). If \(M\) is a continuous square-integrable martingale, there is a unique increasing predictable process \(\langle M\rangle\) such that \(M_t^2-\langle M\rangle_t\) is a martingale.</p>
+        <p><span class="statement-title">Theorem.</span> For Brownian motion, \([B]_t=t\) in probability, and almost surely along suitable refining deterministic partitions.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For finite variation,
-        \[
-        \sum_i(A_{t_{i+1}}-A_{t_i})^2
-        \le \max_i|A_{t_{i+1}}-A_{t_i}|\sum_i|A_{t_{i+1}}-A_{t_i}|.
-        \]
-        The second factor is bounded by the total variation, while the first factor goes to \(0\) by continuity. Hence \([A]_t=0\).</p>
-        <p>For Brownian motion, take a partition \(0=t_0\lt \cdots\lt t_n=t\) and write \(\Delta_iB=B_{t_{i+1}}-B_{t_i}\). Then
-        \[
-        \mathbb E\sum_i(\Delta_iB)^2=t,
-        \quad
-        \operatorname{Var}\left(\sum_i(\Delta_iB)^2\right)
-        =2\sum_i(t_{i+1}-t_i)^2\le 2t|\pi|.
-        \]
-        The variance tends to \(0\), so the sums converge to \(t\) in \(L^2\), hence in probability. The bracket \(\langle M\rangle\) is obtained by applying the Doob-Meyer decomposition to the submartingale \(M^2\); uniqueness follows because a predictable finite-variation martingale starting from \(0\) must be identically \(0\).</p>
+        <p><span class="statement-title">Proof.</span> For a partition of \([0,t]\), independence gives expectation of the sum of squared increments equal to \(t\). The variance is \(2\sum_i(\Delta t_i)^2\), which tends to zero as the mesh tends to zero. Hence the sums converge to \(t\) in \(L^2\) and in probability. Almost-sure convergence follows along dyadic partitions by summability of variances plus Borel-Cantelli.</p>
     </div>
 
-    <h3>Covariation rules</h3>
 
-    <p>For continuous semimartingales, \([X+A,Y]=[X,Y]\) whenever \(A\) has finite variation. Also \([X+Y]=[X]+[Y]+2[X,Y]\). These identities explain why only martingale parts contribute to the second-order term in Itô formula.</p>
+    <h3>Covariation and polarization</h3>
+
+    <p>Cross-variation is obtained by polarizing quadratic variation.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For semimartingales \(X,Y\),
+\[
+[X,Y]_t=\frac14([X+Y]_t-[X-Y]_t).
+\]
+For independent Brownian coordinates \(B^i,B^j\), \([B^i,B^j]_t=0\) when \(i\ne j\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The identity follows algebraically from \((\Delta X+\Delta Y)^2-(\Delta X-\Delta Y)^2=4\Delta X\Delta Y\), then passing to limits over partitions. Independent Brownian coordinates have products of increments with mean zero and variances summing to zero along fine partitions.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The Itô rule \(\mathrm{d}B_t\,\mathrm{d}B_t=\mathrm{d}t\) is shorthand for this quadratic variation statement.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/continuous-time-martingales-local-martingales/" next_label="Next page" next_url="/notes/probability-theory/semimartingales/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>45. Variation quadratique et covariation</h2>
+    <h2><a href="{{ '/notes/probability-theory/quadratic-variation-covariation/' | relative_url }}">45. Variation quadratique et covariation</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/continuous-time-martingales-local-martingales/" next_label="Page suivante" next_url="/notes/probability-theory/semimartingales/" %}
 
+    <p>Quadratic variation measures accumulated squared increments. It is the pathwise trace left by martingale roughness and is the source of Itô correction terms.</p>
+
+    <h3>Quadratic variation</h3>
+
+    <p>Finite variation paths have zero quadratic variation; Brownian paths do not.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Pour un processus continu \(X\), la <strong>variation quadratique</strong> sur \([0,t]\) est la limite en probabilité, si elle existe et ne dépend pas de la suite de partitions,
-        \[
-        [X]_t=\lim_{|\pi|\to0}\sum_{t_i\in\pi,\ t_i\le t}(X_{t_{i+1}}-X_{t_i})^2.
-        \]
-        Pour deux processus continus \(X,Y\), la <strong>covariation</strong> est
-        \[
-        [X,Y]_t=\frac14\big([X+Y]_t-[X-Y]_t\big),
-        \]
-        lorsque le membre de droite est défini.</p>
+        <p><span class="statement-title">Définition.</span> For a process \(X\), quadratic variation along partitions \(\pi_n\) is the limit, when it exists,
+\[
+[X]_t=\lim_{|\pi_n|\to0}\sum_{t_i\le t}(X_{t_{i+1}}-X_{t_i})^2.
+\]</p>
     </div>
 
-    <p>La variation quadratique mesure l’accumulation des carrés des petits accroissements. Les trajectoires à variation finie ont des carrés d’accroissements trop petits pour s’accumuler; les accroissements browniens sont de taille \(\sqrt{\Delta t}\), donc leurs carrés s’accumulent comme \(\Delta t\).</p>
+
+    <h3>Brownian quadratic variation</h3>
+
+    <p>Brownian motion accumulates quadratic variation at deterministic rate.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> Si \(A\) est continu et à variation finie sur les compacts, alors \([A]_t=0\). Pour un mouvement brownien réel \(B\), \([B]_t=t\). Si \(M\) est une martingale continue de carré intégrable, il existe un unique processus prévisible croissant \(\langle M\rangle\) tel que \(M_t^2-\langle M\rangle_t\) soit une martingale.</p>
+        <p><span class="statement-title">Théorème.</span> For Brownian motion, \([B]_t=t\) in probability, and almost surely along suitable refining deterministic partitions.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Pour la variation finie,
-        \[
-        \sum_i(A_{t_{i+1}}-A_{t_i})^2
-        \le \max_i|A_{t_{i+1}}-A_{t_i}|\sum_i|A_{t_{i+1}}-A_{t_i}|.
-        \]
-        Le second facteur est borné par la variation totale, tandis que le premier tend vers \(0\) par continuité. Donc \([A]_t=0\).</p>
-        <p>Pour le mouvement brownien, soit \(0=t_0\lt \cdots\lt t_n=t\) et \(\Delta_iB=B_{t_{i+1}}-B_{t_i}\). Alors
-        \[
-        \mathbb E\sum_i(\Delta_iB)^2=t,
-        \quad
-        \operatorname{Var}\left(\sum_i(\Delta_iB)^2\right)
-        =2\sum_i(t_{i+1}-t_i)^2\le 2t|\pi|.
-        \]
-        La variance tend vers \(0\), donc les sommes convergent vers \(t\) dans \(L^2\), puis en probabilité. Le crochet \(\langle M\rangle\) vient de la décomposition de Doob-Meyer appliquée à la sous-martingale \(M^2\); l’unicité vient du fait qu’une martingale prévisible à variation finie, nulle au départ, est identiquement nulle.</p>
+        <p><span class="statement-title">Preuve.</span> For a partition of \([0,t]\), independence gives expectation of the sum of squared increments equal to \(t\). The variance is \(2\sum_i(\Delta t_i)^2\), which tends to zero as the mesh tends to zero. Hence the sums converge to \(t\) in \(L^2\) and in probability. Almost-sure convergence follows along dyadic partitions by summability of variances plus Borel-Cantelli.</p>
     </div>
 
-    <h3>Règles de covariation</h3>
 
-    <p>Pour des semimartingales continues, \([X+A,Y]=[X,Y]\) dès que \(A\) est à variation finie. De plus \([X+Y]=[X]+[Y]+2[X,Y]\). C’est pourquoi seules les parties martingales contribuent au terme de second ordre dans la formule d’Itô.</p>
+    <h3>Covariation and polarization</h3>
+
+    <p>Cross-variation is obtained by polarizing quadratic variation.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For semimartingales \(X,Y\),
+\[
+[X,Y]_t=\frac14([X+Y]_t-[X-Y]_t).
+\]
+For independent Brownian coordinates \(B^i,B^j\), \([B^i,B^j]_t=0\) when \(i\ne j\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The identity follows algebraically from \((\Delta X+\Delta Y)^2-(\Delta X-\Delta Y)^2=4\Delta X\Delta Y\), then passing to limits over partitions. Independent Brownian coordinates have products of increments with mean zero and variances summing to zero along fine partitions.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The Itô rule \(\mathrm{d}B_t\,\mathrm{d}B_t=\mathrm{d}t\) is shorthand for this quadratic variation statement.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/continuous-time-martingales-local-martingales/" next_label="Page suivante" next_url="/notes/probability-theory/semimartingales/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>45. 二次变差与协变差</h2>
+    <h2><a href="{{ '/notes/probability-theory/quadratic-variation-covariation/' | relative_url }}">45. 二次变差与协变差</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/continuous-time-martingales-local-martingales/" next_label="下一页" next_url="/notes/probability-theory/semimartingales/" %}
 
+    <p>Quadratic variation measures accumulated squared increments. It is the pathwise trace left by martingale roughness and is the source of Itô correction terms.</p>
+
+    <h3>Quadratic variation</h3>
+
+    <p>Finite variation paths have zero quadratic variation; Brownian paths do not.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 对连续过程 \(X\)，若对任意网格趋于 \(0\) 的分割都有如下概率极限且极限与分割无关，则称
-        \[
-        [X]_t=\lim_{|\pi|\to0}\sum_{t_i\in\pi,\ t_i\le t}(X_{t_{i+1}}-X_{t_i})^2
-        \]
-        为 \(X\) 在 \([0,t]\) 上的<strong>二次变差</strong>。对两个连续过程 \(X,Y\)，若右端存在，定义<strong>协变差</strong>
-        \[
-        [X,Y]_t=\frac14\big([X+Y]_t-[X-Y]_t\big).
-        \]</p>
+        <p><span class="statement-title">定义.</span> For a process \(X\), quadratic variation along partitions \(\pi_n\) is the limit, when it exists,
+\[
+[X]_t=\lim_{|\pi_n|\to0}\sum_{t_i\le t}(X_{t_{i+1}}-X_{t_i})^2.
+\]</p>
     </div>
 
-    <p>二次变差记录小增量平方的累积。有限变差路径的增量平方太小，不会累积出非零极限；布朗增量大小为 \(\sqrt{\Delta t}\)，所以平方会像 \(\Delta t\) 一样累积。</p>
+
+    <h3>Brownian quadratic variation</h3>
+
+    <p>Brownian motion accumulates quadratic variation at deterministic rate.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">命题.</span> 若 \(A\) 连续且在紧区间上有限变差，则 \([A]_t=0\)。若 \(B\) 是一维布朗运动，则 \([B]_t=t\)。若 \(M\) 是连续平方可积鞅，则存在唯一的递增可预测过程 \(\langle M\rangle\)，使得 \(M_t^2-\langle M\rangle_t\) 是鞅。</p>
+        <p><span class="statement-title">定理.</span> For Brownian motion, \([B]_t=t\) in probability, and almost surely along suitable refining deterministic partitions.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 对有限变差过程，
-        \[
-        \sum_i(A_{t_{i+1}}-A_{t_i})^2
-        \le \max_i|A_{t_{i+1}}-A_{t_i}|\sum_i|A_{t_{i+1}}-A_{t_i}|.
-        \]
-        第二个因子由总变差控制，第一个因子由连续性趋于 \(0\)，所以 \([A]_t=0\)。</p>
-        <p>对布朗运动，取分割 \(0=t_0\lt \cdots\lt t_n=t\)，记 \(\Delta_iB=B_{t_{i+1}}-B_{t_i}\)。则
-        \[
-        \mathbb E\sum_i(\Delta_iB)^2=t,
-        \quad
-        \operatorname{Var}\left(\sum_i(\Delta_iB)^2\right)
-        =2\sum_i(t_{i+1}-t_i)^2\le 2t|\pi|.
-        \]
-        方差趋于 \(0\)，所以平方和在 \(L^2\) 中收敛到 \(t\)，从而也依概率收敛。括号过程 \(\langle M\rangle\) 由对次鞅 \(M^2\) 应用杜布-Meyer 分解得到；唯一性来自：从 \(0\) 出发的可预测有限变差鞅只能恒为 \(0\)。</p>
+        <p><span class="statement-title">证明.</span> For a partition of \([0,t]\), independence gives expectation of the sum of squared increments equal to \(t\). The variance is \(2\sum_i(\Delta t_i)^2\), which tends to zero as the mesh tends to zero. Hence the sums converge to \(t\) in \(L^2\) and in probability. Almost-sure convergence follows along dyadic partitions by summability of variances plus Borel-Cantelli.</p>
     </div>
 
-    <h3>协变差规则</h3>
 
-    <p>对连续半鞅，若 \(A\) 是有限变差过程，则 \([X+A,Y]=[X,Y]\)。并且 \([X+Y]=[X]+[Y]+2[X,Y]\)。这解释了为什么伊藤公式里的二阶项只来自鞅部分。</p>
+    <h3>Covariation and polarization</h3>
+
+    <p>Cross-variation is obtained by polarizing quadratic variation.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For semimartingales \(X,Y\),
+\[
+[X,Y]_t=\frac14([X+Y]_t-[X-Y]_t).
+\]
+For independent Brownian coordinates \(B^i,B^j\), \([B^i,B^j]_t=0\) when \(i\ne j\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The identity follows algebraically from \((\Delta X+\Delta Y)^2-(\Delta X-\Delta Y)^2=4\Delta X\Delta Y\), then passing to limits over partitions. Independent Brownian coordinates have products of increments with mean zero and variances summing to zero along fine partitions.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The Itô rule \(\mathrm{d}B_t\,\mathrm{d}B_t=\mathrm{d}t\) is shorthand for this quadratic variation statement.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/continuous-time-martingales-local-martingales/" next_label="下一页" next_url="/notes/probability-theory/semimartingales/" %}
 </div>

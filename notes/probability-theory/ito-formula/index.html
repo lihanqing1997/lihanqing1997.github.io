@@ -6,139 +6,178 @@ breadcrumb_child_label_zh: "49. 伊藤公式"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>49. Itô formula</h2>
+    <h2><a href="{{ '/notes/probability-theory/ito-formula/' | relative_url }}">49. Itô formula</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/stochastic-integration-semimartingales/" next_label="Next page" next_url="/notes/probability-theory/applications-ito-formula/" %}
 
+    <p>Itô's formula is the chain rule for semimartingales. The extra second-order term is the analytic signature of quadratic variation.</p>
+
+    <h3>One-dimensional continuous formula</h3>
+
+    <p>For Brownian-driven processes, the second derivative appears with quadratic variation.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A continuous Itô process has the form
-        \[
-        X_t=X_0+\int_0^tb_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s,
-        \]
-        where \(b\) is progressively measurable with \(\int_0^t|b_s|\mathrm{d}s\lt \infty\), and \(\sigma\) is progressively measurable with \(\int_0^t\sigma_s^2\mathrm{d}s\lt \infty\), locally in time. Its quadratic variation is
-        \[
-        [X]_t=\int_0^t\sigma_s^2\,\mathrm{d}s.
-        \]</p>
+        <p><span class="statement-title">Definition.</span> If \(X_t=X_0+\int_0^t b_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s\) and \(f\in C^2\), then
+\[
+f(X_t)=f(X_0)+\int_0^t f'(X_s)\sigma_s\,\mathrm{d}B_s
++\int_0^t\left(f'(X_s)b_s+\frac12f''(X_s)\sigma_s^2\right)\mathrm{d}s.
+\]</p>
     </div>
 
+
+    <h3>Taylor expansion proof</h3>
+
+    <p>The formula is Taylor's theorem plus quadratic variation.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Itô formula.</span> If \(f\in C^2(\mathbb R)\), then
-        \[
-        f(X_t)=f(X_0)+\int_0^tf'(X_s)\,\mathrm{d}X_s
-        +\frac12\int_0^tf''(X_s)\,\mathrm{d}[X]_s.
-        \]
-        Equivalently,
-        \[
-        \mathrm{d}f(X_t)=f'(X_t)b_t\,\mathrm{d}t+f'(X_t)\sigma_t\,\mathrm{d}B_t
-        +\frac12f''(X_t)\sigma_t^2\,\mathrm{d}t.
-        \]</p>
+        <p><span class="statement-title">Theorem.</span> Itô's formula holds for continuous semimartingales, with \(\frac12\int f''(X_s)\,\mathrm{d}[X]_s\) replacing the Brownian variance term.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> First localize so that \(b,\sigma,X\), and the first two derivatives of \(f\) on the range of \(X\), are bounded. Take a partition \(\pi=\{0=t_0\lt \cdots\lt t_n=t\}\). Taylor’s formula gives
-        \[
-        f(X_{t_{i+1}})-f(X_{t_i})
-        =f'(X_{t_i})\Delta_iX+\frac12f''(X_{t_i})(\Delta_iX)^2+r_i,
-        \]
-        where \(|r_i|\le \omega_f(|\Delta_iX|)(\Delta_iX)^2\), and \(\omega_f\) is a modulus of continuity of \(f''\) on the localized compact range. Since \(X\) is continuous, \(\max_i|\Delta_iX|\to0\) in probability, so \(\sum_i r_i\to0\) in probability because \(\sum_i(\Delta_iX)^2\) is tight and converges to \([X]_t\).</p>
-        <p>The first-order sum \(\sum_i f'(X_{t_i})\Delta_iX\) converges to \(\int_0^tf'(X_s)\mathrm{d}X_s\) by the definition of stochastic integration for semimartingales. For the second-order sum, decompose \(\Delta_iX=\Delta_iA+\Delta_iM\), where \(A=\int b\,\mathrm{d}s\) has finite variation and \(M=\int\sigma \mathrm{d}B\) is continuous local martingale. Terms involving \(\Delta_iA\) vanish in quadratic variation, while \(\sum_i(\Delta_iM)^2\to[M]_t=\int_0^t\sigma_s^2\mathrm{d}s\). Hence the second-order sum converges to \(\int_0^tf''(X_s)\mathrm{d}[X]_s\). Removing the localization gives the general formula.</p>
+        <p><span class="statement-title">Proof.</span> Apply Taylor's formula along a partition:
+\[
+f(X_{t_{i+1}})-f(X_{t_i})=f'(X_{t_i})\Delta X_i+\frac12f''(X_{t_i})(\Delta X_i)^2+r_i.
+\]
+The first-order martingale terms converge to the stochastic integral, finite-variation first-order terms converge pathwise, the squared martingale increments converge to quadratic variation, and the remainder vanishes because continuous semimartingales have controlled quadratic variation.</p>
     </div>
 
-    <h3>What changes from ordinary calculus</h3>
 
-    <p>For deterministic \(C^1\) paths, \((\Delta X)^2\) is negligible. For Brownian-driven paths, \(\Delta B\) is of order \(\sqrt{\Delta t}\), so \((\Delta B)^2\) is of order \(\Delta t\). This is the source of the extra \(\frac12f''\,\mathrm{d}[X]\) term.</p>
+    <h3>Multidimensional form</h3>
+
+    <p>Cross-variation supplies the Hessian contraction.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a continuous \(\mathbb R^d\)-valued semimartingale \(X\) and \(f\in C^2(\mathbb R^d)\),
+\[
+\mathrm{d}f(X_t)=\sum_i\partial_if(X_t)\,\mathrm{d}X_t^i
++\frac12\sum_{i,j}\partial_{ij}f(X_t)\,\mathrm{d}[X^i,X^j]_t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use the multivariate Taylor expansion. The linear terms converge to stochastic integrals against each coordinate. Quadratic products of increments converge to covariations \([X^i,X^j]\), while higher-order terms vanish along refining partitions.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Every Itô formula should be read together with the table \(\mathrm{d}B_t^2=\mathrm{d}t\), \(\mathrm{d}t\,\mathrm{d}B_t=0\), and \(\mathrm{d}t^2=0\).</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/stochastic-integration-semimartingales/" next_label="Next page" next_url="/notes/probability-theory/applications-ito-formula/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>49. Formule d’Itô</h2>
+    <h2><a href="{{ '/notes/probability-theory/ito-formula/' | relative_url }}">49. Formule d’Itô</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/stochastic-integration-semimartingales/" next_label="Page suivante" next_url="/notes/probability-theory/applications-ito-formula/" %}
 
+    <p>Itô's formula is the chain rule for semimartingales. The extra second-order term is the analytic signature of quadratic variation.</p>
+
+    <h3>One-dimensional continuous formula</h3>
+
+    <p>For Brownian-driven processes, the second derivative appears with quadratic variation.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Un processus d’Itô continu s’écrit
-        \[
-        X_t=X_0+\int_0^tb_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s,
-        \]
-        où \(b\) est progressivement mesurable avec \(\int_0^t|b_s|\mathrm{d}s\lt \infty\), et \(\sigma\) est progressivement mesurable avec \(\int_0^t\sigma_s^2\mathrm{d}s\lt \infty\), localement en temps. Sa variation quadratique est
-        \[
-        [X]_t=\int_0^t\sigma_s^2\,\mathrm{d}s.
-        \]</p>
+        <p><span class="statement-title">Définition.</span> If \(X_t=X_0+\int_0^t b_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s\) and \(f\in C^2\), then
+\[
+f(X_t)=f(X_0)+\int_0^t f'(X_s)\sigma_s\,\mathrm{d}B_s
++\int_0^t\left(f'(X_s)b_s+\frac12f''(X_s)\sigma_s^2\right)\mathrm{d}s.
+\]</p>
     </div>
 
+
+    <h3>Taylor expansion proof</h3>
+
+    <p>The formula is Taylor's theorem plus quadratic variation.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Formule d’Itô.</span> Si \(f\in C^2(\mathbb R)\), alors
-        \[
-        f(X_t)=f(X_0)+\int_0^tf'(X_s)\,\mathrm{d}X_s
-        +\frac12\int_0^tf''(X_s)\,\mathrm{d}[X]_s.
-        \]
-        De façon équivalente,
-        \[
-        \mathrm{d}f(X_t)=f'(X_t)b_t\,\mathrm{d}t+f'(X_t)\sigma_t\,\mathrm{d}B_t
-        +\frac12f''(X_t)\sigma_t^2\,\mathrm{d}t.
-        \]</p>
+        <p><span class="statement-title">Théorème.</span> Itô's formula holds for continuous semimartingales, with \(\frac12\int f''(X_s)\,\mathrm{d}[X]_s\) replacing the Brownian variance term.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> On localise d’abord pour que \(b,\sigma,X\) et les deux premières dérivées de \(f\) sur l’image de \(X\) soient bornés. Pour une partition \(\pi=\{0=t_0\lt \cdots\lt t_n=t\}\), la formule de Taylor donne
-        \[
-        f(X_{t_{i+1}})-f(X_{t_i})
-        =f'(X_{t_i})\Delta_iX+\frac12f''(X_{t_i})(\Delta_iX)^2+r_i,
-        \]
-        avec \(|r_i|\le \omega_f(|\Delta_iX|)(\Delta_iX)^2\), où \(\omega_f\) est un module de continuité de \(f''\) sur le compact localisé. Comme \(X\) est continu, \(\max_i|\Delta_iX|\to0\) en probabilité; donc \(\sum_i r_i\to0\) en probabilité, puisque \(\sum_i(\Delta_iX)^2\) est tendue et converge vers \([X]_t\).</p>
-        <p>La somme du premier ordre \(\sum_i f'(X_{t_i})\Delta_iX\) converge vers \(\int_0^tf'(X_s)\mathrm{d}X_s\) par définition de l’intégrale semimartingale. Pour la somme du second ordre, on écrit \(\Delta_iX=\Delta_iA+\Delta_iM\), où \(A=\int b\,\mathrm{d}s\) est à variation finie et \(M=\int\sigma \mathrm{d}B\) est une martingale locale continue. Les termes contenant \(\Delta_iA\) disparaissent en variation quadratique, tandis que \(\sum_i(\Delta_iM)^2\to[M]_t=\int_0^t\sigma_s^2\mathrm{d}s\). La somme du second ordre converge donc vers \(\int_0^tf''(X_s)\mathrm{d}[X]_s\). On enlève ensuite la localisation.</p>
+        <p><span class="statement-title">Preuve.</span> Apply Taylor's formula along a partition:
+\[
+f(X_{t_{i+1}})-f(X_{t_i})=f'(X_{t_i})\Delta X_i+\frac12f''(X_{t_i})(\Delta X_i)^2+r_i.
+\]
+The first-order martingale terms converge to the stochastic integral, finite-variation first-order terms converge pathwise, the squared martingale increments converge to quadratic variation, and the remainder vanishes because continuous semimartingales have controlled quadratic variation.</p>
     </div>
 
-    <h3>Différence avec le calcul ordinaire</h3>
 
-    <p>Pour des trajectoires déterministes \(C^1\), \((\Delta X)^2\) est négligeable. Pour des trajectoires conduites par Brownian motion, \(\Delta B\) est de taille \(\sqrt{\Delta t}\), donc \((\Delta B)^2\) est de taille \(\Delta t\). C’est l’origine du terme supplémentaire \(\frac12f''\,\mathrm{d}[X]\).</p>
+    <h3>Multidimensional form</h3>
+
+    <p>Cross-variation supplies the Hessian contraction.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For a continuous \(\mathbb R^d\)-valued semimartingale \(X\) and \(f\in C^2(\mathbb R^d)\),
+\[
+\mathrm{d}f(X_t)=\sum_i\partial_if(X_t)\,\mathrm{d}X_t^i
++\frac12\sum_{i,j}\partial_{ij}f(X_t)\,\mathrm{d}[X^i,X^j]_t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use the multivariate Taylor expansion. The linear terms converge to stochastic integrals against each coordinate. Quadratic products of increments converge to covariations \([X^i,X^j]\), while higher-order terms vanish along refining partitions.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Every Itô formula should be read together with the table \(\mathrm{d}B_t^2=\mathrm{d}t\), \(\mathrm{d}t\,\mathrm{d}B_t=0\), and \(\mathrm{d}t^2=0\).</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/stochastic-integration-semimartingales/" next_label="Page suivante" next_url="/notes/probability-theory/applications-ito-formula/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>49. 伊藤公式</h2>
+    <h2><a href="{{ '/notes/probability-theory/ito-formula/' | relative_url }}">49. 伊藤公式</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/stochastic-integration-semimartingales/" next_label="下一页" next_url="/notes/probability-theory/applications-ito-formula/" %}
 
+    <p>Itô's formula is the chain rule for semimartingales. The extra second-order term is the analytic signature of quadratic variation.</p>
+
+    <h3>One-dimensional continuous formula</h3>
+
+    <p>For Brownian-driven processes, the second derivative appears with quadratic variation.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 连续伊藤过程是指形如
-        \[
-        X_t=X_0+\int_0^tb_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s
-        \]
-        的过程，其中 \(b\) 渐进可测且局部满足 \(\int_0^t|b_s|\mathrm{d}s\lt \infty\)，\(\sigma\) 渐进可测且局部满足 \(\int_0^t\sigma_s^2\mathrm{d}s\lt \infty\)。它的二次变差为
-        \[
-        [X]_t=\int_0^t\sigma_s^2\,\mathrm{d}s.
-        \]</p>
+        <p><span class="statement-title">定义.</span> If \(X_t=X_0+\int_0^t b_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s\) and \(f\in C^2\), then
+\[
+f(X_t)=f(X_0)+\int_0^t f'(X_s)\sigma_s\,\mathrm{d}B_s
++\int_0^t\left(f'(X_s)b_s+\frac12f''(X_s)\sigma_s^2\right)\mathrm{d}s.
+\]</p>
     </div>
 
+
+    <h3>Taylor expansion proof</h3>
+
+    <p>The formula is Taylor's theorem plus quadratic variation.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">伊藤公式.</span> 若 \(f\in C^2(\mathbb R)\)，则
-        \[
-        f(X_t)=f(X_0)+\int_0^tf'(X_s)\,\mathrm{d}X_s
-        +\frac12\int_0^tf''(X_s)\,\mathrm{d}[X]_s.
-        \]
-        等价地，
-        \[
-        \mathrm{d}f(X_t)=f'(X_t)b_t\,\mathrm{d}t+f'(X_t)\sigma_t\,\mathrm{d}B_t
-        +\frac12f''(X_t)\sigma_t^2\,\mathrm{d}t.
-        \]</p>
+        <p><span class="statement-title">定理.</span> Itô's formula holds for continuous semimartingales, with \(\frac12\int f''(X_s)\,\mathrm{d}[X]_s\) replacing the Brownian variance term.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 先局部化，使得 \(b,\sigma,X\) 以及 \(f\) 在 \(X\) 的取值范围上的前两阶导数都有界。取分割 \(\pi=\{0=t_0\lt \cdots\lt t_n=t\}\)。泰勒公式给出
-        \[
-        f(X_{t_{i+1}})-f(X_{t_i})
-        =f'(X_{t_i})\Delta_iX+\frac12f''(X_{t_i})(\Delta_iX)^2+r_i,
-        \]
-        其中 \(|r_i|\le \omega_f(|\Delta_iX|)(\Delta_iX)^2\)，\(\omega_f\) 是 \(f''\) 在局部化紧集上的连续模。由于 \(X\) 连续，\(\max_i|\Delta_iX|\to0\) 依概率成立；又 \(\sum_i(\Delta_iX)^2\) 紧且收敛到 \([X]_t\)，所以 \(\sum_i r_i\to0\) 依概率成立。</p>
-        <p>一阶和 \(\sum_i f'(X_{t_i})\Delta_iX\) 按半鞅随机积分的定义收敛到 \(\int_0^tf'(X_s)\mathrm{d}X_s\)。对二阶和，写 \(\Delta_iX=\Delta_iA+\Delta_iM\)，其中 \(A=\int b\,\mathrm{d}s\) 有限变差，\(M=\int\sigma \mathrm{d}B\) 是连续局部鞅。含 \(\Delta_iA\) 的项在二次变差中消失，而 \(\sum_i(\Delta_iM)^2\to[M]_t=\int_0^t\sigma_s^2\mathrm{d}s\)。所以二阶和收敛到 \(\int_0^tf''(X_s)\mathrm{d}[X]_s\)。最后去掉局部化即可。</p>
+        <p><span class="statement-title">证明.</span> Apply Taylor's formula along a partition:
+\[
+f(X_{t_{i+1}})-f(X_{t_i})=f'(X_{t_i})\Delta X_i+\frac12f''(X_{t_i})(\Delta X_i)^2+r_i.
+\]
+The first-order martingale terms converge to the stochastic integral, finite-variation first-order terms converge pathwise, the squared martingale increments converge to quadratic variation, and the remainder vanishes because continuous semimartingales have controlled quadratic variation.</p>
     </div>
 
-    <h3>与普通微积分的差别</h3>
 
-    <p>对确定性的 \(C^1\) 路径，\((\Delta X)^2\) 可忽略。对布朗运动驱动的路径，\(\Delta B\) 的量级是 \(\sqrt{\Delta t}\)，所以 \((\Delta B)^2\) 的量级是 \(\Delta t\)。这就是额外项 \(\frac12f''\,\mathrm{d}[X]\) 的来源。</p>
+    <h3>Multidimensional form</h3>
+
+    <p>Cross-variation supplies the Hessian contraction.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For a continuous \(\mathbb R^d\)-valued semimartingale \(X\) and \(f\in C^2(\mathbb R^d)\),
+\[
+\mathrm{d}f(X_t)=\sum_i\partial_if(X_t)\,\mathrm{d}X_t^i
++\frac12\sum_{i,j}\partial_{ij}f(X_t)\,\mathrm{d}[X^i,X^j]_t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use the multivariate Taylor expansion. The linear terms converge to stochastic integrals against each coordinate. Quadratic products of increments converge to covariations \([X^i,X^j]\), while higher-order terms vanish along refining partitions.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Every Itô formula should be read together with the table \(\mathrm{d}B_t^2=\mathrm{d}t\), \(\mathrm{d}t\,\mathrm{d}B_t=0\), and \(\mathrm{d}t^2=0\).</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/stochastic-integration-semimartingales/" next_label="下一页" next_url="/notes/probability-theory/applications-ito-formula/" %}
 </div>

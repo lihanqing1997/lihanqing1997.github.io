@@ -6,103 +6,154 @@ breadcrumb_child_label_zh: "22. 离散时间鞅与下鞅"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>22. Discrete-time martingales and submartingales</h2>
+    <h2><a href="{{ '/notes/probability-theory/discrete-time-martingales/' | relative_url }}">22. Discrete-time martingales and submartingales</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/filtrations-stopping-times/" next_label="Next page" next_url="/notes/probability-theory/doob-inequalities-martingale-convergence/" %}
 
+    <p>Martingales formalize fair games relative to a filtration. Their power comes from combining conditional expectation with time.</p>
+
+    <h3>Martingales and submartingales</h3>
+
+    <p>The defining condition says the best future prediction is the current value.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An adapted integrable process \(M_n\) is a martingale with respect to \((\mathcal F_n)\) if
-        \[
-        \mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\quad\text{a.s.}
-        \]
-        It is a submartingale if the conditional expectation is at least \(M_n\), and a supermartingale if it is at most \(M_n\).</p>
+        <p><span class="statement-title">Definition.</span> An adapted integrable process \((M_n,\mathcal F_n)\) is a martingale if \(\mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\). It is a submartingale if the conditional expectation is at least \(M_n\), and a supermartingale if it is at most \(M_n\).</p>
     </div>
 
+
+    <h3>Martingale transforms</h3>
+
+    <p>Predictable betting strategies preserve fairness.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> If \(X\in L^1\), then \(M_n=\mathbb E[X\mid\mathcal F_n]\) is a martingale. Conversely, a martingale satisfies \(\mathbb E M_n=\mathbb E M_0\) for all \(n\).</p>
+        <p><span class="statement-title">Theorem.</span> If \(M_n\) is a martingale and \(H_n\) is bounded and \(\mathcal F_{n-1}\)-measurable, then
+\[
+(H\cdot M)_n=\sum_{k=1}^nH_k(M_k-M_{k-1})
+\]
+is a martingale.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The tower property gives
-        \[
-        \mathbb E[M_{n+1}\mid\mathcal F_n]
-        =\mathbb E[\mathbb E[X\mid\mathcal F_{n+1}]\mid\mathcal F_n]
-        =\mathbb E[X\mid\mathcal F_n]=M_n.
-        \]
-        Taking expectations in the martingale identity gives \(\mathbb E M_{n+1}=\mathbb E M_n\), and induction gives \(\mathbb E M_n=\mathbb E M_0\).</p>
+        <p><span class="statement-title">Proof.</span> The increment \(H_k(M_k-M_{k-1})\) is integrable and adapted. Its conditional expectation given \(\mathcal F_{k-1}\) is \(H_k\mathbb E[M_k-M_{k-1}\mid\mathcal F_{k-1}]=0\), using predictability of \(H_k\). Summing zero-mean conditional increments gives the martingale property.</p>
     </div>
 
-    <h3>Dependence on the filtration</h3>
 
-    <p>A martingale is “fair” only relative to the chosen information \(\mathcal F_n\); changing the filtration changes the statement.</p>
+    <h3>Doob decomposition</h3>
 
+    <p>Every submartingale decomposes into a martingale plus predictable increasing drift.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In discrete time, an integrable submartingale \(X_n\) has a unique decomposition \(X_n=M_n+A_n\), where \(M_n\) is a martingale, \(A_0=0\), and \(A_n\) is predictable increasing.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Define \(A_n=\sum_{k=1}^n \mathbb E[X_k-X_{k-1}\mid\mathcal F_{k-1}]\). Submartingality makes the summands nonnegative, and predictability is immediate. Then \(M_n=X_n-A_n\) has conditional mean \(M_{n-1}\). Uniqueness follows because the difference of two such decompositions is both a predictable finite-variation martingale and must have zero increments.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Submartingales are martingales with compensators; this idea becomes central in continuous time.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/filtrations-stopping-times/" next_label="Next page" next_url="/notes/probability-theory/doob-inequalities-martingale-convergence/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>22. Martingales discrètes et sous-martingales</h2>
+    <h2><a href="{{ '/notes/probability-theory/discrete-time-martingales/' | relative_url }}">22. Martingales discrètes et sous-martingales</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/filtrations-stopping-times/" next_label="Page suivante" next_url="/notes/probability-theory/doob-inequalities-martingale-convergence/" %}
 
+    <p>Martingales formalize fair games relative to a filtration. Their power comes from combining conditional expectation with time.</p>
+
+    <h3>Martingales and submartingales</h3>
+
+    <p>The defining condition says the best future prediction is the current value.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Un processus adapté et intégrable \(M_n\) est une martingale par rapport à \((\mathcal F_n)\) si
-        \[
-        \mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\quad\text{p.s.}
-        \]
-        C’est une sous-martingale si l’espérance conditionnelle est au moins \(M_n\), et une sur-martingale si elle est au plus \(M_n\).</p>
+        <p><span class="statement-title">Définition.</span> An adapted integrable process \((M_n,\mathcal F_n)\) is a martingale if \(\mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\). It is a submartingale if the conditional expectation is at least \(M_n\), and a supermartingale if it is at most \(M_n\).</p>
     </div>
 
+
+    <h3>Martingale transforms</h3>
+
+    <p>Predictable betting strategies preserve fairness.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> Si \(X\in L^1\), alors \(M_n=\mathbb E[X\mid\mathcal F_n]\) est une martingale. Réciproquement, une martingale vérifie \(\mathbb E M_n=\mathbb E M_0\) pour tout \(n\).</p>
+        <p><span class="statement-title">Théorème.</span> If \(M_n\) is a martingale and \(H_n\) is bounded and \(\mathcal F_{n-1}\)-measurable, then
+\[
+(H\cdot M)_n=\sum_{k=1}^nH_k(M_k-M_{k-1})
+\]
+is a martingale.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> La propriété de tour donne
-        \[
-        \mathbb E[M_{n+1}\mid\mathcal F_n]
-        =\mathbb E[\mathbb E[X\mid\mathcal F_{n+1}]\mid\mathcal F_n]
-        =\mathbb E[X\mid\mathcal F_n]=M_n.
-        \]
-        En prenant l’espérance dans l’identité de martingale, on obtient \(\mathbb E M_{n+1}=\mathbb E M_n\). L’égalité avec \(\mathbb E M_0\) suit par récurrence.</p>
+        <p><span class="statement-title">Preuve.</span> The increment \(H_k(M_k-M_{k-1})\) is integrable and adapted. Its conditional expectation given \(\mathcal F_{k-1}\) is \(H_k\mathbb E[M_k-M_{k-1}\mid\mathcal F_{k-1}]=0\), using predictability of \(H_k\). Summing zero-mean conditional increments gives the martingale property.</p>
     </div>
 
-    <h3>Dépendance à la filtration</h3>
 
-    <p>Une martingale est « équitable » relativement à l’information \(\mathcal F_n\). Si la filtration change, l’énoncé change aussi.</p>
+    <h3>Doob decomposition</h3>
 
+    <p>Every submartingale decomposes into a martingale plus predictable increasing drift.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In discrete time, an integrable submartingale \(X_n\) has a unique decomposition \(X_n=M_n+A_n\), where \(M_n\) is a martingale, \(A_0=0\), and \(A_n\) is predictable increasing.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Define \(A_n=\sum_{k=1}^n \mathbb E[X_k-X_{k-1}\mid\mathcal F_{k-1}]\). Submartingality makes the summands nonnegative, and predictability is immediate. Then \(M_n=X_n-A_n\) has conditional mean \(M_{n-1}\). Uniqueness follows because the difference of two such decompositions is both a predictable finite-variation martingale and must have zero increments.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Submartingales are martingales with compensators; this idea becomes central in continuous time.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/filtrations-stopping-times/" next_label="Page suivante" next_url="/notes/probability-theory/doob-inequalities-martingale-convergence/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>22. 离散时间鞅与下鞅</h2>
+    <h2><a href="{{ '/notes/probability-theory/discrete-time-martingales/' | relative_url }}">22. 离散时间鞅与下鞅</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/filtrations-stopping-times/" next_label="下一页" next_url="/notes/probability-theory/doob-inequalities-martingale-convergence/" %}
 
+    <p>Martingales formalize fair games relative to a filtration. Their power comes from combining conditional expectation with time.</p>
+
+    <h3>Martingales and submartingales</h3>
+
+    <p>The defining condition says the best future prediction is the current value.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 适应且可积的过程 \(M_n\) 称为关于 \((\mathcal F_n)\) 的鞅，若
-        \[
-        \mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\quad\text{几乎处处}.
-        \]
-        若条件期望至少为 \(M_n\)，则称为下鞅；若至多为 \(M_n\)，则称为上鞅。</p>
+        <p><span class="statement-title">定义.</span> An adapted integrable process \((M_n,\mathcal F_n)\) is a martingale if \(\mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\). It is a submartingale if the conditional expectation is at least \(M_n\), and a supermartingale if it is at most \(M_n\).</p>
     </div>
 
+
+    <h3>Martingale transforms</h3>
+
+    <p>Predictable betting strategies preserve fairness.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">命题.</span> 若 \(X\in L^1\)，则 \(M_n=\mathbb E[X\mid\mathcal F_n]\) 是鞅。反过来，鞅满足 \(\mathbb E M_n=\mathbb E M_0\)。</p>
+        <p><span class="statement-title">定理.</span> If \(M_n\) is a martingale and \(H_n\) is bounded and \(\mathcal F_{n-1}\)-measurable, then
+\[
+(H\cdot M)_n=\sum_{k=1}^nH_k(M_k-M_{k-1})
+\]
+is a martingale.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 由塔性质，
-        \[
-        \mathbb E[M_{n+1}\mid\mathcal F_n]
-        =\mathbb E[\mathbb E[X\mid\mathcal F_{n+1}]\mid\mathcal F_n]
-        =\mathbb E[X\mid\mathcal F_n]=M_n.
-        \]
-        对鞅恒等式取期望，得到 \(\mathbb E M_{n+1}=\mathbb E M_n\)，再由归纳得到 \(\mathbb E M_n=\mathbb E M_0\)。</p>
+        <p><span class="statement-title">证明.</span> The increment \(H_k(M_k-M_{k-1})\) is integrable and adapted. Its conditional expectation given \(\mathcal F_{k-1}\) is \(H_k\mathbb E[M_k-M_{k-1}\mid\mathcal F_{k-1}]=0\), using predictability of \(H_k\). Summing zero-mean conditional increments gives the martingale property.</p>
     </div>
 
-    <h3>对滤过的依赖</h3>
 
-    <p>鞅的“公平性”是相对于给定信息 \(\mathcal F_n\) 的；改变滤过，鞅性质也可能改变。</p>
+    <h3>Doob decomposition</h3>
 
+    <p>Every submartingale decomposes into a martingale plus predictable increasing drift.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> In discrete time, an integrable submartingale \(X_n\) has a unique decomposition \(X_n=M_n+A_n\), where \(M_n\) is a martingale, \(A_0=0\), and \(A_n\) is predictable increasing.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Define \(A_n=\sum_{k=1}^n \mathbb E[X_k-X_{k-1}\mid\mathcal F_{k-1}]\). Submartingality makes the summands nonnegative, and predictability is immediate. Then \(M_n=X_n-A_n\) has conditional mean \(M_{n-1}\). Uniqueness follows because the difference of two such decompositions is both a predictable finite-variation martingale and must have zero increments.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Submartingales are martingales with compensators; this idea becomes central in continuous time.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/filtrations-stopping-times/" next_label="下一页" next_url="/notes/probability-theory/doob-inequalities-martingale-convergence/" %}
 </div>

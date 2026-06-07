@@ -6,100 +6,184 @@ breadcrumb_child_label_zh: "18. Berry-Esseen 与收敛速度"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>18. Berry-Esseen and rates of convergence</h2>
+    <h2><a href="{{ '/notes/probability-theory/berry-esseen-rates/' | relative_url }}">18. Berry-Esseen and rates of convergence</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/central-limit-theorem/" next_label="Next page" next_url="/notes/probability-theory/poisson-convergence-processes/" %}
 
+    <p>Berry-Esseen theory quantifies the error in the central limit theorem. It measures how fast distribution functions approach the Gaussian distribution.</p>
+
+    <h3>Kolmogorov distance</h3>
+
+    <p>Rates are usually stated in the supremum distance between distribution functions.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Berry-Esseen theorem gives a quantitative rate in the central limit theorem. Let \(S_n=\sum_{i=1}^nX_i\), where \(X_i\) are i.i.d., \(\mathbb EX_i=0\), \(\mathbb EX_i^2=\sigma^2\gt 0\), and \(\rho=\mathbb E|X_i|^3\lt \infty\).</p>
+        <p><span class="statement-title">Definition.</span> For distribution functions \(F,G\), the Kolmogorov distance is
+\[
+d_K(F,G)=\sup_x|F(x)-G(x)|.
+\]
+For standardized sums \(Z_n\), Berry-Esseen bounds \(d_K(\mathcal L(Z_n),\Phi)\).</p>
     </div>
 
+
+    <h3>Berry-Esseen theorem</h3>
+
+    <p>A finite third absolute moment gives the canonical \(n^{-1/2}\) rate.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> There is a universal constant \(C\) such that
-        \[
-        \sup_x\left|P\left(\frac{S_n}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
-        \le C\frac{\rho}{\sigma^3\sqrt n}.
-        \]</p>
+        <p><span class="statement-title">Theorem.</span> If \(X_i\) are i.i.d. with \(\mathbb E X_i=0\), \(\mathbb E X_i^2=\sigma^2\gt0\), and \(\rho=\mathbb E|X_i|^3\lt\infty\), then
+\[
+\sup_x\left|P\left(\frac{\sum_{i=1}^nX_i}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
+\le C\frac{\rho}{\sigma^3\sqrt n}.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The proof uses smoothing inequalities. One compares the distribution functions through their characteristic functions:
-        \[
-        \sup_x|F_n(x)-\Phi(x)|
-        \le C\int_{-T}^T\left|\frac{\varphi_n(t)-e^{-t^2/2}}{t}\right|\mathrm{d}t+\frac{C}{T}.
-        \]
-        Taylor expansion of the standardized characteristic function to third order gives an error of order \(|t|^3\rho/(\sigma^3\sqrt n)\) in the exponent for \(|t|\) not too large. Choosing \(T\) proportional to \(\sqrt n\,\sigma^3/\rho\) balances the integral error and the smoothing error, giving the stated \(n^{-1/2}\) rate.</p>
+        <p><span class="statement-title">Proof.</span> The proof smooths indicators by Fourier inversion. One bounds the difference between the characteristic function of the normalized sum and \(e^{-t^2/2}\) using a third-order Taylor expansion, integrates this difference over \(|t|\le T\), and controls the smoothing error by \(1/T\). Choosing \(T\asymp \sqrt n\,\sigma^3/\rho\) yields the stated rate.</p>
     </div>
 
-    <h3>Optimality of the n^{-1/2} rate</h3>
 
-    <p>The rate \(n^{-1/2}\) is generally the best possible under a third-moment assumption.</p>
+    <h3>Why the third moment appears</h3>
 
+    <p>The first neglected term in the characteristic-function expansion is cubic.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\mathbb E|X|^3\lt\infty\), then
+\[
+\varphi(u)=1-\frac{\sigma^2u^2}{2}+O(|u|^3\mathbb E|X|^3)
+\]
+near zero for centered \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use Taylor's formula with remainder
+\(|e^{ix}-(1+ix-x^2/2)|\le C|x|^3\).
+Taking expectations gives the expansion because \(\mathbb E X=0\) and \(\mathbb E X^2=\sigma^2\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The \(n^{-1/2}\) rate is generally sharp under third-moment assumptions; lattice corrections and skewness can appear in finer Edgeworth expansions.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/central-limit-theorem/" next_label="Next page" next_url="/notes/probability-theory/poisson-convergence-processes/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>18. Berry-Esseen et vitesses de convergence</h2>
+    <h2><a href="{{ '/notes/probability-theory/berry-esseen-rates/' | relative_url }}">18. Berry-Esseen et vitesses de convergence</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/central-limit-theorem/" next_label="Page suivante" next_url="/notes/probability-theory/poisson-convergence-processes/" %}
 
+    <p>Berry-Esseen theory quantifies the error in the central limit theorem. It measures how fast distribution functions approach the Gaussian distribution.</p>
+
+    <h3>Kolmogorov distance</h3>
+
+    <p>Rates are usually stated in the supremum distance between distribution functions.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Le théorème de Berry-Esseen donne une vitesse quantitative dans le théorème central limite. Soit \(S_n=\sum_{i=1}^nX_i\), où les \(X_i\) sont i.i.d., \(\mathbb EX_i=0\), \(\mathbb EX_i^2=\sigma^2\gt 0\), et \(\rho=\mathbb E|X_i|^3\lt \infty\).</p>
+        <p><span class="statement-title">Définition.</span> For distribution functions \(F,G\), the Kolmogorov distance is
+\[
+d_K(F,G)=\sup_x|F(x)-G(x)|.
+\]
+For standardized sums \(Z_n\), Berry-Esseen bounds \(d_K(\mathcal L(Z_n),\Phi)\).</p>
     </div>
 
+
+    <h3>Berry-Esseen theorem</h3>
+
+    <p>A finite third absolute moment gives the canonical \(n^{-1/2}\) rate.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Il existe une constante universelle \(C\) telle que
-        \[
-        \sup_x\left|P\left(\frac{S_n}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
-        \le C\frac{\rho}{\sigma^3\sqrt n}.
-        \]</p>
+        <p><span class="statement-title">Théorème.</span> If \(X_i\) are i.i.d. with \(\mathbb E X_i=0\), \(\mathbb E X_i^2=\sigma^2\gt0\), and \(\rho=\mathbb E|X_i|^3\lt\infty\), then
+\[
+\sup_x\left|P\left(\frac{\sum_{i=1}^nX_i}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
+\le C\frac{\rho}{\sigma^3\sqrt n}.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> La preuve repose sur des inégalités de lissage. On compare les fonctions de répartition à partir des fonctions caractéristiques :
-        \[
-        \sup_x|F_n(x)-\Phi(x)|
-        \le C\int_{-T}^T\left|\frac{\varphi_n(t)-e^{-t^2/2}}{t}\right|\mathrm{d}t+\frac{C}{T}.
-        \]
-        Le développement de Taylor de la fonction caractéristique standardisée jusqu’à l’ordre trois donne une erreur d’ordre \(|t|^3\rho/(\sigma^3\sqrt n)\) dans l’exposant pour \(|t|\) modéré. En choisissant \(T\) proportionnel à \(\sqrt n\,\sigma^3/\rho\), on équilibre l’erreur intégrale et l’erreur de lissage, ce qui donne la vitesse \(n^{-1/2}\).</p>
+        <p><span class="statement-title">Preuve.</span> The proof smooths indicators by Fourier inversion. One bounds the difference between the characteristic function of the normalized sum and \(e^{-t^2/2}\) using a third-order Taylor expansion, integrates this difference over \(|t|\le T\), and controls the smoothing error by \(1/T\). Choosing \(T\asymp \sqrt n\,\sigma^3/\rho\) yields the stated rate.</p>
     </div>
 
-    <h3>Optimalité du taux n^{-1/2}</h3>
 
-    <p>La vitesse \(n^{-1/2}\) est en général optimale sous une hypothèse de moment d’ordre trois.</p>
+    <h3>Why the third moment appears</h3>
 
+    <p>The first neglected term in the characteristic-function expansion is cubic.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\mathbb E|X|^3\lt\infty\), then
+\[
+\varphi(u)=1-\frac{\sigma^2u^2}{2}+O(|u|^3\mathbb E|X|^3)
+\]
+near zero for centered \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use Taylor's formula with remainder
+\(|e^{ix}-(1+ix-x^2/2)|\le C|x|^3\).
+Taking expectations gives the expansion because \(\mathbb E X=0\) and \(\mathbb E X^2=\sigma^2\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The \(n^{-1/2}\) rate is generally sharp under third-moment assumptions; lattice corrections and skewness can appear in finer Edgeworth expansions.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/central-limit-theorem/" next_label="Page suivante" next_url="/notes/probability-theory/poisson-convergence-processes/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>18. Berry-Esseen 与收敛速度</h2>
+    <h2><a href="{{ '/notes/probability-theory/berry-esseen-rates/' | relative_url }}">18. Berry-Esseen 与收敛速度</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/central-limit-theorem/" next_label="下一页" next_url="/notes/probability-theory/poisson-convergence-processes/" %}
 
+    <p>Berry-Esseen theory quantifies the error in the central limit theorem. It measures how fast distribution functions approach the Gaussian distribution.</p>
+
+    <h3>Kolmogorov distance</h3>
+
+    <p>Rates are usually stated in the supremum distance between distribution functions.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Berry-Esseen 定理给出中心极限定理中的定量收敛速度。令 \(S_n=\sum_{i=1}^nX_i\)，其中 \(X_i\) 独立同分布，\(\mathbb EX_i=0\)、\(\mathbb EX_i^2=\sigma^2\gt 0\)，且 \(\rho=\mathbb E|X_i|^3\lt \infty\)。</p>
+        <p><span class="statement-title">定义.</span> For distribution functions \(F,G\), the Kolmogorov distance is
+\[
+d_K(F,G)=\sup_x|F(x)-G(x)|.
+\]
+For standardized sums \(Z_n\), Berry-Esseen bounds \(d_K(\mathcal L(Z_n),\Phi)\).</p>
     </div>
 
+
+    <h3>Berry-Esseen theorem</h3>
+
+    <p>A finite third absolute moment gives the canonical \(n^{-1/2}\) rate.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 存在 universal constant \(C\)，使得
-        \[
-        \sup_x\left|P\left(\frac{S_n}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
-        \le C\frac{\rho}{\sigma^3\sqrt n}.
-        \]</p>
+        <p><span class="statement-title">定理.</span> If \(X_i\) are i.i.d. with \(\mathbb E X_i=0\), \(\mathbb E X_i^2=\sigma^2\gt0\), and \(\rho=\mathbb E|X_i|^3\lt\infty\), then
+\[
+\sup_x\left|P\left(\frac{\sum_{i=1}^nX_i}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
+\le C\frac{\rho}{\sigma^3\sqrt n}.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 证明使用平滑不等式。通过特征函数比较分布函数：
-        \[
-        \sup_x|F_n(x)-\Phi(x)|
-        \le C\int_{-T}^T\left|\frac{\varphi_n(t)-e^{-t^2/2}}{t}\right|\mathrm{d}t+\frac{C}{T}.
-        \]
-        标准化特征函数的三阶泰勒展开表明，在 \(|t|\) 适中时，指数中的误差阶为 \(|t|^3\rho/(\sigma^3\sqrt n)\)。选择 \(T\) 与 \(\sqrt n\,\sigma^3/\rho\) 同阶，可平衡积分误差和平滑误差，从而得到 \(n^{-1/2}\) 速度。</p>
+        <p><span class="statement-title">证明.</span> The proof smooths indicators by Fourier inversion. One bounds the difference between the characteristic function of the normalized sum and \(e^{-t^2/2}\) using a third-order Taylor expansion, integrates this difference over \(|t|\le T\), and controls the smoothing error by \(1/T\). Choosing \(T\asymp \sqrt n\,\sigma^3/\rho\) yields the stated rate.</p>
     </div>
 
-    <h3>n^{-1/2} 速度的最优性</h3>
 
-    <p>在三阶矩假设下，\(n^{-1/2}\) 速度一般是最优的。</p>
+    <h3>Why the third moment appears</h3>
 
+    <p>The first neglected term in the characteristic-function expansion is cubic.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(\mathbb E|X|^3\lt\infty\), then
+\[
+\varphi(u)=1-\frac{\sigma^2u^2}{2}+O(|u|^3\mathbb E|X|^3)
+\]
+near zero for centered \(X\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use Taylor's formula with remainder
+\(|e^{ix}-(1+ix-x^2/2)|\le C|x|^3\).
+Taking expectations gives the expansion because \(\mathbb E X=0\) and \(\mathbb E X^2=\sigma^2\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The \(n^{-1/2}\) rate is generally sharp under third-moment assumptions; lattice corrections and skewness can appear in finer Edgeworth expansions.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/central-limit-theorem/" next_label="下一页" next_url="/notes/probability-theory/poisson-convergence-processes/" %}
 </div>

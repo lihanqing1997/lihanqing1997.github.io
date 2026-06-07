@@ -6,169 +6,187 @@ breadcrumb_child_label_zh: "54. 白噪声与随机热方程"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>54. White noise and stochastic heat equation</h2>
+    <h2><a href="{{ '/notes/probability-theory/white-noise-stochastic-heat-equation/' | relative_url }}">54. White noise and stochastic heat equation</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
+    <p>White noise and the stochastic heat equation are entry points to infinite-dimensional stochastic analysis. The central issue is that noise is a distribution, not an ordinary function.</p>
+
+    <h3>Space-time white noise</h3>
+
+    <p>White noise is defined by its action on test functions.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Space-time white noise on \(\mathbb R_+\times\mathbb R^d\) is an isonormal Gaussian process over \(L^2(\mathbb R_+\times\mathbb R^d)\). This means that for every \(\varphi\in L^2\), \(\xi(\varphi)\) is centered Gaussian and
-        \[
-        \mathbb E[\xi(\varphi)\xi(\psi)]
-        =\int_0^\infty\int_{\mathbb R^d}\varphi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
-        \]
-        The notation \(\xi(t,x)\) is symbolic; the rigorous object is the linear map \(\varphi\mapsto\xi(\varphi)\).</p>
+        <p><span class="statement-title">Definition.</span> Space-time white noise \(W\) on \(\mathbb R_+\times\mathbb R^d\) is a centered Gaussian random distribution such that
+\[
+\mathbb E[W(\phi)W(\psi)]=\int_0^\infty\int_{\mathbb R^d}\phi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
+\]</p>
     </div>
 
-    <p>White noise is too rough to be a function. The stochastic heat equation is therefore not interpreted pointwise. One uses the heat kernel
-    \[
-    p_t(x)=(2\pi t)^{-d/2}\exp\{-|x|^2/(2t)\},\qquad t\gt 0,
-    \]
-    and writes the solution in mild form.</p>
+
+    <h3>Mild stochastic heat equation</h3>
+
+    <p>Solutions are written by convolution with the heat kernel.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Additive stochastic heat equation.</span> For
-        \[
-        \partial_tu=\frac12\Delta u+\xi,\qquad u(0,x)=0,
-        \]
-        the mild candidate is
-        \[
-        u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)\,W(\mathrm{d}s,\mathrm{d}y),
-        \]
-        where \(W\) is the Gaussian martingale measure associated with \(\xi\). This random variable is well-defined in \(L^2\) when
-        \[
-        \int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,\mathrm{d}y\,\mathrm{d}s\lt \infty.
-        \]
-        For the heat kernel on \(\mathbb R^d\), this condition holds exactly when \(d=1\).</p>
+        <p><span class="statement-title">Theorem.</span> For
+\[
+\partial_tu=\frac12\Delta u+\sigma(u)\dot W,
+\]
+the mild form is
+\[
+u(t,x)=\int p_t(x-y)u_0(y)\,\mathrm{d}y+
+\int_0^t\int p_{t-s}(x-y)\sigma(u(s,y))\,W(\mathrm{d}s,\mathrm{d}y).
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The stochastic integral is defined by the Gaussian isometry
-        \[
-        \mathbb E\left|\int_0^t\int g(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right|^2
-        =\int_0^t\int |g(s,y)|^2\mathrm{d}y\,\mathrm{d}s.
-        \]
-        Taking \(g(s,y)=p_{t-s}(x-y)\), the integral is finite exactly when the displayed \(L^2\)-norm is finite. Since
-        \[
-        \int_{\mathbb R^d}p_r(z)^2\mathrm{d}z=C_\mathrm{d}r^{-d/2},
-        \]
-        we need \(\int_0^t(t-s)^{-d/2}\mathrm{d}s\lt \infty\), which holds iff \(d\lt 2\), hence \(d=1\) for integer spatial dimension. The mild formula solves the equation in distributional form because the heat kernel satisfies the semigroup identity and is the fundamental solution of \(\partial_t-\frac12\Delta\).</p>
+        <p><span class="statement-title">Proof.</span> The deterministic heat semigroup solves the homogeneous equation. Duhamel's principle suggests convolution of the forcing term with the heat kernel. Since the forcing is white noise, the second term is interpreted as a Walsh stochastic integral, defined by an \(L^2\) isometry for predictable integrands.</p>
     </div>
 
-    <h3>Dimension threshold for the mild solution</h3>
 
-    <p>The heat kernel smooths white noise, but only up to a dimension-dependent limit. In higher dimensions, the square singularity near \(s=t\) prevents the pointwise random field from existing without renormalization or weaker notions of solution.</p>
+    <h3>Walsh isometry</h3>
+
+    <p>The stochastic integral is controlled by a space-time \(L^2\) norm.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For predictable \(H\),
+\[
+\mathbb E\left(\int_0^t\int H(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right)^2
+=\mathbb E\int_0^t\int H(s,y)^2\,\mathrm{d}y\,\mathrm{d}s.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For simple predictable rectangles, independence and covariance of white-noise increments give the identity. Completion under the displayed norm defines the integral for general predictable \(H\). Fixed-point arguments for the mild equation use this isometry plus heat-kernel bounds.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> In high spatial dimensions the heat kernel may not regularize white noise enough; existence depends on dimension and on the noise covariance.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>54. Bruit blanc et équation de la chaleur stochastique</h2>
+    <h2><a href="{{ '/notes/probability-theory/white-noise-stochastic-heat-equation/' | relative_url }}">54. Bruit blanc et équation de la chaleur stochastique</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
+    <p>White noise and the stochastic heat equation are entry points to infinite-dimensional stochastic analysis. The central issue is that noise is a distribution, not an ordinary function.</p>
+
+    <h3>Space-time white noise</h3>
+
+    <p>White noise is defined by its action on test functions.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Le bruit blanc espace-temps sur \(\mathbb R_+\times\mathbb R^d\) est un processus gaussien isonormal sur \(L^2(\mathbb R_+\times\mathbb R^d)\). Cela signifie que, pour tout \(\varphi\in L^2\), \(\xi(\varphi)\) est gaussienne centrée et
-        \[
-        \mathbb E[\xi(\varphi)\xi(\psi)]
-        =\int_0^\infty\int_{\mathbb R^d}\varphi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
-        \]
-        La notation \(\xi(t,x)\) est symbolique; l’objet rigoureux est l’application linéaire \(\varphi\mapsto\xi(\varphi)\).</p>
+        <p><span class="statement-title">Définition.</span> Space-time white noise \(W\) on \(\mathbb R_+\times\mathbb R^d\) is a centered Gaussian random distribution such that
+\[
+\mathbb E[W(\phi)W(\psi)]=\int_0^\infty\int_{\mathbb R^d}\phi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
+\]</p>
     </div>
 
-    <p>Le bruit blanc est trop irrégulier pour être une fonction. L’équation de la chaleur stochastique n’est donc pas interprétée point par point. On utilise le noyau de chaleur
-    \[
-    p_t(x)=(2\pi t)^{-d/2}\exp\{-|x|^2/(2t)\},\qquad t\gt 0,
-    \]
-    et on écrit la solution sous forme mild.</p>
+
+    <h3>Mild stochastic heat equation</h3>
+
+    <p>Solutions are written by convolution with the heat kernel.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Équation de la chaleur stochastique additive.</span> Pour
-        \[
-        \partial_tu=\frac12\Delta u+\xi,\qquad u(0,x)=0,
-        \]
-        le candidat mild est
-        \[
-        u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)\,W(\mathrm{d}s,\mathrm{d}y),
-        \]
-        où \(W\) est la mesure martingale gaussienne associée à \(\xi\). Cette variable est bien définie dans \(L^2\) lorsque
-        \[
-        \int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,\mathrm{d}y\,\mathrm{d}s\lt \infty.
-        \]
-        Pour le noyau de chaleur sur \(\mathbb R^d\), cette condition est satisfaite exactement pour \(d=1\).</p>
+        <p><span class="statement-title">Théorème.</span> For
+\[
+\partial_tu=\frac12\Delta u+\sigma(u)\dot W,
+\]
+the mild form is
+\[
+u(t,x)=\int p_t(x-y)u_0(y)\,\mathrm{d}y+
+\int_0^t\int p_{t-s}(x-y)\sigma(u(s,y))\,W(\mathrm{d}s,\mathrm{d}y).
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> L’intégrale stochastique est définie par l’isométrie gaussienne
-        \[
-        \mathbb E\left|\int_0^t\int g(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right|^2
-        =\int_0^t\int |g(s,y)|^2\mathrm{d}y\,\mathrm{d}s.
-        \]
-        Avec \(g(s,y)=p_{t-s}(x-y)\), l’intégrale existe si et seulement si cette norme \(L^2\) est finie. Or
-        \[
-        \int_{\mathbb R^d}p_r(z)^2\mathrm{d}z=C_\mathrm{d}r^{-d/2},
-        \]
-        donc il faut \(\int_0^t(t-s)^{-d/2}\mathrm{d}s\lt \infty\), ce qui équivaut à \(d\lt 2\), donc à \(d=1\) en dimension spatiale entière. La formule mild résout l’équation au sens distributionnel grâce à l’identité de semi-groupe du noyau de chaleur et au fait que ce noyau est la solution fondamentale de \(\partial_t-\frac12\Delta\).</p>
+        <p><span class="statement-title">Preuve.</span> The deterministic heat semigroup solves the homogeneous equation. Duhamel's principle suggests convolution of the forcing term with the heat kernel. Since the forcing is white noise, the second term is interpreted as a Walsh stochastic integral, defined by an \(L^2\) isometry for predictable integrands.</p>
     </div>
 
-    <h3>Seuil dimensionnel pour la solution mild</h3>
 
-    <p>Le noyau de chaleur lisse le bruit blanc, mais seulement jusqu’à une limite dépendant de la dimension. En dimension plus grande, la singularité quadratique près de \(s=t\) empêche l’existence d’un champ aléatoire ponctuel sans renormalisation ou notion plus faible de solution.</p>
+    <h3>Walsh isometry</h3>
+
+    <p>The stochastic integral is controlled by a space-time \(L^2\) norm.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For predictable \(H\),
+\[
+\mathbb E\left(\int_0^t\int H(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right)^2
+=\mathbb E\int_0^t\int H(s,y)^2\,\mathrm{d}y\,\mathrm{d}s.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For simple predictable rectangles, independence and covariance of white-noise increments give the identity. Completion under the displayed norm defines the integral for general predictable \(H\). Fixed-point arguments for the mild equation use this isometry plus heat-kernel bounds.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> In high spatial dimensions the heat kernel may not regularize white noise enough; existence depends on dimension and on the noise covariance.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>54. 白噪声与随机热方程</h2>
+    <h2><a href="{{ '/notes/probability-theory/white-noise-stochastic-heat-equation/' | relative_url }}">54. 白噪声与随机热方程</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 
+    <p>White noise and the stochastic heat equation are entry points to infinite-dimensional stochastic analysis. The central issue is that noise is a distribution, not an ordinary function.</p>
+
+    <h3>Space-time white noise</h3>
+
+    <p>White noise is defined by its action on test functions.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> \(\mathbb R_+\times\mathbb R^d\) 上的时空白噪声是 \(L^2(\mathbb R_+\times\mathbb R^d)\) 上的等距高斯过程。也就是说，对每个 \(\varphi\in L^2\)，\(\xi(\varphi)\) 是中心高斯，且
-        \[
-        \mathbb E[\xi(\varphi)\xi(\psi)]
-        =\int_0^\infty\int_{\mathbb R^d}\varphi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
-        \]
-        记号 \(\xi(t,x)\) 只是形式性的；严格对象是线性映射 \(\varphi\mapsto\xi(\varphi)\)。</p>
+        <p><span class="statement-title">定义.</span> Space-time white noise \(W\) on \(\mathbb R_+\times\mathbb R^d\) is a centered Gaussian random distribution such that
+\[
+\mathbb E[W(\phi)W(\psi)]=\int_0^\infty\int_{\mathbb R^d}\phi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
+\]</p>
     </div>
 
-    <p>白噪声太粗糙，不能作为普通函数。因此随机热方程不能逐点理解。我们使用热核
-    \[
-    p_t(x)=(2\pi t)^{-d/2}\exp\{-|x|^2/(2t)\},\qquad t\gt 0,
-    \]
-    并以 mild form 写出解。</p>
+
+    <h3>Mild stochastic heat equation</h3>
+
+    <p>Solutions are written by convolution with the heat kernel.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">加性随机热方程.</span> 对
-        \[
-        \partial_tu=\frac12\Delta u+\xi,\qquad u(0,x)=0,
-        \]
-        mild 候选解为
-        \[
-        u(t,x)=\int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)\,W(\mathrm{d}s,\mathrm{d}y),
-        \]
-        其中 \(W\) 是与 \(\xi\) 对应的高斯鞅 测度。该随机变量在 \(L^2\) 中有定义，当且仅当
-        \[
-        \int_0^t\int_{\mathbb R^d}p_{t-s}(x-y)^2\,\mathrm{d}y\,\mathrm{d}s\lt \infty.
-        \]
-        对 \(\mathbb R^d\) 上的热核，这个条件恰好在 \(d=1\) 时成立。</p>
+        <p><span class="statement-title">定理.</span> For
+\[
+\partial_tu=\frac12\Delta u+\sigma(u)\dot W,
+\]
+the mild form is
+\[
+u(t,x)=\int p_t(x-y)u_0(y)\,\mathrm{d}y+
+\int_0^t\int p_{t-s}(x-y)\sigma(u(s,y))\,W(\mathrm{d}s,\mathrm{d}y).
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 随机积分由高斯等距定义：
-        \[
-        \mathbb E\left|\int_0^t\int g(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right|^2
-        =\int_0^t\int |g(s,y)|^2\mathrm{d}y\,\mathrm{d}s.
-        \]
-        取 \(g(s,y)=p_{t-s}(x-y)\)，积分存在当且仅当显示的 \(L^2\) 范数有限。由于
-        \[
-        \int_{\mathbb R^d}p_r(z)^2\mathrm{d}z=C_\mathrm{d}r^{-d/2},
-        \]
-        需要 \(\int_0^t(t-s)^{-d/2}\mathrm{d}s\lt \infty\)，这等价于 \(d\lt 2\)，也就是整数空间维数下的 \(d=1\)。mild 公式在分布意义下解方程，因为热核满足半群恒等式，并且是 \(\partial_t-\frac12\Delta\) 的基本解。</p>
+        <p><span class="statement-title">证明.</span> The deterministic heat semigroup solves the homogeneous equation. Duhamel's principle suggests convolution of the forcing term with the heat kernel. Since the forcing is white noise, the second term is interpreted as a Walsh stochastic integral, defined by an \(L^2\) isometry for predictable integrands.</p>
     </div>
 
-    <h3>温和解的维度阈值</h3>
 
-    <p>热核会平滑白噪声，但这种平滑有维数限制。在更高维中，\(s=t\) 附近的平方奇性会阻止逐点随机场存在，除非引入重整化或更弱的解概念。</p>
+    <h3>Walsh isometry</h3>
+
+    <p>The stochastic integral is controlled by a space-time \(L^2\) norm.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For predictable \(H\),
+\[
+\mathbb E\left(\int_0^t\int H(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right)^2
+=\mathbb E\int_0^t\int H(s,y)^2\,\mathrm{d}y\,\mathrm{d}s.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For simple predictable rectangles, independence and covariance of white-noise increments give the identity. Completion under the displayed norm defines the integral for general predictable \(H\). Fixed-point arguments for the mild equation use this isometry plus heat-kernel bounds.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> In high spatial dimensions the heat kernel may not regularize white noise enough; existence depends on dimension and on the noise covariance.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/local-time-tanaka-formula/" %}
 </div>

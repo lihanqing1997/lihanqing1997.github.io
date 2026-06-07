@@ -6,148 +6,172 @@ breadcrumb_child_label_zh: "47. 关于布朗运动的随机积分"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>47. Stochastic integration with Brownian motion</h2>
+    <h2><a href="{{ '/notes/probability-theory/stochastic-integration-brownian-motion/' | relative_url }}">47. Stochastic integration with Brownian motion</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/semimartingales/" next_label="Next page" next_url="/notes/probability-theory/stochastic-integration-semimartingales/" %}
 
+    <p>The Itô integral with respect to Brownian motion is first an \(L^2\) isometry for predictable square-integrable integrands, then a localized construction.</p>
+
+    <h3>Simple predictable integrands</h3>
+
+    <p>The integral is defined by summing known coefficients times future increments.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Let \(B\) be Brownian motion with filtration \((\mathcal F_t)\). For a simple predictable process
-        \[
-        H_t=\sum_{i=0}^{n-1}H_i\,1_{(t_i,t_{i+1}]}(t),
-        \quad H_i\in L^2(\mathcal F_{t_i}),
-        \]
-        define the Itô integral by
-        \[
-        \int_0^T H_t\,\mathrm{d}B_t
-        =\sum_{i=0}^{n-1}H_i(B_{t_{i+1}}-B_{t_i}).
-        \]
-        For general predictable \(H\) with \(\mathbb E\int_0^T H_t^2\mathrm{d}t\lt \infty\), define the integral as the \(L^2\)-limit of simple predictable approximations.</p>
+        <p><span class="statement-title">Definition.</span> For \(H_t=\sum_{k=0}^{n-1}H_k1_{(t_k,t_{k+1}]}(t)\), with \(H_k\in\mathcal F_{t_k}\), define
+\[
+\int_0^T H_t\,\mathrm{d}B_t=\sum_kH_k(B_{t_{k+1}}-B_{t_k}).
+\]</p>
     </div>
 
+
+    <h3>Itô isometry</h3>
+
+    <p>The isometry is the central construction theorem.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Itô isometry.</span> For every square-integrable predictable \(H\),
-        \[
-        \mathbb E\left(\int_0^T H_t\,\mathrm{d}B_t\right)^2
-        =\mathbb E\int_0^T H_t^2\,\mathrm{d}t.
-        \]
-        Moreover \(M_t=\int_0^tH_s\,\mathrm{d}B_s\) is a square-integrable martingale and \(\langle M\rangle_t=\int_0^tH_s^2\mathrm{d}s\).</p>
+        <p><span class="statement-title">Theorem.</span> For square-integrable predictable \(H\),
+\[
+\mathbb E\left(\int_0^T H_t\,\mathrm{d}B_t\right)^2
+=\mathbb E\int_0^T H_t^2\,\mathrm{d}t.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For simple \(H\), expand the square:
-        \[
-        \mathbb E\sum_{i,j}H_iH_j\Delta_iB\,\Delta_jB.
-        \]
-        If \(i\lt j\), then \(H_i\Delta_iB H_j\) is \(\mathcal F_{t_j}\)-measurable and \(\mathbb E(\Delta_jB\mid\mathcal F_{t_j})=0\), so the cross term has expectation \(0\). Thus only diagonal terms remain:
-        \[
-        \mathbb E\sum_iH_i^2(\Delta_iB)^2
-        =\sum_i\mathbb E\bigl[H_i^2\,\mathbb E((\Delta_iB)^2\mid\mathcal F_{t_i})\bigr]
-        =\mathbb E\sum_iH_i^2(t_{i+1}-t_i).
-        \]
-        This is the isometry for simple processes. Density of simple predictable processes in \(L^2(\Omega\times[0,T])\) extends the integral and the identity. The martingale property follows by applying the same construction on \([s,t]\) and using independence and mean zero of future Brownian increments.</p>
+        <p><span class="statement-title">Proof.</span> For simple \(H\), cross terms vanish because disjoint Brownian increments are conditionally centered and independent of the past. The diagonal terms give \(\mathbb E[H_k^2(t_{k+1}-t_k)]\). Thus the map from simple predictable processes into \(L^2\) is an isometry. Complete the construction by taking the \(L^2(\Omega\times[0,T])\)-closure of simple predictable processes.</p>
     </div>
 
-    <h3>Predictability and orthogonality of increments</h3>
 
-    <p>The coefficient \(H_i\) must be known at time \(t_i\). Otherwise it could look into the future increment \(\Delta_iB\), and the cross-term cancellation in the proof would fail.</p>
+    <h3>Martingale and bracket</h3>
+
+    <p>The stochastic integral is a martingale with bracket equal to accumulated squared integrand.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(M_t=\int_0^tH_s\,\mathrm{d}B_s\), then \(M_t\) is a square-integrable martingale and
+\[
+\langle M\rangle_t=\int_0^tH_s^2\,\mathrm{d}s.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For simple integrands, the martingale property follows from conditional mean-zero Brownian increments. The squared martingale minus \(\int H^2\,\mathrm{d}s\) has zero conditional increments by the same calculation. Approximation by simple processes and the Itô isometry pass both identities to general square-integrable predictable \(H\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The notation \(\mathrm{d}B_t\) is not an ordinary differential; the integral is defined by martingale limits.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/semimartingales/" next_label="Next page" next_url="/notes/probability-theory/stochastic-integration-semimartingales/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>47. Intégration stochastique par rapport au mouvement brownien</h2>
+    <h2><a href="{{ '/notes/probability-theory/stochastic-integration-brownian-motion/' | relative_url }}">47. Intégration stochastique par rapport au mouvement brownien</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/semimartingales/" next_label="Page suivante" next_url="/notes/probability-theory/stochastic-integration-semimartingales/" %}
 
+    <p>The Itô integral with respect to Brownian motion is first an \(L^2\) isometry for predictable square-integrable integrands, then a localized construction.</p>
+
+    <h3>Simple predictable integrands</h3>
+
+    <p>The integral is defined by summing known coefficients times future increments.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Soit \(B\) un mouvement brownien avec filtration \((\mathcal F_t)\). Pour un processus prévisible simple
-        \[
-        H_t=\sum_{i=0}^{n-1}H_i\,1_{(t_i,t_{i+1}]}(t),
-        \quad H_i\in L^2(\mathcal F_{t_i}),
-        \]
-        on définit l’intégrale d’Itô par
-        \[
-        \int_0^T H_t\,\mathrm{d}B_t
-        =\sum_{i=0}^{n-1}H_i(B_{t_{i+1}}-B_{t_i}).
-        \]
-        Pour un processus prévisible général \(H\) tel que \(\mathbb E\int_0^T H_t^2\mathrm{d}t\lt \infty\), l’intégrale est la limite dans \(L^2\) d’approximations prévisibles simples.</p>
+        <p><span class="statement-title">Définition.</span> For \(H_t=\sum_{k=0}^{n-1}H_k1_{(t_k,t_{k+1}]}(t)\), with \(H_k\in\mathcal F_{t_k}\), define
+\[
+\int_0^T H_t\,\mathrm{d}B_t=\sum_kH_k(B_{t_{k+1}}-B_{t_k}).
+\]</p>
     </div>
 
+
+    <h3>Itô isometry</h3>
+
+    <p>The isometry is the central construction theorem.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Isométrie d’Itô.</span> Pour tout \(H\) prévisible de carré intégrable,
-        \[
-        \mathbb E\left(\int_0^T H_t\,\mathrm{d}B_t\right)^2
-        =\mathbb E\int_0^T H_t^2\,\mathrm{d}t.
-        \]
-        De plus \(M_t=\int_0^tH_s\,\mathrm{d}B_s\) est une martingale de carré intégrable et \(\langle M\rangle_t=\int_0^tH_s^2\mathrm{d}s\).</p>
+        <p><span class="statement-title">Théorème.</span> For square-integrable predictable \(H\),
+\[
+\mathbb E\left(\int_0^T H_t\,\mathrm{d}B_t\right)^2
+=\mathbb E\int_0^T H_t^2\,\mathrm{d}t.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Pour \(H\) simple, développons le carré :
-        \[
-        \mathbb E\sum_{i,j}H_iH_j\Delta_iB\,\Delta_jB.
-        \]
-        Si \(i\lt j\), alors \(H_i\Delta_iB H_j\) est \(\mathcal F_{t_j}\)-mesurable et \(\mathbb E(\Delta_jB\mid\mathcal F_{t_j})=0\), donc le terme croisé a espérance nulle. Il reste les termes diagonaux :
-        \[
-        \mathbb E\sum_iH_i^2(\Delta_iB)^2
-        =\sum_i\mathbb E\bigl[H_i^2\,\mathbb E((\Delta_iB)^2\mid\mathcal F_{t_i})\bigr]
-        =\mathbb E\sum_iH_i^2(t_{i+1}-t_i).
-        \]
-        On obtient l’isométrie pour les processus simples. La densité des processus prévisibles simples dans \(L^2(\Omega\times[0,T])\) prolonge l’intégrale et l’identité. La propriété de martingale vient du même argument sur \([s,t]\), avec indépendance et moyenne nulle des accroissements browniens futurs.</p>
+        <p><span class="statement-title">Preuve.</span> For simple \(H\), cross terms vanish because disjoint Brownian increments are conditionally centered and independent of the past. The diagonal terms give \(\mathbb E[H_k^2(t_{k+1}-t_k)]\). Thus the map from simple predictable processes into \(L^2\) is an isometry. Complete the construction by taking the \(L^2(\Omega\times[0,T])\)-closure of simple predictable processes.</p>
     </div>
 
-    <h3>Prévisibilité et orthogonalité des accroissements</h3>
 
-    <p>Le coefficient \(H_i\) doit être connu au temps \(t_i\). Sinon il pourrait dépendre de l’accroissement futur \(\Delta_iB\), et l’annulation des termes croisés échouerait.</p>
+    <h3>Martingale and bracket</h3>
+
+    <p>The stochastic integral is a martingale with bracket equal to accumulated squared integrand.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(M_t=\int_0^tH_s\,\mathrm{d}B_s\), then \(M_t\) is a square-integrable martingale and
+\[
+\langle M\rangle_t=\int_0^tH_s^2\,\mathrm{d}s.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For simple integrands, the martingale property follows from conditional mean-zero Brownian increments. The squared martingale minus \(\int H^2\,\mathrm{d}s\) has zero conditional increments by the same calculation. Approximation by simple processes and the Itô isometry pass both identities to general square-integrable predictable \(H\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The notation \(\mathrm{d}B_t\) is not an ordinary differential; the integral is defined by martingale limits.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/semimartingales/" next_label="Page suivante" next_url="/notes/probability-theory/stochastic-integration-semimartingales/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>47. 关于布朗运动的随机积分</h2>
+    <h2><a href="{{ '/notes/probability-theory/stochastic-integration-brownian-motion/' | relative_url }}">47. 关于布朗运动的随机积分</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/semimartingales/" next_label="下一页" next_url="/notes/probability-theory/stochastic-integration-semimartingales/" %}
 
+    <p>The Itô integral with respect to Brownian motion is first an \(L^2\) isometry for predictable square-integrable integrands, then a localized construction.</p>
+
+    <h3>Simple predictable integrands</h3>
+
+    <p>The integral is defined by summing known coefficients times future increments.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 设 \(B\) 是带滤过 \((\mathcal F_t)\) 的布朗运动。对简单可预测过程
-        \[
-        H_t=\sum_{i=0}^{n-1}H_i\,1_{(t_i,t_{i+1}]}(t),
-        \quad H_i\in L^2(\mathcal F_{t_i}),
-        \]
-        定义伊藤积分
-        \[
-        \int_0^T H_t\,\mathrm{d}B_t
-        =\sum_{i=0}^{n-1}H_i(B_{t_{i+1}}-B_{t_i}).
-        \]
-        对满足 \(\mathbb E\int_0^T H_t^2\mathrm{d}t\lt \infty\) 的一般可预测过程 \(H\)，积分定义为简单可预测逼近的 \(L^2\) 极限。</p>
+        <p><span class="statement-title">定义.</span> For \(H_t=\sum_{k=0}^{n-1}H_k1_{(t_k,t_{k+1}]}(t)\), with \(H_k\in\mathcal F_{t_k}\), define
+\[
+\int_0^T H_t\,\mathrm{d}B_t=\sum_kH_k(B_{t_{k+1}}-B_{t_k}).
+\]</p>
     </div>
 
+
+    <h3>Itô isometry</h3>
+
+    <p>The isometry is the central construction theorem.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">伊藤等距.</span> 对每个平方可积可预测 \(H\)，
-        \[
-        \mathbb E\left(\int_0^T H_t\,\mathrm{d}B_t\right)^2
-        =\mathbb E\int_0^T H_t^2\,\mathrm{d}t.
-        \]
-        并且 \(M_t=\int_0^tH_s\,\mathrm{d}B_s\) 是平方可积鞅，\(\langle M\rangle_t=\int_0^tH_s^2\mathrm{d}s\)。</p>
+        <p><span class="statement-title">定理.</span> For square-integrable predictable \(H\),
+\[
+\mathbb E\left(\int_0^T H_t\,\mathrm{d}B_t\right)^2
+=\mathbb E\int_0^T H_t^2\,\mathrm{d}t.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 对简单 \(H\)，展开平方：
-        \[
-        \mathbb E\sum_{i,j}H_iH_j\Delta_iB\,\Delta_jB.
-        \]
-        若 \(i\lt j\)，则 \(H_i\Delta_iB H_j\) 是 \(\mathcal F_{t_j}\)-可测，而 \(\mathbb E(\Delta_jB\mid\mathcal F_{t_j})=0\)，所以交叉项期望为 \(0\)。因此只剩对角项：
-        \[
-        \mathbb E\sum_iH_i^2(\Delta_iB)^2
-        =\sum_i\mathbb E\bigl[H_i^2\,\mathbb E((\Delta_iB)^2\mid\mathcal F_{t_i})\bigr]
-        =\mathbb E\sum_iH_i^2(t_{i+1}-t_i).
-        \]
-        这给出简单过程情形的等距。简单可预测过程在 \(L^2(\Omega\times[0,T])\) 中稠密，所以积分和等距可延拓到一般 \(H\)。鞅性质由同样的构造作用在 \([s,t]\) 上，并使用未来布朗增量的独立性与零均值得到。</p>
+        <p><span class="statement-title">证明.</span> For simple \(H\), cross terms vanish because disjoint Brownian increments are conditionally centered and independent of the past. The diagonal terms give \(\mathbb E[H_k^2(t_{k+1}-t_k)]\). Thus the map from simple predictable processes into \(L^2\) is an isometry. Complete the construction by taking the \(L^2(\Omega\times[0,T])\)-closure of simple predictable processes.</p>
     </div>
 
-    <h3>可预测性与增量正交性</h3>
 
-    <p>系数 \(H_i\) 必须在时间 \(t_i\) 已知。否则它可能依赖未来增量 \(\Delta_iB\)，证明中的交叉项抵消就会失效。</p>
+    <h3>Martingale and bracket</h3>
+
+    <p>The stochastic integral is a martingale with bracket equal to accumulated squared integrand.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(M_t=\int_0^tH_s\,\mathrm{d}B_s\), then \(M_t\) is a square-integrable martingale and
+\[
+\langle M\rangle_t=\int_0^tH_s^2\,\mathrm{d}s.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For simple integrands, the martingale property follows from conditional mean-zero Brownian increments. The squared martingale minus \(\int H^2\,\mathrm{d}s\) has zero conditional increments by the same calculation. Approximation by simple processes and the Itô isometry pass both identities to general square-integrable predictable \(H\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The notation \(\mathrm{d}B_t\) is not an ordinary differential; the integral is defined by martingale limits.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/semimartingales/" next_label="下一页" next_url="/notes/probability-theory/stochastic-integration-semimartingales/" %}
 </div>

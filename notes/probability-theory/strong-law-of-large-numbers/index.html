@@ -6,172 +6,151 @@ breadcrumb_child_label_zh: "15. 强大数定律"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>15. Strong law of large numbers</h2>
+    <h2><a href="{{ '/notes/probability-theory/strong-law-of-large-numbers/' | relative_url }}">15. Strong law of large numbers</a></h2>
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="Next page" next_url="/notes/probability-theory/triangular-arrays-truncation/" %}
 
+    <p>The strong law of large numbers upgrades stabilization of averages from probability to almost sure convergence. It is one of the main bridges from randomness to deterministic long-run behavior.</p>
+
+    <h3>Almost-sure averages</h3>
+
+    <p>The strong law controls the entire tail of the sequence of averages.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For random variables \(X_1,X_2,\ldots\), the sample average is
-        \[
-        \bar X_n=\frac1n\sum_{k=1}^nX_k.
-        \]
-        The strong law of large numbers is an almost sure statement: it asks whether \(\bar X_n(\omega)\) converges along almost every infinite sample path.</p>
+        <p><span class="statement-title">Definition.</span> For i.i.d. integrable \(X_i\) with mean \(\mu\), the strong law states
+\[
+\frac1n\sum_{i=1}^nX_i\to\mu\qquad\text{almost surely}.
+\]</p>
     </div>
 
+
+    <h3>Kolmogorov strong law</h3>
+
+    <p>Integrability is the sharp natural assumption in the i.i.d. case.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X_1,X_2,\ldots\) are i.i.d. and \(\mathbb E|X_1|\lt \infty\), then
-        \[
-        \frac1n\sum_{k=1}^nX_k\to \mathbb E X_1
-        \quad\text{a.s.}
-        \]</p>
+        <p><span class="statement-title">Theorem.</span> If \(X_i\) are i.i.d. and \(\mathbb E|X_1|\lt\infty\), then \(n^{-1}\sum_{i=1}^nX_i\to\mathbb E X_1\) almost surely.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Subtract \(\mu=\mathbb EX_1\), so assume \(\mathbb EX_1=0\). Put
-        \[
-        Y_k=X_k1_{\{|X_k|\le k\}}.
-        \]
-        Since
-        \[
-        \sum_{k=1}^{\infty}P(X_k\ne Y_k)
-        =\sum_{k=1}^{\infty}P(|X_1|\gt k)
-        \le \mathbb E|X_1|\lt\infty,
-        \]
-        Borel-Cantelli gives \(X_k=Y_k\) for all but finitely many \(k\), almost surely. Therefore
-        \[
-        \frac1n\sum_{k=1}^n(X_k-Y_k)\to0\quad\text{a.s.}
-        \]</p>
-        <p>It remains to prove \(n^{-1}\sum_{k=1}^nY_k\to0\). Let \(Z_k=Y_k-\mathbb EY_k\). The variables \(Z_k\) are independent and centered. Moreover
-        \[
-        \sum_{k=1}^{\infty}\frac{\operatorname{Var}(Y_k)}{k^2}
-        \le \sum_{k=1}^{\infty}\frac{\mathbb E[X_1^2 1_{\{|X_1|\le k\}}]}{k^2}
-        =\mathbb E\left[X_1^2\sum_{k\ge |X_1|}\frac1{k^2}\right]
-        \le C\mathbb E|X_1|\lt\infty.
-        \]
-        Hence the partial sums of \(\sum_k Z_k/k\) form an \(L^2\)-bounded martingale, so the martingale convergence theorem gives almost sure and \(L^2\) convergence. Kronecker’s lemma then implies
-        \[
-        \frac1n\sum_{k=1}^n Z_k\to0\quad\text{a.s.}
-        \]
-        Finally, \(\mathbb EY_k=\mathbb E[X_1 1_{\{|X_1|\le k\}}]=-\mathbb E[X_1 1_{\{|X_1|\gt k\}}]\to0\) by dominated convergence, so Cesàro averaging gives \(n^{-1}\sum_{k=1}^n\mathbb EY_k\to0\). Combining the three limits proves the centered case, and adding back \(\mu\) proves the theorem.</p>
+        <p><span class="statement-title">Proof.</span> For bounded centered variables, apply maximal inequalities to dyadic blocks and use Borel-Cantelli to show dyadic averages converge almost surely, then fill gaps between powers of two. For integrable variables, truncate \(X_i\) at levels comparable to \(i\). Borel-Cantelli controls the discarded large terms, and the centered truncated variables satisfy the bounded or square-summable variance argument. Finally the truncation bias tends to zero by integrability.</p>
     </div>
 
-    <h3>Interpretation</h3>
 
-    <p>The weak law controls one large \(n\) at a time. The strong law controls the whole tail of the sequence on one probability-one event, which is why summability and Borel-Cantelli enter the proof.</p>
+    <h3>Kolmogorov criterion</h3>
+
+    <p>Independent non-identically distributed variables are controlled by variance summability.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X_n\) are independent, centered, square-integrable, and \(\sum_n \operatorname{Var}(X_n)/n^2\lt\infty\), then \(n^{-1}\sum_{k=1}^nX_k\to0\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Kronecker's lemma reduces the assertion to almost-sure convergence of \(\sum_nX_n/n\). The latter follows from \(L^2\)-boundedness of partial sums because independence gives \(\sum_n\mathbb E(X_n/n)^2\lt\infty\), so the series converges in \(L^2\) and almost surely along a standard subsequence/maximal argument.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Strong laws are often proved by combining three tools: truncation, maximal inequalities, and Borel-Cantelli.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="Next page" next_url="/notes/probability-theory/triangular-arrays-truncation/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>15. Loi forte des grands nombres</h2>
+    <h2><a href="{{ '/notes/probability-theory/strong-law-of-large-numbers/' | relative_url }}">15. Loi forte des grands nombres</a></h2>
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="Page suivante" next_url="/notes/probability-theory/triangular-arrays-truncation/" %}
 
+    <p>The strong law of large numbers upgrades stabilization of averages from probability to almost sure convergence. It is one of the main bridges from randomness to deterministic long-run behavior.</p>
+
+    <h3>Almost-sure averages</h3>
+
+    <p>The strong law controls the entire tail of the sequence of averages.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Pour des variables aléatoires \(X_1,X_2,\ldots\), la moyenne empirique est
-        \[
-        \bar X_n=\frac1n\sum_{k=1}^nX_k.
-        \]
-        La loi forte des grands nombres est un énoncé presque sûr : elle demande si \(\bar X_n(\omega)\) converge le long de presque toute trajectoire infinie.</p>
+        <p><span class="statement-title">Définition.</span> For i.i.d. integrable \(X_i\) with mean \(\mu\), the strong law states
+\[
+\frac1n\sum_{i=1}^nX_i\to\mu\qquad\text{almost surely}.
+\]</p>
     </div>
 
+
+    <h3>Kolmogorov strong law</h3>
+
+    <p>Integrability is the sharp natural assumption in the i.i.d. case.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Si \(X_1,X_2,\ldots\) sont i.i.d. et si \(\mathbb E|X_1|\lt \infty\), alors
-        \[
-        \frac1n\sum_{k=1}^nX_k\to \mathbb E X_1
-        \quad\text{p.s.}
-        \]</p>
+        <p><span class="statement-title">Théorème.</span> If \(X_i\) are i.i.d. and \(\mathbb E|X_1|\lt\infty\), then \(n^{-1}\sum_{i=1}^nX_i\to\mathbb E X_1\) almost surely.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> On soustrait \(\mu=\mathbb EX_1\), et l’on suppose donc \(\mathbb EX_1=0\). Posons
-        \[
-        Y_k=X_k1_{\{|X_k|\le k\}}.
-        \]
-        Comme
-        \[
-        \sum_{k=1}^{\infty}P(X_k\ne Y_k)
-        =\sum_{k=1}^{\infty}P(|X_1|\gt k)
-        \le \mathbb E|X_1|\lt\infty,
-        \]
-        Borel-Cantelli donne \(X_k=Y_k\) sauf pour un nombre fini de \(k\), p.s. Donc
-        \[
-        \frac1n\sum_{k=1}^n(X_k-Y_k)\to0\quad\text{p.s.}
-        \]</p>
-        <p>Il reste à montrer \(n^{-1}\sum_{k=1}^nY_k\to0\). Posons \(Z_k=Y_k-\mathbb EY_k\). Les \(Z_k\) sont indépendantes et centrées. De plus
-        \[
-        \sum_{k=1}^{\infty}\frac{\operatorname{Var}(Y_k)}{k^2}
-        \le \sum_{k=1}^{\infty}\frac{\mathbb E[X_1^2 1_{\{|X_1|\le k\}}]}{k^2}
-        =\mathbb E\left[X_1^2\sum_{k\ge |X_1|}\frac1{k^2}\right]
-        \le C\mathbb E|X_1|\lt\infty.
-        \]
-        Ainsi les sommes partielles de \(\sum_k Z_k/k\) forment une martingale bornée dans \(L^2\); le théorème de convergence des martingales donne donc la convergence presque sûre et dans \(L^2\). Le lemme de Kronecker donne alors
-        \[
-        \frac1n\sum_{k=1}^n Z_k\to0\quad\text{p.s.}
-        \]
-        Enfin, \(\mathbb EY_k=\mathbb E[X_1 1_{\{|X_1|\le k\}}]=-\mathbb E[X_1 1_{\{|X_1|\gt k\}}]\to0\) par convergence dominée, donc les moyennes de Cesàro vérifient \(n^{-1}\sum_{k=1}^n\mathbb EY_k\to0\). Les trois limites donnent le cas centré, puis on rajoute \(\mu\).</p>
+        <p><span class="statement-title">Preuve.</span> For bounded centered variables, apply maximal inequalities to dyadic blocks and use Borel-Cantelli to show dyadic averages converge almost surely, then fill gaps between powers of two. For integrable variables, truncate \(X_i\) at levels comparable to \(i\). Borel-Cantelli controls the discarded large terms, and the centered truncated variables satisfy the bounded or square-summable variance argument. Finally the truncation bias tends to zero by integrability.</p>
     </div>
 
-    <h3>Interprétation</h3>
 
-    <p>La loi faible contrôle un grand \(n\) fixé. La loi forte contrôle toute la queue de la suite sur un même événement de probabilité un, ce qui explique l’apparition de la sommabilité et de Borel-Cantelli.</p>
+    <h3>Kolmogorov criterion</h3>
+
+    <p>Independent non-identically distributed variables are controlled by variance summability.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X_n\) are independent, centered, square-integrable, and \(\sum_n \operatorname{Var}(X_n)/n^2\lt\infty\), then \(n^{-1}\sum_{k=1}^nX_k\to0\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Kronecker's lemma reduces the assertion to almost-sure convergence of \(\sum_nX_n/n\). The latter follows from \(L^2\)-boundedness of partial sums because independence gives \(\sum_n\mathbb E(X_n/n)^2\lt\infty\), so the series converges in \(L^2\) and almost surely along a standard subsequence/maximal argument.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Strong laws are often proved by combining three tools: truncation, maximal inequalities, and Borel-Cantelli.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="Page suivante" next_url="/notes/probability-theory/triangular-arrays-truncation/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>15. 强大数定律</h2>
+    <h2><a href="{{ '/notes/probability-theory/strong-law-of-large-numbers/' | relative_url }}">15. 强大数定律</a></h2>
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="下一页" next_url="/notes/probability-theory/triangular-arrays-truncation/" %}
 
+    <p>The strong law of large numbers upgrades stabilization of averages from probability to almost sure convergence. It is one of the main bridges from randomness to deterministic long-run behavior.</p>
+
+    <h3>Almost-sure averages</h3>
+
+    <p>The strong law controls the entire tail of the sequence of averages.</p>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 对随机变量 \(X_1,X_2,\ldots\)，样本均值为
-        \[
-        \bar X_n=\frac1n\sum_{k=1}^nX_k.
-        \]
-        强大数定律是几乎处处陈述：它研究 \(\bar X_n(\omega)\) 是否在几乎每条无限样本路径上收敛。</p>
+        <p><span class="statement-title">定义.</span> For i.i.d. integrable \(X_i\) with mean \(\mu\), the strong law states
+\[
+\frac1n\sum_{i=1}^nX_i\to\mu\qquad\text{almost surely}.
+\]</p>
     </div>
 
+
+    <h3>Kolmogorov strong law</h3>
+
+    <p>Integrability is the sharp natural assumption in the i.i.d. case.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> 若 \(X_1,X_2,\ldots\) 独立同分布，且 \(\mathbb E|X_1|\lt \infty\)，则
-        \[
-        \frac1n\sum_{k=1}^nX_k\to \mathbb E X_1
-        \quad\text{a.s.}
-        \]</p>
+        <p><span class="statement-title">定理.</span> If \(X_i\) are i.i.d. and \(\mathbb E|X_1|\lt\infty\), then \(n^{-1}\sum_{i=1}^nX_i\to\mathbb E X_1\) almost surely.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 先减去 \(\mu=\mathbb EX_1\)，所以只需考虑 \(\mathbb EX_1=0\)。令
-        \[
-        Y_k=X_k1_{\{|X_k|\le k\}}.
-        \]
-        因为
-        \[
-        \sum_{k=1}^{\infty}P(X_k\ne Y_k)
-        =\sum_{k=1}^{\infty}P(|X_1|\gt k)
-        \le \mathbb E|X_1|\lt\infty,
-        \]
-        博雷尔-坎泰利引理给出：除有限多个 \(k\) 外，\(X_k=Y_k\) a.s. 因此
-        \[
-        \frac1n\sum_{k=1}^n(X_k-Y_k)\to0\quad\text{a.s.}
-        \]</p>
-        <p>接下来证明 \(n^{-1}\sum_{k=1}^nY_k\to0\)。令 \(Z_k=Y_k-\mathbb EY_k\)。这些 \(Z_k\) 独立且中心化。并且
-        \[
-        \sum_{k=1}^{\infty}\frac{\operatorname{Var}(Y_k)}{k^2}
-        \le \sum_{k=1}^{\infty}\frac{\mathbb E[X_1^2 1_{\{|X_1|\le k\}}]}{k^2}
-        =\mathbb E\left[X_1^2\sum_{k\ge |X_1|}\frac1{k^2}\right]
-        \le C\mathbb E|X_1|\lt\infty.
-        \]
-        所以 \(\sum_k Z_k/k\) 的部分和构成 \(L^2\)-有界鞅；由鞅收敛定理，它几乎处处且在 \(L^2\) 中收敛。Kronecker 引理推出
-        \[
-        \frac1n\sum_{k=1}^n Z_k\to0\quad\text{a.s.}
-        \]
-        最后，\(\mathbb EY_k=\mathbb E[X_1 1_{\{|X_1|\le k\}}]=-\mathbb E[X_1 1_{\{|X_1|\gt k\}}]\to0\)，这是 dominated convergence 的结果；于是 Cesàro 平均给出 \(n^{-1}\sum_{k=1}^n\mathbb EY_k\to0\)。合并这三个极限得到中心化情形，再加回 \(\mu\) 即得定理。</p>
+        <p><span class="statement-title">证明.</span> For bounded centered variables, apply maximal inequalities to dyadic blocks and use Borel-Cantelli to show dyadic averages converge almost surely, then fill gaps between powers of two. For integrable variables, truncate \(X_i\) at levels comparable to \(i\). Borel-Cantelli controls the discarded large terms, and the centered truncated variables satisfy the bounded or square-summable variance argument. Finally the truncation bias tends to zero by integrability.</p>
     </div>
 
-    <h3>理解</h3>
 
-    <p>弱大数定律控制的是单个很大的 \(n\)。强大数定律在同一个概率为一的事件上控制整个尾部序列，所以证明中自然出现可和性与博雷尔-坎泰利引理。</p>
+    <h3>Kolmogorov criterion</h3>
+
+    <p>Independent non-identically distributed variables are controlled by variance summability.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(X_n\) are independent, centered, square-integrable, and \(\sum_n \operatorname{Var}(X_n)/n^2\lt\infty\), then \(n^{-1}\sum_{k=1}^nX_k\to0\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Kronecker's lemma reduces the assertion to almost-sure convergence of \(\sum_nX_n/n\). The latter follows from \(L^2\)-boundedness of partial sums because independence gives \(\sum_n\mathbb E(X_n/n)^2\lt\infty\), so the series converges in \(L^2\) and almost surely along a standard subsequence/maximal argument.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Strong laws are often proved by combining three tools: truncation, maximal inequalities, and Borel-Cantelli.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/borel-cantelli-lemma/" next_label="下一页" next_url="/notes/probability-theory/triangular-arrays-truncation/" %}
 </div>

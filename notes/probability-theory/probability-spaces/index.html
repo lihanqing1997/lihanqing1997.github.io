@@ -6,106 +6,142 @@ breadcrumb_child_label_zh: "1. 概率空间"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2>1. Probability spaces</h2>
+    <h2><a href="{{ '/notes/probability-theory/probability-spaces/' | relative_url }}">1. Probability spaces</a></h2>
     {% include probability-note-nav.html back_label="Back" next_label="Next page" next_url="/notes/probability-theory/measures-extension-monotone-classes/" %}
 
+    <p>A probability space is the measure-theoretic stage on which random objects live. The main point is that probabilities are assigned only to measurable events, and almost-sure statements are statements modulo null sets.</p>
+
+    <h3>Events and probability measures</h3>
+
+    <p>The axioms are the same as measure theory, normalized to total mass one.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A <strong>probability space</strong> is a triple \((\Omega,\mathcal F,P)\). Here \(\mathcal F\) is a \(\sigma\)-field on \(\Omega\): \(\Omega\in\mathcal F\), \(A\in\mathcal F\) implies \(A^c\in\mathcal F\), and \((A_n)_{n\ge1}\subset\mathcal F\) implies \(\bigcup_{n=1}^\infty A_n\in\mathcal F\). The map \(P:\mathcal F\to[0,1]\) satisfies \(P(\Omega)=1\) and countable additivity:
-        \[
-        A_i\cap A_j=\varnothing\ (i\ne j)
-        \quad\Longrightarrow\quad
-        P\left(\bigcup_{n=1}^\infty A_n\right)=\sum_{n=1}^\infty P(A_n).
-        \]
-        Events are elements of \(\mathcal F\). A statement holds almost surely if the set on which it fails has probability zero.</p>
+        <p><span class="statement-title">Definition.</span> A probability space is a triple \((\Omega,\mathcal F,P)\), where \(\mathcal F\) is a \(\sigma\)-field on \(\Omega\) and \(P:\mathcal F\to[0,1]\) is countably additive with \(P(\Omega)=1\). Events are elements of \(\mathcal F\). A property holds almost surely if it fails on a set \(N\in\mathcal F\) with \(P(N)=0\).</p>
     </div>
 
+
+    <h3>Continuity of probability</h3>
+
+    <p>Countable additivity is most often used through continuity along monotone set limits.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> If \(A_n\uparrow A\), meaning \(A_1\subset A_2\subset\cdots\) and \(A=\bigcup_n A_n\), then \(P(A_n)\uparrow P(A)\). If \(A_n\downarrow A\), meaning \(A_1\supset A_2\supset\cdots\) and \(A=\bigcap_n A_n\), then \(P(A_n)\downarrow P(A)\).</p>
+        <p><span class="statement-title">Theorem.</span> If \(A_n\uparrow A\), then \(P(A_n)\uparrow P(A)\). If \(A_n\downarrow A\), then \(P(A_n)\downarrow P(A)\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For the increasing case, set \(B_1=A_1\) and \(B_n=A_n\setminus A_{n-1}\) for \(n\ge2\). The sets \(B_n\) are disjoint, \(A_n=\bigcup_{k=1}^nB_k\), and \(A=\bigcup_{k=1}^\infty B_k\). Hence
-        \[
-        P(A_n)=\sum_{k=1}^nP(B_k),\qquad
-        P(A)=\sum_{k=1}^\infty P(B_k),
-        \]
-        so \(P(A_n)\to P(A)\). For the decreasing case, \(A_n^c\uparrow A^c\). By the increasing case, \(P(A_n^c)\uparrow P(A^c)\), and therefore \(P(A_n)=1-P(A_n^c)\downarrow 1-P(A^c)=P(A)\).</p>
+        <p><span class="statement-title">Proof.</span> For \(A_n\uparrow A\), write \(B_1=A_1\) and \(B_n=A_n\setminus A_{n-1}\) for \(n\ge2\). The \(B_n\) are disjoint, \(A_n=\bigcup_{k\le n}B_k\), and \(A=\bigcup_{k\ge1}B_k\), so countable additivity gives \(P(A_n)=\sum_{k\le n}P(B_k)\to\sum_{k\ge1}P(B_k)=P(A)\). For \(A_n\downarrow A\), apply the increasing result to \(A_n^c\uparrow A^c\) and use \(P(A_n)=1-P(A_n^c)\).</p>
     </div>
 
-    <h3>Measurability before probabilities</h3>
 
-    <p>The \(\sigma\)-field is the domain of \(P\). Before writing \(P(X\in B)\), one must know that \(X^{-1}(B)\in\mathcal F\).</p>
+    <h3>Null sets and completion</h3>
 
+    <p>Almost-sure equality is harmless only when the measurable structure has enough null subsets.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The completion of \((\Omega,\mathcal F,P)\) is obtained by adding every subset of every \(P\)-null set to \(\mathcal F\), and extending \(P\) by assigning those subsets probability zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(\overline{\mathcal F}\) consist of sets \(A\cup N\), where \(A\in\mathcal F\) and \(N\subseteq Z\) for some \(Z\in\mathcal F\) with \(P(Z)=0\). This class is a \(\sigma\)-field because countable unions of null subsets are contained in countable unions of null sets. Define \(\overline P(A\cup N)=P(A)\). If the same set has two representations, their symmetric difference is contained in a null set, so the value is well-defined.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Completeness is convenient, but not automatic. Many canonical spaces first appear with a Borel \(\sigma\)-field and are completed only after a probability law is fixed.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Back" next_label="Next page" next_url="/notes/probability-theory/measures-extension-monotone-classes/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2>1. Espaces probabilisés</h2>
+    <h2><a href="{{ '/notes/probability-theory/probability-spaces/' | relative_url }}">1. Espaces probabilisés</a></h2>
     {% include probability-note-nav.html back_label="Retour" next_label="Page suivante" next_url="/notes/probability-theory/measures-extension-monotone-classes/" %}
 
+    <p>A probability space is the measure-theoretic stage on which random objects live. The main point is that probabilities are assigned only to measurable events, and almost-sure statements are statements modulo null sets.</p>
+
+    <h3>Events and probability measures</h3>
+
+    <p>The axioms are the same as measure theory, normalized to total mass one.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Un <strong>espace probabilisé</strong> est un triplet \((\Omega,\mathcal F,P)\). Ici \(\mathcal F\) est une \(\sigma\)-algèbre sur \(\Omega\) : \(\Omega\in\mathcal F\), \(A\in\mathcal F\) entraîne \(A^c\in\mathcal F\), et \((A_n)_{n\ge1}\subset\mathcal F\) entraîne \(\bigcup_{n=1}^\infty A_n\in\mathcal F\). L’application \(P:\mathcal F\to[0,1]\) vérifie \(P(\Omega)=1\) et l’additivité dénombrable :
-        \[
-        A_i\cap A_j=\varnothing\ (i\ne j)
-        \quad\Longrightarrow\quad
-        P\left(\bigcup_{n=1}^\infty A_n\right)=\sum_{n=1}^\infty P(A_n).
-        \]
-        Les événements sont les éléments de \(\mathcal F\). Une propriété est vraie presque sûrement si l’ensemble où elle échoue est de probabilité nulle.</p>
+        <p><span class="statement-title">Définition.</span> A probability space is a triple \((\Omega,\mathcal F,P)\), where \(\mathcal F\) is a \(\sigma\)-field on \(\Omega\) and \(P:\mathcal F\to[0,1]\) is countably additive with \(P(\Omega)=1\). Events are elements of \(\mathcal F\). A property holds almost surely if it fails on a set \(N\in\mathcal F\) with \(P(N)=0\).</p>
     </div>
 
+
+    <h3>Continuity of probability</h3>
+
+    <p>Countable additivity is most often used through continuity along monotone set limits.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> Si \(A_n\uparrow A\), c’est-à-dire \(A_1\subset A_2\subset\cdots\) et \(A=\bigcup_n A_n\), alors \(P(A_n)\uparrow P(A)\). Si \(A_n\downarrow A\), c’est-à-dire \(A_1\supset A_2\supset\cdots\) et \(A=\bigcap_n A_n\), alors \(P(A_n)\downarrow P(A)\).</p>
+        <p><span class="statement-title">Théorème.</span> If \(A_n\uparrow A\), then \(P(A_n)\uparrow P(A)\). If \(A_n\downarrow A\), then \(P(A_n)\downarrow P(A)\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Dans le cas croissant, posons \(B_1=A_1\) et \(B_n=A_n\setminus A_{n-1}\) pour \(n\ge2\). Les ensembles \(B_n\) sont disjoints, \(A_n=\bigcup_{k=1}^nB_k\), et \(A=\bigcup_{k=1}^\infty B_k\). Donc
-        \[
-        P(A_n)=\sum_{k=1}^nP(B_k),\qquad
-        P(A)=\sum_{k=1}^\infty P(B_k),
-        \]
-        d’où \(P(A_n)\to P(A)\). Dans le cas décroissant, \(A_n^c\uparrow A^c\). Le cas croissant donne \(P(A_n^c)\uparrow P(A^c)\), donc \(P(A_n)=1-P(A_n^c)\downarrow 1-P(A^c)=P(A)\).</p>
+        <p><span class="statement-title">Preuve.</span> For \(A_n\uparrow A\), write \(B_1=A_1\) and \(B_n=A_n\setminus A_{n-1}\) for \(n\ge2\). The \(B_n\) are disjoint, \(A_n=\bigcup_{k\le n}B_k\), and \(A=\bigcup_{k\ge1}B_k\), so countable additivity gives \(P(A_n)=\sum_{k\le n}P(B_k)\to\sum_{k\ge1}P(B_k)=P(A)\). For \(A_n\downarrow A\), apply the increasing result to \(A_n^c\uparrow A^c\) and use \(P(A_n)=1-P(A_n^c)\).</p>
     </div>
 
-    <h3>Mesurabilité avant probabilités</h3>
 
-    <p>La \(\sigma\)-algèbre est le domaine de \(P\). Avant d’écrire \(P(X\in B)\), il faut savoir que \(X^{-1}(B)\in\mathcal F\).</p>
+    <h3>Null sets and completion</h3>
 
+    <p>Almost-sure equality is harmless only when the measurable structure has enough null subsets.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The completion of \((\Omega,\mathcal F,P)\) is obtained by adding every subset of every \(P\)-null set to \(\mathcal F\), and extending \(P\) by assigning those subsets probability zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(\overline{\mathcal F}\) consist of sets \(A\cup N\), where \(A\in\mathcal F\) and \(N\subseteq Z\) for some \(Z\in\mathcal F\) with \(P(Z)=0\). This class is a \(\sigma\)-field because countable unions of null subsets are contained in countable unions of null sets. Define \(\overline P(A\cup N)=P(A)\). If the same set has two representations, their symmetric difference is contained in a null set, so the value is well-defined.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Completeness is convenient, but not automatic. Many canonical spaces first appear with a Borel \(\sigma\)-field and are completed only after a probability law is fixed.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="Retour" next_label="Page suivante" next_url="/notes/probability-theory/measures-extension-monotone-classes/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2>1. 概率空间</h2>
+    <h2><a href="{{ '/notes/probability-theory/probability-spaces/' | relative_url }}">1. 概率空间</a></h2>
     {% include probability-note-nav.html back_label="返回" next_label="下一页" next_url="/notes/probability-theory/measures-extension-monotone-classes/" %}
 
+    <p>A probability space is the measure-theoretic stage on which random objects live. The main point is that probabilities are assigned only to measurable events, and almost-sure statements are statements modulo null sets.</p>
+
+    <h3>Events and probability measures</h3>
+
+    <p>The axioms are the same as measure theory, normalized to total mass one.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> <strong>概率空间</strong>是三元组 \((\Omega,\mathcal F,P)\)。其中 \(\mathcal F\) 是 \(\Omega\) 上的 \(\sigma\)-代数：\(\Omega\in\mathcal F\)，若 \(A\in\mathcal F\) 则 \(A^c\in\mathcal F\)，并且若 \((A_n)_{n\ge1}\subset\mathcal F\)，则 \(\bigcup_{n=1}^\infty A_n\in\mathcal F\)。映射 \(P:\mathcal F\to[0,1]\) 满足 \(P(\Omega)=1\)，并满足可列可加性：
-        \[
-        A_i\cap A_j=\varnothing\ (i\ne j)
-        \quad\Longrightarrow\quad
-        P\left(\bigcup_{n=1}^\infty A_n\right)=\sum_{n=1}^\infty P(A_n).
-        \]
-        事件是 \(\mathcal F\) 的元素。若一个命题失败的集合概率为零，则称它几乎处处成立。</p>
+        <p><span class="statement-title">定义.</span> A probability space is a triple \((\Omega,\mathcal F,P)\), where \(\mathcal F\) is a \(\sigma\)-field on \(\Omega\) and \(P:\mathcal F\to[0,1]\) is countably additive with \(P(\Omega)=1\). Events are elements of \(\mathcal F\). A property holds almost surely if it fails on a set \(N\in\mathcal F\) with \(P(N)=0\).</p>
     </div>
 
+
+    <h3>Continuity of probability</h3>
+
+    <p>Countable additivity is most often used through continuity along monotone set limits.</p>
+
     <div class="math-statement theorem">
-        <p><span class="statement-title">命题.</span> 若 \(A_n\uparrow A\)，即 \(A_1\subset A_2\subset\cdots\) 且 \(A=\bigcup_n A_n\)，则 \(P(A_n)\uparrow P(A)\)。若 \(A_n\downarrow A\)，即 \(A_1\supset A_2\supset\cdots\) 且 \(A=\bigcap_n A_n\)，则 \(P(A_n)\downarrow P(A)\)。</p>
+        <p><span class="statement-title">定理.</span> If \(A_n\uparrow A\), then \(P(A_n)\uparrow P(A)\). If \(A_n\downarrow A\), then \(P(A_n)\downarrow P(A)\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 先看递增情形。令 \(B_1=A_1\)，且对 \(n\ge2\) 令 \(B_n=A_n\setminus A_{n-1}\)。这些 \(B_n\) 两两不交，且 \(A_n=\bigcup_{k=1}^nB_k\)、\(A=\bigcup_{k=1}^\infty B_k\)。因此
-        \[
-        P(A_n)=\sum_{k=1}^nP(B_k),\qquad
-        P(A)=\sum_{k=1}^\infty P(B_k),
-        \]
-        所以 \(P(A_n)\to P(A)\)。递减情形由补集得到：\(A_n^c\uparrow A^c\)。由递增情形 \(P(A_n^c)\uparrow P(A^c)\)，从而 \(P(A_n)=1-P(A_n^c)\downarrow 1-P(A^c)=P(A)\)。</p>
+        <p><span class="statement-title">证明.</span> For \(A_n\uparrow A\), write \(B_1=A_1\) and \(B_n=A_n\setminus A_{n-1}\) for \(n\ge2\). The \(B_n\) are disjoint, \(A_n=\bigcup_{k\le n}B_k\), and \(A=\bigcup_{k\ge1}B_k\), so countable additivity gives \(P(A_n)=\sum_{k\le n}P(B_k)\to\sum_{k\ge1}P(B_k)=P(A)\). For \(A_n\downarrow A\), apply the increasing result to \(A_n^c\uparrow A^c\) and use \(P(A_n)=1-P(A_n^c)\).</p>
     </div>
 
-    <h3>概率之前的可测性</h3>
 
-    <p>\(\sigma\)-代数是 \(P\) 的定义域。写下 \(P(X\in B)\) 之前，必须知道 \(X^{-1}(B)\in\mathcal F\)。</p>
+    <h3>Null sets and completion</h3>
 
+    <p>Almost-sure equality is harmless only when the measurable structure has enough null subsets.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The completion of \((\Omega,\mathcal F,P)\) is obtained by adding every subset of every \(P\)-null set to \(\mathcal F\), and extending \(P\) by assigning those subsets probability zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(\overline{\mathcal F}\) consist of sets \(A\cup N\), where \(A\in\mathcal F\) and \(N\subseteq Z\) for some \(Z\in\mathcal F\) with \(P(Z)=0\). This class is a \(\sigma\)-field because countable unions of null subsets are contained in countable unions of null sets. Define \(\overline P(A\cup N)=P(A)\). If the same set has two representations, their symmetric difference is contained in a null set, so the value is well-defined.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Completeness is convenient, but not automatic. Many canonical spaces first appear with a Borel \(\sigma\)-field and are completed only after a probability law is fixed.</p>
+    </div>
 
     {% include probability-note-nav.html back_label="返回" next_label="下一页" next_url="/notes/probability-theory/measures-extension-monotone-classes/" %}
 </div>
