@@ -9,26 +9,70 @@ breadcrumb_child_label_zh: "5. 压缩映射与不动点"
     <h2><a href="{{ '/notes/reinforcement-learning/contraction-and-fixed-points/' | relative_url }}">5. Contraction and fixed points</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/bellman-optimality-equations/" next_label="Next page" next_url="/notes/reinforcement-learning/policy-evaluation/" %}
 
-    <p>Contraction and fixed points records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Discounted dynamic programming works because Bellman operators are contractions. This fixed-point geometry supplies existence, uniqueness, convergence of iteration, and perturbation bounds.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Discounted Bellman operators are contractions in the sup norm with contraction factor \(\gamma\).</p>
+    <h3>Banach fixed-point theorem</h3>
+
+    <p>The contraction theorem is the basic analytic tool behind value iteration.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \((X,d)\) be complete and \(T:X\to X\) satisfy \(d(Tx,Ty)\le\gamma d(x,y)\) for some \(0\le\gamma<1\). Then \(T\) has a unique fixed point \(x^*\), and \(T^nx\to x^*\) for every \(x\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A discounted Bellman operator has a unique fixed point, and iterating the operator converges geometrically to that fixed point.</p>
-    </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For two value functions, the immediate reward cancels and the difference is at most \(\gamma\) times the sup-norm difference after transition averaging and maximization or policy averaging.</p>
+        <p><span class="statement-title">Proof.</span> The iterates satisfy \(d(x_{n+1},x_n)\le\gamma^nd(x_1,x_0)\), so \((x_n)\) is Cauchy and converges to some \(x^*\). Continuity of \(T\) gives \(Tx^*=x^*\). If \(y^*\) is another fixed point, \(d(x^*,y^*)\le\gamma d(x^*,y^*)\), hence \(x^*=y^*\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Contraction is the analytic reason discounted dynamic programming is stable and algorithmically tractable.</p>
+    <h3>Bellman contractions</h3>
+
+    <p>Bellman operators inherit contraction from discounting and Markov averaging.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For bounded value functions,
+\[
+\|T_\pi u-T_\pi v\|_\infty\le\gamma\|u-v\|_\infty,
+\qquad
+\|T_*u-T_*v\|_\infty\le\gamma\|u-v\|_\infty.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(T_\pi\), Markov averaging cannot increase the sup norm and the discount contributes \(\gamma\). For \(T_*\), use the inequality \(|\sup_a f_a-\sup_a g_a|\le\sup_a|f_a-g_a|\), then apply the same Markov averaging bound.</p>
+    </div>
+
+    <h3>Residual bounds</h3>
+
+    <p>A small Bellman residual implies closeness to the fixed point.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(T\) is a \(\gamma\)-contraction with fixed point \(v^*\), then
+\[
+\|v-v^*\|\le\frac{1}{1-\gamma}\|v-Tv\|.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use
+\[
+\|v-v^*\|\le\|v-Tv\|+\|Tv-Tv^*\|
+\le\|v-Tv\|+\gamma\|v-v^*\|.
+\]
+Move the last term to the left.</p>
+    </div>
+
+    <h3>Perturbed fixed points</h3>
+
+    <p>Approximate dynamic programming repeatedly applies operators with error; perturbation bounds quantify error accumulation.</p>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> If \(Tv^*=v^*\), \(\tilde T\tilde v=\tilde v\), and \(\|Tv-\tilde Tv\|\le\varepsilon\) for all \(v\), then
+\[
+\|v^*-\tilde v\|\le\frac{\varepsilon}{1-\gamma}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply the residual bound for \(T\) at \(v=\tilde v\). Since \(T\tilde v-\tilde v=T\tilde v-\tilde T\tilde v\), the residual is at most \(\varepsilon\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/bellman-optimality-equations/" next_label="Next page" next_url="/notes/reinforcement-learning/policy-evaluation/" %}
@@ -38,26 +82,70 @@ breadcrumb_child_label_zh: "5. 压缩映射与不动点"
     <h2><a href="{{ '/notes/reinforcement-learning/contraction-and-fixed-points/' | relative_url }}">5. Contraction et points fixes</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/bellman-optimality-equations/" next_label="Page suivante" next_url="/notes/reinforcement-learning/policy-evaluation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Contraction et points fixes.</p>
+    <p>Discounted dynamic programming works because Bellman operators are contractions. This fixed-point geometry supplies existence, uniqueness, convergence of iteration, and perturbation bounds.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Discounted Bellman operators are contractions in the sup norm with contraction factor \(\gamma\).</p>
+    <h3>Banach fixed-point theorem</h3>
+
+    <p>The contraction theorem is the basic analytic tool behind value iteration.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Let \((X,d)\) be complete and \(T:X\to X\) satisfy \(d(Tx,Ty)\le\gamma d(x,y)\) for some \(0\le\gamma<1\). Then \(T\) has a unique fixed point \(x^*\), and \(T^nx\to x^*\) for every \(x\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A discounted Bellman operator has a unique fixed point, and iterating the operator converges geometrically to that fixed point.</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> For two value functions, the immediate reward cancels and the difference is at most \(\gamma\) times the sup-norm difference after transition averaging and maximization or policy averaging.</p>
+        <p><span class="statement-title">Preuve.</span> The iterates satisfy \(d(x_{n+1},x_n)\le\gamma^nd(x_1,x_0)\), so \((x_n)\) is Cauchy and converges to some \(x^*\). Continuity of \(T\) gives \(Tx^*=x^*\). If \(y^*\) is another fixed point, \(d(x^*,y^*)\le\gamma d(x^*,y^*)\), hence \(x^*=y^*\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Contraction is the analytic reason discounted dynamic programming is stable and algorithmically tractable.</p>
+    <h3>Bellman contractions</h3>
+
+    <p>Bellman operators inherit contraction from discounting and Markov averaging.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For bounded value functions,
+\[
+\|T_\pi u-T_\pi v\|_\infty\le\gamma\|u-v\|_\infty,
+\qquad
+\|T_*u-T_*v\|_\infty\le\gamma\|u-v\|_\infty.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For \(T_\pi\), Markov averaging cannot increase the sup norm and the discount contributes \(\gamma\). For \(T_*\), use the inequality \(|\sup_a f_a-\sup_a g_a|\le\sup_a|f_a-g_a|\), then apply the same Markov averaging bound.</p>
+    </div>
+
+    <h3>Residual bounds</h3>
+
+    <p>A small Bellman residual implies closeness to the fixed point.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(T\) is a \(\gamma\)-contraction with fixed point \(v^*\), then
+\[
+\|v-v^*\|\le\frac{1}{1-\gamma}\|v-Tv\|.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use
+\[
+\|v-v^*\|\le\|v-Tv\|+\|Tv-Tv^*\|
+\le\|v-Tv\|+\gamma\|v-v^*\|.
+\]
+Move the last term to the left.</p>
+    </div>
+
+    <h3>Perturbed fixed points</h3>
+
+    <p>Approximate dynamic programming repeatedly applies operators with error; perturbation bounds quantify error accumulation.</p>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> If \(Tv^*=v^*\), \(\tilde T\tilde v=\tilde v\), and \(\|Tv-\tilde Tv\|\le\varepsilon\) for all \(v\), then
+\[
+\|v^*-\tilde v\|\le\frac{\varepsilon}{1-\gamma}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Apply the residual bound for \(T\) at \(v=\tilde v\). Since \(T\tilde v-\tilde v=T\tilde v-\tilde T\tilde v\), the residual is at most \(\varepsilon\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/bellman-optimality-equations/" next_label="Page suivante" next_url="/notes/reinforcement-learning/policy-evaluation/" %}
@@ -67,26 +155,70 @@ breadcrumb_child_label_zh: "5. 压缩映射与不动点"
     <h2><a href="{{ '/notes/reinforcement-learning/contraction-and-fixed-points/' | relative_url }}">5. 压缩映射与不动点</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/bellman-optimality-equations/" next_label="下一页" next_url="/notes/reinforcement-learning/policy-evaluation/" %}
 
-    <p>本页整理关于“压缩映射与不动点”的主要定义、命题、定理与证明思路。</p>
+    <p>Discounted dynamic programming works because Bellman operators are contractions. This fixed-point geometry supplies existence, uniqueness, convergence of iteration, and perturbation bounds.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Discounted 贝尔曼 operators are contractions in the sup norm with contraction 因子 \(\gamma\).</p>
+    <h3>Banach fixed-point theorem</h3>
+
+    <p>The contraction theorem is the basic analytic tool behind value iteration.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Let \((X,d)\) be complete and \(T:X\to X\) satisfy \(d(Tx,Ty)\le\gamma d(x,y)\) for some \(0\le\gamma<1\). Then \(T\) has a unique fixed point \(x^*\), and \(T^nx\to x^*\) for every \(x\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> A discounted 贝尔曼 operator has a unique fixed point, and iterating the operator converges geometrically to that fixed point.</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> For two value functions, the immediate reward cancels and the difference is at most \(\gamma\) times the sup-norm difference after transition averaging and maximization or policy averaging.</p>
+        <p><span class="statement-title">证明.</span> The iterates satisfy \(d(x_{n+1},x_n)\le\gamma^nd(x_1,x_0)\), so \((x_n)\) is Cauchy and converges to some \(x^*\). Continuity of \(T\) gives \(Tx^*=x^*\). If \(y^*\) is another fixed point, \(d(x^*,y^*)\le\gamma d(x^*,y^*)\), hence \(x^*=y^*\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Contraction is the 解析 reason discounted dynamic programming is stable and algorithmically tractable.</p>
+    <h3>Bellman contractions</h3>
+
+    <p>Bellman operators inherit contraction from discounting and Markov averaging.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For bounded value functions,
+\[
+\|T_\pi u-T_\pi v\|_\infty\le\gamma\|u-v\|_\infty,
+\qquad
+\|T_*u-T_*v\|_\infty\le\gamma\|u-v\|_\infty.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For \(T_\pi\), Markov averaging cannot increase the sup norm and the discount contributes \(\gamma\). For \(T_*\), use the inequality \(|\sup_a f_a-\sup_a g_a|\le\sup_a|f_a-g_a|\), then apply the same Markov averaging bound.</p>
+    </div>
+
+    <h3>Residual bounds</h3>
+
+    <p>A small Bellman residual implies closeness to the fixed point.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(T\) is a \(\gamma\)-contraction with fixed point \(v^*\), then
+\[
+\|v-v^*\|\le\frac{1}{1-\gamma}\|v-Tv\|.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use
+\[
+\|v-v^*\|\le\|v-Tv\|+\|Tv-Tv^*\|
+\le\|v-Tv\|+\gamma\|v-v^*\|.
+\]
+Move the last term to the left.</p>
+    </div>
+
+    <h3>Perturbed fixed points</h3>
+
+    <p>Approximate dynamic programming repeatedly applies operators with error; perturbation bounds quantify error accumulation.</p>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> If \(Tv^*=v^*\), \(\tilde T\tilde v=\tilde v\), and \(\|Tv-\tilde Tv\|\le\varepsilon\) for all \(v\), then
+\[
+\|v^*-\tilde v\|\le\frac{\varepsilon}{1-\gamma}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Apply the residual bound for \(T\) at \(v=\tilde v\). Since \(T\tilde v-\tilde v=T\tilde v-\tilde T\tilde v\), the residual is at most \(\varepsilon\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/bellman-optimality-equations/" next_label="下一页" next_url="/notes/reinforcement-learning/policy-evaluation/" %}

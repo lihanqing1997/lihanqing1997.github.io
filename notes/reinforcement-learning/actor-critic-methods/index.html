@@ -9,26 +9,59 @@ breadcrumb_child_label_zh: "14. 演员-评论家方法"
     <h2><a href="{{ '/notes/reinforcement-learning/actor-critic-methods/' | relative_url }}">14. Actor-critic methods</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" next_label="Next page" next_url="/notes/reinforcement-learning/exploration-and-regret/" %}
 
-    <p>Actor-critic methods records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Actor-critic methods combine policy optimization with value estimation. The actor updates the policy; the critic estimates value or advantage information used by the actor.</p>
 
-    <h3>Definition</h3>
+    <h3>Actor and critic</h3>
+
+    <p>The two time scales correspond to two coupled stochastic approximation problems.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Actor-critic methods combine a policy parameter update, the actor, with a value-function estimator, the critic.</p>
+        <p><span class="statement-title">Definition.</span> An actor-critic method maintains policy parameters \(\theta\) and critic parameters \(w\). A typical update is
+\[
+w_{t+1}=w_t+\beta_t\,\widehat{\Delta}_w,
+\qquad
+\theta_{t+1}=\theta_t+\alpha_t\,\widehat{\Delta}_\theta,
+\]
+where the critic estimates \(v_{\pi_\theta}\), \(q_{\pi_\theta}\), or \(A_{\pi_\theta}\), and the actor uses this estimate in a policy-gradient step.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If the critic consistently estimates the compatible action-value or advantage function, actor updates approximate policy-gradient ascent.</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use the policy gradient theorem and replace the unknown action value by the critic estimate. Compatibility conditions make approximation error orthogonal to policy score directions.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Actor-critic algorithms trade bias, variance, and stability through the coupling of two learning processes.</p>
+        <p><span class="statement-title">Remark.</span> The critic is not an objective by itself; it supplies a lower-variance approximate gradient direction for the actor.</p>
+    </div>
+
+    <h3>TD critic for policy gradient</h3>
+
+    <p>A one-step TD error can estimate an advantage under the current policy.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(v=v_\pi\), then
+\[
+\mathbb E\{R_{t+1}+\gamma v(S_{t+1})-v(S_t)\mid S_t=s,A_t=a\}=A_\pi(s,a).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The conditional expectation of \(R_{t+1}+\gamma v_\pi(S_{t+1})\) given \((s,a)\) is \(q_\pi(s,a)\). Subtracting \(v_\pi(s)\) gives \(A_\pi(s,a)\).</p>
+    </div>
+
+    <h3>Two-time-scale convergence</h3>
+
+    <p>Classical actor-critic theory often assumes the critic equilibrates faster than the actor.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Under standard smoothness, ergodicity, boundedness, and stepsize conditions with \(\alpha_t/\beta_t\to0\), two-time-scale actor-critic tracks an ODE in which the critic is near its fixed point for the current actor.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The critic recursion evolves on the faster time scale \(\beta_t\) and converges to the stable solution of its projected Bellman equation for quasi-static \(\theta\). The actor recursion sees the critic error as asymptotically negligible and follows the mean policy-gradient ODE. This is the standard two-time-scale stochastic approximation argument.</p>
+    </div>
+
+    <h3>Bias from approximate critics</h3>
+
+    <p>A critic can reduce variance but introduce bias if it estimates the wrong quantity.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Compatible function approximation and advantage centering are designed to make the critic's approximation error orthogonal to policy-score directions, thereby reducing gradient bias.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" next_label="Next page" next_url="/notes/reinforcement-learning/exploration-and-regret/" %}
@@ -38,26 +71,59 @@ breadcrumb_child_label_zh: "14. 演员-评论家方法"
     <h2><a href="{{ '/notes/reinforcement-learning/actor-critic-methods/' | relative_url }}">14. Méthodes acteur-critique</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" next_label="Page suivante" next_url="/notes/reinforcement-learning/exploration-and-regret/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Méthodes acteur-critique.</p>
+    <p>Actor-critic methods combine policy optimization with value estimation. The actor updates the policy; the critic estimates value or advantage information used by the actor.</p>
 
-    <h3>Définition</h3>
+    <h3>Actor and critic</h3>
+
+    <p>The two time scales correspond to two coupled stochastic approximation problems.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Actor-critic methods combine a policy parameter update, the actor, with a value-function estimator, the critic.</p>
+        <p><span class="statement-title">Définition.</span> An actor-critic method maintains policy parameters \(\theta\) and critic parameters \(w\). A typical update is
+\[
+w_{t+1}=w_t+\beta_t\,\widehat{\Delta}_w,
+\qquad
+\theta_{t+1}=\theta_t+\alpha_t\,\widehat{\Delta}_\theta,
+\]
+where the critic estimates \(v_{\pi_\theta}\), \(q_{\pi_\theta}\), or \(A_{\pi_\theta}\), and the actor uses this estimate in a policy-gradient step.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If the critic consistently estimates the compatible action-value or advantage function, actor updates approximate policy-gradient ascent.</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Use the policy gradient theorem and replace the unknown action value by the critic estimate. Compatibility conditions make approximation error orthogonal to policy score directions.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Actor-critic algorithms trade bias, variance, and stability through the coupling of two learning processes.</p>
+        <p><span class="statement-title">Remarque.</span> The critic is not an objective by itself; it supplies a lower-variance approximate gradient direction for the actor.</p>
+    </div>
+
+    <h3>TD critic for policy gradient</h3>
+
+    <p>A one-step TD error can estimate an advantage under the current policy.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(v=v_\pi\), then
+\[
+\mathbb E\{R_{t+1}+\gamma v(S_{t+1})-v(S_t)\mid S_t=s,A_t=a\}=A_\pi(s,a).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The conditional expectation of \(R_{t+1}+\gamma v_\pi(S_{t+1})\) given \((s,a)\) is \(q_\pi(s,a)\). Subtracting \(v_\pi(s)\) gives \(A_\pi(s,a)\).</p>
+    </div>
+
+    <h3>Two-time-scale convergence</h3>
+
+    <p>Classical actor-critic theory often assumes the critic equilibrates faster than the actor.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Under standard smoothness, ergodicity, boundedness, and stepsize conditions with \(\alpha_t/\beta_t\to0\), two-time-scale actor-critic tracks an ODE in which the critic is near its fixed point for the current actor.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The critic recursion evolves on the faster time scale \(\beta_t\) and converges to the stable solution of its projected Bellman equation for quasi-static \(\theta\). The actor recursion sees the critic error as asymptotically negligible and follows the mean policy-gradient ODE. This is the standard two-time-scale stochastic approximation argument.</p>
+    </div>
+
+    <h3>Bias from approximate critics</h3>
+
+    <p>A critic can reduce variance but introduce bias if it estimates the wrong quantity.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Compatible function approximation and advantage centering are designed to make the critic's approximation error orthogonal to policy-score directions, thereby reducing gradient bias.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" next_label="Page suivante" next_url="/notes/reinforcement-learning/exploration-and-regret/" %}
@@ -67,26 +133,59 @@ breadcrumb_child_label_zh: "14. 演员-评论家方法"
     <h2><a href="{{ '/notes/reinforcement-learning/actor-critic-methods/' | relative_url }}">14. 演员-评论家方法</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" next_label="下一页" next_url="/notes/reinforcement-learning/exploration-and-regret/" %}
 
-    <p>本页整理关于“演员-评论家方法”的主要定义、命题、定理与证明思路。</p>
+    <p>Actor-critic methods combine policy optimization with value estimation. The actor updates the policy; the critic estimates value or advantage information used by the actor.</p>
 
-    <h3>定义</h3>
+    <h3>Actor and critic</h3>
+
+    <p>The two time scales correspond to two coupled stochastic approximation problems.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 演员-评论家 methods combine a policy parameter update, the actor, with a value-function estimator, the critic.</p>
+        <p><span class="statement-title">定义.</span> An actor-critic method maintains policy parameters \(\theta\) and critic parameters \(w\). A typical update is
+\[
+w_{t+1}=w_t+\beta_t\,\widehat{\Delta}_w,
+\qquad
+\theta_{t+1}=\theta_t+\alpha_t\,\widehat{\Delta}_\theta,
+\]
+where the critic estimates \(v_{\pi_\theta}\), \(q_{\pi_\theta}\), or \(A_{\pi_\theta}\), and the actor uses this estimate in a policy-gradient step.</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If the critic consistently estimates the compatible action-value or advantage function, actor updates approximate policy-gradient ascent.</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Use the 策略梯度定理 and replace the unknown action value by the critic estimate. Compatibility conditions make approximation error 正交 to policy 分数 directions.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 演员-评论家 algorithms trade bias, variance, and stability through the coupling of two learning processes.</p>
+        <p><span class="statement-title">说明.</span> The critic is not an objective by itself; it supplies a lower-variance approximate gradient direction for the actor.</p>
+    </div>
+
+    <h3>TD critic for policy gradient</h3>
+
+    <p>A one-step TD error can estimate an advantage under the current policy.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(v=v_\pi\), then
+\[
+\mathbb E\{R_{t+1}+\gamma v(S_{t+1})-v(S_t)\mid S_t=s,A_t=a\}=A_\pi(s,a).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The conditional expectation of \(R_{t+1}+\gamma v_\pi(S_{t+1})\) given \((s,a)\) is \(q_\pi(s,a)\). Subtracting \(v_\pi(s)\) gives \(A_\pi(s,a)\).</p>
+    </div>
+
+    <h3>Two-time-scale convergence</h3>
+
+    <p>Classical actor-critic theory often assumes the critic equilibrates faster than the actor.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Under standard smoothness, ergodicity, boundedness, and stepsize conditions with \(\alpha_t/\beta_t\to0\), two-time-scale actor-critic tracks an ODE in which the critic is near its fixed point for the current actor.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The critic recursion evolves on the faster time scale \(\beta_t\) and converges to the stable solution of its projected Bellman equation for quasi-static \(\theta\). The actor recursion sees the critic error as asymptotically negligible and follows the mean policy-gradient ODE. This is the standard two-time-scale stochastic approximation argument.</p>
+    </div>
+
+    <h3>Bias from approximate critics</h3>
+
+    <p>A critic can reduce variance but introduce bias if it estimates the wrong quantity.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Compatible function approximation and advantage centering are designed to make the critic's approximation error orthogonal to policy-score directions, thereby reducing gradient bias.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" next_label="下一页" next_url="/notes/reinforcement-learning/exploration-and-regret/" %}

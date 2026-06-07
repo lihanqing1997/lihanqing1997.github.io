@@ -9,26 +9,60 @@ breadcrumb_child_label_zh: "18. 函数逼近"
     <h2><a href="{{ '/notes/reinforcement-learning/function-approximation/' | relative_url }}">18. Function approximation</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/off-policy-evaluation/" next_label="Next page" next_url="/notes/reinforcement-learning/approximate-dynamic-programming/" %}
 
-    <p>Function approximation records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Function approximation is necessary in large state spaces, but it changes exact dynamic programming into projected or approximate fixed-point problems.</p>
 
-    <h3>Definition</h3>
+    <h3>Approximate value classes</h3>
+
+    <p>A value function is represented by parameters rather than a table.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Function approximation represents values, policies, or models in parameterized classes rather than tabular arrays. It is necessary for large or continuous state spaces.</p>
+        <p><span class="statement-title">Definition.</span> A parametric value approximation has the form \(v_\theta(s)\). In the linear case, \(v_\theta(s)=\phi(s)^\top\theta\), where \(\phi(s)\in\mathbb R^d\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> With linear value approximation, projected Bellman equations replace exact Bellman equations because the Bellman update may leave the approximation space.</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Project the Bellman fixed-point equation onto the feature span under a chosen sampling distribution. Orthogonality of residuals yields the normal equations for the projected problem.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Approximation changes the fixed point. Understanding the projection is as important as running the algorithm.</p>
+        <p><span class="statement-title">Remark.</span> Approximation error is unavoidable when \(v_\pi\) is not in the chosen class. Estimation and bootstrapping errors then sit on top of that approximation error.</p>
+    </div>
+
+    <h3>Projected Bellman equation</h3>
+
+    <p>With linear approximation, TD seeks a projected fixed point.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(\Phi\) be the feature matrix and \(D\) a state weighting distribution. The \(D\)-orthogonal projection onto the feature span is \(\Pi_D\). The projected Bellman equation is
+\[
+\Phi\theta=\Pi_DT_\pi(\Phi\theta).
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(\Phi^\top D(I-\gamma P_\pi)\Phi\) is nonsingular, the projected Bellman equation has a unique solution satisfying
+\[
+\Phi^\top D\{r_\pi+\gamma P_\pi\Phi\theta-\Phi\theta\}=0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The projection residual is orthogonal to the feature span in the \(D\)-inner product. Thus \(\Phi\theta=\Pi_DT_\pi\Phi\theta\) is equivalent to \(\Phi^\top D(T_\pi\Phi\theta-\Phi\theta)=0\). Expanding \(T_\pi\) gives the displayed linear system. Nonsingularity gives uniqueness.</p>
+    </div>
+
+    <h3>Deadly triad</h3>
+
+    <p>Function approximation, bootstrapping, and off-policy learning can break contraction.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> In the tabular on-policy discounted case, Bellman operators are contractions in sup norm. With projection and off-policy weighting, the composed operator \(\Pi_DT_\pi\) need not be a contraction in the relevant norm, so iterative methods may diverge.</p>
+    </div>
+
+    <h3>Gradient versus semi-gradient</h3>
+
+    <p>Many practical updates are not gradients of a true objective.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A semi-gradient TD update differentiates only the current estimate \(v_\theta(S_t)\), treating the bootstrap target \(R_{t+1}+\gamma v_\theta(S_{t+1})\) as fixed.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> This shortcut is computationally convenient but changes the optimization geometry. Gradient-TD methods were designed to optimize well-defined projected Bellman-error objectives.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/off-policy-evaluation/" next_label="Next page" next_url="/notes/reinforcement-learning/approximate-dynamic-programming/" %}
@@ -38,26 +72,60 @@ breadcrumb_child_label_zh: "18. 函数逼近"
     <h2><a href="{{ '/notes/reinforcement-learning/function-approximation/' | relative_url }}">18. Approximation fonctionnelle</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/off-policy-evaluation/" next_label="Page suivante" next_url="/notes/reinforcement-learning/approximate-dynamic-programming/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Approximation fonctionnelle.</p>
+    <p>Function approximation is necessary in large state spaces, but it changes exact dynamic programming into projected or approximate fixed-point problems.</p>
 
-    <h3>Définition</h3>
+    <h3>Approximate value classes</h3>
+
+    <p>A value function is represented by parameters rather than a table.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Function approximation represents values, policies, or models in parameterized classes rather than tabular arrays. It is necessary for large or continuous state spaces.</p>
+        <p><span class="statement-title">Définition.</span> A parametric value approximation has the form \(v_\theta(s)\). In the linear case, \(v_\theta(s)=\phi(s)^\top\theta\), where \(\phi(s)\in\mathbb R^d\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> With linear value approximation, projected Bellman equations replace exact Bellman equations because the Bellman update may leave the approximation space.</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Project the Bellman fixed-point equation onto the feature span under a chosen sampling distribution. Orthogonality of residuals yields the normal equations for the projected problem.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Approximation changes the fixed point. Understanding the projection is as important as running the algorithm.</p>
+        <p><span class="statement-title">Remarque.</span> Approximation error is unavoidable when \(v_\pi\) is not in the chosen class. Estimation and bootstrapping errors then sit on top of that approximation error.</p>
+    </div>
+
+    <h3>Projected Bellman equation</h3>
+
+    <p>With linear approximation, TD seeks a projected fixed point.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Let \(\Phi\) be the feature matrix and \(D\) a state weighting distribution. The \(D\)-orthogonal projection onto the feature span is \(\Pi_D\). The projected Bellman equation is
+\[
+\Phi\theta=\Pi_DT_\pi(\Phi\theta).
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(\Phi^\top D(I-\gamma P_\pi)\Phi\) is nonsingular, the projected Bellman equation has a unique solution satisfying
+\[
+\Phi^\top D\{r_\pi+\gamma P_\pi\Phi\theta-\Phi\theta\}=0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The projection residual is orthogonal to the feature span in the \(D\)-inner product. Thus \(\Phi\theta=\Pi_DT_\pi\Phi\theta\) is equivalent to \(\Phi^\top D(T_\pi\Phi\theta-\Phi\theta)=0\). Expanding \(T_\pi\) gives the displayed linear system. Nonsingularity gives uniqueness.</p>
+    </div>
+
+    <h3>Deadly triad</h3>
+
+    <p>Function approximation, bootstrapping, and off-policy learning can break contraction.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> In the tabular on-policy discounted case, Bellman operators are contractions in sup norm. With projection and off-policy weighting, the composed operator \(\Pi_DT_\pi\) need not be a contraction in the relevant norm, so iterative methods may diverge.</p>
+    </div>
+
+    <h3>Gradient versus semi-gradient</h3>
+
+    <p>Many practical updates are not gradients of a true objective.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A semi-gradient TD update differentiates only the current estimate \(v_\theta(S_t)\), treating the bootstrap target \(R_{t+1}+\gamma v_\theta(S_{t+1})\) as fixed.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> This shortcut is computationally convenient but changes the optimization geometry. Gradient-TD methods were designed to optimize well-defined projected Bellman-error objectives.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/off-policy-evaluation/" next_label="Page suivante" next_url="/notes/reinforcement-learning/approximate-dynamic-programming/" %}
@@ -67,26 +135,60 @@ breadcrumb_child_label_zh: "18. 函数逼近"
     <h2><a href="{{ '/notes/reinforcement-learning/function-approximation/' | relative_url }}">18. 函数逼近</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/off-policy-evaluation/" next_label="下一页" next_url="/notes/reinforcement-learning/approximate-dynamic-programming/" %}
 
-    <p>本页整理关于“函数逼近”的主要定义、命题、定理与证明思路。</p>
+    <p>Function approximation is necessary in large state spaces, but it changes exact dynamic programming into projected or approximate fixed-point problems.</p>
 
-    <h3>定义</h3>
+    <h3>Approximate value classes</h3>
+
+    <p>A value function is represented by parameters rather than a table.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Function approximation represents values, policies, or models in parameterized classes rather than tabular arrays. It is necessary for large or continuous state spaces.</p>
+        <p><span class="statement-title">定义.</span> A parametric value approximation has the form \(v_\theta(s)\). In the linear case, \(v_\theta(s)=\phi(s)^\top\theta\), where \(\phi(s)\in\mathbb R^d\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> With linear value approximation, projected 贝尔曼 equations replace exact 贝尔曼 equations because the 贝尔曼 update may leave the approximation space.</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Project the 贝尔曼 fixed-point equation onto the feature span under a chosen sampling distribution. Orthogonality of residuals yields the normal equations for the projected problem.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Approximation changes the fixed point. Understanding the projection is as important as running the algorithm.</p>
+        <p><span class="statement-title">说明.</span> Approximation error is unavoidable when \(v_\pi\) is not in the chosen class. Estimation and bootstrapping errors then sit on top of that approximation error.</p>
+    </div>
+
+    <h3>Projected Bellman equation</h3>
+
+    <p>With linear approximation, TD seeks a projected fixed point.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Let \(\Phi\) be the feature matrix and \(D\) a state weighting distribution. The \(D\)-orthogonal projection onto the feature span is \(\Pi_D\). The projected Bellman equation is
+\[
+\Phi\theta=\Pi_DT_\pi(\Phi\theta).
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(\Phi^\top D(I-\gamma P_\pi)\Phi\) is nonsingular, the projected Bellman equation has a unique solution satisfying
+\[
+\Phi^\top D\{r_\pi+\gamma P_\pi\Phi\theta-\Phi\theta\}=0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The projection residual is orthogonal to the feature span in the \(D\)-inner product. Thus \(\Phi\theta=\Pi_DT_\pi\Phi\theta\) is equivalent to \(\Phi^\top D(T_\pi\Phi\theta-\Phi\theta)=0\). Expanding \(T_\pi\) gives the displayed linear system. Nonsingularity gives uniqueness.</p>
+    </div>
+
+    <h3>Deadly triad</h3>
+
+    <p>Function approximation, bootstrapping, and off-policy learning can break contraction.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> In the tabular on-policy discounted case, Bellman operators are contractions in sup norm. With projection and off-policy weighting, the composed operator \(\Pi_DT_\pi\) need not be a contraction in the relevant norm, so iterative methods may diverge.</p>
+    </div>
+
+    <h3>Gradient versus semi-gradient</h3>
+
+    <p>Many practical updates are not gradients of a true objective.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A semi-gradient TD update differentiates only the current estimate \(v_\theta(S_t)\), treating the bootstrap target \(R_{t+1}+\gamma v_\theta(S_{t+1})\) as fixed.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> This shortcut is computationally convenient but changes the optimization geometry. Gradient-TD methods were designed to optimize well-defined projected Bellman-error objectives.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/off-policy-evaluation/" next_label="下一页" next_url="/notes/reinforcement-learning/approximate-dynamic-programming/" %}

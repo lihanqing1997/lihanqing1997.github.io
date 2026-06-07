@@ -9,26 +9,71 @@ breadcrumb_child_label_zh: "19. 近似动态规划"
     <h2><a href="{{ '/notes/reinforcement-learning/approximate-dynamic-programming/' | relative_url }}">19. Approximate dynamic programming</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/function-approximation/" next_label="Next page" next_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
 
-    <p>Approximate dynamic programming records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Approximate dynamic programming studies how errors in Bellman backups, projections, simulations, and greedy steps propagate through control algorithms.</p>
 
-    <h3>Definition</h3>
+    <h3>Approximate value iteration</h3>
+
+    <p>Each Bellman backup may be followed by approximation error.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Approximate dynamic programming studies Bellman updates combined with approximation, sampling, or restricted policy classes.</p>
+        <p><span class="statement-title">Definition.</span> Approximate value iteration has the form
+\[
+v_{k+1}=T_*v_k+\varepsilon_k.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Performance bounds often control policy loss by Bellman residuals, approximation errors, and concentrability coefficients comparing state distributions.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\|\varepsilon_k\|_\infty\le\varepsilon\), then
+\[
+\limsup_{k\to\infty}\|v_k-v_*\|_\infty\le\frac{\varepsilon}{1-\gamma}.
+\]</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Iterate one-step error inequalities through the discounted dynamics. Distribution mismatch appears when errors are measured under one state distribution but performance under another.</p>
+        <p><span class="statement-title">Proof.</span> Use contraction:
+\[
+\|v_{k+1}-v_*\|_\infty\le\gamma\|v_k-v_*\|_\infty+\varepsilon.
+\]
+Iterating this scalar recursion and letting \(k\to\infty\) gives the bound.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Approximate greedy policies</h3>
+
+    <p>Control loss depends on both value approximation and greedy-step error.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A policy \(\pi\) is \(\eta\)-greedy with respect to \(v\) if
+\[
+T_\pi v\ge T_*v-\eta\mathbf 1.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(\pi\) is \(\eta\)-greedy with respect to \(v\), then
+\[
+\|v_*-v_\pi\|_\infty
+\le \frac{2\gamma}{1-\gamma}\|v-v_*\|_\infty+\frac{\eta}{1-\gamma}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Compare \(T_*v_*\) and \(T_\pi v_\pi\), adding and subtracting \(T_*v\) and \(T_\pi v\). The approximation terms are bounded by \(\gamma\|v-v_*\|_\infty\), the greedy error contributes \(\eta\), and the remaining \(T_\pi(v-v_\pi)\) term is absorbed by \(1-\gamma\).</p>
+    </div>
+
+    <h3>Simulation error</h3>
+
+    <p>Sampled Bellman backups introduce statistical error in addition to approximation error.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Approximate dynamic programming is where statistical learning, optimization, and dynamic programming fully interact.</p>
+        <p><span class="statement-title">Remark.</span> Fitted value iteration and fitted Q-iteration replace conditional expectations by regression estimates. Their analysis combines supervised-learning generalization error with Bellman error propagation.</p>
+    </div>
+
+    <h3>Error norms</h3>
+
+    <p>The norm in which approximation is small matters for control.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Sup-norm error gives clean worst-case control guarantees. \(L^2\)-type errors are often easier statistically but require concentrability coefficients to translate behavior-distribution accuracy into target-policy performance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/function-approximation/" next_label="Next page" next_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
@@ -38,26 +83,71 @@ breadcrumb_child_label_zh: "19. 近似动态规划"
     <h2><a href="{{ '/notes/reinforcement-learning/approximate-dynamic-programming/' | relative_url }}">19. Programmation dynamique approchée</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/function-approximation/" next_label="Page suivante" next_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Programmation dynamique approchée.</p>
+    <p>Approximate dynamic programming studies how errors in Bellman backups, projections, simulations, and greedy steps propagate through control algorithms.</p>
 
-    <h3>Définition</h3>
+    <h3>Approximate value iteration</h3>
+
+    <p>Each Bellman backup may be followed by approximation error.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Approximate dynamic programming studies Bellman updates combined with approximation, sampling, or restricted policy classes.</p>
+        <p><span class="statement-title">Définition.</span> Approximate value iteration has the form
+\[
+v_{k+1}=T_*v_k+\varepsilon_k.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Performance bounds often control policy loss by Bellman residuals, approximation errors, and concentrability coefficients comparing state distributions.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\|\varepsilon_k\|_\infty\le\varepsilon\), then
+\[
+\limsup_{k\to\infty}\|v_k-v_*\|_\infty\le\frac{\varepsilon}{1-\gamma}.
+\]</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Iterate one-step error inequalities through the discounted dynamics. Distribution mismatch appears when errors are measured under one state distribution but performance under another.</p>
+        <p><span class="statement-title">Preuve.</span> Use contraction:
+\[
+\|v_{k+1}-v_*\|_\infty\le\gamma\|v_k-v_*\|_\infty+\varepsilon.
+\]
+Iterating this scalar recursion and letting \(k\to\infty\) gives the bound.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Approximate greedy policies</h3>
+
+    <p>Control loss depends on both value approximation and greedy-step error.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A policy \(\pi\) is \(\eta\)-greedy with respect to \(v\) if
+\[
+T_\pi v\ge T_*v-\eta\mathbf 1.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(\pi\) is \(\eta\)-greedy with respect to \(v\), then
+\[
+\|v_*-v_\pi\|_\infty
+\le \frac{2\gamma}{1-\gamma}\|v-v_*\|_\infty+\frac{\eta}{1-\gamma}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Compare \(T_*v_*\) and \(T_\pi v_\pi\), adding and subtracting \(T_*v\) and \(T_\pi v\). The approximation terms are bounded by \(\gamma\|v-v_*\|_\infty\), the greedy error contributes \(\eta\), and the remaining \(T_\pi(v-v_\pi)\) term is absorbed by \(1-\gamma\).</p>
+    </div>
+
+    <h3>Simulation error</h3>
+
+    <p>Sampled Bellman backups introduce statistical error in addition to approximation error.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Approximate dynamic programming is where statistical learning, optimization, and dynamic programming fully interact.</p>
+        <p><span class="statement-title">Remarque.</span> Fitted value iteration and fitted Q-iteration replace conditional expectations by regression estimates. Their analysis combines supervised-learning generalization error with Bellman error propagation.</p>
+    </div>
+
+    <h3>Error norms</h3>
+
+    <p>The norm in which approximation is small matters for control.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Sup-norm error gives clean worst-case control guarantees. \(L^2\)-type errors are often easier statistically but require concentrability coefficients to translate behavior-distribution accuracy into target-policy performance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/function-approximation/" next_label="Page suivante" next_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
@@ -67,26 +157,71 @@ breadcrumb_child_label_zh: "19. 近似动态规划"
     <h2><a href="{{ '/notes/reinforcement-learning/approximate-dynamic-programming/' | relative_url }}">19. 近似动态规划</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/function-approximation/" next_label="下一页" next_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
 
-    <p>本页整理关于“近似动态规划”的主要定义、命题、定理与证明思路。</p>
+    <p>Approximate dynamic programming studies how errors in Bellman backups, projections, simulations, and greedy steps propagate through control algorithms.</p>
 
-    <h3>定义</h3>
+    <h3>Approximate value iteration</h3>
+
+    <p>Each Bellman backup may be followed by approximation error.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Approximate dynamic programming studies 贝尔曼 updates combined with approximation, sampling, or restricted policy classes.</p>
+        <p><span class="statement-title">定义.</span> Approximate value iteration has the form
+\[
+v_{k+1}=T_*v_k+\varepsilon_k.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Performance bounds often control policy loss by 贝尔曼 residuals, approximation errors, and concentrability coefficients comparing state distributions.</p>
+        <p><span class="statement-title">命题.</span> If \(\|\varepsilon_k\|_\infty\le\varepsilon\), then
+\[
+\limsup_{k\to\infty}\|v_k-v_*\|_\infty\le\frac{\varepsilon}{1-\gamma}.
+\]</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Iterate 一步 error inequalities through the discounted dynamics. Distribution mismatch appears when errors are measured under one state distribution but performance under another.</p>
+        <p><span class="statement-title">证明.</span> Use contraction:
+\[
+\|v_{k+1}-v_*\|_\infty\le\gamma\|v_k-v_*\|_\infty+\varepsilon.
+\]
+Iterating this scalar recursion and letting \(k\to\infty\) gives the bound.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Approximate greedy policies</h3>
+
+    <p>Control loss depends on both value approximation and greedy-step error.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A policy \(\pi\) is \(\eta\)-greedy with respect to \(v\) if
+\[
+T_\pi v\ge T_*v-\eta\mathbf 1.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(\pi\) is \(\eta\)-greedy with respect to \(v\), then
+\[
+\|v_*-v_\pi\|_\infty
+\le \frac{2\gamma}{1-\gamma}\|v-v_*\|_\infty+\frac{\eta}{1-\gamma}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Compare \(T_*v_*\) and \(T_\pi v_\pi\), adding and subtracting \(T_*v\) and \(T_\pi v\). The approximation terms are bounded by \(\gamma\|v-v_*\|_\infty\), the greedy error contributes \(\eta\), and the remaining \(T_\pi(v-v_\pi)\) term is absorbed by \(1-\gamma\).</p>
+    </div>
+
+    <h3>Simulation error</h3>
+
+    <p>Sampled Bellman backups introduce statistical error in addition to approximation error.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Approximate dynamic programming is where statistical learning, optimization, and dynamic programming fully interact.</p>
+        <p><span class="statement-title">说明.</span> Fitted value iteration and fitted Q-iteration replace conditional expectations by regression estimates. Their analysis combines supervised-learning generalization error with Bellman error propagation.</p>
+    </div>
+
+    <h3>Error norms</h3>
+
+    <p>The norm in which approximation is small matters for control.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Sup-norm error gives clean worst-case control guarantees. \(L^2\)-type errors are often easier statistically but require concentrability coefficients to translate behavior-distribution accuracy into target-policy performance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/function-approximation/" next_label="下一页" next_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}

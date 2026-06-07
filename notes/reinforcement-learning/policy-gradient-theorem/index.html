@@ -9,26 +9,79 @@ breadcrumb_child_label_zh: "12. 策略梯度定理"
     <h2><a href="{{ '/notes/reinforcement-learning/policy-gradient-theorem/' | relative_url }}">12. Policy gradient theorem</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" next_label="Next page" next_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" %}
 
-    <p>Policy gradient theorem records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Policy-gradient methods optimize a differentiable policy directly. The policy-gradient theorem expresses the gradient without differentiating the transition law.</p>
 
-    <h3>Definition</h3>
+    <h3>Objective and score identity</h3>
+
+    <p>The log-derivative trick moves differentiation from the trajectory density to the policy score.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Policy gradient methods optimize a differentiable parameterized policy by estimating the gradient of expected return.</p>
+        <p><span class="statement-title">Definition.</span> For a differentiable policy \(\pi_\theta\), define
+\[
+J(\theta)=\mathbb E_{\mu,\pi_\theta}\sum_{t=0}^\infty\gamma^tR_{t+1}.
+\]
+The score identity is \(\nabla_\theta p_\theta(x)=p_\theta(x)\nabla_\theta\log p_\theta(x)\) whenever \(p_\theta(x)>0\).</p>
     </div>
 
-    <h3>Policy gradient theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under regularity assumptions, \(\nabla J(\theta)=E_{\pi_\theta}[\nabla\log\pi_\theta(A\mid S)Q^{\pi_\theta}(S,A)]\), with the expectation under the discounted occupancy measure.</p>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> For any trajectory functional \(F(\tau)\),
+\[
+\nabla_\theta\mathbb E_\theta F(\tau)
+=\mathbb E_\theta\{F(\tau)\nabla_\theta\log p_\theta(\tau)\},
+\]
+provided differentiation and integration may be interchanged.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiate trajectory probabilities using the log-derivative identity. Terms involving transition probabilities vanish because they do not depend on policy parameters.</p>
+        <p><span class="statement-title">Proof.</span> Write the expectation as \(\int F(\tau)p_\theta(\tau)\mathrm{d}\tau\), differentiate under the integral, and substitute \(\nabla p_\theta=p_\theta\nabla\log p_\theta\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The theorem avoids differentiating the environment model and makes model-free policy optimization possible.</p>
+    <h3>Policy-gradient theorem</h3>
+
+    <p>The gradient weights policy scores by action values under the discounted occupancy measure.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For a discounted MDP with differentiable policy,
+\[
+\nabla J(\theta)=\frac{1}{1-\gamma}
+\int d_{\mu,\pi_\theta}(\mathrm{d}s)\int \pi_\theta(\mathrm{d}a\mid s)
+\nabla\log\pi_\theta(a\mid s)q_{\pi_\theta}(s,a).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The trajectory density factors into the initial law, transition kernels, and policy probabilities. Transition kernels do not depend on \(\theta\), so
+\[
+\nabla\log p_\theta(\tau)=\sum_{t\ge0}\nabla\log\pi_\theta(A_t\mid S_t).
+\]
+Apply the score identity to the discounted return. Terms in which a score at time \(t\) is multiplied by rewards before time \(t\) vanish after conditioning on the past, since the conditional expectation of the score is zero. The remaining future rewards give \(q_{\pi_\theta}(S_t,A_t)\). Summing discounted state-action distributions yields the occupancy-measure form.</p>
+    </div>
+
+    <h3>Compatible baselines</h3>
+
+    <p>The theorem is unchanged when a state-dependent baseline is subtracted.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For any bounded \(b(s)\),
+\[
+\int \pi_\theta(\mathrm{d}a\mid s)\nabla\log\pi_\theta(a\mid s)b(s)=0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The integrand equals \(b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)\). Since \(\int\pi_\theta(\mathrm{d}a\mid s)=1\), differentiating the normalization gives zero.</p>
+    </div>
+
+    <h3>Advantage form</h3>
+
+    <p>Subtracting \(v_\pi(s)\) gives the advantage, often reducing variance.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The advantage function is
+\[
+A_\pi(s,a)=q_\pi(s,a)-v_\pi(s).
+\]
+The policy gradient can use \(A_\pi\) in place of \(q_\pi\) because \(v_\pi(s)\) is a valid baseline.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" next_label="Next page" next_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" %}
@@ -38,26 +91,79 @@ breadcrumb_child_label_zh: "12. 策略梯度定理"
     <h2><a href="{{ '/notes/reinforcement-learning/policy-gradient-theorem/' | relative_url }}">12. Théorème du gradient de politique</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" next_label="Page suivante" next_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Théorème du gradient de politique.</p>
+    <p>Policy-gradient methods optimize a differentiable policy directly. The policy-gradient theorem expresses the gradient without differentiating the transition law.</p>
 
-    <h3>Définition</h3>
+    <h3>Objective and score identity</h3>
+
+    <p>The log-derivative trick moves differentiation from the trajectory density to the policy score.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Policy gradient methods optimize a differentiable parameterized policy by estimating the gradient of expected return.</p>
+        <p><span class="statement-title">Définition.</span> For a differentiable policy \(\pi_\theta\), define
+\[
+J(\theta)=\mathbb E_{\mu,\pi_\theta}\sum_{t=0}^\infty\gamma^tR_{t+1}.
+\]
+The score identity is \(\nabla_\theta p_\theta(x)=p_\theta(x)\nabla_\theta\log p_\theta(x)\) whenever \(p_\theta(x)>0\).</p>
     </div>
 
-    <h3>Policy gradient theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Under regularity assumptions, \(\nabla J(\theta)=E_{\pi_\theta}[\nabla\log\pi_\theta(A\mid S)Q^{\pi_\theta}(S,A)]\), with the expectation under the discounted occupancy measure.</p>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> For any trajectory functional \(F(\tau)\),
+\[
+\nabla_\theta\mathbb E_\theta F(\tau)
+=\mathbb E_\theta\{F(\tau)\nabla_\theta\log p_\theta(\tau)\},
+\]
+provided differentiation and integration may be interchanged.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Differentiate trajectory probabilities using the log-derivative identity. Terms involving transition probabilities vanish because they do not depend on policy parameters.</p>
+        <p><span class="statement-title">Preuve.</span> Write the expectation as \(\int F(\tau)p_\theta(\tau)\mathrm{d}\tau\), differentiate under the integral, and substitute \(\nabla p_\theta=p_\theta\nabla\log p_\theta\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> The theorem avoids differentiating the environment model and makes model-free policy optimization possible.</p>
+    <h3>Policy-gradient theorem</h3>
+
+    <p>The gradient weights policy scores by action values under the discounted occupancy measure.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For a discounted MDP with differentiable policy,
+\[
+\nabla J(\theta)=\frac{1}{1-\gamma}
+\int d_{\mu,\pi_\theta}(\mathrm{d}s)\int \pi_\theta(\mathrm{d}a\mid s)
+\nabla\log\pi_\theta(a\mid s)q_{\pi_\theta}(s,a).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The trajectory density factors into the initial law, transition kernels, and policy probabilities. Transition kernels do not depend on \(\theta\), so
+\[
+\nabla\log p_\theta(\tau)=\sum_{t\ge0}\nabla\log\pi_\theta(A_t\mid S_t).
+\]
+Apply the score identity to the discounted return. Terms in which a score at time \(t\) is multiplied by rewards before time \(t\) vanish after conditioning on the past, since the conditional expectation of the score is zero. The remaining future rewards give \(q_{\pi_\theta}(S_t,A_t)\). Summing discounted state-action distributions yields the occupancy-measure form.</p>
+    </div>
+
+    <h3>Compatible baselines</h3>
+
+    <p>The theorem is unchanged when a state-dependent baseline is subtracted.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For any bounded \(b(s)\),
+\[
+\int \pi_\theta(\mathrm{d}a\mid s)\nabla\log\pi_\theta(a\mid s)b(s)=0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The integrand equals \(b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)\). Since \(\int\pi_\theta(\mathrm{d}a\mid s)=1\), differentiating the normalization gives zero.</p>
+    </div>
+
+    <h3>Advantage form</h3>
+
+    <p>Subtracting \(v_\pi(s)\) gives the advantage, often reducing variance.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> The advantage function is
+\[
+A_\pi(s,a)=q_\pi(s,a)-v_\pi(s).
+\]
+The policy gradient can use \(A_\pi\) in place of \(q_\pi\) because \(v_\pi(s)\) is a valid baseline.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" next_label="Page suivante" next_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" %}
@@ -67,26 +173,79 @@ breadcrumb_child_label_zh: "12. 策略梯度定理"
     <h2><a href="{{ '/notes/reinforcement-learning/policy-gradient-theorem/' | relative_url }}">12. 策略梯度定理</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" next_label="下一页" next_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" %}
 
-    <p>本页整理关于“策略梯度定理”的主要定义、命题、定理与证明思路。</p>
+    <p>Policy-gradient methods optimize a differentiable policy directly. The policy-gradient theorem expresses the gradient without differentiating the transition law.</p>
 
-    <h3>定义</h3>
+    <h3>Objective and score identity</h3>
+
+    <p>The log-derivative trick moves differentiation from the trajectory density to the policy score.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 策略梯度 methods optimize a differentiable parameterized policy by estimating the gradient of expected return.</p>
+        <p><span class="statement-title">定义.</span> For a differentiable policy \(\pi_\theta\), define
+\[
+J(\theta)=\mathbb E_{\mu,\pi_\theta}\sum_{t=0}^\infty\gamma^tR_{t+1}.
+\]
+The score identity is \(\nabla_\theta p_\theta(x)=p_\theta(x)\nabla_\theta\log p_\theta(x)\) whenever \(p_\theta(x)>0\).</p>
     </div>
 
-    <h3>策略梯度定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Under regularity assumptions, \(\nabla J(\theta)=E_{\pi_\theta}[\nabla\log\pi_\theta(A\mid S)Q^{\pi_\theta}(S,A)]\), with the expectation under the discounted occupancy 测度.</p>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> For any trajectory functional \(F(\tau)\),
+\[
+\nabla_\theta\mathbb E_\theta F(\tau)
+=\mathbb E_\theta\{F(\tau)\nabla_\theta\log p_\theta(\tau)\},
+\]
+provided differentiation and integration may be interchanged.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Differentiate trajectory probabilities using the log-derivative identity. Terms involving transition probabilities vanish because they do not depend on policy parameters.</p>
+        <p><span class="statement-title">证明.</span> Write the expectation as \(\int F(\tau)p_\theta(\tau)\mathrm{d}\tau\), differentiate under the integral, and substitute \(\nabla p_\theta=p_\theta\nabla\log p_\theta\).</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> The 定理 avoids differentiating the environment model and makes model-free policy optimization possible.</p>
+    <h3>Policy-gradient theorem</h3>
+
+    <p>The gradient weights policy scores by action values under the discounted occupancy measure.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For a discounted MDP with differentiable policy,
+\[
+\nabla J(\theta)=\frac{1}{1-\gamma}
+\int d_{\mu,\pi_\theta}(\mathrm{d}s)\int \pi_\theta(\mathrm{d}a\mid s)
+\nabla\log\pi_\theta(a\mid s)q_{\pi_\theta}(s,a).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The trajectory density factors into the initial law, transition kernels, and policy probabilities. Transition kernels do not depend on \(\theta\), so
+\[
+\nabla\log p_\theta(\tau)=\sum_{t\ge0}\nabla\log\pi_\theta(A_t\mid S_t).
+\]
+Apply the score identity to the discounted return. Terms in which a score at time \(t\) is multiplied by rewards before time \(t\) vanish after conditioning on the past, since the conditional expectation of the score is zero. The remaining future rewards give \(q_{\pi_\theta}(S_t,A_t)\). Summing discounted state-action distributions yields the occupancy-measure form.</p>
+    </div>
+
+    <h3>Compatible baselines</h3>
+
+    <p>The theorem is unchanged when a state-dependent baseline is subtracted.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For any bounded \(b(s)\),
+\[
+\int \pi_\theta(\mathrm{d}a\mid s)\nabla\log\pi_\theta(a\mid s)b(s)=0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The integrand equals \(b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)\). Since \(\int\pi_\theta(\mathrm{d}a\mid s)=1\), differentiating the normalization gives zero.</p>
+    </div>
+
+    <h3>Advantage form</h3>
+
+    <p>Subtracting \(v_\pi(s)\) gives the advantage, often reducing variance.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> The advantage function is
+\[
+A_\pi(s,a)=q_\pi(s,a)-v_\pi(s).
+\]
+The policy gradient can use \(A_\pi\) in place of \(q_\pi\) because \(v_\pi(s)\) is a valid baseline.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" next_label="下一页" next_url="/notes/reinforcement-learning/baselines-and-variance-reduction/" %}

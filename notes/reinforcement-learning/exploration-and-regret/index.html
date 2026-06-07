@@ -9,26 +9,57 @@ breadcrumb_child_label_zh: "15. 探索与遗憾"
     <h2><a href="{{ '/notes/reinforcement-learning/exploration-and-regret/' | relative_url }}">15. Exploration and regret</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/actor-critic-methods/" next_label="Next page" next_url="/notes/reinforcement-learning/multi-armed-bandits/" %}
 
-    <p>Exploration and regret records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Exploration is the statistical cost of learning what actions do. Regret measures this cost by comparing the learner's accumulated reward with an oracle policy.</p>
 
-    <h3>Definition</h3>
+    <h3>Regret</h3>
+
+    <p>Regret converts online learning into a sequence of excess-risk comparisons.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Exploration chooses actions to learn about uncertain rewards or transitions. Regret compares accumulated reward to that of an optimal policy or action.</p>
+        <p><span class="statement-title">Definition.</span> For rewards and optimal value benchmark \(V^*\), cumulative regret over horizon \(T\) is
+\[
+\operatorname{Reg}(T)=\sum_{t=1}^T\{V^*(S_t)-R_t\}
+\]
+in episodic or continuing forms adapted to the model. For bandits, \(\operatorname{Reg}(T)=T\mu^*-\sum_{t=1}^T\mu_{A_t}\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In bandit problems, optimism and posterior sampling achieve sublinear regret under standard stochastic assumptions.</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Confidence intervals or posterior samples balance estimated reward with uncertainty. Concentration controls how often a suboptimal action appears plausibly optimal.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Exploration is statistical experimental design inside sequential decision making.</p>
+        <p><span class="statement-title">Remark.</span> Sublinear regret means the average cost of exploration vanishes.</p>
+    </div>
+
+    <h3>Optimism</h3>
+
+    <p>Optimism chooses actions that could plausibly be best given current uncertainty.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In a bandit problem, if upper confidence bounds \(U_t(a)\) satisfy \(\mu_a\le U_t(a)\) for all arms on a high-probability event, choosing \(A_t\in\operatorname*{argmax}_aU_t(a)\) explores arms whose uncertainty can still affect optimality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On the confidence event, the optimal mean \(\mu^*\le U_t(a^*)\le U_t(A_t)\). If \(A_t\) is suboptimal, its upper bound must still be high enough to cover the optimal mean. Thus either its empirical mean is unusually high or its uncertainty radius is still large; confidence rules out the former and limits the number of times the latter can occur.</p>
+    </div>
+
+    <h3>Regret decomposition</h3>
+
+    <p>For finite bandits, regret is a sum over suboptimal arm pulls.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For arm gaps \(\Delta_a=\mu^*-\mu_a\),
+\[
+\mathbb E\operatorname{Reg}(T)=\sum_{a:\Delta_a>0}\Delta_a\,\mathbb E N_a(T).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Each time arm \(a\) is pulled, the expected loss relative to the best arm is \(\Delta_a\). Sum over time and group by arm, then take expectations.</p>
+    </div>
+
+    <h3>Exploration in MDPs</h3>
+
+    <p>MDP exploration is harder because information is gathered through state visitation.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Optimism and posterior sampling extend to MDPs by adding uncertainty bonuses or sampling plausible models. The difficulty is that actions affect both immediate reward and future information through the transition kernel.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/actor-critic-methods/" next_label="Next page" next_url="/notes/reinforcement-learning/multi-armed-bandits/" %}
@@ -38,26 +69,57 @@ breadcrumb_child_label_zh: "15. 探索与遗憾"
     <h2><a href="{{ '/notes/reinforcement-learning/exploration-and-regret/' | relative_url }}">15. Exploration et regret</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/actor-critic-methods/" next_label="Page suivante" next_url="/notes/reinforcement-learning/multi-armed-bandits/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Exploration et regret.</p>
+    <p>Exploration is the statistical cost of learning what actions do. Regret measures this cost by comparing the learner's accumulated reward with an oracle policy.</p>
 
-    <h3>Définition</h3>
+    <h3>Regret</h3>
+
+    <p>Regret converts online learning into a sequence of excess-risk comparisons.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Exploration chooses actions to learn about uncertain rewards or transitions. Regret compares accumulated reward to that of an optimal policy or action.</p>
+        <p><span class="statement-title">Définition.</span> For rewards and optimal value benchmark \(V^*\), cumulative regret over horizon \(T\) is
+\[
+\operatorname{Reg}(T)=\sum_{t=1}^T\{V^*(S_t)-R_t\}
+\]
+in episodic or continuing forms adapted to the model. For bandits, \(\operatorname{Reg}(T)=T\mu^*-\sum_{t=1}^T\mu_{A_t}\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In bandit problems, optimism and posterior sampling achieve sublinear regret under standard stochastic assumptions.</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Confidence intervals or posterior samples balance estimated reward with uncertainty. Concentration controls how often a suboptimal action appears plausibly optimal.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Exploration is statistical experimental design inside sequential decision making.</p>
+        <p><span class="statement-title">Remarque.</span> Sublinear regret means the average cost of exploration vanishes.</p>
+    </div>
+
+    <h3>Optimism</h3>
+
+    <p>Optimism chooses actions that could plausibly be best given current uncertainty.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In a bandit problem, if upper confidence bounds \(U_t(a)\) satisfy \(\mu_a\le U_t(a)\) for all arms on a high-probability event, choosing \(A_t\in\operatorname*{argmax}_aU_t(a)\) explores arms whose uncertainty can still affect optimality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On the confidence event, the optimal mean \(\mu^*\le U_t(a^*)\le U_t(A_t)\). If \(A_t\) is suboptimal, its upper bound must still be high enough to cover the optimal mean. Thus either its empirical mean is unusually high or its uncertainty radius is still large; confidence rules out the former and limits the number of times the latter can occur.</p>
+    </div>
+
+    <h3>Regret decomposition</h3>
+
+    <p>For finite bandits, regret is a sum over suboptimal arm pulls.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For arm gaps \(\Delta_a=\mu^*-\mu_a\),
+\[
+\mathbb E\operatorname{Reg}(T)=\sum_{a:\Delta_a>0}\Delta_a\,\mathbb E N_a(T).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Each time arm \(a\) is pulled, the expected loss relative to the best arm is \(\Delta_a\). Sum over time and group by arm, then take expectations.</p>
+    </div>
+
+    <h3>Exploration in MDPs</h3>
+
+    <p>MDP exploration is harder because information is gathered through state visitation.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Optimism and posterior sampling extend to MDPs by adding uncertainty bonuses or sampling plausible models. The difficulty is that actions affect both immediate reward and future information through the transition kernel.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/actor-critic-methods/" next_label="Page suivante" next_url="/notes/reinforcement-learning/multi-armed-bandits/" %}
@@ -67,26 +129,57 @@ breadcrumb_child_label_zh: "15. 探索与遗憾"
     <h2><a href="{{ '/notes/reinforcement-learning/exploration-and-regret/' | relative_url }}">15. 探索与遗憾</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/actor-critic-methods/" next_label="下一页" next_url="/notes/reinforcement-learning/multi-armed-bandits/" %}
 
-    <p>本页整理关于“探索与遗憾”的主要定义、命题、定理与证明思路。</p>
+    <p>Exploration is the statistical cost of learning what actions do. Regret measures this cost by comparing the learner's accumulated reward with an oracle policy.</p>
 
-    <h3>定义</h3>
+    <h3>Regret</h3>
+
+    <p>Regret converts online learning into a sequence of excess-risk comparisons.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Exploration chooses actions to learn about uncertain rewards or transitions. Regret compares accumulated reward to that of an optimal policy or action.</p>
+        <p><span class="statement-title">定义.</span> For rewards and optimal value benchmark \(V^*\), cumulative regret over horizon \(T\) is
+\[
+\operatorname{Reg}(T)=\sum_{t=1}^T\{V^*(S_t)-R_t\}
+\]
+in episodic or continuing forms adapted to the model. For bandits, \(\operatorname{Reg}(T)=T\mu^*-\sum_{t=1}^T\mu_{A_t}\).</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> In bandit problems, optimism and 后验 sampling achieve sublinear regret under standard 随机 assumptions.</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Confidence intervals or 后验 samples balance estimated reward with uncertainty. Concentration controls how often a suboptimal action appears plausibly optimal.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Exploration is statistical experimental design inside sequential decision making.</p>
+        <p><span class="statement-title">说明.</span> Sublinear regret means the average cost of exploration vanishes.</p>
+    </div>
+
+    <h3>Optimism</h3>
+
+    <p>Optimism chooses actions that could plausibly be best given current uncertainty.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> In a bandit problem, if upper confidence bounds \(U_t(a)\) satisfy \(\mu_a\le U_t(a)\) for all arms on a high-probability event, choosing \(A_t\in\operatorname*{argmax}_aU_t(a)\) explores arms whose uncertainty can still affect optimality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> On the confidence event, the optimal mean \(\mu^*\le U_t(a^*)\le U_t(A_t)\). If \(A_t\) is suboptimal, its upper bound must still be high enough to cover the optimal mean. Thus either its empirical mean is unusually high or its uncertainty radius is still large; confidence rules out the former and limits the number of times the latter can occur.</p>
+    </div>
+
+    <h3>Regret decomposition</h3>
+
+    <p>For finite bandits, regret is a sum over suboptimal arm pulls.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For arm gaps \(\Delta_a=\mu^*-\mu_a\),
+\[
+\mathbb E\operatorname{Reg}(T)=\sum_{a:\Delta_a>0}\Delta_a\,\mathbb E N_a(T).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Each time arm \(a\) is pulled, the expected loss relative to the best arm is \(\Delta_a\). Sum over time and group by arm, then take expectations.</p>
+    </div>
+
+    <h3>Exploration in MDPs</h3>
+
+    <p>MDP exploration is harder because information is gathered through state visitation.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Optimism and posterior sampling extend to MDPs by adding uncertainty bonuses or sampling plausible models. The difficulty is that actions affect both immediate reward and future information through the transition kernel.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/actor-critic-methods/" next_label="下一页" next_url="/notes/reinforcement-learning/multi-armed-bandits/" %}

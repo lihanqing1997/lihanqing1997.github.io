@@ -9,26 +9,72 @@ breadcrumb_child_label_zh: "16. 多臂老虎机"
     <h2><a href="{{ '/notes/reinforcement-learning/multi-armed-bandits/' | relative_url }}">16. Multi-armed bandits</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/exploration-and-regret/" next_label="Next page" next_url="/notes/reinforcement-learning/off-policy-evaluation/" %}
 
-    <p>Multi-armed bandits records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Bandits are the simplest reinforcement-learning problems with exploration. There is no state transition, only repeated action choice under uncertainty.</p>
 
-    <h3>Definition</h3>
+    <h3>Stochastic bandit model</h3>
+
+    <p>Each arm has an unknown reward distribution, and the learner observes only the reward of the chosen arm.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A multi-armed bandit has actions with unknown reward distributions and no state dynamics. It is the simplest exploration-exploitation model.</p>
+        <p><span class="statement-title">Definition.</span> A \(K\)-armed stochastic bandit has reward distributions \(\nu_1,\ldots,\nu_K\) with means \(\mu_a\). At time \(t\), the learner chooses \(A_t\), observes \(R_t\sim\nu_{A_t}\), and seeks small regret
+\[
+\operatorname{Reg}(T)=T\mu^*-\sum_{t=1}^TR_t.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Upper confidence bound algorithms choose actions by empirical mean plus uncertainty radius and achieve logarithmic problem-dependent regret for suboptimal arms.</p>
+        <p><span class="statement-title">Proposition.</span> The expected regret is \(\sum_a\Delta_a\mathbb E N_a(T)\), where \(\Delta_a=\mu^*-\mu_a\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Concentration bounds ensure that confidence intervals contain true means with high probability. Suboptimal arms are pulled often only while uncertainty is large enough to mask their gap.</p>
+        <p><span class="statement-title">Proof.</span> Take expectation of \(T\mu^*-\sum_tR_t\). Conditional on \(A_t=a\), \(\mathbb E R_t=\mu_a\). Group the resulting \(\mu^*-\mu_a\) terms by arm.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Upper confidence bounds</h3>
+
+    <p>UCB balances empirical mean and uncertainty radius.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For sub-Gaussian rewards, UCB chooses
+\[
+A_t\in\operatorname*{argmax}_a\left\{\hat\mu_a(t)+\sqrt{\frac{2\log t}{N_a(t)}}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For each suboptimal arm \(a\), UCB pulls arm \(a\) \(O((\log T)/\Delta_a^2)\) times in expectation, yielding regret \(O(\sum_a(\log T)/\Delta_a)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On the high-probability event that all empirical means stay within their confidence radii, a suboptimal arm can be selected only if its confidence radius is large enough to bridge the gap \(\Delta_a\). This implies \(N_a(t)\lesssim(\log T)/\Delta_a^2\). The failure event contributes only a bounded additional amount by concentration and summability.</p>
+    </div>
+
+    <h3>Thompson sampling</h3>
+
+    <p>Posterior sampling randomizes according to uncertainty about which arm is best.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Thompson sampling maintains a posterior distribution over arm means, samples a plausible parameter vector from the posterior, and pulls the arm optimal for that sample.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Bandits isolate exploration without transition dynamics, making them a clean statistical core of RL.</p>
+        <p><span class="statement-title">Remark.</span> For conjugate Bernoulli-beta bandits, the update is explicit. Regret analysis shows that posterior sampling often matches logarithmic gap-dependent rates under regularity.</p>
+    </div>
+
+    <h3>Lower bounds</h3>
+
+    <p>Logarithmic regret is unavoidable for uniformly good algorithms in parametric bandits.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For many one-parameter reward families, any uniformly efficient algorithm must satisfy asymptotic lower bounds of Lai-Robbins type:
+\[
+\liminf_{T\to\infty}\frac{\mathbb E N_a(T)}{\log T}\ge \frac{1}{\operatorname{KL}(\nu_a,\nu_{a^*})}
+\]
+with the appropriate alternative distribution in the denominator.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If a suboptimal arm is sampled too rarely, the data cannot statistically distinguish the true instance from an alternative in which that arm is optimal. A change-of-measure argument relates the probability of correct behavior under the two instances to the accumulated KL information, forcing at least logarithmically many samples.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/exploration-and-regret/" next_label="Next page" next_url="/notes/reinforcement-learning/off-policy-evaluation/" %}
@@ -38,26 +84,72 @@ breadcrumb_child_label_zh: "16. 多臂老虎机"
     <h2><a href="{{ '/notes/reinforcement-learning/multi-armed-bandits/' | relative_url }}">16. Bandits manchots</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/exploration-and-regret/" next_label="Page suivante" next_url="/notes/reinforcement-learning/off-policy-evaluation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Bandits manchots.</p>
+    <p>Bandits are the simplest reinforcement-learning problems with exploration. There is no state transition, only repeated action choice under uncertainty.</p>
 
-    <h3>Définition</h3>
+    <h3>Stochastic bandit model</h3>
+
+    <p>Each arm has an unknown reward distribution, and the learner observes only the reward of the chosen arm.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A multi-armed bandit has actions with unknown reward distributions and no state dynamics. It is the simplest exploration-exploitation model.</p>
+        <p><span class="statement-title">Définition.</span> A \(K\)-armed stochastic bandit has reward distributions \(\nu_1,\ldots,\nu_K\) with means \(\mu_a\). At time \(t\), the learner chooses \(A_t\), observes \(R_t\sim\nu_{A_t}\), and seeks small regret
+\[
+\operatorname{Reg}(T)=T\mu^*-\sum_{t=1}^TR_t.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Upper confidence bound algorithms choose actions by empirical mean plus uncertainty radius and achieve logarithmic problem-dependent regret for suboptimal arms.</p>
+        <p><span class="statement-title">Proposition.</span> The expected regret is \(\sum_a\Delta_a\mathbb E N_a(T)\), where \(\Delta_a=\mu^*-\mu_a\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Concentration bounds ensure that confidence intervals contain true means with high probability. Suboptimal arms are pulled often only while uncertainty is large enough to mask their gap.</p>
+        <p><span class="statement-title">Preuve.</span> Take expectation of \(T\mu^*-\sum_tR_t\). Conditional on \(A_t=a\), \(\mathbb E R_t=\mu_a\). Group the resulting \(\mu^*-\mu_a\) terms by arm.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Upper confidence bounds</h3>
+
+    <p>UCB balances empirical mean and uncertainty radius.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For sub-Gaussian rewards, UCB chooses
+\[
+A_t\in\operatorname*{argmax}_a\left\{\hat\mu_a(t)+\sqrt{\frac{2\log t}{N_a(t)}}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For each suboptimal arm \(a\), UCB pulls arm \(a\) \(O((\log T)/\Delta_a^2)\) times in expectation, yielding regret \(O(\sum_a(\log T)/\Delta_a)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On the high-probability event that all empirical means stay within their confidence radii, a suboptimal arm can be selected only if its confidence radius is large enough to bridge the gap \(\Delta_a\). This implies \(N_a(t)\lesssim(\log T)/\Delta_a^2\). The failure event contributes only a bounded additional amount by concentration and summability.</p>
+    </div>
+
+    <h3>Thompson sampling</h3>
+
+    <p>Posterior sampling randomizes according to uncertainty about which arm is best.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Thompson sampling maintains a posterior distribution over arm means, samples a plausible parameter vector from the posterior, and pulls the arm optimal for that sample.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Bandits isolate exploration without transition dynamics, making them a clean statistical core of RL.</p>
+        <p><span class="statement-title">Remarque.</span> For conjugate Bernoulli-beta bandits, the update is explicit. Regret analysis shows that posterior sampling often matches logarithmic gap-dependent rates under regularity.</p>
+    </div>
+
+    <h3>Lower bounds</h3>
+
+    <p>Logarithmic regret is unavoidable for uniformly good algorithms in parametric bandits.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For many one-parameter reward families, any uniformly efficient algorithm must satisfy asymptotic lower bounds of Lai-Robbins type:
+\[
+\liminf_{T\to\infty}\frac{\mathbb E N_a(T)}{\log T}\ge \frac{1}{\operatorname{KL}(\nu_a,\nu_{a^*})}
+\]
+with the appropriate alternative distribution in the denominator.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If a suboptimal arm is sampled too rarely, the data cannot statistically distinguish the true instance from an alternative in which that arm is optimal. A change-of-measure argument relates the probability of correct behavior under the two instances to the accumulated KL information, forcing at least logarithmically many samples.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/exploration-and-regret/" next_label="Page suivante" next_url="/notes/reinforcement-learning/off-policy-evaluation/" %}
@@ -67,26 +159,72 @@ breadcrumb_child_label_zh: "16. 多臂老虎机"
     <h2><a href="{{ '/notes/reinforcement-learning/multi-armed-bandits/' | relative_url }}">16. 多臂老虎机</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/exploration-and-regret/" next_label="下一页" next_url="/notes/reinforcement-learning/off-policy-evaluation/" %}
 
-    <p>本页整理关于“多臂老虎机”的主要定义、命题、定理与证明思路。</p>
+    <p>Bandits are the simplest reinforcement-learning problems with exploration. There is no state transition, only repeated action choice under uncertainty.</p>
 
-    <h3>定义</h3>
+    <h3>Stochastic bandit model</h3>
+
+    <p>Each arm has an unknown reward distribution, and the learner observes only the reward of the chosen arm.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A multi-armed bandit has actions with unknown reward distributions and no state dynamics. It is the simplest exploration-exploitation model.</p>
+        <p><span class="statement-title">定义.</span> A \(K\)-armed stochastic bandit has reward distributions \(\nu_1,\ldots,\nu_K\) with means \(\mu_a\). At time \(t\), the learner chooses \(A_t\), observes \(R_t\sim\nu_{A_t}\), and seeks small regret
+\[
+\operatorname{Reg}(T)=T\mu^*-\sum_{t=1}^TR_t.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Upper confidence bound algorithms choose actions by 经验 mean plus uncertainty radius and achieve logarithmic problem-dependent regret for suboptimal arms.</p>
+        <p><span class="statement-title">命题.</span> The expected regret is \(\sum_a\Delta_a\mathbb E N_a(T)\), where \(\Delta_a=\mu^*-\mu_a\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Concentration bounds ensure that confidence intervals contain true means with high probability. Suboptimal arms are pulled often only while uncertainty is large enough to mask their gap.</p>
+        <p><span class="statement-title">证明.</span> Take expectation of \(T\mu^*-\sum_tR_t\). Conditional on \(A_t=a\), \(\mathbb E R_t=\mu_a\). Group the resulting \(\mu^*-\mu_a\) terms by arm.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Upper confidence bounds</h3>
+
+    <p>UCB balances empirical mean and uncertainty radius.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For sub-Gaussian rewards, UCB chooses
+\[
+A_t\in\operatorname*{argmax}_a\left\{\hat\mu_a(t)+\sqrt{\frac{2\log t}{N_a(t)}}\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For each suboptimal arm \(a\), UCB pulls arm \(a\) \(O((\log T)/\Delta_a^2)\) times in expectation, yielding regret \(O(\sum_a(\log T)/\Delta_a)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> On the high-probability event that all empirical means stay within their confidence radii, a suboptimal arm can be selected only if its confidence radius is large enough to bridge the gap \(\Delta_a\). This implies \(N_a(t)\lesssim(\log T)/\Delta_a^2\). The failure event contributes only a bounded additional amount by concentration and summability.</p>
+    </div>
+
+    <h3>Thompson sampling</h3>
+
+    <p>Posterior sampling randomizes according to uncertainty about which arm is best.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> Thompson sampling maintains a posterior distribution over arm means, samples a plausible parameter vector from the posterior, and pulls the arm optimal for that sample.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Bandits isolate exploration without transition dynamics, making them a clean statistical core of RL.</p>
+        <p><span class="statement-title">说明.</span> For conjugate Bernoulli-beta bandits, the update is explicit. Regret analysis shows that posterior sampling often matches logarithmic gap-dependent rates under regularity.</p>
+    </div>
+
+    <h3>Lower bounds</h3>
+
+    <p>Logarithmic regret is unavoidable for uniformly good algorithms in parametric bandits.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For many one-parameter reward families, any uniformly efficient algorithm must satisfy asymptotic lower bounds of Lai-Robbins type:
+\[
+\liminf_{T\to\infty}\frac{\mathbb E N_a(T)}{\log T}\ge \frac{1}{\operatorname{KL}(\nu_a,\nu_{a^*})}
+\]
+with the appropriate alternative distribution in the denominator.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If a suboptimal arm is sampled too rarely, the data cannot statistically distinguish the true instance from an alternative in which that arm is optimal. A change-of-measure argument relates the probability of correct behavior under the two instances to the accumulated KL information, forcing at least logarithmically many samples.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/exploration-and-regret/" next_label="下一页" next_url="/notes/reinforcement-learning/off-policy-evaluation/" %}

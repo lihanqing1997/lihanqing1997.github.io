@@ -9,26 +9,53 @@ breadcrumb_child_label_zh: "10. Q 学习"
     <h2><a href="{{ '/notes/reinforcement-learning/q-learning/' | relative_url }}">10. Q-learning</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/temporal-difference-learning/" next_label="Next page" next_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" %}
 
-    <p>Q-learning records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Q-learning is an off-policy stochastic approximation method for the optimal action-value function. It learns greedy control values without following the greedy policy during data collection.</p>
 
-    <h3>Definition</h3>
+    <h3>Tabular update</h3>
+
+    <p>The update samples the Bellman optimality operator for action values.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Q-learning is an off-policy temporal-difference method for estimating the optimal action-value function.</p>
+        <p><span class="statement-title">Definition.</span> For a transition \((S_t,A_t,R_{t+1},S_{t+1})\), tabular Q-learning updates
+\[
+Q_{t+1}(S_t,A_t)=Q_t(S_t,A_t)+\alpha_t\{R_{t+1}+\gamma\max_aQ_t(S_{t+1},a)-Q_t(S_t,A_t)\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In finite discounted MDPs, tabular Q-learning converges to \(Q^*\) under sufficient exploration and Robbins-Monro step-size conditions.</p>
+        <p><span class="statement-title">Proposition.</span> Conditionally on \((S_t,A_t)=(s,a)\), the expected update target equals \((T_*^QQ_t)(s,a)\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The update is stochastic approximation to the optimal Bellman fixed point for \(Q\). Visiting all state-action pairs infinitely often and contraction of the Bellman optimality operator drive convergence.</p>
+        <p><span class="statement-title">Proof.</span> Condition on \((s,a)\). The reward and next-state expectation of \(R_{t+1}+\gamma\max_{a'}Q_t(S_{t+1},a')\) is \(r(s,a)+\gamma\int\max_{a'}Q_t(s',a')P(\mathrm{d}s'\mid s,a)\), which is the optimal \(Q\)-Bellman operator.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Convergence in the tabular case</h3>
+
+    <p>The classical convergence theorem requires enough exploration and diminishing stepsizes.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> In a finite discounted MDP, if every state-action pair is visited infinitely often, rewards have bounded variance, and the stepsizes for each pair satisfy Robbins-Monro conditions, tabular Q-learning converges to \(q_*\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The update is asynchronous stochastic approximation to the contraction \(T_*^Q\). The conditional noise is a martingale difference, the stepsizes remove persistent noise, and infinite visits ensure every coordinate is updated. Standard asynchronous stochastic approximation for contractions gives almost-sure convergence to the unique fixed point \(q_*\).</p>
+    </div>
+
+    <h3>Off-policy nature</h3>
+
+    <p>The behavior policy generates data; the target policy is greedy with respect to \(Q\).</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Q-learning separates behavior from target optimality in the tabular case; function approximation makes this separation much more delicate.</p>
+        <p><span class="statement-title">Remark.</span> Q-learning can learn the greedy optimal value while taking exploratory actions, because the backup uses \(\max_aQ(S_{t+1},a)\) rather than averaging over the behavior policy's next action.</p>
+    </div>
+
+    <h3>Function approximation warning</h3>
+
+    <p>The convergence guarantee is tabular; nonlinear approximation changes the problem.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> With function approximation, bootstrapping, and off-policy data, the update may diverge. Stabilizing devices such as target networks and replay buffers are algorithmic remedies, not replacements for the tabular contraction proof.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/temporal-difference-learning/" next_label="Next page" next_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" %}
@@ -38,26 +65,53 @@ breadcrumb_child_label_zh: "10. Q 学习"
     <h2><a href="{{ '/notes/reinforcement-learning/q-learning/' | relative_url }}">10. Q-apprentissage</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/temporal-difference-learning/" next_label="Page suivante" next_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Q-apprentissage.</p>
+    <p>Q-learning is an off-policy stochastic approximation method for the optimal action-value function. It learns greedy control values without following the greedy policy during data collection.</p>
 
-    <h3>Définition</h3>
+    <h3>Tabular update</h3>
+
+    <p>The update samples the Bellman optimality operator for action values.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Q-learning is an off-policy temporal-difference method for estimating the optimal action-value function.</p>
+        <p><span class="statement-title">Définition.</span> For a transition \((S_t,A_t,R_{t+1},S_{t+1})\), tabular Q-learning updates
+\[
+Q_{t+1}(S_t,A_t)=Q_t(S_t,A_t)+\alpha_t\{R_{t+1}+\gamma\max_aQ_t(S_{t+1},a)-Q_t(S_t,A_t)\}.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In finite discounted MDPs, tabular Q-learning converges to \(Q^*\) under sufficient exploration and Robbins-Monro step-size conditions.</p>
+        <p><span class="statement-title">Proposition.</span> Conditionally on \((S_t,A_t)=(s,a)\), the expected update target equals \((T_*^QQ_t)(s,a)\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The update is stochastic approximation to the optimal Bellman fixed point for \(Q\). Visiting all state-action pairs infinitely often and contraction of the Bellman optimality operator drive convergence.</p>
+        <p><span class="statement-title">Preuve.</span> Condition on \((s,a)\). The reward and next-state expectation of \(R_{t+1}+\gamma\max_{a'}Q_t(S_{t+1},a')\) is \(r(s,a)+\gamma\int\max_{a'}Q_t(s',a')P(\mathrm{d}s'\mid s,a)\), which is the optimal \(Q\)-Bellman operator.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Convergence in the tabular case</h3>
+
+    <p>The classical convergence theorem requires enough exploration and diminishing stepsizes.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> In a finite discounted MDP, if every state-action pair is visited infinitely often, rewards have bounded variance, and the stepsizes for each pair satisfy Robbins-Monro conditions, tabular Q-learning converges to \(q_*\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The update is asynchronous stochastic approximation to the contraction \(T_*^Q\). The conditional noise is a martingale difference, the stepsizes remove persistent noise, and infinite visits ensure every coordinate is updated. Standard asynchronous stochastic approximation for contractions gives almost-sure convergence to the unique fixed point \(q_*\).</p>
+    </div>
+
+    <h3>Off-policy nature</h3>
+
+    <p>The behavior policy generates data; the target policy is greedy with respect to \(Q\).</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Q-learning separates behavior from target optimality in the tabular case; function approximation makes this separation much more delicate.</p>
+        <p><span class="statement-title">Remarque.</span> Q-learning can learn the greedy optimal value while taking exploratory actions, because the backup uses \(\max_aQ(S_{t+1},a)\) rather than averaging over the behavior policy's next action.</p>
+    </div>
+
+    <h3>Function approximation warning</h3>
+
+    <p>The convergence guarantee is tabular; nonlinear approximation changes the problem.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> With function approximation, bootstrapping, and off-policy data, the update may diverge. Stabilizing devices such as target networks and replay buffers are algorithmic remedies, not replacements for the tabular contraction proof.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/temporal-difference-learning/" next_label="Page suivante" next_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" %}
@@ -67,26 +121,53 @@ breadcrumb_child_label_zh: "10. Q 学习"
     <h2><a href="{{ '/notes/reinforcement-learning/q-learning/' | relative_url }}">10. Q 学习</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/temporal-difference-learning/" next_label="下一页" next_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" %}
 
-    <p>本页整理关于“Q 学习”的主要定义、命题、定理与证明思路。</p>
+    <p>Q-learning is an off-policy stochastic approximation method for the optimal action-value function. It learns greedy control values without following the greedy policy during data collection.</p>
 
-    <h3>定义</h3>
+    <h3>Tabular update</h3>
+
+    <p>The update samples the Bellman optimality operator for action values.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Q 学习 is an off-policy 时序差分 method for estimating the optimal action-value function.</p>
+        <p><span class="statement-title">定义.</span> For a transition \((S_t,A_t,R_{t+1},S_{t+1})\), tabular Q-learning updates
+\[
+Q_{t+1}(S_t,A_t)=Q_t(S_t,A_t)+\alpha_t\{R_{t+1}+\gamma\max_aQ_t(S_{t+1},a)-Q_t(S_t,A_t)\}.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> In finite discounted MDPs, tabular Q 学习 converges to \(Q^*\) under sufficient exploration and Robbins-Monro step-size conditions.</p>
+        <p><span class="statement-title">命题.</span> Conditionally on \((S_t,A_t)=(s,a)\), the expected update target equals \((T_*^QQ_t)(s,a)\).</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The update is 随机 approximation to the optimal 贝尔曼 fixed point for \(Q\). Visiting all state-action pairs infinitely often and contraction of the 贝尔曼 optimality operator drive convergence.</p>
+        <p><span class="statement-title">证明.</span> Condition on \((s,a)\). The reward and next-state expectation of \(R_{t+1}+\gamma\max_{a'}Q_t(S_{t+1},a')\) is \(r(s,a)+\gamma\int\max_{a'}Q_t(s',a')P(\mathrm{d}s'\mid s,a)\), which is the optimal \(Q\)-Bellman operator.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Convergence in the tabular case</h3>
+
+    <p>The classical convergence theorem requires enough exploration and diminishing stepsizes.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> In a finite discounted MDP, if every state-action pair is visited infinitely often, rewards have bounded variance, and the stepsizes for each pair satisfy Robbins-Monro conditions, tabular Q-learning converges to \(q_*\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The update is asynchronous stochastic approximation to the contraction \(T_*^Q\). The conditional noise is a martingale difference, the stepsizes remove persistent noise, and infinite visits ensure every coordinate is updated. Standard asynchronous stochastic approximation for contractions gives almost-sure convergence to the unique fixed point \(q_*\).</p>
+    </div>
+
+    <h3>Off-policy nature</h3>
+
+    <p>The behavior policy generates data; the target policy is greedy with respect to \(Q\).</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Q 学习 separates behavior from target optimality in the tabular case; function approximation makes this separation much more delicate.</p>
+        <p><span class="statement-title">说明.</span> Q-learning can learn the greedy optimal value while taking exploratory actions, because the backup uses \(\max_aQ(S_{t+1},a)\) rather than averaging over the behavior policy's next action.</p>
+    </div>
+
+    <h3>Function approximation warning</h3>
+
+    <p>The convergence guarantee is tabular; nonlinear approximation changes the problem.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> With function approximation, bootstrapping, and off-policy data, the update may diverge. Stabilizing devices such as target networks and replay buffers are algorithmic remedies, not replacements for the tabular contraction proof.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/temporal-difference-learning/" next_label="下一页" next_url="/notes/reinforcement-learning/eligibility-traces-and-td-lambda/" %}

@@ -9,26 +9,68 @@ breadcrumb_child_label_zh: "20. 熵正则化强化学习"
     <h2><a href="{{ '/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/' | relative_url }}">20. Entropy-regularized reinforcement learning</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/approximate-dynamic-programming/" next_label="Next page" next_url="/notes/reinforcement-learning/partially-observable-problems/" %}
 
-    <p>Entropy-regularized reinforcement learning records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Entropy regularization changes hard maximization into soft maximization. It encourages exploration, smooths policy improvement, and connects reinforcement learning with convex duality.</p>
 
-    <h3>Definition</h3>
+    <h3>Regularized objective</h3>
+
+    <p>The policy is rewarded for both external reward and entropy.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Entropy-regularized RL adds an entropy bonus to reward, encouraging stochastic policies and smoothing the Bellman optimality operator.</p>
+        <p><span class="statement-title">Definition.</span> For temperature \(\alpha>0\), the entropy-regularized return includes
+\[
+\sum_{t\ge0}\gamma^t\{R_{t+1}+\alpha H(\pi(\cdot\mid S_t))\},
+\]
+where \(H(\pi(\cdot\mid s))=-\int\pi(\mathrm{d}a\mid s)\log\pi(a\mid s)\) in the discrete or density case.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The entropy-regularized optimal policy has a softmax form, and the optimal value satisfies a soft Bellman equation using log-sum-exp instead of max.</p>
-    </div>
-
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Optimize the regularized one-step objective over action distributions. Convex duality between negative entropy and log-sum-exp gives the softmax and soft value expression.</p>
-    </div>
-
-    <h3>Remark</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Entropy regularization links RL to convex duality, control-as-inference, and linearly solvable control.</p>
+        <p><span class="statement-title">Remark.</span> Larger \(\alpha\) favors more random policies; as \(\alpha\downarrow0\), the ordinary control objective is recovered.</p>
+    </div>
+
+    <h3>Soft Bellman operator</h3>
+
+    <p>The maximum is replaced by log-sum-exp or its continuous analogue.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For finite actions, the soft optimality operator is
+\[
+(T_\alpha v)(s)=\alpha\log\sum_a\exp\left(\frac{r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)v(s')}{\alpha}\right).
+\]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The soft Bellman operator is a \(\gamma\)-contraction in sup norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The log-sum-exp map is 1-Lipschitz with respect to the sup norm: shifting all action scores by at most \(\varepsilon\) shifts the log-sum-exp by at most \(\varepsilon\). The only dependence on \(v\) is through \(\gamma Pv\), whose sup-norm change is at most \(\gamma\|u-v\|_\infty\).</p>
+    </div>
+
+    <h3>Soft greedy policy</h3>
+
+    <p>The soft maximizer is a Gibbs distribution over action values.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For action scores \(q(s,a)\), the solution of
+\[
+\max_{\pi(\cdot\mid s)}\left\{\sum_a\pi(a\mid s)q(s,a)+\alpha H(\pi(\cdot\mid s))\right\}
+\]
+is
+\[
+\pi_\alpha(a\mid s)=\frac{\exp(q(s,a)/\alpha)}{\sum_b\exp(q(s,b)/\alpha)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use a Lagrange multiplier for the constraint \(\sum_a\pi(a\mid s)=1\). The first-order condition is \(q(s,a)-\alpha(1+\log\pi(a\mid s))-\lambda=0\), hence \(\pi(a\mid s)\propto e^{q(s,a)/\alpha}\).</p>
+    </div>
+
+    <h3>KL control</h3>
+
+    <p>Entropy regularization is equivalent to KL regularization relative to a reference policy in many formulations.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Replacing entropy by \(-\operatorname{KL}(\pi(\cdot\mid s)\|\rho(\cdot\mid s))\) gives soft policies tilted from the reference \(\rho\). This is the form used in trust-region and mirror-descent views of policy optimization.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/approximate-dynamic-programming/" next_label="Next page" next_url="/notes/reinforcement-learning/partially-observable-problems/" %}
@@ -38,26 +80,68 @@ breadcrumb_child_label_zh: "20. 熵正则化强化学习"
     <h2><a href="{{ '/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/' | relative_url }}">20. Apprentissage par renforcement régularisé par entropie</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/approximate-dynamic-programming/" next_label="Page suivante" next_url="/notes/reinforcement-learning/partially-observable-problems/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Apprentissage par renforcement régularisé par entropie.</p>
+    <p>Entropy regularization changes hard maximization into soft maximization. It encourages exploration, smooths policy improvement, and connects reinforcement learning with convex duality.</p>
 
-    <h3>Définition</h3>
+    <h3>Regularized objective</h3>
+
+    <p>The policy is rewarded for both external reward and entropy.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Entropy-regularized RL adds an entropy bonus to reward, encouraging stochastic policies and smoothing the Bellman optimality operator.</p>
+        <p><span class="statement-title">Définition.</span> For temperature \(\alpha>0\), the entropy-regularized return includes
+\[
+\sum_{t\ge0}\gamma^t\{R_{t+1}+\alpha H(\pi(\cdot\mid S_t))\},
+\]
+where \(H(\pi(\cdot\mid s))=-\int\pi(\mathrm{d}a\mid s)\log\pi(a\mid s)\) in the discrete or density case.</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The entropy-regularized optimal policy has a softmax form, and the optimal value satisfies a soft Bellman equation using log-sum-exp instead of max.</p>
-    </div>
-
-    <h3>Preuve</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Optimize the regularized one-step objective over action distributions. Convex duality between negative entropy and log-sum-exp gives the softmax and soft value expression.</p>
-    </div>
-
-    <h3>Remarque</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Entropy regularization links RL to convex duality, control-as-inference, and linearly solvable control.</p>
+        <p><span class="statement-title">Remarque.</span> Larger \(\alpha\) favors more random policies; as \(\alpha\downarrow0\), the ordinary control objective is recovered.</p>
+    </div>
+
+    <h3>Soft Bellman operator</h3>
+
+    <p>The maximum is replaced by log-sum-exp or its continuous analogue.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For finite actions, the soft optimality operator is
+\[
+(T_\alpha v)(s)=\alpha\log\sum_a\exp\left(\frac{r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)v(s')}{\alpha}\right).
+\]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The soft Bellman operator is a \(\gamma\)-contraction in sup norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The log-sum-exp map is 1-Lipschitz with respect to the sup norm: shifting all action scores by at most \(\varepsilon\) shifts the log-sum-exp by at most \(\varepsilon\). The only dependence on \(v\) is through \(\gamma Pv\), whose sup-norm change is at most \(\gamma\|u-v\|_\infty\).</p>
+    </div>
+
+    <h3>Soft greedy policy</h3>
+
+    <p>The soft maximizer is a Gibbs distribution over action values.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For action scores \(q(s,a)\), the solution of
+\[
+\max_{\pi(\cdot\mid s)}\left\{\sum_a\pi(a\mid s)q(s,a)+\alpha H(\pi(\cdot\mid s))\right\}
+\]
+is
+\[
+\pi_\alpha(a\mid s)=\frac{\exp(q(s,a)/\alpha)}{\sum_b\exp(q(s,b)/\alpha)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use a Lagrange multiplier for the constraint \(\sum_a\pi(a\mid s)=1\). The first-order condition is \(q(s,a)-\alpha(1+\log\pi(a\mid s))-\lambda=0\), hence \(\pi(a\mid s)\propto e^{q(s,a)/\alpha}\).</p>
+    </div>
+
+    <h3>KL control</h3>
+
+    <p>Entropy regularization is equivalent to KL regularization relative to a reference policy in many formulations.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Replacing entropy by \(-\operatorname{KL}(\pi(\cdot\mid s)\|\rho(\cdot\mid s))\) gives soft policies tilted from the reference \(\rho\). This is the form used in trust-region and mirror-descent views of policy optimization.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/approximate-dynamic-programming/" next_label="Page suivante" next_url="/notes/reinforcement-learning/partially-observable-problems/" %}
@@ -67,26 +151,68 @@ breadcrumb_child_label_zh: "20. 熵正则化强化学习"
     <h2><a href="{{ '/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/' | relative_url }}">20. 熵正则化强化学习</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/approximate-dynamic-programming/" next_label="下一页" next_url="/notes/reinforcement-learning/partially-observable-problems/" %}
 
-    <p>本页整理关于“熵正则化强化学习”的主要定义、命题、定理与证明思路。</p>
+    <p>Entropy regularization changes hard maximization into soft maximization. It encourages exploration, smooths policy improvement, and connects reinforcement learning with convex duality.</p>
 
-    <h3>定义</h3>
+    <h3>Regularized objective</h3>
+
+    <p>The policy is rewarded for both external reward and entropy.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 熵-regularized RL adds an 熵 bonus to reward, encouraging 随机 policies and smoothing the 贝尔曼 optimality operator.</p>
+        <p><span class="statement-title">定义.</span> For temperature \(\alpha>0\), the entropy-regularized return includes
+\[
+\sum_{t\ge0}\gamma^t\{R_{t+1}+\alpha H(\pi(\cdot\mid S_t))\},
+\]
+where \(H(\pi(\cdot\mid s))=-\int\pi(\mathrm{d}a\mid s)\log\pi(a\mid s)\) in the discrete or density case.</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The 熵-regularized optimal policy has a softmax form, and the optimal value satisfies a soft 贝尔曼 equation using log-sum-exp instead of max.</p>
-    </div>
-
-    <h3>证明</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Optimize the regularized 一步 objective over action distributions. 凸对偶性 between negative 熵 and log-sum-exp gives the softmax and soft value expression.</p>
-    </div>
-
-    <h3>说明</h3>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 熵 regularization links RL to 凸对偶性, control-as-inference, and linearly solvable control.</p>
+        <p><span class="statement-title">说明.</span> Larger \(\alpha\) favors more random policies; as \(\alpha\downarrow0\), the ordinary control objective is recovered.</p>
+    </div>
+
+    <h3>Soft Bellman operator</h3>
+
+    <p>The maximum is replaced by log-sum-exp or its continuous analogue.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For finite actions, the soft optimality operator is
+\[
+(T_\alpha v)(s)=\alpha\log\sum_a\exp\left(\frac{r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)v(s')}{\alpha}\right).
+\]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The soft Bellman operator is a \(\gamma\)-contraction in sup norm.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The log-sum-exp map is 1-Lipschitz with respect to the sup norm: shifting all action scores by at most \(\varepsilon\) shifts the log-sum-exp by at most \(\varepsilon\). The only dependence on \(v\) is through \(\gamma Pv\), whose sup-norm change is at most \(\gamma\|u-v\|_\infty\).</p>
+    </div>
+
+    <h3>Soft greedy policy</h3>
+
+    <p>The soft maximizer is a Gibbs distribution over action values.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For action scores \(q(s,a)\), the solution of
+\[
+\max_{\pi(\cdot\mid s)}\left\{\sum_a\pi(a\mid s)q(s,a)+\alpha H(\pi(\cdot\mid s))\right\}
+\]
+is
+\[
+\pi_\alpha(a\mid s)=\frac{\exp(q(s,a)/\alpha)}{\sum_b\exp(q(s,b)/\alpha)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use a Lagrange multiplier for the constraint \(\sum_a\pi(a\mid s)=1\). The first-order condition is \(q(s,a)-\alpha(1+\log\pi(a\mid s))-\lambda=0\), hence \(\pi(a\mid s)\propto e^{q(s,a)/\alpha}\).</p>
+    </div>
+
+    <h3>KL control</h3>
+
+    <p>Entropy regularization is equivalent to KL regularization relative to a reference policy in many formulations.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Replacing entropy by \(-\operatorname{KL}(\pi(\cdot\mid s)\|\rho(\cdot\mid s))\) gives soft policies tilted from the reference \(\rho\). This is the form used in trust-region and mirror-descent views of policy optimization.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/approximate-dynamic-programming/" next_label="下一页" next_url="/notes/reinforcement-learning/partially-observable-problems/" %}

@@ -9,27 +9,61 @@ breadcrumb_child_label_zh: "13. 基线与方差缩减"
     <h2><a href="{{ '/notes/reinforcement-learning/baselines-and-variance-reduction/' | relative_url }}">13. Baselines and variance reduction</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/policy-gradient-theorem/" next_label="Next page" next_url="/notes/reinforcement-learning/actor-critic-methods/" %}
 
-    <p>Baselines and variance reduction records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Policy-gradient estimators can have high variance. Baselines reduce variance without changing the mean when they do not depend on the sampled action in a way that breaks the score identity.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A baseline is a quantity subtracted from the return or action value in policy-gradient estimation without changing the expected gradient.</p>
+    <h3>Unbiased baselines</h3>
+
+    <p>The baseline principle is an immediate consequence of policy normalization.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For any state-dependent baseline \(b(S_t)\),
+\[
+\mathbb E_{\pi_\theta}\left[\nabla\log\pi_\theta(A_t\mid S_t)b(S_t)\mid S_t\right]=0.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Any state-dependent baseline \(b(S)\) independent of the sampled action has zero contribution: \(E[\nabla\log\pi(A\mid S)b(S)\mid S]=0\).</p>
-    </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on the state and pull out \(b(S)\). The remaining expectation is the gradient of \(
-\sum_a\pi(a\mid S)\), which is the gradient of one.</p>
+        <p><span class="statement-title">Proof.</span> Condition on \(S_t=s\). Then
+\[
+\int \nabla\log\pi_\theta(a\mid s)b(s)\pi_\theta(\mathrm{d}a\mid s)
+=b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)
+=b(s)\nabla1=0.
+\]</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Optimal scalar baseline</h3>
+
+    <p>For a single score vector, the variance-minimizing constant baseline has a weighted least-squares form.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For an estimator \(g=(G-b)Z\), where \(Z=\nabla\log\pi_\theta(A\mid S)\), the constant \(b\) minimizing \(\mathbb E\|g\|_2^2\) is
+\[
+b^*=\frac{\mathbb E(G\|Z\|_2^2)}{\mathbb E\|Z\|_2^2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Expand \(\mathbb E\|(G-b)Z\|^2=\mathbb E\{(G-b)^2\|Z\|^2\}\) as a quadratic function of \(b\). Differentiating and setting the derivative equal to zero gives the displayed ratio.</p>
+    </div>
+
+    <h3>Reward-to-go</h3>
+
+    <p>Removing past rewards from a score term lowers variance and keeps unbiasedness.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In the likelihood-ratio gradient, the score at time \(t\) may be multiplied only by future return \(\sum_{k\ge t}\gamma^kR_{k+1}\); past reward terms have zero expectation with that score.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Past rewards are measurable with respect to the history before \(A_t\). Conditional on that history and \(S_t\), the score has mean zero by policy normalization. Therefore products with past rewards integrate to zero.</p>
+    </div>
+
+    <h3>Control variates</h3>
+
+    <p>Baselines are a special case of control variates.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Baselines do not change the target gradient, but they can dramatically change estimator variance.</p>
+        <p><span class="statement-title">Remark.</span> A critic, generalized advantage estimation, and learned value baselines all try to approximate the conditional expectation structure that removes avoidable return noise while preserving the policy-gradient mean.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/policy-gradient-theorem/" next_label="Next page" next_url="/notes/reinforcement-learning/actor-critic-methods/" %}
@@ -39,27 +73,61 @@ breadcrumb_child_label_zh: "13. 基线与方差缩减"
     <h2><a href="{{ '/notes/reinforcement-learning/baselines-and-variance-reduction/' | relative_url }}">13. Références et réduction de variance</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/policy-gradient-theorem/" next_label="Page suivante" next_url="/notes/reinforcement-learning/actor-critic-methods/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Références et réduction de variance.</p>
+    <p>Policy-gradient estimators can have high variance. Baselines reduce variance without changing the mean when they do not depend on the sampled action in a way that breaks the score identity.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A baseline is a quantity subtracted from the return or action value in policy-gradient estimation without changing the expected gradient.</p>
+    <h3>Unbiased baselines</h3>
+
+    <p>The baseline principle is an immediate consequence of policy normalization.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For any state-dependent baseline \(b(S_t)\),
+\[
+\mathbb E_{\pi_\theta}\left[\nabla\log\pi_\theta(A_t\mid S_t)b(S_t)\mid S_t\right]=0.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Any state-dependent baseline \(b(S)\) independent of the sampled action has zero contribution: \(E[\nabla\log\pi(A\mid S)b(S)\mid S]=0\).</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Condition on the state and pull out \(b(S)\). The remaining expectation is the gradient of \(
-\sum_a\pi(a\mid S)\), which is the gradient of one.</p>
+        <p><span class="statement-title">Preuve.</span> Condition on \(S_t=s\). Then
+\[
+\int \nabla\log\pi_\theta(a\mid s)b(s)\pi_\theta(\mathrm{d}a\mid s)
+=b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)
+=b(s)\nabla1=0.
+\]</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Optimal scalar baseline</h3>
+
+    <p>For a single score vector, the variance-minimizing constant baseline has a weighted least-squares form.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For an estimator \(g=(G-b)Z\), where \(Z=\nabla\log\pi_\theta(A\mid S)\), the constant \(b\) minimizing \(\mathbb E\|g\|_2^2\) is
+\[
+b^*=\frac{\mathbb E(G\|Z\|_2^2)}{\mathbb E\|Z\|_2^2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Expand \(\mathbb E\|(G-b)Z\|^2=\mathbb E\{(G-b)^2\|Z\|^2\}\) as a quadratic function of \(b\). Differentiating and setting the derivative equal to zero gives the displayed ratio.</p>
+    </div>
+
+    <h3>Reward-to-go</h3>
+
+    <p>Removing past rewards from a score term lowers variance and keeps unbiasedness.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> In the likelihood-ratio gradient, the score at time \(t\) may be multiplied only by future return \(\sum_{k\ge t}\gamma^kR_{k+1}\); past reward terms have zero expectation with that score.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Past rewards are measurable with respect to the history before \(A_t\). Conditional on that history and \(S_t\), the score has mean zero by policy normalization. Therefore products with past rewards integrate to zero.</p>
+    </div>
+
+    <h3>Control variates</h3>
+
+    <p>Baselines are a special case of control variates.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Baselines do not change the target gradient, but they can dramatically change estimator variance.</p>
+        <p><span class="statement-title">Remarque.</span> A critic, generalized advantage estimation, and learned value baselines all try to approximate the conditional expectation structure that removes avoidable return noise while preserving the policy-gradient mean.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/policy-gradient-theorem/" next_label="Page suivante" next_url="/notes/reinforcement-learning/actor-critic-methods/" %}
@@ -69,27 +137,61 @@ breadcrumb_child_label_zh: "13. 基线与方差缩减"
     <h2><a href="{{ '/notes/reinforcement-learning/baselines-and-variance-reduction/' | relative_url }}">13. 基线与方差缩减</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/policy-gradient-theorem/" next_label="下一页" next_url="/notes/reinforcement-learning/actor-critic-methods/" %}
 
-    <p>本页整理关于“基线与方差缩减”的主要定义、命题、定理与证明思路。</p>
+    <p>Policy-gradient estimators can have high variance. Baselines reduce variance without changing the mean when they do not depend on the sampled action in a way that breaks the score identity.</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A baseline is a quantity subtracted from the return or action value in policy-gradient estimation without changing the expected gradient.</p>
+    <h3>Unbiased baselines</h3>
+
+    <p>The baseline principle is an immediate consequence of policy normalization.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For any state-dependent baseline \(b(S_t)\),
+\[
+\mathbb E_{\pi_\theta}\left[\nabla\log\pi_\theta(A_t\mid S_t)b(S_t)\mid S_t\right]=0.
+\]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Any state-dependent baseline \(b(S)\) 独立 of the sampled action has zero contribution: \(E[\nabla\log\pi(A\mid S)b(S)\mid S]=0\).</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Condition on the state and pull out \(b(S)\). The remaining expectation is the gradient of \(
-\sum_a\pi(a\mid S)\), which is the gradient of one.</p>
+        <p><span class="statement-title">证明.</span> Condition on \(S_t=s\). Then
+\[
+\int \nabla\log\pi_\theta(a\mid s)b(s)\pi_\theta(\mathrm{d}a\mid s)
+=b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)
+=b(s)\nabla1=0.
+\]</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Optimal scalar baseline</h3>
+
+    <p>For a single score vector, the variance-minimizing constant baseline has a weighted least-squares form.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For an estimator \(g=(G-b)Z\), where \(Z=\nabla\log\pi_\theta(A\mid S)\), the constant \(b\) minimizing \(\mathbb E\|g\|_2^2\) is
+\[
+b^*=\frac{\mathbb E(G\|Z\|_2^2)}{\mathbb E\|Z\|_2^2}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Expand \(\mathbb E\|(G-b)Z\|^2=\mathbb E\{(G-b)^2\|Z\|^2\}\) as a quadratic function of \(b\). Differentiating and setting the derivative equal to zero gives the displayed ratio.</p>
+    </div>
+
+    <h3>Reward-to-go</h3>
+
+    <p>Removing past rewards from a score term lowers variance and keeps unbiasedness.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> In the likelihood-ratio gradient, the score at time \(t\) may be multiplied only by future return \(\sum_{k\ge t}\gamma^kR_{k+1}\); past reward terms have zero expectation with that score.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Past rewards are measurable with respect to the history before \(A_t\). Conditional on that history and \(S_t\), the score has mean zero by policy normalization. Therefore products with past rewards integrate to zero.</p>
+    </div>
+
+    <h3>Control variates</h3>
+
+    <p>Baselines are a special case of control variates.</p>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Baselines do not change the target gradient, but they can dramatically change estimator variance.</p>
+        <p><span class="statement-title">说明.</span> A critic, generalized advantage estimation, and learned value baselines all try to approximate the conditional expectation structure that removes avoidable return noise while preserving the policy-gradient mean.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/policy-gradient-theorem/" next_label="下一页" next_url="/notes/reinforcement-learning/actor-critic-methods/" %}

@@ -9,26 +9,72 @@ breadcrumb_child_label_zh: "11. 资格迹与 TD lambda"
     <h2><a href="{{ '/notes/reinforcement-learning/eligibility-traces-and-td-lambda/' | relative_url }}">11. Eligibility traces and TD lambda</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/q-learning/" next_label="Next page" next_url="/notes/reinforcement-learning/policy-gradient-theorem/" %}
 
-    <p>Eligibility traces and TD lambda records the objects, main results, proof mechanisms, and boundary cases needed for the reinforcement learning note.</p>
+    <p>Eligibility traces interpolate between one-step TD and Monte Carlo returns. They assign credit backward through recently visited states or features.</p>
 
-    <h3>Definition</h3>
+    <h3>Lambda returns</h3>
+
+    <p>The \(\lambda\)-return averages \(n\)-step returns geometrically.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Eligibility traces assign credit to recently visited states or features, interpolating between one-step TD and Monte Carlo returns.</p>
+        <p><span class="statement-title">Definition.</span> The \(n\)-step return is
+\[
+G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+\cdots+\gamma^{n-1}R_{t+n}+\gamma^nv(S_{t+n}).
+\]
+The forward-view \(\lambda\)-return is
+\[
+G_t^\lambda=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}G_t^{(n)},\qquad 0\le\lambda<1.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The forward view of \(TD(\lambda)\) uses \(\lambda\)-returns, while the backward view uses recursively updated eligibility traces; under suitable conditions the two views agree.</p>
+        <p><span class="statement-title">Proposition.</span> When \(\lambda=0\), \(G_t^\lambda\) is the one-step TD target. As \(\lambda\uparrow1\), it approaches the Monte Carlo return when the discounted return is finite.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Expand the \(\lambda\)-return as a geometrically weighted sum of \(n\)-step returns and rearrange terms to obtain the trace recursion.</p>
+        <p><span class="statement-title">Proof.</span> At \(\lambda=0\), only \(n=1\) has positive weight. As \(\lambda\uparrow1\), the geometric weighting shifts mass to longer horizons; with bounded discounted returns, Abelian convergence gives the full return limit.</p>
     </div>
 
-    <h3>Remark</h3>
+    <h3>Backward eligibility traces</h3>
+
+    <p>The backward view computes the same credit assignment online.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For tabular TD, the accumulating trace is
+\[
+e_t(s)=\gamma\lambda e_{t-1}(s)+\mathbf 1\{S_t=s\}.
+\]
+The update is
+\[
+v_{t+1}(s)=v_t(s)+\alpha_t\delta_t e_t(s).
+\]</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Eligibility traces control bias-variance and credit assignment across time.</p>
+        <p><span class="statement-title">Remark.</span> The trace marks which previous states are eligible to receive the current TD error. Larger \(\lambda\) makes credit assignment more persistent.</p>
+    </div>
+
+    <h3>Forward-backward equivalence</h3>
+
+    <p>For fixed value estimates within an episode, the forward and backward views agree.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> In the episodic tabular case with offline updates, summing TD errors with eligibility traces gives the same total update as using forward-view \(\lambda\)-returns.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Expand the backward update as a double sum over times and traces:
+\[
+\sum_t\delta_te_t(s)=\sum_{k:S_k=s}\sum_{t\ge k}(\gamma\lambda)^{t-k}\delta_t.
+\]
+The inner discounted sum telescopes into \(G_k^\lambda-v(S_k)\), which is precisely the forward-view error for visit \(k\).</p>
+    </div>
+
+    <h3>Bias-variance continuum</h3>
+
+    <p>The trace parameter tunes between bootstrapping and full returns.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Small \(\lambda\) uses more bootstrapping and often lower variance; large \(\lambda\) uses longer returns and often lower bootstrap bias. The best value depends on mixing, reward noise, and approximation error.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/q-learning/" next_label="Next page" next_url="/notes/reinforcement-learning/policy-gradient-theorem/" %}
@@ -38,26 +84,72 @@ breadcrumb_child_label_zh: "11. 资格迹与 TD lambda"
     <h2><a href="{{ '/notes/reinforcement-learning/eligibility-traces-and-td-lambda/' | relative_url }}">11. Traces d’éligibilité et TD lambda</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/q-learning/" next_label="Page suivante" next_url="/notes/reinforcement-learning/policy-gradient-theorem/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Traces d’éligibilité et TD lambda.</p>
+    <p>Eligibility traces interpolate between one-step TD and Monte Carlo returns. They assign credit backward through recently visited states or features.</p>
 
-    <h3>Définition</h3>
+    <h3>Lambda returns</h3>
+
+    <p>The \(\lambda\)-return averages \(n\)-step returns geometrically.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Eligibility traces assign credit to recently visited states or features, interpolating between one-step TD and Monte Carlo returns.</p>
+        <p><span class="statement-title">Définition.</span> The \(n\)-step return is
+\[
+G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+\cdots+\gamma^{n-1}R_{t+n}+\gamma^nv(S_{t+n}).
+\]
+The forward-view \(\lambda\)-return is
+\[
+G_t^\lambda=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}G_t^{(n)},\qquad 0\le\lambda<1.
+\]</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The forward view of \(TD(\lambda)\) uses \(\lambda\)-returns, while the backward view uses recursively updated eligibility traces; under suitable conditions the two views agree.</p>
+        <p><span class="statement-title">Proposition.</span> When \(\lambda=0\), \(G_t^\lambda\) is the one-step TD target. As \(\lambda\uparrow1\), it approaches the Monte Carlo return when the discounted return is finite.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Expand the \(\lambda\)-return as a geometrically weighted sum of \(n\)-step returns and rearrange terms to obtain the trace recursion.</p>
+        <p><span class="statement-title">Preuve.</span> At \(\lambda=0\), only \(n=1\) has positive weight. As \(\lambda\uparrow1\), the geometric weighting shifts mass to longer horizons; with bounded discounted returns, Abelian convergence gives the full return limit.</p>
     </div>
 
-    <h3>Remarque</h3>
+    <h3>Backward eligibility traces</h3>
+
+    <p>The backward view computes the same credit assignment online.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For tabular TD, the accumulating trace is
+\[
+e_t(s)=\gamma\lambda e_{t-1}(s)+\mathbf 1\{S_t=s\}.
+\]
+The update is
+\[
+v_{t+1}(s)=v_t(s)+\alpha_t\delta_t e_t(s).
+\]</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Eligibility traces control bias-variance and credit assignment across time.</p>
+        <p><span class="statement-title">Remarque.</span> The trace marks which previous states are eligible to receive the current TD error. Larger \(\lambda\) makes credit assignment more persistent.</p>
+    </div>
+
+    <h3>Forward-backward equivalence</h3>
+
+    <p>For fixed value estimates within an episode, the forward and backward views agree.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> In the episodic tabular case with offline updates, summing TD errors with eligibility traces gives the same total update as using forward-view \(\lambda\)-returns.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Expand the backward update as a double sum over times and traces:
+\[
+\sum_t\delta_te_t(s)=\sum_{k:S_k=s}\sum_{t\ge k}(\gamma\lambda)^{t-k}\delta_t.
+\]
+The inner discounted sum telescopes into \(G_k^\lambda-v(S_k)\), which is precisely the forward-view error for visit \(k\).</p>
+    </div>
+
+    <h3>Bias-variance continuum</h3>
+
+    <p>The trace parameter tunes between bootstrapping and full returns.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Small \(\lambda\) uses more bootstrapping and often lower variance; large \(\lambda\) uses longer returns and often lower bootstrap bias. The best value depends on mixing, reward noise, and approximation error.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/q-learning/" next_label="Page suivante" next_url="/notes/reinforcement-learning/policy-gradient-theorem/" %}
@@ -67,26 +159,72 @@ breadcrumb_child_label_zh: "11. 资格迹与 TD lambda"
     <h2><a href="{{ '/notes/reinforcement-learning/eligibility-traces-and-td-lambda/' | relative_url }}">11. 资格迹与 TD lambda</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/q-learning/" next_label="下一页" next_url="/notes/reinforcement-learning/policy-gradient-theorem/" %}
 
-    <p>本页整理关于“资格迹与 TD lambda”的主要定义、命题、定理与证明思路。</p>
+    <p>Eligibility traces interpolate between one-step TD and Monte Carlo returns. They assign credit backward through recently visited states or features.</p>
 
-    <h3>定义</h3>
+    <h3>Lambda returns</h3>
+
+    <p>The \(\lambda\)-return averages \(n\)-step returns geometrically.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> 资格迹 assign credit to recently visited states or features, interpolating between 一步 TD and 蒙特卡罗 returns.</p>
+        <p><span class="statement-title">定义.</span> The \(n\)-step return is
+\[
+G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+\cdots+\gamma^{n-1}R_{t+n}+\gamma^nv(S_{t+n}).
+\]
+The forward-view \(\lambda\)-return is
+\[
+G_t^\lambda=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}G_t^{(n)},\qquad 0\le\lambda<1.
+\]</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The forward view of \(TD(\lambda)\) uses \(\lambda\)-returns, while the backward view uses recursively updated 资格迹; under suitable conditions the two views agree.</p>
+        <p><span class="statement-title">命题.</span> When \(\lambda=0\), \(G_t^\lambda\) is the one-step TD target. As \(\lambda\uparrow1\), it approaches the Monte Carlo return when the discounted return is finite.</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Expand the \(\lambda\)-return as a geometrically weighted sum of \(n\)-step returns and rearrange terms to obtain the trace recursion.</p>
+        <p><span class="statement-title">证明.</span> At \(\lambda=0\), only \(n=1\) has positive weight. As \(\lambda\uparrow1\), the geometric weighting shifts mass to longer horizons; with bounded discounted returns, Abelian convergence gives the full return limit.</p>
     </div>
 
-    <h3>说明</h3>
+    <h3>Backward eligibility traces</h3>
+
+    <p>The backward view computes the same credit assignment online.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For tabular TD, the accumulating trace is
+\[
+e_t(s)=\gamma\lambda e_{t-1}(s)+\mathbf 1\{S_t=s\}.
+\]
+The update is
+\[
+v_{t+1}(s)=v_t(s)+\alpha_t\delta_t e_t(s).
+\]</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 资格迹 control bias-variance and credit assignment across time.</p>
+        <p><span class="statement-title">说明.</span> The trace marks which previous states are eligible to receive the current TD error. Larger \(\lambda\) makes credit assignment more persistent.</p>
+    </div>
+
+    <h3>Forward-backward equivalence</h3>
+
+    <p>For fixed value estimates within an episode, the forward and backward views agree.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> In the episodic tabular case with offline updates, summing TD errors with eligibility traces gives the same total update as using forward-view \(\lambda\)-returns.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Expand the backward update as a double sum over times and traces:
+\[
+\sum_t\delta_te_t(s)=\sum_{k:S_k=s}\sum_{t\ge k}(\gamma\lambda)^{t-k}\delta_t.
+\]
+The inner discounted sum telescopes into \(G_k^\lambda-v(S_k)\), which is precisely the forward-view error for visit \(k\).</p>
+    </div>
+
+    <h3>Bias-variance continuum</h3>
+
+    <p>The trace parameter tunes between bootstrapping and full returns.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Small \(\lambda\) uses more bootstrapping and often lower variance; large \(\lambda\) uses longer returns and often lower bootstrap bias. The best value depends on mixing, reward noise, and approximation error.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/q-learning/" next_label="下一页" next_url="/notes/reinforcement-learning/policy-gradient-theorem/" %}
