@@ -9,30 +9,60 @@ breadcrumb_child_label_zh: "38. 函数的收敛方式"
     <h2><a href="{{ '/notes/real-analysis/modes-of-convergence/' | relative_url }}">38. Modes of convergence for functions</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/differentiation-of-measures-and-density-theorems/" next_label="Next page" next_url="/notes/real-analysis/uniform-integrability-and-vitali-theorem/" %}
 
-    <p>Different convergence modes preserve different operations. Mastering their implication diagram prevents illegal limit interchanges.</p>
-    <h3>Almost-everywhere convergence</h3>
+    <p>Different modes of convergence encode different kinds of control: pointwise, almost everywhere, in measure, in norm, and uniformly. Knowing the implications prevents false limit interchanges.</p>
+
+    <h3>Almost everywhere and in measure</h3>
+    <p>Almost-everywhere convergence is pointwise outside a null set; convergence in measure controls exceptional sets quantitatively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Almost-everywhere convergence means \(f_n(x)\to f(x)\) outside a null set. It is pointwise convergence after ignoring a set invisible to the measure.</p>
+        <p><span class="statement-title">Definition.</span> \(f_n\to f\) almost everywhere if \(\mu(\{x:f_n(x)\not\to f(x)\})=0\). It converges in measure if \(\mu(|f_n-f|>\varepsilon)\to0\) for every \(\varepsilon>0\).</p>
     </div>
 
-    <h3>Almost uniform convergence</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Almost uniform convergence means that outside a set of arbitrarily small measure, the convergence is uniform. It is stronger than convergence in measure and close to a.e. convergence on finite spaces.</p>
-    </div>
-
-    <h3>Egorov theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> On a finite measure space, almost-everywhere convergence implies almost uniform convergence. Finiteness is essential because one must remove a set of small total measure.</p>
+        <p><span class="statement-title">Theorem.</span> On a finite measure space, almost-everywhere convergence implies convergence in measure.</p>
     </div>
 
-    <h3>Convergence in measure and Lp</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For fixed \(\varepsilon\), define \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\). Then \(A_n\downarrow A\), where \(A\) is contained in the null set of nonconvergence. Since \(\mu(X)\lt \infty\), \(\mu(A_n)\downarrow0\), and \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
+    </div>
+
+    <h3>Lp convergence</h3>
+    <p>Norm convergence controls average size of errors.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For \(1\le p\lt \infty\), \(f_n\to f\) in \(L^p\) if \(\int |f_n-f|^p\,\mathrm{d}\mu\to0\). For \(p=\infty\), use essential sup norm.</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> \(L^p\) convergence implies convergence in measure under standard finite-measure or localization assumptions. Convergence in measure has almost-everywhere convergent subsequences.</p>
+        <p><span class="statement-title">Proposition.</span> If \(f_n\to f\) in \(L^p\) for \(1\le p\lt \infty\), then \(f_n\to f\) in measure.</p>
     </div>
 
-    <h3>Implication failures</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Counterexample.</span> Convergence in measure need not imply almost-everywhere convergence of the full sequence. Almost-everywhere convergence need not imply \(L^1\) convergence without domination or uniform integrability.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Markov's inequality gives \(\mu(|f_n-f|>\varepsilon)\le\varepsilon^{-p}\int|f_n-f|^p\,\mathrm{d}\mu\), which tends to zero.</p>
+    </div>
+
+    <h3>Subsequence principle</h3>
+    <p>Convergence in measure is almost-everywhere convergence after subselection.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f_n\to f\) in measure, then some subsequence converges to \(f\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose \(n_k\) with \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of the exceptional measures is finite. By Borel-Cantelli, almost every point belongs to only finitely many exceptional sets, so \(f_{n_k}(x)\to f(x)\) almost everywhere.</p>
+    </div>
+
+    <h3>Uniform convergence</h3>
+    <p>Uniform convergence is stronger than pointwise convergence and preserves continuity.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f_n\to f\) uniformly and each \(f_n\) is continuous on a metric space, then \(f\) is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Fix \(x\) and \(\varepsilon>0\). Choose \(n\) with \(\|f_n-f\|_\infty\lt \varepsilon/3\), then choose a neighborhood of \(x\) on which \(f_n\) varies by less than \(\varepsilon/3\). The triangle inequality gives continuity of \(f\).</p>
+    </div>
+
+    <h3>Implication map</h3>
+    <p>No single mode dominates all others without hypotheses.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> On finite measure spaces, \(L^p\) convergence implies convergence in measure, and almost-everywhere convergence implies convergence in measure. Conversely, convergence in measure gives almost-everywhere convergence only along subsequences. Uniform convergence implies pointwise convergence but is usually much stronger than measure convergence.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/differentiation-of-measures-and-density-theorems/" next_label="Next page" next_url="/notes/real-analysis/uniform-integrability-and-vitali-theorem/" %}
@@ -43,30 +73,60 @@ breadcrumb_child_label_zh: "38. 函数的收敛方式"
     <h2><a href="{{ '/notes/real-analysis/modes-of-convergence/' | relative_url }}">38. Modes de convergence des fonctions</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/differentiation-of-measures-and-density-theorems/" next_label="Page suivante" next_url="/notes/real-analysis/uniform-integrability-and-vitali-theorem/" %}
 
-    <p>Different convergence modes preserve different operations. Mastering their implication diagram prevents illegal limit interchanges.</p>
-    <h3>Almost-everywhere convergence</h3>
+    <p>Different modes of convergence encode different kinds of control: pointwise, almost everywhere, in measure, in norm, and uniformly. Knowing the implications prevents false limit interchanges.</p>
+
+    <h3>Almost everywhere and in measure</h3>
+    <p>Almost-everywhere convergence is pointwise outside a null set; convergence in measure controls exceptional sets quantitatively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Almost-everywhere convergence means \(f_n(x)\to f(x)\) outside a null set. It is pointwise convergence after ignoring a set invisible to the measure.</p>
+        <p><span class="statement-title">Définition.</span> \(f_n\to f\) almost everywhere if \(\mu(\{x:f_n(x)\not\to f(x)\})=0\). It converges in measure if \(\mu(|f_n-f|>\varepsilon)\to0\) for every \(\varepsilon>0\).</p>
     </div>
 
-    <h3>Almost uniform convergence</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Almost uniform convergence means that outside a set of arbitrarily small measure, the convergence is uniform. It is stronger than convergence in measure and close to a.e. convergence on finite spaces.</p>
-    </div>
-
-    <h3>Egorov theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> On a finite measure space, almost-everywhere convergence implies almost uniform convergence. Finiteness is essential because one must remove a set of small total measure.</p>
+        <p><span class="statement-title">Théorème.</span> On a finite measure space, almost-everywhere convergence implies convergence in measure.</p>
     </div>
 
-    <h3>Convergence in measure and Lp</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For fixed \(\varepsilon\), define \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\). Then \(A_n\downarrow A\), where \(A\) is contained in the null set of nonconvergence. Since \(\mu(X)\lt \infty\), \(\mu(A_n)\downarrow0\), and \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
+    </div>
+
+    <h3>Lp convergence</h3>
+    <p>Norm convergence controls average size of errors.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For \(1\le p\lt \infty\), \(f_n\to f\) in \(L^p\) if \(\int |f_n-f|^p\,\mathrm{d}\mu\to0\). For \(p=\infty\), use essential sup norm.</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> \(L^p\) convergence implies convergence in measure under standard finite-measure or localization assumptions. Convergence in measure has almost-everywhere convergent subsequences.</p>
+        <p><span class="statement-title">Proposition.</span> If \(f_n\to f\) in \(L^p\) for \(1\le p\lt \infty\), then \(f_n\to f\) in measure.</p>
     </div>
 
-    <h3>Implication failures</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Contre-exemple.</span> Convergence in measure need not imply almost-everywhere convergence of the full sequence. Almost-everywhere convergence need not imply \(L^1\) convergence without domination or uniform integrability.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Markov's inequality gives \(\mu(|f_n-f|>\varepsilon)\le\varepsilon^{-p}\int|f_n-f|^p\,\mathrm{d}\mu\), which tends to zero.</p>
+    </div>
+
+    <h3>Subsequence principle</h3>
+    <p>Convergence in measure is almost-everywhere convergence after subselection.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f_n\to f\) in measure, then some subsequence converges to \(f\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose \(n_k\) with \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of the exceptional measures is finite. By Borel-Cantelli, almost every point belongs to only finitely many exceptional sets, so \(f_{n_k}(x)\to f(x)\) almost everywhere.</p>
+    </div>
+
+    <h3>Uniform convergence</h3>
+    <p>Uniform convergence is stronger than pointwise convergence and preserves continuity.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f_n\to f\) uniformly and each \(f_n\) is continuous on a metric space, then \(f\) is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Fix \(x\) and \(\varepsilon>0\). Choose \(n\) with \(\|f_n-f\|_\infty\lt \varepsilon/3\), then choose a neighborhood of \(x\) on which \(f_n\) varies by less than \(\varepsilon/3\). The triangle inequality gives continuity of \(f\).</p>
+    </div>
+
+    <h3>Implication map</h3>
+    <p>No single mode dominates all others without hypotheses.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> On finite measure spaces, \(L^p\) convergence implies convergence in measure, and almost-everywhere convergence implies convergence in measure. Conversely, convergence in measure gives almost-everywhere convergence only along subsequences. Uniform convergence implies pointwise convergence but is usually much stronger than measure convergence.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/differentiation-of-measures-and-density-theorems/" next_label="Page suivante" next_url="/notes/real-analysis/uniform-integrability-and-vitali-theorem/" %}
@@ -77,30 +137,60 @@ breadcrumb_child_label_zh: "38. 函数的收敛方式"
     <h2><a href="{{ '/notes/real-analysis/modes-of-convergence/' | relative_url }}">38. 函数的收敛方式</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/differentiation-of-measures-and-density-theorems/" next_label="下一页" next_url="/notes/real-analysis/uniform-integrability-and-vitali-theorem/" %}
 
-    <p>Different convergence modes preserve different operations. Mastering their implication diagram prevents illegal limit interchanges.</p>
-    <h3>Almost-everywhere convergence</h3>
+    <p>Different modes of convergence encode different kinds of control: pointwise, almost everywhere, in measure, in norm, and uniformly. Knowing the implications prevents false limit interchanges.</p>
+
+    <h3>Almost everywhere and in measure</h3>
+    <p>Almost-everywhere convergence is pointwise outside a null set; convergence in measure controls exceptional sets quantitatively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Almost-everywhere convergence means \(f_n(x)\to f(x)\) outside a null set. It is 逐点收敛 after ignoring a set invisible to the 测度.</p>
+        <p><span class="statement-title">定义.</span> \(f_n\to f\) almost everywhere if \(\mu(\{x:f_n(x)\not\to f(x)\})=0\). It converges in measure if \(\mu(|f_n-f|>\varepsilon)\to0\) for every \(\varepsilon>0\).</p>
     </div>
 
-    <h3>Almost 一致收敛</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Almost 一致收敛 means that outside a set of arbitrarily small 测度, the convergence is uniform. It is stronger than 依测度收敛 and close to a.e. convergence on finite spaces.</p>
-    </div>
-
-    <h3>叶戈罗夫定理</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> On a finite 测度 space, almost-everywhere convergence implies almost 一致收敛. Finiteness is essential because one must remove a set of small total 测度.</p>
+        <p><span class="statement-title">定理.</span> On a finite measure space, almost-everywhere convergence implies convergence in measure.</p>
     </div>
 
-    <h3>依测度收敛 and Lp</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For fixed \(\varepsilon\), define \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\). Then \(A_n\downarrow A\), where \(A\) is contained in the null set of nonconvergence. Since \(\mu(X)\lt \infty\), \(\mu(A_n)\downarrow0\), and \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
+    </div>
+
+    <h3>Lp convergence</h3>
+    <p>Norm convergence controls average size of errors.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For \(1\le p\lt \infty\), \(f_n\to f\) in \(L^p\) if \(\int |f_n-f|^p\,\mathrm{d}\mu\to0\). For \(p=\infty\), use essential sup norm.</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> \(L^p\) convergence implies 依测度收敛 under standard finite-测度 or localization assumptions. 依测度收敛 has almost-everywhere convergent subsequences.</p>
+        <p><span class="statement-title">命题.</span> If \(f_n\to f\) in \(L^p\) for \(1\le p\lt \infty\), then \(f_n\to f\) in measure.</p>
     </div>
 
-    <h3>Implication failures</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">反例.</span> 依测度收敛 need not imply almost-everywhere convergence of the full sequence. Almost-everywhere convergence need not imply \(L^1\) convergence without domination or uniform integrability.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Markov's inequality gives \(\mu(|f_n-f|>\varepsilon)\le\varepsilon^{-p}\int|f_n-f|^p\,\mathrm{d}\mu\), which tends to zero.</p>
+    </div>
+
+    <h3>Subsequence principle</h3>
+    <p>Convergence in measure is almost-everywhere convergence after subselection.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f_n\to f\) in measure, then some subsequence converges to \(f\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose \(n_k\) with \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of the exceptional measures is finite. By Borel-Cantelli, almost every point belongs to only finitely many exceptional sets, so \(f_{n_k}(x)\to f(x)\) almost everywhere.</p>
+    </div>
+
+    <h3>Uniform convergence</h3>
+    <p>Uniform convergence is stronger than pointwise convergence and preserves continuity.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(f_n\to f\) uniformly and each \(f_n\) is continuous on a metric space, then \(f\) is continuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Fix \(x\) and \(\varepsilon>0\). Choose \(n\) with \(\|f_n-f\|_\infty\lt \varepsilon/3\), then choose a neighborhood of \(x\) on which \(f_n\) varies by less than \(\varepsilon/3\). The triangle inequality gives continuity of \(f\).</p>
+    </div>
+
+    <h3>Implication map</h3>
+    <p>No single mode dominates all others without hypotheses.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> On finite measure spaces, \(L^p\) convergence implies convergence in measure, and almost-everywhere convergence implies convergence in measure. Conversely, convergence in measure gives almost-everywhere convergence only along subsequences. Uniform convergence implies pointwise convergence but is usually much stronger than measure convergence.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/differentiation-of-measures-and-density-theorems/" next_label="下一页" next_url="/notes/real-analysis/uniform-integrability-and-vitali-theorem/" %}

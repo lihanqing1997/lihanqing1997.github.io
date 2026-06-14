@@ -9,30 +9,64 @@ breadcrumb_child_label_zh: "28. 可测函数与依测度收敛"
     <h2><a href="{{ '/notes/real-analysis/lebesgue-measurable-functions/' | relative_url }}">28. Measurable functions and convergence in measure</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/borel-and-radon-measures/" next_label="Next page" next_url="/notes/real-analysis/lebesgue-integral/" %}
 
-    <p>Measurable functions are those whose level sets are measurable. They are stable under the limiting operations needed for integration and probability.</p>
-    <h3>Measurability</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A map \(f:(X,\mathcal A)\to(Y,\mathcal B)\) is measurable if inverse images of sets in \(\mathcal B\) lie in \(\mathcal A\). For real functions it suffices to check half-lines with rational thresholds.</p>
+    <p>Measurable functions are functions compatible with sigma-algebras. They are the objects that can be integrated, approximated by simple functions, and compared almost everywhere.</p>
+
+    <h3>Measurability criteria</h3>
+    <p>For real-valued functions it is enough to test half-lines.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> A function \(f:X\to\mathbb R\) is measurable if and only if \(\{x:f(x)>a\}\in\mathcal A\) for every \(a\in\mathbb R\). Equivalently one may use \(\{f\le a\}\), \(\{f\lt a\}\), or \(\{f\ge a\}\).</p>
     </div>
 
-    <h3>Closure under limits</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Sums, products, compositions with Borel maps, pointwise suprema, infima, limsup, and liminf of measurable functions are measurable. This stability is why measurable functions form the right class for analysis.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The inverse images of intervals \((a,\infty)\) generate the Borel sigma-algebra on \(\mathbb R\), so measurability implies the condition. Conversely, if inverse images of these generators are measurable, the class of Borel sets with measurable inverse image is a sigma-algebra containing the generators.</p>
     </div>
 
     <h3>Simple approximation</h3>
+    <p>Nonnegative measurable functions are monotone limits of simple functions.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Every nonnegative measurable function is the increasing pointwise limit of nonnegative simple functions. This theorem is the construction engine for the Lebesgue integral.</p>
+        <p><span class="statement-title">Theorem.</span> If \(f\ge0\) is measurable, there exist nonnegative simple functions \(s_n\uparrow f\) pointwise.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Define \(s_n(x)=2^{-n}\lfloor 2^n\min(f(x),n)\rfloor\). Each \(s_n\) takes finitely many values and is measurable because its level sets are described by inverse images of intervals under \(f\). The construction increases to \(f\) pointwise.</p>
     </div>
 
     <h3>Almost-everywhere equality</h3>
+    <p>Measure theory identifies functions that differ only on null sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Functions that agree outside a null set are equal almost everywhere. Integration and \(L^p\) norms identify such functions, since null-set modifications do not change their analytic value.</p>
+        <p><span class="statement-title">Definition.</span> Functions \(f,g\) are equal almost everywhere if \(\mu(\{f\ne g\})=0\). A property holds almost everywhere if it fails only on a null set.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f=g\) almost everywhere and \(f\) is measurable on a complete measure space, then \(g\) is measurable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For every \(a\), the symmetric difference between \(\{g>a\}\) and \(\{f>a\}\) is contained in \(\{f\ne g\}\). Completeness makes the exceptional subset measurable, so \(\{g>a\}\) is measurable.</p>
     </div>
 
     <h3>Convergence in measure</h3>
+    <p>Convergence in measure ignores small exceptional sets whose measure vanishes.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The sequence \(f_n\) converges to \(f\) in measure if \(\mu(|f_n-f|>\varepsilon)\to0\) for every \(\varepsilon>0\). On probability spaces this is convergence in probability.</p>
+        <p><span class="statement-title">Definition.</span> \(f_n\to f\) in measure if for every \(\varepsilon>0\), \(\mu(|f_n-f|>\varepsilon)\to0\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f_n\to f\) almost everywhere and \(\mu(X)\lt \infty\), then \(f_n\to f\) in measure.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For fixed \(\varepsilon>0\), the sets \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\) decrease to a null set by almost-everywhere convergence. Since \(\mu(X)\lt \infty\), continuity from above gives \(\mu(A_n)\to0\). Then \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
+    </div>
+
+    <h3>Subsequence principle</h3>
+    <p>Convergence in measure contains almost-everywhere convergence along subsequences.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f_n\to f\) in measure, then some subsequence converges to \(f\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose \(n_k\) so that \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of these measures is finite, so Borel-Cantelli for measures implies that almost every \(x\) belongs to only finitely many exceptional sets. Hence \(|f_{n_k}(x)-f(x)|\le2^{-k}\) eventually for almost every \(x\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/borel-and-radon-measures/" next_label="Next page" next_url="/notes/real-analysis/lebesgue-integral/" %}
@@ -43,30 +77,64 @@ breadcrumb_child_label_zh: "28. 可测函数与依测度收敛"
     <h2><a href="{{ '/notes/real-analysis/lebesgue-measurable-functions/' | relative_url }}">28. Fonctions mesurables et convergence en mesure</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/borel-and-radon-measures/" next_label="Page suivante" next_url="/notes/real-analysis/lebesgue-integral/" %}
 
-    <p>Measurable functions are those whose level sets are measurable. They are stable under the limiting operations needed for integration and probability.</p>
-    <h3>Measurability</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A map \(f:(X,\mathcal A)\to(Y,\mathcal B)\) is measurable if inverse images of sets in \(\mathcal B\) lie in \(\mathcal A\). For real functions it suffices to check half-lines with rational thresholds.</p>
+    <p>Measurable functions are functions compatible with sigma-algebras. They are the objects that can be integrated, approximated by simple functions, and compared almost everywhere.</p>
+
+    <h3>Measurability criteria</h3>
+    <p>For real-valued functions it is enough to test half-lines.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> A function \(f:X\to\mathbb R\) is measurable if and only if \(\{x:f(x)>a\}\in\mathcal A\) for every \(a\in\mathbb R\). Equivalently one may use \(\{f\le a\}\), \(\{f\lt a\}\), or \(\{f\ge a\}\).</p>
     </div>
 
-    <h3>Closure under limits</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Sums, products, compositions with Borel maps, pointwise suprema, infima, limsup, and liminf of measurable functions are measurable. This stability is why measurable functions form the right class for analysis.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The inverse images of intervals \((a,\infty)\) generate the Borel sigma-algebra on \(\mathbb R\), so measurability implies the condition. Conversely, if inverse images of these generators are measurable, the class of Borel sets with measurable inverse image is a sigma-algebra containing the generators.</p>
     </div>
 
     <h3>Simple approximation</h3>
+    <p>Nonnegative measurable functions are monotone limits of simple functions.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Every nonnegative measurable function is the increasing pointwise limit of nonnegative simple functions. This theorem is the construction engine for the Lebesgue integral.</p>
+        <p><span class="statement-title">Théorème.</span> If \(f\ge0\) is measurable, there exist nonnegative simple functions \(s_n\uparrow f\) pointwise.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Define \(s_n(x)=2^{-n}\lfloor 2^n\min(f(x),n)\rfloor\). Each \(s_n\) takes finitely many values and is measurable because its level sets are described by inverse images of intervals under \(f\). The construction increases to \(f\) pointwise.</p>
     </div>
 
     <h3>Almost-everywhere equality</h3>
+    <p>Measure theory identifies functions that differ only on null sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Functions that agree outside a null set are equal almost everywhere. Integration and \(L^p\) norms identify such functions, since null-set modifications do not change their analytic value.</p>
+        <p><span class="statement-title">Définition.</span> Functions \(f,g\) are equal almost everywhere if \(\mu(\{f\ne g\})=0\). A property holds almost everywhere if it fails only on a null set.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f=g\) almost everywhere and \(f\) is measurable on a complete measure space, then \(g\) is measurable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For every \(a\), the symmetric difference between \(\{g>a\}\) and \(\{f>a\}\) is contained in \(\{f\ne g\}\). Completeness makes the exceptional subset measurable, so \(\{g>a\}\) is measurable.</p>
     </div>
 
     <h3>Convergence in measure</h3>
+    <p>Convergence in measure ignores small exceptional sets whose measure vanishes.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The sequence \(f_n\) converges to \(f\) in measure if \(\mu(|f_n-f|>\varepsilon)\to0\) for every \(\varepsilon>0\). On probability spaces this is convergence in probability.</p>
+        <p><span class="statement-title">Définition.</span> \(f_n\to f\) in measure if for every \(\varepsilon>0\), \(\mu(|f_n-f|>\varepsilon)\to0\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f_n\to f\) almost everywhere and \(\mu(X)\lt \infty\), then \(f_n\to f\) in measure.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For fixed \(\varepsilon>0\), the sets \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\) decrease to a null set by almost-everywhere convergence. Since \(\mu(X)\lt \infty\), continuity from above gives \(\mu(A_n)\to0\). Then \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
+    </div>
+
+    <h3>Subsequence principle</h3>
+    <p>Convergence in measure contains almost-everywhere convergence along subsequences.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f_n\to f\) in measure, then some subsequence converges to \(f\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose \(n_k\) so that \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of these measures is finite, so Borel-Cantelli for measures implies that almost every \(x\) belongs to only finitely many exceptional sets. Hence \(|f_{n_k}(x)-f(x)|\le2^{-k}\) eventually for almost every \(x\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/borel-and-radon-measures/" next_label="Page suivante" next_url="/notes/real-analysis/lebesgue-integral/" %}
@@ -77,30 +145,64 @@ breadcrumb_child_label_zh: "28. 可测函数与依测度收敛"
     <h2><a href="{{ '/notes/real-analysis/lebesgue-measurable-functions/' | relative_url }}">28. 可测函数与依测度收敛</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/borel-and-radon-measures/" next_label="下一页" next_url="/notes/real-analysis/lebesgue-integral/" %}
 
-    <p>可测函数 are those whose level sets are 可测. They are stable under the limiting operations needed for integration and probability.</p>
-    <h3>Measurability</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A map \(f:(X,\mathcal A)\to(Y,\mathcal B)\) is 可测 if inverse images of sets in \(\mathcal B\) 李 in \(\mathcal A\). For real functions it suffices to check half-lines with rational thresholds.</p>
+    <p>Measurable functions are functions compatible with sigma-algebras. They are the objects that can be integrated, approximated by simple functions, and compared almost everywhere.</p>
+
+    <h3>Measurability criteria</h3>
+    <p>For real-valued functions it is enough to test half-lines.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> A function \(f:X\to\mathbb R\) is measurable if and only if \(\{x:f(x)>a\}\in\mathcal A\) for every \(a\in\mathbb R\). Equivalently one may use \(\{f\le a\}\), \(\{f\lt a\}\), or \(\{f\ge a\}\).</p>
     </div>
 
-    <h3>Closure under limits</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Sums, products, compositions with 博雷尔 maps, pointwise suprema, infima, limsup, and liminf of 可测函数 are 可测. This stability is why 可测函数 form the right class for analysis.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The inverse images of intervals \((a,\infty)\) generate the Borel sigma-algebra on \(\mathbb R\), so measurability implies the condition. Conversely, if inverse images of these generators are measurable, the class of Borel sets with measurable inverse image is a sigma-algebra containing the generators.</p>
     </div>
 
     <h3>Simple approximation</h3>
+    <p>Nonnegative measurable functions are monotone limits of simple functions.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Every nonnegative 可测函数 is the increasing pointwise limit of nonnegative simple functions. This 定理 is the construction engine for the 勒贝格积分.</p>
+        <p><span class="statement-title">定理.</span> If \(f\ge0\) is measurable, there exist nonnegative simple functions \(s_n\uparrow f\) pointwise.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Define \(s_n(x)=2^{-n}\lfloor 2^n\min(f(x),n)\rfloor\). Each \(s_n\) takes finitely many values and is measurable because its level sets are described by inverse images of intervals under \(f\). The construction increases to \(f\) pointwise.</p>
     </div>
 
     <h3>Almost-everywhere equality</h3>
+    <p>Measure theory identifies functions that differ only on null sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Functions that agree outside a null set are equal 几乎处处. Integration and \(L^p\) norms identify such functions, since null-set modifications do not change their 解析 value.</p>
+        <p><span class="statement-title">定义.</span> Functions \(f,g\) are equal almost everywhere if \(\mu(\{f\ne g\})=0\). A property holds almost everywhere if it fails only on a null set.</p>
     </div>
 
-    <h3>依测度收敛</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(f=g\) almost everywhere and \(f\) is measurable on a complete measure space, then \(g\) is measurable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For every \(a\), the symmetric difference between \(\{g>a\}\) and \(\{f>a\}\) is contained in \(\{f\ne g\}\). Completeness makes the exceptional subset measurable, so \(\{g>a\}\) is measurable.</p>
+    </div>
+
+    <h3>Convergence in measure</h3>
+    <p>Convergence in measure ignores small exceptional sets whose measure vanishes.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The sequence \(f_n\) converges to \(f\) in 测度 if \(\mu(|f_n-f|>\varepsilon)\to0\) for every \(\varepsilon>0\). On probability spaces this is convergence in probability.</p>
+        <p><span class="statement-title">定义.</span> \(f_n\to f\) in measure if for every \(\varepsilon>0\), \(\mu(|f_n-f|>\varepsilon)\to0\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f_n\to f\) almost everywhere and \(\mu(X)\lt \infty\), then \(f_n\to f\) in measure.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For fixed \(\varepsilon>0\), the sets \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\) decrease to a null set by almost-everywhere convergence. Since \(\mu(X)\lt \infty\), continuity from above gives \(\mu(A_n)\to0\). Then \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
+    </div>
+
+    <h3>Subsequence principle</h3>
+    <p>Convergence in measure contains almost-everywhere convergence along subsequences.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f_n\to f\) in measure, then some subsequence converges to \(f\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose \(n_k\) so that \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of these measures is finite, so Borel-Cantelli for measures implies that almost every \(x\) belongs to only finitely many exceptional sets. Hence \(|f_{n_k}(x)-f(x)|\le2^{-k}\) eventually for almost every \(x\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/borel-and-radon-measures/" next_label="下一页" next_url="/notes/real-analysis/lebesgue-integral/" %}

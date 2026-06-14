@@ -9,30 +9,63 @@ breadcrumb_child_label_zh: "15. 可微性与泰勒展开"
     <h2><a href="{{ '/notes/real-analysis/differentiability-and-taylor-expansion/' | relative_url }}">15. Differentiability and Taylor expansion</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/equicontinuity-and-arzela-ascoli/" next_label="Next page" next_url="/notes/real-analysis/mean-value-theorems/" %}
 
-    <p>Differentiability linearizes a function near a point. Taylor expansion measures the error of replacing a function by its polynomial approximation.</p>
-    <h3>Derivative as linear approximation</h3>
+    <p>Differentiability is linear approximation at small scales. Taylor's theorem refines this approximation by recording higher-order local information.</p>
+
+    <h3>Derivative as best linear approximation</h3>
+    <p>In one dimension, the derivative is the coefficient of the first-order local model.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For one real variable, \(f^\prime(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) when the limit exists. Differentiability implies continuity, but continuity alone gives no derivative.</p>
+        <p><span class="statement-title">Definition.</span> A function \(f:I\to\mathbb R\) is differentiable at \(x\in I\) if the limit \(f'(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) exists.</p>
     </div>
 
-    <h3>Rules of differentiation</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Linearity, product, quotient, and chain rules follow from algebra of difference quotients. The chain rule is the analytic core of transformations and delta-method arguments.</p>
+        <p><span class="statement-title">Proposition.</span> If \(f\) is differentiable at \(x\), then \(f(x+h)=f(x)+f'(x)h+o(h)\) as \(h\to0\), and \(f\) is continuous at \(x\).</p>
     </div>
 
-    <h3>Taylor formula</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The definition says \((f(x+h)-f(x))/h=f'(x)+r(h)\) with \(r(h)\to0\). Multiplying by \(h\) gives the expansion. Since \(f(x+h)-f(x)=h(f'(x)+r(h))\to0\), continuity follows.</p>
+    </div>
+
+    <h3>Algebra and chain rules</h3>
+    <p>Differentiability is stable under the usual algebraic operations.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\) is sufficiently smooth near \(a\), then \(f(a+h)=\sum_{j=0}^k f^{(j)}(a)h^j/j!+o(h^k)\). Integral or Lagrange remainders give sharper quantitative bounds when higher derivatives are controlled.</p>
+        <p><span class="statement-title">Theorem.</span> If \(f,g\) are differentiable at \(x\), then \(f+g\), \(fg\), and \(f/g\) where \(g(x)\ne0\), are differentiable at \(x\). If \(g\) is differentiable at \(x\) and \(f\) is differentiable at \(g(x)\), then \((f\circ g)'(x)=f'(g(x))g'(x)\).</p>
     </div>
 
-    <h3>Quadratic approximation</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> If \(f^\prime(a)=0\) and \(f^{\prime\prime}(a)>0\), then \(f(a+h)=f(a)+\frac12 f^{\prime\prime}(a)h^2+o(h^2)\). Likelihood and risk expansions often have this quadratic form.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Write first-order expansions \(f(x+h)=f(x)+f'(x)h+o(h)\) and \(g(x+h)=g(x)+g'(x)h+o(h)\). Multiplying expansions gives the product rule, and applying the product rule to \(g^{-1}\) gives the quotient rule. For the chain rule, use \(g(x+h)-g(x)=g'(x)h+o(h)\) inside the first-order expansion of \(f\) at \(g(x)\).</p>
     </div>
 
-    <h3>Pathologies</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Counterexample.</span> The function \(|x|\) is continuous but not differentiable at \(0\). Smoothness assumptions are not decoration; they determine which expansions are valid.</p>
+    <h3>Taylor theorem with remainder</h3>
+    <p>Higher derivatives give polynomial approximations and quantitative errors.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f\in C^{n+1}\) on an interval containing \(a\) and \(x\), then
+\[
+f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k+\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}
+\]
+for some \(\xi\) between \(a\) and \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Subtract the degree \(n\) Taylor polynomial and choose \(C\) so that the remainder equals \(C(x-a)^{n+1}\) at the endpoint. Repeatedly apply Rolle's theorem to the function \(f(t)-T_n(t)-C(t-a)^{n+1}\), which has enough vanishing derivatives at \(a\) and vanishes at \(x\). After \(n+1\) applications, \(C=f^{(n+1)}(\xi)/(n+1)!\).</p>
+    </div>
+
+    <h3>Peano form</h3>
+    <p>The Peano remainder is often cleaner for asymptotics.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f\) has \(n\) derivatives near \(a\) and \(f^{(n)}\) is continuous at \(a\), then
+\[
+f(a+h)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}h^k+o(h^n).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply Taylor's formula with integral or repeated mean-value remainder to \(f^{(n-1)}\), using continuity of \(f^{(n)}\) at \(a\). The error is bounded by \(|h|^n\) times the oscillation of \(f^{(n)}\) near \(a\), which tends to zero.</p>
+    </div>
+
+    <h3>Taylor expansion as local geometry</h3>
+    <p>The first derivative gives slope; the second derivative gives curvature.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> In asymptotic statistics, Taylor expansion of criteria and log-likelihoods is the deterministic core behind consistency rates, asymptotic normality, Laplace approximation, and local asymptotic quadraticity.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/equicontinuity-and-arzela-ascoli/" next_label="Next page" next_url="/notes/real-analysis/mean-value-theorems/" %}
@@ -43,30 +76,63 @@ breadcrumb_child_label_zh: "15. 可微性与泰勒展开"
     <h2><a href="{{ '/notes/real-analysis/differentiability-and-taylor-expansion/' | relative_url }}">15. Différentiabilité et développement de Taylor</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/equicontinuity-and-arzela-ascoli/" next_label="Page suivante" next_url="/notes/real-analysis/mean-value-theorems/" %}
 
-    <p>Differentiability linearizes a function near a point. Taylor expansion measures the error of replacing a function by its polynomial approximation.</p>
-    <h3>Derivative as linear approximation</h3>
+    <p>Differentiability is linear approximation at small scales. Taylor's theorem refines this approximation by recording higher-order local information.</p>
+
+    <h3>Derivative as best linear approximation</h3>
+    <p>In one dimension, the derivative is the coefficient of the first-order local model.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For one real variable, \(f^\prime(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) when the limit exists. Differentiability implies continuity, but continuity alone gives no derivative.</p>
+        <p><span class="statement-title">Définition.</span> A function \(f:I\to\mathbb R\) is differentiable at \(x\in I\) if the limit \(f'(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) exists.</p>
     </div>
 
-    <h3>Rules of differentiation</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Linearity, product, quotient, and chain rules follow from algebra of difference quotients. The chain rule is the analytic core of transformations and delta-method arguments.</p>
+        <p><span class="statement-title">Proposition.</span> If \(f\) is differentiable at \(x\), then \(f(x+h)=f(x)+f'(x)h+o(h)\) as \(h\to0\), and \(f\) is continuous at \(x\).</p>
     </div>
 
-    <h3>Taylor formula</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The definition says \((f(x+h)-f(x))/h=f'(x)+r(h)\) with \(r(h)\to0\). Multiplying by \(h\) gives the expansion. Since \(f(x+h)-f(x)=h(f'(x)+r(h))\to0\), continuity follows.</p>
+    </div>
+
+    <h3>Algebra and chain rules</h3>
+    <p>Differentiability is stable under the usual algebraic operations.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(f\) is sufficiently smooth near \(a\), then \(f(a+h)=\sum_{j=0}^k f^{(j)}(a)h^j/j!+o(h^k)\). Integral or Lagrange remainders give sharper quantitative bounds when higher derivatives are controlled.</p>
+        <p><span class="statement-title">Théorème.</span> If \(f,g\) are differentiable at \(x\), then \(f+g\), \(fg\), and \(f/g\) where \(g(x)\ne0\), are differentiable at \(x\). If \(g\) is differentiable at \(x\) and \(f\) is differentiable at \(g(x)\), then \((f\circ g)'(x)=f'(g(x))g'(x)\).</p>
     </div>
 
-    <h3>Quadratic approximation</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> If \(f^\prime(a)=0\) and \(f^{\prime\prime}(a)>0\), then \(f(a+h)=f(a)+\frac12 f^{\prime\prime}(a)h^2+o(h^2)\). Likelihood and risk expansions often have this quadratic form.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Write first-order expansions \(f(x+h)=f(x)+f'(x)h+o(h)\) and \(g(x+h)=g(x)+g'(x)h+o(h)\). Multiplying expansions gives the product rule, and applying the product rule to \(g^{-1}\) gives the quotient rule. For the chain rule, use \(g(x+h)-g(x)=g'(x)h+o(h)\) inside the first-order expansion of \(f\) at \(g(x)\).</p>
     </div>
 
-    <h3>Pathologies</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Contre-exemple.</span> The function \(|x|\) is continuous but not differentiable at \(0\). Smoothness assumptions are not decoration; they determine which expansions are valid.</p>
+    <h3>Taylor theorem with remainder</h3>
+    <p>Higher derivatives give polynomial approximations and quantitative errors.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f\in C^{n+1}\) on an interval containing \(a\) and \(x\), then
+\[
+f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k+\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}
+\]
+for some \(\xi\) between \(a\) and \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Subtract the degree \(n\) Taylor polynomial and choose \(C\) so that the remainder equals \(C(x-a)^{n+1}\) at the endpoint. Repeatedly apply Rolle's theorem to the function \(f(t)-T_n(t)-C(t-a)^{n+1}\), which has enough vanishing derivatives at \(a\) and vanishes at \(x\). After \(n+1\) applications, \(C=f^{(n+1)}(\xi)/(n+1)!\).</p>
+    </div>
+
+    <h3>Peano form</h3>
+    <p>The Peano remainder is often cleaner for asymptotics.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f\) has \(n\) derivatives near \(a\) and \(f^{(n)}\) is continuous at \(a\), then
+\[
+f(a+h)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}h^k+o(h^n).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Apply Taylor's formula with integral or repeated mean-value remainder to \(f^{(n-1)}\), using continuity of \(f^{(n)}\) at \(a\). The error is bounded by \(|h|^n\) times the oscillation of \(f^{(n)}\) near \(a\), which tends to zero.</p>
+    </div>
+
+    <h3>Taylor expansion as local geometry</h3>
+    <p>The first derivative gives slope; the second derivative gives curvature.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> In asymptotic statistics, Taylor expansion of criteria and log-likelihoods is the deterministic core behind consistency rates, asymptotic normality, Laplace approximation, and local asymptotic quadraticity.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/equicontinuity-and-arzela-ascoli/" next_label="Page suivante" next_url="/notes/real-analysis/mean-value-theorems/" %}
@@ -77,30 +143,63 @@ breadcrumb_child_label_zh: "15. 可微性与泰勒展开"
     <h2><a href="{{ '/notes/real-analysis/differentiability-and-taylor-expansion/' | relative_url }}">15. 可微性与泰勒展开</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/equicontinuity-and-arzela-ascoli/" next_label="下一页" next_url="/notes/real-analysis/mean-value-theorems/" %}
 
-    <p>Differentiability linearizes a function near a point. 泰勒展开测度 the error of replacing a function by its polynomial approximation.</p>
-    <h3>Derivative as linear approximation</h3>
+    <p>Differentiability is linear approximation at small scales. Taylor's theorem refines this approximation by recording higher-order local information.</p>
+
+    <h3>Derivative as best linear approximation</h3>
+    <p>In one dimension, the derivative is the coefficient of the first-order local model.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For one real variable, \(f^\prime(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) when the limit exists. Differentiability implies continuity, but continuity alone gives no derivative.</p>
+        <p><span class="statement-title">定义.</span> A function \(f:I\to\mathbb R\) is differentiable at \(x\in I\) if the limit \(f'(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) exists.</p>
     </div>
 
-    <h3>Rules of differentiation</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Linearity, product, quotient, and chain rules follow from algebra of difference quotients. The chain rule is the 解析 core of transformations and delta-method arguments.</p>
+        <p><span class="statement-title">命题.</span> If \(f\) is differentiable at \(x\), then \(f(x+h)=f(x)+f'(x)h+o(h)\) as \(h\to0\), and \(f\) is continuous at \(x\).</p>
     </div>
 
-    <h3>泰勒公式</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The definition says \((f(x+h)-f(x))/h=f'(x)+r(h)\) with \(r(h)\to0\). Multiplying by \(h\) gives the expansion. Since \(f(x+h)-f(x)=h(f'(x)+r(h))\to0\), continuity follows.</p>
+    </div>
+
+    <h3>Algebra and chain rules</h3>
+    <p>Differentiability is stable under the usual algebraic operations.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(f\) is sufficiently smooth near \(a\), then \(f(a+h)=\sum_{j=0}^k f^{(j)}(a)h^j/j!+o(h^k)\). Integral or 拉格朗日 remainders give sharper quantitative bounds when higher derivatives are controlled.</p>
+        <p><span class="statement-title">定理.</span> If \(f,g\) are differentiable at \(x\), then \(f+g\), \(fg\), and \(f/g\) where \(g(x)\ne0\), are differentiable at \(x\). If \(g\) is differentiable at \(x\) and \(f\) is differentiable at \(g(x)\), then \((f\circ g)'(x)=f'(g(x))g'(x)\).</p>
     </div>
 
-    <h3>Quadratic approximation</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">例.</span> If \(f^\prime(a)=0\) and \(f^{\prime\prime}(a)>0\), then \(f(a+h)=f(a)+\frac12 f^{\prime\prime}(a)h^2+o(h^2)\). 似然 and risk expansions often have this quadratic form.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Write first-order expansions \(f(x+h)=f(x)+f'(x)h+o(h)\) and \(g(x+h)=g(x)+g'(x)h+o(h)\). Multiplying expansions gives the product rule, and applying the product rule to \(g^{-1}\) gives the quotient rule. For the chain rule, use \(g(x+h)-g(x)=g'(x)h+o(h)\) inside the first-order expansion of \(f\) at \(g(x)\).</p>
     </div>
 
-    <h3>Pathologies</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">反例.</span> The function \(|x|\) is continuous but not differentiable at \(0\). Smoothness assumptions are not decoration; they determine which expansions are valid.</p>
+    <h3>Taylor theorem with remainder</h3>
+    <p>Higher derivatives give polynomial approximations and quantitative errors.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f\in C^{n+1}\) on an interval containing \(a\) and \(x\), then
+\[
+f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k+\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}
+\]
+for some \(\xi\) between \(a\) and \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Subtract the degree \(n\) Taylor polynomial and choose \(C\) so that the remainder equals \(C(x-a)^{n+1}\) at the endpoint. Repeatedly apply Rolle's theorem to the function \(f(t)-T_n(t)-C(t-a)^{n+1}\), which has enough vanishing derivatives at \(a\) and vanishes at \(x\). After \(n+1\) applications, \(C=f^{(n+1)}(\xi)/(n+1)!\).</p>
+    </div>
+
+    <h3>Peano form</h3>
+    <p>The Peano remainder is often cleaner for asymptotics.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f\) has \(n\) derivatives near \(a\) and \(f^{(n)}\) is continuous at \(a\), then
+\[
+f(a+h)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}h^k+o(h^n).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Apply Taylor's formula with integral or repeated mean-value remainder to \(f^{(n-1)}\), using continuity of \(f^{(n)}\) at \(a\). The error is bounded by \(|h|^n\) times the oscillation of \(f^{(n)}\) near \(a\), which tends to zero.</p>
+    </div>
+
+    <h3>Taylor expansion as local geometry</h3>
+    <p>The first derivative gives slope; the second derivative gives curvature.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> In asymptotic statistics, Taylor expansion of criteria and log-likelihoods is the deterministic core behind consistency rates, asymptotic normality, Laplace approximation, and local asymptotic quadraticity.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/equicontinuity-and-arzela-ascoli/" next_label="下一页" next_url="/notes/real-analysis/mean-value-theorems/" %}

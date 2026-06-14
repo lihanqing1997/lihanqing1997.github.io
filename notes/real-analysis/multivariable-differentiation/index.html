@@ -9,30 +9,70 @@ breadcrumb_child_label_zh: "23. 多变量微分与全导数"
     <h2><a href="{{ '/notes/real-analysis/multivariable-differentiation/' | relative_url }}">23. Multivariable differentiation and total derivatives</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/power-series-on-the-real-line/" next_label="Next page" next_url="/notes/real-analysis/inverse-and-implicit-function-theorems/" %}
 
-    <p>In several variables, differentiability means approximation by a linear map, not merely existence of partial derivatives. This distinction is central for asymptotic expansions.</p>
-    <h3>Total derivative</h3>
+    <p>In several variables, differentiability means approximation by a linear map, not merely the existence of partial derivatives.</p>
+
+    <h3>Frechet derivative</h3>
+    <p>The derivative is the linear map that captures first-order behavior.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(f:U\subset\mathbb R^d\to\mathbb R^m\), differentiability at \(x\) means \(f(x+h)=f(x)+Df(x)h+o(|h|)\). The derivative \(Df(x)\) is a linear map, represented by the Jacobian matrix in coordinates.</p>
+        <p><span class="statement-title">Definition.</span> A map \(f:U\subset\mathbb R^d\to\mathbb R^m\) is differentiable at \(x\) if there is a linear map \(Df(x)\) such that
+\[
+f(x+h)=f(x)+Df(x)h+o(\|h\|).
+\]</p>
     </div>
 
-    <h3>Continuous partials imply differentiability</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If all partial derivatives exist near \(x\) and are continuous at \(x\), then \(f\) is differentiable at \(x\). Existence of partial derivatives at a single point alone is not sufficient.</p>
+        <p><span class="statement-title">Proposition.</span> If \(f\) is differentiable at \(x\), then all directional derivatives exist and equal \(Df(x)v\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Substitute \(h=tv\) into the Frechet expansion and divide by \(t\). The error \(o(|t|\|v\|)/t\) tends to zero as \(t\to0\).</p>
+    </div>
+
+    <h3>Partial derivatives are not enough</h3>
+    <p>Partial derivatives see only coordinate directions.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Existence of all partial derivatives at a point does not imply differentiability. A common sufficient condition is existence of partial derivatives in a neighborhood together with continuity of those partial derivatives at the point.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If all first partial derivatives of \(f\) exist in a neighborhood of \(x\) and are continuous at \(x\), then \(f\) is differentiable at \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Write \(f(x+h)-f(x)\) as a telescoping sum changing one coordinate at a time. The one-dimensional mean value theorem expresses each difference using the corresponding partial derivative at an intermediate point. Continuity of the partial derivatives at \(x\) turns the sum into \(\sum_j \partial_j f(x)h_j+o(\|h\|)\).</p>
     </div>
 
     <h3>Chain rule</h3>
+    <p>Linear approximations compose by matrix multiplication.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\) is differentiable at \(x\) and \(g\) is differentiable at \(f(x)\), then \(D(g\circ f)(x)=Dg(f(x))Df(x)\). Jacobians multiply in the order of composition.</p>
+        <p><span class="statement-title">Theorem.</span> If \(g\) is differentiable at \(x\) and \(f\) is differentiable at \(g(x)\), then \(f\circ g\) is differentiable at \(x\) and \(D(f\circ g)(x)=Df(g(x))Dg(x)\).</p>
     </div>
 
-    <h3>Hessian and Taylor formula</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For scalar twice differentiable \(f\), \(f(x+h)=f(x)+Df(x)h+\frac12 h^\top D^2f(x)h+o(|h|^2)\). This is the deterministic core of quadratic likelihood approximations.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use \(g(x+h)=g(x)+Dg(x)h+r(h)\), where \(\|r(h)\|=o(\|h\|)\), and apply the expansion of \(f\) at \(g(x)\). Since \(\|Dg(x)h+r(h)\|=O(\|h\|)\), the remainder from \(f\) is \(o(\|h\|)\).</p>
     </div>
 
-    <h3>Delta-method bridge</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> If an estimator has a first-order limit and \(g\) is differentiable at the target, the expansion of \(g\) transfers the limit through its derivative. Probability supplies the mode of convergence for the remainder.</p>
+    <h3>Mean value inequality</h3>
+    <p>Derivative bounds imply global Lipschitz bounds on convex domains.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(U\) is convex and \(\|Df(z)\|\le M\) for all \(z\in U\), then \(\|f(x)-f(y)\|\le M\|x-y\|\) for \(x,y\in U\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Define \(\gamma(t)=f(y+t(x-y))\). Then \(\gamma'(t)=Df(y+t(x-y))(x-y)\), so \(\|\gamma'(t)\|\le M\|x-y\|\). Integrating \(\gamma'\) from \(0\) to \(1\) gives the estimate.</p>
+    </div>
+
+    <h3>Second-order expansion</h3>
+    <p>Hessians encode local curvature.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f\in C^2\) near \(x\), then
+\[
+f(x+h)=f(x)+\nabla f(x)^\top h+\frac12 h^\top \nabla^2 f(x)h+o(\|h\|^2).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply the one-dimensional Taylor theorem to \(\phi(t)=f(x+th)\) at \(t=0\). Then \(\phi'(0)=\nabla f(x)^\top h\) and \(\phi''(0)=h^\top\nabla^2 f(x)h\), while continuity of the Hessian gives the Peano remainder.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/power-series-on-the-real-line/" next_label="Next page" next_url="/notes/real-analysis/inverse-and-implicit-function-theorems/" %}
@@ -43,30 +83,70 @@ breadcrumb_child_label_zh: "23. 多变量微分与全导数"
     <h2><a href="{{ '/notes/real-analysis/multivariable-differentiation/' | relative_url }}">23. Différentiation multivariée et différentielles totales</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/power-series-on-the-real-line/" next_label="Page suivante" next_url="/notes/real-analysis/inverse-and-implicit-function-theorems/" %}
 
-    <p>In several variables, differentiability means approximation by a linear map, not merely existence of partial derivatives. This distinction is central for asymptotic expansions.</p>
-    <h3>Total derivative</h3>
+    <p>In several variables, differentiability means approximation by a linear map, not merely the existence of partial derivatives.</p>
+
+    <h3>Frechet derivative</h3>
+    <p>The derivative is the linear map that captures first-order behavior.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For \(f:U\subset\mathbb R^d\to\mathbb R^m\), differentiability at \(x\) means \(f(x+h)=f(x)+Df(x)h+o(|h|)\). The derivative \(Df(x)\) is a linear map, represented by the Jacobian matrix in coordinates.</p>
+        <p><span class="statement-title">Définition.</span> A map \(f:U\subset\mathbb R^d\to\mathbb R^m\) is differentiable at \(x\) if there is a linear map \(Df(x)\) such that
+\[
+f(x+h)=f(x)+Df(x)h+o(\|h\|).
+\]</p>
     </div>
 
-    <h3>Continuous partials imply differentiability</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If all partial derivatives exist near \(x\) and are continuous at \(x\), then \(f\) is differentiable at \(x\). Existence of partial derivatives at a single point alone is not sufficient.</p>
+        <p><span class="statement-title">Proposition.</span> If \(f\) is differentiable at \(x\), then all directional derivatives exist and equal \(Df(x)v\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Substitute \(h=tv\) into the Frechet expansion and divide by \(t\). The error \(o(|t|\|v\|)/t\) tends to zero as \(t\to0\).</p>
+    </div>
+
+    <h3>Partial derivatives are not enough</h3>
+    <p>Partial derivatives see only coordinate directions.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Existence of all partial derivatives at a point does not imply differentiability. A common sufficient condition is existence of partial derivatives in a neighborhood together with continuity of those partial derivatives at the point.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If all first partial derivatives of \(f\) exist in a neighborhood of \(x\) and are continuous at \(x\), then \(f\) is differentiable at \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Write \(f(x+h)-f(x)\) as a telescoping sum changing one coordinate at a time. The one-dimensional mean value theorem expresses each difference using the corresponding partial derivative at an intermediate point. Continuity of the partial derivatives at \(x\) turns the sum into \(\sum_j \partial_j f(x)h_j+o(\|h\|)\).</p>
     </div>
 
     <h3>Chain rule</h3>
+    <p>Linear approximations compose by matrix multiplication.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(f\) is differentiable at \(x\) and \(g\) is differentiable at \(f(x)\), then \(D(g\circ f)(x)=Dg(f(x))Df(x)\). Jacobians multiply in the order of composition.</p>
+        <p><span class="statement-title">Théorème.</span> If \(g\) is differentiable at \(x\) and \(f\) is differentiable at \(g(x)\), then \(f\circ g\) is differentiable at \(x\) and \(D(f\circ g)(x)=Df(g(x))Dg(x)\).</p>
     </div>
 
-    <h3>Hessian and Taylor formula</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> For scalar twice differentiable \(f\), \(f(x+h)=f(x)+Df(x)h+\frac12 h^\top D^2f(x)h+o(|h|^2)\). This is the deterministic core of quadratic likelihood approximations.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use \(g(x+h)=g(x)+Dg(x)h+r(h)\), where \(\|r(h)\|=o(\|h\|)\), and apply the expansion of \(f\) at \(g(x)\). Since \(\|Dg(x)h+r(h)\|=O(\|h\|)\), the remainder from \(f\) is \(o(\|h\|)\).</p>
     </div>
 
-    <h3>Delta-method bridge</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> If an estimator has a first-order limit and \(g\) is differentiable at the target, the expansion of \(g\) transfers the limit through its derivative. Probability supplies the mode of convergence for the remainder.</p>
+    <h3>Mean value inequality</h3>
+    <p>Derivative bounds imply global Lipschitz bounds on convex domains.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(U\) is convex and \(\|Df(z)\|\le M\) for all \(z\in U\), then \(\|f(x)-f(y)\|\le M\|x-y\|\) for \(x,y\in U\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Define \(\gamma(t)=f(y+t(x-y))\). Then \(\gamma'(t)=Df(y+t(x-y))(x-y)\), so \(\|\gamma'(t)\|\le M\|x-y\|\). Integrating \(\gamma'\) from \(0\) to \(1\) gives the estimate.</p>
+    </div>
+
+    <h3>Second-order expansion</h3>
+    <p>Hessians encode local curvature.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f\in C^2\) near \(x\), then
+\[
+f(x+h)=f(x)+\nabla f(x)^\top h+\frac12 h^\top \nabla^2 f(x)h+o(\|h\|^2).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Apply the one-dimensional Taylor theorem to \(\phi(t)=f(x+th)\) at \(t=0\). Then \(\phi'(0)=\nabla f(x)^\top h\) and \(\phi''(0)=h^\top\nabla^2 f(x)h\), while continuity of the Hessian gives the Peano remainder.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/power-series-on-the-real-line/" next_label="Page suivante" next_url="/notes/real-analysis/inverse-and-implicit-function-theorems/" %}
@@ -77,30 +157,70 @@ breadcrumb_child_label_zh: "23. 多变量微分与全导数"
     <h2><a href="{{ '/notes/real-analysis/multivariable-differentiation/' | relative_url }}">23. 多变量微分与全导数</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/power-series-on-the-real-line/" next_label="下一页" next_url="/notes/real-analysis/inverse-and-implicit-function-theorems/" %}
 
-    <p>In several variables, differentiability means approximation by a linear map, not merely existence of partial derivatives. This distinction is central for asymptotic expansions.</p>
-    <h3>Total derivative</h3>
+    <p>In several variables, differentiability means approximation by a linear map, not merely the existence of partial derivatives.</p>
+
+    <h3>Frechet derivative</h3>
+    <p>The derivative is the linear map that captures first-order behavior.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For \(f:U\subset\mathbb R^d\to\mathbb R^m\), differentiability at \(x\) means \(f(x+h)=f(x)+Df(x)h+o(|h|)\). The derivative \(Df(x)\) is a linear map, represented by the Jacobian matrix in coordinates.</p>
+        <p><span class="statement-title">定义.</span> A map \(f:U\subset\mathbb R^d\to\mathbb R^m\) is differentiable at \(x\) if there is a linear map \(Df(x)\) such that
+\[
+f(x+h)=f(x)+Df(x)h+o(\|h\|).
+\]</p>
     </div>
 
-    <h3>Continuous partials imply differentiability</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If all partial derivatives exist near \(x\) and are continuous at \(x\), then \(f\) is differentiable at \(x\). Existence of partial derivatives at a single point alone is not sufficient.</p>
+        <p><span class="statement-title">命题.</span> If \(f\) is differentiable at \(x\), then all directional derivatives exist and equal \(Df(x)v\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Substitute \(h=tv\) into the Frechet expansion and divide by \(t\). The error \(o(|t|\|v\|)/t\) tends to zero as \(t\to0\).</p>
+    </div>
+
+    <h3>Partial derivatives are not enough</h3>
+    <p>Partial derivatives see only coordinate directions.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Existence of all partial derivatives at a point does not imply differentiability. A common sufficient condition is existence of partial derivatives in a neighborhood together with continuity of those partial derivatives at the point.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If all first partial derivatives of \(f\) exist in a neighborhood of \(x\) and are continuous at \(x\), then \(f\) is differentiable at \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Write \(f(x+h)-f(x)\) as a telescoping sum changing one coordinate at a time. The one-dimensional mean value theorem expresses each difference using the corresponding partial derivative at an intermediate point. Continuity of the partial derivatives at \(x\) turns the sum into \(\sum_j \partial_j f(x)h_j+o(\|h\|)\).</p>
     </div>
 
     <h3>Chain rule</h3>
+    <p>Linear approximations compose by matrix multiplication.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(f\) is differentiable at \(x\) and \(g\) is differentiable at \(f(x)\), then \(D(g\circ f)(x)=Dg(f(x))Df(x)\). Jacobians multiply in the order of composition.</p>
+        <p><span class="statement-title">定理.</span> If \(g\) is differentiable at \(x\) and \(f\) is differentiable at \(g(x)\), then \(f\circ g\) is differentiable at \(x\) and \(D(f\circ g)(x)=Df(g(x))Dg(x)\).</p>
     </div>
 
-    <h3>黑塞 and 泰勒公式</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> For scalar twice differentiable \(f\), \(f(x+h)=f(x)+Df(x)h+\frac12 h^\top D^2f(x)h+o(|h|^2)\). This is the deterministic core of 二次似然 approximations.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use \(g(x+h)=g(x)+Dg(x)h+r(h)\), where \(\|r(h)\|=o(\|h\|)\), and apply the expansion of \(f\) at \(g(x)\). Since \(\|Dg(x)h+r(h)\|=O(\|h\|)\), the remainder from \(f\) is \(o(\|h\|)\).</p>
     </div>
 
-    <h3>Delta-method bridge</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> If an estimator has a first-order limit and \(g\) is differentiable at the target, the expansion of \(g\) transfers the limit through its derivative. Probability supplies the mode of convergence for the remainder.</p>
+    <h3>Mean value inequality</h3>
+    <p>Derivative bounds imply global Lipschitz bounds on convex domains.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(U\) is convex and \(\|Df(z)\|\le M\) for all \(z\in U\), then \(\|f(x)-f(y)\|\le M\|x-y\|\) for \(x,y\in U\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Define \(\gamma(t)=f(y+t(x-y))\). Then \(\gamma'(t)=Df(y+t(x-y))(x-y)\), so \(\|\gamma'(t)\|\le M\|x-y\|\). Integrating \(\gamma'\) from \(0\) to \(1\) gives the estimate.</p>
+    </div>
+
+    <h3>Second-order expansion</h3>
+    <p>Hessians encode local curvature.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f\in C^2\) near \(x\), then
+\[
+f(x+h)=f(x)+\nabla f(x)^\top h+\frac12 h^\top \nabla^2 f(x)h+o(\|h\|^2).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Apply the one-dimensional Taylor theorem to \(\phi(t)=f(x+th)\) at \(t=0\). Then \(\phi'(0)=\nabla f(x)^\top h\) and \(\phi''(0)=h^\top\nabla^2 f(x)h\), while continuity of the Hessian gives the Peano remainder.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/power-series-on-the-real-line/" next_label="下一页" next_url="/notes/real-analysis/inverse-and-implicit-function-theorems/" %}

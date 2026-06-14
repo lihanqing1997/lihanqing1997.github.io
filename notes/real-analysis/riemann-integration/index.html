@@ -9,30 +9,60 @@ breadcrumb_child_label_zh: "18. 黎曼与 Darboux 积分"
     <h2><a href="{{ '/notes/real-analysis/riemann-integration/' | relative_url }}">18. Riemann and Darboux integration</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/convex-functions-and-monotone-functions/" next_label="Next page" next_url="/notes/real-analysis/riemann-stieltjes-integration/" %}
 
-    <p>Riemann integration approximates area by partitions of the domain. Darboux upper and lower sums identify precisely when these approximations agree.</p>
-    <h3>Upper and lower sums</h3>
+    <p>Riemann integration measures area by refining partitions of the domain. Darboux sums expose the exact criterion for when upper and lower approximations meet.</p>
+
+    <h3>Upper and lower Darboux sums</h3>
+    <p>The Riemann integral exists when all sufficiently fine upper and lower step approximations agree.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For bounded \(f\) on \([a,b]\), a partition produces upper sums \(U(f,P)\) and lower sums \(L(f,P)\) from suprema and infima on subintervals. Riemann integrability means the best upper and lower sums coincide.</p>
+        <p><span class="statement-title">Definition.</span> For a bounded \(f:[a,b]\to\mathbb R\) and partition \(P\), define \(U(f,P)=\sum_i M_i\Delta x_i\) and \(L(f,P)=\sum_i m_i\Delta x_i\), where \(M_i=\sup_{[x_{i-1},x_i]}f\) and \(m_i=\inf_{[x_{i-1},x_i]}f\).</p>
     </div>
 
-    <h3>Darboux criterion</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A bounded function is Riemann integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)<\varepsilon\).</p>
+        <p><span class="statement-title">Theorem.</span> \(f\) is Riemann integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
     </div>
 
-    <h3>Lebesgue criterion</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Refining partitions lowers upper sums and raises lower sums. The upper integral is the infimum of upper sums and the lower integral is the supremum of lower sums. Equality of these two values is equivalent to being able to make their difference arbitrarily small.</p>
+    </div>
+
+    <h3>Continuous functions are integrable</h3>
+    <p>Uniform continuity on a compact interval controls oscillation on small subintervals.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A bounded function on a compact interval is Riemann integrable if and only if its discontinuity set has Lebesgue measure zero. This theorem exactly marks the boundary between Riemann and Lebesgue integration.</p>
+        <p><span class="statement-title">Theorem.</span> Every continuous function on \([a,b]\) is Riemann integrable.</p>
     </div>
 
-    <h3>Fundamental theorem compatibility</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> By uniform continuity, choose \(\delta\) so that \(|x-y|\lt \delta\Rightarrow |f(x)-f(y)|\lt \varepsilon/(b-a)\). For any partition with mesh below \(\delta\), the oscillation on each subinterval is below \(\varepsilon/(b-a)\), hence \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
+    </div>
+
+    <h3>Lebesgue criterion for Riemann integrability</h3>
+    <p>Riemann integrability is exactly continuity except on a null set.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> A bounded function on \([a,b]\) is Riemann integrable if and only if its set of discontinuities has Lebesgue measure zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(\omega_f(x)\) be the oscillation of \(f\) at \(x\). The discontinuity set is \(\bigcup_{m\ge1}\{\omega_f\ge1/m\}\). Small Darboux gap implies each such set can be covered by intervals of arbitrarily small total length. Conversely, if discontinuities have measure zero, cover the bad set by short intervals and use uniform continuity on the remaining compact pieces to make the Darboux gap small.</p>
+    </div>
+
+    <h3>Algebra and order</h3>
+    <p>Integrable functions form a stable ordered vector space.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Continuous functions and monotone functions on compact intervals are Riemann integrable. If \(F^\prime=f\) and \(f\) is Riemann integrable, then \(\int_a^b f(x)\,\mathrm{d}x=F(b)-F(a)\).</p>
+        <p><span class="statement-title">Proposition.</span> If \(f,g\) are Riemann integrable, then \(af+bg\), \(fg\), \(|f|\), \(\max(f,g)\), and \(\min(f,g)\) are Riemann integrable.</p>
     </div>
 
-    <h3>Dirichlet function</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Counterexample.</span> The indicator of \(\mathbb Q\cap[0,1]\) has lower sums \(0\) and upper sums \(1\) for every partition, so it is not Riemann integrable. Lebesgue integration assigns it integral \(0\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The discontinuities of these combinations are contained in the union of the discontinuity sets of \(f\) and \(g\), except for operations involving continuous maps on \(\mathbb R^2\). Since finite unions of null sets are null, the Lebesgue criterion applies.</p>
+    </div>
+
+    <h3>Relation to Lebesgue integration</h3>
+    <p>The Riemann integral is a special case of the Lebesgue integral.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f\) is Riemann integrable on \([a,b]\), then \(f\) is Lebesgue integrable and the two integrals agree.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Riemann integrability gives upper and lower step functions converging in integral gap. These step functions are Lebesgue measurable and squeeze \(f\). Monotone and dominated convergence identify the common limit with the Lebesgue integral.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/convex-functions-and-monotone-functions/" next_label="Next page" next_url="/notes/real-analysis/riemann-stieltjes-integration/" %}
@@ -43,30 +73,60 @@ breadcrumb_child_label_zh: "18. 黎曼与 Darboux 积分"
     <h2><a href="{{ '/notes/real-analysis/riemann-integration/' | relative_url }}">18. Intégration de Riemann et de Darboux</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/convex-functions-and-monotone-functions/" next_label="Page suivante" next_url="/notes/real-analysis/riemann-stieltjes-integration/" %}
 
-    <p>Riemann integration approximates area by partitions of the domain. Darboux upper and lower sums identify precisely when these approximations agree.</p>
-    <h3>Upper and lower sums</h3>
+    <p>Riemann integration measures area by refining partitions of the domain. Darboux sums expose the exact criterion for when upper and lower approximations meet.</p>
+
+    <h3>Upper and lower Darboux sums</h3>
+    <p>The Riemann integral exists when all sufficiently fine upper and lower step approximations agree.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For bounded \(f\) on \([a,b]\), a partition produces upper sums \(U(f,P)\) and lower sums \(L(f,P)\) from suprema and infima on subintervals. Riemann integrability means the best upper and lower sums coincide.</p>
+        <p><span class="statement-title">Définition.</span> For a bounded \(f:[a,b]\to\mathbb R\) and partition \(P\), define \(U(f,P)=\sum_i M_i\Delta x_i\) and \(L(f,P)=\sum_i m_i\Delta x_i\), where \(M_i=\sup_{[x_{i-1},x_i]}f\) and \(m_i=\inf_{[x_{i-1},x_i]}f\).</p>
     </div>
 
-    <h3>Darboux criterion</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> A bounded function is Riemann integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)<\varepsilon\).</p>
+        <p><span class="statement-title">Théorème.</span> \(f\) is Riemann integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
     </div>
 
-    <h3>Lebesgue criterion</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Refining partitions lowers upper sums and raises lower sums. The upper integral is the infimum of upper sums and the lower integral is the supremum of lower sums. Equality of these two values is equivalent to being able to make their difference arbitrarily small.</p>
+    </div>
+
+    <h3>Continuous functions are integrable</h3>
+    <p>Uniform continuity on a compact interval controls oscillation on small subintervals.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> A bounded function on a compact interval is Riemann integrable if and only if its discontinuity set has Lebesgue measure zero. This theorem exactly marks the boundary between Riemann and Lebesgue integration.</p>
+        <p><span class="statement-title">Théorème.</span> Every continuous function on \([a,b]\) is Riemann integrable.</p>
     </div>
 
-    <h3>Fundamental theorem compatibility</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> By uniform continuity, choose \(\delta\) so that \(|x-y|\lt \delta\Rightarrow |f(x)-f(y)|\lt \varepsilon/(b-a)\). For any partition with mesh below \(\delta\), the oscillation on each subinterval is below \(\varepsilon/(b-a)\), hence \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
+    </div>
+
+    <h3>Lebesgue criterion for Riemann integrability</h3>
+    <p>Riemann integrability is exactly continuity except on a null set.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> A bounded function on \([a,b]\) is Riemann integrable if and only if its set of discontinuities has Lebesgue measure zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(\omega_f(x)\) be the oscillation of \(f\) at \(x\). The discontinuity set is \(\bigcup_{m\ge1}\{\omega_f\ge1/m\}\). Small Darboux gap implies each such set can be covered by intervals of arbitrarily small total length. Conversely, if discontinuities have measure zero, cover the bad set by short intervals and use uniform continuity on the remaining compact pieces to make the Darboux gap small.</p>
+    </div>
+
+    <h3>Algebra and order</h3>
+    <p>Integrable functions form a stable ordered vector space.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Continuous functions and monotone functions on compact intervals are Riemann integrable. If \(F^\prime=f\) and \(f\) is Riemann integrable, then \(\int_a^b f(x)\,\mathrm{d}x=F(b)-F(a)\).</p>
+        <p><span class="statement-title">Proposition.</span> If \(f,g\) are Riemann integrable, then \(af+bg\), \(fg\), \(|f|\), \(\max(f,g)\), and \(\min(f,g)\) are Riemann integrable.</p>
     </div>
 
-    <h3>Dirichlet function</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Contre-exemple.</span> The indicator of \(\mathbb Q\cap[0,1]\) has lower sums \(0\) and upper sums \(1\) for every partition, so it is not Riemann integrable. Lebesgue integration assigns it integral \(0\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The discontinuities of these combinations are contained in the union of the discontinuity sets of \(f\) and \(g\), except for operations involving continuous maps on \(\mathbb R^2\). Since finite unions of null sets are null, the Lebesgue criterion applies.</p>
+    </div>
+
+    <h3>Relation to Lebesgue integration</h3>
+    <p>The Riemann integral is a special case of the Lebesgue integral.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f\) is Riemann integrable on \([a,b]\), then \(f\) is Lebesgue integrable and the two integrals agree.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Riemann integrability gives upper and lower step functions converging in integral gap. These step functions are Lebesgue measurable and squeeze \(f\). Monotone and dominated convergence identify the common limit with the Lebesgue integral.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/convex-functions-and-monotone-functions/" next_label="Page suivante" next_url="/notes/real-analysis/riemann-stieltjes-integration/" %}
@@ -77,30 +137,60 @@ breadcrumb_child_label_zh: "18. 黎曼与 Darboux 积分"
     <h2><a href="{{ '/notes/real-analysis/riemann-integration/' | relative_url }}">18. 黎曼与 Darboux 积分</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/convex-functions-and-monotone-functions/" next_label="下一页" next_url="/notes/real-analysis/riemann-stieltjes-integration/" %}
 
-    <p>黎曼 integration approximates area by partitions of the domain. Darboux upper and lower sums identify precisely when these approximations agree.</p>
-    <h3>Upper and lower sums</h3>
+    <p>Riemann integration measures area by refining partitions of the domain. Darboux sums expose the exact criterion for when upper and lower approximations meet.</p>
+
+    <h3>Upper and lower Darboux sums</h3>
+    <p>The Riemann integral exists when all sufficiently fine upper and lower step approximations agree.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For 有界 \(f\) on \([a,b]\), a partition produces upper sums \(U(f,P)\) and lower sums \(L(f,P)\) from suprema and infima on subintervals. 黎曼 integrability means the best upper and lower sums coincide.</p>
+        <p><span class="statement-title">定义.</span> For a bounded \(f:[a,b]\to\mathbb R\) and partition \(P\), define \(U(f,P)=\sum_i M_i\Delta x_i\) and \(L(f,P)=\sum_i m_i\Delta x_i\), where \(M_i=\sup_{[x_{i-1},x_i]}f\) and \(m_i=\inf_{[x_{i-1},x_i]}f\).</p>
     </div>
 
-    <h3>Darboux criterion</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> A 有界 function is 黎曼 integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)<\varepsilon\).</p>
+        <p><span class="statement-title">定理.</span> \(f\) is Riemann integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
     </div>
 
-    <h3>勒贝格 criterion</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Refining partitions lowers upper sums and raises lower sums. The upper integral is the infimum of upper sums and the lower integral is the supremum of lower sums. Equality of these two values is equivalent to being able to make their difference arbitrarily small.</p>
+    </div>
+
+    <h3>Continuous functions are integrable</h3>
+    <p>Uniform continuity on a compact interval controls oscillation on small subintervals.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> A 有界 function on a 紧 interval is 黎曼 integrable if and only if its discontinuity set has 勒贝格测度 zero. This 定理 exactly marks the boundary between 黎曼 and 勒贝格 integration.</p>
+        <p><span class="statement-title">定理.</span> Every continuous function on \([a,b]\) is Riemann integrable.</p>
     </div>
 
-    <h3>Fundamental 定理 compatibility</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> By uniform continuity, choose \(\delta\) so that \(|x-y|\lt \delta\Rightarrow |f(x)-f(y)|\lt \varepsilon/(b-a)\). For any partition with mesh below \(\delta\), the oscillation on each subinterval is below \(\varepsilon/(b-a)\), hence \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
+    </div>
+
+    <h3>Lebesgue criterion for Riemann integrability</h3>
+    <p>Riemann integrability is exactly continuity except on a null set.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> A bounded function on \([a,b]\) is Riemann integrable if and only if its set of discontinuities has Lebesgue measure zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(\omega_f(x)\) be the oscillation of \(f\) at \(x\). The discontinuity set is \(\bigcup_{m\ge1}\{\omega_f\ge1/m\}\). Small Darboux gap implies each such set can be covered by intervals of arbitrarily small total length. Conversely, if discontinuities have measure zero, cover the bad set by short intervals and use uniform continuity on the remaining compact pieces to make the Darboux gap small.</p>
+    </div>
+
+    <h3>Algebra and order</h3>
+    <p>Integrable functions form a stable ordered vector space.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Continuous functions and monotone functions on 紧 intervals are 黎曼 integrable. If \(F^\prime=f\) and \(f\) is 黎曼 integrable, then \(\int_a^b f(x)\,\mathrm{d}x=F(b)-F(a)\).</p>
+        <p><span class="statement-title">命题.</span> If \(f,g\) are Riemann integrable, then \(af+bg\), \(fg\), \(|f|\), \(\max(f,g)\), and \(\min(f,g)\) are Riemann integrable.</p>
     </div>
 
-    <h3>狄利克雷 function</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">反例.</span> The indicator of \(\mathbb Q\cap[0,1]\) has lower sums \(0\) and upper sums \(1\) for every partition, so it is not 黎曼 integrable. 勒贝格 integration assigns it integral \(0\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The discontinuities of these combinations are contained in the union of the discontinuity sets of \(f\) and \(g\), except for operations involving continuous maps on \(\mathbb R^2\). Since finite unions of null sets are null, the Lebesgue criterion applies.</p>
+    </div>
+
+    <h3>Relation to Lebesgue integration</h3>
+    <p>The Riemann integral is a special case of the Lebesgue integral.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f\) is Riemann integrable on \([a,b]\), then \(f\) is Lebesgue integrable and the two integrals agree.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Riemann integrability gives upper and lower step functions converging in integral gap. These step functions are Lebesgue measurable and squeeze \(f\). Monotone and dominated convergence identify the common limit with the Lebesgue integral.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/convex-functions-and-monotone-functions/" next_label="下一页" next_url="/notes/real-analysis/riemann-stieltjes-integration/" %}

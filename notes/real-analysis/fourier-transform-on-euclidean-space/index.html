@@ -9,30 +9,67 @@ breadcrumb_child_label_zh: "47. 欧几里得空间上的傅里叶变换"
     <h2><a href="{{ '/notes/real-analysis/fourier-transform-on-euclidean-space/' | relative_url }}">47. Fourier transform on Euclidean space</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/fourier-series-and-orthogonality/" next_label="Next page" next_url="/notes/real-analysis/weak-convergence-of-measures/" %}
 
-    <p>The Fourier transform decomposes functions on Euclidean space into frequencies. It turns convolution into multiplication and differentiation into polynomial weights.</p>
-    <h3>Fourier transform on L1</h3>
+    <p>The Fourier transform decomposes functions on \(\mathbb R^d\) into frequencies. It turns translation into modulation, convolution into multiplication, and differentiation into polynomial weights.</p>
+
+    <h3>Fourier transform on \(L^1\)</h3>
+    <p>Integrable functions have bounded continuous transforms.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(f\in L^1(\mathbb R^d)\), define \(\hat f(\xi)=\int e^{-ix\cdot\xi}f(x)\,\mathrm{d}x\). Then \(\hat f\) is bounded and uniformly continuous.</p>
+        <p><span class="statement-title">Definition.</span> For \(f\in L^1(\mathbb R^d)\), define \(\widehat f(\xi)=\int_{\mathbb R^d}e^{-ix\cdot\xi}f(x)\,\mathrm{d}x\).</p>
     </div>
 
-    <h3>Inversion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> When \(f\) and \(\hat f\) are integrable, \(f(x)=(2\pi)^{-d}\int e^{ix\cdot\xi}\hat f(\xi)\,\mathrm{d}\xi\) at continuity points. General inversion follows by approximation.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> \(\widehat f\) is bounded and uniformly continuous, with \(\|\widehat f\|_\infty\le\|f\|_1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The bound is immediate from \(|e^{-ix\cdot\xi}|=1\). For continuity, \(\widehat f(\xi+h)-\widehat f(\xi)=\int e^{-ix\cdot\xi}(e^{-ix\cdot h}-1)f(x)\,\mathrm{d}x\), and dominated convergence applies.</p>
     </div>
 
     <h3>Convolution theorem</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under suitable assumptions, \(\widehat{f*g}=\hat f\hat g\). This is why convolution operators become multipliers in frequency space.</p>
+    <p>Fourier transform turns convolution into multiplication.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f,g\in L^1(\mathbb R^d)\), then \(\widehat{f*g}=\widehat f\,\widehat g\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use Fubini:
+\[
+\widehat{f*g}(\xi)=\int e^{-ix\cdot\xi}\int f(x-y)g(y)\,\mathrm{d}y\,\mathrm{d}x.
+\]
+Set \(u=x-y\). The integral factors into \(\int e^{-iu\cdot\xi}f(u)\,\mathrm{d}u\int e^{-iy\cdot\xi}g(y)\,\mathrm{d}y\).</p>
+    </div>
+
+    <h3>Inversion on Schwartz functions</h3>
+    <p>For rapidly decreasing smooth functions, inversion is exact.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f\) is a Schwartz function, then
+\[
+f(x)=(2\pi)^{-d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,\mathrm{d}\xi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Insert a Gaussian cutoff \(e^{-\varepsilon|\xi|^2}\), whose inverse transform is an approximate identity. The regularized inverse equals convolution of \(f\) with a Gaussian kernel. As \(\varepsilon\downarrow0\), the approximate identity converges to \(f\) uniformly for Schwartz \(f\).</p>
     </div>
 
     <h3>Plancherel theorem</h3>
+    <p>Fourier transform extends from \(L^1\cap L^2\) to a unitary operator on \(L^2\).</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The Fourier transform extends to a unitary operator on \(L^2\) after normalization. Thus frequency analysis preserves Hilbert-space energy.</p>
+        <p><span class="statement-title">Theorem.</span> With the standard normalization, \(\|\widehat f\|_2=(2\pi)^{d/2}\|f\|_2\) for \(f\in L^2\), after defining the transform by density.</p>
     </div>
 
-    <h3>Characteristic functions</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> For a probability law, \(\varphi_X(t)=\mathbb E e^{itX}\) is its Fourier transform. Products of characteristic functions correspond to sums of independent variables.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Prove the identity first for Schwartz functions using inversion and Fubini. Since Schwartz functions are dense in \(L^2\), the transform extends uniquely by continuity to all \(L^2\). The norm identity passes to the limit.</p>
+    </div>
+
+    <h3>Differentiation and decay</h3>
+    <p>Smoothness in one domain corresponds to decay in the other.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For Schwartz \(f\), \(\widehat{\partial^\alpha f}(\xi)=(i\xi)^\alpha\widehat f(\xi)\) and \(\widehat{x^\alpha f}=i^{|\alpha|}\partial^\alpha_\xi\widehat f\), up to the chosen sign convention.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The derivative identity follows by integration by parts, with boundary terms vanishing because \(f\) is rapidly decreasing. The multiplication identity follows by differentiating under the integral sign with respect to \(\xi\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/fourier-series-and-orthogonality/" next_label="Next page" next_url="/notes/real-analysis/weak-convergence-of-measures/" %}
@@ -43,30 +80,67 @@ breadcrumb_child_label_zh: "47. 欧几里得空间上的傅里叶变换"
     <h2><a href="{{ '/notes/real-analysis/fourier-transform-on-euclidean-space/' | relative_url }}">47. Transformée de Fourier sur l’espace euclidien</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/fourier-series-and-orthogonality/" next_label="Page suivante" next_url="/notes/real-analysis/weak-convergence-of-measures/" %}
 
-    <p>The Fourier transform decomposes functions on Euclidean space into frequencies. It turns convolution into multiplication and differentiation into polynomial weights.</p>
-    <h3>Fourier transform on L1</h3>
+    <p>The Fourier transform decomposes functions on \(\mathbb R^d\) into frequencies. It turns translation into modulation, convolution into multiplication, and differentiation into polynomial weights.</p>
+
+    <h3>Fourier transform on \(L^1\)</h3>
+    <p>Integrable functions have bounded continuous transforms.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For \(f\in L^1(\mathbb R^d)\), define \(\hat f(\xi)=\int e^{-ix\cdot\xi}f(x)\,\mathrm{d}x\). Then \(\hat f\) is bounded and uniformly continuous.</p>
+        <p><span class="statement-title">Définition.</span> For \(f\in L^1(\mathbb R^d)\), define \(\widehat f(\xi)=\int_{\mathbb R^d}e^{-ix\cdot\xi}f(x)\,\mathrm{d}x\).</p>
     </div>
 
-    <h3>Inversion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> When \(f\) and \(\hat f\) are integrable, \(f(x)=(2\pi)^{-d}\int e^{ix\cdot\xi}\hat f(\xi)\,\mathrm{d}\xi\) at continuity points. General inversion follows by approximation.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> \(\widehat f\) is bounded and uniformly continuous, with \(\|\widehat f\|_\infty\le\|f\|_1\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The bound is immediate from \(|e^{-ix\cdot\xi}|=1\). For continuity, \(\widehat f(\xi+h)-\widehat f(\xi)=\int e^{-ix\cdot\xi}(e^{-ix\cdot h}-1)f(x)\,\mathrm{d}x\), and dominated convergence applies.</p>
     </div>
 
     <h3>Convolution theorem</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under suitable assumptions, \(\widehat{f*g}=\hat f\hat g\). This is why convolution operators become multipliers in frequency space.</p>
+    <p>Fourier transform turns convolution into multiplication.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f,g\in L^1(\mathbb R^d)\), then \(\widehat{f*g}=\widehat f\,\widehat g\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use Fubini:
+\[
+\widehat{f*g}(\xi)=\int e^{-ix\cdot\xi}\int f(x-y)g(y)\,\mathrm{d}y\,\mathrm{d}x.
+\]
+Set \(u=x-y\). The integral factors into \(\int e^{-iu\cdot\xi}f(u)\,\mathrm{d}u\int e^{-iy\cdot\xi}g(y)\,\mathrm{d}y\).</p>
+    </div>
+
+    <h3>Inversion on Schwartz functions</h3>
+    <p>For rapidly decreasing smooth functions, inversion is exact.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(f\) is a Schwartz function, then
+\[
+f(x)=(2\pi)^{-d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,\mathrm{d}\xi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Insert a Gaussian cutoff \(e^{-\varepsilon|\xi|^2}\), whose inverse transform is an approximate identity. The regularized inverse equals convolution of \(f\) with a Gaussian kernel. As \(\varepsilon\downarrow0\), the approximate identity converges to \(f\) uniformly for Schwartz \(f\).</p>
     </div>
 
     <h3>Plancherel theorem</h3>
+    <p>Fourier transform extends from \(L^1\cap L^2\) to a unitary operator on \(L^2\).</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> The Fourier transform extends to a unitary operator on \(L^2\) after normalization. Thus frequency analysis preserves Hilbert-space energy.</p>
+        <p><span class="statement-title">Théorème.</span> With the standard normalization, \(\|\widehat f\|_2=(2\pi)^{d/2}\|f\|_2\) for \(f\in L^2\), after defining the transform by density.</p>
     </div>
 
-    <h3>Characteristic functions</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> For a probability law, \(\varphi_X(t)=\mathbb E e^{itX}\) is its Fourier transform. Products of characteristic functions correspond to sums of independent variables.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Prove the identity first for Schwartz functions using inversion and Fubini. Since Schwartz functions are dense in \(L^2\), the transform extends uniquely by continuity to all \(L^2\). The norm identity passes to the limit.</p>
+    </div>
+
+    <h3>Differentiation and decay</h3>
+    <p>Smoothness in one domain corresponds to decay in the other.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For Schwartz \(f\), \(\widehat{\partial^\alpha f}(\xi)=(i\xi)^\alpha\widehat f(\xi)\) and \(\widehat{x^\alpha f}=i^{|\alpha|}\partial^\alpha_\xi\widehat f\), up to the chosen sign convention.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The derivative identity follows by integration by parts, with boundary terms vanishing because \(f\) is rapidly decreasing. The multiplication identity follows by differentiating under the integral sign with respect to \(\xi\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/fourier-series-and-orthogonality/" next_label="Page suivante" next_url="/notes/real-analysis/weak-convergence-of-measures/" %}
@@ -77,30 +151,67 @@ breadcrumb_child_label_zh: "47. 欧几里得空间上的傅里叶变换"
     <h2><a href="{{ '/notes/real-analysis/fourier-transform-on-euclidean-space/' | relative_url }}">47. 欧几里得空间上的傅里叶变换</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/fourier-series-and-orthogonality/" next_label="下一页" next_url="/notes/real-analysis/weak-convergence-of-measures/" %}
 
-    <p>The 傅里叶变换 decomposes functions on 欧几里得 space into frequencies. It turns convolution into multiplication and differentiation into polynomial weights.</p>
-    <h3>傅里叶变换 on L1</h3>
+    <p>The Fourier transform decomposes functions on \(\mathbb R^d\) into frequencies. It turns translation into modulation, convolution into multiplication, and differentiation into polynomial weights.</p>
+
+    <h3>Fourier transform on \(L^1\)</h3>
+    <p>Integrable functions have bounded continuous transforms.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For \(f\in L^1(\mathbb R^d)\), define \(\hat f(\xi)=\int e^{-ix\cdot\xi}f(x)\,\mathrm{d}x\). Then \(\hat f\) is 有界 and uniformly continuous.</p>
+        <p><span class="statement-title">定义.</span> For \(f\in L^1(\mathbb R^d)\), define \(\widehat f(\xi)=\int_{\mathbb R^d}e^{-ix\cdot\xi}f(x)\,\mathrm{d}x\).</p>
     </div>
 
-    <h3>Inversion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> When \(f\) and \(\hat f\) are integrable, \(f(x)=(2\pi)^{-d}\int e^{ix\cdot\xi}\hat f(\xi)\,\mathrm{d}\xi\) at continuity points. General inversion follows by approximation.</p>
-    </div>
-
-    <h3>Convolution 定理</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Under suitable assumptions, \(\widehat{f*g}=\hat f\hat g\). This is why convolution operators become multipliers in frequency space.</p>
+        <p><span class="statement-title">命题.</span> \(\widehat f\) is bounded and uniformly continuous, with \(\|\widehat f\|_\infty\le\|f\|_1\).</p>
     </div>
 
-    <h3>Plancherel 定理</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The bound is immediate from \(|e^{-ix\cdot\xi}|=1\). For continuity, \(\widehat f(\xi+h)-\widehat f(\xi)=\int e^{-ix\cdot\xi}(e^{-ix\cdot h}-1)f(x)\,\mathrm{d}x\), and dominated convergence applies.</p>
+    </div>
+
+    <h3>Convolution theorem</h3>
+    <p>Fourier transform turns convolution into multiplication.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> The 傅里叶变换 extends to a unitary operator on \(L^2\) after normalization. Thus frequency analysis preserves 希尔伯特-space energy.</p>
+        <p><span class="statement-title">定理.</span> If \(f,g\in L^1(\mathbb R^d)\), then \(\widehat{f*g}=\widehat f\,\widehat g\).</p>
     </div>
 
-    <h3>Characteristic functions</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">例.</span> For a probability law, \(\varphi_X(t)=\mathbb E e^{itX}\) is its 傅里叶变换. Products of characteristic functions correspond to sums of 独立 variables.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use Fubini:
+\[
+\widehat{f*g}(\xi)=\int e^{-ix\cdot\xi}\int f(x-y)g(y)\,\mathrm{d}y\,\mathrm{d}x.
+\]
+Set \(u=x-y\). The integral factors into \(\int e^{-iu\cdot\xi}f(u)\,\mathrm{d}u\int e^{-iy\cdot\xi}g(y)\,\mathrm{d}y\).</p>
+    </div>
+
+    <h3>Inversion on Schwartz functions</h3>
+    <p>For rapidly decreasing smooth functions, inversion is exact.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(f\) is a Schwartz function, then
+\[
+f(x)=(2\pi)^{-d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,\mathrm{d}\xi.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Insert a Gaussian cutoff \(e^{-\varepsilon|\xi|^2}\), whose inverse transform is an approximate identity. The regularized inverse equals convolution of \(f\) with a Gaussian kernel. As \(\varepsilon\downarrow0\), the approximate identity converges to \(f\) uniformly for Schwartz \(f\).</p>
+    </div>
+
+    <h3>Plancherel theorem</h3>
+    <p>Fourier transform extends from \(L^1\cap L^2\) to a unitary operator on \(L^2\).</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> With the standard normalization, \(\|\widehat f\|_2=(2\pi)^{d/2}\|f\|_2\) for \(f\in L^2\), after defining the transform by density.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Prove the identity first for Schwartz functions using inversion and Fubini. Since Schwartz functions are dense in \(L^2\), the transform extends uniquely by continuity to all \(L^2\). The norm identity passes to the limit.</p>
+    </div>
+
+    <h3>Differentiation and decay</h3>
+    <p>Smoothness in one domain corresponds to decay in the other.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For Schwartz \(f\), \(\widehat{\partial^\alpha f}(\xi)=(i\xi)^\alpha\widehat f(\xi)\) and \(\widehat{x^\alpha f}=i^{|\alpha|}\partial^\alpha_\xi\widehat f\), up to the chosen sign convention.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The derivative identity follows by integration by parts, with boundary terms vanishing because \(f\) is rapidly decreasing. The multiplication identity follows by differentiating under the integral sign with respect to \(\xi\).</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/fourier-series-and-orthogonality/" next_label="下一页" next_url="/notes/real-analysis/weak-convergence-of-measures/" %}

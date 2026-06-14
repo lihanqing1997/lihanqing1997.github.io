@@ -9,30 +9,64 @@ breadcrumb_child_label_zh: "4. 有理数的柯西完备化"
     <h2><a href="{{ '/notes/real-analysis/cauchy-completion-of-rationals/' | relative_url }}">4. Cauchy completion of the rationals</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/dedekind-cuts-and-real-line/" next_label="Next page" next_url="/notes/real-analysis/completeness-principles/" %}
 
-    <p>The Cauchy construction builds the real line by adding limits to rational Cauchy sequences. It is the metric counterpart to Dedekind's order-theoretic construction.</p>
-    <h3>Rational Cauchy sequences</h3>
+    <p>Cauchy completion builds real numbers from rational approximating sequences. It is the metric counterpart of Dedekind's order construction.</p>
+
+    <h3>Cauchy sequences and null sequences</h3>
+    <p>A sequence is Cauchy when its tail becomes internally indistinguishable, even before a limit is known.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A rational sequence \((q_n)\) is Cauchy if for every \(\varepsilon>0\) there is \(N\) such that \(|q_n-q_m|<\varepsilon\) whenever \(m,n\ge N\). This definition mentions only rational distances, not an external limit.</p>
+        <p><span class="statement-title">Definition.</span> A rational sequence \((q_n)\) is Cauchy if for every \(\varepsilon>0\) there is \(N\) such that \(|q_n-q_m|\lt \varepsilon\) for all \(m,n\ge N\). A null sequence satisfies \(q_n\to0\) in \(\mathbb Q\).</p>
     </div>
 
-    <h3>Equivalence of approximations</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> Every Cauchy sequence of rationals is bounded.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose \(N\) such that \(|q_n-q_N|\lt 1\) for \(n\ge N\). The tail is bounded by \(|q_N|+1\), and the finitely many initial terms have a maximum absolute value.</p>
+    </div>
+
+    <h3>Equivalence classes of approximations</h3>
+    <p>Two rational Cauchy sequences represent the same real number when their difference vanishes.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Two rational Cauchy sequences are equivalent when their difference tends to \(0\). A real number is an equivalence class of such sequences. Constant sequences embed \(\mathbb Q\) into the completion.</p>
+        <p><span class="statement-title">Definition.</span> Let \(\mathcal C\) be the set of rational Cauchy sequences and \(\mathcal N\) the set of rational null sequences. Define \((q_n)\sim(r_n)\) if \((q_n-r_n)\in\mathcal N\). The completion is \(\mathcal C/\mathcal N\).</p>
     </div>
 
-    <h3>Operations by representatives</h3>
-    <div class="math-statement construction">
-        <p><span class="statement-title">Construction.</span> Addition and multiplication are defined termwise: \([(q_n)]+[(r_n)]=[(q_n+r_n)]\) and \([(q_n)][(r_n)]=[(q_nr_n)]\). Cauchy estimates show these definitions do not depend on the chosen representatives.</p>
-    </div>
-
-    <h3>Completeness of the completion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Every Cauchy sequence of equivalence classes has a limit represented by a carefully chosen diagonal sequence of rational approximants. Thus the completion is complete as a metric space and also becomes a complete ordered field.</p>
-    </div>
-
-    <h3>Comparison with cuts</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A Cauchy real determines the cut of rationals below it, and a cut can be approached by rational sequences from inside. These maps preserve order and arithmetic, so the two constructions give isomorphic real lines.</p>
+        <p><span class="statement-title">Proposition.</span> Coordinatewise addition and multiplication are well-defined on \(\mathcal C/\mathcal N\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Sums and products of Cauchy sequences are Cauchy; products use boundedness of Cauchy sequences. If \(q_n-r_n\to0\) and \(u_n-v_n\to0\), then \((q_n+u_n)-(r_n+v_n)\to0\), and \(q_nu_n-r_nv_n=q_n(u_n-v_n)+v_n(q_n-r_n)\to0\) by boundedness.</p>
+    </div>
+
+    <h3>Order from eventual positivity</h3>
+    <p>Positivity is defined by being eventually separated from zero.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A class \([q_n]\) is positive if there exist \(\delta>0\) and \(N\) such that \(q_n>\delta\) for all \(n\ge N\). Define \([q_n]\le[r_n]\) if \([r_n-q_n]\) is positive or zero.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> This order is total and compatible with the field operations.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For a nonzero class \([q_n]\), the sequence cannot have subsequences arbitrarily close to both positive and negative values; otherwise Cauchyness would force convergence to zero. Thus exactly one of the class or its negative is positive. Compatibility follows from the corresponding rational inequalities for sufficiently large indices.</p>
+    </div>
+
+    <h3>Completeness of the completed field</h3>
+    <p>The construction is designed so that Cauchy approximations converge.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> The metric field \(\mathcal C/\mathcal N\) is complete.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(x_k\) be a Cauchy sequence of classes. Choose rational representatives \(q^{(k)}_n\), and pass to a subsequence, still denoted \(x_k\), with \(|x_{k+1}-x_k|\lt 2^{-k}\). Pick rational representatives \(a_k\) of \(x_k\) accurate within \(2^{-k}\). Then \((a_k)\) is a rational Cauchy sequence and its class is the limit of \(x_k\). The original sequence has the same limit because it is Cauchy.</p>
+    </div>
+
+    <h3>Equivalence with Dedekind reals</h3>
+    <p>The metric and order repairs give the same real line.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> A Cauchy class maps to the cut of rationals eventually below its representatives. Conversely, a cut is represented by any rational sequence increasing through the cut and approaching its boundary. These maps are inverse order-preserving field isomorphisms.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/dedekind-cuts-and-real-line/" next_label="Next page" next_url="/notes/real-analysis/completeness-principles/" %}
@@ -43,30 +77,64 @@ breadcrumb_child_label_zh: "4. 有理数的柯西完备化"
     <h2><a href="{{ '/notes/real-analysis/cauchy-completion-of-rationals/' | relative_url }}">4. Complétion de Cauchy des rationnels</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/dedekind-cuts-and-real-line/" next_label="Page suivante" next_url="/notes/real-analysis/completeness-principles/" %}
 
-    <p>The Cauchy construction builds the real line by adding limits to rational Cauchy sequences. It is the metric counterpart to Dedekind's order-theoretic construction.</p>
-    <h3>Rational Cauchy sequences</h3>
+    <p>Cauchy completion builds real numbers from rational approximating sequences. It is the metric counterpart of Dedekind's order construction.</p>
+
+    <h3>Cauchy sequences and null sequences</h3>
+    <p>A sequence is Cauchy when its tail becomes internally indistinguishable, even before a limit is known.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A rational sequence \((q_n)\) is Cauchy if for every \(\varepsilon>0\) there is \(N\) such that \(|q_n-q_m|<\varepsilon\) whenever \(m,n\ge N\). This definition mentions only rational distances, not an external limit.</p>
+        <p><span class="statement-title">Définition.</span> A rational sequence \((q_n)\) is Cauchy if for every \(\varepsilon>0\) there is \(N\) such that \(|q_n-q_m|\lt \varepsilon\) for all \(m,n\ge N\). A null sequence satisfies \(q_n\to0\) in \(\mathbb Q\).</p>
     </div>
 
-    <h3>Equivalence of approximations</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> Every Cauchy sequence of rationals is bounded.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose \(N\) such that \(|q_n-q_N|\lt 1\) for \(n\ge N\). The tail is bounded by \(|q_N|+1\), and the finitely many initial terms have a maximum absolute value.</p>
+    </div>
+
+    <h3>Equivalence classes of approximations</h3>
+    <p>Two rational Cauchy sequences represent the same real number when their difference vanishes.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Two rational Cauchy sequences are equivalent when their difference tends to \(0\). A real number is an equivalence class of such sequences. Constant sequences embed \(\mathbb Q\) into the completion.</p>
+        <p><span class="statement-title">Définition.</span> Let \(\mathcal C\) be the set of rational Cauchy sequences and \(\mathcal N\) the set of rational null sequences. Define \((q_n)\sim(r_n)\) if \((q_n-r_n)\in\mathcal N\). The completion is \(\mathcal C/\mathcal N\).</p>
     </div>
 
-    <h3>Operations by representatives</h3>
-    <div class="math-statement construction">
-        <p><span class="statement-title">Construction.</span> Addition and multiplication are defined termwise: \([(q_n)]+[(r_n)]=[(q_n+r_n)]\) and \([(q_n)][(r_n)]=[(q_nr_n)]\). Cauchy estimates show these definitions do not depend on the chosen representatives.</p>
-    </div>
-
-    <h3>Completeness of the completion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Every Cauchy sequence of equivalence classes has a limit represented by a carefully chosen diagonal sequence of rational approximants. Thus the completion is complete as a metric space and also becomes a complete ordered field.</p>
-    </div>
-
-    <h3>Comparison with cuts</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A Cauchy real determines the cut of rationals below it, and a cut can be approached by rational sequences from inside. These maps preserve order and arithmetic, so the two constructions give isomorphic real lines.</p>
+        <p><span class="statement-title">Proposition.</span> Coordinatewise addition and multiplication are well-defined on \(\mathcal C/\mathcal N\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Sums and products of Cauchy sequences are Cauchy; products use boundedness of Cauchy sequences. If \(q_n-r_n\to0\) and \(u_n-v_n\to0\), then \((q_n+u_n)-(r_n+v_n)\to0\), and \(q_nu_n-r_nv_n=q_n(u_n-v_n)+v_n(q_n-r_n)\to0\) by boundedness.</p>
+    </div>
+
+    <h3>Order from eventual positivity</h3>
+    <p>Positivity is defined by being eventually separated from zero.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A class \([q_n]\) is positive if there exist \(\delta>0\) and \(N\) such that \(q_n>\delta\) for all \(n\ge N\). Define \([q_n]\le[r_n]\) if \([r_n-q_n]\) is positive or zero.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> This order is total and compatible with the field operations.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For a nonzero class \([q_n]\), the sequence cannot have subsequences arbitrarily close to both positive and negative values; otherwise Cauchyness would force convergence to zero. Thus exactly one of the class or its negative is positive. Compatibility follows from the corresponding rational inequalities for sufficiently large indices.</p>
+    </div>
+
+    <h3>Completeness of the completed field</h3>
+    <p>The construction is designed so that Cauchy approximations converge.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> The metric field \(\mathcal C/\mathcal N\) is complete.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Let \(x_k\) be a Cauchy sequence of classes. Choose rational representatives \(q^{(k)}_n\), and pass to a subsequence, still denoted \(x_k\), with \(|x_{k+1}-x_k|\lt 2^{-k}\). Pick rational representatives \(a_k\) of \(x_k\) accurate within \(2^{-k}\). Then \((a_k)\) is a rational Cauchy sequence and its class is the limit of \(x_k\). The original sequence has the same limit because it is Cauchy.</p>
+    </div>
+
+    <h3>Equivalence with Dedekind reals</h3>
+    <p>The metric and order repairs give the same real line.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> A Cauchy class maps to the cut of rationals eventually below its representatives. Conversely, a cut is represented by any rational sequence increasing through the cut and approaching its boundary. These maps are inverse order-preserving field isomorphisms.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/dedekind-cuts-and-real-line/" next_label="Page suivante" next_url="/notes/real-analysis/completeness-principles/" %}
@@ -77,30 +145,64 @@ breadcrumb_child_label_zh: "4. 有理数的柯西完备化"
     <h2><a href="{{ '/notes/real-analysis/cauchy-completion-of-rationals/' | relative_url }}">4. 有理数的柯西完备化</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/dedekind-cuts-and-real-line/" next_label="下一页" next_url="/notes/real-analysis/completeness-principles/" %}
 
-    <p>The 柯西 construction builds the real line by adding limits to rational 柯西列. It is the 度量 counterpart to 戴德金's order-theoretic construction.</p>
-    <h3>Rational 柯西列</h3>
+    <p>Cauchy completion builds real numbers from rational approximating sequences. It is the metric counterpart of Dedekind's order construction.</p>
+
+    <h3>Cauchy sequences and null sequences</h3>
+    <p>A sequence is Cauchy when its tail becomes internally indistinguishable, even before a limit is known.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A rational sequence \((q_n)\) is 柯西 if for every \(\varepsilon>0\) there is \(N\) such that \(|q_n-q_m|<\varepsilon\) whenever \(m,n\ge N\). This 定义 mentions only rational distances, not an external limit.</p>
+        <p><span class="statement-title">定义.</span> A rational sequence \((q_n)\) is Cauchy if for every \(\varepsilon>0\) there is \(N\) such that \(|q_n-q_m|\lt \varepsilon\) for all \(m,n\ge N\). A null sequence satisfies \(q_n\to0\) in \(\mathbb Q\).</p>
     </div>
 
-    <h3>Equivalence of approximations</h3>
+    <div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> Every Cauchy sequence of rationals is bounded.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose \(N\) such that \(|q_n-q_N|\lt 1\) for \(n\ge N\). The tail is bounded by \(|q_N|+1\), and the finitely many initial terms have a maximum absolute value.</p>
+    </div>
+
+    <h3>Equivalence classes of approximations</h3>
+    <p>Two rational Cauchy sequences represent the same real number when their difference vanishes.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Two rational 柯西列 are equivalent when their difference tends to \(0\). A real number is an equivalence class of such sequences. Constant sequences embed \(\mathbb Q\) into the 完备化.</p>
+        <p><span class="statement-title">定义.</span> Let \(\mathcal C\) be the set of rational Cauchy sequences and \(\mathcal N\) the set of rational null sequences. Define \((q_n)\sim(r_n)\) if \((q_n-r_n)\in\mathcal N\). The completion is \(\mathcal C/\mathcal N\).</p>
     </div>
 
-    <h3>Operations by representatives</h3>
-    <div class="math-statement construction">
-        <p><span class="statement-title">构造.</span> Addition and multiplication are defined termwise: \([(q_n)]+[(r_n)]=[(q_n+r_n)]\) and \([(q_n)][(r_n)]=[(q_nr_n)]\). 柯西 estimates show these definitions do not depend on the chosen representatives.</p>
-    </div>
-
-    <h3>完备性 of the 完备化</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Every 柯西列 of equivalence classes has a limit represented by a carefully chosen diagonal sequence of rational approximants. Thus the 完备化 is complete as a 度量空间 and also becomes a complete ordered field.</p>
-    </div>
-
-    <h3>Comparison with cuts</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> A 柯西 real determines the cut of rationals below it, and a cut can be approached by rational sequences from inside. These maps preserve order and arithmetic, so the two constructions give isomorphic real lines.</p>
+        <p><span class="statement-title">命题.</span> Coordinatewise addition and multiplication are well-defined on \(\mathcal C/\mathcal N\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Sums and products of Cauchy sequences are Cauchy; products use boundedness of Cauchy sequences. If \(q_n-r_n\to0\) and \(u_n-v_n\to0\), then \((q_n+u_n)-(r_n+v_n)\to0\), and \(q_nu_n-r_nv_n=q_n(u_n-v_n)+v_n(q_n-r_n)\to0\) by boundedness.</p>
+    </div>
+
+    <h3>Order from eventual positivity</h3>
+    <p>Positivity is defined by being eventually separated from zero.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A class \([q_n]\) is positive if there exist \(\delta>0\) and \(N\) such that \(q_n>\delta\) for all \(n\ge N\). Define \([q_n]\le[r_n]\) if \([r_n-q_n]\) is positive or zero.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> This order is total and compatible with the field operations.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For a nonzero class \([q_n]\), the sequence cannot have subsequences arbitrarily close to both positive and negative values; otherwise Cauchyness would force convergence to zero. Thus exactly one of the class or its negative is positive. Compatibility follows from the corresponding rational inequalities for sufficiently large indices.</p>
+    </div>
+
+    <h3>Completeness of the completed field</h3>
+    <p>The construction is designed so that Cauchy approximations converge.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> The metric field \(\mathcal C/\mathcal N\) is complete.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Let \(x_k\) be a Cauchy sequence of classes. Choose rational representatives \(q^{(k)}_n\), and pass to a subsequence, still denoted \(x_k\), with \(|x_{k+1}-x_k|\lt 2^{-k}\). Pick rational representatives \(a_k\) of \(x_k\) accurate within \(2^{-k}\). Then \((a_k)\) is a rational Cauchy sequence and its class is the limit of \(x_k\). The original sequence has the same limit because it is Cauchy.</p>
+    </div>
+
+    <h3>Equivalence with Dedekind reals</h3>
+    <p>The metric and order repairs give the same real line.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> A Cauchy class maps to the cut of rationals eventually below its representatives. Conversely, a cut is represented by any rational sequence increasing through the cut and approaching its boundary. These maps are inverse order-preserving field isomorphisms.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/dedekind-cuts-and-real-line/" next_label="下一页" next_url="/notes/real-analysis/completeness-principles/" %}

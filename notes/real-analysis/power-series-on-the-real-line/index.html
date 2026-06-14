@@ -9,30 +9,63 @@ breadcrumb_child_label_zh: "22. 实直线上的幂级数"
     <h2><a href="{{ '/notes/real-analysis/power-series-on-the-real-line/' | relative_url }}">22. Power series on the real line</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/fundamental-theorem-of-calculus-and-change-of-variables/" next_label="Next page" next_url="/notes/real-analysis/multivariable-differentiation/" %}
 
-    <p>Power series define functions from infinite coefficient sequences. Their convergence is local, but inside the radius of convergence they behave like polynomials.</p>
+    <p>Power series are functions defined by infinite algebraic data. Inside their radius of convergence they behave like polynomials: continuous, differentiable, and integrable term by term.</p>
+
     <h3>Radius of convergence</h3>
+    <p>The convergence set of a power series is controlled by one number.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For \(\sum a_n(x-c)^n\) there is \(R\in[0,\infty]\) such that the series converges absolutely for \(|x-c|<R\) and diverges for \(|x-c|>R\). The Cauchy-Hadamard formula is \(1/R=\limsup |a_n|^{1/n}\).</p>
+        <p><span class="statement-title">Theorem.</span> For \(\sum_{n=0}^\infty a_n(x-c)^n\), there is \(R\in[0,\infty]\) such that the series converges absolutely for \(|x-c|\lt R\) and diverges for \(|x-c|>R\). Moreover \(1/R=\limsup |a_n|^{1/n}\).</p>
     </div>
 
-    <h3>Compact-uniform convergence</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply the root test to terms \(a_n(x-c)^n\). The limsup of the \(n\)-th roots is \(|x-c|\limsup |a_n|^{1/n}\). It is below \(1\) inside the radius and above \(1\) outside.</p>
+    </div>
+
+    <h3>Uniform convergence on compact subintervals</h3>
+    <p>Inside the radius, convergence is locally uniform.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Inside the radius, convergence is uniform on every compact subinterval. This follows from the Weierstrass test after choosing \(r<R\).</p>
+        <p><span class="statement-title">Proposition.</span> If \(0\lt r\lt R\), then \(\sum a_n(x-c)^n\) converges uniformly and absolutely on \(|x-c|\le r\).</p>
     </div>
 
-    <h3>Termwise operations</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose \(\rho\) with \(r\lt \rho\lt R\). Since \(\sum |a_n|\rho^n\) converges, \(|a_n(x-c)^n|\le |a_n|r^n\le |a_n|\rho^n\) on \(|x-c|\le r\). The Weierstrass test gives uniform absolute convergence.</p>
+    </div>
+
+    <h3>Termwise differentiation</h3>
+    <p>The derivative series has the same radius of convergence.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Power series may be differentiated and integrated term by term inside their radius of convergence, and the resulting series have the same radius.</p>
+        <p><span class="statement-title">Theorem.</span> Inside \(|x-c|\lt R\), the sum \(f(x)=\sum a_n(x-c)^n\) is differentiable and
+\[
+f'(x)=\sum_{n=1}^\infty n a_n(x-c)^{n-1}.
+\]</p>
     </div>
 
-    <h3>Analytic versus smooth</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Counterexample.</span> A smooth function need not equal its Taylor series. The standard function \(e^{-1/x^2}\) for positive \(x\), extended by zero at the origin, is smooth but flat at \(0\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The differentiated series has the same radius because \(\lim n^{1/n}=1\). On every compact subinterval inside the radius, the derivative series converges uniformly, and the original series converges at \(c\). The theorem on differentiating uniformly convergent derivative series applies.</p>
     </div>
 
-    <h3>Moment generating functions</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> If \(M(t)=\mathbb E e^{tX}\) is finite near \(0\), then its derivatives at zero recover moments. The neighborhood condition supplies the domination needed for termwise differentiation.</p>
+    <h3>Termwise integration</h3>
+    <p>Power series can be integrated coefficient by coefficient.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For \(|x-c|\lt R\),
+\[
+\int_c^x\sum_{n=0}^\infty a_n(t-c)^n\,\mathrm{d}t
+=\sum_{n=0}^\infty \frac{a_n}{n+1}(x-c)^{n+1}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On the interval between \(c\) and \(x\), choose a compact subinterval strictly inside the radius. Uniform convergence permits interchanging the Riemann or Lebesgue integral with the infinite sum.</p>
+    </div>
+
+    <h3>Identity principle on intervals</h3>
+    <p>Coefficients are uniquely determined by the local function.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If a power series centered at \(c\) vanishes on a nonempty open interval inside its radius, then every coefficient is zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Since the sum is infinitely differentiable and derivatives are obtained termwise, \(a_n=f^{(n)}(c)/n!\). If the function vanishes on a neighborhood of \(c\), all derivatives at \(c\) vanish, hence all coefficients vanish. If the open interval does not contain \(c\), recenter at a point in the interval and continue by overlapping intervals.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/fundamental-theorem-of-calculus-and-change-of-variables/" next_label="Next page" next_url="/notes/real-analysis/multivariable-differentiation/" %}
@@ -43,30 +76,63 @@ breadcrumb_child_label_zh: "22. 实直线上的幂级数"
     <h2><a href="{{ '/notes/real-analysis/power-series-on-the-real-line/' | relative_url }}">22. Séries entières sur la droite réelle</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/fundamental-theorem-of-calculus-and-change-of-variables/" next_label="Page suivante" next_url="/notes/real-analysis/multivariable-differentiation/" %}
 
-    <p>Power series define functions from infinite coefficient sequences. Their convergence is local, but inside the radius of convergence they behave like polynomials.</p>
+    <p>Power series are functions defined by infinite algebraic data. Inside their radius of convergence they behave like polynomials: continuous, differentiable, and integrable term by term.</p>
+
     <h3>Radius of convergence</h3>
+    <p>The convergence set of a power series is controlled by one number.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> For \(\sum a_n(x-c)^n\) there is \(R\in[0,\infty]\) such that the series converges absolutely for \(|x-c|<R\) and diverges for \(|x-c|>R\). The Cauchy-Hadamard formula is \(1/R=\limsup |a_n|^{1/n}\).</p>
+        <p><span class="statement-title">Théorème.</span> For \(\sum_{n=0}^\infty a_n(x-c)^n\), there is \(R\in[0,\infty]\) such that the series converges absolutely for \(|x-c|\lt R\) and diverges for \(|x-c|>R\). Moreover \(1/R=\limsup |a_n|^{1/n}\).</p>
     </div>
 
-    <h3>Compact-uniform convergence</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Apply the root test to terms \(a_n(x-c)^n\). The limsup of the \(n\)-th roots is \(|x-c|\limsup |a_n|^{1/n}\). It is below \(1\) inside the radius and above \(1\) outside.</p>
+    </div>
+
+    <h3>Uniform convergence on compact subintervals</h3>
+    <p>Inside the radius, convergence is locally uniform.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Inside the radius, convergence is uniform on every compact subinterval. This follows from the Weierstrass test after choosing \(r<R\).</p>
+        <p><span class="statement-title">Proposition.</span> If \(0\lt r\lt R\), then \(\sum a_n(x-c)^n\) converges uniformly and absolutely on \(|x-c|\le r\).</p>
     </div>
 
-    <h3>Termwise operations</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Choose \(\rho\) with \(r\lt \rho\lt R\). Since \(\sum |a_n|\rho^n\) converges, \(|a_n(x-c)^n|\le |a_n|r^n\le |a_n|\rho^n\) on \(|x-c|\le r\). The Weierstrass test gives uniform absolute convergence.</p>
+    </div>
+
+    <h3>Termwise differentiation</h3>
+    <p>The derivative series has the same radius of convergence.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Power series may be differentiated and integrated term by term inside their radius of convergence, and the resulting series have the same radius.</p>
+        <p><span class="statement-title">Théorème.</span> Inside \(|x-c|\lt R\), the sum \(f(x)=\sum a_n(x-c)^n\) is differentiable and
+\[
+f'(x)=\sum_{n=1}^\infty n a_n(x-c)^{n-1}.
+\]</p>
     </div>
 
-    <h3>Analytic versus smooth</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">Contre-exemple.</span> A smooth function need not equal its Taylor series. The standard function \(e^{-1/x^2}\) for positive \(x\), extended by zero at the origin, is smooth but flat at \(0\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The differentiated series has the same radius because \(\lim n^{1/n}=1\). On every compact subinterval inside the radius, the derivative series converges uniformly, and the original series converges at \(c\). The theorem on differentiating uniformly convergent derivative series applies.</p>
     </div>
 
-    <h3>Moment generating functions</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">Exemple.</span> If \(M(t)=\mathbb E e^{tX}\) is finite near \(0\), then its derivatives at zero recover moments. The neighborhood condition supplies the domination needed for termwise differentiation.</p>
+    <h3>Termwise integration</h3>
+    <p>Power series can be integrated coefficient by coefficient.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For \(|x-c|\lt R\),
+\[
+\int_c^x\sum_{n=0}^\infty a_n(t-c)^n\,\mathrm{d}t
+=\sum_{n=0}^\infty \frac{a_n}{n+1}(x-c)^{n+1}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On the interval between \(c\) and \(x\), choose a compact subinterval strictly inside the radius. Uniform convergence permits interchanging the Riemann or Lebesgue integral with the infinite sum.</p>
+    </div>
+
+    <h3>Identity principle on intervals</h3>
+    <p>Coefficients are uniquely determined by the local function.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If a power series centered at \(c\) vanishes on a nonempty open interval inside its radius, then every coefficient is zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Since the sum is infinitely differentiable and derivatives are obtained termwise, \(a_n=f^{(n)}(c)/n!\). If the function vanishes on a neighborhood of \(c\), all derivatives at \(c\) vanish, hence all coefficients vanish. If the open interval does not contain \(c\), recenter at a point in the interval and continue by overlapping intervals.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/fundamental-theorem-of-calculus-and-change-of-variables/" next_label="Page suivante" next_url="/notes/real-analysis/multivariable-differentiation/" %}
@@ -77,30 +143,63 @@ breadcrumb_child_label_zh: "22. 实直线上的幂级数"
     <h2><a href="{{ '/notes/real-analysis/power-series-on-the-real-line/' | relative_url }}">22. 实直线上的幂级数</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/fundamental-theorem-of-calculus-and-change-of-variables/" next_label="下一页" next_url="/notes/real-analysis/multivariable-differentiation/" %}
 
-    <p>Power series define functions from infinite coefficient sequences. Their convergence is local, but inside the radius of convergence they behave like polynomials.</p>
+    <p>Power series are functions defined by infinite algebraic data. Inside their radius of convergence they behave like polynomials: continuous, differentiable, and integrable term by term.</p>
+
     <h3>Radius of convergence</h3>
+    <p>The convergence set of a power series is controlled by one number.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> For \(\sum a_n(x-c)^n\) there is \(R\in[0,\infty]\) such that the series converges absolutely for \(|x-c|<R\) and diverges for \(|x-c|>R\). The 柯西-Hadamard formula is \(1/R=\limsup |a_n|^{1/n}\).</p>
+        <p><span class="statement-title">定理.</span> For \(\sum_{n=0}^\infty a_n(x-c)^n\), there is \(R\in[0,\infty]\) such that the series converges absolutely for \(|x-c|\lt R\) and diverges for \(|x-c|>R\). Moreover \(1/R=\limsup |a_n|^{1/n}\).</p>
     </div>
 
-    <h3>紧-一致收敛</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Apply the root test to terms \(a_n(x-c)^n\). The limsup of the \(n\)-th roots is \(|x-c|\limsup |a_n|^{1/n}\). It is below \(1\) inside the radius and above \(1\) outside.</p>
+    </div>
+
+    <h3>Uniform convergence on compact subintervals</h3>
+    <p>Inside the radius, convergence is locally uniform.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Inside the radius, convergence is uniform on every 紧 subinterval. This follows from the 魏尔斯特拉斯 test after choosing \(r<R\).</p>
+        <p><span class="statement-title">命题.</span> If \(0\lt r\lt R\), then \(\sum a_n(x-c)^n\) converges uniformly and absolutely on \(|x-c|\le r\).</p>
     </div>
 
-    <h3>Termwise operations</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Choose \(\rho\) with \(r\lt \rho\lt R\). Since \(\sum |a_n|\rho^n\) converges, \(|a_n(x-c)^n|\le |a_n|r^n\le |a_n|\rho^n\) on \(|x-c|\le r\). The Weierstrass test gives uniform absolute convergence.</p>
+    </div>
+
+    <h3>Termwise differentiation</h3>
+    <p>The derivative series has the same radius of convergence.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Power series may be differentiated and integrated term by term inside their radius of convergence, and the resulting series have the same radius.</p>
+        <p><span class="statement-title">定理.</span> Inside \(|x-c|\lt R\), the sum \(f(x)=\sum a_n(x-c)^n\) is differentiable and
+\[
+f'(x)=\sum_{n=1}^\infty n a_n(x-c)^{n-1}.
+\]</p>
     </div>
 
-    <h3>解析 versus smooth</h3>
-    <div class="math-statement counterexample">
-        <p><span class="statement-title">反例.</span> A smooth function need not equal its 泰勒 series. The standard function \(e^{-1/x^2}\) for positive \(x\), extended by zero at the origin, is smooth but flat at \(0\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The differentiated series has the same radius because \(\lim n^{1/n}=1\). On every compact subinterval inside the radius, the derivative series converges uniformly, and the original series converges at \(c\). The theorem on differentiating uniformly convergent derivative series applies.</p>
     </div>
 
-    <h3>Moment generating functions</h3>
-    <div class="math-statement example">
-        <p><span class="statement-title">例.</span> If \(M(t)=\mathbb E e^{tX}\) is finite near \(0\), then its derivatives at zero recover moments. The neighborhood condition supplies the domination needed for termwise differentiation.</p>
+    <h3>Termwise integration</h3>
+    <p>Power series can be integrated coefficient by coefficient.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For \(|x-c|\lt R\),
+\[
+\int_c^x\sum_{n=0}^\infty a_n(t-c)^n\,\mathrm{d}t
+=\sum_{n=0}^\infty \frac{a_n}{n+1}(x-c)^{n+1}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> On the interval between \(c\) and \(x\), choose a compact subinterval strictly inside the radius. Uniform convergence permits interchanging the Riemann or Lebesgue integral with the infinite sum.</p>
+    </div>
+
+    <h3>Identity principle on intervals</h3>
+    <p>Coefficients are uniquely determined by the local function.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If a power series centered at \(c\) vanishes on a nonempty open interval inside its radius, then every coefficient is zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Since the sum is infinitely differentiable and derivatives are obtained termwise, \(a_n=f^{(n)}(c)/n!\). If the function vanishes on a neighborhood of \(c\), all derivatives at \(c\) vanish, hence all coefficients vanish. If the open interval does not contain \(c\), recenter at a point in the interval and continue by overlapping intervals.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/fundamental-theorem-of-calculus-and-change-of-variables/" next_label="下一页" next_url="/notes/real-analysis/multivariable-differentiation/" %}

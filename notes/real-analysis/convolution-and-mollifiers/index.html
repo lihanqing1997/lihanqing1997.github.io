@@ -9,30 +9,63 @@ breadcrumb_child_label_zh: "45. 卷积与磨光核"
     <h2><a href="{{ '/notes/real-analysis/convolution-and-mollifiers/' | relative_url }}">45. Convolution and mollifiers</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/approximation-by-smooth-and-simple-functions/" next_label="Next page" next_url="/notes/real-analysis/fourier-series-and-orthogonality/" %}
 
-    <p>Convolution averages a function by translation. Mollifiers use this operation to create smooth approximations to rough functions.</p>
-    <h3>Convolution</h3>
+    <p>Convolution averages a function against translated kernels. Mollifiers use this operation to turn rough functions into smooth approximations.</p>
+
+    <h3>Convolution definition</h3>
+    <p>Convolution combines translation and integration.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For functions on \(\mathbb R^d\), \((f*g)(x)=\int f(x-y)g(y)\,\mathrm{d}y\) when the integral exists. Convolution is commutative under standard integrability assumptions.</p>
+        <p><span class="statement-title">Definition.</span> For suitable functions \(f,g\) on \(\mathbb R^d\), define
+\[
+(f*g)(x)=\int_{\mathbb R^d} f(x-y)g(y)\,\mathrm{d}y.
+\]</p>
     </div>
 
-    <h3>Boundedness on Lp</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(g\in L^1\), then \(\|f*g\|_p\le\|f\|_p\|g\|_1\) for \(1\le p\le\infty\). Thus integrable kernels act as bounded smoothing operators.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f\in L^p\) and \(g\in L^1\), then \(f*g\) is defined almost everywhere and \(\|f*g\|_p\le\|f\|_p\|g\|_1\).</p>
     </div>
 
-    <h3>Mollifiers</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Minkowski's integral inequality gives \(\|f*g\|_p\le\int |g(y)|\|f(\cdot-y)\|_p\,\mathrm{d}y=\|f\|_p\|g\|_1\). The \(p=\infty\) case is direct from the essential supremum.</p>
+    </div>
+
+    <h3>Smoothness by convolution</h3>
+    <p>Smooth kernels transfer smoothness to the convolution.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(g\in C_c^\infty(\mathbb R^d)\) and \(f\in L^1_{\mathrm{loc}}\), then \(f*g\in C^\infty\), and \(\partial^\alpha(f*g)=f*(\partial^\alpha g)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Difference quotients may be passed under the integral because the support of \(g\) is compact and derivatives of \(g\) are bounded. Dominated convergence justifies differentiating under the integral, and iteration gives all multi-index derivatives.</p>
+    </div>
+
+    <h3>Approximate identities</h3>
+    <p>A mollifier concentrates mass near the origin while preserving total mass one.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A mollifier is a nonnegative \(\rho\in C_c^\infty\) with \(\int \rho\,\mathrm{d}x=1\). Set \(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\).</p>
+        <p><span class="statement-title">Definition.</span> A standard mollifier is \(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\), where \(\rho\in C_c^\infty\), \(\rho\ge0\), and \(\int\rho=1\).</p>
     </div>
 
-    <h3>Approximate identity</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\in L^p(\mathbb R^d)\) with \(1\le p<\infty\), then \(\rho_\varepsilon*f\to f\) in \(L^p\) as \(\varepsilon\downarrow0\).</p>
+        <p><span class="statement-title">Theorem.</span> If \(f\in L^p(\mathbb R^d)\), \(1\le p\lt \infty\), then \(\rho_\varepsilon*f\to f\) in \(L^p\). If \(f\) is bounded and uniformly continuous, convergence is uniform.</p>
     </div>
 
-    <h3>Kernel smoothing</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Write \(\rho_\varepsilon*f-f=\int\rho_\varepsilon(y)(f(\cdot-y)-f)\,\mathrm{d}y\). For \(L^p\), use Minkowski and continuity of translations in \(L^p\). For uniform convergence, use the modulus of continuity and the fact that \(\rho_\varepsilon\) is supported near zero.</p>
+    </div>
+
+    <h3>Support and boundary effects</h3>
+    <p>Convolution expands support by the support of the kernel.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> \(\operatorname{supp}(f*g)\subset \operatorname{supp}f+\operatorname{supp}g\) whenever the convolution is defined and the supports are closed in the usual sense.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(x\) is outside the Minkowski sum of the supports, then for every \(y\), either \(y\notin\operatorname{supp}g\) or \(x-y\notin\operatorname{supp}f\). Thus the integrand vanishes in a neighborhood sense almost everywhere, so \((f*g)(x)=0\).</p>
+    </div>
+
+    <h3>Mollifiers as local averages</h3>
+    <p>Mollification is a controlled local blur.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Kernel density estimators are empirical convolutions. Deterministic mollifier theory explains bias and smoothness, while probability controls stochastic fluctuation.</p>
+        <p><span class="statement-title">Remark.</span> Mollifiers preserve constants, commute with derivatives in the weak sense, and provide the standard path from \(L^p\) functions to smooth test functions.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/approximation-by-smooth-and-simple-functions/" next_label="Next page" next_url="/notes/real-analysis/fourier-series-and-orthogonality/" %}
@@ -43,30 +76,63 @@ breadcrumb_child_label_zh: "45. 卷积与磨光核"
     <h2><a href="{{ '/notes/real-analysis/convolution-and-mollifiers/' | relative_url }}">45. Convolution et régularisation</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/approximation-by-smooth-and-simple-functions/" next_label="Page suivante" next_url="/notes/real-analysis/fourier-series-and-orthogonality/" %}
 
-    <p>Convolution averages a function by translation. Mollifiers use this operation to create smooth approximations to rough functions.</p>
-    <h3>Convolution</h3>
+    <p>Convolution averages a function against translated kernels. Mollifiers use this operation to turn rough functions into smooth approximations.</p>
+
+    <h3>Convolution definition</h3>
+    <p>Convolution combines translation and integration.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For functions on \(\mathbb R^d\), \((f*g)(x)=\int f(x-y)g(y)\,\mathrm{d}y\) when the integral exists. Convolution is commutative under standard integrability assumptions.</p>
+        <p><span class="statement-title">Définition.</span> For suitable functions \(f,g\) on \(\mathbb R^d\), define
+\[
+(f*g)(x)=\int_{\mathbb R^d} f(x-y)g(y)\,\mathrm{d}y.
+\]</p>
     </div>
 
-    <h3>Boundedness on Lp</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(g\in L^1\), then \(\|f*g\|_p\le\|f\|_p\|g\|_1\) for \(1\le p\le\infty\). Thus integrable kernels act as bounded smoothing operators.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f\in L^p\) and \(g\in L^1\), then \(f*g\) is defined almost everywhere and \(\|f*g\|_p\le\|f\|_p\|g\|_1\).</p>
     </div>
 
-    <h3>Mollifiers</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Minkowski's integral inequality gives \(\|f*g\|_p\le\int |g(y)|\|f(\cdot-y)\|_p\,\mathrm{d}y=\|f\|_p\|g\|_1\). The \(p=\infty\) case is direct from the essential supremum.</p>
+    </div>
+
+    <h3>Smoothness by convolution</h3>
+    <p>Smooth kernels transfer smoothness to the convolution.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(g\in C_c^\infty(\mathbb R^d)\) and \(f\in L^1_{\mathrm{loc}}\), then \(f*g\in C^\infty\), and \(\partial^\alpha(f*g)=f*(\partial^\alpha g)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Difference quotients may be passed under the integral because the support of \(g\) is compact and derivatives of \(g\) are bounded. Dominated convergence justifies differentiating under the integral, and iteration gives all multi-index derivatives.</p>
+    </div>
+
+    <h3>Approximate identities</h3>
+    <p>A mollifier concentrates mass near the origin while preserving total mass one.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A mollifier is a nonnegative \(\rho\in C_c^\infty\) with \(\int \rho\,\mathrm{d}x=1\). Set \(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\).</p>
+        <p><span class="statement-title">Définition.</span> A standard mollifier is \(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\), where \(\rho\in C_c^\infty\), \(\rho\ge0\), and \(\int\rho=1\).</p>
     </div>
 
-    <h3>Approximate identity</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(f\in L^p(\mathbb R^d)\) with \(1\le p<\infty\), then \(\rho_\varepsilon*f\to f\) in \(L^p\) as \(\varepsilon\downarrow0\).</p>
+        <p><span class="statement-title">Théorème.</span> If \(f\in L^p(\mathbb R^d)\), \(1\le p\lt \infty\), then \(\rho_\varepsilon*f\to f\) in \(L^p\). If \(f\) is bounded and uniformly continuous, convergence is uniform.</p>
     </div>
 
-    <h3>Kernel smoothing</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Write \(\rho_\varepsilon*f-f=\int\rho_\varepsilon(y)(f(\cdot-y)-f)\,\mathrm{d}y\). For \(L^p\), use Minkowski and continuity of translations in \(L^p\). For uniform convergence, use the modulus of continuity and the fact that \(\rho_\varepsilon\) is supported near zero.</p>
+    </div>
+
+    <h3>Support and boundary effects</h3>
+    <p>Convolution expands support by the support of the kernel.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> \(\operatorname{supp}(f*g)\subset \operatorname{supp}f+\operatorname{supp}g\) whenever the convolution is defined and the supports are closed in the usual sense.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(x\) is outside the Minkowski sum of the supports, then for every \(y\), either \(y\notin\operatorname{supp}g\) or \(x-y\notin\operatorname{supp}f\). Thus the integrand vanishes in a neighborhood sense almost everywhere, so \((f*g)(x)=0\).</p>
+    </div>
+
+    <h3>Mollifiers as local averages</h3>
+    <p>Mollification is a controlled local blur.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Kernel density estimators are empirical convolutions. Deterministic mollifier theory explains bias and smoothness, while probability controls stochastic fluctuation.</p>
+        <p><span class="statement-title">Remarque.</span> Mollifiers preserve constants, commute with derivatives in the weak sense, and provide the standard path from \(L^p\) functions to smooth test functions.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/approximation-by-smooth-and-simple-functions/" next_label="Page suivante" next_url="/notes/real-analysis/fourier-series-and-orthogonality/" %}
@@ -77,30 +143,63 @@ breadcrumb_child_label_zh: "45. 卷积与磨光核"
     <h2><a href="{{ '/notes/real-analysis/convolution-and-mollifiers/' | relative_url }}">45. 卷积与磨光核</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/approximation-by-smooth-and-simple-functions/" next_label="下一页" next_url="/notes/real-analysis/fourier-series-and-orthogonality/" %}
 
-    <p>Convolution averages a function by translation. Mollifiers use this operation to create smooth approximations to rough functions.</p>
-    <h3>Convolution</h3>
+    <p>Convolution averages a function against translated kernels. Mollifiers use this operation to turn rough functions into smooth approximations.</p>
+
+    <h3>Convolution definition</h3>
+    <p>Convolution combines translation and integration.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For functions on \(\mathbb R^d\), \((f*g)(x)=\int f(x-y)g(y)\,\mathrm{d}y\) when the integral exists. Convolution is commutative under standard integrability assumptions.</p>
+        <p><span class="statement-title">定义.</span> For suitable functions \(f,g\) on \(\mathbb R^d\), define
+\[
+(f*g)(x)=\int_{\mathbb R^d} f(x-y)g(y)\,\mathrm{d}y.
+\]</p>
     </div>
 
-    <h3>Boundedness on Lp</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(g\in L^1\), then \(\|f*g\|_p\le\|f\|_p\|g\|_1\) for \(1\le p\le\infty\). Thus integrable kernels act as 有界 smoothing operators.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(f\in L^p\) and \(g\in L^1\), then \(f*g\) is defined almost everywhere and \(\|f*g\|_p\le\|f\|_p\|g\|_1\).</p>
     </div>
 
-    <h3>Mollifiers</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Minkowski's integral inequality gives \(\|f*g\|_p\le\int |g(y)|\|f(\cdot-y)\|_p\,\mathrm{d}y=\|f\|_p\|g\|_1\). The \(p=\infty\) case is direct from the essential supremum.</p>
+    </div>
+
+    <h3>Smoothness by convolution</h3>
+    <p>Smooth kernels transfer smoothness to the convolution.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(g\in C_c^\infty(\mathbb R^d)\) and \(f\in L^1_{\mathrm{loc}}\), then \(f*g\in C^\infty\), and \(\partial^\alpha(f*g)=f*(\partial^\alpha g)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Difference quotients may be passed under the integral because the support of \(g\) is compact and derivatives of \(g\) are bounded. Dominated convergence justifies differentiating under the integral, and iteration gives all multi-index derivatives.</p>
+    </div>
+
+    <h3>Approximate identities</h3>
+    <p>A mollifier concentrates mass near the origin while preserving total mass one.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A mollifier is a nonnegative \(\rho\in C_c^\infty\) with \(\int \rho\,\mathrm{d}x=1\). Set \(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\).</p>
+        <p><span class="statement-title">定义.</span> A standard mollifier is \(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\), where \(\rho\in C_c^\infty\), \(\rho\ge0\), and \(\int\rho=1\).</p>
     </div>
 
-    <h3>Approximate identity</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(f\in L^p(\mathbb R^d)\) with \(1\le p<\infty\), then \(\rho_\varepsilon*f\to f\) in \(L^p\) as \(\varepsilon\downarrow0\).</p>
+        <p><span class="statement-title">定理.</span> If \(f\in L^p(\mathbb R^d)\), \(1\le p\lt \infty\), then \(\rho_\varepsilon*f\to f\) in \(L^p\). If \(f\) is bounded and uniformly continuous, convergence is uniform.</p>
     </div>
 
-    <h3>核 smoothing</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Write \(\rho_\varepsilon*f-f=\int\rho_\varepsilon(y)(f(\cdot-y)-f)\,\mathrm{d}y\). For \(L^p\), use Minkowski and continuity of translations in \(L^p\). For uniform convergence, use the modulus of continuity and the fact that \(\rho_\varepsilon\) is supported near zero.</p>
+    </div>
+
+    <h3>Support and boundary effects</h3>
+    <p>Convolution expands support by the support of the kernel.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> \(\operatorname{supp}(f*g)\subset \operatorname{supp}f+\operatorname{supp}g\) whenever the convolution is defined and the supports are closed in the usual sense.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(x\) is outside the Minkowski sum of the supports, then for every \(y\), either \(y\notin\operatorname{supp}g\) or \(x-y\notin\operatorname{supp}f\). Thus the integrand vanishes in a neighborhood sense almost everywhere, so \((f*g)(x)=0\).</p>
+    </div>
+
+    <h3>Mollifiers as local averages</h3>
+    <p>Mollification is a controlled local blur.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 核 density estimators are 经验 convolutions. Deterministic mollifier theory explains bias and smoothness, while probability controls 随机 fluctuation.</p>
+        <p><span class="statement-title">说明.</span> Mollifiers preserve constants, commute with derivatives in the weak sense, and provide the standard path from \(L^p\) functions to smooth test functions.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/approximation-by-smooth-and-simple-functions/" next_label="下一页" next_url="/notes/real-analysis/fourier-series-and-orthogonality/" %}

@@ -9,30 +9,67 @@ breadcrumb_child_label_zh: "26. 外测度与勒贝格测度"
     <h2><a href="{{ '/notes/real-analysis/outer-measures-and-lebesgue-measure/' | relative_url }}">26. Outer measures and Lebesgue measure</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/sigma-algebras-and-measures/" next_label="Next page" next_url="/notes/real-analysis/borel-and-radon-measures/" %}
 
-    <p>Lebesgue measure is built by assigning an outer size to every set, then selecting the sets that split all other sets additively.</p>
+    <p>Lebesgue measure is built by first assigning an outer size to every set, then selecting the sets whose interaction with outer size is consistent.</p>
+
     <h3>Outer measure</h3>
+    <p>Outer measures are defined on all subsets, but only subadditively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An outer measure \(\mu^*\) is defined on all subsets, is monotone, vanishes at the empty set, and is countably subadditive. It need not be countably additive on all subsets.</p>
+        <p><span class="statement-title">Definition.</span> An outer measure on \(X\) is a function \(\mu^*:2^X\to[0,\infty]\) with \(\mu^*(\varnothing)=0\), monotonicity, and countable subadditivity.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\ell(I)\) is interval length, then
+\[
+m^*(E)=\inf\left\{\sum_n\ell(I_n):E\subset\bigcup_n I_n\right\}
+\]
+defines an outer measure on \(\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The empty set is covered with total length zero. Monotonicity follows because every cover of a larger set covers a smaller one. For subadditivity, cover each \(E_k\) within \(\varepsilon2^{-k}\) of its outer measure; the union of all covers covers \(\bigcup_kE_k\), and summing gives the inequality after \(\varepsilon\downarrow0\).</p>
     </div>
 
     <h3>Caratheodory measurability</h3>
+    <p>Measurable sets are those that split every set additively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A set \(E\) is measurable if \(\mu^*(A)=\mu^*(A\cap E)+\mu^*(A\setminus E)\) for every \(A\). Measurable sets split outer measure without loss.</p>
+        <p><span class="statement-title">Definition.</span> A set \(A\subset X\) is \(\mu^*\)-measurable if for every \(E\subset X\),
+\[
+\mu^*(E)=\mu^*(E\cap A)+\mu^*(E\setminus A).
+\]</p>
     </div>
 
-    <h3>Caratheodory theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The measurable sets form a sigma-algebra, and the restriction of \(\mu^*\) to that sigma-algebra is a complete measure. This converts subadditive outer size into additive measure.</p>
+        <p><span class="statement-title">Theorem.</span> The \(\mu^*\)-measurable sets form a sigma-algebra, and \(\mu^*\) restricted to it is a complete measure.</p>
     </div>
 
-    <h3>Lebesgue outer measure</h3>
-    <div class="math-statement construction">
-        <p><span class="statement-title">Construction.</span> For \(E\subset\mathbb R^d\), cover \(E\) by countably many boxes and take the infimum of the sums of their volumes. The resulting measure on Caratheodory sets is Lebesgue measure.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Complements are immediate from the criterion. Finite unions follow by splitting \(E\) successively and using subadditivity for the reverse inequality. Countable unions are obtained by applying finite additivity to disjoint partial unions and then passing to the limit. Subsets of outer-null sets satisfy the criterion by monotonicity.</p>
     </div>
 
-    <h3>Translation and scaling</h3>
+    <h3>Lebesgue measurable sets</h3>
+    <p>Lebesgue measure is the Caratheodory measure induced by interval covers.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> All Borel subsets of \(\mathbb R\) are Lebesgue measurable, and the resulting measure agrees with interval length on intervals.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> One first checks that intervals satisfy the Caratheodory criterion by separating covers across interval endpoints with arbitrarily small loss. Since measurable sets form a sigma-algebra containing intervals, they contain the Borel sigma-algebra. The equality with interval length follows from covering intervals and compactness arguments for the reverse inequality.</p>
+    </div>
+
+    <h3>Translation invariance</h3>
+    <p>Lebesgue measure respects the additive structure of the line.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Lebesgue measure satisfies \(\lambda(E+x)=\lambda(E)\) and \(\lambda(cE)=|c|^d\lambda(E)\). These properties follow first for boxes and then pass through the outer-measure construction.</p>
+        <p><span class="statement-title">Proposition.</span> For every \(a\in\mathbb R\), \(m(E+a)=m(E)\) for Lebesgue measurable \(E\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Translating interval covers preserves total length, so \(m^*(E+a)=m^*(E)\). Translation also preserves the Caratheodory criterion, hence measurable sets remain measurable and their measures agree.</p>
+    </div>
+
+    <h3>Null sets and completion</h3>
+    <p>Lebesgue measure contains more sets than the Borel sigma-algebra.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Every subset of the Cantor set is Lebesgue measurable because the Cantor set has measure zero, but not every subset of the Cantor set is Borel. This is why completion matters in analysis and probability.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/sigma-algebras-and-measures/" next_label="Next page" next_url="/notes/real-analysis/borel-and-radon-measures/" %}
@@ -43,30 +80,67 @@ breadcrumb_child_label_zh: "26. 外测度与勒贝格测度"
     <h2><a href="{{ '/notes/real-analysis/outer-measures-and-lebesgue-measure/' | relative_url }}">26. Mesures extérieures et mesure de Lebesgue</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/sigma-algebras-and-measures/" next_label="Page suivante" next_url="/notes/real-analysis/borel-and-radon-measures/" %}
 
-    <p>Lebesgue measure is built by assigning an outer size to every set, then selecting the sets that split all other sets additively.</p>
+    <p>Lebesgue measure is built by first assigning an outer size to every set, then selecting the sets whose interaction with outer size is consistent.</p>
+
     <h3>Outer measure</h3>
+    <p>Outer measures are defined on all subsets, but only subadditively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> An outer measure \(\mu^*\) is defined on all subsets, is monotone, vanishes at the empty set, and is countably subadditive. It need not be countably additive on all subsets.</p>
+        <p><span class="statement-title">Définition.</span> An outer measure on \(X\) is a function \(\mu^*:2^X\to[0,\infty]\) with \(\mu^*(\varnothing)=0\), monotonicity, and countable subadditivity.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\ell(I)\) is interval length, then
+\[
+m^*(E)=\inf\left\{\sum_n\ell(I_n):E\subset\bigcup_n I_n\right\}
+\]
+defines an outer measure on \(\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The empty set is covered with total length zero. Monotonicity follows because every cover of a larger set covers a smaller one. For subadditivity, cover each \(E_k\) within \(\varepsilon2^{-k}\) of its outer measure; the union of all covers covers \(\bigcup_kE_k\), and summing gives the inequality after \(\varepsilon\downarrow0\).</p>
     </div>
 
     <h3>Caratheodory measurability</h3>
+    <p>Measurable sets are those that split every set additively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A set \(E\) is measurable if \(\mu^*(A)=\mu^*(A\cap E)+\mu^*(A\setminus E)\) for every \(A\). Measurable sets split outer measure without loss.</p>
+        <p><span class="statement-title">Définition.</span> A set \(A\subset X\) is \(\mu^*\)-measurable if for every \(E\subset X\),
+\[
+\mu^*(E)=\mu^*(E\cap A)+\mu^*(E\setminus A).
+\]</p>
     </div>
 
-    <h3>Caratheodory theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> The measurable sets form a sigma-algebra, and the restriction of \(\mu^*\) to that sigma-algebra is a complete measure. This converts subadditive outer size into additive measure.</p>
+        <p><span class="statement-title">Théorème.</span> The \(\mu^*\)-measurable sets form a sigma-algebra, and \(\mu^*\) restricted to it is a complete measure.</p>
     </div>
 
-    <h3>Lebesgue outer measure</h3>
-    <div class="math-statement construction">
-        <p><span class="statement-title">Construction.</span> For \(E\subset\mathbb R^d\), cover \(E\) by countably many boxes and take the infimum of the sums of their volumes. The resulting measure on Caratheodory sets is Lebesgue measure.</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Complements are immediate from the criterion. Finite unions follow by splitting \(E\) successively and using subadditivity for the reverse inequality. Countable unions are obtained by applying finite additivity to disjoint partial unions and then passing to the limit. Subsets of outer-null sets satisfy the criterion by monotonicity.</p>
     </div>
 
-    <h3>Translation and scaling</h3>
+    <h3>Lebesgue measurable sets</h3>
+    <p>Lebesgue measure is the Caratheodory measure induced by interval covers.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> All Borel subsets of \(\mathbb R\) are Lebesgue measurable, and the resulting measure agrees with interval length on intervals.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> One first checks that intervals satisfy the Caratheodory criterion by separating covers across interval endpoints with arbitrarily small loss. Since measurable sets form a sigma-algebra containing intervals, they contain the Borel sigma-algebra. The equality with interval length follows from covering intervals and compactness arguments for the reverse inequality.</p>
+    </div>
+
+    <h3>Translation invariance</h3>
+    <p>Lebesgue measure respects the additive structure of the line.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Lebesgue measure satisfies \(\lambda(E+x)=\lambda(E)\) and \(\lambda(cE)=|c|^d\lambda(E)\). These properties follow first for boxes and then pass through the outer-measure construction.</p>
+        <p><span class="statement-title">Proposition.</span> For every \(a\in\mathbb R\), \(m(E+a)=m(E)\) for Lebesgue measurable \(E\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Translating interval covers preserves total length, so \(m^*(E+a)=m^*(E)\). Translation also preserves the Caratheodory criterion, hence measurable sets remain measurable and their measures agree.</p>
+    </div>
+
+    <h3>Null sets and completion</h3>
+    <p>Lebesgue measure contains more sets than the Borel sigma-algebra.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Every subset of the Cantor set is Lebesgue measurable because the Cantor set has measure zero, but not every subset of the Cantor set is Borel. This is why completion matters in analysis and probability.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/sigma-algebras-and-measures/" next_label="Page suivante" next_url="/notes/real-analysis/borel-and-radon-measures/" %}
@@ -77,30 +151,67 @@ breadcrumb_child_label_zh: "26. 外测度与勒贝格测度"
     <h2><a href="{{ '/notes/real-analysis/outer-measures-and-lebesgue-measure/' | relative_url }}">26. 外测度与勒贝格测度</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/sigma-algebras-and-measures/" next_label="下一页" next_url="/notes/real-analysis/borel-and-radon-measures/" %}
 
-    <p>勒贝格测度 is built by assigning an outer size to every set, then selecting the sets that split all other sets additively.</p>
-    <h3>外测度</h3>
+    <p>Lebesgue measure is built by first assigning an outer size to every set, then selecting the sets whose interaction with outer size is consistent.</p>
+
+    <h3>Outer measure</h3>
+    <p>Outer measures are defined on all subsets, but only subadditively.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> An 外测度 \(\mu^*\) is defined on all subsets, is monotone, vanishes at the empty set, and is countably subadditive. It need not be countably additive on all subsets.</p>
+        <p><span class="statement-title">定义.</span> An outer measure on \(X\) is a function \(\mu^*:2^X\to[0,\infty]\) with \(\mu^*(\varnothing)=0\), monotonicity, and countable subadditivity.</p>
     </div>
 
-    <h3>卡拉泰奥多里 measurability</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A set \(E\) is 可测 if \(\mu^*(A)=\mu^*(A\cap E)+\mu^*(A\setminus E)\) for every \(A\). 可测集 split 外测度 without loss.</p>
-    </div>
-
-    <h3>卡拉泰奥多里定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> The 可测集 form a σ-代数, and the restriction of \(\mu^*\) to that σ-代数 is a complete 测度. This converts subadditive outer size into additive 测度.</p>
-    </div>
-
-    <h3>勒贝格外测度</h3>
-    <div class="math-statement construction">
-        <p><span class="statement-title">构造.</span> For \(E\subset\mathbb R^d\), cover \(E\) by countably many boxes and take the infimum of the sums of their volumes. The resulting 测度 on 卡拉泰奥多里 sets is 勒贝格测度.</p>
-    </div>
-
-    <h3>Translation and scaling</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 勒贝格测度 satisfies \(\lambda(E+x)=\lambda(E)\) and \(\lambda(cE)=|c|^d\lambda(E)\). These properties follow first for boxes and then pass through the outer-测度 construction.</p>
+        <p><span class="statement-title">命题.</span> If \(\ell(I)\) is interval length, then
+\[
+m^*(E)=\inf\left\{\sum_n\ell(I_n):E\subset\bigcup_n I_n\right\}
+\]
+defines an outer measure on \(\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The empty set is covered with total length zero. Monotonicity follows because every cover of a larger set covers a smaller one. For subadditivity, cover each \(E_k\) within \(\varepsilon2^{-k}\) of its outer measure; the union of all covers covers \(\bigcup_kE_k\), and summing gives the inequality after \(\varepsilon\downarrow0\).</p>
+    </div>
+
+    <h3>Caratheodory measurability</h3>
+    <p>Measurable sets are those that split every set additively.</p>
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A set \(A\subset X\) is \(\mu^*\)-measurable if for every \(E\subset X\),
+\[
+\mu^*(E)=\mu^*(E\cap A)+\mu^*(E\setminus A).
+\]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> The \(\mu^*\)-measurable sets form a sigma-algebra, and \(\mu^*\) restricted to it is a complete measure.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Complements are immediate from the criterion. Finite unions follow by splitting \(E\) successively and using subadditivity for the reverse inequality. Countable unions are obtained by applying finite additivity to disjoint partial unions and then passing to the limit. Subsets of outer-null sets satisfy the criterion by monotonicity.</p>
+    </div>
+
+    <h3>Lebesgue measurable sets</h3>
+    <p>Lebesgue measure is the Caratheodory measure induced by interval covers.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> All Borel subsets of \(\mathbb R\) are Lebesgue measurable, and the resulting measure agrees with interval length on intervals.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> One first checks that intervals satisfy the Caratheodory criterion by separating covers across interval endpoints with arbitrarily small loss. Since measurable sets form a sigma-algebra containing intervals, they contain the Borel sigma-algebra. The equality with interval length follows from covering intervals and compactness arguments for the reverse inequality.</p>
+    </div>
+
+    <h3>Translation invariance</h3>
+    <p>Lebesgue measure respects the additive structure of the line.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> For every \(a\in\mathbb R\), \(m(E+a)=m(E)\) for Lebesgue measurable \(E\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Translating interval covers preserves total length, so \(m^*(E+a)=m^*(E)\). Translation also preserves the Caratheodory criterion, hence measurable sets remain measurable and their measures agree.</p>
+    </div>
+
+    <h3>Null sets and completion</h3>
+    <p>Lebesgue measure contains more sets than the Borel sigma-algebra.</p>
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Every subset of the Cantor set is Lebesgue measurable because the Cantor set has measure zero, but not every subset of the Cantor set is Borel. This is why completion matters in analysis and probability.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/sigma-algebras-and-measures/" next_label="下一页" next_url="/notes/real-analysis/borel-and-radon-measures/" %}

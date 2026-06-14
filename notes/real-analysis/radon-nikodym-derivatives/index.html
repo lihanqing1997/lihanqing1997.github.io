@@ -9,30 +9,69 @@ breadcrumb_child_label_zh: "33. 拉东-尼科迪姆导数"
     <h2><a href="{{ '/notes/real-analysis/radon-nikodym-derivatives/' | relative_url }}">33. Radon-Nikodym derivatives</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/signed-measures-and-decompositions/" next_label="Next page" next_url="/notes/real-analysis/lebesgue-decomposition-and-singularity/" %}
 
-    <p>The Radon-Nikodym theorem says when one measure has a density with respect to another. Likelihood ratios are precisely such derivatives.</p>
+    <p>The Radon-Nikodym theorem is the measure-theoretic derivative theorem. It tells when one measure has a density with respect to another.</p>
+
     <h3>Absolute continuity of measures</h3>
+    <p>One measure is absolutely continuous with respect to another if it ignores the same null sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Write \(\nu\ll\mu\) if \(\mu(A)=0\) implies \(\nu(A)=0\). Then \(\nu\) assigns no mass to sets that \(\mu\) regards as null.</p>
+        <p><span class="statement-title">Definition.</span> For measures \(\nu,\mu\), write \(\nu\ll\mu\) if \(\mu(A)=0\Rightarrow \nu(A)=0\). A density of \(\nu\) with respect to \(\mu\) is a measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\nu(A)=\int_A f\,\mathrm{d}\mu\), then \(\nu\ll\mu\), and \(f\) is unique \(\mu\)-almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(\mu(A)=0\), then \(\int_A f\,\mathrm{d}\mu=0\). If \(f,g\) give the same measure, then \(\int_A(f-g)\,\mathrm{d}\mu=0\) for all \(A\). Taking \(A=\{f>g\}\) and \(A=\{g>f\}\) gives \(f=g\) almost everywhere.</p>
     </div>
 
     <h3>Radon-Nikodym theorem</h3>
+    <p>Absolute continuity is also sufficient for the existence of a density under sigma-finiteness.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\nu\ll\mu\) and the measures are sigma-finite, then there exists measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\). The function is unique \(\mu\)-a.e. and is written \(\mathrm{d}\nu/\mathrm{d}\mu\).</p>
+        <p><span class="statement-title">Theorem.</span> If \(\nu\) and \(\mu\) are sigma-finite measures and \(\nu\ll\mu\), then there exists a measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\) for all \(A\). Write \(f=\mathrm{d}\nu/\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>Chain rule</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> In the finite case, first prove the result for a bounded positive functional \(T(g)=\int g\,\mathrm{d}\nu\) on \(L^2(\mu+\nu)\). Riesz representation gives a function \(h\), and algebraic manipulation yields a density \(f=h/(1-h)\) on the nontrivial part. Sigma-finite measures are handled by applying the finite result on countable finite-measure pieces and pasting the densities.</p>
+    </div>
+
+    <h3>Chain rule and change of measure</h3>
+    <p>Radon-Nikodym derivatives behave like ordinary derivatives.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\lambda\ll\nu\ll\mu\), then \(\mathrm{d}\lambda/\mathrm{d}\mu=(\mathrm{d}\lambda/\mathrm{d}\nu)(\mathrm{d}\nu/\mathrm{d}\mu)\) a.e. This is the abstract product rule for likelihood ratios.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\lambda\ll\nu\ll\mu\), then
+\[
+\frac{\mathrm{d}\lambda}{\mathrm{d}\mu}
+=\frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}
+\quad \mu\text{-a.e.}
+\]</p>
     </div>
 
-    <h3>Change of measure</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> If \(\nu\) has density \(f\) with respect to \(\mu\), then \(\int g\,\mathrm{d}\nu=\int gf\,\mathrm{d}\mu\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For every measurable \(A\),
+\[
+\lambda(A)=\int_A \frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\,\mathrm{d}\nu
+=\int_A \frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}\,\mathrm{d}\mu.
+\]
+Uniqueness of Radon-Nikodym derivatives gives the identity.</p>
     </div>
 
-    <h3>Conditional expectation</h3>
+    <h3>Lebesgue differentiation viewpoint</h3>
+    <p>Densities are local ratios of masses in Euclidean spaces.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(\nu\ll m\) on \(\mathbb R^d\) with density \(f\), then for \(m\)-almost every \(x\),
+\[
+f(x)=\lim_{r\downarrow0}\frac{\nu(B(x,r))}{m(B(x,r))}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Since \(\nu(B(x,r))=\int_{B(x,r)}f\,\mathrm{d}m\), the ratio is the average of \(f\) over the ball. The Lebesgue differentiation theorem says these averages converge to \(f(x)\) almost everywhere.</p>
+    </div>
+
+    <h3>Statistical densities</h3>
+    <p>Likelihood ratios are Radon-Nikodym derivatives.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Conditional expectation is a Radon-Nikodym derivative on a sub-sigma-algebra. This is why it is characterized by integrals over all conditioning events.</p>
+        <p><span class="statement-title">Remark.</span> If \(P_\theta\ll P_{\theta_0}\), the likelihood ratio is \(\mathrm{d}P_\theta/\mathrm{d}P_{\theta_0}\). This measure-theoretic notation is what keeps dominated and nondominated statistical models conceptually clean.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/real-analysis/" prev_label="Last page" prev_url="/notes/real-analysis/signed-measures-and-decompositions/" next_label="Next page" next_url="/notes/real-analysis/lebesgue-decomposition-and-singularity/" %}
@@ -43,30 +82,69 @@ breadcrumb_child_label_zh: "33. 拉东-尼科迪姆导数"
     <h2><a href="{{ '/notes/real-analysis/radon-nikodym-derivatives/' | relative_url }}">33. Dérivées de Radon-Nikodym</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/signed-measures-and-decompositions/" next_label="Page suivante" next_url="/notes/real-analysis/lebesgue-decomposition-and-singularity/" %}
 
-    <p>The Radon-Nikodym theorem says when one measure has a density with respect to another. Likelihood ratios are precisely such derivatives.</p>
+    <p>The Radon-Nikodym theorem is the measure-theoretic derivative theorem. It tells when one measure has a density with respect to another.</p>
+
     <h3>Absolute continuity of measures</h3>
+    <p>One measure is absolutely continuous with respect to another if it ignores the same null sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Write \(\nu\ll\mu\) if \(\mu(A)=0\) implies \(\nu(A)=0\). Then \(\nu\) assigns no mass to sets that \(\mu\) regards as null.</p>
+        <p><span class="statement-title">Définition.</span> For measures \(\nu,\mu\), write \(\nu\ll\mu\) if \(\mu(A)=0\Rightarrow \nu(A)=0\). A density of \(\nu\) with respect to \(\mu\) is a measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(\nu(A)=\int_A f\,\mathrm{d}\mu\), then \(\nu\ll\mu\), and \(f\) is unique \(\mu\)-almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> If \(\mu(A)=0\), then \(\int_A f\,\mathrm{d}\mu=0\). If \(f,g\) give the same measure, then \(\int_A(f-g)\,\mathrm{d}\mu=0\) for all \(A\). Taking \(A=\{f>g\}\) and \(A=\{g>f\}\) gives \(f=g\) almost everywhere.</p>
     </div>
 
     <h3>Radon-Nikodym theorem</h3>
+    <p>Absolute continuity is also sufficient for the existence of a density under sigma-finiteness.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(\nu\ll\mu\) and the measures are sigma-finite, then there exists measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\). The function is unique \(\mu\)-a.e. and is written \(\mathrm{d}\nu/\mathrm{d}\mu\).</p>
+        <p><span class="statement-title">Théorème.</span> If \(\nu\) and \(\mu\) are sigma-finite measures and \(\nu\ll\mu\), then there exists a measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\) for all \(A\). Write \(f=\mathrm{d}\nu/\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>Chain rule</h3>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> In the finite case, first prove the result for a bounded positive functional \(T(g)=\int g\,\mathrm{d}\nu\) on \(L^2(\mu+\nu)\). Riesz representation gives a function \(h\), and algebraic manipulation yields a density \(f=h/(1-h)\) on the nontrivial part. Sigma-finite measures are handled by applying the finite result on countable finite-measure pieces and pasting the densities.</p>
+    </div>
+
+    <h3>Chain rule and change of measure</h3>
+    <p>Radon-Nikodym derivatives behave like ordinary derivatives.</p>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\lambda\ll\nu\ll\mu\), then \(\mathrm{d}\lambda/\mathrm{d}\mu=(\mathrm{d}\lambda/\mathrm{d}\nu)(\mathrm{d}\nu/\mathrm{d}\mu)\) a.e. This is the abstract product rule for likelihood ratios.</p>
+        <p><span class="statement-title">Proposition.</span> If \(\lambda\ll\nu\ll\mu\), then
+\[
+\frac{\mathrm{d}\lambda}{\mathrm{d}\mu}
+=\frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}
+\quad \mu\text{-a.e.}
+\]</p>
     </div>
 
-    <h3>Change of measure</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollaire.</span> If \(\nu\) has density \(f\) with respect to \(\mu\), then \(\int g\,\mathrm{d}\nu=\int gf\,\mathrm{d}\mu\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> For every measurable \(A\),
+\[
+\lambda(A)=\int_A \frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\,\mathrm{d}\nu
+=\int_A \frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}\,\mathrm{d}\mu.
+\]
+Uniqueness of Radon-Nikodym derivatives gives the identity.</p>
     </div>
 
-    <h3>Conditional expectation</h3>
+    <h3>Lebesgue differentiation viewpoint</h3>
+    <p>Densities are local ratios of masses in Euclidean spaces.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> If \(\nu\ll m\) on \(\mathbb R^d\) with density \(f\), then for \(m\)-almost every \(x\),
+\[
+f(x)=\lim_{r\downarrow0}\frac{\nu(B(x,r))}{m(B(x,r))}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Since \(\nu(B(x,r))=\int_{B(x,r)}f\,\mathrm{d}m\), the ratio is the average of \(f\) over the ball. The Lebesgue differentiation theorem says these averages converge to \(f(x)\) almost everywhere.</p>
+    </div>
+
+    <h3>Statistical densities</h3>
+    <p>Likelihood ratios are Radon-Nikodym derivatives.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Conditional expectation is a Radon-Nikodym derivative on a sub-sigma-algebra. This is why it is characterized by integrals over all conditioning events.</p>
+        <p><span class="statement-title">Remarque.</span> If \(P_\theta\ll P_{\theta_0}\), the likelihood ratio is \(\mathrm{d}P_\theta/\mathrm{d}P_{\theta_0}\). This measure-theoretic notation is what keeps dominated and nondominated statistical models conceptually clean.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/real-analysis/" prev_label="Page précédente" prev_url="/notes/real-analysis/signed-measures-and-decompositions/" next_label="Page suivante" next_url="/notes/real-analysis/lebesgue-decomposition-and-singularity/" %}
@@ -77,30 +155,69 @@ breadcrumb_child_label_zh: "33. 拉东-尼科迪姆导数"
     <h2><a href="{{ '/notes/real-analysis/radon-nikodym-derivatives/' | relative_url }}">33. 拉东-尼科迪姆导数</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/signed-measures-and-decompositions/" next_label="下一页" next_url="/notes/real-analysis/lebesgue-decomposition-and-singularity/" %}
 
-    <p>The 拉东-尼科迪姆定理 says when one 测度 has a density with respect to another. 似然比 are precisely such derivatives.</p>
-    <h3>Absolute continuity of 测度</h3>
+    <p>The Radon-Nikodym theorem is the measure-theoretic derivative theorem. It tells when one measure has a density with respect to another.</p>
+
+    <h3>Absolute continuity of measures</h3>
+    <p>One measure is absolutely continuous with respect to another if it ignores the same null sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Write \(\nu\ll\mu\) if \(\mu(A)=0\) implies \(\nu(A)=0\). Then \(\nu\) assigns no mass to sets that \(\mu\) regards as null.</p>
+        <p><span class="statement-title">定义.</span> For measures \(\nu,\mu\), write \(\nu\ll\mu\) if \(\mu(A)=0\Rightarrow \nu(A)=0\). A density of \(\nu\) with respect to \(\mu\) is a measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\).</p>
     </div>
 
-    <h3>拉东-尼科迪姆定理</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(\nu\ll\mu\) and the 测度 are sigma-finite, then there exists 可测 \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\). The function is unique \(\mu\)-a.e. and is written \(\mathrm{d}\nu/\mathrm{d}\mu\).</p>
-    </div>
-
-    <h3>Chain rule</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If \(\lambda\ll\nu\ll\mu\), then \(\mathrm{d}\lambda/\mathrm{d}\mu=(\mathrm{d}\lambda/\mathrm{d}\nu)(\mathrm{d}\nu/\mathrm{d}\mu)\) a.e. This is the abstract product rule for 似然比.</p>
+        <p><span class="statement-title">命题.</span> If \(\nu(A)=\int_A f\,\mathrm{d}\mu\), then \(\nu\ll\mu\), and \(f\) is unique \(\mu\)-almost everywhere.</p>
     </div>
 
-    <h3>Change of 测度</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">推论.</span> If \(\nu\) has density \(f\) with respect to \(\mu\), then \(\int g\,\mathrm{d}\nu=\int gf\,\mathrm{d}\mu\).</p>
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> If \(\mu(A)=0\), then \(\int_A f\,\mathrm{d}\mu=0\). If \(f,g\) give the same measure, then \(\int_A(f-g)\,\mathrm{d}\mu=0\) for all \(A\). Taking \(A=\{f>g\}\) and \(A=\{g>f\}\) gives \(f=g\) almost everywhere.</p>
     </div>
 
-    <h3>Conditional expectation</h3>
+    <h3>Radon-Nikodym theorem</h3>
+    <p>Absolute continuity is also sufficient for the existence of a density under sigma-finiteness.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(\nu\) and \(\mu\) are sigma-finite measures and \(\nu\ll\mu\), then there exists a measurable \(f\ge0\) such that \(\nu(A)=\int_A f\,\mathrm{d}\mu\) for all \(A\). Write \(f=\mathrm{d}\nu/\mathrm{d}\mu\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> In the finite case, first prove the result for a bounded positive functional \(T(g)=\int g\,\mathrm{d}\nu\) on \(L^2(\mu+\nu)\). Riesz representation gives a function \(h\), and algebraic manipulation yields a density \(f=h/(1-h)\) on the nontrivial part. Sigma-finite measures are handled by applying the finite result on countable finite-measure pieces and pasting the densities.</p>
+    </div>
+
+    <h3>Chain rule and change of measure</h3>
+    <p>Radon-Nikodym derivatives behave like ordinary derivatives.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> If \(\lambda\ll\nu\ll\mu\), then
+\[
+\frac{\mathrm{d}\lambda}{\mathrm{d}\mu}
+=\frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}
+\quad \mu\text{-a.e.}
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> For every measurable \(A\),
+\[
+\lambda(A)=\int_A \frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\,\mathrm{d}\nu
+=\int_A \frac{\mathrm{d}\lambda}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}\,\mathrm{d}\mu.
+\]
+Uniqueness of Radon-Nikodym derivatives gives the identity.</p>
+    </div>
+
+    <h3>Lebesgue differentiation viewpoint</h3>
+    <p>Densities are local ratios of masses in Euclidean spaces.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> If \(\nu\ll m\) on \(\mathbb R^d\) with density \(f\), then for \(m\)-almost every \(x\),
+\[
+f(x)=\lim_{r\downarrow0}\frac{\nu(B(x,r))}{m(B(x,r))}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Since \(\nu(B(x,r))=\int_{B(x,r)}f\,\mathrm{d}m\), the ratio is the average of \(f\) over the ball. The Lebesgue differentiation theorem says these averages converge to \(f(x)\) almost everywhere.</p>
+    </div>
+
+    <h3>Statistical densities</h3>
+    <p>Likelihood ratios are Radon-Nikodym derivatives.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Conditional expectation is a 拉东-尼科迪姆 derivative on a sub-σ-代数. This is why it is characterized by integrals over all conditioning events.</p>
+        <p><span class="statement-title">说明.</span> If \(P_\theta\ll P_{\theta_0}\), the likelihood ratio is \(\mathrm{d}P_\theta/\mathrm{d}P_{\theta_0}\). This measure-theoretic notation is what keeps dominated and nondominated statistical models conceptually clean.</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/real-analysis/" prev_label="上一页" prev_url="/notes/real-analysis/signed-measures-and-decompositions/" next_label="下一页" next_url="/notes/real-analysis/lebesgue-decomposition-and-singularity/" %}
