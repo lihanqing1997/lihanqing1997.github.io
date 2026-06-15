@@ -1,0 +1,437 @@
+---
+layout: default
+breadcrumb_child_label_en: "6. Moments, kurtosis, and tail behavior"
+breadcrumb_child_label_fr: "6. Moments, kurtose et comportement des queues"
+breadcrumb_child_label_zh: "6. 矩、峰度与尾部行为"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/probability-theory/moments-kurtosis-tail-behavior/' | relative_url }}">6. Moments, kurtosis, and tail behavior</a></h2>
+    {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/expected-value/" next_label="Next page" next_url="/notes/probability-theory/lp-spaces-inequalities-uniform-integrability/" %}
+
+    <p>Moments compress a distribution into integrals of powers. Low moments locate and scale a law, while high moments amplify rare observations. Kurtosis belongs to this second group: it is a standardized fourth moment, and its mathematical force comes from tail mass rather than from the visual height of a density at its mode.</p>
+
+    <h3>Raw, central, and absolute moments</h3>
+
+    <p>The first distinction is between moments around the origin and moments around the mean.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(X\) be real-valued. If \(\mathbb E|X|^r\lt\infty\), the \(r\)-th raw moment is \(\mathbb E X^r\) when meaningful. If \(\mu=\mathbb E X\) exists, the \(r\)-th central moment is
+\[
+m_r=\mathbb E[(X-\mu)^r],
+\]
+and the \(r\)-th absolute central moment is \(\mathbb E|X-\mu|^r\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> On a probability space, if \(0\lt p\le q\) and \(\mathbb E|X|^q\lt\infty\), then \(\mathbb E|X|^p\lt\infty\) and
+\[
+\|X\|_p\le \|X\|_q .
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(p\lt q\), Jensen's inequality applied to the concave function \(u\mapsto u^{p/q}\) gives \(\mathbb E|X|^p=\mathbb E[(|X|^q)^{p/q}]\le(\mathbb E|X|^q)^{p/q}\). Taking \(p\)-th roots gives the stated norm inequality. The case \(p=q\) is immediate.</p>
+    </div>
+
+    <h3>Tail integrals for powers</h3>
+
+    <p>Power moments can be read directly from tail probabilities. This is the cleanest reason that high moments are tail quantities.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For \(Y\ge0\) and \(r\gt0\),
+\[
+\mathbb E Y^r=r\int_0^\infty t^{r-1}P(Y\gt t)\,\mathrm{d}t.
+\]
+In particular,
+\[
+\mathbb E|X-\mu|^4=4\int_0^\infty t^3P(|X-\mu|\gt t)\,\mathrm{d}t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For each \(y\ge0\), \(y^r=\int_0^y r t^{r-1}\,\mathrm{d}t=\int_0^\infty r t^{r-1}1_{\{t\lt y\}}\,\mathrm{d}t\). Substituting \(Y(\omega)\) and applying Tonelli's theorem gives
+\[
+\mathbb E Y^r=\int_0^\infty r t^{r-1}P(Y\gt t)\,\mathrm{d}t .
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The weight \(t^3\) in the fourth-moment formula means that a small amount of probability far from the mean can dominate the value of the moment.</p>
+    </div>
+
+    <h3>Standardized moments and excess kurtosis</h3>
+
+    <p>Standardization removes units and makes distributions comparable after location-scale changes.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Suppose \(\mu=\mathbb E X\), \(0\lt\sigma^2=\operatorname{Var}(X)\lt\infty\), and \(\mathbb E|X-\mu|^4\lt\infty\). The standardized fourth moment is
+\[
+\beta_2=\mathbb E\left[\left(\frac{X-\mu}{\sigma}\right)^4\right]
+=\frac{\mathbb E[(X-\mu)^4]}{\sigma^4}.
+\]
+The excess kurtosis is \(\gamma_2=\beta_2-3\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Kurtosis is invariant under nondegenerate affine changes. If \(Y=aX+b\) with \(a\ne0\), then \(Y\) and \(X\) have the same \(\beta_2\) and the same excess kurtosis whenever these quantities exist.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The mean of \(Y\) is \(a\mu+b\), its standard deviation is \(|a|\sigma\), and \(Y-\mathbb EY=a(X-\mu)\). Hence
+\[
+\mathbb E\left[\left(\frac{Y-\mathbb EY}{\operatorname{sd}(Y)}\right)^4\right]
+=\mathbb E\left[\left(\frac{a(X-\mu)}{|a|\sigma}\right)^4\right]
+=\beta_2 .
+\]</p>
+    </div>
+
+    <h3>Why kurtosis is tail-sensitive</h3>
+
+    <p>A distribution can have fixed variance and still have arbitrarily large kurtosis if a tiny amount of mass is placed very far away.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For every \(K\gt0\), there exists a mean-zero, variance-one random variable with excess kurtosis greater than \(K\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(0\lt p\lt1\), set \(a=p^{-1/2}\), and define \(X_p\) by
+\[
+P(X_p=a)=p/2,\qquad P(X_p=-a)=p/2,\qquad P(X_p=0)=1-p .
+\]
+Then \(\mathbb EX_p=0\), \(\mathbb EX_p^2=pa^2=1\), and \(\mathbb EX_p^4=pa^4=1/p\). Thus the excess kurtosis is \(1/p-3\), which tends to infinity as \(p\downarrow0\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> This example also has a large atom at the center, but the explosion is not caused by central height alone. The fourth power of the distant values is what drives the calculation.</p>
+    </div>
+
+    <h3>Canonical distributions</h3>
+
+    <p>The standard examples separate bounded, exponential, Gaussian, and polynomial tail behavior.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The following excess kurtoses hold when the stated moments exist:
+\[
+\begin{array}{c|c}
+\text{law} & \gamma_2\\ \hline
+N(0,1) & 0\\
+\mathrm{Unif}[-1,1] & -6/5\\
+\mathrm{Laplace}(0,b) & 3\\
+t_\nu,\ \nu\gt4 & 6/(\nu-4)\\
+\mathrm{Pareto}(\alpha),\ \alpha\gt4 &
+\dfrac{6(\alpha^3+\alpha^2-6\alpha-2)}{\alpha(\alpha-3)(\alpha-4)}
+\end{array}
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For a standard normal variable, integration by parts or differentiation of the moment generating function gives \(\mathbb EX^4=3\). For \(U\sim\mathrm{Unif}[-1,1]\), \(\mathbb EU^2=1/3\) and \(\mathbb EU^4=1/5\), so \(\beta_2=(1/5)/(1/3)^2=9/5\). For the Laplace density \((2b)^{-1}e^{-|x|/b}\), the even moments are \(\mathbb EX^{2k}=(2k)!b^{2k}\), giving variance \(2b^2\), fourth moment \(24b^4\), and \(\beta_2=6\). The Student and Pareto formulas follow by evaluating their standard moment formulas: \(t_\nu\) has finite fourth moment only for \(\nu\gt4\), and a type-I Pareto variable has raw moment \(\alpha x_m^r/(\alpha-r)\) for \(r\lt\alpha\), from which the displayed central standardized expression follows.</p>
+    </div>
+
+    <h3>Not a measure of peakedness</h3>
+
+    <p>The density near the mode can suggest a sharp or flat center, but kurtosis is defined by a fourth moment. It is therefore a tail-weighted integral, not a direct measurement of the height of a peak.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The Laplace distribution has both a sharper central cusp than the normal law and heavier exponential tails; its excess kurtosis is \(3\). The uniform law has no central peak and bounded tails; its excess kurtosis is negative. These examples are useful visually, but the definition decides the matter: kurtosis is governed by the standardized fourth central moment.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Sample kurtosis is highly sensitive to extreme observations. The population functional \(P\mapsto \mathbb E_P[(X-\mu_P)^4]/\sigma_P^4-3\) has an unbounded influence function at any distribution with positive finite variance and finite fourth moment.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Contaminate \(P\) by \(P_\varepsilon=(1-\varepsilon)P+\varepsilon\delta_z\). The derivative at \(\varepsilon=0\) contains a leading term proportional to \((z-\mu)^4/\sigma^4\), together with lower-order corrections from the perturbed mean and variance. As \(|z|\to\infty\), this leading term is unbounded, so the influence function is unbounded.</p>
+    </div>
+
+    {% include probability-note-nav.html back_label="Back" prev_label="Last page" prev_url="/notes/probability-theory/expected-value/" next_label="Next page" next_url="/notes/probability-theory/lp-spaces-inequalities-uniform-integrability/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/probability-theory/moments-kurtosis-tail-behavior/' | relative_url }}">6. Moments, kurtose et comportement des queues</a></h2>
+    {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/expected-value/" next_label="Page suivante" next_url="/notes/probability-theory/lp-spaces-inequalities-uniform-integrability/" %}
+
+    <p>Les moments résument une loi par des intégrales de puissances. Les moments faibles localisent et mettent à l'échelle une loi; les moments élevés amplifient les observations rares. La kurtose appartient à cette seconde famille: c'est un moment central d'ordre quatre standardisé, donc une quantité de queue plutôt qu'une mesure directe de la hauteur du mode.</p>
+
+    <h3>Moments bruts, centrés et absolus</h3>
+
+    <p>Il faut d'abord distinguer les puissances prises autour de l'origine et celles prises autour de la moyenne.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Soit \(X\) réelle. Si \(\mathbb E|X|^r\lt\infty\), le moment brut d'ordre \(r\) est \(\mathbb E X^r\) lorsque cette expression a un sens. Si \(\mu=\mathbb E X\) existe, le moment central d'ordre \(r\) est
+\[
+m_r=\mathbb E[(X-\mu)^r],
+\]
+et le moment central absolu d'ordre \(r\) est \(\mathbb E|X-\mu|^r\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Sur un espace de probabilité, si \(0\lt p\le q\) et \(\mathbb E|X|^q\lt\infty\), alors \(\mathbb E|X|^p\lt\infty\) et
+\[
+\|X\|_p\le \|X\|_q .
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Si \(p\lt q\), l'inégalité de Jensen appliquée à la fonction concave \(u\mapsto u^{p/q}\) donne \(\mathbb E|X|^p=\mathbb E[(|X|^q)^{p/q}]\le(\mathbb E|X|^q)^{p/q}\). En prenant la racine \(p\)-ième, on obtient l'inégalité des normes. Le cas \(p=q\) est immédiat.</p>
+    </div>
+
+    <h3>Intégrales de queue pour les puissances</h3>
+
+    <p>Les moments de puissance se lisent directement sur les probabilités de queue. C'est la raison la plus nette pour laquelle les moments élevés sont des quantités de queue.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Pour \(Y\ge0\) et \(r\gt0\),
+\[
+\mathbb E Y^r=r\int_0^\infty t^{r-1}P(Y\gt t)\,\mathrm{d}t.
+\]
+En particulier,
+\[
+\mathbb E|X-\mu|^4=4\int_0^\infty t^3P(|X-\mu|\gt t)\,\mathrm{d}t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Pour \(y\ge0\), \(y^r=\int_0^y r t^{r-1}\,\mathrm{d}t=\int_0^\infty r t^{r-1}1_{\{t\lt y\}}\,\mathrm{d}t\). En remplaçant \(y\) par \(Y(\omega)\) et en appliquant le théorème de Tonelli, on obtient
+\[
+\mathbb E Y^r=\int_0^\infty r t^{r-1}P(Y\gt t)\,\mathrm{d}t .
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Le poids \(t^3\) dans la formule du quatrième moment signifie qu'une petite masse de probabilité très loin de la moyenne peut dominer la valeur du moment.</p>
+    </div>
+
+    <h3>Moments standardisés et kurtose en excès</h3>
+
+    <p>La standardisation enlève les unités et rend comparables les lois après changement d'origine et d'échelle.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Supposons que \(\mu=\mathbb E X\), \(0\lt\sigma^2=\operatorname{Var}(X)\lt\infty\), et \(\mathbb E|X-\mu|^4\lt\infty\). Le quatrième moment standardisé est
+\[
+\beta_2=\mathbb E\left[\left(\frac{X-\mu}{\sigma}\right)^4\right]
+=\frac{\mathbb E[(X-\mu)^4]}{\sigma^4}.
+\]
+La kurtose en excès est \(\gamma_2=\beta_2-3\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> La kurtose est invariante par changement affine non dégénéré. Si \(Y=aX+b\) avec \(a\ne0\), alors \(Y\) et \(X\) ont le même \(\beta_2\) et la même kurtose en excès lorsque ces quantités existent.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La moyenne de \(Y\) est \(a\mu+b\), son écart-type est \(|a|\sigma\), et \(Y-\mathbb EY=a(X-\mu)\). Donc
+\[
+\mathbb E\left[\left(\frac{Y-\mathbb EY}{\operatorname{sd}(Y)}\right)^4\right]
+=\mathbb E\left[\left(\frac{a(X-\mu)}{|a|\sigma}\right)^4\right]
+=\beta_2 .
+\]</p>
+    </div>
+
+    <h3>Sensibilité de la kurtose aux queues</h3>
+
+    <p>Une loi peut garder une variance fixée tout en ayant une kurtose arbitrairement grande si une très petite masse est placée très loin.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Pour tout \(K\gt0\), il existe une variable aléatoire de moyenne nulle et de variance un dont la kurtose en excès est strictement plus grande que \(K\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Soit \(0\lt p\lt1\), posons \(a=p^{-1/2}\), et définissons \(X_p\) par
+\[
+P(X_p=a)=p/2,\qquad P(X_p=-a)=p/2,\qquad P(X_p=0)=1-p .
+\]
+Alors \(\mathbb EX_p=0\), \(\mathbb EX_p^2=pa^2=1\), et \(\mathbb EX_p^4=pa^4=1/p\). La kurtose en excès vaut donc \(1/p-3\), qui tend vers l'infini quand \(p\downarrow0\).</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Cet exemple possède aussi une grande masse au centre, mais l'explosion ne vient pas seulement de la hauteur centrale. C'est la puissance quatrième des valeurs éloignées qui pilote le calcul.</p>
+    </div>
+
+    <h3>Lois canoniques</h3>
+
+    <p>Les exemples standards séparent les queues bornées, exponentielles, gaussiennes et polynomiales.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Les kurtoses en excès suivantes sont valables lorsque les moments indiqués existent:
+\[
+\begin{array}{c|c}
+\text{loi} & \gamma_2\\ \hline
+N(0,1) & 0\\
+\mathrm{Unif}[-1,1] & -6/5\\
+\mathrm{Laplace}(0,b) & 3\\
+t_\nu,\ \nu\gt4 & 6/(\nu-4)\\
+\mathrm{Pareto}(\alpha),\ \alpha\gt4 &
+\dfrac{6(\alpha^3+\alpha^2-6\alpha-2)}{\alpha(\alpha-3)(\alpha-4)}
+\end{array}
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Pour une variable normale standard, une intégration par parties ou la différentiation de la fonction génératrice des moments donne \(\mathbb EX^4=3\). Si \(U\sim\mathrm{Unif}[-1,1]\), alors \(\mathbb EU^2=1/3\) et \(\mathbb EU^4=1/5\), donc \(\beta_2=(1/5)/(1/3)^2=9/5\). Pour la densité de Laplace \((2b)^{-1}e^{-|x|/b}\), les moments pairs sont \(\mathbb EX^{2k}=(2k)!b^{2k}\), d'où variance \(2b^2\), quatrième moment \(24b^4\), et \(\beta_2=6\). Les formules de Student et de Pareto viennent de leurs formules usuelles de moments: \(t_\nu\) a un quatrième moment fini seulement si \(\nu\gt4\), et une variable de Pareto de type I a le moment brut \(\alpha x_m^r/(\alpha-r)\) pour \(r\lt\alpha\).</p>
+    </div>
+
+    <h3>Pas une mesure de pic</h3>
+
+    <p>La densité près du mode peut suggérer un centre aigu ou plat, mais la kurtose est définie par un quatrième moment. C'est donc une intégrale pondérée par les queues, pas une mesure directe de la hauteur du pic.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> La loi de Laplace a à la fois une pointe centrale plus aiguë que la loi normale et des queues exponentielles plus lourdes; sa kurtose en excès vaut \(3\). La loi uniforme n'a pas de pic central et a des queues bornées; sa kurtose en excès est négative. Ces exemples sont utiles visuellement, mais la définition tranche: la kurtose est gouvernée par le quatrième moment central standardisé.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> La kurtose empirique est très sensible aux observations extrêmes. La fonctionnelle \(P\mapsto \mathbb E_P[(X-\mu_P)^4]/\sigma_P^4-3\) a une fonction d'influence non bornée en toute loi de variance positive finie et de quatrième moment fini.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Contaminons \(P\) par \(P_\varepsilon=(1-\varepsilon)P+\varepsilon\delta_z\). La dérivée en \(\varepsilon=0\) contient un terme dominant proportionnel à \((z-\mu)^4/\sigma^4\), plus des corrections d'ordre inférieur dues à la moyenne et à la variance perturbées. Lorsque \(|z|\to\infty\), ce terme dominant n'est pas borné; la fonction d'influence est donc non bornée.</p>
+    </div>
+
+    {% include probability-note-nav.html back_label="Retour" prev_label="Page précédente" prev_url="/notes/probability-theory/expected-value/" next_label="Page suivante" next_url="/notes/probability-theory/lp-spaces-inequalities-uniform-integrability/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/probability-theory/moments-kurtosis-tail-behavior/' | relative_url }}">6. 矩、峰度与尾部行为</a></h2>
+    {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/expected-value/" next_label="下一页" next_url="/notes/probability-theory/lp-spaces-inequalities-uniform-integrability/" %}
+
+    <p>矩把一个分布压缩成若干幂函数的积分。低阶矩描述位置与尺度，高阶矩会显著放大罕见的大偏离。峰度属于后一类: 它是标准化的四阶中心矩，因此其数学含义主要来自尾部质量，而不是密度在众数处的视觉高度。</p>
+
+    <h3>原点矩、中心矩与绝对矩</h3>
+
+    <p>首先要区分围绕原点取幂和围绕均值取幂。</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 设 \(X\) 为实值随机变量。若 \(\mathbb E|X|^r\lt\infty\)，则 \(r\) 阶原点矩为有意义时的 \(\mathbb E X^r\)。若 \(\mu=\mathbb E X\) 存在，则 \(r\) 阶中心矩为
+\[
+m_r=\mathbb E[(X-\mu)^r],
+\]
+\(r\) 阶绝对中心矩为 \(\mathbb E|X-\mu|^r\)。</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 在概率空间上，若 \(0\lt p\le q\) 且 \(\mathbb E|X|^q\lt\infty\)，则 \(\mathbb E|X|^p\lt\infty\)，并且
+\[
+\|X\|_p\le \|X\|_q .
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 当 \(p\lt q\) 时，对凹函数 \(u\mapsto u^{p/q}\) 使用詹森不等式，得 \(\mathbb E|X|^p=\mathbb E[(|X|^q)^{p/q}]\le(\mathbb E|X|^q)^{p/q}\)。两边取 \(p\) 次方根即得范数不等式。\(p=q\) 的情形显然。</p>
+    </div>
+
+    <h3>幂矩的尾积分表示</h3>
+
+    <p>幂矩可以直接由尾概率恢复。这正是高阶矩本质上是尾部量的最清楚原因。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> 若 \(Y\ge0\) 且 \(r\gt0\)，则
+\[
+\mathbb E Y^r=r\int_0^\infty t^{r-1}P(Y\gt t)\,\mathrm{d}t.
+\]
+特别地，
+\[
+\mathbb E|X-\mu|^4=4\int_0^\infty t^3P(|X-\mu|\gt t)\,\mathrm{d}t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对每个 \(y\ge0\)，有 \(y^r=\int_0^y r t^{r-1}\,\mathrm{d}t=\int_0^\infty r t^{r-1}1_{\{t\lt y\}}\,\mathrm{d}t\)。令 \(y=Y(\omega)\)，再用托内利定理交换积分次序，得到
+\[
+\mathbb E Y^r=\int_0^\infty r t^{r-1}P(Y\gt t)\,\mathrm{d}t .
+\]</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> 四阶矩公式中的权重 \(t^3\) 表明: 即使只有很小的概率质量，只要离均值足够远，就可能主导整个四阶矩。</p>
+    </div>
+
+    <h3>标准化矩与超额峰度</h3>
+
+    <p>标准化消除量纲，使经过平移和尺度变换后的分布仍然可以比较。</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 设 \(\mu=\mathbb E X\)，\(0\lt\sigma^2=\operatorname{Var}(X)\lt\infty\)，且 \(\mathbb E|X-\mu|^4\lt\infty\)。四阶标准化矩为
+\[
+\beta_2=\mathbb E\left[\left(\frac{X-\mu}{\sigma}\right)^4\right]
+=\frac{\mathbb E[(X-\mu)^4]}{\sigma^4}.
+\]
+超额峰度为 \(\gamma_2=\beta_2-3\)。</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 峰度在非退化仿射变换下不变。若 \(Y=aX+b\) 且 \(a\ne0\)，则只要相应量存在，\(Y\) 与 \(X\) 有相同的 \(\beta_2\) 和相同的超额峰度。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> \(Y\) 的均值为 \(a\mu+b\)，标准差为 \(|a|\sigma\)，且 \(Y-\mathbb EY=a(X-\mu)\)。因此
+\[
+\mathbb E\left[\left(\frac{Y-\mathbb EY}{\operatorname{sd}(Y)}\right)^4\right]
+=\mathbb E\left[\left(\frac{a(X-\mu)}{|a|\sigma}\right)^4\right]
+=\beta_2 .
+\]</p>
+    </div>
+
+    <h3>峰度对尾部的敏感性</h3>
+
+    <p>即使均值和方差被固定，只要把极小一部分质量放得足够远，峰度也可以任意大。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 对任意 \(K\gt0\)，存在均值为零、方差为一的随机变量，使其超额峰度大于 \(K\)。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 取 \(0\lt p\lt1\)，令 \(a=p^{-1/2}\)，并定义 \(X_p\) 满足
+\[
+P(X_p=a)=p/2,\qquad P(X_p=-a)=p/2,\qquad P(X_p=0)=1-p .
+\]
+于是 \(\mathbb EX_p=0\)，\(\mathbb EX_p^2=pa^2=1\)，且 \(\mathbb EX_p^4=pa^4=1/p\)。所以超额峰度为 \(1/p-3\)，当 \(p\downarrow0\) 时趋于无穷。</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> 这个例子在中心也有很大原子质量，但发散并非仅由中心高度造成。真正驱动计算的是远端取值的四次方。</p>
+    </div>
+
+    <h3>典型分布</h3>
+
+    <p>标准例子可以区分有界尾、指数尾、高斯尾和多项式尾。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 在相应矩存在时，下列超额峰度成立:
+\[
+\begin{array}{c|c}
+\text{分布} & \gamma_2\\ \hline
+N(0,1) & 0\\
+\mathrm{Unif}[-1,1] & -6/5\\
+\mathrm{Laplace}(0,b) & 3\\
+t_\nu,\ \nu\gt4 & 6/(\nu-4)\\
+\mathrm{Pareto}(\alpha),\ \alpha\gt4 &
+\dfrac{6(\alpha^3+\alpha^2-6\alpha-2)}{\alpha(\alpha-3)(\alpha-4)}
+\end{array}
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对标准正态变量，分部积分或对矩母函数求导可得 \(\mathbb EX^4=3\)。若 \(U\sim\mathrm{Unif}[-1,1]\)，则 \(\mathbb EU^2=1/3\)，\(\mathbb EU^4=1/5\)，所以 \(\beta_2=(1/5)/(1/3)^2=9/5\)。对拉普拉斯密度 \((2b)^{-1}e^{-|x|/b}\)，偶数阶矩为 \(\mathbb EX^{2k}=(2k)!b^{2k}\)，因此方差为 \(2b^2\)，四阶矩为 \(24b^4\)，\(\beta_2=6\)。学生 \(t\) 分布和帕累托分布的公式来自其标准矩公式: \(t_\nu\) 只有在 \(\nu\gt4\) 时四阶矩有限，I 型帕累托变量在 \(r\lt\alpha\) 时有原点矩 \(\alpha x_m^r/(\alpha-r)\)。</p>
+    </div>
+
+    <h3>不是峰顶高度的度量</h3>
+
+    <p>众数附近的密度可能看起来尖锐或平坦，但峰度由四阶矩定义。它是由尾部加权的积分，而不是对峰顶高度的直接测量。</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> 拉普拉斯分布既比正态分布有更尖的中心尖点，也有更重的指数尾，其超额峰度为 \(3\)。均匀分布没有中心峰顶且尾部有界，其超额峰度为负。这些图像直觉有帮助，但定义才是根本: 峰度由标准化四阶中心矩决定。</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 样本峰度对极端观测高度敏感。总体泛函 \(P\mapsto \mathbb E_P[(X-\mu_P)^4]/\sigma_P^4-3\) 在任意具有正有限方差和有限四阶矩的分布处都有无界影响函数。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 用 \(P_\varepsilon=(1-\varepsilon)P+\varepsilon\delta_z\) 污染 \(P\)。在 \(\varepsilon=0\) 处的导数含有主导项 \((z-\mu)^4/\sigma^4\) 的常数倍，另外还有由均值和方差扰动带来的低阶修正。当 \(|z|\to\infty\) 时，主导项无界，所以影响函数无界。</p>
+    </div>
+
+    {% include probability-note-nav.html back_label="返回" prev_label="上一页" prev_url="/notes/probability-theory/expected-value/" next_label="下一页" next_url="/notes/probability-theory/lp-spaces-inequalities-uniform-integrability/" %}
+</div>
+
+<hr>
