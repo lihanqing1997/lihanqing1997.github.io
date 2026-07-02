@@ -1,0 +1,164 @@
+---
+layout: default
+breadcrumb_child_label_en: "5. Partial likelihood, score, and information"
+breadcrumb_child_label_fr: "5. Vraisemblance partielle, score et information"
+breadcrumb_child_label_zh: "5. 部分似然、分数与信息"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/survival-analysis/partial-likelihood-score-information/' | relative_url }}">5. Partial likelihood, score, and information</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" prev_label="Last page" prev_url="/notes/survival-analysis/cox-proportional-hazards-model/" next_label="Next page" next_url="/notes/survival-analysis/large-sample-theory-cox/" %}
+
+    <h3>Partial likelihood</h3>
+
+    <p>At an event time, the Cox model gives the conditional probability that the observed failing subject is the one that fails among all subjects in the risk set. Multiplying these conditional probabilities gives the partial likelihood.</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For distinct event times and no ties, the Cox partial likelihood is
+\[
+L_p(\beta)=\prod_{i:\Delta_i=1}{\exp(Z_i^\top\beta)\over \sum_{j:X_j\ge X_i}\exp(Z_j^\top\beta)}.
+\]
+The log partial likelihood is \(\ell_p(\beta)=\log L_p(\beta)\).</p>
+    </div><div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Let
+\[
+S^{(k)}(t,\beta)=\sum_{j=1}^nY_j(t)Z_j^{\otimes k}\exp(Z_j^\top\beta),\quad k=0,1,2,
+\]
+and \(\bar Z(t,\beta)=S^{(1)}(t,\beta)/S^{(0)}(t,\beta)\). Then the score is
+\[
+U(\beta)=\sum_{i=1}^n\int_0^\tau\{Z_i-\bar Z(t,\beta)\}\,\mathrm{d}N_i(t).
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Differentiate \(\ell_p(\beta)=\sum_i\int Z_i^\top\beta\,\mathrm{d}N_i(t)-\int\log S^{(0)}(t,\beta)\,\mathrm{d}N_\cdot(t)\), where \(N_\cdot=\sum_iN_i\). The derivative of the first term is \(Z_i\); the derivative of \(\log S^{(0)}\) is \(S^{(1)}/S^{(0)}\).</p>
+    </div>
+    <h3>Observed information</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The negative Hessian is
+\[
+I_n(\beta)=\sum_i\int_0^\tau V(t,\beta)\,\mathrm{d}N_i(t),\quad
+V(t,\beta)={S^{(2)}\over S^{(0)}}(t,\beta)-\bar Z(t,\beta)^{\otimes2}.
+\]
+Thus \(V(t,\beta)\) is the weighted risk-set covariance of \(Z\).</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Differentiate \(\bar Z=S^{(1)}/S^{(0)}\). The quotient rule gives \(S^{(2)}/S^{(0)}-(S^{(1)}/S^{(0)})^{\otimes2}\), which is precisely the covariance matrix under weights proportional to \(Y_j(t)\exp(Z_j^\top\beta)\).</p>
+    </div>
+    <h3>Concavity and uniqueness</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The negative Cox partial log likelihood is convex in \(\beta\). It is strictly convex on directions that have nonzero weighted risk-set variance at event times.</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The Hessian of \(-\ell_p(\beta)\) is the sum over event times of weighted covariance matrices \(V(t,\beta)\). Covariance matrices are positive semidefinite; strict positivity holds exactly on directions whose risk-set values are not almost surely constant.</p>
+    </div>
+    <h3>Ties</h3>
+<div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> When several events occur at the same recorded time, the Breslow approximation treats the risk-set denominator as unchanged across the tied failures, while the Efron approximation partially removes the tied failures across the tied substeps.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> The exact partial likelihood for ties is combinatorial. Breslow is simple, Efron is usually more accurate for moderate tie frequency, and both coincide asymptotically when ties are artifacts of time discretization that vanish with finer measurement.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" prev_label="Last page" prev_url="/notes/survival-analysis/cox-proportional-hazards-model/" next_label="Next page" next_url="/notes/survival-analysis/large-sample-theory-cox/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/survival-analysis/partial-likelihood-score-information/' | relative_url }}">5. Vraisemblance partielle, score et information</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" prev_label="Page précédente" prev_url="/notes/survival-analysis/cox-proportional-hazards-model/" next_label="Page suivante" next_url="/notes/survival-analysis/large-sample-theory-cox/" %}
+
+    <h3>Partial likelihood</h3>
+
+    <p>At an event time, the Cox model gives the conditional probability that the observed failing subject is the one that fails among all subjects in the risk set. Multiplying these conditional probabilities gives the partial likelihood.</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For distinct event times and no ties, the Cox partial likelihood is
+\[
+L_p(\beta)=\prod_{i:\Delta_i=1}{\exp(Z_i^\top\beta)\over \sum_{j:X_j\ge X_i}\exp(Z_j^\top\beta)}.
+\]
+The log partial likelihood is \(\ell_p(\beta)=\log L_p(\beta)\).</p>
+    </div><div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Let
+\[
+S^{(k)}(t,\beta)=\sum_{j=1}^nY_j(t)Z_j^{\otimes k}\exp(Z_j^\top\beta),\quad k=0,1,2,
+\]
+and \(\bar Z(t,\beta)=S^{(1)}(t,\beta)/S^{(0)}(t,\beta)\). Then the score is
+\[
+U(\beta)=\sum_{i=1}^n\int_0^\tau\{Z_i-\bar Z(t,\beta)\}\,\mathrm{d}N_i(t).
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Differentiate \(\ell_p(\beta)=\sum_i\int Z_i^\top\beta\,\mathrm{d}N_i(t)-\int\log S^{(0)}(t,\beta)\,\mathrm{d}N_\cdot(t)\), where \(N_\cdot=\sum_iN_i\). The derivative of the first term is \(Z_i\); the derivative of \(\log S^{(0)}\) is \(S^{(1)}/S^{(0)}\).</p>
+    </div>
+    <h3>Observed information</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The negative Hessian is
+\[
+I_n(\beta)=\sum_i\int_0^\tau V(t,\beta)\,\mathrm{d}N_i(t),\quad
+V(t,\beta)={S^{(2)}\over S^{(0)}}(t,\beta)-\bar Z(t,\beta)^{\otimes2}.
+\]
+Thus \(V(t,\beta)\) is the weighted risk-set covariance of \(Z\).</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Differentiate \(\bar Z=S^{(1)}/S^{(0)}\). The quotient rule gives \(S^{(2)}/S^{(0)}-(S^{(1)}/S^{(0)})^{\otimes2}\), which is precisely the covariance matrix under weights proportional to \(Y_j(t)\exp(Z_j^\top\beta)\).</p>
+    </div>
+    <h3>Concavity and uniqueness</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The negative Cox partial log likelihood is convex in \(\beta\). It is strictly convex on directions that have nonzero weighted risk-set variance at event times.</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The Hessian of \(-\ell_p(\beta)\) is the sum over event times of weighted covariance matrices \(V(t,\beta)\). Covariance matrices are positive semidefinite; strict positivity holds exactly on directions whose risk-set values are not almost surely constant.</p>
+    </div>
+    <h3>Ties</h3>
+<div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> When several events occur at the same recorded time, the Breslow approximation treats the risk-set denominator as unchanged across the tied failures, while the Efron approximation partially removes the tied failures across the tied substeps.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> The exact partial likelihood for ties is combinatorial. Breslow is simple, Efron is usually more accurate for moderate tie frequency, and both coincide asymptotically when ties are artifacts of time discretization that vanish with finer measurement.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" prev_label="Page précédente" prev_url="/notes/survival-analysis/cox-proportional-hazards-model/" next_label="Page suivante" next_url="/notes/survival-analysis/large-sample-theory-cox/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/survival-analysis/partial-likelihood-score-information/' | relative_url }}">5. 部分似然、分数与信息</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" prev_label="上一页" prev_url="/notes/survival-analysis/cox-proportional-hazards-model/" next_label="下一页" next_url="/notes/survival-analysis/large-sample-theory-cox/" %}
+
+    <h3>Partial likelihood</h3>
+
+    <p>At an event time, the Cox model gives the conditional probability that the observed failing subject is the one that fails among all subjects in the risk set. Multiplying these conditional probabilities gives the partial likelihood.</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For distinct event times and no ties, the Cox partial likelihood is
+\[
+L_p(\beta)=\prod_{i:\Delta_i=1}{\exp(Z_i^\top\beta)\over \sum_{j:X_j\ge X_i}\exp(Z_j^\top\beta)}.
+\]
+The log partial likelihood is \(\ell_p(\beta)=\log L_p(\beta)\).</p>
+    </div><div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> Let
+\[
+S^{(k)}(t,\beta)=\sum_{j=1}^nY_j(t)Z_j^{\otimes k}\exp(Z_j^\top\beta),\quad k=0,1,2,
+\]
+and \(\bar Z(t,\beta)=S^{(1)}(t,\beta)/S^{(0)}(t,\beta)\). Then the score is
+\[
+U(\beta)=\sum_{i=1}^n\int_0^\tau\{Z_i-\bar Z(t,\beta)\}\,\mathrm{d}N_i(t).
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Differentiate \(\ell_p(\beta)=\sum_i\int Z_i^\top\beta\,\mathrm{d}N_i(t)-\int\log S^{(0)}(t,\beta)\,\mathrm{d}N_\cdot(t)\), where \(N_\cdot=\sum_iN_i\). The derivative of the first term is \(Z_i\); the derivative of \(\log S^{(0)}\) is \(S^{(1)}/S^{(0)}\).</p>
+    </div>
+    <h3>Observed information</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The negative Hessian is
+\[
+I_n(\beta)=\sum_i\int_0^\tau V(t,\beta)\,\mathrm{d}N_i(t),\quad
+V(t,\beta)={S^{(2)}\over S^{(0)}}(t,\beta)-\bar Z(t,\beta)^{\otimes2}.
+\]
+Thus \(V(t,\beta)\) is the weighted risk-set covariance of \(Z\).</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Differentiate \(\bar Z=S^{(1)}/S^{(0)}\). The quotient rule gives \(S^{(2)}/S^{(0)}-(S^{(1)}/S^{(0)})^{\otimes2}\), which is precisely the covariance matrix under weights proportional to \(Y_j(t)\exp(Z_j^\top\beta)\).</p>
+    </div>
+    <h3>Concavity and uniqueness</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The negative Cox partial log likelihood is convex in \(\beta\). It is strictly convex on directions that have nonzero weighted risk-set variance at event times.</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The Hessian of \(-\ell_p(\beta)\) is the sum over event times of weighted covariance matrices \(V(t,\beta)\). Covariance matrices are positive semidefinite; strict positivity holds exactly on directions whose risk-set values are not almost surely constant.</p>
+    </div>
+    <h3>Ties</h3>
+<div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> When several events occur at the same recorded time, the Breslow approximation treats the risk-set denominator as unchanged across the tied failures, while the Efron approximation partially removes the tied failures across the tied substeps.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> The exact partial likelihood for ties is combinatorial. Breslow is simple, Efron is usually more accurate for moderate tie frequency, and both coincide asymptotically when ties are artifacts of time discretization that vanish with finer measurement.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" prev_label="上一页" prev_url="/notes/survival-analysis/cox-proportional-hazards-model/" next_label="下一页" next_url="/notes/survival-analysis/large-sample-theory-cox/" %}
+</div>
+
+<hr>

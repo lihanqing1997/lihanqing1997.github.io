@@ -1,0 +1,164 @@
+---
+layout: default
+breadcrumb_child_label_en: "2. Kaplan-Meier and Nelson-Aalen estimators"
+breadcrumb_child_label_fr: "2. Estimateurs de Kaplan-Meier et de Nelson-Aalen"
+breadcrumb_child_label_zh: "2. Kaplan-Meier 与 Nelson-Aalen 估计量"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/survival-analysis/kaplan-meier-nelson-aalen/' | relative_url }}">2. Kaplan-Meier and Nelson-Aalen estimators</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" prev_label="Last page" prev_url="/notes/survival-analysis/survival-functions-hazards-censoring/" next_label="Next page" next_url="/notes/survival-analysis/counting-processes-martingales/" %}
+
+    <h3>Risk sets</h3>
+
+    <p>Nonparametric survival estimation begins by separating two processes: who is at risk immediately before a time \(t\), and whether an event occurs at \(t\).</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For subject \(i\), let \(N_i(t)=1\{X_i\le t,\Delta_i=1\}\) and \(Y_i(t)=1\{X_i\ge t\}\). At an event time \(t_j\), write \(d_j=\sum_i \Delta_i1\{X_i=t_j\}\) and \(r_j=\sum_i1\{X_i\ge t_j\}\).</p>
+    </div><div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Under independent right censoring, the Kaplan-Meier estimator is
+\[
+\widehat S(t)=\prod_{t_j\le t}\left(1-{d_j\over r_j}\right),
+\]
+and the Nelson-Aalen estimator of the cumulative hazard is
+\[
+\widehat\Lambda(t)=\sum_{t_j\le t}{d_j\over r_j}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> At time \(t_j\), conditional on being in the risk set, the empirical conditional survival probability across the jump is \(1-d_j/r_j\). Multiplying these conditional survival estimates gives the product-limit form. Since \(\mathrm{d}\Lambda(t)\) is the conditional event probability over an infinitesimal interval, its empirical jump at \(t_j\) is \(d_j/r_j\), giving Nelson-Aalen.</p>
+    </div>
+    <h3>Connection between the two estimators</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> When jumps are small, \(-\log \widehat S(t)=\widehat\Lambda(t)+O_p(\sum_{t_j\le t}d_j^2/r_j^2)\).</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use \(-\log(1-x)=x+O(x^2)\) uniformly for small \(x\), and substitute \(x=d_j/r_j\) in the product formula for \(\widehat S\).</p>
+    </div>
+    <h3>Greenwood variance and log-scale intervals</h3>
+<div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> For fixed \(t\) before the last time with a nonempty risk set, Greenwood's formula estimates the variance of the Kaplan-Meier estimator by
+\[
+\widehat{\operatorname{var}}\{\widehat S(t)\}
+=\widehat S(t)^2\sum_{t_j\le t}{d_j\over r_j(r_j-d_j)}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Work on the log product scale. Since \(\log\widehat S(t)=\sum_{t_j\le t}\log(1-d_j/r_j)\), a first-order delta calculation gives increments with variance \(d_j/\{r_j(r_j-d_j)\}\). Multiplying by \(\widehat S(t)^2\) returns to the survival scale.</p>
+    </div>
+    <h3>Asymptotic process viewpoint</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The Nelson-Aalen error admits the martingale representation
+\[
+\widehat\Lambda(t)-\Lambda(t)
+=\int_0^t {1\over Y_\cdot(u)}\,\mathrm{d}M_\cdot(u)+R_n(t),
+\]
+where \(R_n(t)\) is a smaller order term on intervals where \(Y_\cdot(u)\) is of order \(n\).</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> This representation is the bridge from product-limit estimators to the counting-process central limit theory used for Cox regression.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" prev_label="Last page" prev_url="/notes/survival-analysis/survival-functions-hazards-censoring/" next_label="Next page" next_url="/notes/survival-analysis/counting-processes-martingales/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/survival-analysis/kaplan-meier-nelson-aalen/' | relative_url }}">2. Estimateurs de Kaplan-Meier et de Nelson-Aalen</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" prev_label="Page précédente" prev_url="/notes/survival-analysis/survival-functions-hazards-censoring/" next_label="Page suivante" next_url="/notes/survival-analysis/counting-processes-martingales/" %}
+
+    <h3>Risk sets</h3>
+
+    <p>Nonparametric survival estimation begins by separating two processes: who is at risk immediately before a time \(t\), and whether an event occurs at \(t\).</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> For subject \(i\), let \(N_i(t)=1\{X_i\le t,\Delta_i=1\}\) and \(Y_i(t)=1\{X_i\ge t\}\). At an event time \(t_j\), write \(d_j=\sum_i \Delta_i1\{X_i=t_j\}\) and \(r_j=\sum_i1\{X_i\ge t_j\}\).</p>
+    </div><div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Under independent right censoring, the Kaplan-Meier estimator is
+\[
+\widehat S(t)=\prod_{t_j\le t}\left(1-{d_j\over r_j}\right),
+\]
+and the Nelson-Aalen estimator of the cumulative hazard is
+\[
+\widehat\Lambda(t)=\sum_{t_j\le t}{d_j\over r_j}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> At time \(t_j\), conditional on being in the risk set, the empirical conditional survival probability across the jump is \(1-d_j/r_j\). Multiplying these conditional survival estimates gives the product-limit form. Since \(\mathrm{d}\Lambda(t)\) is the conditional event probability over an infinitesimal interval, its empirical jump at \(t_j\) is \(d_j/r_j\), giving Nelson-Aalen.</p>
+    </div>
+    <h3>Connection between the two estimators</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> When jumps are small, \(-\log \widehat S(t)=\widehat\Lambda(t)+O_p(\sum_{t_j\le t}d_j^2/r_j^2)\).</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Use \(-\log(1-x)=x+O(x^2)\) uniformly for small \(x\), and substitute \(x=d_j/r_j\) in the product formula for \(\widehat S\).</p>
+    </div>
+    <h3>Greenwood variance and log-scale intervals</h3>
+<div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> For fixed \(t\) before the last time with a nonempty risk set, Greenwood's formula estimates the variance of the Kaplan-Meier estimator by
+\[
+\widehat{\operatorname{var}}\{\widehat S(t)\}
+=\widehat S(t)^2\sum_{t_j\le t}{d_j\over r_j(r_j-d_j)}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Work on the log product scale. Since \(\log\widehat S(t)=\sum_{t_j\le t}\log(1-d_j/r_j)\), a first-order delta calculation gives increments with variance \(d_j/\{r_j(r_j-d_j)\}\). Multiplying by \(\widehat S(t)^2\) returns to the survival scale.</p>
+    </div>
+    <h3>Asymptotic process viewpoint</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The Nelson-Aalen error admits the martingale representation
+\[
+\widehat\Lambda(t)-\Lambda(t)
+=\int_0^t {1\over Y_\cdot(u)}\,\mathrm{d}M_\cdot(u)+R_n(t),
+\]
+where \(R_n(t)\) is a smaller order term on intervals where \(Y_\cdot(u)\) is of order \(n\).</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> This representation is the bridge from product-limit estimators to the counting-process central limit theory used for Cox regression.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" prev_label="Page précédente" prev_url="/notes/survival-analysis/survival-functions-hazards-censoring/" next_label="Page suivante" next_url="/notes/survival-analysis/counting-processes-martingales/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/survival-analysis/kaplan-meier-nelson-aalen/' | relative_url }}">2. Kaplan-Meier 与 Nelson-Aalen 估计量</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" prev_label="上一页" prev_url="/notes/survival-analysis/survival-functions-hazards-censoring/" next_label="下一页" next_url="/notes/survival-analysis/counting-processes-martingales/" %}
+
+    <h3>Risk sets</h3>
+
+    <p>Nonparametric survival estimation begins by separating two processes: who is at risk immediately before a time \(t\), and whether an event occurs at \(t\).</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> For subject \(i\), let \(N_i(t)=1\{X_i\le t,\Delta_i=1\}\) and \(Y_i(t)=1\{X_i\ge t\}\). At an event time \(t_j\), write \(d_j=\sum_i \Delta_i1\{X_i=t_j\}\) and \(r_j=\sum_i1\{X_i\ge t_j\}\).</p>
+    </div><div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> Under independent right censoring, the Kaplan-Meier estimator is
+\[
+\widehat S(t)=\prod_{t_j\le t}\left(1-{d_j\over r_j}\right),
+\]
+and the Nelson-Aalen estimator of the cumulative hazard is
+\[
+\widehat\Lambda(t)=\sum_{t_j\le t}{d_j\over r_j}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> At time \(t_j\), conditional on being in the risk set, the empirical conditional survival probability across the jump is \(1-d_j/r_j\). Multiplying these conditional survival estimates gives the product-limit form. Since \(\mathrm{d}\Lambda(t)\) is the conditional event probability over an infinitesimal interval, its empirical jump at \(t_j\) is \(d_j/r_j\), giving Nelson-Aalen.</p>
+    </div>
+    <h3>Connection between the two estimators</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> When jumps are small, \(-\log \widehat S(t)=\widehat\Lambda(t)+O_p(\sum_{t_j\le t}d_j^2/r_j^2)\).</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Use \(-\log(1-x)=x+O(x^2)\) uniformly for small \(x\), and substitute \(x=d_j/r_j\) in the product formula for \(\widehat S\).</p>
+    </div>
+    <h3>Greenwood variance and log-scale intervals</h3>
+<div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> For fixed \(t\) before the last time with a nonempty risk set, Greenwood's formula estimates the variance of the Kaplan-Meier estimator by
+\[
+\widehat{\operatorname{var}}\{\widehat S(t)\}
+=\widehat S(t)^2\sum_{t_j\le t}{d_j\over r_j(r_j-d_j)}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Work on the log product scale. Since \(\log\widehat S(t)=\sum_{t_j\le t}\log(1-d_j/r_j)\), a first-order delta calculation gives increments with variance \(d_j/\{r_j(r_j-d_j)\}\). Multiplying by \(\widehat S(t)^2\) returns to the survival scale.</p>
+    </div>
+    <h3>Asymptotic process viewpoint</h3>
+<div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> The Nelson-Aalen error admits the martingale representation
+\[
+\widehat\Lambda(t)-\Lambda(t)
+=\int_0^t {1\over Y_\cdot(u)}\,\mathrm{d}M_\cdot(u)+R_n(t),
+\]
+where \(R_n(t)\) is a smaller order term on intervals where \(Y_\cdot(u)\) is of order \(n\).</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> This representation is the bridge from product-limit estimators to the counting-process central limit theory used for Cox regression.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" prev_label="上一页" prev_url="/notes/survival-analysis/survival-functions-hazards-censoring/" next_label="下一页" next_url="/notes/survival-analysis/counting-processes-martingales/" %}
+</div>
+
+<hr>

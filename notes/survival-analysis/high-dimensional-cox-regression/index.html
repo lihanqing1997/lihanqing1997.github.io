@@ -1,0 +1,167 @@
+---
+layout: default
+breadcrumb_child_label_en: "11. High-dimensional Cox regression"
+breadcrumb_child_label_fr: "11. Régression de Cox en grande dimension"
+breadcrumb_child_label_zh: "11. 高维 Cox 回归"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/survival-analysis/high-dimensional-cox-regression/' | relative_url }}">11. High-dimensional Cox regression</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" prev_label="Last page" prev_url="/notes/survival-analysis/semiparametric-efficiency-cox/" next_label="Next page" next_url="/notes/survival-analysis/bayesian-cox-bvm/" %}
+
+    <h3>Penalized partial likelihood</h3>
+
+    <p>High-dimensional Cox regression replaces fixed-dimensional likelihood maximization by a sparse convex program. The geometry is analogous to Lasso, but the loss is the negative partial log likelihood.</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The Lasso Cox estimator solves
+\[
+\hat\beta\in\arg\min_{\beta\in\mathbb R^p}\{-n^{-1}\ell_p(\beta)+\lambda\|\beta\|_1\}.
+\]</p>
+    </div><div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A Cox restricted eigenvalue condition requires the Hessian of the normalized negative partial log likelihood to have curvature on sparse cones:
+\[
+\delta^\top\nabla^2\{-n^{-1}\ell_p(\beta_0)\}\delta\ge \kappa\|\delta_S\|_2^2
+\]
+for all \(\delta\) satisfying \(\|\delta_{S^c}\|_1\le c\|\delta_S\|_1\).</p>
+    </div><div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> On the score event \(\|n^{-1}U(\beta_0)\|_\infty\le\lambda/2\), and under restricted eigenvalue curvature \(\kappa\), an \(s\)-sparse truth satisfies the typical bounds
+\[
+\|\hat\beta-\beta_0\|_1\lesssim {s\lambda\over\kappa},\qquad
+(\hat\beta-\beta_0)^\top\nabla^2 L(\beta_0)(\hat\beta-\beta_0)\lesssim {s\lambda^2\over\kappa}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The optimality inequality gives the basic inequality. The score event controls the stochastic linear term by \(\lambda\|\Delta\|_1/2\), forcing the cone condition. Restricted eigenvalue curvature converts prediction curvature into \(\ell_2\) control on the active coordinates, and the cone converts that into \(\ell_1\) control.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> For support recovery one also needs beta-min and an incoherence or irrepresentability-type condition. Prediction consistency alone does not identify the active set.</p>
+    </div>
+    <h3>Score concentration</h3>
+<div class="math-statement lemma">
+        <p><span class="statement-title">Lemma.</span> If covariates are uniformly bounded and martingale Bernstein inequalities apply, then with high probability
+\[
+\|n^{-1}U(\beta_0)\|_\infty\lesssim \sqrt{\log p\over n}.
+\]
+Thus the Lasso tuning parameter is typically chosen of this order.</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Each score coordinate is a martingale integral with bounded jumps and predictable variation of order \(n\). Bernstein's inequality gives a coordinate tail bound, and a union bound over \(p\) coordinates gives the logarithmic factor.</p>
+    </div>
+    <h3>Debiased Cox estimator</h3>
+<div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A debiased Cox estimator for coordinate \(j\) has the form
+\[
+\tilde\beta_j=\hat\beta_j+\hat\Theta_j^\top n^{-1}U(\hat\beta),
+\]
+where \(\hat\Theta_j\) estimates the \(j\)-th row of the inverse sparse information matrix.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> Debiasing requires both an accurate initial sparse estimator and an accurate inverse-information direction. The second requirement is often the harder one.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" prev_label="Last page" prev_url="/notes/survival-analysis/semiparametric-efficiency-cox/" next_label="Next page" next_url="/notes/survival-analysis/bayesian-cox-bvm/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/survival-analysis/high-dimensional-cox-regression/' | relative_url }}">11. Régression de Cox en grande dimension</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" prev_label="Page précédente" prev_url="/notes/survival-analysis/semiparametric-efficiency-cox/" next_label="Page suivante" next_url="/notes/survival-analysis/bayesian-cox-bvm/" %}
+
+    <h3>Penalized partial likelihood</h3>
+
+    <p>High-dimensional Cox regression replaces fixed-dimensional likelihood maximization by a sparse convex program. The geometry is analogous to Lasso, but the loss is the negative partial log likelihood.</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> The Lasso Cox estimator solves
+\[
+\hat\beta\in\arg\min_{\beta\in\mathbb R^p}\{-n^{-1}\ell_p(\beta)+\lambda\|\beta\|_1\}.
+\]</p>
+    </div><div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A Cox restricted eigenvalue condition requires the Hessian of the normalized negative partial log likelihood to have curvature on sparse cones:
+\[
+\delta^\top\nabla^2\{-n^{-1}\ell_p(\beta_0)\}\delta\ge \kappa\|\delta_S\|_2^2
+\]
+for all \(\delta\) satisfying \(\|\delta_{S^c}\|_1\le c\|\delta_S\|_1\).</p>
+    </div><div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> On the score event \(\|n^{-1}U(\beta_0)\|_\infty\le\lambda/2\), and under restricted eigenvalue curvature \(\kappa\), an \(s\)-sparse truth satisfies the typical bounds
+\[
+\|\hat\beta-\beta_0\|_1\lesssim {s\lambda\over\kappa},\qquad
+(\hat\beta-\beta_0)^\top\nabla^2 L(\beta_0)(\hat\beta-\beta_0)\lesssim {s\lambda^2\over\kappa}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> The optimality inequality gives the basic inequality. The score event controls the stochastic linear term by \(\lambda\|\Delta\|_1/2\), forcing the cone condition. Restricted eigenvalue curvature converts prediction curvature into \(\ell_2\) control on the active coordinates, and the cone converts that into \(\ell_1\) control.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> For support recovery one also needs beta-min and an incoherence or irrepresentability-type condition. Prediction consistency alone does not identify the active set.</p>
+    </div>
+    <h3>Score concentration</h3>
+<div class="math-statement lemma">
+        <p><span class="statement-title">Lemme.</span> If covariates are uniformly bounded and martingale Bernstein inequalities apply, then with high probability
+\[
+\|n^{-1}U(\beta_0)\|_\infty\lesssim \sqrt{\log p\over n}.
+\]
+Thus the Lasso tuning parameter is typically chosen of this order.</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Each score coordinate is a martingale integral with bounded jumps and predictable variation of order \(n\). Bernstein's inequality gives a coordinate tail bound, and a union bound over \(p\) coordinates gives the logarithmic factor.</p>
+    </div>
+    <h3>Debiased Cox estimator</h3>
+<div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> A debiased Cox estimator for coordinate \(j\) has the form
+\[
+\tilde\beta_j=\hat\beta_j+\hat\Theta_j^\top n^{-1}U(\hat\beta),
+\]
+where \(\hat\Theta_j\) estimates the \(j\)-th row of the inverse sparse information matrix.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">Remarque.</span> Debiasing requires both an accurate initial sparse estimator and an accurate inverse-information direction. The second requirement is often the harder one.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" prev_label="Page précédente" prev_url="/notes/survival-analysis/semiparametric-efficiency-cox/" next_label="Page suivante" next_url="/notes/survival-analysis/bayesian-cox-bvm/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/survival-analysis/high-dimensional-cox-regression/' | relative_url }}">11. 高维 Cox 回归</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" prev_label="上一页" prev_url="/notes/survival-analysis/semiparametric-efficiency-cox/" next_label="下一页" next_url="/notes/survival-analysis/bayesian-cox-bvm/" %}
+
+    <h3>Penalized partial likelihood</h3>
+
+    <p>High-dimensional Cox regression replaces fixed-dimensional likelihood maximization by a sparse convex program. The geometry is analogous to Lasso, but the loss is the negative partial log likelihood.</p>
+<div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> The Lasso Cox estimator solves
+\[
+\hat\beta\in\arg\min_{\beta\in\mathbb R^p}\{-n^{-1}\ell_p(\beta)+\lambda\|\beta\|_1\}.
+\]</p>
+    </div><div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A Cox restricted eigenvalue condition requires the Hessian of the normalized negative partial log likelihood to have curvature on sparse cones:
+\[
+\delta^\top\nabla^2\{-n^{-1}\ell_p(\beta_0)\}\delta\ge \kappa\|\delta_S\|_2^2
+\]
+for all \(\delta\) satisfying \(\|\delta_{S^c}\|_1\le c\|\delta_S\|_1\).</p>
+    </div><div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> On the score event \(\|n^{-1}U(\beta_0)\|_\infty\le\lambda/2\), and under restricted eigenvalue curvature \(\kappa\), an \(s\)-sparse truth satisfies the typical bounds
+\[
+\|\hat\beta-\beta_0\|_1\lesssim {s\lambda\over\kappa},\qquad
+(\hat\beta-\beta_0)^\top\nabla^2 L(\beta_0)(\hat\beta-\beta_0)\lesssim {s\lambda^2\over\kappa}.
+\]</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> The optimality inequality gives the basic inequality. The score event controls the stochastic linear term by \(\lambda\|\Delta\|_1/2\), forcing the cone condition. Restricted eigenvalue curvature converts prediction curvature into \(\ell_2\) control on the active coordinates, and the cone converts that into \(\ell_1\) control.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> For support recovery one also needs beta-min and an incoherence or irrepresentability-type condition. Prediction consistency alone does not identify the active set.</p>
+    </div>
+    <h3>Score concentration</h3>
+<div class="math-statement lemma">
+        <p><span class="statement-title">引理.</span> If covariates are uniformly bounded and martingale Bernstein inequalities apply, then with high probability
+\[
+\|n^{-1}U(\beta_0)\|_\infty\lesssim \sqrt{\log p\over n}.
+\]
+Thus the Lasso tuning parameter is typically chosen of this order.</p>
+    </div><div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> Each score coordinate is a martingale integral with bounded jumps and predictable variation of order \(n\). Bernstein's inequality gives a coordinate tail bound, and a union bound over \(p\) coordinates gives the logarithmic factor.</p>
+    </div>
+    <h3>Debiased Cox estimator</h3>
+<div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> A debiased Cox estimator for coordinate \(j\) has the form
+\[
+\tilde\beta_j=\hat\beta_j+\hat\Theta_j^\top n^{-1}U(\hat\beta),
+\]
+where \(\hat\Theta_j\) estimates the \(j\)-th row of the inverse sparse information matrix.</p>
+    </div><div class="math-statement remark">
+        <p><span class="statement-title">说明.</span> Debiasing requires both an accurate initial sparse estimator and an accurate inverse-information direction. The second requirement is often the harder one.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" prev_label="上一页" prev_url="/notes/survival-analysis/semiparametric-efficiency-cox/" next_label="下一页" next_url="/notes/survival-analysis/bayesian-cox-bvm/" %}
+</div>
+
+<hr>
