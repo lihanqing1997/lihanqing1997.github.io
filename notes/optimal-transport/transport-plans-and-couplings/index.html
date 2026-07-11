@@ -1,92 +1,458 @@
 ---
 layout: default
-breadcrumb_child_label_en: "1. Transport plans and couplings"
-breadcrumb_child_label_fr: "1. Plans de transport et couplages"
-breadcrumb_child_label_zh: "1. 传输计划与耦合"
+breadcrumb_child_label_en: "1. Measures, pushforwards, and couplings"
+breadcrumb_child_label_fr: "1. Mesures, images directes et couplages"
+breadcrumb_child_label_zh: "1. 测度、推前与耦合"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">1. Transport plans and couplings</a></h2>
+    <h2><a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">1. Measures, pushforwards, and couplings</a></h2>
     {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" next_label="Next page" next_url="/notes/optimal-transport/monge-problem/" %}
 
-    <p>Transport plans and couplings records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>Optimal transport compares two distributions by placing them on a common probability space. Before a cost is minimized, one must understand the three operations that make this possible: moving a measure through a map, joining two measures by a coupling, and composing couplings through a common marginal.</p>
 
-    <h3>Definition</h3>
+    <h3>Probability measures on Polish spaces</h3>
+    <p>Throughout the note, \(X\) and \(Y\) are Polish spaces with their Borel \(\sigma\)-fields. This assumption is broad enough for Euclidean spaces, separable Banach spaces, manifolds, path spaces, and countable discrete spaces, while still providing tightness and regular conditional probabilities.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For probability measures \(\mu\) on \(X\) and \(\nu\) on \(Y\), a coupling is a probability measure \(\pi\) on \(X\times Y\) with marginals \(\mu\) and \(\nu\).</p>
+        <p><span class="statement-title">Definition.</span> Write \(\mathcal P(X)\) for the Borel probability measures on \(X\). If \(d_X\) is a complete compatible metric and \(p\ge1\), define
+
+        \[
+        \mathcal P_p(X)=\left\{\mu\in\mathcal P(X):\int_X d_X(x,x_0)^p\,\mathrm d\mu(x)&lt;\infty\right\}.
+        \]
+
+        The definition does not depend on the base point \(x_0\), because \(d_X(x,x_1)^p\le 2^{p-1}\{d_X(x,x_0)^p+d_X(x_0,x_1)^p\}\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <p>Weak convergence \(\mu_n\Rightarrow\mu\) means \(\int f\,\mathrm d\mu_n\to\int f\,\mathrm d\mu\) for every bounded continuous \(f\). Moment conditions will later strengthen weak convergence into Wasserstein convergence.</p>
+
+    <h3>Pushforward measures</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> If \(T:X\to Y\) is Borel measurable and \(\mu\in\mathcal P(X)\), the pushforward \(T_\#\mu\in\mathcal P(Y)\) is
+
+        \[
+        (T_\#\mu)(B)=\mu(T^{-1}(B)),\qquad B\in\mathcal B(Y).
+        \]
+
+        Equivalently, \(T_\#\mu\) is the law of \(T(U)\) whenever \(U\sim\mu\).</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The set \(\Pi(\mu,\nu)\) of couplings is convex and weakly compact under tightness hypotheses such as Polish spaces with tight marginals.</p>
+        <p><span class="statement-title">Change-of-variables identity.</span> For every nonnegative Borel function \(g:Y\to[0,\infty]\), and for every \(T_\#\mu\)-integrable \(g\),
+
+        \[
+        \int_Y g(y)\,\mathrm d(T_\#\mu)(y)=\int_X g(T(x))\,\mathrm d\mu(x).
+        \]</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Convexity is immediate from linearity of marginals. Compactness follows from Prokhorov tightness and closedness of the marginal constraints under weak convergence.</p>
+        <p><span class="statement-title">Proof.</span> The identity follows from the definition when \(g=\mathbf 1_B\). Linearity gives it for nonnegative simple functions. If \(g_n\uparrow g\) are simple, the monotone convergence theorem on both sides gives the nonnegative case. Applying the result to the positive and negative parts gives the integrable case.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Couplings are the relaxed objects of optimal transport. They allow splitting mass and make existence theorems possible.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> If \(X=Y=\mathbb R^d\), \(T(x)=Ax+b\), and \(U\sim N(m,\Sigma)\), then \(T_\#N(m,\Sigma)=N(Am+b,A\Sigma A^{\mathsf T})\). If \(\mu\) has density \(f\) and \(T\) is a \(C^1\)-diffeomorphism, then \(T_\#\mu\) has density \(g(y)=f(T^{-1}y)|\det DT(T^{-1}y)|^{-1}\). The Monge--Ampère equation will arise by applying this formula to \(T=\nabla\varphi\).</p>
+    </div>
+
+    <h3>Couplings and transport plans</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A coupling of \(\mu\in\mathcal P(X)\) and \(\nu\in\mathcal P(Y)\) is a probability measure \(\pi\in\mathcal P(X\times Y)\) whose marginals are \(\mu\) and \(\nu\):
+
+        \[
+        (\operatorname{pr}_X)_\#\pi=\mu,
+        \qquad
+        (\operatorname{pr}_Y)_\#\pi=\nu.
+        \]
+
+        The set of all such measures is denoted \(\Pi(\mu,\nu)\). In optimal transport, a coupling is also called a transport plan.</p>
+    </div>
+
+    <p>The set \(\Pi(\mu,\nu)\) is never empty because it contains the independent coupling \(\mu\otimes\nu\). A coupling records dependence while leaving the two marginal laws fixed. Thus choosing a transport plan is exactly choosing which source points are paired with which target points.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X,Y\) are Polish, then \(\Pi(\mu,\nu)\) is convex and tight. It is also closed under weak convergence; consequently it is weakly compact.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Convexity follows because the marginal maps are linear. Given \(\varepsilon>0\), tightness of \(\mu\) and \(\nu\) provides compact sets \(K_X,K_Y\) with \(\mu(K_X)\ge1-\varepsilon/2\) and \(\nu(K_Y)\ge1-\varepsilon/2\). Every \(\pi\in\Pi(\mu,\nu)\) then satisfies
+
+        \[
+        \pi(K_X\times K_Y)
+        \ge 1-\pi(K_X^c\times Y)-\pi(X\times K_Y^c)
+        \ge1-\varepsilon.
+        \]
+
+        Hence the family is tight. If \(\pi_n\Rightarrow\pi\), continuity of the projections gives \((\operatorname{pr}_X)_\#\pi_n\Rightarrow(\operatorname{pr}_X)_\#\pi\), so the first marginal of \(\pi\) is \(\mu\); similarly the second is \(\nu\). Prokhorov's theorem now yields compactness.</p>
+    </div>
+
+    <h3>Maps, kernels, and disintegration</h3>
+    <p>A map sends all mass located at \(x\) to one point. A general plan may split that mass among several destinations. Disintegration makes this distinction exact.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Disintegration theorem.</span> For every \(\pi\in\Pi(\mu,\nu)\), there exists a \(\mu\)-almost surely unique measurable probability kernel \(x\mapsto\pi_x\in\mathcal P(Y)\) such that
+
+        \[
+        \pi(\mathrm dx,\mathrm dy)=\mu(\mathrm dx)\pi_x(\mathrm dy),
+        \qquad
+        \nu(B)=\int_X\pi_x(B)\,\mathrm d\mu(x).
+        \]
+
+        Moreover, \(\pi\) is induced by a measurable map \(T:X\to Y\), meaning \(\pi=(\operatorname{id},T)_\#\mu\), if and only if \(\pi_x=\delta_{T(x)}\) for \(\mu\)-almost every \(x\).</p>
+    </div>
+
+    <p>The kernel \(\pi_x\) is the conditional law of the destination given the source \(x\). Deterministic plans are therefore precisely the couplings whose conditional laws are Dirac masses.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Let \(\mu=\delta_0\) and \(\nu=\tfrac12(\delta_{-1}+\delta_1)\). There is one coupling, \(\pi=\delta_0\otimes\nu\), and its conditional law at \(0\) is \(\nu\). No map \(T\) can satisfy \(T_\#\mu=\nu\), because the image of a Dirac mass under a map is another Dirac mass. This is the simplest reason the Kantorovich relaxation is needed.</p>
+    </div>
+
+    <h3>The gluing lemma</h3>
+    <p>The triangle inequality for Wasserstein distance and the composition of stochastic transports both rely on the following construction.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Gluing lemma.</span> Let \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) and \(\pi_{23}\in\Pi(\mu_2,\mu_3)\) on Polish spaces \(X_1,X_2,X_3\). There exists \(\gamma\in\mathcal P(X_1\times X_2\times X_3)\) whose \((1,2)\)-marginal is \(\pi_{12}\) and whose \((2,3)\)-marginal is \(\pi_{23}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Disintegrate the two plans over their common marginal:
+
+        \[
+        \pi_{12}(\mathrm dx_1,\mathrm dx_2)
+        =\mu_2(\mathrm dx_2)K_{21}(x_2,\mathrm dx_1),
+        \quad
+        \pi_{23}(\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)K_{23}(x_2,\mathrm dx_3).
+        \]
+
+        Define
+
+        \[
+        \gamma(\mathrm dx_1,\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)K_{21}(x_2,\mathrm dx_1)K_{23}(x_2,\mathrm dx_3).
+        \]
+
+        Integrating out \(x_3\) gives \(\pi_{12}\), and integrating out \(x_1\) gives \(\pi_{23}\). Thus the two pairwise couplings can be realized simultaneously, conditionally independently given \(x_2\).</p>
+    </div>
+
+    <h3>A finite coupling polytope</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> If \(X=\{x_1,x_2\}\), \(Y=\{y_1,y_2\}\), \(\mu=(a,1-a)\), and \(\nu=(b,1-b)\), every coupling has matrix
+
+        \[
+        P(t)=
+        \begin{pmatrix}
+        t &amp; a-\
+        b-t &amp; 1-a-b+t
+        \end{pmatrix},
+        \qquad
+        \max(0,a+b-1)\le t\le\min(a,b).
+        \]
+
+        The interval of admissible \(t\)'s is the two-by-two transport polytope. A linear transport cost selects one of its endpoints unless the cost is parallel to the interval. This finite picture already contains convexity, nonuniqueness, and the distinction between marginals and dependence.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" next_label="Next page" next_url="/notes/optimal-transport/monge-problem/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">1. Plans de transport et couplages</a></h2>
+    <h2><a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">1. Mesures, images directes et couplages</a></h2>
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/monge-problem/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Plans de transport et couplages.</p>
+    <p>Le transport optimal compare deux lois en les plaçant sur un même espace probabilisé. Avant de minimiser un coût, il faut maîtriser trois opérations : déplacer une mesure par une application, réunir deux mesures par un couplage, puis composer des couplages par l'intermédiaire d'une marginale commune.</p>
 
-    <h3>Définition</h3>
+    <h3>Mesures de probabilité sur les espaces polonais</h3>
+    <p>Dans toute la note, \(X\) et \(Y\) sont des espaces polonais munis de leurs tribus boréliennes. Cette hypothèse englobe les espaces euclidiens, les espaces de Banach séparables, les variétés, les espaces de trajectoires et les espaces discrets dénombrables, tout en garantissant la tension et l'existence de probabilités conditionnelles régulières.</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For probability measures \(\mu\) on \(X\) and \(\nu\) on \(Y\), a coupling is a probability measure \(\pi\) on \(X\times Y\) with marginals \(\mu\) and \(\nu\).</p>
+        <p><span class="statement-title">Définition.</span> On note \(\mathcal P(X)\) l'ensemble des probabilités boréliennes sur \(X\). Si \(d_X\) est une distance compatible complète et \(p\ge1\), on pose
+
+        \[
+        \mathcal P_p(X)=\left\{\mu\in\mathcal P(X):\int_X d_X(x,x_0)^p\,\mathrm d\mu(x)&lt;\infty\right\}.
+        \]
+
+        Cette définition ne dépend pas du point de base \(x_0\), car \(d_X(x,x_1)^p\le 2^{p-1}\{d_X(x,x_0)^p+d_X(x_0,x_1)^p\}\).</p>
     </div>
 
-    <h3>Proposition</h3>
+    <p>La convergence étroite \(\mu_n\Rightarrow\mu\) signifie que \(\int f\,\mathrm d\mu_n\to\int f\,\mathrm d\mu\) pour toute fonction \(f\) continue bornée. Des conditions de moments transformeront plus loin cette convergence en convergence de Wasserstein.</p>
+
+    <h3>Mesures images</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Si \(T:X\to Y\) est borélienne et \(\mu\in\mathcal P(X)\), l'image directe \(T_\#\mu\in\mathcal P(Y)\) est définie par
+
+        \[
+        (T_\#\mu)(B)=\mu(T^{-1}(B)),\qquad B\in\mathcal B(Y).
+        \]
+
+        De manière équivalente, \(T_\#\mu\) est la loi de \(T(U)\) lorsque \(U\sim\mu\).</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The set \(\Pi(\mu,\nu)\) of couplings is convex and weakly compact under tightness hypotheses such as Polish spaces with tight marginals.</p>
+        <p><span class="statement-title">Formule de changement de variables.</span> Pour toute fonction borélienne positive \(g:Y\to[0,\infty]\), ainsi que pour toute fonction \(T_\#\mu\)-intégrable,
+
+        \[
+        \int_Y g(y)\,\mathrm d(T_\#\mu)(y)=\int_X g(T(x))\,\mathrm d\mu(x).
+        \]</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Convexity is immediate from linearity of marginals. Compactness follows from Prokhorov tightness and closedness of the marginal constraints under weak convergence.</p>
+        <p><span class="statement-title">Preuve.</span> Pour \(g=\mathbf 1_B\), l'identité est exactement la définition. La linéarité donne le résultat pour les fonctions simples positives. Si \(g_n\uparrow g\) avec \(g_n\) simples, le théorème de convergence monotone appliqué aux deux membres fournit le cas positif. On traite enfin une fonction intégrable par ses parties positive et négative.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Couplings are the relaxed objects of optimal transport. They allow splitting mass and make existence theorems possible.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Si \(X=Y=\mathbb R^d\), \(T(x)=Ax+b\) et \(U\sim N(m,\Sigma)\), alors \(T_\#N(m,\Sigma)=N(Am+b,A\Sigma A^{\mathsf T})\). Si \(\mu\) possède une densité \(f\) et \(T\) est un \(C^1\)-difféomorphisme, \(T_\#\mu\) a pour densité \(g(y)=f(T^{-1}y)|\det DT(T^{-1}y)|^{-1}\). L'équation de Monge--Ampère apparaîtra en appliquant cette formule à \(T=\nabla\varphi\).</p>
+    </div>
+
+    <h3>Couplages et plans de transport</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Un couplage de \(\mu\in\mathcal P(X)\) et \(\nu\in\mathcal P(Y)\) est une probabilité \(\pi\in\mathcal P(X\times Y)\) dont les marginales sont \(\mu\) et \(\nu\) :
+
+        \[
+        (\operatorname{pr}_X)_\#\pi=\mu,
+        \qquad
+        (\operatorname{pr}_Y)_\#\pi=\nu.
+        \]
+
+        L'ensemble de ces mesures est noté \(\Pi(\mu,\nu)\). En transport optimal, un couplage est aussi appelé plan de transport.</p>
+    </div>
+
+    <p>L'ensemble \(\Pi(\mu,\nu)\) n'est jamais vide puisqu'il contient le couplage indépendant \(\mu\otimes\nu\). Un couplage décrit la dépendance tout en conservant les deux lois marginales. Choisir un plan revient donc à décider quels points sources sont associés à quels points cibles.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Si \(X,Y\) sont polonais, \(\Pi(\mu,\nu)\) est convexe et tendu. Il est également fermé pour la convergence étroite et, par conséquent, compact pour cette convergence.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La convexité vient de la linéarité des applications marginales. Étant donné \(\varepsilon>0\), la tension de \(\mu\) et \(\nu\) fournit des compacts \(K_X,K_Y\) tels que \(\mu(K_X)\ge1-\varepsilon/2\) et \(\nu(K_Y)\ge1-\varepsilon/2\). Pour tout \(\pi\in\Pi(\mu,\nu)\),
+
+        \[
+        \pi(K_X\times K_Y)
+        \ge1-\pi(K_X^c\times Y)-\pi(X\times K_Y^c)
+        \ge1-\varepsilon.
+        \]
+
+        La famille est donc tendue. Si \(\pi_n\Rightarrow\pi\), la continuité des projections entraîne \((\operatorname{pr}_X)_\#\pi_n\Rightarrow(\operatorname{pr}_X)_\#\pi\), donc la première marginale de \(\pi\) est \(\mu\); de même pour \(\nu\). Le théorème de Prokhorov conclut.</p>
+    </div>
+
+    <h3>Applications, noyaux et désintégration</h3>
+    <p>Une application envoie toute la masse située en \(x\) vers un unique point. Un plan général peut partager cette masse entre plusieurs destinations. La désintégration rend cette distinction exacte.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Théorème de désintégration.</span> Pour tout \(\pi\in\Pi(\mu,\nu)\), il existe un noyau de probabilité mesurable \(x\mapsto\pi_x\in\mathcal P(Y)\), unique \(\mu\)-presque sûrement, tel que
+
+        \[
+        \pi(\mathrm dx,\mathrm dy)=\mu(\mathrm dx)\pi_x(\mathrm dy),
+        \qquad
+        \nu(B)=\int_X\pi_x(B)\,\mathrm d\mu(x).
+        \]
+
+        En outre, \(\pi\) est induit par une application mesurable \(T:X\to Y\), c'est-à-dire \(\pi=(\operatorname{id},T)_\#\mu\), si et seulement si \(\pi_x=\delta_{T(x)}\) pour \(\mu\)-presque tout \(x\).</p>
+    </div>
+
+    <p>Le noyau \(\pi_x\) est la loi conditionnelle de la destination connaissant la source \(x\). Les plans déterministes sont donc exactement ceux dont les lois conditionnelles sont des masses de Dirac.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Soient \(\mu=\delta_0\) et \(\nu=\tfrac12(\delta_{-1}+\delta_1)\). Il existe un unique couplage, \(\pi=\delta_0\otimes\nu\), et sa loi conditionnelle en \(0\) est \(\nu\). Aucune application \(T\) ne peut vérifier \(T_\#\mu=\nu\), car l'image d'une masse de Dirac par une application reste une masse de Dirac. C'est la raison la plus simple qui impose la relaxation de Kantorovitch.</p>
+    </div>
+
+    <h3>Lemme de recollement</h3>
+    <p>L'inégalité triangulaire pour la distance de Wasserstein et la composition de transports stochastiques reposent toutes deux sur la construction suivante.</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme de recollement.</span> Soient \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) et \(\pi_{23}\in\Pi(\mu_2,\mu_3)\) sur des espaces polonais \(X_1,X_2,X_3\). Il existe \(\gamma\in\mathcal P(X_1\times X_2\times X_3)\) dont la marginale \((1,2)\) est \(\pi_{12}\) et la marginale \((2,3)\) est \(\pi_{23}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Désintégrons les deux plans par rapport à leur marginale commune :
+
+        \[
+        \pi_{12}(\mathrm dx_1,\mathrm dx_2)
+        =\mu_2(\mathrm dx_2)K_{21}(x_2,\mathrm dx_1),
+        \quad
+        \pi_{23}(\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)K_{23}(x_2,\mathrm dx_3).
+        \]
+
+        On définit
+
+        \[
+        \gamma(\mathrm dx_1,\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)K_{21}(x_2,\mathrm dx_1)K_{23}(x_2,\mathrm dx_3).
+        \]
+
+        L'intégration en \(x_3\) donne \(\pi_{12}\), tandis que l'intégration en \(x_1\) donne \(\pi_{23}\). Les deux couplages sont ainsi réalisés simultanément, conditionnellement indépendants sachant \(x_2\).</p>
+    </div>
+
+    <h3>Un polytope de couplages fini</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Si \(X=\{x_1,x_2\}\), \(Y=\{y_1,y_2\}\), \(\mu=(a,1-a)\) et \(\nu=(b,1-b)\), tout couplage possède la matrice
+
+        \[
+        P(t)=
+        \begin{pmatrix}
+        t &amp; a-\
+        b-t &amp; 1-a-b+t
+        \end{pmatrix},
+        \qquad
+        \max(0,a+b-1)\le t\le\min(a,b).
+        \]
+
+        L'intervalle admissible est le polytope de transport deux-par-deux. Un coût linéaire sélectionne une extrémité, sauf s'il est parallèle à l'intervalle. Cette image finie contient déjà la convexité, la non-unicité et la distinction entre marginales et dépendance.</p>
     </div>
 
     {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/monge-problem/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">1. 传输计划与耦合</a></h2>
+    <h2><a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">1. 测度、推前与耦合</a></h2>
     {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" next_label="下一页" next_url="/notes/optimal-transport/monge-problem/" %}
 
-    <p>本页整理关于“传输计划与耦合”的主要定义、命题、定理与证明思路。</p>
+    <p>最优传输通过把两个分布置于同一个概率空间来比较它们。在最小化代价之前，必须掌握三个基本操作：用映射移动测度，用耦合连接两个测度，以及通过共同边缘分布拼接耦合。</p>
 
-    <h3>定义</h3>
+    <h3>波兰空间上的概率测度</h3>
+    <p>本笔记中，\(X\) 与 \(Y\) 均为配备博雷尔 \(\sigma\)-代数的波兰空间。这一设定涵盖欧几里得空间、可分巴拿赫空间、流形、路径空间与可数离散空间，同时保证紧性方法和正则条件概率可以使用。</p>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For 概率测度 \(\mu\) on \(X\) and \(\nu\) on \(Y\), a coupling is a 概率测度 \(\pi\) on \(X\times Y\) with marginals \(\mu\) and \(\nu\).</p>
+        <p><span class="statement-title">定义.</span> 记 \(\mathcal P(X)\) 为 \(X\) 上全体博雷尔概率测度。若 \(d_X\) 是一个相容的完备度量且 \(p\ge1\)，定义
+
+        \[
+        \mathcal P_p(X)=\left\{\mu\in\mathcal P(X):\int_X d_X(x,x_0)^p\,\mathrm d\mu(x)&lt;\infty\right\}.
+        \]
+
+        此定义与基点 \(x_0\) 无关，因为 \(d_X(x,x_1)^p\le 2^{p-1}\{d_X(x,x_0)^p+d_X(x_0,x_1)^p\}\)。</p>
     </div>
 
-    <h3>命题</h3>
+    <p>弱收敛 \(\mu_n\Rightarrow\mu\) 是指对每个有界连续函数 \(f\)，都有 \(\int f\,\mathrm d\mu_n\to\int f\,\mathrm d\mu\)。后文将通过矩条件把弱收敛加强为瓦瑟斯坦收敛。</p>
+
+    <h3>推前测度</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 若 \(T:X\to Y\) 为博雷尔可测映射且 \(\mu\in\mathcal P(X)\)，则推前测度 \(T_\#\mu\in\mathcal P(Y)\) 定义为
+
+        \[
+        (T_\#\mu)(B)=\mu(T^{-1}(B)),\qquad B\in\mathcal B(Y).
+        \]
+
+        等价地，若 \(U\sim\mu\)，则 \(T_\#\mu\) 是 \(T(U)\) 的分布。</p>
+    </div>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The set \(\Pi(\mu,\nu)\) of couplings is 凸 and weakly 紧 under tightness hypotheses such as Polish spaces with tight marginals.</p>
+        <p><span class="statement-title">换元恒等式.</span> 对任意非负博雷尔函数 \(g:Y\to[0,\infty]\)，以及任意关于 \(T_\#\mu\) 可积的 \(g\)，有
+
+        \[
+        \int_Y g(y)\,\mathrm d(T_\#\mu)(y)=\int_X g(T(x))\,\mathrm d\mu(x).
+        \]</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> 凸性 is immediate from linearity of marginals. 紧性 follows from 普罗霍罗夫 tightness and closedness of the marginal constraints under 弱收敛.</p>
+        <p><span class="statement-title">证明.</span> 当 \(g=\mathbf 1_B\) 时，等式就是推前测度的定义。由线性性可得非负简单函数的情形。若简单函数 \(g_n\uparrow g\)，对等式两边应用单调收敛定理即得非负函数的情形；再分别处理正部与负部便得可积函数的情形。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Couplings are the relaxed objects of 最优传输. They allow splitting mass and make existence theorems possible.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> 若 \(X=Y=\mathbb R^d\)、\(T(x)=Ax+b\) 且 \(U\sim N(m,\Sigma)\)，则 \(T_\#N(m,\Sigma)=N(Am+b,A\Sigma A^{\mathsf T})\)。若 \(\mu\) 的密度为 \(f\)，且 \(T\) 是 \(C^1\) 微分同胚，则 \(T_\#\mu\) 的密度为 \(g(y)=f(T^{-1}y)|\det DT(T^{-1}y)|^{-1}\)。在 \(T=\nabla\varphi\) 时，这一公式将导出蒙日--安培方程。</p>
+    </div>
+
+    <h3>耦合与传输计划</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> \(\mu\in\mathcal P(X)\) 与 \(\nu\in\mathcal P(Y)\) 的一个耦合，是边缘分布分别为 \(\mu\) 与 \(\nu\) 的概率测度 \(\pi\in\mathcal P(X\times Y)\)：
+
+        \[
+        (\operatorname{pr}_X)_\#\pi=\mu,
+        \qquad
+        (\operatorname{pr}_Y)_\#\pi=\nu.
+        \]
+
+        全体耦合记为 \(\Pi(\mu,\nu)\)。在最优传输中，耦合也称为传输计划。</p>
+    </div>
+
+    <p>\(\Pi(\mu,\nu)\) 总是非空，因为独立耦合 \(\mu\otimes\nu\) 属于其中。耦合在保持两个边缘分布不变的同时记录依赖结构。因此，选择传输计划正是在决定哪些源点与哪些目标点相配。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 若 \(X,Y\) 为波兰空间，则 \(\Pi(\mu,\nu)\) 是凸且紧的测度族；它关于弱收敛闭，因此关于弱拓扑紧。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 边缘映射的线性性给出凸性。给定 \(\varepsilon>0\)，由 \(\mu,\nu\) 的紧性，可取紧集 \(K_X,K_Y\)，使得 \(\mu(K_X)\ge1-\varepsilon/2\)、\(\nu(K_Y)\ge1-\varepsilon/2\)。任意 \(\pi\in\Pi(\mu,\nu)\) 均满足
+
+        \[
+        \pi(K_X\times K_Y)
+        \ge1-\pi(K_X^c\times Y)-\pi(X\times K_Y^c)
+        \ge1-\varepsilon.
+        \]
+
+        故该族一致紧。若 \(\pi_n\Rightarrow\pi\)，投影的连续性给出 \((\operatorname{pr}_X)_\#\pi_n\Rightarrow(\operatorname{pr}_X)_\#\pi\)，故 \(\pi\) 的第一边缘为 \(\mu\)；第二边缘同理为 \(\nu\)。最后由普罗霍罗夫定理得到紧性。</p>
+    </div>
+
+    <h3>映射、核与分解</h3>
+    <p>一个映射把位于 \(x\) 的全部质量送往同一个点，而一般传输计划可以把这部分质量分配到多个目的地。测度分解定理准确刻画了两者的区别。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">测度分解定理.</span> 对每个 \(\pi\in\Pi(\mu,\nu)\)，存在 \(\mu\)-几乎处处唯一的可测概率核 \(x\mapsto\pi_x\in\mathcal P(Y)\)，使得
+
+        \[
+        \pi(\mathrm dx,\mathrm dy)=\mu(\mathrm dx)\pi_x(\mathrm dy),
+        \qquad
+        \nu(B)=\int_X\pi_x(B)\,\mathrm d\mu(x).
+        \]
+
+        此外，\(\pi\) 由某个可测映射 \(T:X\to Y\) 诱导，即 \(\pi=(\operatorname{id},T)_\#\mu\)，当且仅当对 \(\mu\)-几乎处处的 \(x\)，\(\pi_x=\delta_{T(x)}\)。</p>
+    </div>
+
+    <p>概率核 \(\pi_x\) 是给定源点 \(x\) 后目的地的条件分布。因此，确定性传输计划恰好就是条件分布几乎处处为狄拉克测度的耦合。</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> 令 \(\mu=\delta_0\)、\(\nu=\tfrac12(\delta_{-1}+\delta_1)\)。唯一耦合是 \(\pi=\delta_0\otimes\nu\)，其在 \(0\) 处的条件分布为 \(\nu\)。不存在映射 \(T\) 使 \(T_\#\mu=\nu\)，因为狄拉克测度经映射后的像仍为狄拉克测度。这是需要康托罗维奇松弛的最简单原因。</p>
+    </div>
+
+    <h3>拼接引理</h3>
+    <p>瓦瑟斯坦距离的三角不等式以及随机传输的复合，都依赖下面的构造。</p>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">拼接引理.</span> 设 \(\pi_{12}\in\Pi(\mu_1,\mu_2)\)、\(\pi_{23}\in\Pi(\mu_2,\mu_3)\)，其中 \(X_1,X_2,X_3\) 均为波兰空间。则存在 \(\gamma\in\mathcal P(X_1\times X_2\times X_3)\)，使其 \((1,2)\) 边缘为 \(\pi_{12}\)，\((2,3)\) 边缘为 \(\pi_{23}\)。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 关于共同边缘 \(\mu_2\) 分解两个传输计划：
+
+        \[
+        \pi_{12}(\mathrm dx_1,\mathrm dx_2)
+        =\mu_2(\mathrm dx_2)K_{21}(x_2,\mathrm dx_1),
+        \quad
+        \pi_{23}(\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)K_{23}(x_2,\mathrm dx_3).
+        \]
+
+        定义
+
+        \[
+        \gamma(\mathrm dx_1,\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)K_{21}(x_2,\mathrm dx_1)K_{23}(x_2,\mathrm dx_3).
+        \]
+
+        积去 \(x_3\) 得 \(\pi_{12}\)，积去 \(x_1\) 得 \(\pi_{23}\)。因此，给定 \(x_2\) 后令两端条件独立，便可在同一空间上同时实现两个耦合。</p>
+    </div>
+
+    <h3>有限耦合多面体</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> 若 \(X=\{x_1,x_2\}\)、\(Y=\{y_1,y_2\}\)、\(\mu=(a,1-a)\)、\(\nu=(b,1-b)\)，则每个耦合都可写成矩阵
+
+        \[
+        P(t)=
+        \begin{pmatrix}
+        t &amp; a-\
+        b-t &amp; 1-a-b+t
+        \end{pmatrix},
+        \qquad
+        \max(0,a+b-1)\le t\le\min(a,b).
+        \]
+
+        可行 \(t\) 构成二乘二传输多面体。除非线性代价与该区间平行，否则最优解位于某个端点。这个有限例子已经展示了凸性、非唯一性以及边缘分布与依赖结构之间的区别。</p>
     </div>
 
     {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" next_label="下一页" next_url="/notes/optimal-transport/monge-problem/" %}

@@ -1,95 +1,432 @@
 ---
 layout: default
-breadcrumb_child_label_en: "4. Kantorovich duality"
-breadcrumb_child_label_fr: "4. Dualité de Kantorovich"
-breadcrumb_child_label_zh: "4. 康托罗维奇对偶"
+breadcrumb_child_label_en: "4. Kantorovich duality and optimality certificates"
+breadcrumb_child_label_fr: "4. Dualité de Kantorovitch et certificats d'optimalité"
+breadcrumb_child_label_zh: "4. 康托罗维奇对偶与最优性证书"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/kantorovich-duality/' | relative_url }}">4. Kantorovich duality</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/kantorovich-problem/" next_label="Next page" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
+    <h2><a href="{{ '/notes/optimal-transport/kantorovich-duality/' | relative_url }}">4. Kantorovich duality and optimality certificates</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/stability-and-convergence-of-transport-costs/" next_label="Next page" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
 
-    <p>Kantorovich duality records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>The primal problem chooses how mass moves. The dual problem assigns a value to mass at each endpoint. If the combined endpoint value never exceeds the cost of a journey, then its expected value is a lower bound on every transport plan. At optimality this inequality becomes equality exactly along the journeys actually used.</p>
 
-    <h3>Definition</h3>
+    <h3>Dual feasible potentials</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The dual problem maximizes \(\int \varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\) over functions satisfying \(\varphi(x)+\psi(y)\le c(x,y)\).</p>
+        <p><span class="statement-title">Definition.</span> A pair of measurable functions \((\varphi,\psi)\) is dual feasible for the cost \(c\) if
+        \[
+        \varphi(x)+\psi(y)\le c(x,y)
+        \]
+        for all \((x,y)\), or outside a set irrelevant to the marginals under an appropriate integrable formulation. Its dual value is
+        \[
+        J(\varphi,\psi)=\int_X\varphi\,\mathrm d\mu+\int_Y\psi\,\mathrm d\nu.
+        \]
+        The Kantorovich dual value is
+        \[
+        D_c(\mu,\nu)=\sup_{\varphi\oplus\psi\le c}J(\varphi,\psi).
+        \]</p>
     </div>
 
-    <h3>Kantorovich duality</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under standard lower semicontinuity and integrability assumptions, the primal transport value equals the Kantorovich dual value.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Weak duality.</span> For every \(\pi\in\Pi(\mu,\nu)\) and every feasible \((\varphi,\psi)\),
+        \[
+        J(\varphi,\psi)\le\int c\,\mathrm d\pi.
+        \]
+        Hence \(D_c(\mu,\nu)\le K_c(\mu,\nu)\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Weak duality follows by integrating the inequality against any coupling. Strong duality follows from convex analysis, tight approximation, and closure of admissible potentials.</p>
+        <p><span class="statement-title">Proof.</span> Using the marginal constraints,
+        \[
+        J(\varphi,\psi)
+        =\int_{X\times Y}\{\varphi(x)+\psi(y)\}\,\mathrm d\pi(x,y)
+        \le\int_{X\times Y}c(x,y)\,\mathrm d\pi(x,y).
+        \]
+        Taking the supremum on the left and the infimum on the right proves the claim.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Dual potentials are certificates of optimality. They are the analogues of Lagrange multipliers for marginal constraints.</p>
+    <h3>Strong duality</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Kantorovich duality.</span> Let \(X,Y\) be Polish and let \(c:X\times Y\to[0,\infty]\) be lower semicontinuous. Then
+        \[
+        \inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi
+        =
+        \sup_{\varphi\oplus\psi\le c}
+        \left\{\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu\right\},
+        \]
+        where the dual may be taken over bounded continuous potentials when \(c\) is bounded and continuous, and over integrable potentials under the general formulation.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/kantorovich-problem/" next_label="Next page" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof for compact spaces and continuous cost.</span> Consider the Lagrangian
+        \[
+        L(\pi,\varphi,\psi)
+        =\int c\,\mathrm d\pi
+        +\int\varphi\,\mathrm d(\mu-\pi_X)
+        +\int\psi\,\mathrm d(\nu-\pi_Y).
+        \]
+        For a nonnegative measure \(\pi\),
+        \[
+        L=\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        +\int\{c-\varphi\oplus\psi\}\,\mathrm d\pi.
+        \]
+        Taking the supremum over \(\varphi,\psi\in C\) enforces \(\pi_X=\mu,\pi_Y=\nu\): if a marginal equality fails, a continuous test function separates the two measures and scaling it makes the supremum infinite. Thus
+        \[
+        \inf_{\pi\ge0}\sup_{\varphi,\psi}L(\pi,\varphi,\psi)
+        =K_c(\mu,\nu).
+        \]
+        Conversely, taking the infimum over \(\pi\ge0\) gives a finite value precisely when \(c-\varphi\oplus\psi\ge0\); in that case the infimum is attained at the zero measure and equals \(J(\varphi,\psi)\). The convex minimax theorem applies after restricting to a compact mass-bounded set containing all feasible plans, because \(c\) and the potentials are continuous and the problem has a feasible point. It permits interchange of infimum and supremum and yields \(K_c=D_c\).</p>
+        <p>For Polish spaces and lower semicontinuous \(c\), approximate the marginals by compact restrictions and \(c\) from below by bounded continuous costs. Apply the compact result, use monotone convergence for the primal values, and diagonalize the dual potentials. Tightness controls the discarded mass. This gives the stated general form.</p>
+    </div>
+
+    <h3>Complementary slackness</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Optimality certificate.</span> Let \(\pi\in\Pi(\mu,\nu)\) and let \((\varphi,\psi)\) be dual feasible. If both values are finite, then \(\pi\) and \((\varphi,\psi)\) are primal and dual optimal if and only if
+        \[
+        \varphi(x)+\psi(y)=c(x,y)
+        \qquad\text{for \(\pi\)-almost every \((x,y)\)}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The nonnegative slack \(s=c-\varphi-\psi\) satisfies
+        \[
+        \int s\,\mathrm d\pi
+        =\int c\,\mathrm d\pi-J(\varphi,\psi).
+        \]
+        If the equality holds \(\pi\)-almost surely, the primal and dual values coincide, so weak duality makes both optimal. Conversely, if both are optimal, strong duality makes the right-hand side zero. A nonnegative measurable function with zero integral vanishes almost surely.</p>
+    </div>
+
+    <p>This criterion converts a global optimization problem into a geometric support condition. One does not need to compare a candidate plan with every competitor; it suffices to find potentials touching the cost on its support.</p>
+
+    <h3>Dual attainment and normalization</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X,Y\) are compact and \(c\) is continuous, the dual supremum is attained. Potentials are nonunique because \((\varphi+a,\psi-a)\) has the same feasibility and value. One may normalize, for example, by fixing \(\varphi(x_0)=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof idea.</span> Replace a maximizing pair successively by its \(c\)-transforms. This does not decrease the objective and produces uniformly bounded, equicontinuous potentials after normalization, because \(c\) is uniformly continuous on the compact product. Arzelà--Ascoli gives uniformly convergent subsequences. The feasibility inequality and objective pass to the limit.</p>
+    </div>
+
+    <h3>Kantorovich--Rubinstein duality</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Kantorovich--Rubinstein theorem.</span> On a Polish metric space \((X,d)\), for \(\mu,\nu\in\mathcal P_1(X)\),
+        \[
+        W_1(\mu,\nu)
+        =\sup_{\operatorname{Lip}(f)\le1}
+        \left\{\int_X f\,\mathrm d\mu-\int_X f\,\mathrm d\nu\right\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(f\) is \(1\)-Lipschitz, then \(f(x)-f(y)\le d(x,y)\), so \((f,-f)\) is dual feasible and weak duality gives the lower bound. For the reverse direction, start from any feasible \((\varphi,\psi)\) and define
+        \[
+        f(x)=\inf_y\{d(x,y)-\psi(y)\}.
+        \]
+        The triangle inequality shows that \(f\) is \(1\)-Lipschitz. Feasibility gives \(\varphi\le f\), while the definition gives \(f(y)\le-\psi(y)\) by choosing the same point in the infimum. Hence
+        \[
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        \le\int f\,\mathrm d\mu-\int f\,\mathrm d\nu.
+        \]
+        Taking the supremum and invoking Kantorovich duality proves the formula.</p>
+    </div>
+
+    <h3>Potentials as sensitivity derivatives</h3>
+    <p>Dual potentials also measure the first-order response of the optimal value to changes in the marginals. Formally, if \(\mu_t=\mu+t\sigma\) and \(\nu_t=\nu+t\tau\) preserve total mass, an optimal pair \((\varphi,\psi)\) gives
+    \[
+    \frac{\mathrm d}{\mathrm dt}K_c(\mu_t,\nu_t)\bigg|_{t=0}
+    =\int\varphi\,\mathrm d\sigma+\int\psi\,\mathrm d\tau
+    \]
+    whenever differentiability holds. This fact later drives statistical limit theory and numerical optimization.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/stability-and-convergence-of-transport-costs/" next_label="Next page" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/kantorovich-duality/' | relative_url }}">4. Dualité de Kantorovich</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/kantorovich-problem/" next_label="Page suivante" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
+    <h2><a href="{{ '/notes/optimal-transport/kantorovich-duality/' | relative_url }}">4. Dualité de Kantorovitch et certificats d'optimalité</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/stability-and-convergence-of-transport-costs/" next_label="Page suivante" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Dualité de Kantorovich.</p>
+    <p>Le problème primal choisit le mouvement de la masse. Le problème dual attribue une valeur à la masse à chaque extrémité. Si la somme des valeurs aux extrémités ne dépasse jamais le coût du trajet, son espérance minore le coût de tout plan. À l'optimalité, l'inégalité devient une égalité exactement sur les trajets effectivement utilisés.</p>
 
-    <h3>Définition</h3>
+    <h3>Potentiels duaux admissibles</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The dual problem maximizes \(\int \varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\) over functions satisfying \(\varphi(x)+\psi(y)\le c(x,y)\).</p>
+        <p><span class="statement-title">Définition.</span> Une paire mesurable \((\varphi,\psi)\) est dualement admissible pour \(c\) si
+        \[
+        \varphi(x)+\psi(y)\le c(x,y).
+        \]
+        Sa valeur duale est
+        \[
+        J(\varphi,\psi)=\int_X\varphi\,\mathrm d\mu+\int_Y\psi\,\mathrm d\nu,
+        \]
+        et la valeur duale de Kantorovitch est
+        \[
+        D_c(\mu,\nu)=\sup_{\varphi\oplus\psi\le c}J(\varphi,\psi).
+        \]</p>
     </div>
 
-    <h3>Kantorovich duality</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> Under standard lower semicontinuity and integrability assumptions, the primal transport value equals the Kantorovich dual value.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Dualité faible.</span> Pour tout \(\pi\in\Pi(\mu,\nu)\) et toute paire admissible,
+        \[
+        J(\varphi,\psi)\le\int c\,\mathrm d\pi.
+        \]
+        Ainsi \(D_c(\mu,\nu)\le K_c(\mu,\nu)\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Weak duality follows by integrating the inequality against any coupling. Strong duality follows from convex analysis, tight approximation, and closure of admissible potentials.</p>
+        <p><span class="statement-title">Preuve.</span> Les contraintes marginales donnent
+        \[
+        J(\varphi,\psi)
+        =\int\{\varphi(x)+\psi(y)\}\,\mathrm d\pi(x,y)
+        \le\int c(x,y)\,\mathrm d\pi(x,y).
+        \]
+        On prend ensuite le supremum à gauche et l'infimum à droite.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Dual potentials are certificates of optimality. They are the analogues of Lagrange multipliers for marginal constraints.</p>
+    <h3>Dualité forte</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Dualité de Kantorovitch.</span> Soient \(X,Y\) polonais et \(c:X\times Y\to[0,\infty]\) semi-continu inférieurement. Alors
+        \[
+        \inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi
+        =
+        \sup_{\varphi\oplus\psi\le c}
+        \left\{\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu\right\}.
+        \]
+        Pour un coût continu borné, on peut prendre des potentiels continus bornés; dans le cas général, on utilise des potentiels intégrables.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/kantorovich-problem/" next_label="Page suivante" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve pour des espaces compacts et un coût continu.</span> Considérons le lagrangien
+        \[
+        L(\pi,\varphi,\psi)
+        =\int c\,\mathrm d\pi
+        +\int\varphi\,\mathrm d(\mu-\pi_X)
+        +\int\psi\,\mathrm d(\nu-\pi_Y).
+        \]
+        Pour une mesure positive \(\pi\),
+        \[
+        L=\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        +\int\{c-\varphi\oplus\psi\}\,\mathrm d\pi.
+        \]
+        Le supremum sur \(\varphi,\psi\in C\) impose \(\pi_X=\mu,\pi_Y=\nu\) : si une égalité marginale échoue, une fonction continue sépare les deux mesures, et sa multiplication par une constante rend le supremum infini. Ainsi
+        \[
+        \inf_{\pi\ge0}\sup_{\varphi,\psi}L=K_c(\mu,\nu).
+        \]
+        Inversement, l'infimum en \(\pi\ge0\) est fini exactement lorsque \(c-\varphi\oplus\psi\ge0\); il vaut alors \(J(\varphi,\psi)\). Le théorème minimax convexe, appliqué sur un ensemble compact de mesures à masse bornée contenant les plans admissibles, permet d'échanger infimum et supremum. On obtient \(K_c=D_c\).</p>
+        <p>Pour des espaces polonais et \(c\) semi-continu inférieurement, on approche les marginales par des restrictions compactes et \(c\) par des coûts continus bornés croissants. Le résultat compact, la convergence monotone, la tension et un argument diagonal donnent la formule générale.</p>
+    </div>
+
+    <h3>Complémentarité</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Certificat d'optimalité.</span> Soient \(\pi\in\Pi(\mu,\nu)\) et \((\varphi,\psi)\) dualement admissible, de valeurs finies. Ils sont simultanément optimaux si et seulement si
+        \[
+        \varphi(x)+\psi(y)=c(x,y)
+        \qquad\text{pour \(\pi\)-presque tout \((x,y)\)}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> L'écart positif \(s=c-\varphi-\psi\) vérifie
+        \[
+        \int s\,\mathrm d\pi
+        =\int c\,\mathrm d\pi-J(\varphi,\psi).
+        \]
+        Si \(s=0\) presque sûrement, les valeurs primale et duale coïncident, donc la dualité faible rend les deux objets optimaux. Réciproquement, l'optimalité et la dualité forte annulent l'intégrale de \(s\); une fonction positive d'intégrale nulle est nulle presque sûrement.</p>
+    </div>
+
+    <p>Ce critère transforme une optimisation globale en une condition géométrique sur le support. Il suffit de trouver des potentiels qui touchent le coût sur le support du plan candidat.</p>
+
+    <h3>Existence et normalisation des potentiels</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Si \(X,Y\) sont compacts et \(c\) continu, le supremum dual est atteint. Les potentiels ne sont pas uniques, car \((\varphi+a,\psi-a)\) conserve l'admissibilité et la valeur. On peut imposer \(\varphi(x_0)=0\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Idée de la preuve.</span> On remplace successivement une suite maximisante par ses \(c\)-transformées. L'objectif ne diminue pas et, après normalisation, les potentiels deviennent uniformément bornés et équicontinus grâce à l'uniforme continuité de \(c\). Le théorème d'Arzelà--Ascoli donne des sous-suites uniformément convergentes; l'admissibilité et l'objectif passent à la limite.</p>
+    </div>
+
+    <h3>Dualité de Kantorovitch--Rubinstein</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de Kantorovitch--Rubinstein.</span> Sur un espace métrique polonais \((X,d)\), pour \(\mu,\nu\in\mathcal P_1(X)\),
+        \[
+        W_1(\mu,\nu)
+        =\sup_{\operatorname{Lip}(f)\le1}
+        \left\{\int_X f\,\mathrm d\mu-\int_X f\,\mathrm d\nu\right\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Si \(f\) est \(1\)-lipschitzienne, \(f(x)-f(y)\le d(x,y)\), donc \((f,-f)\) est admissible. Réciproquement, à partir d'une paire admissible \((\varphi,\psi)\), posons
+        \[
+        f(x)=\inf_y\{d(x,y)-\psi(y)\}.
+        \]
+        L'inégalité triangulaire montre que \(f\) est \(1\)-lipschitzienne. L'admissibilité donne \(\varphi\le f\), et le choix du même point dans l'infimum donne \(f(y)\le-\psi(y)\). Par suite,
+        \[
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        \le\int f\,\mathrm d\mu-\int f\,\mathrm d\nu.
+        \]
+        Le supremum et la dualité de Kantorovitch concluent.</p>
+    </div>
+
+    <h3>Potentiels et dérivées de sensibilité</h3>
+    <p>Les potentiels mesurent aussi la réponse au premier ordre de la valeur optimale aux perturbations des marginales. Formellement, si \(\mu_t=\mu+t\sigma\) et \(\nu_t=\nu+t\tau\) conservent la masse totale, alors
+    \[
+    \frac{\mathrm d}{\mathrm dt}K_c(\mu_t,\nu_t)\bigg|_{t=0}
+    =\int\varphi\,\mathrm d\sigma+\int\psi\,\mathrm d\tau
+    \]
+    lorsque la différentiabilité est valide. Cette propriété sera centrale pour l'inférence statistique et les méthodes numériques.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/stability-and-convergence-of-transport-costs/" next_label="Page suivante" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/kantorovich-duality/' | relative_url }}">4. 康托罗维奇对偶</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/kantorovich-problem/" next_label="下一页" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
+    <h2><a href="{{ '/notes/optimal-transport/kantorovich-duality/' | relative_url }}">4. 康托罗维奇对偶与最优性证书</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/stability-and-convergence-of-transport-costs/" next_label="下一页" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
 
-    <p>本页整理关于“康托罗维奇对偶”的主要定义、命题、定理与证明思路。</p>
+    <p>原问题选择质量如何移动；对偶问题则为两个端点处的质量赋值。若端点价值之和始终不超过旅程代价，那么其期望就是每个传输计划代价的下界。在最优情形，这个不等式恰好在实际使用的路径上取等号。</p>
 
-    <h3>定义</h3>
+    <h3>对偶可行势</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The dual problem maximizes \(\int \varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\) over functions satisfying \(\varphi(x)+\psi(y)\le c(x,y)\).</p>
+        <p><span class="statement-title">定义.</span> 若可测函数对 \((\varphi,\psi)\) 满足
+        \[
+        \varphi(x)+\psi(y)\le c(x,y),
+        \]
+        则称其对代价 \(c\) 对偶可行。其对偶值为
+        \[
+        J(\varphi,\psi)=\int_X\varphi\,\mathrm d\mu+\int_Y\psi\,\mathrm d\nu,
+        \]
+        康托罗维奇对偶值定义为
+        \[
+        D_c(\mu,\nu)=\sup_{\varphi\oplus\psi\le c}J(\varphi,\psi).
+        \]</p>
     </div>
 
-    <h3>康托罗维奇对偶</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> Under standard lower semicontinuity and integrability assumptions, the primal transport value equals the 康托罗维奇 dual value.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">弱对偶.</span> 对每个 \(\pi\in\Pi(\mu,\nu)\) 和每个对偶可行函数对，
+        \[
+        J(\varphi,\psi)\le\int c\,\mathrm d\pi.
+        \]
+        因而 \(D_c(\mu,\nu)\le K_c(\mu,\nu)\)。</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Weak 对偶性 follows by integrating the inequality against any coupling. Strong 对偶性 follows from 凸 analysis, tight approximation, and closure of admissible potentials.</p>
+        <p><span class="statement-title">证明.</span> 由边缘约束，
+        \[
+        J(\varphi,\psi)
+        =\int\{\varphi(x)+\psi(y)\}\,\mathrm d\pi(x,y)
+        \le\int c(x,y)\,\mathrm d\pi(x,y).
+        \]
+        左边取上确界、右边取下确界即得结论。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Dual potentials are certificates of optimality. They are the analogues of 拉格朗日乘子 for marginal constraints.</p>
+    <h3>强对偶</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">康托罗维奇对偶定理.</span> 设 \(X,Y\) 为波兰空间，且 \(c:X\times Y\to[0,\infty]\) 下半连续，则
+        \[
+        \inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi
+        =
+        \sup_{\varphi\oplus\psi\le c}
+        \left\{\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu\right\}.
+        \]
+        当 \(c\) 有界连续时，可把对偶范围限制为有界连续势；一般情形则采用适当的可积势。</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/kantorovich-problem/" next_label="下一页" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">紧空间与连续代价下的证明.</span> 考虑拉格朗日函数
+        \[
+        L(\pi,\varphi,\psi)
+        =\int c\,\mathrm d\pi
+        +\int\varphi\,\mathrm d(\mu-\pi_X)
+        +\int\psi\,\mathrm d(\nu-\pi_Y).
+        \]
+        对非负测度 \(\pi\)，
+        \[
+        L=\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        +\int\{c-\varphi\oplus\psi\}\,\mathrm d\pi.
+        \]
+        对 \(\varphi,\psi\in C\) 取上确界会强制 \(\pi_X=\mu,\pi_Y=\nu\)：若某个边缘等式不成立，则存在连续函数分离两个测度，把该函数乘以任意大常数会令上确界为无穷。因此
+        \[
+        \inf_{\pi\ge0}\sup_{\varphi,\psi}L=K_c(\mu,\nu).
+        \]
+        反过来，对 \(\pi\ge0\) 取下确界时，只有在 \(c-\varphi\oplus\psi\ge0\) 时结果才有限，此时下确界等于 \(J(\varphi,\psi)\)。在包含全部可行计划的质量有界紧集上应用凸极小极大定理，可以交换上下确界，得到 \(K_c=D_c\)。</p>
+        <p>对一般波兰空间和下半连续代价，可用紧集限制逼近边缘分布，并用递增的有界连续函数从下方逼近 \(c\)。结合紧空间结论、单调收敛、紧性与对角化论证即可得到一般形式。</p>
+    </div>
+
+    <h3>互补松弛</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">最优性证书.</span> 设 \(\pi\in\Pi(\mu,\nu)\)，且 \((\varphi,\psi)\) 对偶可行并具有有限值。二者同时最优，当且仅当
+        \[
+        \varphi(x)+\psi(y)=c(x,y)
+        \qquad\text{对 \(\pi\)-几乎处处的 \((x,y)\) 成立}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 非负松弛量 \(s=c-\varphi-\psi\) 满足
+        \[
+        \int s\,\mathrm d\pi
+        =\int c\,\mathrm d\pi-J(\varphi,\psi).
+        \]
+        若等式在 \(\pi\)-几乎处处成立，则原值与对偶值相等，弱对偶立即说明二者最优。反之，若二者最优，强对偶使右侧为零；非负可测函数积分为零意味着它几乎处处为零。</p>
+    </div>
+
+    <p>这一判据把全局优化问题转化为支撑集上的几何条件。无需把候选计划与所有竞争者逐一比较，只需找到在其支撑上接触代价函数的势。</p>
+
+    <h3>对偶势的存在性与规范化</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 若 \(X,Y\) 紧且 \(c\) 连续，则对偶上确界可以达到。由于 \((\varphi+a,\psi-a)\) 保持可行性与目标值，势并不唯一；可以用 \(\varphi(x_0)=0\) 规范化。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明思路.</span> 依次用 \(c\)-变换替换极大化序列中的两个势，目标值不会降低。规范化后，由紧集上 \(c\) 的一致连续性可得势族一致有界且等度连续。阿尔泽拉--阿斯科利定理给出一致收敛子列，可行不等式和目标函数均可传至极限。</p>
+    </div>
+
+    <h3>康托罗维奇--鲁宾斯坦对偶</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">康托罗维奇--鲁宾斯坦定理.</span> 在波兰度量空间 \((X,d)\) 上，对 \(\mu,\nu\in\mathcal P_1(X)\)，
+        \[
+        W_1(\mu,\nu)
+        =\sup_{\operatorname{Lip}(f)\le1}
+        \left\{\int_X f\,\mathrm d\mu-\int_X f\,\mathrm d\nu\right\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 若 \(f\) 为 \(1\)-利普希茨函数，则 \(f(x)-f(y)\le d(x,y)\)，故 \((f,-f)\) 对偶可行。反之，从任意可行对 \((\varphi,\psi)\) 出发，定义
+        \[
+        f(x)=\inf_y\{d(x,y)-\psi(y)\}.
+        \]
+        三角不等式说明 \(f\) 是 \(1\)-利普希茨的。可行性给出 \(\varphi\le f\)，而在下确界中取相同点给出 \(f(y)\le-\psi(y)\)。因此
+        \[
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        \le\int f\,\mathrm d\mu-\int f\,\mathrm d\nu.
+        \]
+        再取上确界并使用康托罗维奇对偶定理即得公式。</p>
+    </div>
+
+    <h3>作为敏感性导数的势</h3>
+    <p>对偶势还刻画最优值关于边缘分布扰动的一阶响应。形式上，若 \(\mu_t=\mu+t\sigma\)、\(\nu_t=\nu+t\tau\) 保持总质量，则在可微条件下
+    \[
+    \frac{\mathrm d}{\mathrm dt}K_c(\mu_t,\nu_t)\bigg|_{t=0}
+    =\int\varphi\,\mathrm d\sigma+\int\psi\,\mathrm d\tau.
+    \]
+    这一性质将在统计极限理论和数值优化中发挥核心作用。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/stability-and-convergence-of-transport-costs/" next_label="下一页" next_url="/notes/optimal-transport/c-transforms-and-c-convexity/" %}
 </div>
 
 <hr>

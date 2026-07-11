@@ -1,0 +1,756 @@
+---
+layout: default
+breadcrumb_child_label_en: "27. Multi-marginal and martingale transport"
+breadcrumb_child_label_fr: "27. Transport multi-marginal et transport martingale"
+breadcrumb_child_label_zh: "27. 多边缘传输与鞅传输"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/optimal-transport/multi-marginal-and-martingale-transport/' | relative_url }}">27. Multi-marginal and martingale transport</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/unbalanced-optimal-transport/" next_label="Next page" next_url="/notes/optimal-transport/gromov-wasserstein-geometry/" %}
+
+    <p>Two important extensions alter the set of admissible couplings in different directions. Multi-marginal transport couples more than two laws simultaneously. Martingale transport keeps two marginals but imposes a conditional-mean constraint. Their compactness arguments resemble classical transport, whereas their geometry and dual variables are genuinely different.</p>
+
+    <h3>The multi-marginal Kantorovich problem</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(X_i\) be Polish spaces, let \(\mu_i\in\mathcal P(X_i)\), and let \(c:X_1\times\cdots\times X_N\to(-\infty,\infty]\). Write
+        \[
+        \Pi(\mu_1,\ldots,\mu_N)
+        =
+        \{\gamma\in\mathcal P(X_1\times\cdots\times X_N):
+        (p_i)_\#\gamma=\mu_i,\ 1\le i\le N\}.
+        \]
+        The multi-marginal transport value is
+        \[
+        \mathsf{MMOT}_c(\mu_1,\ldots,\mu_N)
+        =
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}
+        \int c(x_1,\ldots,x_N)\,\mathrm d\gamma.
+        \]</p>
+    </div>
+
+    <p>A plan \(\gamma\) describes a joint law with all prescribed one-coordinate laws. Pairwise optimal couplings generally cannot be assembled independently: their shared coordinates must be compatible with one common joint distribution.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence.</span> Suppose \(c\) is lower semicontinuous and
+        \[
+        c(x_1,\ldots,x_N)\ge \sum_{i=1}^N a_i(x_i)
+        \]
+        for continuous functions \(a_i\in L^1(\mu_i)\). If the value is finite, an optimal multi-marginal plan exists. In particular, the conclusion holds whenever \(c\) is nonnegative and lower semicontinuous.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For compact sets \(K_i\subset X_i\),
+        \[
+        \gamma\!\left((K_1\times\cdots\times K_N)^c\right)
+        \le \sum_{i=1}^N\mu_i(K_i^c)
+        \]
+        for every admissible \(\gamma\). Tightness of the marginals therefore gives uniform tightness of \(\Pi(\mu_1,\ldots,\mu_N)\). A minimizing sequence has a weakly convergent subsequence. Coordinate projections are continuous, so the limit retains every marginal. Apply the Portmanteau theorem to \(c-\sum_i a_i\), then restore the fixed integrals \(\int a_i\,\mathrm d\mu_i\).</p>
+    </div>
+
+    <h3>Duality and splitting sets</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Multi-marginal Kantorovich duality.</span> On compact \(X_i\), for continuous \(c\),
+        \[
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}\int c\,\mathrm d\gamma
+        =
+        \sup_{\sum_i\varphi_i(x_i)\le c(x_1,\ldots,x_N)}
+        \sum_{i=1}^N\int\varphi_i\,\mathrm d\mu_i.
+        \]
+        The dual contains one potential for each marginal.</p>
+    </div>
+
+    <p>Weak duality follows by integrating the pointwise inequality. Strong duality is the same separation principle as in the two-marginal problem, applied to the linear marginal map \(\gamma\mapsto((p_1)_\#\gamma,\ldots,(p_N)_\#\gamma)\). Under the displayed assumptions, normalized maximizing potentials may be chosen and compactness yields dual attainment.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A set \(\Gamma\subset X_1\times\cdots\times X_N\) is a \(c\)-splitting set if there are functions \(\varphi_i\) such that
+        \[
+        \sum_i\varphi_i(x_i)\le c(x_1,\ldots,x_N)
+        \quad\text{everywhere},\qquad
+        \sum_i\varphi_i(x_i)=c(x_1,\ldots,x_N)
+        \quad\text{on }\Gamma.
+        \]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Generalized cyclical monotonicity.</span> If \(\Gamma\) is \(c\)-splitting, \(x^1,\ldots,x^m\in\Gamma\), and \(\sigma_1,\ldots,\sigma_N\) are permutations of \(\{1,\ldots,m\}\), then
+        \[
+        \sum_{k=1}^m c(x_1^k,\ldots,x_N^k)
+        \le
+        \sum_{k=1}^m
+        c(x_1^{\sigma_1(k)},\ldots,x_N^{\sigma_N(k)}).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Equality on \(\Gamma\) changes the left side into
+        \(\sum_{i,k}\varphi_i(x_i^k)\). Permuting the \(k\)-indices does not change this sum. Applying the splitting inequality to each recombined tuple gives the right side. An optimal plan is concentrated on a splitting set whenever dual optimizers exist.</p>
+    </div>
+
+    <h3>Quadratic interaction and Wasserstein barycenters</h3>
+
+    <p>Let \(\lambda_i>0\), \(\sum_i\lambda_i=1\), and put
+    \[
+    \bar x=\sum_{i=1}^N\lambda_i x_i,\qquad
+    c_\lambda(x_1,\ldots,x_N)
+    =\sum_i\lambda_i|x_i-\bar x|^2
+    =\sum_{i<j}\lambda_i\lambda_j|x_i-x_j|^2.
+    \]
+    Thus the cost measures dispersion around the Euclidean barycenter of each transported tuple.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Barycenter equivalence.</span> For \(\mu_i\in\mathcal P_2(\mathbb R^d)\),
+        \[
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}
+        \int c_\lambda\,\mathrm d\gamma
+        =
+        \inf_{\nu\in\mathcal P_2(\mathbb R^d)}
+        \sum_{i=1}^N\lambda_iW_2^2(\mu_i,\nu).
+        \]
+        If \(\gamma^\star\) is optimal, then
+        \(\nu^\star=(\sum_i\lambda_i p_i)_\#\gamma^\star\) is a Wasserstein barycenter.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Rewrite the right side as an infimum over joint laws of \((X_1,\ldots,X_N,Y)\) with \(X_i\sim\mu_i\):
+        \[
+        \inf\mathbb E\sum_i\lambda_i|X_i-Y|^2.
+        \]
+        Conditional on \(X_1,\ldots,X_N\), the unique minimizer in \(Y\) is
+        \(Y=\sum_i\lambda_iX_i\), and the minimum is \(c_\lambda(X_1,\ldots,X_N)\). Conversely, glue optimal couplings between any candidate \(\nu\) and the \(\mu_i\) conditionally on their common \(\nu\)-coordinate. The two infima are therefore equal.</p>
+    </div>
+
+    <h3>When is a multi-marginal optimizer a graph?</h3>
+
+    <p>In two-marginal quadratic transport, absolute continuity of one marginal produces a unique Monge map. For \(N\ge3\), pairwise twist is not enough. A useful replacement is <em>twist on splitting sets</em>: for fixed \(x_1\), the map
+    \[
+    (x_2,\ldots,x_N)\longmapsto D_{x_1}c(x_1,\ldots,x_N)
+    \]
+    must be injective when restricted to every \(c\)-splitting set.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Graph theorem.</span> Assume \(c\) is differentiable in \(x_1\), twisted on splitting sets, and regular enough for the first dual potential to be differentiable \(\mu_1\)-almost everywhere. If \(\mu_1\) is absolutely continuous, then every optimizer is concentrated on a graph
+        \[
+        (x_1,T_2(x_1),\ldots,T_N(x_1)).
+        \]
+        Consequently the optimizer is unique.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On a splitting set supporting an optimizer, equality of the dual constraint gives, at differentiability points,
+        \[
+        \nabla\varphi_1(x_1)=D_{x_1}c(x_1,x_2,\ldots,x_N).
+        \]
+        For fixed \(x_1\), twist on splitting sets permits at most one tuple \((x_2,\ldots,x_N)\). Disintegration over \(\mu_1\) therefore has Dirac conditional laws. If \(\gamma\) and \(\widetilde\gamma\) were two optimizers, their average would also be optimal and hence would also have Dirac conditional laws. But its conditional law is
+        \(\tfrac12\delta_{(T_2,\ldots,T_N)}+\tfrac12\delta_{(\widetilde T_2,\ldots,\widetilde T_N)}\); it is Dirac only when the two tuples agree \(\mu_1\)-almost everywhere. Thus \(\gamma=\widetilde\gamma\).</p>
+    </div>
+
+    <h3>Martingale couplings and convex order</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For \(\mu,\nu\in\mathcal P_1(\mathbb R^d)\), a coupling \(\pi\in\Pi(\mu,\nu)\) is a martingale coupling if
+        \[
+        \int (y-x)f(x)\,\mathrm d\pi(x,y)=0
+        \]
+        for every bounded measurable scalar function \(f\). Equivalently, under \((X,Y)\sim\pi\),
+        \(\mathbb E[Y\mid X]=X\). Denote the set by \(\Pi_M(\mu,\nu)\).</p>
+    </div>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> We say that \(\mu\) is below \(\nu\) in convex order, written \(\mu\preceq_{\mathrm{cx}}\nu\), if
+        \[
+        \int\phi\,\mathrm d\mu\le\int\phi\,\mathrm d\nu
+        \]
+        for every finite convex \(\phi\) of at most linear growth. Affine test functions show that the two measures must have the same mean.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Strassen's theorem.</span>
+        \[
+        \Pi_M(\mu,\nu)\ne\varnothing
+        \quad\Longleftrightarrow\quad
+        \mu\preceq_{\mathrm{cx}}\nu.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \((X,Y)\) is a martingale, conditional Jensen gives
+        \[
+        \phi(X)=\phi(\mathbb E[Y\mid X])
+        \le\mathbb E[\phi(Y)\mid X],
+        \]
+        and integration proves convex order. For the converse, consider the convex set of second marginals generated by kernels \(K(x,\mathrm dy)\) satisfying \(\int y\,K(x,\mathrm dy)=x\). If \(\nu\) were outside its weakly closed, tight subset with controlled first moments, separation would produce a continuous function \(g\) whose expectation under \(\nu\) is smaller than under every reachable second marginal. Minimizing \(\int g\,\mathrm dK(x,\cdot)\) subject to mean \(x\) gives the convex envelope \(g^{**}(x)\). Hence separation would imply
+        \(\int g\,\mathrm d\nu<\int g^{**}\,\mathrm d\mu\), while convex order and \(g^{**}\le g\) imply the reverse inequality. Thus \(\nu\) is reachable. Approximation extends the argument from compact support to \(\mathcal P_1\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Let \(\mu=\delta_0\) and
+        \(\nu=\tfrac12\delta_{-a}+\tfrac12\delta_a\). Then
+        \(\mu\preceq_{\mathrm{cx}}\nu\), and the only coupling is
+        \[
+        \pi=\tfrac12\delta_{(0,-a)}+\tfrac12\delta_{(0,a)}.
+        \]
+        It is a martingale because the conditional mean of \(Y\) is zero. The second law is a mean-preserving spread of the first.</p>
+    </div>
+
+    <h3>Martingale optimal transport duality</h3>
+
+    <p>For a lower semicontinuous cost \(c\), the primal problem is
+    \[
+    \mathsf{MOT}_c(\mu,\nu)
+    =
+    \inf_{\pi\in\Pi_M(\mu,\nu)}\int c(x,y)\,\mathrm d\pi.
+    \]
+    The martingale restriction introduces a vector-valued multiplier \(h(x)\).</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Martingale duality.</span> Suppose \(\mu,\nu\) have compact support, \(\mu\preceq_{\mathrm{cx}}\nu\), and \(c\) is continuous on the product of their convex hulls. Then
+        \[
+        \mathsf{MOT}_c(\mu,\nu)
+        =
+        \sup_{\varphi,\psi,h}
+        \left\{
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu:
+        \varphi(x)+\psi(y)+h(x)\cdot(y-x)\le c(x,y)
+        \right\},
+        \]
+        where the supremum may be taken over continuous \(\varphi,\psi\) and continuous \(h\) with values in \(\mathbb R^d\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Weak duality.</span> Integrate the constraint against \(\pi\in\Pi_M(\mu,\nu)\). The marginal terms become the two displayed integrals, while
+        \[
+        \int h(x)\cdot(y-x)\,\mathrm d\pi=0
+        \]
+        by the martingale property. For strong duality, include the conditional-moment functional in the linear marginal operator and separate its compact convex image from any value strictly below the primal optimum. Compact support makes all constraint functions bounded and makes the feasible image closed, so the separating functional has precisely the form \((\varphi,\psi,h)\) above.</p>
+    </div>
+
+    <p>The term \(h(x)\cdot(y-x)\) has no counterpart in ordinary transport. In robust pricing it is the gain of a self-financing linear hedge, while \(\varphi\) and \(\psi\) are static positions depending on the initial and terminal states.</p>
+
+    <h3>One-dimensional structure</h3>
+
+    <p>On \(\mathbb R\), convex order can be checked through call functions:
+    \[
+    \mu\preceq_{\mathrm{cx}}\nu
+    \quad\Longleftrightarrow\quad
+    \int(x-k)_+\,\mathrm d\mu(x)
+    \le
+    \int(x-k)_+\,\mathrm d\nu(x)
+    \quad\text{for every }k,
+    \]
+    together with equality of means. Canonical couplings such as the left-curtain coupling transport each infinitesimal source interval to at most two target locations and are selected by a martingale analogue of monotonicity. For suitable Spence--Mirrlees costs, this coupling is the unique optimizer.</p>
+
+    <h3>Stability</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Closedness of the martingale constraint.</span> Suppose
+        \(\pi_n\in\Pi_M(\mu_n,\nu_n)\), \(\pi_n\Rightarrow\pi\), and the first moments are uniformly integrable. Then \(\pi\in\Pi_M(\mu,\nu)\), where \(\mu,\nu\) are its marginals.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For bounded continuous \(f\), truncate \(y-x\) at radius \(R\). Weak convergence passes the bounded continuous truncated integral to the limit. Uniform integrability makes the truncation error vanish uniformly as \(R\to\infty\). Hence
+        \(\int(y-x)f(x)\,\mathrm d\pi=0\). A monotone-class argument extends from continuous \(f\) to bounded measurable \(f\).</p>
+    </div>
+
+    <p>Existence and stability of martingale optimizers then follow by the direct method. The essential extra hypothesis is first-moment control: weak convergence alone does not preserve conditional means.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/unbalanced-optimal-transport/" next_label="Next page" next_url="/notes/optimal-transport/gromov-wasserstein-geometry/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/optimal-transport/multi-marginal-and-martingale-transport/' | relative_url }}">27. Transport multi-marginal et transport martingale</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/unbalanced-optimal-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/gromov-wasserstein-geometry/" %}
+
+    <p>Deux extensions importantes modifient l'ensemble des couplages admissibles de manières différentes. Le transport multi-marginal couple simultanément plus de deux lois. Le transport martingale conserve deux marginales mais impose une contrainte d'espérance conditionnelle. Leurs arguments de compacité ressemblent au transport classique, mais leurs géométries et leurs variables duales sont nouvelles.</p>
+
+    <h3>Le problème de Kantorovitch multi-marginal</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Soient \(X_i\) des espaces polonais, \(\mu_i\in\mathcal P(X_i)\), et \(c:X_1\times\cdots\times X_N\to(-\infty,\infty]\). On pose
+        \[
+        \Pi(\mu_1,\ldots,\mu_N)
+        =
+        \{\gamma:(p_i)_\#\gamma=\mu_i,\ 1\le i\le N\},
+        \]
+        et
+        \[
+        \mathsf{MMOT}_c(\mu_1,\ldots,\mu_N)
+        =
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}
+        \int c(x_1,\ldots,x_N)\,\mathrm d\gamma.
+        \]</p>
+    </div>
+
+    <p>Un plan \(\gamma\) est une loi jointe ayant toutes les lois coordonnées prescrites. Des couplages optimaux deux à deux ne peuvent en général pas être assemblés indépendamment : leurs coordonnées communes doivent provenir d'une même loi jointe.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence.</span> Si \(c\) est semi-continue inférieurement et
+        \(c(x_1,\ldots,x_N)\ge\sum_i a_i(x_i)\) avec des fonctions continues \(a_i\in L^1(\mu_i)\), alors une valeur finie est atteinte. En particulier, cela vaut pour tout coût positif semi-continu inférieur.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Pour des compacts \(K_i\subset X_i\),
+        \[
+        \gamma((K_1\times\cdots\times K_N)^c)
+        \le\sum_i\mu_i(K_i^c).
+        \]
+        Les plans admissibles sont donc uniformément tendus. Une sous-suite d'une suite minimisante converge faiblement; les projections continues préservent les marginales. Le théorème de Portmanteau appliqué à \(c-\sum_i a_i\) donne la semi-continuité du coût.</p>
+    </div>
+
+    <h3>Dualité et ensembles de scission</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Dualité multi-marginale.</span> Si les \(X_i\) sont compacts et \(c\) continue,
+        \[
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}\int c\,\mathrm d\gamma
+        =
+        \sup_{\sum_i\varphi_i(x_i)\le c(x_1,\ldots,x_N)}
+        \sum_i\int\varphi_i\,\mathrm d\mu_i.
+        \]
+        Il y a un potentiel dual par marginale.</p>
+    </div>
+
+    <p>La dualité faible vient de l'intégration de l'inégalité ponctuelle. La dualité forte résulte de la séparation convexe appliquée à l'application linéaire qui envoie un plan sur ses \(N\) marginales.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Un ensemble \(\Gamma\) est un ensemble de \(c\)-scission s'il existe des \(\varphi_i\) tels que
+        \[
+        \sum_i\varphi_i(x_i)\le c(x_1,\ldots,x_N)
+        \quad\text{partout},\qquad
+        \sum_i\varphi_i(x_i)=c(x_1,\ldots,x_N)
+        \quad\text{sur }\Gamma.
+        \]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Monotonie cyclique généralisée.</span> Si \(x^1,\ldots,x^m\in\Gamma\) et si \(\sigma_i\) sont des permutations,
+        \[
+        \sum_k c(x_1^k,\ldots,x_N^k)
+        \le
+        \sum_k c(x_1^{\sigma_1(k)},\ldots,x_N^{\sigma_N(k)}).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Sur \(\Gamma\), le membre de gauche vaut \(\sum_{i,k}\varphi_i(x_i^k)\). Les permutations ne changent pas cette somme. L'inégalité de scission appliquée aux tuples recombinés donne le membre de droite. Tout plan optimal est porté par un tel ensemble lorsque les potentiels duaux existent.</p>
+    </div>
+
+    <h3>Interaction quadratique et barycentres de Wasserstein</h3>
+
+    <p>Pour \(\lambda_i>0\), \(\sum_i\lambda_i=1\),
+    \[
+    \bar x=\sum_i\lambda_i x_i,\qquad
+    c_\lambda=\sum_i\lambda_i|x_i-\bar x|^2
+    =\sum_{i<j}\lambda_i\lambda_j|x_i-x_j|^2.
+    \]</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Équivalence barycentrique.</span> Pour \(\mu_i\in\mathcal P_2(\mathbb R^d)\),
+        \[
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}
+        \int c_\lambda\,\mathrm d\gamma
+        =
+        \inf_{\nu\in\mathcal P_2(\mathbb R^d)}
+        \sum_i\lambda_iW_2^2(\mu_i,\nu).
+        \]
+        Si \(\gamma^\star\) est optimal, alors
+        \(\nu^\star=(\sum_i\lambda_i p_i)_\#\gamma^\star\) est un barycentre.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Le membre de droite est l'infimum de
+        \(\mathbb E\sum_i\lambda_i|X_i-Y|^2\) parmi les lois jointes telles que \(X_i\sim\mu_i\). Conditionnellement aux \(X_i\), le minimiseur unique est \(Y=\sum_i\lambda_iX_i\), et le minimum est \(c_\lambda\). Réciproquement, on recolle, conditionnellement à leur coordonnée commune \(Y\), des couplages optimaux de \(\nu\) et des \(\mu_i\).</p>
+    </div>
+
+    <h3>Structure de Monge</h3>
+
+    <p>Pour \(N\ge3\), une condition de twist deux à deux ne suffit pas. Le coût est dit <em>twisté sur les ensembles de scission</em> si, pour \(x_1\) fixé,
+    \[
+    (x_2,\ldots,x_N)\longmapsto D_{x_1}c(x_1,\ldots,x_N)
+    \]
+    est injective sur tout ensemble de \(c\)-scission.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de graphe.</span> Si \(c\) est différentiable en \(x_1\), twisté sur les ensembles de scission, et si \(\mu_1\) est absolument continue, alors, sous les hypothèses régulières usuelles, tout optimiseur est porté par
+        \[
+        (x_1,T_2(x_1),\ldots,T_N(x_1))
+        \]
+        et il est unique.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> L'égalité duale sur le support donne
+        \[
+        \nabla\varphi_1(x_1)=D_{x_1}c(x_1,x_2,\ldots,x_N)
+        \]
+        aux points de différentiabilité. Le twist autorise au plus un tuple \((x_2,\ldots,x_N)\) au-dessus de chaque \(x_1\). La désintégration sur \(\mu_1\) est donc presque partout une masse de Dirac. Si \(\gamma,\widetilde\gamma\) étaient deux optimiseurs, leur moyenne serait optimale, mais ses lois conditionnelles seraient les moyennes des deux masses de Dirac; elles ne peuvent être de Dirac que si les deux graphes coïncident presque partout. D'où l'unicité.</p>
+    </div>
+
+    <h3>Couplages martingales et ordre convexe</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Un \(\pi\in\Pi(\mu,\nu)\), avec \(\mu,\nu\in\mathcal P_1(\mathbb R^d)\), est un couplage martingale si
+        \[
+        \int(y-x)f(x)\,\mathrm d\pi(x,y)=0
+        \]
+        pour toute fonction mesurable bornée \(f\). Cela équivaut à
+        \(\mathbb E[Y\mid X]=X\). On note l'ensemble \(\Pi_M(\mu,\nu)\).</p>
+    </div>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> On écrit \(\mu\preceq_{\mathrm{cx}}\nu\) si
+        \[
+        \int\phi\,\mathrm d\mu\le\int\phi\,\mathrm d\nu
+        \]
+        pour toute fonction convexe de croissance au plus linéaire. Les fonctions affines imposent l'égalité des moyennes.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de Strassen.</span>
+        \[
+        \Pi_M(\mu,\nu)\ne\varnothing
+        \quad\Longleftrightarrow\quad
+        \mu\preceq_{\mathrm{cx}}\nu.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Si \((X,Y)\) est une martingale, Jensen conditionnelle donne
+        \[
+        \phi(X)\le\mathbb E[\phi(Y)\mid X],
+        \]
+        puis l'ordre convexe après intégration. Réciproquement, considérons les secondes marginales obtenues par les noyaux \(K(x,\mathrm dy)\) de moyenne \(x\). Si \(\nu\) était séparée de cet ensemble convexe fermé, une fonction continue \(g\) donnerait
+        \(\int g\,\mathrm d\nu<\int g^{**}\,\mathrm d\mu\), car minimiser \(\int g\,\mathrm dK(x,\cdot)\) sous la contrainte de moyenne donne l'enveloppe convexe \(g^{**}(x)\). Mais l'ordre convexe et \(g^{**}\le g\) donnent l'inégalité inverse. Une approximation par troncature traite le cas non compact.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Pour \(\mu=\delta_0\) et
+        \(\nu=\tfrac12\delta_{-a}+\tfrac12\delta_a\), l'unique couplage est
+        \[
+        \pi=\tfrac12\delta_{(0,-a)}+\tfrac12\delta_{(0,a)}.
+        \]
+        Il est martingale, et \(\nu\) est un étalement à moyenne conservée de \(\mu\).</p>
+    </div>
+
+    <h3>Dualité du transport optimal martingale</h3>
+
+    <p>Le problème primal est
+    \[
+    \mathsf{MOT}_c(\mu,\nu)
+    =
+    \inf_{\pi\in\Pi_M(\mu,\nu)}\int c(x,y)\,\mathrm d\pi.
+    \]</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Dualité martingale.</span> Supposons que \(\mu,\nu\) soient à support compact, que \(\mu\preceq_{\mathrm{cx}}\nu\), et que \(c\) soit continue sur le produit de leurs enveloppes convexes. Alors
+        \[
+        \mathsf{MOT}_c(\mu,\nu)
+        =
+        \sup_{\varphi,\psi,h}
+        \left\{
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu:
+        \varphi(x)+\psi(y)+h(x)\cdot(y-x)\le c(x,y)
+        \right\},
+        \]
+        où l'on peut prendre \(\varphi,\psi\) continues et \(h\) continue à valeurs dans \(\mathbb R^d\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Dualité faible.</span> Intégrons la contrainte contre \(\pi\in\Pi_M\). Les termes marginaux donnent les deux intégrales, tandis que
+        \[
+        \int h(x)\cdot(y-x)\,\mathrm d\pi=0.
+        \]
+        Pour la dualité forte, on inclut la fonctionnelle de moment conditionnel dans l'opérateur marginal linéaire, puis on sépare son image convexe compacte de toute valeur strictement inférieure à l'optimum primal. Le support compact rend les contraintes bornées et l'image fermée; la fonctionnelle séparatrice est exactement de la forme \((\varphi,\psi,h)\) ci-dessus.</p>
+    </div>
+
+    <p>Le multiplicateur vectoriel \(h\) n'existe pas en transport ordinaire. En finance robuste, \(h(x)\cdot(y-x)\) représente le gain d'une stratégie linéaire auto-financée, tandis que \(\varphi,\psi\) représentent les positions statiques.</p>
+
+    <h3>Structure unidimensionnelle</h3>
+
+    <p>Sur \(\mathbb R\), l'ordre convexe équivaut, avec égalité des moyennes, à
+    \[
+    \int(x-k)_+\,\mathrm d\mu(x)
+    \le
+    \int(x-k)_+\,\mathrm d\nu(x)
+    \quad\text{pour tout }k.
+    \]
+    Le couplage rideau gauche est un couplage canonique : chaque intervalle source infinitésimal est envoyé vers au plus deux positions cibles. Pour certaines fonctions de coût de type Spence--Mirrlees, il est l'unique optimiseur.</p>
+
+    <h3>Stabilité</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Fermeture.</span> Si \(\pi_n\in\Pi_M(\mu_n,\nu_n)\), \(\pi_n\Rightarrow\pi\), et si les premiers moments sont uniformément intégrables, alors \(\pi\) est encore un couplage martingale.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Pour \(f\) continue bornée, tronquons \(y-x\) au rayon \(R\). La convergence faible traite l'intégrande borné; l'intégrabilité uniforme fait tendre l'erreur de troncature vers zéro uniformément. Ainsi
+        \(\int(y-x)f(x)\,\mathrm d\pi=0\). Un argument de classe monotone étend cette identité aux \(f\) mesurables bornées.</p>
+    </div>
+
+    <p>L'existence et la stabilité des optimiseurs suivent alors par la méthode directe. Le contrôle du premier moment est essentiel : la convergence faible seule ne préserve pas les espérances conditionnelles.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/unbalanced-optimal-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/gromov-wasserstein-geometry/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/optimal-transport/multi-marginal-and-martingale-transport/' | relative_url }}">27. 多边缘传输与鞅传输</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/unbalanced-optimal-transport/" next_label="下一页" next_url="/notes/optimal-transport/gromov-wasserstein-geometry/" %}
+
+    <p>两个重要扩展以不同方式改变容许耦合集。多边缘传输同时耦合两个以上的分布；鞅传输仍有两个边缘，却附加条件均值约束。它们的紧性论证与经典传输相似，但几何结构和对偶变量都真正不同。</p>
+
+    <h3>多边缘康托罗维奇问题</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 设 \(X_i\) 为波兰空间，\(\mu_i\in\mathcal P(X_i)\)，且
+        \(c:X_1\times\cdots\times X_N\to(-\infty,\infty]\)。记
+        \[
+        \Pi(\mu_1,\ldots,\mu_N)
+        =
+        \{\gamma\in\mathcal P(X_1\times\cdots\times X_N):
+        (p_i)_\#\gamma=\mu_i,\ 1\le i\le N\}.
+        \]
+        多边缘传输值为
+        \[
+        \mathsf{MMOT}_c(\mu_1,\ldots,\mu_N)
+        =
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}
+        \int c(x_1,\ldots,x_N)\,\mathrm d\gamma.
+        \]</p>
+    </div>
+
+    <p>计划 \(\gamma\) 是具有全部指定坐标分布的联合分布。若分别求各对边缘的最优耦合，通常不能把它们独立拼接起来，因为共享坐标必须与同一个联合分布相容。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">存在性.</span> 若 \(c\) 下半连续，且
+        \[
+        c(x_1,\ldots,x_N)\ge\sum_{i=1}^Na_i(x_i),
+        \qquad a_i\in C(X_i)\cap L^1(\mu_i),
+        \]
+        则只要最优值有限，极小化解就存在。特别地，非负下半连续代价总满足该结论。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对紧集 \(K_i\subset X_i\)，每个容许 \(\gamma\) 都满足
+        \[
+        \gamma((K_1\times\cdots\times K_N)^c)
+        \le\sum_i\mu_i(K_i^c).
+        \]
+        因而边缘的紧性给出容许计划族的一致紧性。极小化序列有弱收敛子列；坐标投影连续，故极限保留全部边缘。对 \(c-\sum_i a_i\) 使用波特曼托定理，再加回固定的边缘积分即可。</p>
+    </div>
+
+    <h3>对偶与分裂集</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">多边缘康托罗维奇对偶.</span> 若 \(X_i\) 紧且 \(c\) 连续，则
+        \[
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}\int c\,\mathrm d\gamma
+        =
+        \sup_{\sum_i\varphi_i(x_i)\le c(x_1,\ldots,x_N)}
+        \sum_i\int\varphi_i\,\mathrm d\mu_i.
+        \]
+        每个边缘对应一个对偶势。</p>
+    </div>
+
+    <p>逐点不等式积分后立即得到弱对偶。把线性边缘映射
+    \(\gamma\mapsto((p_1)_\#\gamma,\ldots,(p_N)_\#\gamma)\)
+    代入与二边缘情形相同的凸分离论证，得到强对偶。</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 若存在函数 \(\varphi_i\) 使
+        \[
+        \sum_i\varphi_i(x_i)\le c(x_1,\ldots,x_N)
+        \quad\text{处处成立},\qquad
+        \sum_i\varphi_i(x_i)=c(x_1,\ldots,x_N)
+        \quad\text{在 }\Gamma\text{ 上成立},
+        \]
+        则称 \(\Gamma\) 为一个 \(c\)-分裂集。</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">广义循环单调性.</span> 若 \(x^1,\ldots,x^m\in\Gamma\)，且 \(\sigma_i\) 是 \(\{1,\ldots,m\}\) 的置换，则
+        \[
+        \sum_k c(x_1^k,\ldots,x_N^k)
+        \le
+        \sum_k c(x_1^{\sigma_1(k)},\ldots,x_N^{\sigma_N(k)}).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 在 \(\Gamma\) 上，左侧等于
+        \(\sum_{i,k}\varphi_i(x_i^k)\)。置换 \(k\) 不改变此和。对重新组合的每个元组使用分裂不等式，即得右侧。只要对偶最优势存在，最优计划就集中在某个分裂集上。</p>
+    </div>
+
+    <h3>二次相互作用与瓦瑟斯坦重心</h3>
+
+    <p>设 \(\lambda_i>0\)、\(\sum_i\lambda_i=1\)，并令
+    \[
+    \bar x=\sum_i\lambda_i x_i,\qquad
+    c_\lambda(x_1,\ldots,x_N)
+    =\sum_i\lambda_i|x_i-\bar x|^2
+    =\sum_{i<j}\lambda_i\lambda_j|x_i-x_j|^2.
+    \]
+    该代价度量每个传输元组围绕其欧氏重心的离散程度。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">重心等价性.</span> 对 \(\mu_i\in\mathcal P_2(\mathbb R^d)\)，
+        \[
+        \inf_{\gamma\in\Pi(\mu_1,\ldots,\mu_N)}
+        \int c_\lambda\,\mathrm d\gamma
+        =
+        \inf_{\nu\in\mathcal P_2(\mathbb R^d)}
+        \sum_i\lambda_iW_2^2(\mu_i,\nu).
+        \]
+        若 \(\gamma^\star\) 最优，则
+        \(\nu^\star=(\sum_i\lambda_i p_i)_\#\gamma^\star\) 是瓦瑟斯坦重心。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 右侧可改写为在满足 \(X_i\sim\mu_i\) 的联合分布中极小化
+        \[
+        \mathbb E\sum_i\lambda_i|X_i-Y|^2.
+        \]
+        给定 \(X_1,\ldots,X_N\)，关于 \(Y\) 的唯一极小点是
+        \(Y=\sum_i\lambda_iX_i\)，最小值正是 \(c_\lambda\)。反过来，把任意候选 \(\nu\) 与各 \(\mu_i\) 的最优耦合沿共同的 \(\nu\)-坐标条件拼接，即得相反不等式。</p>
+    </div>
+
+    <h3>多边缘最优计划何时是图</h3>
+
+    <p>当 \(N\ge3\) 时，两两扭结条件并不足够。若固定 \(x_1\) 后，映射
+    \[
+    (x_2,\ldots,x_N)\longmapsto D_{x_1}c(x_1,\ldots,x_N)
+    \]
+    在每个 \(c\)-分裂集上都单射，则称代价在分裂集上满足扭结条件。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">图结构定理.</span> 设 \(c\) 关于 \(x_1\) 可微并在分裂集上满足扭结条件；再设正则性足以保证第一对偶势在 \(\mu_1\)-几乎处处可微。若 \(\mu_1\) 绝对连续，则每个最优计划都集中在图
+        \[
+        (x_1,T_2(x_1),\ldots,T_N(x_1))
+        \]
+        上，因而最优计划唯一。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 在支撑最优计划的分裂集上，对偶等式在可微点给出
+        \[
+        \nabla\varphi_1(x_1)=D_{x_1}c(x_1,x_2,\ldots,x_N).
+        \]
+        固定 \(x_1\) 后，扭结条件至多容许一个 \((x_2,\ldots,x_N)\)，故关于 \(\mu_1\) 的析取条件分布几乎处处为狄拉克测度。若 \(\gamma,\widetilde\gamma\) 是两个最优计划，则其平均仍最优；但平均计划的条件分布是两个狄拉克测度的平均，只有两张图几乎处处重合时它才仍是狄拉克测度。因此最优计划唯一。</p>
+    </div>
+
+    <h3>鞅耦合与凸序</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 对 \(\mu,\nu\in\mathcal P_1(\mathbb R^d)\)，若
+        \[
+        \int(y-x)f(x)\,\mathrm d\pi(x,y)=0
+        \]
+        对每个有界可测标量函数 \(f\) 都成立，则称
+        \(\pi\in\Pi(\mu,\nu)\) 为鞅耦合。等价地，在 \((X,Y)\sim\pi\) 下，
+        \(\mathbb E[Y\mid X]=X\)。所有鞅耦合组成 \(\Pi_M(\mu,\nu)\)。</p>
+    </div>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 若对每个至多线性增长的有限凸函数 \(\phi\)，
+        \[
+        \int\phi\,\mathrm d\mu\le\int\phi\,\mathrm d\nu,
+        \]
+        则称 \(\mu\) 小于 \(\nu\) 的凸序，记作
+        \(\mu\preceq_{\mathrm{cx}}\nu\)。取仿射函数可知两者均值必须相同。</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">斯特拉森定理.</span>
+        \[
+        \Pi_M(\mu,\nu)\ne\varnothing
+        \quad\Longleftrightarrow\quad
+        \mu\preceq_{\mathrm{cx}}\nu.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 若 \((X,Y)\) 是鞅，则条件詹森不等式给出
+        \[
+        \phi(X)=\phi(\mathbb E[Y\mid X])
+        \le\mathbb E[\phi(Y)\mid X],
+        \]
+        积分后得到凸序。反过来，考虑所有满足
+        \(\int y\,K(x,\mathrm dy)=x\) 的核所能产生的第二边缘组成的凸集。若 \(\nu\) 不在其弱闭包中，分离定理给出连续函数 \(g\)，使
+        \(\int g\,\mathrm d\nu<\int g^{**}\,\mathrm d\mu\)；这是因为在均值固定为 \(x\) 的分布中极小化 \(\int g\) 得到凸包络 \(g^{**}(x)\)。然而凸序与 \(g^{**}\le g\) 给出相反不等式。紧支撑外的情形由截断逼近得到。</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> 令 \(\mu=\delta_0\)，
+        \(\nu=\tfrac12\delta_{-a}+\tfrac12\delta_a\)。唯一耦合为
+        \[
+        \pi=\tfrac12\delta_{(0,-a)}+\tfrac12\delta_{(0,a)}.
+        \]
+        因为 \(Y\) 的条件均值为零，它是鞅耦合；\(\nu\) 是 \(\mu\) 的均值保持扩散。</p>
+    </div>
+
+    <h3>鞅最优传输对偶</h3>
+
+    <p>对下半连续代价 \(c\)，原问题为
+    \[
+    \mathsf{MOT}_c(\mu,\nu)
+    =
+    \inf_{\pi\in\Pi_M(\mu,\nu)}\int c(x,y)\,\mathrm d\pi.
+    \]
+    条件均值约束引入向量值乘子 \(h(x)\)。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">鞅对偶.</span> 设 \(\mu,\nu\) 具有紧支撑，
+        \(\mu\preceq_{\mathrm{cx}}\nu\)，且 \(c\) 在两者凸包的乘积上连续。则
+        \[
+        \mathsf{MOT}_c(\mu,\nu)
+        =
+        \sup_{\varphi,\psi,h}
+        \left\{
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu:
+        \varphi(x)+\psi(y)+h(x)\cdot(y-x)\le c(x,y)
+        \right\},
+        \]
+        其中上确界可限制在连续 \(\varphi,\psi\) 与连续向量值函数
+        \(h:X\to\mathbb R^d\) 上。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">弱对偶证明.</span> 对 \(\pi\in\Pi_M\) 积分约束。边缘项给出两个积分，而鞅性质给出
+        \[
+        \int h(x)\cdot(y-x)\,\mathrm d\pi=0.
+        \]
+        为证强对偶，把条件矩泛函与边缘约束一并纳入线性算子，再把其紧凸像与任何严格低于原最优值的数分离。紧支撑使全部约束函数有界并保证可行像闭合；所得分离泛函恰具有上述 \((\varphi,\psi,h)\) 形式。</p>
+    </div>
+
+    <p>向量项 \(h(x)\cdot(y-x)\) 在普通传输中不存在。在稳健定价中，它是自融资线性对冲的收益，而 \(\varphi,\psi\) 是分别依赖初始状态和终止状态的静态头寸。</p>
+
+    <h3>一维结构</h3>
+
+    <p>在 \(\mathbb R\) 上，若均值相同，则凸序等价于
+    \[
+    \int(x-k)_+\,\mathrm d\mu(x)
+    \le
+    \int(x-k)_+\,\mathrm d\nu(x)
+    \quad\text{对每个 }k.
+    \]
+    左帘耦合是一种典范耦合：它把每个无穷小源区间传到至多两个目标位置，并由鞅版单调性选出。对适当的斯彭斯--米尔利斯型代价，它是唯一最优解。</p>
+
+    <h3>稳定性</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">鞅约束的闭性.</span> 若
+        \(\pi_n\in\Pi_M(\mu_n,\nu_n)\)、\(\pi_n\Rightarrow\pi\)，且一阶矩一致可积，则 \(\pi\) 仍为鞅耦合。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对有界连续 \(f\)，先把 \(y-x\) 截断在半径 \(R\)。弱收敛可传递有界连续的截断积分；一致可积性使截断误差在 \(R\to\infty\) 时一致趋于零。因此
+        \(\int(y-x)f(x)\,\mathrm d\pi=0\)。单调类论证把结果扩展到有界可测 \(f\)。</p>
+    </div>
+
+    <p>由此配合直接法即可得到鞅最优解的存在性与稳定性。一阶矩控制不可省略：仅有弱收敛并不能保留条件均值。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/unbalanced-optimal-transport/" next_label="下一页" next_url="/notes/optimal-transport/gromov-wasserstein-geometry/" %}
+</div>
+
+<hr>

@@ -1,95 +1,390 @@
 ---
 layout: default
-breadcrumb_child_label_en: "14. Displacement convexity"
-breadcrumb_child_label_fr: "14. Convexité par déplacement"
-breadcrumb_child_label_zh: "14. 位移凸性"
+breadcrumb_child_label_en: "16. Displacement convexity"
+breadcrumb_child_label_fr: "16. Convexité par déplacement"
+breadcrumb_child_label_zh: "16. 位移凸性"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/displacement-convexity/' | relative_url }}">14. Displacement convexity</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Next page" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+    <h2><a href="{{ '/notes/optimal-transport/displacement-convexity/' | relative_url }}">16. Displacement convexity</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/" next_label="Next page" next_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" %}
 
-    <p>Displacement convexity records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>Functionals of probability measures are rarely convex under ordinary mixture. The geometry relevant to transport follows displacement geodesics, and convexity along those curves controls uniqueness, contraction, inequalities, and evolution equations.</p>
 
-    <h3>Definition</h3>
+    <h3>Geodesic \(\lambda\)-convexity</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A functional on probability measures is displacement convex if it is convex along Wasserstein geodesics.</p>
+        <p><span class="statement-title">Definition.</span> A functional \(\mathcal F:\mathcal P_2(\mathbb R^d)\to(-\infty,\infty]\) is displacement \(\lambda\)-convex if for every pair \(\mu_0,\mu_1\) in its effective domain there exists a constant-speed geodesic \(\mu_t\) such that
+        \[
+        \mathcal F(\mu_t)
+        \le(1-t)\mathcal F(\mu_0)+t\mathcal F(\mu_1)
+        -\frac{\lambda}{2}t(1-t)W_2^2(\mu_0,\mu_1).
+        \]
+        When the inequality holds along every geodesic, one says strongly displacement convex.</p>
     </div>
 
-    <h3>Proposition</h3>
+    <p>Positive \(\lambda\) is strong convexity, \(\lambda=0\) is ordinary geodesic convexity, and negative \(\lambda\) allows controlled concavity. The correction term is the metric analogue of strong convexity in a Hilbert space.</p>
+
+    <h3>Potential energy</h3>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Entropy-type functionals and interaction energies satisfy displacement convexity under structural convexity assumptions on the integrand or kernel.</p>
+        <p><span class="statement-title">Proposition.</span> Let
+        \[
+        \mathcal V(\mu)=\int_{\mathbb R^d}V(x)\,\mathrm d\mu(x).
+        \]
+        If \(D^2V\ge\lambda I\), then \(\mathcal V\) is displacement \(\lambda\)-convex.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write the functional along a geodesic induced by a transport map and use change-of-variables plus determinant or pointwise convexity inequalities.</p>
+        <p><span class="statement-title">Proof.</span> Let \(\pi\) be an optimal coupling and \(\mu_t=((1-t)x+ty)_\#\pi\). Pointwise \(\lambda\)-convexity of \(V\) gives
+        \[
+        V((1-t)x+ty)
+        \le(1-t)V(x)+tV(y)-\frac{\lambda}{2}t(1-t)|x-y|^2.
+        \]
+        Integrate with respect to \(\pi\), and use \(\int|x-y|^2\,\mathrm d\pi=W_2^2(\mu_0,\mu_1)\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Displacement convexity is the right convexity notion for variational problems in Wasserstein space.</p>
+    <h3>Interaction energy</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Let \(W:\mathbb R^d\to\mathbb R\) be even and convex, and define
+        \[
+        \mathcal W(\mu)=\frac12\iint W(x-y)\,\mathrm d\mu(x)\,\mathrm d\mu(y).
+        \]
+        Then \(\mathcal W\) is displacement convex. If \(D^2W\ge\lambda I\), the corresponding convexity estimate holds modulo translations; the center-of-mass direction remains flat.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Next page" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use two independent copies \((x,y)\), \((x',y')\) of an optimal coupling. Along interpolation,
+        \[
+        x_t-x_t'=(1-t)(x-x')+t(y-y').
+        \]
+        Convexity of \(W\), followed by integration over the product coupling, gives
+        \[
+        \mathcal W(\mu_t)\le(1-t)\mathcal W(\mu_0)+t\mathcal W(\mu_1).
+        \]
+        Strong convexity yields an additional quadratic term involving \(|(x-x')-(y-y')|^2\); it vanishes for common translations, explaining the flat direction.</p>
+    </div>
+
+    <h3>Internal energy and McCann's condition</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For \(\mu=\rho\,\mathrm dx\), define
+        \[
+        \mathcal U(\mu)=\int_{\mathbb R^d}U(\rho(x))\,\mathrm dx,
+        \]
+        and set \(\mathcal U(\mu)=+\infty\) when \(\mu\) is not absolutely continuous. McCann's condition is that
+        \[
+        s\longmapsto s^dU(s^{-d})
+        \]
+        is convex and nonincreasing on \((0,\infty)\), together with the usual lower-semicontinuity growth assumptions.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">McCann displacement-convexity theorem.</span> If \(U\) satisfies McCann's condition, then \(\mathcal U\) is displacement convex on \(\mathcal P_2(\mathbb R^d)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof for smooth positive densities.</span> Let \(T=\nabla u\) be the optimal map from \(\rho_0\) to \(\rho_1\), and \(T_t=(1-t)I+tDT\). The Jacobian equation gives
+        \[
+        \rho_t(T_t(x))=\frac{\rho_0(x)}
+        {\det((1-t)I+tDT(x))}.
+        \]
+        Since \(DT\) is positive semidefinite, concavity of \(\det(\cdot)^{1/d}\) on positive matrices yields
+        \[
+        \det((1-t)I+tDT)^{1/d}
+        \ge(1-t)+t\det(DT)^{1/d}.
+        \]
+        After changing variables \(z=T_t(x)\), the internal energy becomes an integral of
+        \[
+        J\,U(\rho_0/J),\qquad J=\det((1-t)I+tDT).
+        \]
+        McCann's condition is exactly the scalar convexity and monotonicity needed to combine the determinant inequality with the endpoint Jacobians. Integration proves the geodesic convexity inequality. Approximation by smooth positive densities and lower semicontinuity give the general case.</p>
+    </div>
+
+    <h3>Entropy and porous-medium energies</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Boltzmann entropy.</span> For \(U(r)=r\log r\),
+        \[
+        s^dU(s^{-d})=-d\log s,
+        \]
+        which is convex and decreasing. Hence
+        \[
+        \operatorname{Ent}(\mu)=\int\rho\log\rho\,\mathrm dx
+        \]
+        is displacement convex.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Power energies.</span> For \(U(r)=r^m/(m-1)\), McCann's condition holds when
+        \[
+        m\ge1-\frac1d.
+        \]
+        The range includes the porous-medium case \(m>1\) and part of the fast-diffusion range.</p>
+    </div>
+
+    <h3>Free energies</h3>
+    <p>The functional
+    \[
+    \mathcal F(\mu)
+    =\int U(\rho)\,\mathrm dx
+    +\int V\,\mathrm d\mu
+    +\frac12\iint W(x-y)\,\mathrm d\mu(x)\,\mathrm d\mu(y)
+    \]
+    combines internal, confining, and interaction energies. The previous results allow their displacement-convexity constants to be added. This single class generates the heat, Fokker--Planck, porous-medium, and aggregation--diffusion equations studied on pages 17 and 18.</p>
+
+    <h3>Consequences of strict convexity</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Uniqueness of minimizers.</span> If \(\mathcal F\) is displacement \(\lambda\)-convex with \(\lambda>0\), then it has at most one minimizer. If a minimizer \(\mu_\star\) exists, then
+        \[
+        \mathcal F(\mu)-\mathcal F(\mu_\star)
+        \ge\frac{\lambda}{2}W_2^2(\mu,\mu_\star).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply \(\lambda\)-convexity along a geodesic from \(\mu_\star\) to \(\mu\). Minimality gives \(\mathcal F(\mu_\star)\le\mathcal F(\mu_t)\). Rearranging,
+        \[
+        t\{\mathcal F(\mu)-\mathcal F(\mu_\star)\}
+        \ge\frac{\lambda}{2}t(1-t)W_2^2(\mu,\mu_\star).
+        \]
+        Divide by \(t\) and let \(t\downarrow0\). Two minimizers would make the left side zero and hence have zero distance.</p>
+    </div>
+
+    <h3>Generalized geodesics</h3>
+    <p>The squared Wasserstein distance is not convex along every ordinary geodesic in dimensions \(d\ge2\). Many variational arguments use generalized geodesics with a common base measure: glue optimal maps from a base \(\omega\) to \(\mu_0,\mu_1\), then interpolate their images. Along these curves, squared distance to \(\omega\) has the exact Hilbertian quadratic identity needed for the JKO scheme.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/" next_label="Next page" next_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/displacement-convexity/' | relative_url }}">14. Convexité par déplacement</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Page suivante" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+    <h2><a href="{{ '/notes/optimal-transport/displacement-convexity/' | relative_url }}">16. Convexité par déplacement</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/" next_label="Page suivante" next_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Convexité par déplacement.</p>
+    <p>Les fonctionnelles de mesures sont rarement convexes sous le mélange ordinaire. La géométrie pertinente suit les géodésiques de déplacement; la convexité le long de ces courbes contrôle unicité, contraction, inégalités et équations d'évolution.</p>
 
-    <h3>Définition</h3>
+    <h3>Convexité géodésique avec paramètre \(\lambda\)</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A functional on probability measures is displacement convex if it is convex along Wasserstein geodesics.</p>
+        <p><span class="statement-title">Définition.</span> \(\mathcal F\) est \(\lambda\)-convexe par déplacement si, entre deux mesures de son domaine, il existe une géodésique \(\mu_t\) telle que
+        \[
+        \mathcal F(\mu_t)
+        \le(1-t)\mathcal F(\mu_0)+t\mathcal F(\mu_1)
+        -\frac{\lambda}{2}t(1-t)W_2^2(\mu_0,\mu_1).
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
+    <h3>Énergie potentielle</h3>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Entropy-type functionals and interaction energies satisfy displacement convexity under structural convexity assumptions on the integrand or kernel.</p>
+        <p><span class="statement-title">Proposition.</span> Si \(\mathcal V(\mu)=\int V\,\mathrm d\mu\) et \(D^2V\ge\lambda I\), alors \(\mathcal V\) est \(\lambda\)-convexe par déplacement.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Write the functional along a geodesic induced by a transport map and use change-of-variables plus determinant or pointwise convexity inequalities.</p>
+        <p><span class="statement-title">Preuve.</span> Le long de \(\mu_t=((1-t)x+ty)_\#\pi\), la \(\lambda\)-convexité ponctuelle donne
+        \[
+        V((1-t)x+ty)\le(1-t)V(x)+tV(y)-\frac\lambda2t(1-t)|x-y|^2.
+        \]
+        L'intégration sous un plan optimal conclut.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Displacement convexity is the right convexity notion for variational problems in Wasserstein space.</p>
+    <h3>Énergie d'interaction</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Si \(W\) est paire et convexe,
+        \[
+        \mathcal W(\mu)=\frac12\iint W(x-y)\,\mathrm d\mu(x)\,\mathrm d\mu(y)
+        \]
+        est convexe par déplacement.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Page suivante" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Prenons deux copies indépendantes \((x,y),(x',y')\) d'un plan optimal. Alors
+        \[
+        x_t-x_t'=(1-t)(x-x')+t(y-y').
+        \]
+        La convexité de \(W\), puis l'intégration sur le plan produit, donne l'inégalité. Une convexité forte subsiste sauf dans la direction plate des translations communes.</p>
+    </div>
+
+    <h3>Énergie interne et condition de McCann</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Pour \(\mu=\rho\,\mathrm dx\),
+        \[
+        \mathcal U(\mu)=\int U(\rho)\,\mathrm dx.
+        \]
+        La condition de McCann demande que \(s\mapsto s^dU(s^{-d})\) soit convexe et décroissante.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de McCann.</span> Sous cette condition et les hypothèses de semi-continuité usuelles, \(\mathcal U\) est convexe par déplacement.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve pour des densités lisses.</span> Si \(T=\nabla u\) est optimal et \(T_t=(1-t)I+tT\), alors
+        \[
+        \rho_t(T_t(x))=\frac{\rho_0(x)}{\det((1-t)I+tDT(x))}.
+        \]
+        La concavité de \(\det(\cdot)^{1/d}\) sur les matrices positives donne
+        \[
+        \det((1-t)I+tDT)^{1/d}\ge(1-t)+t\det(DT)^{1/d}.
+        \]
+        Après changement de variables, l'intégrande vaut \(J\,U(\rho_0/J)\). La condition de McCann est exactement la convexité scalaire permettant de comparer cette expression aux deux extrémités. L'approximation et la semi-continuité traitent le cas général.</p>
+    </div>
+
+    <h3>Entropie et puissances</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Entropie de Boltzmann.</span> Pour \(U(r)=r\log r\), \(s^dU(s^{-d})=-d\log s\), convexe décroissante. Donc \(\int\rho\log\rho\) est convexe par déplacement.</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">Énergies puissances.</span> Pour \(U(r)=r^m/(m-1)\), la condition vaut lorsque \(m\ge1-1/d\), incluant la diffusion en milieu poreux et une partie de la diffusion rapide.</p>
+    </div>
+
+    <h3>Énergies libres</h3>
+    <p>La somme
+    \[
+    \mathcal F(\mu)=\int U(\rho)\,\mathrm dx+\int V\,\mathrm d\mu
+    +\frac12\iint W(x-y)\,\mathrm d\mu(x)\,\mathrm d\mu(y)
+    \]
+    engendre les équations de la chaleur, de Fokker--Planck, des milieux poreux et d'agrégation--diffusion.</p>
+
+    <h3>Conséquence de la stricte convexité</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Unicité.</span> Si \(\lambda>0\), \(\mathcal F\) a au plus un minimiseur \(\mu_\star\), et
+        \[
+        \mathcal F(\mu)-\mathcal F(\mu_\star)\ge\frac\lambda2W_2^2(\mu,\mu_\star).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Appliquons la convexité à une géodésique issue de \(\mu_\star\), utilisons sa minimalité, divisons par \(t\), puis faisons \(t\downarrow0\). Deux minimiseurs auraient alors une distance nulle.</p>
+    </div>
+
+    <h3>Géodésiques généralisées</h3>
+    <p>En dimension supérieure, \(W_2^2\) n'est pas convexe le long de toute géodésique. On utilise des géodésiques généralisées à mesure de base commune, obtenues en recollant les applications optimales depuis cette base. La distance carrée à la base y possède l'identité quadratique nécessaire au schéma JKO.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/" next_label="Page suivante" next_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/displacement-convexity/' | relative_url }}">14. 位移凸性</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="下一页" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+    <h2><a href="{{ '/notes/optimal-transport/displacement-convexity/' | relative_url }}">16. 位移凸性</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/" next_label="下一页" next_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" %}
 
-    <p>本页整理关于“位移凸性”的主要定义、命题、定理与证明思路。</p>
+    <p>概率测度泛函关于普通混合通常并不凸。与传输相适应的几何沿位移测地线展开；沿这些曲线的凸性控制唯一性、压缩性、泛函不等式和演化方程。</p>
 
-    <h3>定义</h3>
+    <h3>测地 \(\lambda\)-凸性</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A functional on 概率测度 is displacement 凸 if it is 凸 along 瓦瑟斯坦测地线.</p>
+        <p><span class="statement-title">定义.</span> 若对 \(\mathcal F\) 有效域中的任意 \(\mu_0,\mu_1\)，存在常速测地线 \(\mu_t\) 使
+        \[
+        \mathcal F(\mu_t)
+        \le(1-t)\mathcal F(\mu_0)+t\mathcal F(\mu_1)
+        -\frac{\lambda}{2}t(1-t)W_2^2(\mu_0,\mu_1),
+        \]
+        则称 \(\mathcal F\) 位移 \(\lambda\)-凸。</p>
     </div>
 
-    <h3>命题</h3>
+    <h3>势能</h3>
+
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> 熵-type functionals and interaction energies satisfy displacement 凸性 under structural 凸性 assumptions on the integrand or 核.</p>
+        <p><span class="statement-title">命题.</span> 设 \(\mathcal V(\mu)=\int V\,\mathrm d\mu\)。若 \(D^2V\ge\lambda I\)，则 \(\mathcal V\) 位移 \(\lambda\)-凸。</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Write the functional along a 测地线 induced by a transport map and use change-of-variables plus determinant or pointwise 凸性 inequalities.</p>
+        <p><span class="statement-title">证明.</span> 沿 \(\mu_t=((1-t)x+ty)_\#\pi\)，\(V\) 的逐点 \(\lambda\)-凸性给出
+        \[
+        V((1-t)x+ty)\le(1-t)V(x)+tV(y)-\frac\lambda2t(1-t)|x-y|^2.
+        \]
+        关于最优计划积分即得结论。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Displacement 凸性 is the right 凸性 notion for variational problems in 瓦瑟斯坦 space.</p>
+    <h3>相互作用能</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 若 \(W\) 为偶凸函数，则
+        \[
+        \mathcal W(\mu)=\frac12\iint W(x-y)\,\mathrm d\mu(x)\,\mathrm d\mu(y)
+        \]
+        位移凸。</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="下一页" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 取最优耦合的两个独立副本 \((x,y)\)、\((x',y')\)，则
+        \[
+        x_t-x_t'=(1-t)(x-x')+t(y-y').
+        \]
+        对 \(W\) 用凸性，再关于乘积耦合积分即可。若 \(W\) 强凸，除共同平移这一平坦方向外，还会得到强凸二次项。</p>
+    </div>
+
+    <h3>内能与麦肯条件</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 对 \(\mu=\rho\,\mathrm dx\)，令
+        \[
+        \mathcal U(\mu)=\int U(\rho(x))\,\mathrm dx.
+        \]
+        麦肯条件要求
+        \[
+        s\longmapsto s^dU(s^{-d})
+        \]
+        在 \((0,\infty)\) 上凸且单调不增。</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">麦肯位移凸性定理.</span> 若 \(U\) 满足麦肯条件及通常的下半连续增长条件，则 \(\mathcal U\) 位移凸。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">光滑正密度情形的证明.</span> 设 \(T=\nabla u\) 为最优映射，\(T_t=(1-t)I+tT\)。雅可比方程给出
+        \[
+        \rho_t(T_t(x))=\frac{\rho_0(x)}
+        {\det((1-t)I+tDT(x))}.
+        \]
+        由于 \(DT\ge0\)，正矩阵锥上 \(\det(\cdot)^{1/d}\) 的凹性给出
+        \[
+        \det((1-t)I+tDT)^{1/d}
+        \ge(1-t)+t\det(DT)^{1/d}.
+        \]
+        换元后内能被写成 \(J\,U(\rho_0/J)\) 的积分。麦肯条件正是把行列式不等式转化为端点凸性不等式所需的标量凸性与单调性。一般情形由光滑逼近和下半连续性得到。</p>
+    </div>
+
+    <h3>熵与幂内能</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">玻尔兹曼熵.</span> 对 \(U(r)=r\log r\)，\(s^dU(s^{-d})=-d\log s\)，它凸且递减。因此 \(\int\rho\log\rho\,\mathrm dx\) 位移凸。</p>
+    </div>
+    <div class="math-statement example">
+        <p><span class="statement-title">幂内能.</span> 对 \(U(r)=r^m/(m-1)\)，当 \(m\ge1-1/d\) 时麦肯条件成立，包含多孔介质情形 \(m>1\) 以及部分快速扩散范围。</p>
+    </div>
+
+    <h3>自由能</h3>
+    <p>组合泛函
+    \[
+    \mathcal F(\mu)=\int U(\rho)\,\mathrm dx+\int V\,\mathrm d\mu
+    +\frac12\iint W(x-y)\,\mathrm d\mu(x)\,\mathrm d\mu(y)
+    \]
+    包含内能、约束势能与相互作用能。其位移凸性常数可以相加；第 17、18 页将由此统一导出热方程、福克--普朗克方程、多孔介质方程和聚集--扩散方程。</p>
+
+    <h3>严格凸性的结果</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">极小化解的唯一性.</span> 若 \(\mathcal F\) 位移 \(\lambda\)-凸且 \(\lambda>0\)，则它至多有一个极小化解 \(\mu_\star\)，并且
+        \[
+        \mathcal F(\mu)-\mathcal F(\mu_\star)
+        \ge\frac{\lambda}{2}W_2^2(\mu,\mu_\star).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 沿从 \(\mu_\star\) 到 \(\mu\) 的测地线应用 \(\lambda\)-凸性，并利用 \(\mu_\star\) 的极小性。整理后除以 \(t\)，令 \(t\downarrow0\) 即得。若有两个极小化解，左侧为零，故二者距离也为零。</p>
+    </div>
+
+    <h3>广义测地线</h3>
+    <p>当 \(d\ge2\) 时，平方瓦瑟斯坦距离沿普通测地线未必凸。变分论证常采用具有共同基测度的广义测地线：把从基测度到两个端点的最优映射拼接后，再插值其像。沿这种曲线，到基测度的平方距离满足 JKO 格式所需的精确二次恒等式。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/" next_label="下一页" next_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" %}
 </div>
 
 <hr>

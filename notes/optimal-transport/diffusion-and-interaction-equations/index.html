@@ -1,0 +1,508 @@
+---
+layout: default
+breadcrumb_child_label_en: "18. Diffusion and interaction equations"
+breadcrumb_child_label_fr: "18. Équations de diffusion et d'interaction"
+breadcrumb_child_label_zh: "18. 扩散方程与相互作用方程"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/optimal-transport/diffusion-and-interaction-equations/' | relative_url }}">18. Diffusion and interaction equations</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Next page" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+
+    <p>Many nonlinear diffusion equations are steepest-descent equations in Wasserstein space. The same computation that identifies their velocity also reveals the correct Lyapunov functional, stationary measures, and dissipation rate.</p>
+
+    <h3>The general free-energy equation</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">First variation.</span> For
+        \[
+        \mathcal F(\rho)
+        =\int U(\rho(x))\,\mathrm dx
+        +\int V(x)\rho(x)\,\mathrm dx
+        +\frac12\iint W(x-y)\rho(x)\rho(y)\,\mathrm dx\,\mathrm dy,
+        \]
+        with \(W\) even,
+        \[
+        \frac{\delta\mathcal F}{\delta\rho}
+        =U'(\rho)+V+W*\rho
+        \]
+        up to an irrelevant additive constant.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Substitute \(\rho+\varepsilon\sigma\) with \(\int\sigma=0\), differentiate at zero, and use symmetry of \(W\):
+        \[
+        \frac{\mathrm d}{\mathrm d\varepsilon}\mathcal F(\rho+\varepsilon\sigma)\bigg|_0
+        =\int\{U'(\rho)+V+W*\rho\}\sigma\,\mathrm dx.
+        \]</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Gradient-flow equation.</span> The formal \(W_2\)-gradient flow is
+        \[
+        \boxed{
+        \partial_t\rho
+        =\nabla\cdot\left[
+        \rho\nabla\{U'(\rho)+V+W*\rho\}
+        \right].
+        }
+        \]</p>
+    </div>
+
+    <h3>Energy dissipation</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Dissipation identity.</span> Along a smooth positive solution with sufficient decay,
+        \[
+        \frac{\mathrm d}{\mathrm dt}\mathcal F(\rho_t)
+        =-\int\rho_t
+        \left|\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho_t}\right)\right|^2\,\mathrm dx
+        \le0.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Differentiate \(\mathcal F\), substitute the gradient-flow equation, and integrate by parts:
+        \[
+        \int \frac{\delta\mathcal F}{\delta\rho}
+        \nabla\cdot\left(\rho\nabla\frac{\delta\mathcal F}{\delta\rho}\right)\mathrm dx
+        =
+        -\int\rho\left|\nabla\frac{\delta\mathcal F}{\delta\rho}\right|^2\mathrm dx.
+        \]
+        The right side is both the squared metric slope and the squared metric speed.</p>
+    </div>
+
+    <h3>The heat equation</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Heat as entropy flow.</span> For the Boltzmann entropy
+        \[
+        \operatorname{Ent}(\rho)=\int\rho\log\rho\,\mathrm dx,
+        \]
+        the Wasserstein gradient flow is
+        \[
+        \partial_t\rho=\Delta\rho.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Since \(\delta\operatorname{Ent}/\delta\rho=1+\log\rho\),
+        \[
+        \nabla\cdot(\rho\nabla\log\rho)
+        =\nabla\cdot(\nabla\rho)=\Delta\rho.
+        \]
+        Moreover,
+        \[
+        \frac{\mathrm d}{\mathrm dt}\operatorname{Ent}(\rho_t)
+        =-\int\frac{|\nabla\rho_t|^2}{\rho_t}\,\mathrm dx
+        =-\int|\nabla\log\rho_t|^2\rho_t\,\mathrm dx,
+        \]
+        so entropy dissipation is the Fisher information.</p>
+    </div>
+
+    <h3>Fokker--Planck and Langevin dynamics</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Fokker--Planck flow.</span> For
+        \[
+        \mathcal F(\rho)=\int\rho\log\rho\,\mathrm dx+\int V\rho\,\mathrm dx,
+        \]
+        the gradient flow is
+        \[
+        \partial_t\rho=\Delta\rho+\nabla\cdot(\rho\nabla V).
+        \]
+        If \(Z=\int e^{-V}\,\mathrm dx&lt;\infty\), its equilibrium is \(\gamma=Z^{-1}e^{-V}\,\mathrm dx\), and
+        \[
+        \mathcal F(\rho)-\mathcal F(\gamma)
+        =\operatorname{KL}(\rho\,\|\,\gamma).
+        \]</p>
+    </div>
+
+    <p>This is the forward equation of the Langevin diffusion
+    \[
+    \mathrm dX_t=-\nabla V(X_t)\,\mathrm dt+\sqrt2\,\mathrm dB_t.
+    \]
+    When \(D^2V\ge\lambda I\), displacement \(\lambda\)-convexity gives \(W_2\)-contraction at rate \(e^{-\lambda t}\).</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Ornstein--Uhlenbeck flow.</span> For \(V(x)=|x|^2/2\),
+        \[
+        \mathrm dX_t=-X_t\,\mathrm dt+\sqrt2\,\mathrm dB_t,
+        \]
+        and
+        \[
+        X_t=e^{-t}X_0+\sqrt{1-e^{-2t}}\,Z,\qquad Z\sim N(0,I).
+        \]
+        The invariant law is \(N(0,I)\), and the semigroup contracts \(W_2\) by \(e^{-t}\).</p>
+    </div>
+
+    <h3>Porous-medium and fast-diffusion equations</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Power internal energy.</span> For
+        \[
+        \mathcal U_m(\rho)=\frac{1}{m-1}\int\rho^m\,\mathrm dx,\qquad m\ne1,
+        \]
+        the Wasserstein gradient flow is
+        \[
+        \partial_t\rho=\Delta(\rho^m).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The first variation is \(\tfrac{m}{m-1}\rho^{m-1}\). Hence
+        \[
+        \nabla\cdot\left(\rho\nabla\frac{m}{m-1}\rho^{m-1}\right)
+        =\nabla\cdot(m\rho^{m-1}\nabla\rho)
+        =\Delta(\rho^m).
+        \]
+        The case \(m>1\) is porous-medium diffusion with finite-speed propagation; \(m&lt;1\) is fast diffusion, subject to the integrability range dictated by dimension.</p>
+    </div>
+
+    <h3>Aggregation and interaction</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Aggregation equation.</span> For the interaction energy
+        \[
+        \mathcal W(\rho)=\frac12\iint W(x-y)\rho(x)\rho(y)\,\mathrm dx\,\mathrm dy,
+        \]
+        the gradient flow is
+        \[
+        \partial_t\rho=\nabla\cdot\{\rho\nabla(W*\rho)\}.
+        \]</p>
+    </div>
+
+    <p>Attractive kernels may concentrate mass, while repulsive kernels spread it. Adding entropy or power internal energy gives the aggregation--diffusion equation
+    \[
+    \partial_t\rho
+    =\Delta(\rho^m)+\nabla\cdot\{\rho\nabla(V+W*\rho)\}.
+    \]
+    The competition between diffusion and attraction determines whether solutions disperse, approach equilibrium, or concentrate.</p>
+
+    <h3>Weak solutions from JKO</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Variational construction.</span> Under lower semicontinuity, coercivity, and displacement-convexity assumptions on the free energy, the JKO scheme has a continuous-time limit that is a weak solution of the corresponding diffusion equation and satisfies the energy-dissipation inequality.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Identification of the PDE.</span> The Euler equation of each JKO step gives the discrete velocity
+        \[
+        v_\tau^{k+1}
+        =-\nabla\{U'(\rho_\tau^{k+1})+V+W*\rho_\tau^{k+1}\}.
+        \]
+        Insert this field in the discrete weak continuity equation, sum over time steps, and use the action bound for compactness. Weak convergence of the densities and lower-semicontinuity of the dissipation identify the limiting continuity equation with the displayed PDE.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Next page" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/optimal-transport/diffusion-and-interaction-equations/' | relative_url }}">18. Équations de diffusion et d'interaction</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Page suivante" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+
+    <p>De nombreuses équations de diffusion non linéaires sont des équations de descente maximale dans l'espace de Wasserstein. Le même calcul identifie leur vitesse, leur énergie de Lyapunov, leurs équilibres et leur taux de dissipation.</p>
+
+    <h3>Équation générale d'énergie libre</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Première variation.</span> Pour
+        \[
+        \mathcal F(\rho)=\int U(\rho)\,\mathrm dx+\int V\rho\,\mathrm dx
+        +\frac12\iint W(x-y)\rho(x)\rho(y)\,\mathrm dx\,\mathrm dy,
+        \]
+        avec \(W\) paire,
+        \[
+        \frac{\delta\mathcal F}{\delta\rho}=U'(\rho)+V+W*\rho.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On remplace \(\rho\) par \(\rho+\varepsilon\sigma\), dérive en zéro et utilise la symétrie de \(W\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Équation de flot.</span>
+        \[
+        \partial_t\rho
+        =\nabla\cdot\left[\rho\nabla\{U'(\rho)+V+W*\rho\}\right].
+        \]</p>
+    </div>
+
+    <h3>Dissipation d'énergie</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Identité de dissipation.</span>
+        \[
+        \frac{\mathrm d}{\mathrm dt}\mathcal F(\rho_t)
+        =-\int\rho_t\left|\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho_t}\right)\right|^2\,\mathrm dx.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On différentie \(\mathcal F\), substitue l'équation du flot et intègre par parties. Le membre droit est à la fois le carré de la pente métrique et celui de la vitesse métrique.</p>
+    </div>
+
+    <h3>Équation de la chaleur</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Chaleur comme flot de l'entropie.</span> Pour \(\operatorname{Ent}(\rho)=\int\rho\log\rho\,\mathrm dx\),
+        \[
+        \partial_t\rho=\Delta\rho.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La première variation vaut \(1+\log\rho\), donc \(\nabla\cdot(\rho\nabla\log\rho)=\Delta\rho\). En outre,
+        \[
+        \frac{\mathrm d}{\mathrm dt}\operatorname{Ent}(\rho_t)
+        =-\int|\nabla\log\rho_t|^2\rho_t\,\mathrm dx,
+        \]
+        l'information de Fisher.</p>
+    </div>
+
+    <h3>Fokker--Planck et dynamique de Langevin</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Flot de Fokker--Planck.</span> Pour \(\mathcal F=\operatorname{Ent}+\int V\rho\),
+        \[
+        \partial_t\rho=\Delta\rho+\nabla\cdot(\rho\nabla V).
+        \]
+        Si \(Z=\int e^{-V}\,\mathrm dx&lt;\infty\), l'équilibre est \(\gamma=Z^{-1}e^{-V}\,\mathrm dx\), et
+        \[
+        \mathcal F(\rho)-\mathcal F(\gamma)=\operatorname{KL}(\rho\,\|\,\gamma).
+        \]</p>
+    </div>
+
+    <p>C'est l'équation directe de \(\mathrm dX_t=-\nabla V(X_t)\,\mathrm dt+\sqrt2\,\mathrm dB_t\). Si \(D^2V\ge\lambda I\), le flot contracte \(W_2\) au taux \(e^{-\lambda t}\).</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Ornstein--Uhlenbeck.</span> Pour \(V(x)=|x|^2/2\),
+        \[
+        X_t=e^{-t}X_0+\sqrt{1-e^{-2t}}\,Z,\qquad Z\sim N(0,I).
+        \]
+        La loi invariante est \(N(0,I)\).</p>
+    </div>
+
+    <h3>Milieux poreux et diffusion rapide</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Énergie puissance.</span> Pour
+        \[
+        \mathcal U_m(\rho)=\frac1{m-1}\int\rho^m\,\mathrm dx,
+        \]
+        le flot est \(\partial_t\rho=\Delta(\rho^m)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La première variation vaut \(\tfrac m{m-1}\rho^{m-1}\), et
+        \[
+        \nabla\cdot\left(\rho\nabla\frac m{m-1}\rho^{m-1}\right)=\Delta(\rho^m).
+        \]</p>
+    </div>
+
+    <h3>Agrégation et interaction</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Équation d'agrégation.</span>
+        \[
+        \partial_t\rho=\nabla\cdot\{\rho\nabla(W*\rho)\}.
+        \]</p>
+    </div>
+
+    <p>L'ajout d'une énergie interne et d'un potentiel donne
+    \[
+    \partial_t\rho=\Delta(\rho^m)+\nabla\cdot\{\rho\nabla(V+W*\rho)\}.
+    \]
+    L'équilibre entre diffusion et attraction détermine dispersion, convergence vers l'équilibre ou concentration.</p>
+
+    <h3>Solutions faibles par JKO</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Construction variationnelle.</span> Sous semi-continuité, coercivité et convexité par déplacement, la limite du schéma JKO est une solution faible de l'équation correspondante et satisfait l'inégalité de dissipation.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Identification.</span> L'équation d'Euler discrète donne
+        \[
+        v_\tau^{k+1}=-\nabla\{U'(\rho_\tau^{k+1})+V+W*\rho_\tau^{k+1}\}.
+        \]
+        On l'insère dans la continuité faible discrète, somme en temps et utilise la borne d'action pour passer à la limite.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="Page suivante" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/optimal-transport/diffusion-and-interaction-equations/' | relative_url }}">18. 扩散方程与相互作用方程</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="下一页" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+
+    <p>许多非线性扩散方程都是瓦瑟斯坦空间中的最速下降方程。同一个计算同时识别速度、李雅普诺夫泛函、平稳测度与耗散率。</p>
+
+    <h3>一般自由能方程</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">一阶变分.</span> 对
+        \[
+        \mathcal F(\rho)
+        =\int U(\rho)\,\mathrm dx+\int V\rho\,\mathrm dx
+        +\frac12\iint W(x-y)\rho(x)\rho(y)\,\mathrm dx\,\mathrm dy,
+        \]
+        若 \(W\) 为偶函数，则
+        \[
+        \frac{\delta\mathcal F}{\delta\rho}=U'(\rho)+V+W*\rho,
+        \]
+        相差的加法常数无关紧要。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 代入 \(\rho+\varepsilon\sigma\)，在零处求导，并利用 \(W\) 的对称性把相互作用项的两个线性部分合并。</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">梯度流方程.</span>
+        \[
+        \boxed{
+        \partial_t\rho
+        =\nabla\cdot\left[
+        \rho\nabla\{U'(\rho)+V+W*\rho\}
+        \right].
+        }
+        \]</p>
+    </div>
+
+    <h3>能量耗散</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">耗散恒等式.</span> 沿充分光滑且衰减良好的正解，
+        \[
+        \frac{\mathrm d}{\mathrm dt}\mathcal F(\rho_t)
+        =-\int\rho_t
+        \left|\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho_t}\right)\right|^2\,\mathrm dx
+        \le0.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对 \(\mathcal F\) 求时间导数，代入梯度流方程并分部积分。右侧既是度量斜率平方，也是度量速度平方。</p>
+    </div>
+
+    <h3>热方程</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">作为熵流的热方程.</span> 对玻尔兹曼熵
+        \[
+        \operatorname{Ent}(\rho)=\int\rho\log\rho\,\mathrm dx,
+        \]
+        其瓦瑟斯坦梯度流为
+        \[
+        \partial_t\rho=\Delta\rho.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> \(\delta\operatorname{Ent}/\delta\rho=1+\log\rho\)，故
+        \[
+        \nabla\cdot(\rho\nabla\log\rho)=\nabla\cdot(\nabla\rho)=\Delta\rho.
+        \]
+        此外
+        \[
+        \frac{\mathrm d}{\mathrm dt}\operatorname{Ent}(\rho_t)
+        =-\int|\nabla\log\rho_t|^2\rho_t\,\mathrm dx,
+        \]
+        其耗散量就是费雪信息。</p>
+    </div>
+
+    <h3>福克--普朗克方程与朗之万动力学</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">福克--普朗克流.</span> 对
+        \[
+        \mathcal F(\rho)=\int\rho\log\rho\,\mathrm dx+\int V\rho\,\mathrm dx,
+        \]
+        梯度流为
+        \[
+        \partial_t\rho=\Delta\rho+\nabla\cdot(\rho\nabla V).
+        \]
+        若 \(Z=\int e^{-V}\,\mathrm dx&lt;\infty\)，平衡分布为 \(\gamma=Z^{-1}e^{-V}\,\mathrm dx\)，且
+        \[
+        \mathcal F(\rho)-\mathcal F(\gamma)=\operatorname{KL}(\rho\,\|\,\gamma).
+        \]</p>
+    </div>
+
+    <p>这是朗之万扩散
+    \[
+    \mathrm dX_t=-\nabla V(X_t)\,\mathrm dt+\sqrt2\,\mathrm dB_t
+    \]
+    的前向方程。若 \(D^2V\ge\lambda I\)，位移 \(\lambda\)-凸性给出速率 \(e^{-\lambda t}\) 的 \(W_2\) 压缩。</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">奥恩斯坦--乌伦贝克流.</span> 对 \(V(x)=|x|^2/2\)，
+        \[
+        X_t=e^{-t}X_0+\sqrt{1-e^{-2t}}\,Z,\qquad Z\sim N(0,I).
+        \]
+        不变分布为 \(N(0,I)\)，半群以 \(e^{-t}\) 压缩 \(W_2\)。</p>
+    </div>
+
+    <h3>多孔介质方程与快速扩散方程</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">幂内能.</span> 对
+        \[
+        \mathcal U_m(\rho)=\frac{1}{m-1}\int\rho^m\,\mathrm dx,\qquad m\ne1,
+        \]
+        瓦瑟斯坦梯度流为
+        \[
+        \partial_t\rho=\Delta(\rho^m).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 一阶变分为 \(\tfrac{m}{m-1}\rho^{m-1}\)，故
+        \[
+        \nabla\cdot\left(\rho\nabla\frac{m}{m-1}\rho^{m-1}\right)
+        =\nabla\cdot(m\rho^{m-1}\nabla\rho)
+        =\Delta(\rho^m).
+        \]
+        \(m>1\) 对应具有有限传播速度的多孔介质扩散，\(m&lt;1\) 对应快速扩散。</p>
+    </div>
+
+    <h3>聚集与相互作用</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">聚集方程.</span> 对相互作用能
+        \[
+        \mathcal W(\rho)=\frac12\iint W(x-y)\rho(x)\rho(y)\,\mathrm dx\,\mathrm dy,
+        \]
+        梯度流为
+        \[
+        \partial_t\rho=\nabla\cdot\{\rho\nabla(W*\rho)\}.
+        \]</p>
+    </div>
+
+    <p>吸引核可能使质量集中，排斥核则使其扩散。加入内能与外势得到聚集--扩散方程
+    \[
+    \partial_t\rho
+    =\Delta(\rho^m)+\nabla\cdot\{\rho\nabla(V+W*\rho)\}.
+    \]
+    扩散与吸引的竞争决定了解是弥散、趋于平衡还是集中。</p>
+
+    <h3>由 JKO 构造弱解</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">变分构造.</span> 在自由能下半连续、强制且位移凸的条件下，JKO 格式的连续时间极限是相应扩散方程的弱解，并满足能量耗散不等式。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">偏微分方程的识别.</span> 每个 JKO 步的欧拉方程给出离散速度
+        \[
+        v_\tau^{k+1}
+        =-\nabla\{U'(\rho_\tau^{k+1})+V+W*\rho_\tau^{k+1}\}.
+        \]
+        把它代入离散弱连续性方程，对时间步求和，并利用作用量界取得紧性。密度的弱收敛与耗散的下半连续性把极限识别为上述偏微分方程。</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/gradient-flows-in-wasserstein-space/" next_label="下一页" next_url="/notes/optimal-transport/talagrand-and-transport-inequalities/" %}
+</div>
+
+<hr>

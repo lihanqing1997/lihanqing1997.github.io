@@ -1,95 +1,338 @@
 ---
 layout: default
-breadcrumb_child_label_en: "19. Stability and convergence of transport costs"
-breadcrumb_child_label_fr: "19. Stabilité et convergence des coûts de transport"
-breadcrumb_child_label_zh: "19. 传输代价的稳定性与收敛"
+breadcrumb_child_label_en: "3. Existence and stability of optimal plans"
+breadcrumb_child_label_fr: "3. Existence et stabilité des plans optimaux"
+breadcrumb_child_label_zh: "3. 最优传输计划的存在性与稳定性"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">19. Stability and convergence of transport costs</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/sinkhorn-scaling/" next_label="Next page" next_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" %}
+    <h2><a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">3. Existence and stability of optimal plans</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/monge-problem/" next_label="Next page" next_url="/notes/optimal-transport/kantorovich-duality/" %}
 
-    <p>Stability and convergence of transport costs records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>The Kantorovich relaxation is useful because minimizers survive limiting operations. The proof is a clean instance of the direct method: compactness of feasible plans supplies a limit, closed marginal constraints preserve feasibility, and lower semicontinuity prevents the cost from dropping in the limit.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Stability asks when convergence of measures implies convergence of optimal values and optimizers.</p>
+    <h3>Lower semicontinuity of integral costs</h3>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Portmanteau lemma for costs.</span> Let \(Z\) be Polish, \(\eta_n\Rightarrow\eta\), and let \(f:Z\to(-\infty,\infty]\) be lower semicontinuous and bounded below. Then
+        \[
+        \int_Z f\,\mathrm d\eta
+        \le\liminf_{n\to\infty}\int_Z f\,\mathrm d\eta_n.
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under weak convergence plus uniform moment control, Wasserstein distances and optimal transport costs with appropriate growth conditions are stable. Optimal plans are tight and subsequential limits are optimal.</p>
-    </div>
-
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use tightness of couplings, lower semicontinuity for the liminf inequality, and recovery couplings or gluing for the limsup inequality.</p>
+        <p><span class="statement-title">Proof.</span> After adding a constant, assume \(f\ge0\). There exist bounded continuous functions \(f_k\uparrow f\); for example one may use the infimal regularizations \(f_k(z)=\min\{k,\inf_w(f(w)+k\,d(z,w))\}\). For fixed \(k\),
+        \[
+        \int f_k\,\mathrm d\eta=\lim_n\int f_k\,\mathrm d\eta_n
+        \le\liminf_n\int f\,\mathrm d\eta_n.
+        \]
+        Letting \(k\to\infty\) and applying monotone convergence proves the claim.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Stability is essential when transport is estimated from data or approximated computationally.</p>
+    <h3>Existence by the direct method</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence theorem.</span> Let \(X,Y\) be Polish, \(\mu\in\mathcal P(X)\), \(\nu\in\mathcal P(Y)\), and \(c:X\times Y\to(-\infty,\infty]\) be lower semicontinuous and bounded below. If at least one \(\pi_0\in\Pi(\mu,\nu)\) has finite cost, then the Kantorovich problem admits an optimal plan.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/sinkhorn-scaling/" next_label="Next page" next_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose a minimizing sequence \(\pi_n\in\Pi(\mu,\nu)\). Page 1 showed that \(\Pi(\mu,\nu)\) is weakly compact, so a subsequence converges weakly to some \(\pi\in\Pi(\mu,\nu)\). The preceding lemma gives
+        \[
+        \int c\,\mathrm d\pi
+        \le\liminf_n\int c\,\mathrm d\pi_n
+        =K_c(\mu,\nu).
+        \]
+        Since \(\pi\) is feasible, the reverse inequality follows from the definition of the infimum. Thus equality holds and \(\pi\) is optimal.</p>
+    </div>
+
+    <p>Nothing in this argument implies uniqueness or determinism. Those are geometric properties of the cost and the marginals, not consequences of compactness.</p>
+
+    <h3>Stability when the marginals vary</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Stability theorem.</span> Suppose \(\mu_n\Rightarrow\mu\), \(\nu_n\Rightarrow\nu\), and \(\pi_n\in\Pi(\mu_n,\nu_n)\). Then \((\pi_n)\) is tight. Every weak limit point \(\pi\) belongs to \(\Pi(\mu,\nu)\). If \(c\) is lower semicontinuous and bounded below, then
+        \[
+        \int c\,\mathrm d\pi\le\liminf_n\int c\,\mathrm d\pi_n.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Weakly convergent sequences of probability measures are uniformly tight. Choose compact \(K_X,K_Y\) carrying mass at least \(1-\varepsilon/2\) for all sufficiently large \(n\); enlarge them to handle the finitely many remaining indices. Then
+        \[
+        \pi_n(K_X\times K_Y)\ge1-\mu_n(K_X^c)-\nu_n(K_Y^c)\ge1-\varepsilon.
+        \]
+        Prokhorov gives subsequential compactness. If \(\pi_{n_k}\Rightarrow\pi\), pushing forward by the continuous projections identifies the marginals of \(\pi\) as \(\mu,\nu\). The cost inequality is the Portmanteau lemma.</p>
+    </div>
+
+    <h3>Convergence of optimal values</h3>
+    <p>The preceding theorem gives the lower-bound half. To identify the limit as optimal, one also needs recovery plans whose costs approach that of a prescribed limiting plan.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Continuity for bounded continuous costs.</span> If \(c\in C_b(X\times Y)\), \(\mu_n\Rightarrow\mu\), and \(\nu_n\Rightarrow\nu\), then
+        \[
+        K_c(\mu_n,\nu_n)\longrightarrow K_c(\mu,\nu).
+        \]
+        Moreover, every weak limit of optimal plans for \((\mu_n,\nu_n)\) is optimal for \((\mu,\nu)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The lower bound follows from stability. For the upper bound, fix an optimal \(\pi\in\Pi(\mu,\nu)\). Because weak convergence on Polish spaces can be metrized by couplings, choose \(\alpha_n\in\Pi(\mu,\mu_n)\) and \(\beta_n\in\Pi(\nu,\nu_n)\) that concentrate near the diagonals. Glue \(\alpha_n\), \(\pi\), and \(\beta_n\), then take the \((\mu_n,\nu_n)\)-marginal \(\widetilde\pi_n\). The pair \((x_n,y_n)\) under \(\widetilde\pi_n\) converges in probability to \((x,y)\) under \(\pi\). Bounded continuity of \(c\) gives
+        \[
+        \int c\,\mathrm d\widetilde\pi_n\to\int c\,\mathrm d\pi.
+        \]
+        Hence \(\limsup_nK_c(\mu_n,\nu_n)\le K_c(\mu,\nu)\). Combining the two inequalities proves convergence. If \(\pi_n\) are optimal and \(\pi_{n_k}\Rightarrow\bar\pi\), lower semicontinuity and convergence of the values force \(\bar\pi\) to attain \(K_c(\mu,\nu)\).</p>
+    </div>
+
+    <h3>Unbounded costs and moment control</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Let \(X=Y=\mathbb R^d\), \(p\ge1\), and suppose \(\mu_n\to\mu\), \(\nu_n\to\nu\) in \(W_p\). If \(c\) is continuous and
+        \[
+        |c(x,y)|\le C(1+|x|^p+|y|^p),
+        \]
+        then \(K_c(\mu_n,\nu_n)\to K_c(\mu,\nu)\), and limit points of optimal plans are optimal.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Truncate \(c\) by bounded continuous functions and apply the preceding theorem. The \(W_p\) convergence makes \((|x|^p)\) uniformly integrable under \(\mu_n\) and \((|y|^p)\) uniformly integrable under \(\nu_n\). Since every coupling has these marginals, the same tail bound holds uniformly over all admissible plans. The truncation error therefore tends to zero uniformly, which passes the bounded-cost conclusion to \(c\).</p>
+    </div>
+
+    <h3>Failure without the hypotheses</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Moment escape.</span> Let \(\mu_n=(1-n^{-1})\delta_0+n^{-1}\delta_n\) and \(\mu=\delta_0\). Then \(\mu_n\Rightarrow\mu\), but
+        \[
+        W_1(\mu_n,\mu)=\int|x|\,\mathrm d\mu_n(x)=1.
+        \]
+        Weak convergence alone does not control an unbounded transport cost: a vanishing amount of mass may travel an unbounded distance.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Loss of lower semicontinuity.</span> On \(\mathbb R^2\), define \(c(0,0)=1\) and \(c(x,y)=0\) elsewhere. For \(\pi_n=\delta_{(1/n,0)}\Rightarrow\delta_{(0,0)}=\pi\), the costs satisfy \(\int c\,\mathrm d\pi_n=0\) but \(\int c\,\mathrm d\pi=1\). A discontinuous upward jump can destroy existence by allowing minimizing sequences to approach a more expensive limit.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/monge-problem/" next_label="Next page" next_url="/notes/optimal-transport/kantorovich-duality/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">19. Stabilité et convergence des coûts de transport</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/sinkhorn-scaling/" next_label="Page suivante" next_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" %}
+    <h2><a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">3. Existence et stabilité des plans optimaux</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/monge-problem/" next_label="Page suivante" next_url="/notes/optimal-transport/kantorovich-duality/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Stabilité et convergence des coûts de transport.</p>
+    <p>La relaxation de Kantorovitch est utile parce que ses minimiseurs résistent aux passages à la limite. La preuve est une application nette de la méthode directe : la compacité fournit une limite, les contraintes marginales fermées conservent l'admissibilité, et la semi-continuité inférieure empêche le coût de diminuer au passage à la limite.</p>
 
-    <h3>Définition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Stability asks when convergence of measures implies convergence of optimal values and optimizers.</p>
+    <h3>Semi-continuité inférieure des coûts intégraux</h3>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemme de Portmanteau pour les coûts.</span> Soit \(Z\) polonais, \(\eta_n\Rightarrow\eta\), et soit \(f:Z\to(-\infty,\infty]\) semi-continue inférieurement et minorée. Alors
+        \[
+        \int_Z f\,\mathrm d\eta
+        \le\liminf_{n\to\infty}\int_Z f\,\mathrm d\eta_n.
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under weak convergence plus uniform moment control, Wasserstein distances and optimal transport costs with appropriate growth conditions are stable. Optimal plans are tight and subsequential limits are optimal.</p>
-    </div>
-
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Use tightness of couplings, lower semicontinuity for the liminf inequality, and recovery couplings or gluing for the limsup inequality.</p>
+        <p><span class="statement-title">Preuve.</span> Après addition d'une constante, supposons \(f\ge0\). Il existe des fonctions continues bornées \(f_k\uparrow f\), par exemple les régularisations infimales \(f_k(z)=\min\{k,\inf_w(f(w)+k\,d(z,w))\}\). Pour \(k\) fixé,
+        \[
+        \int f_k\,\mathrm d\eta=\lim_n\int f_k\,\mathrm d\eta_n
+        \le\liminf_n\int f\,\mathrm d\eta_n.
+        \]
+        On conclut en faisant tendre \(k\) vers l'infini et en appliquant la convergence monotone.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Stability is essential when transport is estimated from data or approximated computationally.</p>
+    <h3>Existence par la méthode directe</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème d'existence.</span> Soient \(X,Y\) polonais, \(\mu\in\mathcal P(X)\), \(\nu\in\mathcal P(Y)\), et \(c:X\times Y\to(-\infty,\infty]\) semi-continu inférieurement et minoré. S'il existe \(\pi_0\in\Pi(\mu,\nu)\) de coût fini, le problème de Kantorovitch admet un plan optimal.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/sinkhorn-scaling/" next_label="Page suivante" next_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Prenons une suite minimisante \(\pi_n\in\Pi(\mu,\nu)\). La page 1 a établi la compacité étroite de \(\Pi(\mu,\nu)\); une sous-suite converge donc vers un \(\pi\in\Pi(\mu,\nu)\). Le lemme précédent donne
+        \[
+        \int c\,\mathrm d\pi
+        \le\liminf_n\int c\,\mathrm d\pi_n
+        =K_c(\mu,\nu).
+        \]
+        Comme \(\pi\) est admissible, l'inégalité inverse découle de la définition de l'infimum. Ainsi \(\pi\) est optimal.</p>
+    </div>
+
+    <p>Cet argument ne donne ni unicité ni déterminisme. Ces propriétés dépendent de la géométrie du coût et des marginales, non de la seule compacité.</p>
+
+    <h3>Stabilité lorsque les marginales varient</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de stabilité.</span> Supposons \(\mu_n\Rightarrow\mu\), \(\nu_n\Rightarrow\nu\), et \(\pi_n\in\Pi(\mu_n,\nu_n)\). Alors \((\pi_n)\) est tendue. Toute valeur d'adhérence étroite \(\pi\) appartient à \(\Pi(\mu,\nu)\). Si \(c\) est semi-continu inférieurement et minoré, alors
+        \[
+        \int c\,\mathrm d\pi\le\liminf_n\int c\,\mathrm d\pi_n.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Une suite étroitement convergente est uniformément tendue. Choisissons des compacts \(K_X,K_Y\) portant une masse au moins \(1-\varepsilon/2\) pour tout \(n\), après agrandissement pour les premiers indices. Alors
+        \[
+        \pi_n(K_X\times K_Y)\ge1-\mu_n(K_X^c)-\nu_n(K_Y^c)\ge1-\varepsilon.
+        \]
+        Le théorème de Prokhorov donne la compacité séquentielle. Si \(\pi_{n_k}\Rightarrow\pi\), les projections continues identifient ses marginales à \(\mu,\nu\). L'inégalité sur le coût est le lemme de Portmanteau.</p>
+    </div>
+
+    <h3>Convergence des valeurs optimales</h3>
+    <p>Le théorème précédent fournit la borne inférieure. Pour identifier la limite comme optimale, il faut aussi construire des plans de récupération dont les coûts approchent celui d'un plan limite donné.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Continuité pour les coûts continus bornés.</span> Si \(c\in C_b(X\times Y)\), \(\mu_n\Rightarrow\mu\) et \(\nu_n\Rightarrow\nu\), alors
+        \[
+        K_c(\mu_n,\nu_n)\longrightarrow K_c(\mu,\nu).
+        \]
+        Toute limite étroite de plans optimaux pour \((\mu_n,\nu_n)\) est en outre optimale pour \((\mu,\nu)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La borne inférieure vient de la stabilité. Pour la borne supérieure, fixons un plan optimal \(\pi\in\Pi(\mu,\nu)\). La convergence étroite sur un espace polonais peut être métrisée par des couplages; choisissons \(\alpha_n\in\Pi(\mu,\mu_n)\) et \(\beta_n\in\Pi(\nu,\nu_n)\) se concentrant près des diagonales. Recolons \(\alpha_n,\pi,\beta_n\), puis prenons la marginale \((\mu_n,\nu_n)\), notée \(\widetilde\pi_n\). Sous ce couplage, \((x_n,y_n)\) converge en probabilité vers \((x,y)\). La continuité bornée de \(c\) implique
+        \[
+        \int c\,\mathrm d\widetilde\pi_n\to\int c\,\mathrm d\pi.
+        \]
+        On obtient donc \(\limsup_nK_c(\mu_n,\nu_n)\le K_c(\mu,\nu)\). Pour une suite de plans optimaux, la semi-continuité et la convergence des valeurs forcent chaque limite à atteindre la valeur limite.</p>
+    </div>
+
+    <h3>Coûts non bornés et contrôle des moments</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Soient \(X=Y=\mathbb R^d\), \(p\ge1\), et supposons \(\mu_n\to\mu\), \(\nu_n\to\nu\) dans \(W_p\). Si \(c\) est continu et
+        \[
+        |c(x,y)|\le C(1+|x|^p+|y|^p),
+        \]
+        alors \(K_c(\mu_n,\nu_n)\to K_c(\mu,\nu)\), et les valeurs d'adhérence des plans optimaux sont optimales.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Tronquons \(c\) par des fonctions continues bornées et appliquons le théorème précédent. La convergence dans \(W_p\) rend \((|x|^p)\) uniformément intégrable sous \(\mu_n\) et \((|y|^p)\) uniformément intégrable sous \(\nu_n\). Tout couplage ayant ces marginales, la même borne de queue vaut uniformément pour tous les plans admissibles. L'erreur de troncature tend donc uniformément vers zéro.</p>
+    </div>
+
+    <h3>Ce qui échoue sans les hypothèses</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Fuite des moments.</span> Soient \(\mu_n=(1-n^{-1})\delta_0+n^{-1}\delta_n\) et \(\mu=\delta_0\). Alors \(\mu_n\Rightarrow\mu\), mais
+        \[
+        W_1(\mu_n,\mu)=\int|x|\,\mathrm d\mu_n(x)=1.
+        \]
+        La convergence étroite seule ne contrôle pas un coût non borné : une masse évanescente peut parcourir une distance divergente.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Perte de semi-continuité.</span> Sur \(\mathbb R^2\), posons \(c(0,0)=1\) et \(c(x,y)=0\) ailleurs. Pour \(\pi_n=\delta_{(1/n,0)}\Rightarrow\delta_{(0,0)}=\pi\), on a \(\int c\,\mathrm d\pi_n=0\), mais \(\int c\,\mathrm d\pi=1\). Un saut vers le haut peut faire converger une suite minimisante vers une limite plus coûteuse.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/monge-problem/" next_label="Page suivante" next_url="/notes/optimal-transport/kantorovich-duality/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">19. 传输代价的稳定性与收敛</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/sinkhorn-scaling/" next_label="下一页" next_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" %}
+    <h2><a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">3. 最优传输计划的存在性与稳定性</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/monge-problem/" next_label="下一页" next_url="/notes/optimal-transport/kantorovich-duality/" %}
 
-    <p>本页整理关于“传输代价的稳定性与收敛”的主要定义、命题、定理与证明思路。</p>
+    <p>康托罗维奇松弛之所以有效，是因为其极小化解在取极限时能够保留下来。证明是直接法的典型应用：可行计划的紧性提供极限，闭的边缘约束保持可行性，下半连续性则防止代价在极限处突然增大到低于极限下界所允许的水平。</p>
 
-    <h3>定义</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Stability asks when convergence of 测度 implies convergence of optimal values and optimizers.</p>
+    <h3>积分代价的下半连续性</h3>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">代价函数的波特曼托引理.</span> 设 \(Z\) 为波兰空间，\(\eta_n\Rightarrow\eta\)，且 \(f:Z\to(-\infty,\infty]\) 下半连续并有下界，则
+        \[
+        \int_Z f\,\mathrm d\eta
+        \le\liminf_{n\to\infty}\int_Z f\,\mathrm d\eta_n.
+        \]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Under 弱收敛 plus uniform moment control, 瓦瑟斯坦距离 and 最优传输 costs with appropriate growth conditions are stable. Optimal plans are tight and subsequential limits are optimal.</p>
-    </div>
-
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Use tightness of couplings, lower semicontinuity for the liminf inequality, and recovery couplings or gluing for the limsup inequality.</p>
+        <p><span class="statement-title">证明.</span> 加上一个常数后可设 \(f\ge0\)。存在有界连续函数 \(f_k\uparrow f\)，例如下确界正则化 \(f_k(z)=\min\{k,\inf_w(f(w)+k\,d(z,w))\}\)。固定 \(k\)，有
+        \[
+        \int f_k\,\mathrm d\eta=\lim_n\int f_k\,\mathrm d\eta_n
+        \le\liminf_n\int f\,\mathrm d\eta_n.
+        \]
+        令 \(k\to\infty\)，再用单调收敛定理即得结论。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Stability is essential when transport is estimated from data or approximated computationally.</p>
+    <h3>直接法给出的存在性</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">存在性定理.</span> 设 \(X,Y\) 为波兰空间，\(\mu\in\mathcal P(X)\)、\(\nu\in\mathcal P(Y)\)，且 \(c:X\times Y\to(-\infty,\infty]\) 下半连续并有下界。若存在某个 \(\pi_0\in\Pi(\mu,\nu)\) 具有有限代价，则康托罗维奇问题存在最优传输计划。</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/sinkhorn-scaling/" next_label="下一页" next_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 取极小化序列 \(\pi_n\in\Pi(\mu,\nu)\)。第 1 页已经证明 \(\Pi(\mu,\nu)\) 关于弱拓扑紧，因此某个子列弱收敛到 \(\pi\in\Pi(\mu,\nu)\)。由前述引理，
+        \[
+        \int c\,\mathrm d\pi
+        \le\liminf_n\int c\,\mathrm d\pi_n
+        =K_c(\mu,\nu).
+        \]
+        由于 \(\pi\) 可行，反向不等式由下确界定义立即得到。因此等号成立，\(\pi\) 最优。</p>
+    </div>
+
+    <p>这一论证既不蕴含唯一性，也不蕴含确定性。这两种性质来自代价与边缘分布的几何结构，而非紧性本身。</p>
+
+    <h3>边缘分布变化时的稳定性</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">稳定性定理.</span> 设 \(\mu_n\Rightarrow\mu\)、\(\nu_n\Rightarrow\nu\)，且 \(\pi_n\in\Pi(\mu_n,\nu_n)\)。则 \((\pi_n)\) 一致紧，每个弱极限点 \(\pi\) 都属于 \(\Pi(\mu,\nu)\)。若 \(c\) 下半连续并有下界，则
+        \[
+        \int c\,\mathrm d\pi\le\liminf_n\int c\,\mathrm d\pi_n.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 弱收敛的概率测度列一致紧。选取紧集 \(K_X,K_Y\)，使所有充分大的 \(n\) 均满足 \(\mu_n(K_X),\nu_n(K_Y)\ge1-\varepsilon/2\)，再扩大紧集以包含有限个初始项。于是
+        \[
+        \pi_n(K_X\times K_Y)\ge1-\mu_n(K_X^c)-\nu_n(K_Y^c)\ge1-\varepsilon.
+        \]
+        普罗霍罗夫定理给出子列紧性。若 \(\pi_{n_k}\Rightarrow\pi\)，由连续投影的推前可识别 \(\pi\) 的边缘为 \(\mu,\nu\)。代价不等式则来自波特曼托引理。</p>
+    </div>
+
+    <h3>最优值的收敛</h3>
+    <p>上述定理给出下界。为了证明极限确实最优，还需要构造恢复计划，使其代价逼近任意给定的极限计划。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">有界连续代价的连续性.</span> 若 \(c\in C_b(X\times Y)\)、\(\mu_n\Rightarrow\mu\)、\(\nu_n\Rightarrow\nu\)，则
+        \[
+        K_c(\mu_n,\nu_n)\longrightarrow K_c(\mu,\nu).
+        \]
+        此外，\((\mu_n,\nu_n)\) 的最优计划的每个弱极限都是 \((\mu,\nu)\) 的最优计划。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 下界来自稳定性。为得上界，固定最优计划 \(\pi\in\Pi(\mu,\nu)\)。波兰空间上的弱收敛可由耦合度量化，因此可取 \(\alpha_n\in\Pi(\mu,\mu_n)\)、\(\beta_n\in\Pi(\nu,\nu_n)\)，使其质量集中到对角线附近。拼接 \(\alpha_n,\pi,\beta_n\)，并取 \((\mu_n,\nu_n)\) 边缘 \(\widetilde\pi_n\)。在该联合构造下，\((x_n,y_n)\) 依概率收敛到 \((x,y)\)。由 \(c\) 的有界连续性，
+        \[
+        \int c\,\mathrm d\widetilde\pi_n\to\int c\,\mathrm d\pi.
+        \]
+        因而 \(\limsup_nK_c(\mu_n,\nu_n)\le K_c(\mu,\nu)\)。结合下界得到最优值收敛；对最优计划列再用下半连续性，即知其每个极限都达到极限最优值。</p>
+    </div>
+
+    <h3>无界代价与矩控制</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 设 \(X=Y=\mathbb R^d\)、\(p\ge1\)，并且 \(\mu_n\to\mu\)、\(\nu_n\to\nu\) 在 \(W_p\) 中收敛。若 \(c\) 连续且
+        \[
+        |c(x,y)|\le C(1+|x|^p+|y|^p),
+        \]
+        则 \(K_c(\mu_n,\nu_n)\to K_c(\mu,\nu)\)，最优计划的所有极限点均最优。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 先用有界连续函数截断 \(c\)，并应用上一条定理。\(W_p\) 收敛保证 \((|x|^p)\) 关于 \(\mu_n\) 一致可积，\((|y|^p)\) 关于 \(\nu_n\) 一致可积。每个可行耦合都具有这些边缘，故尾部估计对所有可行计划一致成立。于是截断误差一致趋于零，可将有界代价的结论传递给 \(c\)。</p>
+    </div>
+
+    <h3>缺少条件时的失效</h3>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">矩逃逸.</span> 令 \(\mu_n=(1-n^{-1})\delta_0+n^{-1}\delta_n\)、\(\mu=\delta_0\)。虽然 \(\mu_n\Rightarrow\mu\)，但
+        \[
+        W_1(\mu_n,\mu)=\int|x|\,\mathrm d\mu_n(x)=1.
+        \]
+        单独的弱收敛无法控制无界传输代价：趋于零的一小部分质量仍可能移动到趋于无穷远的位置。</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">下半连续性的丧失.</span> 在 \(\mathbb R^2\) 上定义 \(c(0,0)=1\)，其余位置 \(c(x,y)=0\)。对 \(\pi_n=\delta_{(1/n,0)}\Rightarrow\delta_{(0,0)}=\pi\)，有 \(\int c\,\mathrm d\pi_n=0\)，但 \(\int c\,\mathrm d\pi=1\)。向上的不连续跳跃会使极小化序列收敛到代价更高的极限，从而破坏直接法。</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/monge-problem/" next_label="下一页" next_url="/notes/optimal-transport/kantorovich-duality/" %}
 </div>
 
 <hr>

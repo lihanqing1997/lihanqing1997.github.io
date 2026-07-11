@@ -1,95 +1,427 @@
 ---
 layout: default
-breadcrumb_child_label_en: "13. Gradient flows in Wasserstein space"
-breadcrumb_child_label_fr: "13. Flots de gradient dans l’espace de Wasserstein"
-breadcrumb_child_label_zh: "13. 瓦瑟斯坦空间中的梯度流"
+breadcrumb_child_label_en: "17. Wasserstein gradient flows and the JKO scheme"
+breadcrumb_child_label_fr: "17. Flots de gradient de Wasserstein et schéma JKO"
+breadcrumb_child_label_zh: "17. 瓦瑟斯坦梯度流与 JKO 格式"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">13. Gradient flows in Wasserstein space</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/continuity-equation/" next_label="Next page" next_url="/notes/optimal-transport/displacement-convexity/" %}
+    <h2><a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">17. Wasserstein gradient flows and the JKO scheme</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/displacement-convexity/" next_label="Next page" next_url="/notes/optimal-transport/diffusion-and-interaction-equations/" %}
 
-    <p>Gradient flows in Wasserstein space records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>A gradient flow moves in the direction of steepest energy decrease. In Wasserstein space, the motion is a continuity equation whose velocity is the negative gradient of the first variation. The Jordan--Kinderlehrer--Otto scheme constructs this flow through repeated variational minimization.</p>
 
-    <h3>Definition</h3>
+    <h3>Implicit Euler in a metric space</h3>
+    <p>For a smooth function \(F\) on \(\mathbb R^d\), implicit Euler for \(\dot x=-\nabla F(x)\) is
+    \[
+    x_{k+1}\in\operatorname*{arg\,min}_x
+    \left\{F(x)+\frac{|x-x_k|^2}{2\tau}\right\}.
+    \]
+    The optimality condition \(\nabla F(x_{k+1})+(x_{k+1}-x_k)/\tau=0\) is the backward Euler equation. Replacing Euclidean distance by \(W_2\) gives a definition that requires no linear structure on measures.</p>
+
+    <h3>The JKO minimizing movement</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Wasserstein gradient flow is a steepest-descent curve for a functional on probability measures, using Wasserstein distance as the underlying metric.</p>
+        <p><span class="statement-title">Definition.</span> Given \(\mu_\tau^0\in\mathcal P_2\), define recursively
+        \[
+        \mu_\tau^{k+1}\in
+        \operatorname*{arg\,min}_{\mu\in\mathcal P_2}
+        \left\{
+        \mathcal F(\mu)+\frac{1}{2\tau}W_2^2(\mu,\mu_\tau^k)
+        \right\}.
+        \]
+        The piecewise-constant interpolation is \(\bar\mu_\tau(t)=\mu_\tau^k\) for \(t\in((k-1)\tau,k\tau]\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The Fokker-Planck equation is the Wasserstein gradient flow of relative entropy under suitable convexity and regularity assumptions.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence of one step.</span> Suppose \(\mathcal F\) is proper, lower semicontinuous in \(W_2\), and its negative part is controlled so that the penalized functional is coercive in the second moment. Then every JKO step has a minimizer.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Compute the first variation of entropy, identify the velocity field as minus its Wasserstein gradient, and insert it into the continuity equation.</p>
+        <p><span class="statement-title">Proof.</span> Take a minimizing sequence. The penalty and the triangle inequality against \(\delta_0\) bound its second moments, while the coercivity of \(\mathcal F\) prevents escape through its negative part. Wasserstein compactness yields a convergent subsequence. Lower semicontinuity of both \(\mathcal F\) and \(W_2^2(\cdot,\mu_\tau^k)\) makes the limit a minimizer.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Wasserstein gradient flows connect diffusion PDE, entropy, convexity, and geometry of probability measures.</p>
+    <h3>Discrete energy estimates</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Energy dissipation.</span> Each JKO step satisfies
+        \[
+        \mathcal F(\mu_\tau^{k+1})
+        +\frac{1}{2\tau}W_2^2(\mu_\tau^{k+1},\mu_\tau^k)
+        \le\mathcal F(\mu_\tau^k).
+        \]
+        Hence, for \(N\tau\le T\),
+        \[
+        \sum_{k=0}^{N-1}\frac{W_2^2(\mu_\tau^{k+1},\mu_\tau^k)}{\tau}
+        \le2\{\mathcal F(\mu_\tau^0)-\inf\mathcal F\}.
+        \]</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/continuity-equation/" next_label="Next page" next_url="/notes/optimal-transport/displacement-convexity/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use \(\mu=\mu_\tau^k\) as a competitor in the minimization. Sum the resulting inequalities; the energy terms telescope.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Temporal modulus.</span> For grid times \(s=m\tau&lt;n\tau=t\),
+        \[
+        W_2(\mu_\tau^m,\mu_\tau^n)
+        \le\sum_{k=m}^{n-1}W_2(\mu_\tau^k,\mu_\tau^{k+1})
+        \le C\sqrt{t-s+\tau}.
+        \]
+        The second inequality follows from Cauchy--Schwarz and the discrete action bound.</p>
+    </div>
+
+    <h3>Euler equation of one step</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">First-order condition.</span> Suppose \(\mu_\tau^{k+1}=\rho\,\mathrm dx\), \(\mathcal F\) has first variation \(\delta\mathcal F/\delta\rho\), and \(T\) is the optimal map from \(\mu_\tau^{k+1}\) to \(\mu_\tau^k\). Then
+        \[
+        \frac{T(x)-x}{\tau}
+        =
+        \nabla\!\left(\frac{\delta\mathcal F}{\delta\rho}(x)\right)
+        \quad\text{for \(\mu_\tau^{k+1}\)-almost every \(x\)}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Perturb the new measure by \(S_\varepsilon=\operatorname{id}+\varepsilon\xi\). The derivative of \(\mathcal F(S_{\varepsilon\#}\mu)\) is
+        \[
+        \int\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho}\right)\cdot\xi\,\mathrm d\mu.
+        \]
+        Coupling \(S_\varepsilon(x)\) with \(T(x)\) shows that the derivative of \(\tfrac12W_2^2(S_{\varepsilon\#}\mu,\mu_\tau^k)\) is \(\int(x-T(x))\cdot\xi(x)\,\mathrm d\mu\). Stationarity for every \(\xi\) gives the formula. Thus the forward discrete velocity \((x-T(x))/\tau\) is the negative Wasserstein gradient.</p>
+    </div>
+
+    <h3>Metric slope and energy dissipation</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The descending metric slope is
+        \[
+        |\partial\mathcal F|(\mu)
+        =\limsup_{\nu\to\mu}
+        \frac{(\mathcal F(\mu)-\mathcal F(\nu))_+}{W_2(\mu,\nu)}.
+        \]
+        A curve of maximal slope satisfies the energy-dissipation inequality
+        \[
+        \mathcal F(\mu_T)
+        +\frac12\int_0^T|\dot\mu_t|^2\,\mathrm dt
+        +\frac12\int_0^T|\partial\mathcal F|(\mu_t)^2\,\mathrm dt
+        \le\mathcal F(\mu_0).
+        \]</p>
+    </div>
+
+    <p>For sufficiently regular displacement-convex functionals, the inequality is an equality, and the minimal velocity satisfies
+    \[
+    v_t=-\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho_t}\right),
+    \qquad
+    \partial_t\rho_t
+    =\nabla\cdot\left(
+    \rho_t\nabla\frac{\delta\mathcal F}{\delta\rho_t}
+    \right).
+    \]</p>
+
+    <h3>Passage to continuous time</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Convergence of minimizing movements.</span> Under properness, lower semicontinuity, compactness of energy sublevels, and an appropriate geodesic-convexity assumption, the interpolants \(\bar\mu_\tau\) converge as \(\tau\downarrow0\), locally uniformly in \(W_2\), to a curve of maximal slope for \(\mathcal F\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof architecture.</span> The discrete energy bound gives uniform second moments and a \(1/2\)-Hölder time modulus. A metric Arzelà--Ascoli theorem yields subsequential convergence. Lower semicontinuity passes the energy and discrete action to the limit. The variational inequality of each minimizing step controls the discrete slopes; their lower limit gives the metric-slope term. The limiting curve therefore satisfies the energy-dissipation inequality. Geodesic convexity then identifies it uniquely, so the whole family converges.</p>
+    </div>
+
+    <h3>Evolution variational inequalities</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> An \(EVI_\lambda\) gradient flow satisfies, for every comparison measure \(\nu\),
+        \[
+        \frac12\frac{\mathrm d}{\mathrm dt}W_2^2(\mu_t,\nu)
+        +\frac{\lambda}{2}W_2^2(\mu_t,\nu)
+        \le\mathcal F(\nu)-\mathcal F(\mu_t)
+        \]
+        for almost every \(t>0\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Contraction and uniqueness.</span> If two curves \(\mu_t,\nu_t\) solve the same \(EVI_\lambda\) flow, then
+        \[
+        W_2(\mu_t,\nu_t)\le e^{-\lambda t}W_2(\mu_0,\nu_0).
+        \]
+        In particular, the flow is unique and depends continuously on its initial law.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Insert \(\nu_t\) as comparison in the EVI for \(\mu_t\), and \(\mu_t\) in the EVI for \(\nu_t\). The energy differences cancel. A standard doubling-of-time argument yields
+        \[
+        \frac{\mathrm d}{\mathrm dt}W_2^2(\mu_t,\nu_t)+2\lambda W_2^2(\mu_t,\nu_t)\le0.
+        \]
+        Grönwall's inequality gives the result.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/displacement-convexity/" next_label="Next page" next_url="/notes/optimal-transport/diffusion-and-interaction-equations/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">13. Flots de gradient dans l’espace de Wasserstein</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/continuity-equation/" next_label="Page suivante" next_url="/notes/optimal-transport/displacement-convexity/" %}
+    <h2><a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">17. Flots de gradient de Wasserstein et schéma JKO</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/displacement-convexity/" next_label="Page suivante" next_url="/notes/optimal-transport/diffusion-and-interaction-equations/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Flots de gradient dans l’espace de Wasserstein.</p>
+    <p>Un flot de gradient suit la décroissance la plus rapide de l'énergie. Dans l'espace de Wasserstein, il s'agit d'une équation de continuité dont la vitesse est l'opposé du gradient de la première variation. Le schéma de Jordan--Kinderlehrer--Otto construit ce flot par minimisations successives.</p>
 
-    <h3>Définition</h3>
+    <h3>Euler implicite dans un espace métrique</h3>
+    <p>Dans \(\mathbb R^d\), Euler implicite pour \(\dot x=-\nabla F(x)\) s'écrit
+    \[
+    x_{k+1}\in\operatorname*{arg\,min}_x
+    \left\{F(x)+\frac{|x-x_k|^2}{2\tau}\right\}.
+    \]
+    Remplacer la distance euclidienne par \(W_2\) donne une définition sans structure linéaire sur les mesures.</p>
+
+    <h3>Mouvement minimisant JKO</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A Wasserstein gradient flow is a steepest-descent curve for a functional on probability measures, using Wasserstein distance as the underlying metric.</p>
+        <p><span class="statement-title">Définition.</span>
+        \[
+        \mu_\tau^{k+1}\in\operatorname*{arg\,min}_{\mu}
+        \left\{\mathcal F(\mu)+\frac{1}{2\tau}W_2^2(\mu,\mu_\tau^k)\right\}.
+        \]</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The Fokker-Planck equation is the Wasserstein gradient flow of relative entropy under suitable convexity and regularity assumptions.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence d'une étape.</span> Si \(\mathcal F\) est propre, semi-continue inférieurement et si la fonctionnelle pénalisée est coercive en second moment, chaque étape admet un minimiseur.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Compute the first variation of entropy, identify the velocity field as minus its Wasserstein gradient, and insert it into the continuity equation.</p>
+        <p><span class="statement-title">Preuve.</span> La pénalisation et l'inégalité triangulaire bornent les seconds moments d'une suite minimisante. La compacité de Wasserstein fournit une sous-suite convergente, et la semi-continuité des deux termes donne un minimiseur.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Wasserstein gradient flows connect diffusion PDE, entropy, convexity, and geometry of probability measures.</p>
+    <h3>Estimations discrètes d'énergie</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Dissipation.</span>
+        \[
+        \mathcal F(\mu_\tau^{k+1})
+        +\frac{1}{2\tau}W_2^2(\mu_\tau^{k+1},\mu_\tau^k)
+        \le\mathcal F(\mu_\tau^k),
+        \]
+        et
+        \[
+        \sum_{k=0}^{N-1}\frac{W_2^2(\mu_\tau^{k+1},\mu_\tau^k)}{\tau}
+        \le2\{\mathcal F(\mu_\tau^0)-\inf\mathcal F\}.
+        \]</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/continuity-equation/" next_label="Page suivante" next_url="/notes/optimal-transport/displacement-convexity/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On prend \(\mu_\tau^k\) comme concurrent, puis on somme; les énergies se télescopent. Cauchy--Schwarz donne ensuite un module temporel d'ordre \(1/2\).</p>
+    </div>
+
+    <h3>Équation d'Euler d'une étape</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Condition du premier ordre.</span> Si \(T\) est l'application optimale de \(\mu_\tau^{k+1}=\rho\,\mathrm dx\) vers \(\mu_\tau^k\), alors
+        \[
+        \frac{T(x)-x}{\tau}
+        =\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho}(x)\right).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Perturbons la nouvelle mesure par \(\operatorname{id}+\varepsilon\xi\). La dérivée de \(\mathcal F\) est le produit \(L^2(\rho)\) de \(\nabla(\delta\mathcal F/\delta\rho)\) avec \(\xi\). Celle de \(\tfrac12W_2^2\) vaut \(\int(x-T(x))\cdot\xi\,\mathrm d\mu\). La stationnarité pour tout \(\xi\) donne la formule. La vitesse directe \((x-T(x))/\tau\) est donc l'opposé du gradient.</p>
+    </div>
+
+    <h3>Pente métrique et dissipation</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span>
+        \[
+        |\partial\mathcal F|(\mu)
+        =\limsup_{\nu\to\mu}
+        \frac{(\mathcal F(\mu)-\mathcal F(\nu))_+}{W_2(\mu,\nu)}.
+        \]
+        Une courbe de pente maximale satisfait
+        \[
+        \mathcal F(\mu_T)+\frac12\int_0^T|\dot\mu_t|^2\,\mathrm dt
+        +\frac12\int_0^T|\partial\mathcal F|(\mu_t)^2\,\mathrm dt
+        \le\mathcal F(\mu_0).
+        \]</p>
+    </div>
+
+    <p>Dans le cas régulier,
+    \[
+    v_t=-\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho_t}\right),
+    \qquad
+    \partial_t\rho_t
+    =\nabla\cdot\left(\rho_t\nabla\frac{\delta\mathcal F}{\delta\rho_t}\right).
+    \]</p>
+
+    <h3>Passage au temps continu</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Convergence des mouvements minimisants.</span> Sous les hypothèses de semi-continuité, compacité des sous-niveaux et convexité géodésique appropriée, les interpolations JKO convergent localement uniformément dans \(W_2\) vers une courbe de pente maximale.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Architecture de la preuve.</span> L'estimation discrète donne compacité des moments et module temporel. Arzelà--Ascoli métrique fournit une limite. La semi-continuité passe l'énergie et l'action à la limite; l'inégalité variationnelle de chaque étape contrôle les pentes. La limite satisfait la dissipation d'énergie, et la convexité donne son unicité.</p>
+    </div>
+
+    <h3>Inégalité variationnelle d'évolution</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Un flot \(EVI_\lambda\) satisfait
+        \[
+        \frac12\frac{\mathrm d}{\mathrm dt}W_2^2(\mu_t,\nu)
+        +\frac\lambda2W_2^2(\mu_t,\nu)
+        \le\mathcal F(\nu)-\mathcal F(\mu_t).
+        \]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Contraction.</span> Deux solutions du même flot vérifient
+        \[
+        W_2(\mu_t,\nu_t)\le e^{-\lambda t}W_2(\mu_0,\nu_0).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> On utilise chaque solution comme mesure de comparaison dans l'EVI de l'autre. Les différences d'énergie s'annulent et donnent \(\frac{\mathrm d}{\mathrm dt}W_2^2+2\lambda W_2^2\le0\). Le lemme de Grönwall conclut.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/displacement-convexity/" next_label="Page suivante" next_url="/notes/optimal-transport/diffusion-and-interaction-equations/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">13. 瓦瑟斯坦空间中的梯度流</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/continuity-equation/" next_label="下一页" next_url="/notes/optimal-transport/displacement-convexity/" %}
+    <h2><a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">17. 瓦瑟斯坦梯度流与 JKO 格式</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/displacement-convexity/" next_label="下一页" next_url="/notes/optimal-transport/diffusion-and-interaction-equations/" %}
 
-    <p>本页整理关于“瓦瑟斯坦空间中的梯度流”的主要定义、命题、定理与证明思路。</p>
+    <p>梯度流沿能量下降最快的方向运动。在瓦瑟斯坦空间中，运动由连续性方程描述，其速度是能量一阶变分梯度的负值。乔丹--金德莱勒--奥托格式通过反复求解变分极小化问题构造这一流。</p>
 
-    <h3>定义</h3>
+    <h3>度量空间中的隐式欧拉法</h3>
+    <p>对 \(\mathbb R^d\) 上的光滑函数 \(F\)，\(\dot x=-\nabla F(x)\) 的隐式欧拉格式为
+    \[
+    x_{k+1}\in\operatorname*{arg\,min}_x
+    \left\{F(x)+\frac{|x-x_k|^2}{2\tau}\right\}.
+    \]
+    其最优性条件正是后向欧拉方程。以 \(W_2\) 替换欧几里得距离，就得到无需测度线性结构的定义。</p>
+
+    <h3>JKO 极小运动</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A 瓦瑟斯坦 gradient flow is a steepest-descent curve for a functional on 概率测度, using 瓦瑟斯坦距离 as the underlying 度量.</p>
+        <p><span class="statement-title">定义.</span>
+        \[
+        \mu_\tau^{k+1}\in
+        \operatorname*{arg\,min}_{\mu\in\mathcal P_2}
+        \left\{\mathcal F(\mu)+\frac{1}{2\tau}W_2^2(\mu,\mu_\tau^k)\right\}.
+        \]</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The Fokker-Planck equation is the 瓦瑟斯坦 gradient flow of 相对熵 under suitable 凸性 and regularity assumptions.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">单步存在性.</span> 若 \(\mathcal F\) 为真且关于 \(W_2\) 下半连续，并且其负部受到控制，使惩罚泛函关于二阶矩强制，则每个 JKO 步都存在极小化解。</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Compute the first variation of 熵, identify the velocity field as minus its 瓦瑟斯坦 gradient, and insert it into the continuity equation.</p>
+        <p><span class="statement-title">证明.</span> 惩罚项与到 \(\delta_0\) 的三角不等式给出极小化序列的一致二阶矩界；\(\mathcal F\) 的强制性阻止其负部逃逸。瓦瑟斯坦紧性给出收敛子列，两个目标项的下半连续性说明极限为极小化解。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 瓦瑟斯坦 gradient flows connect diffusion PDE, 熵, 凸性, and geometry of 概率测度.</p>
+    <h3>离散能量估计</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">能量耗散.</span> 每一步满足
+        \[
+        \mathcal F(\mu_\tau^{k+1})
+        +\frac{1}{2\tau}W_2^2(\mu_\tau^{k+1},\mu_\tau^k)
+        \le\mathcal F(\mu_\tau^k),
+        \]
+        因而
+        \[
+        \sum_{k=0}^{N-1}\frac{W_2^2(\mu_\tau^{k+1},\mu_\tau^k)}{\tau}
+        \le2\{\mathcal F(\mu_\tau^0)-\inf\mathcal F\}.
+        \]</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/continuity-equation/" next_label="下一页" next_url="/notes/optimal-transport/displacement-convexity/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 在第 \(k+1\) 步用 \(\mu_\tau^k\) 作竞争者，再对 \(k\) 求和；能量项望远镜相消。柯西--施瓦茨不等式还给出 \(1/2\) 阶时间连续模。</p>
+    </div>
+
+    <h3>单步欧拉方程</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">一阶条件.</span> 设 \(\mu_\tau^{k+1}=\rho\,\mathrm dx\)，\(T\) 是从 \(\mu_\tau^{k+1}\) 到 \(\mu_\tau^k\) 的最优映射，则
+        \[
+        \frac{T(x)-x}{\tau}
+        =
+        \nabla\!\left(\frac{\delta\mathcal F}{\delta\rho}(x)\right)
+        \quad\text{几乎处处}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 用 \(S_\varepsilon=\operatorname{id}+\varepsilon\xi\) 扰动新测度。\(\mathcal F(S_{\varepsilon\#}\mu)\) 在零处的导数为
+        \[
+        \int\nabla(\delta\mathcal F/\delta\rho)\cdot\xi\,\mathrm d\mu.
+        \]
+        将 \(S_\varepsilon(x)\) 与 \(T(x)\) 耦合，得到 \(\tfrac12W_2^2\) 的导数 \(\int(x-T(x))\cdot\xi\,\mathrm d\mu\)。对每个 \(\xi\) 的驻定性给出公式。故向前离散速度 \((x-T(x))/\tau\) 正是负瓦瑟斯坦梯度。</p>
+    </div>
+
+    <h3>度量斜率与能量耗散</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 下降度量斜率为
+        \[
+        |\partial\mathcal F|(\mu)
+        =\limsup_{\nu\to\mu}
+        \frac{(\mathcal F(\mu)-\mathcal F(\nu))_+}{W_2(\mu,\nu)}.
+        \]
+        极大斜率曲线满足
+        \[
+        \mathcal F(\mu_T)
+        +\frac12\int_0^T|\dot\mu_t|^2\,\mathrm dt
+        +\frac12\int_0^T|\partial\mathcal F|(\mu_t)^2\,\mathrm dt
+        \le\mathcal F(\mu_0).
+        \]</p>
+    </div>
+
+    <p>对足够正则的位移凸泛函，上式取等号，最小速度满足
+    \[
+    v_t=-\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho_t}\right),
+    \qquad
+    \partial_t\rho_t
+    =\nabla\cdot\left(\rho_t\nabla\frac{\delta\mathcal F}{\delta\rho_t}\right).
+    \]</p>
+
+    <h3>连续时间极限</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">极小运动收敛定理.</span> 在真性、下半连续性、能量次水平集紧性及适当测地凸性条件下，当 \(\tau\downarrow0\) 时，JKO 插值在 \(W_2\) 中局部一致收敛到 \(\mathcal F\) 的极大斜率曲线。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明结构.</span> 离散能量估计给出一致二阶矩和 \(1/2\)-赫尔德时间模。度量阿尔泽拉--阿斯科利定理产生收敛子列。下半连续性把能量与离散作用量传至极限；每一步的变分不等式控制离散斜率，并在极限中给出度量斜率项。因此极限满足能量耗散不等式。测地凸性进一步给出唯一性，从而全族收敛。</p>
+    </div>
+
+    <h3>演化变分不等式</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> \(EVI_\lambda\) 梯度流对每个比较测度 \(\nu\) 满足
+        \[
+        \frac12\frac{\mathrm d}{\mathrm dt}W_2^2(\mu_t,\nu)
+        +\frac{\lambda}{2}W_2^2(\mu_t,\nu)
+        \le\mathcal F(\nu)-\mathcal F(\mu_t).
+        \]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">压缩性与唯一性.</span> 若 \(\mu_t,\nu_t\) 解同一个 \(EVI_\lambda\) 流，则
+        \[
+        W_2(\mu_t,\nu_t)\le e^{-\lambda t}W_2(\mu_0,\nu_0).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 在 \(\mu_t\) 的 EVI 中以 \(\nu_t\) 作比较，在 \(\nu_t\) 的 EVI 中以 \(\mu_t\) 作比较。能量差相消，经标准双时间论证得到
+        \[
+        \frac{\mathrm d}{\mathrm dt}W_2^2(\mu_t,\nu_t)+2\lambda W_2^2(\mu_t,\nu_t)\le0.
+        \]
+        格朗沃尔不等式给出结论。</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/displacement-convexity/" next_label="下一页" next_url="/notes/optimal-transport/diffusion-and-interaction-equations/" %}
 </div>
 
 <hr>

@@ -1,95 +1,361 @@
 ---
 layout: default
-breadcrumb_child_label_en: "7. Wasserstein distances"
-breadcrumb_child_label_fr: "7. Distances de Wasserstein"
-breadcrumb_child_label_zh: "7. 瓦瑟斯坦距离"
+breadcrumb_child_label_en: "11. Wasserstein distances and the topology of probability measures"
+breadcrumb_child_label_fr: "11. Distances de Wasserstein et topologie des mesures de probabilité"
+breadcrumb_child_label_zh: "11. 瓦瑟斯坦距离与概率测度的拓扑"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">7. Wasserstein distances</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/cyclical-monotonicity/" next_label="Next page" next_url="/notes/optimal-transport/one-dimensional-transport/" %}
+    <h2><a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">11. Wasserstein distances and the topology of probability measures</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/" next_label="Next page" next_url="/notes/optimal-transport/displacement-interpolation/" %}
 
-    <p>Wasserstein distances records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>A Wasserstein distance does more than assign a transport cost. It equips a space of probability measures with a metric that simultaneously records weak convergence and control of tails. The geometry developed later rests on this topology.</p>
 
-    <h3>Definition</h3>
+    <h3>Definition and finiteness</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(p\ge1\), the Wasserstein distance is \(W_p(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}(\int d(x,y)^p\,\mathrm{d}\pi)^{1/p}\), on measures with finite \(p\)-moment.</p>
+        <p><span class="statement-title">Definition.</span> Let \((X,d)\) be Polish and \(1\le p&lt;\infty\). For \(\mu,\nu\in\mathcal P_p(X)\), define
+        \[
+        W_p(\mu,\nu)
+        =\left(
+        \inf_{\pi\in\Pi(\mu,\nu)}
+        \int_{X\times X}d(x,y)^p\,\mathrm d\pi(x,y)
+        \right)^{1/p}.
+        \]
+        An optimizer exists because \(d^p\) is continuous and nonnegative.</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The function \(W_p\) is a metric on the space of probability measures with finite \(p\)-moment. Convergence in \(W_p\) is weak convergence plus convergence of \(p\)-moments.</p>
+        <p><span class="statement-title">Finiteness.</span> For any base point \(x_0\),
+        \[
+        W_p(\mu,\nu)^p
+        \le 2^{p-1}\left(
+        \int d(x,x_0)^p\,\mathrm d\mu
+        +\int d(y,x_0)^p\,\mathrm d\nu
+        \right).
+        \]</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The triangle inequality is proved by gluing optimal or nearly optimal couplings and applying Minkowski inequality. The convergence characterization uses truncation and tightness.</p>
+        <p><span class="statement-title">Proof.</span> Use the product coupling \(\mu\otimes\nu\) and the inequality \(d(x,y)^p\le2^{p-1}\{d(x,x_0)^p+d(y,x_0)^p\}\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Wasserstein distance metrizes not only distributional closeness but also geometry of the underlying space.</p>
+    <h3>The metric axioms</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> \(W_p\) is a metric on \(\mathcal P_p(X)\).</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/cyclical-monotonicity/" next_label="Next page" next_url="/notes/optimal-transport/one-dimensional-transport/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Nonnegativity and symmetry are immediate. If \(W_p(\mu,\nu)=0\), an optimal plan \(\pi\) satisfies \(d(x,y)=0\) almost surely, so it is concentrated on the diagonal and its two marginals coincide.</p>
+        <p>For the triangle inequality, choose \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) and \(\pi_{23}\in\Pi(\mu_2,\mu_3)\), and glue them to \(\gamma\) on \(X^3\). Its \((1,3)\)-marginal is a coupling of \(\mu_1,\mu_3\). Minkowski's inequality gives
+        \[
+        \begin{aligned}
+        W_p(\mu_1,\mu_3)
+        &amp;\le\left(\int d(x_1,x_3)^p\,\mathrm d\gamma\right)^{1/p}\\
+        &amp;\le\left(\int d(x_1,x_2)^p\,\mathrm d\gamma\right)^{1/p}
+        +\left(\int d(x_2,x_3)^p\,\mathrm d\gamma\right)^{1/p}.
+        \end{aligned}
+        \]
+        Taking infima over the two plans proves \(W_p(\mu_1,\mu_3)\le W_p(\mu_1,\mu_2)+W_p(\mu_2,\mu_3)\).</p>
+    </div>
+
+    <h3>Elementary comparisons</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(1\le p\le q\) and \(\mu,\nu\in\mathcal P_q(X)\), then
+        \[
+        W_p(\mu,\nu)\le W_q(\mu,\nu).
+        \]
+        Also,
+        \[
+        W_p(\mu,\delta_{x_0})^p=\int d(x,x_0)^p\,\mathrm d\mu(x).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For every coupling, the \(L^p\)-norm of \(d(x,y)\) is at most its \(L^q\)-norm; take infima. A coupling with \(\delta_{x_0}\) is unique, namely \(\mu(\mathrm dx)\delta_{x_0}(\mathrm dy)\), giving the second formula.</p>
+    </div>
+
+    <p>On a space of finite diameter \(D\), interpolation gives \(W_q^q\le D^{q-p}W_p^p\). On unbounded spaces no reverse comparison is possible without stronger moment bounds.</p>
+
+    <h3>Characterization of \(W_p\)-convergence</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Topology theorem.</span> For \(\mu_n,\mu\in\mathcal P_p(X)\), the following are equivalent:
+        </p>
+        <p>(i) \(W_p(\mu_n,\mu)\to0\).</p>
+        <p>(ii) \(\mu_n\Rightarrow\mu\) and, for one base point \(x_0\),
+        \[
+        \int d(x,x_0)^p\,\mathrm d\mu_n(x)
+        \to
+        \int d(x,x_0)^p\,\mathrm d\mu(x).
+        \]</p>
+        <p>(iii) \(\mu_n\Rightarrow\mu\) and the \(p\)-th moments are uniformly integrable:
+        \[
+        \lim_{R\to\infty}\sup_n
+        \int_{\{d(x,x_0)>R\}}d(x,x_0)^p\,\mathrm d\mu_n(x)=0.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(W_p(\mu_n,\mu)\to0\), take nearly optimal couplings \((X_n,X)\). Then \(d(X_n,X)\to0\) in \(L^p\), hence in probability, which implies weak convergence. The reverse triangle inequality
+        \[
+        |d(X_n,x_0)-d(X,x_0)|\le d(X_n,X)
+        \]
+        and the \(L^p\) norm inequality give convergence of \(p\)-th moment norms and uniform integrability.</p>
+        <p>Conversely, weak convergence admits couplings with \(X_n\to X\) almost surely by the Skorokhod representation theorem. Condition (iii) makes \(d(X_n,X)^p\) uniformly integrable because it is bounded by \(2^{p-1}\{d(X_n,x_0)^p+d(X,x_0)^p\}\). Vitali's theorem yields \(\mathbb E d(X_n,X)^p\to0\), hence \(W_p(\mu_n,\mu)\to0\). Equivalence of (ii) and (iii) follows by truncating the moment function and using weak convergence on bounded continuous truncations.</p>
+    </div>
+
+    <h3>Completeness and separability</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \((X,d)\) is complete and separable, then \((\mathcal P_p(X),W_p)\) is complete and separable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For completeness, take a \(W_p\)-Cauchy sequence and extract a subsequence with \(W_p(\mu_{n_k},\mu_{n_{k+1}})\le2^{-k}\). Glue nearly optimal successive couplings to random variables \(X_k\) on one space. Then
+        \[
+        \sum_k\|d(X_k,X_{k+1})\|_{L^p}&lt;\infty.
+        \]
+        Hence \(X_k\) is almost surely Cauchy along a further argument and converges to an \(X\)-valued variable \(X_\infty\), using completeness of \(X\). Minkowski and tail summation give \(\|d(X_k,X_\infty)\|_{L^p}\to0\), so \(W_p(\mu_{n_k},\mathcal L(X_\infty))\to0\). The Cauchy property brings the full sequence to the same limit.</p>
+        <p>For separability, choose a countable dense subset \(D\subset X\). Finitely supported probability measures on \(D\) with rational weights form a countable family. Truncation to a compact high-mass set, quantization by nearby points of \(D\), and rational approximation of weights show that this family is \(W_p\)-dense.</p>
+    </div>
+
+    <h3>Relative compactness</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Compactness criterion.</span> A family \(\mathcal K\subset\mathcal P_p(X)\) is relatively compact in \(W_p\) if it is tight and its \(p\)-th moments are uniformly integrable. On a proper metric space, a uniform bound on a moment of order \(q>p\) implies these conditions.</p>
+    </div>
+
+    <p>The extra tail condition is essential. Weak compactness alone permits a small amount of mass to escape to infinity while carrying nonvanishing \(p\)-transport cost, as the example on page 3 showed.</p>
+
+    <h3>The \(W_\infty\) distance</h3>
+    <p>For bounded-support measures one may also define
+    \[
+    W_\infty(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}
+    \operatorname*{ess\,sup}_{(x,y)\sim\pi}d(x,y).
+    \]
+    It minimizes the largest displacement rather than an average displacement. It is the limit of \(W_p\) as \(p\to\infty\) under suitable boundedness assumptions, but its topology and geodesics can be more rigid.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/" next_label="Next page" next_url="/notes/optimal-transport/displacement-interpolation/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">7. Distances de Wasserstein</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/cyclical-monotonicity/" next_label="Page suivante" next_url="/notes/optimal-transport/one-dimensional-transport/" %}
+    <h2><a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">11. Distances de Wasserstein et topologie des mesures de probabilité</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/" next_label="Page suivante" next_url="/notes/optimal-transport/displacement-interpolation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Distances de Wasserstein.</p>
+    <p>Une distance de Wasserstein ne se contente pas de mesurer un coût. Elle munit un espace de probabilités d'une métrique qui encode simultanément convergence étroite et contrôle des queues.</p>
 
-    <h3>Définition</h3>
+    <h3>Définition et finitude</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For \(p\ge1\), the Wasserstein distance is \(W_p(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}(\int d(x,y)^p\,\mathrm{d}\pi)^{1/p}\), on measures with finite \(p\)-moment.</p>
+        <p><span class="statement-title">Définition.</span> Sur un espace polonais \((X,d)\), pour \(1\le p&lt;\infty\),
+        \[
+        W_p(\mu,\nu)
+        =\left(\inf_{\pi\in\Pi(\mu,\nu)}
+        \int d(x,y)^p\,\mathrm d\pi(x,y)\right)^{1/p}.
+        \]
+        Un minimiseur existe, car \(d^p\) est continu et positif.</p>
     </div>
 
-    <h3>Proposition</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The function \(W_p\) is a metric on the space of probability measures with finite \(p\)-moment. Convergence in \(W_p\) is weak convergence plus convergence of \(p\)-moments.</p>
+        <p><span class="statement-title">Finitude.</span> Pour tout \(x_0\),
+        \[
+        W_p^p(\mu,\nu)\le2^{p-1}\left(
+        \int d(x,x_0)^p\,\mathrm d\mu+
+        \int d(y,x_0)^p\,\mathrm d\nu\right).
+        \]</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The triangle inequality is proved by gluing optimal or nearly optimal couplings and applying Minkowski inequality. The convergence characterization uses truncation and tightness.</p>
+        <p><span class="statement-title">Preuve.</span> On utilise le couplage produit et \(d(x,y)^p\le2^{p-1}\{d(x,x_0)^p+d(y,x_0)^p\}\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Wasserstein distance metrizes not only distributional closeness but also geometry of the underlying space.</p>
+    <h3>Axiomes métriques</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> \(W_p\) est une distance sur \(\mathcal P_p(X)\).</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/cyclical-monotonicity/" next_label="Page suivante" next_url="/notes/optimal-transport/one-dimensional-transport/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Positivité et symétrie sont immédiates. Si \(W_p=0\), un plan optimal est porté par la diagonale, donc ses marginales sont égales.</p>
+        <p>Pour l'inégalité triangulaire, recollons \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) et \(\pi_{23}\in\Pi(\mu_2,\mu_3)\) en une mesure \(\gamma\) sur \(X^3\). Sa marginale \((1,3)\) est admissible et l'inégalité de Minkowski donne
+        \[
+        W_p(\mu_1,\mu_3)
+        \le\|d(x_1,x_2)+d(x_2,x_3)\|_{L^p(\gamma)}
+        \le\|d(x_1,x_2)\|_{L^p}+\|d(x_2,x_3)\|_{L^p}.
+        \]
+        L'infimum sur les deux plans conclut.</p>
+    </div>
+
+    <h3>Comparaisons élémentaires</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Si \(1\le p\le q\), alors \(W_p\le W_q\), et
+        \[
+        W_p(\mu,\delta_{x_0})^p=\int d(x,x_0)^p\,\mathrm d\mu(x).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Sur un espace probabilisé, la norme \(L^p\) est dominée par la norme \(L^q\); on prend l'infimum sur les couplages. Le couplage avec une masse de Dirac est unique, ce qui donne la seconde formule.</p>
+    </div>
+
+    <h3>Caractérisation de la convergence</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème topologique.</span> Les propriétés suivantes sont équivalentes :</p>
+        <p>(i) \(W_p(\mu_n,\mu)\to0\).</p>
+        <p>(ii) \(\mu_n\Rightarrow\mu\) et les moments d'ordre \(p\) convergent.</p>
+        <p>(iii) \(\mu_n\Rightarrow\mu\) et
+        \[
+        \lim_{R\to\infty}\sup_n\int_{\{d(x,x_0)>R\}}d(x,x_0)^p\,\mathrm d\mu_n=0.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Si \(W_p\to0\), des couplages presque optimaux donnent \(d(X_n,X)\to0\) dans \(L^p\), donc en probabilité et en loi. L'inégalité \(|d(X_n,x_0)-d(X,x_0)|\le d(X_n,X)\) donne la convergence des moments et l'intégrabilité uniforme.</p>
+        <p>Réciproquement, le théorème de représentation de Skorokhod fournit un couplage tel que \(X_n\to X\) presque sûrement. L'intégrabilité uniforme des moments entraîne celle de \(d(X_n,X)^p\); le théorème de Vitali donne \(\mathbb E d(X_n,X)^p\to0\), donc \(W_p\to0\). L'équivalence des deux formulations de moments s'obtient par troncature.</p>
+    </div>
+
+    <h3>Complétude et séparabilité</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Si \(X\) est complet et séparable, \((\mathcal P_p(X),W_p)\) l'est aussi.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> D'une suite de Cauchy, extrayons \(\mu_{n_k}\) telle que \(W_p(\mu_{n_k},\mu_{n_{k+1}})\le2^{-k}\). Recolons des couplages presque optimaux pour obtenir des variables \(X_k\) sur un même espace avec \(\sum_k\|d(X_k,X_{k+1})\|_{L^p}&lt;\infty\). Elles convergent vers une variable \(X_\infty\), et la somme des queues donne \(W_p(\mu_{n_k},\mathcal L(X_\infty))\to0\). La propriété de Cauchy traite la suite entière.</p>
+        <p>Pour la séparabilité, les mesures finies à poids rationnels portées par un sous-ensemble dense dénombrable forment une famille dénombrable et dense, par troncature, quantification et approximation des poids.</p>
+    </div>
+
+    <h3>Compacité relative</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Critère de compacité.</span> Une famille de \(\mathcal P_p(X)\) est relativement compacte pour \(W_p\) si elle est tendue et si ses moments d'ordre \(p\) sont uniformément intégrables. Sur un espace propre, une borne uniforme sur un moment d'ordre \(q>p\) suffit.</p>
+    </div>
+
+    <h3>Distance \(W_\infty\)</h3>
+    <p>Pour des mesures à support borné,
+    \[
+    W_\infty(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}
+    \operatorname*{ess\,sup}_{(x,y)\sim\pi}d(x,y).
+    \]
+    Elle minimise le déplacement maximal. Sous des hypothèses de bornitude, elle est la limite de \(W_p\) lorsque \(p\to\infty\), mais sa géométrie est plus rigide.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/" next_label="Page suivante" next_url="/notes/optimal-transport/displacement-interpolation/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">7. 瓦瑟斯坦距离</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/cyclical-monotonicity/" next_label="下一页" next_url="/notes/optimal-transport/one-dimensional-transport/" %}
+    <h2><a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">11. 瓦瑟斯坦距离与概率测度的拓扑</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/" next_label="下一页" next_url="/notes/optimal-transport/displacement-interpolation/" %}
 
-    <p>本页整理关于“瓦瑟斯坦距离”的主要定义、命题、定理与证明思路。</p>
+    <p>瓦瑟斯坦距离不只是一个传输代价。它在概率测度空间上定义度量，同时记录弱收敛与尾部控制。后续的几何理论都建立在这一拓扑之上。</p>
 
-    <h3>定义</h3>
+    <h3>定义与有限性</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For \(p\ge1\), the 瓦瑟斯坦距离 is \(W_p(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}(\int d(x,y)^p\,\mathrm{d}\pi)^{1/p}\), on 测度 with finite \(p\)-moment.</p>
+        <p><span class="statement-title">定义.</span> 设 \((X,d)\) 为波兰空间，\(1\le p&lt;\infty\)。对 \(\mu,\nu\in\mathcal P_p(X)\)，定义
+        \[
+        W_p(\mu,\nu)
+        =\left(\inf_{\pi\in\Pi(\mu,\nu)}
+        \int d(x,y)^p\,\mathrm d\pi(x,y)\right)^{1/p}.
+        \]
+        由于 \(d^p\) 连续非负，最优计划存在。</p>
     </div>
 
-    <h3>命题</h3>
     <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The function \(W_p\) is a 度量 on the space of 概率测度 with finite \(p\)-moment. Convergence in \(W_p\) is 弱收敛 plus convergence of \(p\)-moments.</p>
+        <p><span class="statement-title">有限性.</span> 对任意基点 \(x_0\)，
+        \[
+        W_p^p(\mu,\nu)\le2^{p-1}\left(
+        \int d(x,x_0)^p\,\mathrm d\mu+
+        \int d(y,x_0)^p\,\mathrm d\nu\right).
+        \]</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The triangle inequality is proved by gluing optimal or nearly optimal couplings and applying Minkowski inequality. The convergence characterization uses truncation and tightness.</p>
+        <p><span class="statement-title">证明.</span> 对乘积耦合使用 \(d(x,y)^p\le2^{p-1}\{d(x,x_0)^p+d(y,x_0)^p\}\)。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> 瓦瑟斯坦距离 metrizes not only distributional closeness but also geometry of the underlying space.</p>
+    <h3>度量公理</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> \(W_p\) 是 \(\mathcal P_p(X)\) 上的度量。</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/cyclical-monotonicity/" next_label="下一页" next_url="/notes/optimal-transport/one-dimensional-transport/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 非负性与对称性显然。若 \(W_p(\mu,\nu)=0\)，最优计划满足 \(d(x,y)=0\) 几乎处处，故集中于对角线，两边缘相同。</p>
+        <p>为证三角不等式，拼接 \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) 与 \(\pi_{23}\in\Pi(\mu_2,\mu_3)\) 得到 \(X^3\) 上的 \(\gamma\)。其 \((1,3)\) 边缘耦合 \(\mu_1,\mu_3\)。闵可夫斯基不等式给出
+        \[
+        W_p(\mu_1,\mu_3)
+        \le\|d(x_1,x_2)+d(x_2,x_3)\|_{L^p(\gamma)}
+        \le\|d(x_1,x_2)\|_{L^p}+\|d(x_2,x_3)\|_{L^p}.
+        \]
+        对两计划取下确界即得结论。</p>
+    </div>
+
+    <h3>基本比较</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 若 \(1\le p\le q\)，则 \(W_p(\mu,\nu)\le W_q(\mu,\nu)\)，并且
+        \[
+        W_p(\mu,\delta_{x_0})^p=\int d(x,x_0)^p\,\mathrm d\mu(x).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 在概率空间上，随机变量的 \(L^p\) 范数不超过 \(L^q\) 范数；对耦合取下确界。与狄拉克测度的耦合唯一，因此第二式直接成立。</p>
+    </div>
+
+    <h3>\(W_p\) 收敛的刻画</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">拓扑定理.</span> 下列条件等价：</p>
+        <p>(i) \(W_p(\mu_n,\mu)\to0\)。</p>
+        <p>(ii) \(\mu_n\Rightarrow\mu\)，且 \(p\) 阶矩收敛。</p>
+        <p>(iii) \(\mu_n\Rightarrow\mu\)，且 \(p\) 阶矩一致可积：
+        \[
+        \lim_{R\to\infty}\sup_n
+        \int_{\{d(x,x_0)>R\}}d(x,x_0)^p\,\mathrm d\mu_n=0.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 若 \(W_p\to0\)，取近似最优耦合 \((X_n,X)\)，则 \(d(X_n,X)\to0\) 于 \(L^p\)，从而依概率收敛并推出弱收敛。反三角不等式
+        \[
+        |d(X_n,x_0)-d(X,x_0)|\le d(X_n,X)
+        \]
+        给出矩收敛与一致可积性。</p>
+        <p>反之，由斯科罗霍德表示定理，可在同一空间上实现 \(X_n\to X\) 几乎处处。条件 (iii) 使 \(d(X_n,X)^p\) 一致可积，因为它被 \(2^{p-1}\{d(X_n,x_0)^p+d(X,x_0)^p\}\) 控制。维塔利定理给出 \(\mathbb E d(X_n,X)^p\to0\)，故 \(W_p\to0\)。条件 (ii) 与 (iii) 的等价性由截断矩函数得到。</p>
+    </div>
+
+    <h3>完备性与可分性</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> 若 \((X,d)\) 完备且可分，则 \((\mathcal P_p(X),W_p)\) 也完备且可分。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对 \(W_p\)-柯西列抽取子列，使 \(W_p(\mu_{n_k},\mu_{n_{k+1}})\le2^{-k}\)。拼接相邻近似最优耦合，得到同一空间上的 \(X_k\)，满足 \(\sum_k\|d(X_k,X_{k+1})\|_{L^p}&lt;\infty\)。于是 \(X_k\) 收敛到 \(X_\infty\)，尾和估计给出 \(W_p(\mu_{n_k},\mathcal L(X_\infty))\to0\)，再由柯西性得到全列收敛。</p>
+        <p>为证可分，取 \(X\) 的可数稠密子集。支撑在该子集上、具有有理权重的有限支撑概率测度构成可数族；通过截断、量化和权重有理逼近可证明其在 \(W_p\) 下稠密。</p>
+    </div>
+
+    <h3>相对紧性</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">紧性判据.</span> \(\mathcal P_p(X)\) 中的测度族若一致紧且 \(p\) 阶矩一致可积，则在 \(W_p\) 中相对紧。在恰当度量空间上，一致有界的 \(q>p\) 阶矩蕴含这两个条件。</p>
+    </div>
+
+    <h3>\(W_\infty\) 距离</h3>
+    <p>对有界支撑测度，还可定义
+    \[
+    W_\infty(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}
+    \operatorname*{ess\,sup}_{(x,y)\sim\pi}d(x,y).
+    \]
+    它最小化最大位移而非平均位移。在适当有界条件下，它是 \(p\to\infty\) 时 \(W_p\) 的极限，但其拓扑与测地线通常更为刚性。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/" next_label="下一页" next_url="/notes/optimal-transport/displacement-interpolation/" %}
 </div>
 
 <hr>

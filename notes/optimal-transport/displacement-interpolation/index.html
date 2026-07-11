@@ -1,95 +1,332 @@
 ---
 layout: default
-breadcrumb_child_label_en: "10. Displacement interpolation"
-breadcrumb_child_label_fr: "10. Interpolation par déplacement"
-breadcrumb_child_label_zh: "10. 位移插值"
+breadcrumb_child_label_en: "12. Geodesics and displacement interpolation"
+breadcrumb_child_label_fr: "12. Géodésiques et interpolation par déplacement"
+breadcrumb_child_label_zh: "12. 测地线与位移插值"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">10. Displacement interpolation</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/brenier-theorem/" next_label="Next page" next_url="/notes/optimal-transport/benamou-brenier-formula/" %}
+    <h2><a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">12. Geodesics and displacement interpolation</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Next page" next_url="/notes/optimal-transport/continuity-equation/" %}
 
-    <p>Displacement interpolation records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>Linear interpolation of measures creates and destroys mass at fixed locations. Wasserstein interpolation instead follows particles along shortest paths. This produces the intrinsic geodesics of the probability-measure space.</p>
 
-    <h3>Definition</h3>
+    <h3>Constant-speed geodesics</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Displacement interpolation moves mass along optimal transport geodesics rather than linearly mixing measures. For quadratic cost, it is \(\mu_t=((1-t)\operatorname{id}+tT)_\#\mu_0\).</p>
+        <p><span class="statement-title">Definition.</span> A curve \(t\mapsto\mu_t\) in a metric space is a constant-speed geodesic from \(\mu_0\) to \(\mu_1\) if
+        \[
+        W_p(\mu_s,\mu_t)=|t-s|W_p(\mu_0,\mu_1)
+        \]
+        for all \(s,t\in[0,1]\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> When \(T\) is an optimal map between \(\mu_0\) and \(\mu_1\), the curve \((\mu_t)_{t\in[0,1]}\) is a constant-speed geodesic in \(W_2\).</p>
+    <p>Assume first that \(X=\mathbb R^d\). If \(\pi\in\Pi(\mu_0,\mu_1)\), define
+    \[
+    e_t(x,y)=(1-t)x+ty,\qquad \mu_t=(e_t)_\#\pi.
+    \]
+    Each pair \((x,y)\) is moved along the Euclidean segment joining its endpoints.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Displacement interpolation theorem.</span> If \(\pi\) is \(p\)-optimal between \(\mu_0,\mu_1\), then
+        \[
+        \mu_t=((1-t)\operatorname{pr}_1+t\operatorname{pr}_2)_\#\pi
+        \]
+        is a constant-speed \(W_p\)-geodesic.</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Construct the dynamic coupling by sending each particle along the straight segment from \(x\) to \(T(x)\). Optimality of subsegments follows from cyclical monotonicity.</p>
+        <p><span class="statement-title">Proof.</span> For \(s&lt;t\), the joint law of
+        \[
+        x_s=(1-s)x+sy,\qquad x_t=(1-t)x+ty
+        \]
+        under \(\pi\) couples \(\mu_s,\mu_t\). Since \(|x_t-x_s|=(t-s)|y-x|\),
+        \[
+        W_p(\mu_s,\mu_t)\le(t-s)W_p(\mu_0,\mu_1).
+        \]
+        Apply this bound to the intervals \([0,s]\), \([s,t]\), and \([t,1]\). The triangle inequality gives
+        \[
+        W_p(\mu_0,\mu_1)
+        \le W_p(\mu_0,\mu_s)+W_p(\mu_s,\mu_t)+W_p(\mu_t,\mu_1)
+        \le W_p(\mu_0,\mu_1).
+        \]
+        All inequalities are equalities, proving the formula for every \(s,t\).</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Displacement interpolation is why Wasserstein space has a geometry distinct from linear mixture geometry.</p>
+    <h3>Interpolation induced by a map</h3>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> If the optimal plan is induced by \(T\), then
+        \[
+        \mu_t=T_{t\#}\mu_0,\qquad
+        T_t=(1-t)\operatorname{id}+tT.
+        \]
+        For quadratic transport with \(\mu_0\) absolutely continuous, Brenier's theorem makes this the unique geodesic whenever the optimal plan is unique.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/brenier-theorem/" next_label="Next page" next_url="/notes/optimal-transport/benamou-brenier-formula/" %}
+    <div class="math-statement example">
+        <p><span class="statement-title">Translation.</span> If \(T(x)=x+a\), then \(\mu_t=(x\mapsto x+ta)_\#\mu_0\). The entire distribution moves rigidly at constant speed.</p>
+    </div>
+
+    <h3>Geodesic base spaces and dynamical plans</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(\operatorname{Geo}(X)\) be the set of constant-speed minimizing geodesics \(\gamma:[0,1]\to X\), and let \(e_t(\gamma)=\gamma_t\). A probability measure \(\boldsymbol\pi\) on \(\operatorname{Geo}(X)\) is a dynamical optimal plan if
+        \[
+        (e_0,e_1)_\#\boldsymbol\pi
+        \]
+        is an optimal coupling of its endpoint marginals.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Geodesic-space theorem.</span> If \(X\) is a complete separable geodesic space, then \((\mathcal P_p(X),W_p)\) is geodesic. Every dynamical optimal plan generates a geodesic by
+        \[
+        \mu_t=(e_t)_\#\boldsymbol\pi.
+        \]
+        Conversely, every \(W_p\)-geodesic admits such a representation under the standard measurable-selection hypotheses.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof idea.</span> Start with an optimal endpoint coupling and choose measurably a minimizing geodesic between almost every endpoint pair. The same distance-scaling proof as in Euclidean space gives a Wasserstein geodesic. Conversely, sample the curve at dyadic times, glue optimal couplings between successive samples, and use equality in the triangle inequality to show that almost every resulting path is a constant-speed base-space geodesic. Tightness and consistency pass to a path-space limit.</p>
+    </div>
+
+    <h3>Displacement versus mixture interpolation</h3>
+    <p>The ordinary convex mixture
+    \[
+    \bar\mu_t=(1-t)\mu_0+t\mu_1
+    \]
+    leaves part of the mass at the source and creates the remainder at the target. By contrast, displacement interpolation locates the mass between its endpoints.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Two Dirac masses.</span> For \(\mu_0=\delta_0\), \(\mu_1=\delta_1\),
+        \[
+        \bar\mu_t=(1-t)\delta_0+t\delta_1,
+        \qquad
+        \mu_t=\delta_t.
+        \]
+        Only the second curve describes one particle moving continuously from \(0\) to \(1\).</p>
+    </div>
+
+    <h3>Gaussian geodesics</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For nondegenerate Gaussian measures, let \(T(x)=m_1+A(x-m_0)\) be the Brenier map from page 8. Then the \(W_2\)-geodesic is Gaussian:
+        \[
+        \mu_t=N(m_t,\Sigma_t),
+        \]
+        where
+        \[
+        m_t=(1-t)m_0+tm_1,\qquad
+        \Sigma_t=((1-t)I+tA)\Sigma_0((1-t)I+tA)^{\mathsf T}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The interpolating map \(T_t=(1-t)I+tT\) is affine. The image of a Gaussian under an affine map is Gaussian, with the displayed mean and covariance.</p>
+    </div>
+
+    <h3>Uniqueness and branching</h3>
+    <p>A unique endpoint coupling and unique base-space geodesics imply a unique displacement interpolation. Nonuniqueness can arise either from several optimal couplings or from branching geodesics in \(X\). In \(\mathbb R^d\) with quadratic cost and absolutely continuous source, Brenier's theorem removes the first ambiguity and straight lines remove the second. On branching metric spaces, the same mass can follow several shortest paths.</p>
+
+    <h3>Curvature visible in probability space</h3>
+    <p>Although Euclidean particles travel along straight lines, \(\mathcal P_2(\mathbb R^d)\) is not a Hilbert space when \(d\ge2\). Distances between displacement geodesics reflect the interaction of their transport maps. This nonlinear geometry is precisely why ordinary convexity must later be replaced by displacement convexity.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Next page" next_url="/notes/optimal-transport/continuity-equation/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">10. Interpolation par déplacement</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/brenier-theorem/" next_label="Page suivante" next_url="/notes/optimal-transport/benamou-brenier-formula/" %}
+    <h2><a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">12. Géodésiques et interpolation par déplacement</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Page suivante" next_url="/notes/optimal-transport/continuity-equation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Interpolation par déplacement.</p>
+    <p>L'interpolation linéaire des mesures crée et détruit de la masse à des positions fixes. L'interpolation de Wasserstein suit plutôt les particules le long de chemins minimaux et produit les géodésiques intrinsèques de l'espace des probabilités.</p>
 
-    <h3>Définition</h3>
+    <h3>Géodésiques à vitesse constante</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Displacement interpolation moves mass along optimal transport geodesics rather than linearly mixing measures. For quadratic cost, it is \(\mu_t=((1-t)\operatorname{id}+tT)_\#\mu_0\).</p>
+        <p><span class="statement-title">Définition.</span> Une courbe \(t\mapsto\mu_t\) est une géodésique à vitesse constante si
+        \[
+        W_p(\mu_s,\mu_t)=|t-s|W_p(\mu_0,\mu_1)
+        \]
+        pour tous \(s,t\in[0,1]\).</p>
     </div>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> When \(T\) is an optimal map between \(\mu_0\) and \(\mu_1\), the curve \((\mu_t)_{t\in[0,1]}\) is a constant-speed geodesic in \(W_2\).</p>
+    <p>Sur \(\mathbb R^d\), pour \(\pi\in\Pi(\mu_0,\mu_1)\), posons
+    \[
+    e_t(x,y)=(1-t)x+ty,\qquad \mu_t=(e_t)_\#\pi.
+    \]</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème d'interpolation par déplacement.</span> Si \(\pi\) est \(p\)-optimal, alors \(\mu_t\) est une géodésique de \(W_p\) à vitesse constante.</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Construct the dynamic coupling by sending each particle along the straight segment from \(x\) to \(T(x)\). Optimality of subsegments follows from cyclical monotonicity.</p>
+        <p><span class="statement-title">Preuve.</span> La loi jointe de \(x_s=(1-s)x+sy\) et \(x_t=(1-t)x+ty\) couple \(\mu_s,\mu_t\), et \(|x_t-x_s|=(t-s)|y-x|\). Ainsi
+        \[
+        W_p(\mu_s,\mu_t)\le(t-s)W_p(\mu_0,\mu_1).
+        \]
+        Appliquons cette borne aux trois intervalles \([0,s]\), \([s,t]\), \([t,1]\). Leur somme, combinée avec l'inégalité triangulaire entre les extrémités, force l'égalité partout.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Displacement interpolation is why Wasserstein space has a geometry distinct from linear mixture geometry.</p>
+    <h3>Interpolation induite par une application</h3>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> Si le plan optimal est induit par \(T\),
+        \[
+        \mu_t=T_{t\#}\mu_0,\qquad T_t=(1-t)\operatorname{id}+tT.
+        \]
+        Pour le coût quadratique et une source absolument continue, l'unicité de Brenier donne l'unicité de la géodésique.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/brenier-theorem/" next_label="Page suivante" next_url="/notes/optimal-transport/benamou-brenier-formula/" %}
+    <div class="math-statement example">
+        <p><span class="statement-title">Translation.</span> Si \(T(x)=x+a\), alors \(\mu_t=(x\mapsto x+ta)_\#\mu_0\) : toute la loi se déplace rigidement.</p>
+    </div>
+
+    <h3>Espaces géodésiques et plans dynamiques</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Soit \(\operatorname{Geo}(X)\) l'espace des géodésiques minimisantes \(\gamma\), avec \(e_t(\gamma)=\gamma_t\). Une probabilité \(\boldsymbol\pi\) sur \(\operatorname{Geo}(X)\) est un plan dynamique optimal si \((e_0,e_1)_\#\boldsymbol\pi\) est un couplage optimal.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Si \(X\) est complet, séparable et géodésique, alors \((\mathcal P_p(X),W_p)\) est géodésique. Tout plan dynamique optimal engendre \(\mu_t=(e_t)_\#\boldsymbol\pi\), et toute géodésique de Wasserstein admet une telle représentation sous les hypothèses usuelles de sélection mesurable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Idée de la preuve.</span> À partir d'un couplage optimal des extrémités, choisissons mesurablement une géodésique entre chaque paire. Le calcul précédent donne la géodésique de mesures. Réciproquement, on échantillonne la courbe aux temps dyadiques, recolle les couplages optimaux successifs et utilise l'égalité triangulaire pour montrer que presque toute trajectoire limite est une géodésique de \(X\).</p>
+    </div>
+
+    <h3>Déplacement et mélange</h3>
+    <p>Le mélange \(\bar\mu_t=(1-t)\mu_0+t\mu_1\) laisse une partie de la masse à la source et en crée une autre à la cible. L'interpolation par déplacement place la masse entre les deux.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Deux masses de Dirac.</span> Pour \(\mu_0=\delta_0\), \(\mu_1=\delta_1\),
+        \[
+        \bar\mu_t=(1-t)\delta_0+t\delta_1,\qquad \mu_t=\delta_t.
+        \]
+        Seule la seconde courbe décrit une particule en mouvement continu.</p>
+    </div>
+
+    <h3>Géodésiques gaussiennes</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Si \(T(x)=m_1+A(x-m_0)\) est l'application de Brenier entre deux lois gaussiennes, alors
+        \[
+        \mu_t=N(m_t,\Sigma_t),
+        \]
+        avec
+        \[
+        m_t=(1-t)m_0+tm_1,\qquad
+        \Sigma_t=((1-t)I+tA)\Sigma_0((1-t)I+tA)^{\mathsf T}.
+        \]</p>
+    </div>
+
+    <h3>Unicité et branchement</h3>
+    <p>L'unicité du couplage des extrémités et celle des géodésiques de \(X\) donnent une interpolation unique. La non-unicité peut venir de plusieurs couplages optimaux ou de chemins géodésiques ramifiés. Dans \(\mathbb R^d\), le théorème de Brenier et les segments droits éliminent ces deux ambiguïtés sous les hypothèses usuelles.</p>
+
+    <h3>Courbure de l'espace des probabilités</h3>
+    <p>Bien que les particules euclidiennes suivent des droites, \(\mathcal P_2(\mathbb R^d)\) n'est pas un espace de Hilbert pour \(d\ge2\). La géométrie dépend de l'interaction des applications de transport; c'est pourquoi la convexité ordinaire devra être remplacée par la convexité par déplacement.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Page suivante" next_url="/notes/optimal-transport/continuity-equation/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">10. 位移插值</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/brenier-theorem/" next_label="下一页" next_url="/notes/optimal-transport/benamou-brenier-formula/" %}
+    <h2><a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">12. 测地线与位移插值</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="下一页" next_url="/notes/optimal-transport/continuity-equation/" %}
 
-    <p>本页整理关于“位移插值”的主要定义、命题、定理与证明思路。</p>
+    <p>测度的线性插值会在固定位置消灭和产生质量。瓦瑟斯坦插值则让粒子沿最短路径运动，由此得到概率测度空间的内在测地线。</p>
 
-    <h3>定义</h3>
+    <h3>常速测地线</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Displacement interpolation moves mass along 最优传输测地线 rather than linearly mixing 测度. For quadratic cost, it is \(\mu_t=((1-t)\operatorname{id}+tT)_\#\mu_0\).</p>
+        <p><span class="statement-title">定义.</span> 若曲线 \(t\mapsto\mu_t\) 满足
+        \[
+        W_p(\mu_s,\mu_t)=|t-s|W_p(\mu_0,\mu_1)
+        \]
+        对所有 \(s,t\in[0,1]\) 成立，则称其为从 \(\mu_0\) 到 \(\mu_1\) 的常速测地线。</p>
     </div>
 
-    <h3>命题</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> When \(T\) is an optimal map between \(\mu_0\) and \(\mu_1\), the curve \((\mu_t)_{t\in[0,1]}\) is a constant-speed 测地线 in \(W_2\).</p>
+    <p>先设 \(X=\mathbb R^d\)。对 \(\pi\in\Pi(\mu_0,\mu_1)\)，定义
+    \[
+    e_t(x,y)=(1-t)x+ty,\qquad \mu_t=(e_t)_\#\pi.
+    \]
+    每个端点对 \((x,y)\) 沿欧几里得线段移动。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">位移插值定理.</span> 若 \(\pi\) 是 \(\mu_0,\mu_1\) 间的 \(p\)-最优计划，则 \(\mu_t\) 是一条常速 \(W_p\)-测地线。</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Construct the dynamic coupling by sending each particle along the straight segment from \(x\) to \(T(x)\). Optimality of subsegments follows from cyclical monotonicity.</p>
+        <p><span class="statement-title">证明.</span> 在 \(\pi\) 下，\(x_s=(1-s)x+sy\) 与 \(x_t=(1-t)x+ty\) 的联合分布耦合 \(\mu_s,\mu_t\)，且 \(|x_t-x_s|=(t-s)|y-x|\)。故
+        \[
+        W_p(\mu_s,\mu_t)\le(t-s)W_p(\mu_0,\mu_1).
+        \]
+        把该上界分别用于 \([0,s]\)、\([s,t]\)、\([t,1]\)，再与端点间三角不等式结合，可见所有不等式必须取等号，从而得到常速公式。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Displacement interpolation is why 瓦瑟斯坦 space has a geometry distinct from linear mixture geometry.</p>
+    <h3>由映射诱导的插值</h3>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> 若最优计划由 \(T\) 诱导，则
+        \[
+        \mu_t=T_{t\#}\mu_0,\qquad T_t=(1-t)\operatorname{id}+tT.
+        \]
+        对二次传输和绝对连续源测度，布雷尼耶定理通常同时给出测地线唯一性。</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/brenier-theorem/" next_label="下一页" next_url="/notes/optimal-transport/benamou-brenier-formula/" %}
+    <div class="math-statement example">
+        <p><span class="statement-title">平移.</span> 若 \(T(x)=x+a\)，则 \(\mu_t=(x\mapsto x+ta)_\#\mu_0\)，整个分布以常速刚性移动。</p>
+    </div>
+
+    <h3>测地基空间与动态计划</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 记 \(\operatorname{Geo}(X)\) 为常速最短测地线 \(\gamma:[0,1]\to X\) 的集合，\(e_t(\gamma)=\gamma_t\)。若 \(\operatorname{Geo}(X)\) 上的概率测度 \(\boldsymbol\pi\) 满足 \((e_0,e_1)_\#\boldsymbol\pi\) 为最优耦合，则称其为动态最优计划。</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">测地空间定理.</span> 若 \(X\) 为完备可分测地空间，则 \((\mathcal P_p(X),W_p)\) 也是测地空间。每个动态最优计划通过
+        \[
+        \mu_t=(e_t)_\#\boldsymbol\pi
+        \]
+        生成一条测地线；在标准可测选择条件下，每条瓦瑟斯坦测地线都有这种表示。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明思路.</span> 从端点最优耦合出发，为几乎每个端点对可测地选择一条最短测地线，前述距离缩放论证即给出测度测地线。反过来，在二进时间点对曲线采样，拼接相邻样本之间的最优耦合，并利用三角不等式取等号证明极限中几乎每条路径都是基空间的常速测地线。</p>
+    </div>
+
+    <h3>位移插值与混合插值</h3>
+    <p>普通凸混合 \(\bar\mu_t=(1-t)\mu_0+t\mu_1\) 把部分质量留在源点，并在目标点产生其余质量。位移插值则把质量放在端点之间。</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">两个狄拉克测度.</span> 对 \(\mu_0=\delta_0\)、\(\mu_1=\delta_1\)，
+        \[
+        \bar\mu_t=(1-t)\delta_0+t\delta_1,\qquad \mu_t=\delta_t.
+        \]
+        只有第二条曲线描述一个粒子从 \(0\) 连续移动到 \(1\)。</p>
+    </div>
+
+    <h3>高斯测地线</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 若 \(T(x)=m_1+A(x-m_0)\) 是两个非退化高斯测度之间的布雷尼耶映射，则 \(W_2\)-测地线仍为高斯分布：
+        \[
+        \mu_t=N(m_t,\Sigma_t),
+        \]
+        其中
+        \[
+        m_t=(1-t)m_0+tm_1,\qquad
+        \Sigma_t=((1-t)I+tA)\Sigma_0((1-t)I+tA)^{\mathsf T}.
+        \]</p>
+    </div>
+
+    <h3>唯一性与分支</h3>
+    <p>若端点最优耦合唯一且基空间端点间测地线唯一，则位移插值唯一。非唯一性可能来自多个最优耦合，也可能来自 \(X\) 中分叉的最短路径。在 \(\mathbb R^d\) 的二次传输中，绝对连续源测度下的布雷尼耶定理消除第一种歧义，直线段则消除第二种歧义。</p>
+
+    <h3>概率空间中显现的曲率</h3>
+    <p>尽管欧几里得粒子沿直线运动，当 \(d\ge2\) 时 \(\mathcal P_2(\mathbb R^d)\) 并不是希尔伯特空间。不同位移测地线间的距离取决于传输映射的相互作用。正是这种非线性几何，使后文必须以位移凸性取代普通凸性。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="下一页" next_url="/notes/optimal-transport/continuity-equation/" %}
 </div>
 
 <hr>

@@ -1,95 +1,350 @@
 ---
 layout: default
-breadcrumb_child_label_en: "8. One-dimensional transport"
-breadcrumb_child_label_fr: "8. Transport en dimension un"
-breadcrumb_child_label_zh: "8. 一维传输"
+breadcrumb_child_label_en: "7. One-dimensional transport and monotone rearrangement"
+breadcrumb_child_label_fr: "7. Transport unidimensionnel et réarrangement monotone"
+breadcrumb_child_label_zh: "7. 一维传输与单调重排"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/one-dimensional-transport/' | relative_url }}">8. One-dimensional transport</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Next page" next_url="/notes/optimal-transport/brenier-theorem/" %}
+    <h2><a href="{{ '/notes/optimal-transport/one-dimensional-transport/' | relative_url }}">7. One-dimensional transport and monotone rearrangement</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/discrete-transport-and-assignment-problems/" next_label="Next page" next_url="/notes/optimal-transport/brenier-theorem/" %}
 
-    <p>One-dimensional transport records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>On the real line, order determines optimality. Pairing equal quantile levels produces a coupling with no crossings, and every crossing can be uncrossed without increasing a convex distance cost. This yields explicit formulas unavailable in higher dimensions.</p>
 
-    <h3>Definition</h3>
+    <h3>Distribution and quantile functions</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> On the real line, monotonicity orders mass. Quantile functions provide canonical transport maps between probability measures.</p>
+        <p><span class="statement-title">Definition.</span> For \(\mu\in\mathcal P(\mathbb R)\), define
+        \[
+        F_\mu(x)=\mu((-\infty,x]),\qquad
+        F_\mu^{-1}(u)=\inf\{x:F_\mu(x)\ge u\},\quad 0&lt;u&lt;1.
+        \]
+        The generalized inverse \(F_\mu^{-1}\) is nondecreasing and left-continuous.</p>
     </div>
 
-    <h3>Monotone rearrangement</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For convex costs depending on \(|x-y|\), the increasing rearrangement \(T=F_\nu^{-1}\circ F_\mu\) is optimal, and \(W_p^p(\mu,\nu)=\int_0^1 |F_\mu^{-1}(t)-F_\nu^{-1}(t)|^p\,\mathrm{d}t\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Quantile representation.</span> If \(U\sim\operatorname{Unif}(0,1)\), then \(F_\mu^{-1}(U)\sim\mu\).</p>
     </div>
 
-    <h3>Proof</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The quantile coupling is comonotone. Any crossing assignment can be uncrossed to reduce convex distance cost, and approximation handles atoms.</p>
+        <p><span class="statement-title">Proof.</span> For every \(x\),
+        \[
+        F_\mu^{-1}(u)\le x\quad\Longleftrightarrow\quad u\le F_\mu(x).
+        \]
+        Therefore
+        \[
+        \mathbb P(F_\mu^{-1}(U)\le x)=\mathbb P(U\le F_\mu(x))=F_\mu(x),
+        \]
+        which identifies the distribution.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> One-dimensional transport is unusually explicit. It is the model case behind stochastic order and quantile coupling arguments.</p>
+    <h3>The quantile coupling</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The monotone or comonotone coupling of \(\mu,\nu\) is
+        \[
+        \pi^\uparrow=(F_\mu^{-1},F_\nu^{-1})_\#\lambda_{(0,1)}.
+        \]
+        If \(\mu\) has no atoms, the monotone transport map is
+        \[
+        T(x)=F_\nu^{-1}(F_\mu(x)),
+        \qquad T_\#\mu=\nu.
+        \]</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Next page" next_url="/notes/optimal-transport/brenier-theorem/" %}
+    <p>When \(\mu\) has atoms, the formula \(F_\nu^{-1}\circ F_\mu\) may fail to split them and need not push \(\mu\) to \(\nu\). The quantile coupling remains valid because the auxiliary uniform variable supplies the required randomization inside jumps.</p>
+
+    <h3>The uncrossing inequality</h3>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Monge inequality.</span> Let \(h:\mathbb R\to\mathbb R\) be convex. If \(x_1\le x_2\) and \(y_1\le y_2\), then
+        \[
+        h(x_1-y_1)+h(x_2-y_2)
+        \le h(x_1-y_2)+h(x_2-y_1).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Put \(a=x_1-y_2\), \(b=x_1-y_1\), \(c=x_2-y_2\), and \(d=x_2-y_1\). Then \(a\le b,c\le d\) and \(a+d=b+c\). Thus \(b,c\) are less spread than \(a,d\) with the same sum. Convexity, equivalently monotonicity of secant slopes, gives \(h(b)+h(c)\le h(a)+h(d)\).</p>
+    </div>
+
+    <p>The right-hand side pairs the smaller source with the larger target and the larger source with the smaller target. The lemma says that removing such a crossing cannot increase any convex displacement cost.</p>
+
+    <h3>Optimality of monotone rearrangement</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Monotone rearrangement theorem.</span> Let \(c(x,y)=h(x-y)\) with \(h\) convex and lower semicontinuous. Among all \(\pi\in\Pi(\mu,\nu)\), the quantile coupling \(\pi^\uparrow\) minimizes \(\int c\,\mathrm d\pi\). If \(h\) is strictly convex and \(\mu\) is nonatomic, the optimal plan is unique and is induced by \(T=F_\nu^{-1}\circ F_\mu\), up to \(\mu\)-null sets.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For finitely supported measures with rational masses, split atoms into equal subatoms. Any coupling becomes a convex combination of matchings. Repeatedly apply the uncrossing inequality to each inverted pair; after finitely many swaps the matching is monotone and its cost has not increased. The unique monotone matching pairs equal ranks. Approximate general \(\mu,\nu\) weakly by quantized measures and use lower semicontinuity and stability of optimal costs. Strict convexity makes every genuine crossing strictly more expensive. A noncrossing plan with nonatomic first marginal has conditionals concentrated at the monotone map, giving uniqueness.</p>
+    </div>
+
+    <h3>Explicit Wasserstein formulas</h3>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> For \(1\le p&lt;\infty\) and \(\mu,\nu\in\mathcal P_p(\mathbb R)\),
+        \[
+        W_p^p(\mu,\nu)
+        =\int_0^1|F_\mu^{-1}(u)-F_\nu^{-1}(u)|^p\,\mathrm du.
+        \]
+        For compactly supported measures,
+        \[
+        W_\infty(\mu,\nu)
+        =\operatorname*{ess\,sup}_{0&lt;u&lt;1}
+        |F_\mu^{-1}(u)-F_\nu^{-1}(u)|.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Gaussian laws.</span> If \(\mu=N(m_0,\sigma_0^2)\) and \(\nu=N(m_1,\sigma_1^2)\) with \(\sigma_0,\sigma_1>0\), then
+        \[
+        T(x)=m_1+\frac{\sigma_1}{\sigma_0}(x-m_0),
+        \qquad
+        W_2^2(\mu,\nu)=(m_0-m_1)^2+(\sigma_0-\sigma_1)^2.
+        \]
+        The formula follows by writing both quantiles with the same standard normal quantile and integrating.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Empirical measures.</span> If
+        \[
+        \mu_n=\frac1n\sum_{i=1}^n\delta_{x_i},\qquad
+        \nu_n=\frac1n\sum_{i=1}^n\delta_{y_i},
+        \]
+        and \(x_{(1)}\le\cdots\le x_{(n)}\), \(y_{(1)}\le\cdots\le y_{(n)}\), then
+        \[
+        W_p^p(\mu_n,\nu_n)=\frac1n\sum_{i=1}^n|x_{(i)}-y_{(i)}|^p.
+        \]
+        Thus one-dimensional empirical transport reduces to sorting.</p>
+    </div>
+
+    <h3>Geodesics on the line</h3>
+    <p>The quantile representation also linearizes Wasserstein geodesics:
+    \[
+    F_{\mu_t}^{-1}(u)=(1-t)F_{\mu_0}^{-1}(u)+tF_{\mu_1}^{-1}(u).
+    \]
+    Consequently \(\mathcal P_2(\mathbb R)\) embeds isometrically as the closed convex cone of nondecreasing functions in \(L^2(0,1)\). This special Hilbertian description explains why one-dimensional barycenters and asymptotics are unusually explicit.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/discrete-transport-and-assignment-problems/" next_label="Next page" next_url="/notes/optimal-transport/brenier-theorem/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/one-dimensional-transport/' | relative_url }}">8. Transport en dimension un</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Page suivante" next_url="/notes/optimal-transport/brenier-theorem/" %}
+    <h2><a href="{{ '/notes/optimal-transport/one-dimensional-transport/' | relative_url }}">7. Transport unidimensionnel et réarrangement monotone</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/discrete-transport-and-assignment-problems/" next_label="Page suivante" next_url="/notes/optimal-transport/brenier-theorem/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Transport en dimension un.</p>
+    <p>Sur la droite réelle, l'ordre détermine l'optimalité. L'appariement des mêmes niveaux quantiles produit un couplage sans croisements, et tout croisement peut être supprimé sans augmenter un coût convexe du déplacement.</p>
 
-    <h3>Définition</h3>
+    <h3>Fonctions de répartition et quantiles</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> On the real line, monotonicity orders mass. Quantile functions provide canonical transport maps between probability measures.</p>
+        <p><span class="statement-title">Définition.</span> Pour \(\mu\in\mathcal P(\mathbb R)\),
+        \[
+        F_\mu(x)=\mu((-\infty,x]),\qquad
+        F_\mu^{-1}(u)=\inf\{x:F_\mu(x)\ge u\}.
+        \]
+        L'inverse généralisé \(F_\mu^{-1}\) est croissant et continu à gauche.</p>
     </div>
 
-    <h3>Monotone rearrangement</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> For convex costs depending on \(|x-y|\), the increasing rearrangement \(T=F_\nu^{-1}\circ F_\mu\) is optimal, and \(W_p^p(\mu,\nu)=\int_0^1 |F_\mu^{-1}(t)-F_\nu^{-1}(t)|^p\,\mathrm{d}t\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Représentation quantile.</span> Si \(U\sim\operatorname{Unif}(0,1)\), alors \(F_\mu^{-1}(U)\sim\mu\).</p>
     </div>
 
-    <h3>Preuve</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The quantile coupling is comonotone. Any crossing assignment can be uncrossed to reduce convex distance cost, and approximation handles atoms.</p>
+        <p><span class="statement-title">Preuve.</span> Pour tout \(x\),
+        \[
+        F_\mu^{-1}(u)\le x\quad\Longleftrightarrow\quad u\le F_\mu(x).
+        \]
+        Ainsi \(\mathbb P(F_\mu^{-1}(U)\le x)=F_\mu(x)\).</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> One-dimensional transport is unusually explicit. It is the model case behind stochastic order and quantile coupling arguments.</p>
+    <h3>Couplage quantile</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Le couplage monotone de \(\mu,\nu\) est
+        \[
+        \pi^\uparrow=(F_\mu^{-1},F_\nu^{-1})_\#\lambda_{(0,1)}.
+        \]
+        Si \(\mu\) est sans atome, l'application monotone est
+        \[
+        T(x)=F_\nu^{-1}(F_\mu(x)),\qquad T_\#\mu=\nu.
+        \]</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="Page suivante" next_url="/notes/optimal-transport/brenier-theorem/" %}
+    <p>Lorsque \(\mu\) possède des atomes, \(F_\nu^{-1}\circ F_\mu\) peut ne pas les partager correctement. Le couplage quantile reste valide, car la variable uniforme auxiliaire fournit la randomisation nécessaire à l'intérieur des sauts.</p>
+
+    <h3>Inégalité de décroisement</h3>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Inégalité de Monge.</span> Si \(h\) est convexe, \(x_1\le x_2\) et \(y_1\le y_2\), alors
+        \[
+        h(x_1-y_1)+h(x_2-y_2)
+        \le h(x_1-y_2)+h(x_2-y_1).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Posons \(a=x_1-y_2\), \(b=x_1-y_1\), \(c=x_2-y_2\), \(d=x_2-y_1\). Alors \(a\le b,c\le d\) et \(a+d=b+c\). La paire \((b,c)\) est moins dispersée que \((a,d)\) à somme égale. La convexité, ou la croissance des pentes sécantes, donne \(h(b)+h(c)\le h(a)+h(d)\).</p>
+    </div>
+
+    <h3>Optimalité du réarrangement monotone</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de réarrangement monotone.</span> Pour \(c(x,y)=h(x-y)\) avec \(h\) convexe et semi-continu inférieurement, le couplage quantile minimise \(\int c\,\mathrm d\pi\). Si \(h\) est strictement convexe et \(\mu\) sans atome, le plan optimal est unique et induit par \(T=F_\nu^{-1}\circ F_\mu\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Pour des mesures finies à masses rationnelles, divisons les atomes en sous-atomes égaux. Tout couplage est combinaison de couplages d'affectation. L'inégalité de décroisement supprime successivement chaque inversion sans augmenter le coût; l'affectation finale, qui apparie les rangs égaux, est monotone. On approche ensuite les mesures générales par des mesures quantifiées et on utilise la semi-continuité et la stabilité. La convexité stricte rend tout véritable croisement strictement plus coûteux, et l'absence d'atomes transforme le plan non croisé en l'application monotone.</p>
+    </div>
+
+    <h3>Formules explicites de Wasserstein</h3>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollaire.</span> Pour \(1\le p&lt;\infty\),
+        \[
+        W_p^p(\mu,\nu)
+        =\int_0^1|F_\mu^{-1}(u)-F_\nu^{-1}(u)|^p\,\mathrm du.
+        \]
+        Pour des mesures à support compact,
+        \[
+        W_\infty(\mu,\nu)
+        =\operatorname*{ess\,sup}_{0&lt;u&lt;1}|F_\mu^{-1}(u)-F_\nu^{-1}(u)|.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Lois gaussiennes.</span> Si \(\mu=N(m_0,\sigma_0^2)\), \(\nu=N(m_1,\sigma_1^2)\), alors
+        \[
+        T(x)=m_1+\frac{\sigma_1}{\sigma_0}(x-m_0),\qquad
+        W_2^2(\mu,\nu)=(m_0-m_1)^2+(\sigma_0-\sigma_1)^2.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Mesures empiriques.</span> Pour deux mesures équipondérées et leurs statistiques d'ordre \(x_{(i)},y_{(i)}\),
+        \[
+        W_p^p(\mu_n,\nu_n)=\frac1n\sum_{i=1}^n|x_{(i)}-y_{(i)}|^p.
+        \]
+        Le transport empirique unidimensionnel se réduit donc au tri.</p>
+    </div>
+
+    <h3>Géodésiques sur la droite</h3>
+    <p>La représentation quantile linéarise aussi les géodésiques :
+    \[
+    F_{\mu_t}^{-1}=(1-t)F_{\mu_0}^{-1}+tF_{\mu_1}^{-1}.
+    \]
+    Ainsi \(\mathcal P_2(\mathbb R)\) s'identifie isométriquement au cône convexe fermé des fonctions croissantes de \(L^2(0,1)\). Cela explique les formules particulièrement explicites pour les barycentres et les limites statistiques en dimension un.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/discrete-transport-and-assignment-problems/" next_label="Page suivante" next_url="/notes/optimal-transport/brenier-theorem/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/one-dimensional-transport/' | relative_url }}">8. 一维传输</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="下一页" next_url="/notes/optimal-transport/brenier-theorem/" %}
+    <h2><a href="{{ '/notes/optimal-transport/one-dimensional-transport/' | relative_url }}">7. 一维传输与单调重排</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/discrete-transport-and-assignment-problems/" next_label="下一页" next_url="/notes/optimal-transport/brenier-theorem/" %}
 
-    <p>本页整理关于“一维传输”的主要定义、命题、定理与证明思路。</p>
+    <p>在实直线上，序结构决定最优性。把相同分位水平配对会得到无交叉耦合，而任何交叉都可以在不增加凸位移代价的情况下消除。这给出了高维中通常不存在的显式公式。</p>
 
-    <h3>定义</h3>
+    <h3>分布函数与分位数函数</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> On the real line, monotonicity orders mass. Quantile functions provide canonical transport maps between 概率测度.</p>
+        <p><span class="statement-title">定义.</span> 对 \(\mu\in\mathcal P(\mathbb R)\)，定义
+        \[
+        F_\mu(x)=\mu((-\infty,x]),\qquad
+        F_\mu^{-1}(u)=\inf\{x:F_\mu(x)\ge u\},\quad 0&lt;u&lt;1.
+        \]
+        广义逆 \(F_\mu^{-1}\) 单调不减且左连续。</p>
     </div>
 
-    <h3>Monotone rearrangement</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> For 凸 costs depending on \(|x-y|\), the increasing rearrangement \(T=F_\nu^{-1}\circ F_\mu\) is optimal, and \(W_p^p(\mu,\nu)=\int_0^1 |F_\mu^{-1}(t)-F_\nu^{-1}(t)|^p\,\mathrm{d}t\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">分位数表示.</span> 若 \(U\sim\operatorname{Unif}(0,1)\)，则 \(F_\mu^{-1}(U)\sim\mu\)。</p>
     </div>
 
-    <h3>证明</h3>
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The quantile coupling is comonotone. Any crossing assignment can be uncrossed to reduce 凸 distance cost, and approximation handles atoms.</p>
+        <p><span class="statement-title">证明.</span> 对每个 \(x\)，
+        \[
+        F_\mu^{-1}(u)\le x\quad\Longleftrightarrow\quad u\le F_\mu(x).
+        \]
+        因而 \(\mathbb P(F_\mu^{-1}(U)\le x)=\mathbb P(U\le F_\mu(x))=F_\mu(x)\)。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> One-dimensional transport is unusually explicit. It is the model case behind 随机 order and quantile coupling arguments.</p>
+    <h3>分位数耦合</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> \(\mu,\nu\) 的单调耦合或同单调耦合为
+        \[
+        \pi^\uparrow=(F_\mu^{-1},F_\nu^{-1})_\#\lambda_{(0,1)}.
+        \]
+        若 \(\mu\) 无原子，则单调传输映射为
+        \[
+        T(x)=F_\nu^{-1}(F_\mu(x)),\qquad T_\#\mu=\nu.
+        \]</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/wasserstein-distances/" next_label="下一页" next_url="/notes/optimal-transport/brenier-theorem/" %}
+    <p>当 \(\mu\) 有原子时，\(F_\nu^{-1}\circ F_\mu\) 可能无法分裂原子，因而未必把 \(\mu\) 推前为 \(\nu\)。分位数耦合仍然有效，因为辅助均匀变量在分布函数跳跃处提供了所需随机化。</p>
+
+    <h3>消交叉不等式</h3>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">蒙日不等式.</span> 若 \(h:\mathbb R\to\mathbb R\) 为凸函数，且 \(x_1\le x_2\)、\(y_1\le y_2\)，则
+        \[
+        h(x_1-y_1)+h(x_2-y_2)
+        \le h(x_1-y_2)+h(x_2-y_1).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 令 \(a=x_1-y_2\)、\(b=x_1-y_1\)、\(c=x_2-y_2\)、\(d=x_2-y_1\)。则 \(a\le b,c\le d\) 且 \(a+d=b+c\)。在和相同的条件下，\((b,c)\) 比 \((a,d)\) 更集中。由凸性，等价地由割线斜率单调性，得到 \(h(b)+h(c)\le h(a)+h(d)\)。</p>
+    </div>
+
+    <h3>单调重排的最优性</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">单调重排定理.</span> 设 \(c(x,y)=h(x-y)\)，其中 \(h\) 凸且下半连续。则分位数耦合在 \(\Pi(\mu,\nu)\) 中最小化 \(\int c\,\mathrm d\pi\)。若 \(h\) 严格凸且 \(\mu\) 无原子，则最优计划唯一，并由 \(T=F_\nu^{-1}\circ F_\mu\) 诱导。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 先考虑质量为有理数的有限支撑测度，把每个原子拆成等质量子原子。任意耦合可写成匹配的凸组合。对每个逆序配对反复应用消交叉不等式，有限次交换后得到单调匹配，代价不增；该匹配恰把相同秩配对。再用量化测度弱逼近一般 \(\mu,\nu\)，结合下半连续性与稳定性得到结论。严格凸性使每个真实交叉都严格增加代价；第一边缘无原子时，无交叉计划的条件分布集中在单调映射上，从而得到唯一性。</p>
+    </div>
+
+    <h3>显式瓦瑟斯坦公式</h3>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">推论.</span> 对 \(1\le p&lt;\infty\) 以及 \(\mu,\nu\in\mathcal P_p(\mathbb R)\)，
+        \[
+        W_p^p(\mu,\nu)
+        =\int_0^1|F_\mu^{-1}(u)-F_\nu^{-1}(u)|^p\,\mathrm du.
+        \]
+        对紧支撑测度，
+        \[
+        W_\infty(\mu,\nu)
+        =\operatorname*{ess\,sup}_{0&lt;u&lt;1}|F_\mu^{-1}(u)-F_\nu^{-1}(u)|.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">高斯分布.</span> 若 \(\mu=N(m_0,\sigma_0^2)\)、\(\nu=N(m_1,\sigma_1^2)\)，则
+        \[
+        T(x)=m_1+\frac{\sigma_1}{\sigma_0}(x-m_0),\qquad
+        W_2^2(\mu,\nu)=(m_0-m_1)^2+(\sigma_0-\sigma_1)^2.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">经验测度.</span> 若两个等权经验测度的次序统计量分别为 \(x_{(i)}\)、\(y_{(i)}\)，则
+        \[
+        W_p^p(\mu_n,\nu_n)=\frac1n\sum_{i=1}^n|x_{(i)}-y_{(i)}|^p.
+        \]
+        因此一维经验传输只需排序。</p>
+    </div>
+
+    <h3>实直线上的测地线</h3>
+    <p>分位数表示还把瓦瑟斯坦测地线线性化：
+    \[
+    F_{\mu_t}^{-1}=(1-t)F_{\mu_0}^{-1}+tF_{\mu_1}^{-1}.
+    \]
+    因而 \(\mathcal P_2(\mathbb R)\) 等距嵌入为 \(L^2(0,1)\) 中单调不减函数组成的闭凸锥。这解释了一维瓦瑟斯坦重心与统计渐近理论为何格外显式。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/discrete-transport-and-assignment-problems/" next_label="下一页" next_url="/notes/optimal-transport/brenier-theorem/" %}
 </div>
 
 <hr>

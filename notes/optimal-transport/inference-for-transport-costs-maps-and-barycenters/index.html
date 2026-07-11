@@ -1,0 +1,411 @@
+---
+layout: default
+breadcrumb_child_label_en: "21. Inference for transport costs, maps, and barycenters"
+breadcrumb_child_label_fr: "21. Inférence pour les coûts, applications et barycentres de transport"
+breadcrumb_child_label_zh: "21. 传输代价、传输映射与重心的统计推断"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/optimal-transport/inference-for-transport-costs-maps-and-barycenters/' | relative_url }}">21. Inference for transport costs, maps, and barycenters</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" next_label="Next page" next_url="/notes/optimal-transport/projection-based-transport-in-high-dimensions/" %}
+
+    <p>Statistical optimal transport is not governed by one universal central limit theorem. Transport costs can be smooth away from equality and degenerate at equality; potentials may be unique or set-valued; maps require differentiation of convex potentials; barycenters are nonlinear Fréchet means. The inferential regime must be identified before a limit law or bootstrap is chosen.</p>
+
+    <h3>Transport value as a statistical functional</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For a fixed cost \(c\), write
+        \[
+        \mathcal T_c(\mu,\nu)
+        =\inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi.
+        \]
+        Its plug-in estimator is \(\mathcal T_c(\widehat\mu_n,\widehat\nu_m)\), or \(\mathcal T_c(\widehat\mu_n,\nu)\) in the one-sample case.</p>
+    </div>
+
+    <h3>Directional derivatives from duality</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Envelope derivative.</span> Let \(\Phi^\star(\mu,\nu)\) be the normalized set of optimal dual pairs. Under compactness and continuity conditions ensuring dual attainment and stable potentials, the directional derivative in signed zero-mass directions \((\alpha,\beta)\) is
+        \[
+        \mathcal T'_{c,(\mu,\nu)}(\alpha,\beta)
+        =
+        \sup_{(\varphi,\psi)\in\Phi^\star(\mu,\nu)}
+        \left\{\int\varphi\,\mathrm d\alpha+\int\psi\,\mathrm d\beta\right\}.
+        \]
+        If the normalized dual pair is unique, the derivative is linear.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Duality writes the value as the supremum of affine maps
+        \[
+        (\mu,\nu)\longmapsto\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        \]
+        over the cost-dependent feasible set. For a perturbation of size \(t\), any optimizer at the base point gives a lower derivative bound. Conversely, choose optimizers at the perturbed measures; compactness produces a limiting optimal pair at the base point, giving the matching upper bound. This is Danskin's envelope argument in the topology in which potential integrals are continuous.</p>
+    </div>
+
+    <p>Uniqueness of the transport plan does not by itself guarantee differentiability of the value. What matters for the envelope derivative is uniqueness of the normalized dual potentials in the relevant function space.</p>
+
+    <h3>Central limit theorem in a regular regime</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Two-sample delta method.</span> Suppose the normalized optimal potentials \((\varphi,\psi)\) are unique, square integrable, and the empirical processes admit the required functional convergence. If \(n/(n+m)\to\lambda\in(0,1)\), then
+        \[
+        \sqrt{\frac{nm}{n+m}}
+        \{\mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)\}
+        \Rightarrow N(0,\sigma^2),
+        \]
+        where
+        \[
+        \sigma^2
+        =(1-\lambda)\operatorname{Var}_\mu\{\varphi(X)\}
+        +\lambda\operatorname{Var}_\nu\{\psi(Y)\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Linear differentiability gives
+        \[
+        \mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)
+        =
+        (\widehat\mu_n-\mu)\varphi+(\widehat\nu_m-\nu)\psi
+        +o_{\mathbb P}(n^{-1/2}+m^{-1/2}).
+        \]
+        The two empirical averages are independent. The ordinary central limit theorem and the limiting sample-size ratio give the displayed variance.</p>
+    </div>
+
+    <h3>Nonunique potentials and directional limits</h3>
+    <p>If \(\Phi^\star\) contains several normalized pairs, the derivative is a supremum of Gaussian linear functionals rather than a single linear functional. The functional delta method then yields a generally non-Gaussian limit
+    \[
+    \sup_{(\varphi,\psi)\in\Phi^\star}
+    \{\mathbb G_\mu\varphi+\mathbb G_\nu\psi\}.
+    \]
+    This occurs naturally for discrete measures, symmetric configurations, and costs with flat optimal faces.</p>
+
+    <h3>Degeneracy under equality</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">First-order degeneracy.</span> For \(c(x,y)=d(x,y)^p\), \(\mathcal T_c(\mu,\mu)=0\). The zero potential pair is optimal, and in many smooth settings the first directional derivative along probability perturbations vanishes. The empirical transport cost under the null is then governed by a second-order or nonsmooth limit and does not have the same scaling as under \(\mu\ne\nu\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">One-dimensional \(W_2\) null limit.</span> Suppose \(\mu\) has a positive smooth density \(f\) on a compact interval and quantile \(Q=F^{-1}\). The quantile process satisfies
+        \[
+        \sqrt n\{F_n^{-1}(u)-Q(u)\}
+        \Rightarrow-\frac{B(u)}{f(Q(u))},
+        \]
+        where \(B\) is a Brownian bridge. Therefore
+        \[
+        nW_2^2(\widehat\mu_n,\mu)
+        \Rightarrow
+        \int_0^1\frac{B(u)^2}{f(Q(u))^2}\,\mathrm du.
+        \]
+        The limit is quadratic and non-Gaussian, illustrating why a root-\(n\) Gaussian approximation to \(W_2^2\) fails at the null.</p>
+    </div>
+
+    <h3>Bootstrap validity</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Bootstrap principle.</span> The ordinary empirical bootstrap is typically valid when \(\mathcal T_c\) is fully Hadamard differentiable with a unique linear derivative and the potential class is empirically regular. It may fail when the derivative is only directional, when the null is degenerate, or when the empirical support changes the active optimal face.</p>
+    </div>
+
+    <p>Possible remedies include subsampling, an \(m\)-out-of-\(n\) bootstrap, estimating the directional derivative and simulating its Gaussian argument, or using entropic regularization to obtain a smooth functional. Each remedy targets a different source of nonregularity and must be justified for the regime at hand.</p>
+
+    <h3>Estimating optimal potentials</h3>
+    <p>Empirical dual potentials are \(M\)-estimators over a constrained function class. Consistency follows from compactness after normalization, uniform convergence of the empirical dual objective, and uniqueness of the population potential. Rates require local curvature of the dual criterion and control of the complexity of the potential class. Potentials are statistically important because they are influence functions for regular transport costs.</p>
+
+    <h3>Estimating transport maps</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Plug-in map principle.</span> For quadratic cost, estimate densities or potentials, solve an empirical or regularized Monge--Ampère problem for \(\widehat u\), and set \(\widehat T=\nabla\widehat u\). Under strong convexity and regularity,
+        \[
+        \|\widehat T-T\|_{L^2(\mu)}
+        \]
+        can be controlled by errors in the estimated potential, its gradient, or the source and target measures in stronger norms than weak convergence alone.</p>
+    </div>
+
+    <p>Raw empirical measures in dimension \(d\ge2\) usually yield a discrete plan rather than a globally defined map. A map estimator therefore requires interpolation, density smoothing, semi-discrete transport, or another structural regularization. Stability of costs alone is insufficient: differentiating a convex potential is an ill-posed operation unless additional smoothness is imposed.</p>
+
+    <h3>Statistical barycenters</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Fréchet \(M\)-estimation principle.</span> Let \(\mu_1,\ldots,\mu_N\) be sampled from a law \(\mathsf Q\) on \(\mathcal P_2\), and let
+        \[
+        \widehat{\bar\mu}_N\in\operatorname*{arg\,min}_\nu
+        \frac1{2N}\sum_{i=1}^NW_2^2(\nu,\mu_i).
+        \]
+        If the population barycenter is unique and second moments are integrable, then \(\widehat{\bar\mu}_N\to\bar\mu\) under standard compactness assumptions. If the Fréchet functional has a nonsingular second variation in a tangent chart, then
+        \[
+        \sqrt N\,\log_{\bar\mu}(\widehat{\bar\mu}_N)
+        \Rightarrow H^{-1}G,
+        \]
+        where \(G\) is the Gaussian limit of empirical tangent scores and \(H\) is the Hessian of the population Fréchet functional.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof mechanism.</span> Uniform laws of large numbers on moment-bounded sets give consistency by the argmin theorem. For the limit law, expand the empirical first-order barycenter equation around \(\bar\mu\):
+        \[
+        0=\frac1N\sum_i S(\bar\mu,\mu_i)
+        +H\,\log_{\bar\mu}(\widehat{\bar\mu}_N)+o_{\mathbb P}(N^{-1/2}).
+        \]
+        The first term obeys a central limit theorem in the tangent space, and inversion of \(H\) gives the result. Curvature, nonuniqueness, or singular measures can invalidate this linear chart.</p>
+    </div>
+
+    <h3>Regularization changes the estimand</h3>
+    <p>Entropic and other regularizations often restore differentiability and improve sample behavior, but they estimate a regularized transport functional. Valid inference must separate stochastic error from regularization bias and specify whether the regularization parameter is fixed or tends to zero. Pages 23 and 24 make this tradeoff explicit.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" next_label="Next page" next_url="/notes/optimal-transport/projection-based-transport-in-high-dimensions/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/optimal-transport/inference-for-transport-costs-maps-and-barycenters/' | relative_url }}">21. Inférence pour les coûts, applications et barycentres de transport</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" next_label="Page suivante" next_url="/notes/optimal-transport/projection-based-transport-in-high-dimensions/" %}
+
+    <p>L'inférence en transport optimal n'est pas régie par un théorème central limite unique. Les coûts peuvent être lisses hors de l'égalité et dégénérés à l'égalité; les potentiels peuvent être uniques ou multivalués; les applications exigent de différencier des potentiels convexes; les barycentres sont des moyennes de Fréchet non linéaires.</p>
+
+    <h3>Valeur de transport comme fonctionnelle statistique</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span>
+        \[
+        \mathcal T_c(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi.
+        \]
+        Son estimateur plug-in est \(\mathcal T_c(\widehat\mu_n,\widehat\nu_m)\).</p>
+    </div>
+
+    <h3>Dérivées directionnelles par dualité</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Dérivée d'enveloppe.</span> Si \(\Phi^\star(\mu,\nu)\) est l'ensemble normalisé des potentiels optimaux et si les hypothèses de compacité sont satisfaites,
+        \[
+        \mathcal T'_{c,(\mu,\nu)}(\alpha,\beta)
+        =
+        \sup_{(\varphi,\psi)\in\Phi^\star}
+        \left\{\int\varphi\,\mathrm d\alpha+\int\psi\,\mathrm d\beta\right\}.
+        \]
+        Si la paire normalisée est unique, la dérivée est linéaire.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La dualité écrit la valeur comme le supremum d'applications affines des marginales. Un potentiel optimal au point de base donne la borne directionnelle inférieure. Des potentiels optimaux aux mesures perturbées possèdent une sous-suite convergeant vers un potentiel optimal de base et donnent la borne supérieure. C'est l'argument d'enveloppe de Danskin.</p>
+    </div>
+
+    <h3>Théorème central limite régulier</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Méthode delta à deux échantillons.</span> Si \((\varphi,\psi)\) est l'unique paire normalisée et si les processus empiriques sont réguliers, pour \(n/(n+m)\to\lambda\),
+        \[
+        \sqrt{\frac{nm}{n+m}}\{\mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)\}
+        \Rightarrow N(0,\sigma^2),
+        \]
+        où
+        \[
+        \sigma^2=(1-\lambda)\operatorname{Var}_\mu\varphi
+        +\lambda\operatorname{Var}_\nu\psi.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> La différentiabilité linéaire donne
+        \[
+        \mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)
+        =(\widehat\mu_n-\mu)\varphi+(\widehat\nu_m-\nu)\psi
+        +o_{\mathbb P}(n^{-1/2}+m^{-1/2}).
+        \]
+        Le théorème central limite appliqué aux deux moyennes indépendantes conclut.</p>
+    </div>
+
+    <h3>Potentiels non uniques</h3>
+    <p>Si plusieurs paires sont optimales, la limite est généralement
+    \[
+    \sup_{(\varphi,\psi)\in\Phi^\star}
+    \{\mathbb G_\mu\varphi+\mathbb G_\nu\psi\},
+    \]
+    un supremum gaussien non nécessairement normal. Ce cas apparaît pour les mesures discrètes, les symétries et les faces optimales plates.</p>
+
+    <h3>Dégénérescence sous l'égalité</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Dégénérescence du premier ordre.</span> Pour \(c=d^p\), \(\mathcal T_c(\mu,\mu)=0\), et la première dérivée s'annule souvent. Le coût empirique sous l'hypothèse nulle suit alors une limite de second ordre ou non lisse.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Limite unidimensionnelle de \(W_2\).</span> Si \(f\) est positive lisse et \(Q=F^{-1}\),
+        \[
+        \sqrt n(F_n^{-1}-Q)\Rightarrow-\frac B{f\circ Q},
+        \]
+        donc
+        \[
+        nW_2^2(\widehat\mu_n,\mu)
+        \Rightarrow\int_0^1\frac{B(u)^2}{f(Q(u))^2}\,\mathrm du.
+        \]
+        La limite quadratique n'est pas gaussienne.</p>
+    </div>
+
+    <h3>Validité du bootstrap</h3>
+    <p>Le bootstrap empirique ordinaire est typiquement valide sous différentiabilité complète et dérivée linéaire unique. Il peut échouer pour une dérivée seulement directionnelle, au point nul dégénéré ou lorsque le support empirique change la face active. Le sous-échantillonnage, le bootstrap \(m\)-parmi-\(n\), la simulation de la dérivée directionnelle et la régularisation entropique répondent à des défaillances différentes.</p>
+
+    <h3>Estimation des potentiels</h3>
+    <p>Les potentiels duaux empiriques sont des \(M\)-estimateurs sous contrainte. Leur cohérence vient de la compacité après normalisation, de la convergence uniforme de l'objectif et de l'unicité. Leurs vitesses demandent une courbure locale et un contrôle de complexité. Dans le régime régulier, ils jouent le rôle de fonctions d'influence du coût.</p>
+
+    <h3>Estimation des applications</h3>
+    <p>Pour le coût quadratique, on estime les densités ou le potentiel, résout un problème de Monge--Ampère régularisé et pose \(\widehat T=\nabla\widehat u\). Les mesures empiriques brutes donnent généralement un plan discret, non une application globale. Le lissage, le transport semi-discret ou une interpolation structurelle sont donc indispensables; la stabilité du coût seule ne contrôle pas la dérivée du potentiel.</p>
+
+    <h3>Barycentres statistiques</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Principe de \(M\)-estimation de Fréchet.</span> Le barycentre empirique
+        \[
+        \widehat{\bar\mu}_N\in\operatorname*{arg\,min}_\nu
+        \frac1{2N}\sum_iW_2^2(\nu,\mu_i)
+        \]
+        est cohérent sous unicité et intégrabilité. Si la seconde variation est inversible dans une carte tangente,
+        \[
+        \sqrt N\,\log_{\bar\mu}(\widehat{\bar\mu}_N)\Rightarrow H^{-1}G.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Mécanisme.</span> Une loi uniforme des grands nombres et le théorème de l'argmin donnent la cohérence. Le développement de l'équation du premier ordre fournit une moyenne de scores tangents plus \(H\log_{\bar\mu}(\widehat{\bar\mu}_N)\); un théorème central limite tangent et l'inversion de \(H\) donnent la loi limite.</p>
+    </div>
+
+    <h3>La régularisation change la cible</h3>
+    <p>La régularisation entropique restaure souvent la différentiabilité, mais estime une fonctionnelle différente. L'inférence doit séparer erreur stochastique et biais de régularisation, et préciser si le paramètre reste fixe ou tend vers zéro.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" next_label="Page suivante" next_url="/notes/optimal-transport/projection-based-transport-in-high-dimensions/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/optimal-transport/inference-for-transport-costs-maps-and-barycenters/' | relative_url }}">21. 传输代价、传输映射与重心的统计推断</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" next_label="下一页" next_url="/notes/optimal-transport/projection-based-transport-in-high-dimensions/" %}
+
+    <p>统计最优传输不存在一个普适的中心极限定理。传输代价在两个分布不同处可能光滑，在相等处却退化；势可能唯一也可能构成集合；映射估计需要对凸势求导；重心则是非线性的弗雷歇均值。因此必须先识别推断所处的正则或非正则区域，再选择极限理论与自助法。</p>
+
+    <h3>作为统计泛函的传输值</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 对固定代价 \(c\)，记
+        \[
+        \mathcal T_c(\mu,\nu)
+        =\inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi.
+        \]
+        其代入估计量为 \(\mathcal T_c(\widehat\mu_n,\widehat\nu_m)\)。</p>
+    </div>
+
+    <h3>由对偶性得到方向导数</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">包络导数.</span> 记 \(\Phi^\star(\mu,\nu)\) 为规范化最优对偶势对的集合。在保证对偶达到和势稳定的紧性条件下，对总质量为零的有符号方向 \((\alpha,\beta)\)，
+        \[
+        \mathcal T'_{c,(\mu,\nu)}(\alpha,\beta)
+        =
+        \sup_{(\varphi,\psi)\in\Phi^\star(\mu,\nu)}
+        \left\{\int\varphi\,\mathrm d\alpha+\int\psi\,\mathrm d\beta\right\}.
+        \]
+        若规范化势对唯一，则导数为线性的。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 对偶性把传输值写成关于 \((\mu,\nu)\) 的一族仿射泛函的上确界。基点处任一最优势给出扰动导数的下界。反之，在扰动测度处选最优势；紧性使其某子列收敛到基点处的最优势，从而给出相同上界。这就是丹斯金包络论证。</p>
+    </div>
+
+    <p>最优传输计划唯一并不足以保证传输值可微。包络导数是否线性，关键在于相应函数空间中的规范化对偶势是否唯一。</p>
+
+    <h3>正则区域中的中心极限定理</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">双样本函数型 Delta 方法.</span> 设规范化最优势 \((\varphi,\psi)\) 唯一、平方可积，经验过程满足所需函数收敛，且 \(n/(n+m)\to\lambda\in(0,1)\)。则
+        \[
+        \sqrt{\frac{nm}{n+m}}
+        \{\mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)\}
+        \Rightarrow N(0,\sigma^2),
+        \]
+        其中
+        \[
+        \sigma^2=(1-\lambda)\operatorname{Var}_\mu\{\varphi(X)\}
+        +\lambda\operatorname{Var}_\nu\{\psi(Y)\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 线性可微性给出
+        \[
+        \mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)
+        =(\widehat\mu_n-\mu)\varphi+(\widehat\nu_m-\nu)\psi
+        +o_{\mathbb P}(n^{-1/2}+m^{-1/2}).
+        \]
+        两个经验平均相互独立，对其应用普通中心极限定理与样本量比例极限即可。</p>
+    </div>
+
+    <h3>非唯一势与方向极限</h3>
+    <p>若 \(\Phi^\star\) 含有多个规范化势对，则导数是高斯线性泛函的上确界，而非单个线性泛函。函数型 Delta 方法给出一般非高斯极限
+    \[
+    \sup_{(\varphi,\psi)\in\Phi^\star}
+    \{\mathbb G_\mu\varphi+\mathbb G_\nu\psi\}.
+    \]
+    离散测度、对称构型和具有平坦最优面的代价中都会自然出现这种情形。</p>
+
+    <h3>相等零假设下的退化</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">一阶退化.</span> 对 \(c(x,y)=d(x,y)^p\)，\(\mathcal T_c(\mu,\mu)=0\)。零势对最优，许多光滑情形中沿概率扰动的一阶方向导数也为零。因此零假设下的经验传输代价由二阶或非光滑极限控制，其尺度不同于 \(\mu\ne\nu\) 时的尺度。</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">一维 \(W_2\) 零假设极限.</span> 设 \(\mu\) 在紧区间上具有光滑正密度 \(f\)，分位数函数为 \(Q=F^{-1}\)。分位数过程满足
+        \[
+        \sqrt n\{F_n^{-1}(u)-Q(u)\}
+        \Rightarrow-\frac{B(u)}{f(Q(u))},
+        \]
+        其中 \(B\) 为布朗桥。因此
+        \[
+        nW_2^2(\widehat\mu_n,\mu)
+        \Rightarrow
+        \int_0^1\frac{B(u)^2}{f(Q(u))^2}\,\mathrm du.
+        \]
+        极限为二次型且非高斯，说明在零假设处对 \(W_2^2\) 使用根号 \(n\) 高斯近似会失败。</p>
+    </div>
+
+    <h3>自助法的有效性</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">自助法原则.</span> 当 \(\mathcal T_c\) 完全哈达玛可微、导数唯一且线性，并且势函数类具有适当经验过程正则性时，普通经验自助法通常有效。若只有方向可微性、零假设退化，或经验支撑改变活跃最优面，则普通自助法可能失败。</p>
+    </div>
+
+    <p>可能的修正包括子抽样、\(m\)-out-of-\(n\) 自助法、估计方向导数后模拟其高斯输入，以及使用熵正则化获得光滑泛函。不同方法对应不同非正则来源，不能互相替代。</p>
+
+    <h3>最优势的估计</h3>
+    <p>经验对偶势是受约束函数类上的 \(M\)-估计量。规范化后的紧性、经验对偶目标的一致收敛以及总体势唯一性给出相合性。速率还需要对偶准则的局部曲率和势函数类复杂度控制。在正则区域中，最优势就是传输代价的影响函数。</p>
+
+    <h3>最优映射的估计</h3>
+    <p>对二次代价，可以估计密度或势，求解经验或正则化蒙日--安培问题，再令 \(\widehat T=\nabla\widehat u\)。高维原始经验测度通常只给出离散计划，而非全局映射，因此必须引入插值、密度平滑、半离散传输或其他结构正则化。代价稳定性本身不足以控制映射，因为对凸势求导是病态操作。</p>
+
+    <h3>统计重心</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">弗雷歇 \(M\)-估计原理.</span> 设 \(\mu_1,\ldots,\mu_N\) 来自 \(\mathcal P_2\) 上的分布 \(\mathsf Q\)，经验重心为
+        \[
+        \widehat{\bar\mu}_N\in\operatorname*{arg\,min}_\nu
+        \frac1{2N}\sum_iW_2^2(\nu,\mu_i).
+        \]
+        在总体重心唯一且二阶矩可积时，标准紧性条件给出 \(\widehat{\bar\mu}_N\to\bar\mu\)。若弗雷歇泛函在切空间坐标中具有非奇异二阶变分，则
+        \[
+        \sqrt N\,\log_{\bar\mu}(\widehat{\bar\mu}_N)\Rightarrow H^{-1}G.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明机制.</span> 矩有界集上的一致大数定律与极小值定理给出相合性。再在 \(\bar\mu\) 附近展开经验一阶重心方程：
+        \[
+        0=\frac1N\sum_iS(\bar\mu,\mu_i)
+        +H\,\log_{\bar\mu}(\widehat{\bar\mu}_N)+o_{\mathbb P}(N^{-1/2}).
+        \]
+        第一项在切空间中满足中心极限定理，反演 \(H\) 即得极限。曲率、非唯一性或奇异测度会破坏该线性坐标。</p>
+    </div>
+
+    <h3>正则化会改变目标泛函</h3>
+    <p>熵正则化常能恢复可微性并改善样本行为，但它估计的是正则化传输泛函。有效推断必须区分随机误差与正则化偏差，并说明正则化参数是固定还是趋于零。第 23、24 页将进一步分析这一权衡。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/empirical-measures-in-wasserstein-distance/" next_label="下一页" next_url="/notes/optimal-transport/projection-based-transport-in-high-dimensions/" %}
+</div>
+
+<hr>

@@ -1,95 +1,321 @@
 ---
 layout: default
-breadcrumb_child_label_en: "9. Brenier theorem"
-breadcrumb_child_label_fr: "9. Théorème de Brenier"
-breadcrumb_child_label_zh: "9. Brenier 定理"
+breadcrumb_child_label_en: "8. Quadratic transport and Brenier's theorem"
+breadcrumb_child_label_fr: "8. Transport quadratique et théorème de Brenier"
+breadcrumb_child_label_zh: "8. 二次传输与布雷尼耶定理"
 ---
 
 <div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">9. Brenier theorem</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Next page" next_url="/notes/optimal-transport/displacement-interpolation/" %}
+    <h2><a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">8. Quadratic transport and Brenier's theorem</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Next page" next_url="/notes/optimal-transport/monge-ampere-equation/" %}
 
-    <p>Brenier theorem records the objects, main results, proof mechanisms, and boundary cases needed for the optimal transport note.</p>
+    <p>For squared Euclidean distance, cyclical monotonicity becomes ordinary convexity. This identifies the optimal map as a gradient and gives a multidimensional replacement for monotone rearrangement.</p>
 
-    <h3>Definition</h3>
+    <h3>Convex subgradients</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For quadratic cost in Euclidean space, optimal transport maps are gradients of convex functions when the source measure is absolutely continuous.</p>
+        <p><span class="statement-title">Definition.</span> For a proper lower-semicontinuous convex function \(u:\mathbb R^d\to(-\infty,\infty]\), its subdifferential at \(x\) is
+        \[
+        \partial u(x)=\{y:u(z)\ge u(x)+y\cdot(z-x)\ \text{for every }z\}.
+        \]
+        If \(u\) is differentiable at \(x\), then \(\partial u(x)=\{\nabla u(x)\}\).</p>
     </div>
 
-    <h3>Brenier theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\mu\) is absolutely continuous on \(\mathbb R^d\) and \(\nu\) has finite second moment, there is a unique optimal map for quadratic cost, and it has the form \(T=\nabla\phi\) for a convex function \(\phi\).</p>
+        <p><span class="statement-title">Rockafellar theorem.</span> A set \(\Gamma\subset\mathbb R^d\times\mathbb R^d\) is cyclically monotone for the pairing, meaning
+        \[
+        \sum_i x_i\cdot y_i\ge\sum_i x_i\cdot y_{\sigma(i)},
+        \]
+        if and only if it is contained in \(\partial u\) for some proper lower-semicontinuous convex \(u\).</p>
     </div>
 
-    <h3>Proof</h3>
+    <p>For \(c(x,y)=\tfrac12|x-y|^2\), expanding the squares shows that \(c\)-cyclical monotonicity is exactly cyclical monotonicity of the pairing. The quadratic terms cancel under permutations.</p>
+
+    <h3>Brenier's theorem</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Brenier's theorem.</span> Let \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\), and suppose \(\mu\) is absolutely continuous with respect to Lebesgue measure. Then there exists a convex lower-semicontinuous \(u\) such that
+        \[
+        T=\nabla u,\qquad T_\#\mu=\nu.
+        \]
+        The plan \((\operatorname{id},T)_\#\mu\) is the unique optimal plan for the cost \(\tfrac12|x-y|^2\). Consequently \(T\) is the unique optimal map \(\mu\)-almost everywhere.</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Quadratic cost converts \(c\)-cyclical monotonicity into ordinary cyclical monotonicity of the map. Rockafellar's theorem identifies cyclically monotone maps as subgradients of convex functions; absolute continuity selects a gradient almost everywhere.</p>
+        <p><span class="statement-title">Proof.</span> Existence of an optimal plan \(\pi\) follows from page 3. Its support is \(c\)-cyclically monotone, so after expanding the quadratic cost it is cyclically monotone for \(x\cdot y\). Rockafellar's theorem gives a convex \(u\) with \(\operatorname{supp}\pi\subset\partial u\).</p>
+        <p>A convex function on \(\mathbb R^d\) is locally Lipschitz in the interior of its effective domain and therefore differentiable Lebesgue-almost everywhere by Rademacher's theorem. Since \(\mu\ll\mathcal L^d\), \(\partial u(x)=\{\nabla u(x)\}\) for \(\mu\)-almost every \(x\). Disintegrating \(\pi=\mu(\mathrm dx)\pi_x(\mathrm dy)\), the support inclusion forces \(\pi_x=\delta_{\nabla u(x)}\) almost surely. Hence \(\pi=(\operatorname{id},\nabla u)_\#\mu\) and \((\nabla u)_\#\mu=\nu\).</p>
+        <p>If \(\widetilde\pi\) is another optimal plan, the average \((\pi+\widetilde\pi)/2\) is optimal and the same argument makes it a graph plan. But the conditional law of this average is \(\tfrac12\delta_{\nabla u(x)}+\tfrac12\widetilde\pi_x\), which can be a Dirac mass only when \(\widetilde\pi_x=\delta_{\nabla u(x)}\) almost surely. Thus the optimal plan is unique.</p>
     </div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Brenier's theorem is the main bridge between optimal transport and convex analysis.</p>
+    <h3>Converse optimality</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(u\) is convex, \(\nabla u\) exists \(\mu\)-almost everywhere, and \(T=\nabla u\) pushes \(\mu\) to \(\nu\), then \(T\) is optimal for quadratic cost.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Next page" next_url="/notes/optimal-transport/displacement-interpolation/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The graph of \(\partial u\) is cyclically monotone by summing the subgradient inequalities around a cycle. Therefore the graph of \(T\) is \(c\)-cyclically monotone for quadratic cost. The optimal support theorem from page 5, or equivalently the convex conjugate inequality \(u(x)+u^*(y)\ge x\cdot y\) with equality at \(y=\nabla u(x)\), supplies dual potentials touching the cost on the graph. Complementary slackness proves optimality.</p>
+    </div>
+
+    <h3>Inverse transport and Legendre duality</h3>
+    <p>If both \(\mu\) and \(\nu\) are absolutely continuous, the reverse optimal map is \(\nabla u^*\), where
+    \[
+    u^*(y)=\sup_x\{x\cdot y-u(x)\}.
+    \]
+    At differentiability points,
+    \[
+    y=\nabla u(x)\quad\Longleftrightarrow\quad x=\nabla u^*(y).
+    \]
+    Thus the forward and reverse maps are inverse almost everywhere with respect to the corresponding measures.</p>
+
+    <h3>Gaussian transport</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Let \(\mu=N(m_0,\Sigma_0)\), \(\nu=N(m_1,\Sigma_1)\), with positive-definite covariances. The Brenier map is
+        \[
+        T(x)=m_1+A(x-m_0),
+        \quad
+        A=\Sigma_0^{-1/2}
+        (\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}
+        \Sigma_0^{-1/2},
+        \]
+        and
+        \[
+        W_2^2(\mu,\nu)
+        =|m_0-m_1|^2+
+        \operatorname{tr}\!\left(
+        \Sigma_0+\Sigma_1
+        -2(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}
+        \right).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The matrix \(A\) is symmetric positive definite, hence \(T=\nabla u\) for the convex quadratic
+        \[
+        u(x)=m_1\cdot x+\tfrac12(x-m_0)^{\mathsf T}A(x-m_0).
+        \]
+        Direct multiplication gives \(A\Sigma_0A^{\mathsf T}=\Sigma_1\), so \(T_\#\mu=\nu\). The converse proposition proves optimality. Expanding \(\mathbb E|X-T(X)|^2\) and using the covariance identity yields the distance formula.</p>
+    </div>
+
+    <h3>Polar factorization</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Polar factorization theorem.</span> Let \(\mu\ll\mathcal L^d\) and let \(S\in L^2(\mu;\mathbb R^d)\). If \(\nu=S_\#\mu\), then
+        \[
+        S=\nabla u\circ s
+        \]
+        \(\mu\)-almost everywhere, where \(\nabla u\) is the Brenier map from \(\mu\) to \(\nu\) and \(s_\#\mu=\mu\). Under the usual nondegeneracy assumptions the factorization is unique.</p>
+    </div>
+
+    <p>This is the nonlinear analogue of matrix polar decomposition: the measure-preserving map \(s\) plays the role of the orthogonal factor, and the gradient of a convex function plays the role of the positive factor.</p>
+
+    <h3>Why absolute continuity matters</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> If \(\mu=\delta_0\) and \(\nu=\tfrac12(\delta_{-1}+\delta_1)\), the optimal plan cannot be induced by a map. More subtly, a source supported on a lower-dimensional surface may meet a multivalued part of \(\partial u\) on a set of positive \(\mu\)-mass. Absolute continuity removes this ambiguity because convex functions are differentiable Lebesgue-almost everywhere.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Next page" next_url="/notes/optimal-transport/monge-ampere-equation/" %}
 </div>
 
 <div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">9. Théorème de Brenier</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/displacement-interpolation/" %}
+    <h2><a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">8. Transport quadratique et théorème de Brenier</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/monge-ampere-equation/" %}
 
-    <p>Cette page rassemble les définitions, résultats et mécanismes de preuve autour de Théorème de Brenier.</p>
+    <p>Pour la distance euclidienne quadratique, la monotonie cyclique devient la convexité ordinaire. L'application optimale est donc un gradient, ce qui fournit l'analogue multidimensionnel du réarrangement monotone.</p>
 
-    <h3>Définition</h3>
+    <h3>Sous-gradients convexes</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For quadratic cost in Euclidean space, optimal transport maps are gradients of convex functions when the source measure is absolutely continuous.</p>
+        <p><span class="statement-title">Définition.</span> Pour une fonction convexe propre semi-continue inférieurement \(u\),
+        \[
+        \partial u(x)=\{y:u(z)\ge u(x)+y\cdot(z-x)\ \text{pour tout }z\}.
+        \]
+        Si \(u\) est différentiable en \(x\), alors \(\partial u(x)=\{\nabla u(x)\}\).</p>
     </div>
 
-    <h3>Brenier theorem</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> If \(\mu\) is absolutely continuous on \(\mathbb R^d\) and \(\nu\) has finite second moment, there is a unique optimal map for quadratic cost, and it has the form \(T=\nabla\phi\) for a convex function \(\phi\).</p>
+        <p><span class="statement-title">Théorème de Rockafellar.</span> Un ensemble \(\Gamma\) est cycliquement monotone pour l'appariement, c'est-à-dire
+        \[
+        \sum_i x_i\cdot y_i\ge\sum_i x_i\cdot y_{\sigma(i)},
+        \]
+        si et seulement s'il est contenu dans \(\partial u\) pour une fonction convexe propre semi-continue inférieurement \(u\).</p>
     </div>
 
-    <h3>Preuve</h3>
+    <p>Pour \(c(x,y)=\tfrac12|x-y|^2\), le développement des carrés montre que la \(c\)-monotonie cyclique est exactement la monotonie cyclique de \(x\cdot y\).</p>
+
+    <h3>Théorème de Brenier</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de Brenier.</span> Soient \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\), avec \(\mu\ll\mathcal L^d\). Il existe une fonction convexe semi-continue inférieurement \(u\) telle que
+        \[
+        T=\nabla u,\qquad T_\#\mu=\nu.
+        \]
+        Le plan \((\operatorname{id},T)_\#\mu\) est l'unique plan optimal pour \(\tfrac12|x-y|^2\), et \(T\) est l'unique application optimale \(\mu\)-presque partout.</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Quadratic cost converts \(c\)-cyclical monotonicity into ordinary cyclical monotonicity of the map. Rockafellar's theorem identifies cyclically monotone maps as subgradients of convex functions; absolute continuity selects a gradient almost everywhere.</p>
+        <p><span class="statement-title">Preuve.</span> Un plan optimal \(\pi\) existe par la page 3. Son support est \(c\)-cycliquement monotone; après développement du coût quadratique, le théorème de Rockafellar donne une fonction convexe \(u\) telle que \(\operatorname{supp}\pi\subset\partial u\).</p>
+        <p>Une fonction convexe est localement lipschitzienne dans l'intérieur de son domaine et donc différentiable presque partout par le théorème de Rademacher. Comme \(\mu\ll\mathcal L^d\), \(\partial u(x)=\{\nabla u(x)\}\) pour \(\mu\)-presque tout \(x\). En désintégrant \(\pi=\mu(\mathrm dx)\pi_x(\mathrm dy)\), l'inclusion du support impose \(\pi_x=\delta_{\nabla u(x)}\). Ainsi \(\pi=(\operatorname{id},\nabla u)_\#\mu\).</p>
+        <p>Si \(\widetilde\pi\) est aussi optimale, leur moyenne est optimale et doit également être portée par un graphe. Sa loi conditionnelle est \(\tfrac12\delta_{\nabla u(x)}+\tfrac12\widetilde\pi_x\), qui ne peut être une masse de Dirac que si \(\widetilde\pi_x=\delta_{\nabla u(x)}\). L'unicité suit.</p>
     </div>
 
-    <h3>Remarque</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Brenier's theorem is the main bridge between optimal transport and convex analysis.</p>
+    <h3>Optimalité réciproque</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Si \(u\) est convexe, \(\nabla u\) existe \(\mu\)-presque partout et \(T=\nabla u\) vérifie \(T_\#\mu=\nu\), alors \(T\) est optimal pour le coût quadratique.</p>
     </div>
 
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/displacement-interpolation/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> Le graphe de \(\partial u\) est cycliquement monotone, comme on le voit en sommant les inégalités de sous-gradient le long d'un cycle. Il est donc \(c\)-cycliquement monotone. L'inégalité de Fenchel \(u(x)+u^*(y)\ge x\cdot y\), avec égalité pour \(y=\nabla u(x)\), fournit des potentiels duaux qui touchent le coût sur le graphe. La complémentarité prouve l'optimalité.</p>
+    </div>
+
+    <h3>Transport inverse et dualité de Legendre</h3>
+    <p>Si \(\mu\) et \(\nu\) sont toutes deux absolument continues, l'application optimale inverse est \(\nabla u^*\), où \(u^*(y)=\sup_x\{x\cdot y-u(x)\}\). Aux points de différentiabilité,
+    \[
+    y=\nabla u(x)\quad\Longleftrightarrow\quad x=\nabla u^*(y).
+    \]</p>
+
+    <h3>Transport gaussien</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Pour \(\mu=N(m_0,\Sigma_0)\), \(\nu=N(m_1,\Sigma_1)\) à covariances définies positives,
+        \[
+        T(x)=m_1+A(x-m_0),\quad
+        A=\Sigma_0^{-1/2}(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\Sigma_0^{-1/2},
+        \]
+        et
+        \[
+        W_2^2=|m_0-m_1|^2+
+        \operatorname{tr}\!\left(\Sigma_0+\Sigma_1
+        -2(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\right).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Preuve.</span> \(A\) est symétrique définie positive, donc \(T\) est le gradient d'une fonction quadratique convexe. L'identité \(A\Sigma_0A^{\mathsf T}=\Sigma_1\) donne \(T_\#\mu=\nu\), puis la proposition précédente donne l'optimalité. Le développement de \(\mathbb E|X-T(X)|^2\) fournit la formule.</p>
+    </div>
+
+    <h3>Factorisation polaire</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème de factorisation polaire.</span> Si \(\mu\ll\mathcal L^d\), \(S\in L^2(\mu;\mathbb R^d)\), et \(\nu=S_\#\mu\), alors
+        \[
+        S=\nabla u\circ s
+        \]
+        \(\mu\)-presque partout, où \(\nabla u\) est l'application de Brenier de \(\mu\) vers \(\nu\) et \(s_\#\mu=\mu\).</p>
+    </div>
+
+    <p>C'est l'analogue non linéaire de la décomposition polaire des matrices : \(s\) joue le rôle du facteur orthogonal et le gradient convexe celui du facteur positif.</p>
+
+    <h3>Rôle de l'absolue continuité</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Exemple.</span> Pour \(\mu=\delta_0\) et \(\nu=\tfrac12(\delta_{-1}+\delta_1)\), aucun plan optimal ne provient d'une application. Plus généralement, une mesure source portée par une sous-variété peut rencontrer une partie multivoque de \(\partial u\) sur un ensemble de masse positive. L'absolue continuité élimine cette ambiguïté par la différentiabilité presque partout des fonctions convexes.</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="Page suivante" next_url="/notes/optimal-transport/monge-ampere-equation/" %}
 </div>
 
 <div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">9. Brenier 定理</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="下一页" next_url="/notes/optimal-transport/displacement-interpolation/" %}
+    <h2><a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">8. 二次传输与布雷尼耶定理</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="下一页" next_url="/notes/optimal-transport/monge-ampere-equation/" %}
 
-    <p>本页整理关于“Brenier 定理”的主要定义、命题、定理与证明思路。</p>
+    <p>对欧几里得平方距离，循环单调性转化为普通凸性。这把最优映射识别为凸函数的梯度，并给出单调重排的多维对应物。</p>
 
-    <h3>定义</h3>
+    <h3>凸函数的次梯度</h3>
+
     <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For quadratic cost in 欧几里得 space, 最优传输 maps are gradients of 凸函数 when the source 测度 is absolutely continuous.</p>
+        <p><span class="statement-title">定义.</span> 对真下半连续凸函数 \(u:\mathbb R^d\to(-\infty,\infty]\)，定义
+        \[
+        \partial u(x)=\{y:u(z)\ge u(x)+y\cdot(z-x)\ \text{对所有 }z\}.
+        \]
+        若 \(u\) 在 \(x\) 可微，则 \(\partial u(x)=\{\nabla u(x)\}\)。</p>
     </div>
 
-    <h3>Brenier 定理</h3>
     <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> If \(\mu\) is absolutely continuous on \(\mathbb R^d\) and \(\nu\) has finite second moment, there is a unique optimal map for quadratic cost, and it has the form \(T=\nabla\phi\) for a 凸函数 \(\phi\).</p>
+        <p><span class="statement-title">罗卡费拉定理.</span> 集合 \(\Gamma\subset\mathbb R^d\times\mathbb R^d\) 关于内积循环单调，即
+        \[
+        \sum_i x_i\cdot y_i\ge\sum_i x_i\cdot y_{\sigma(i)},
+        \]
+        当且仅当存在真下半连续凸函数 \(u\)，使 \(\Gamma\subset\partial u\)。</p>
     </div>
 
-    <h3>证明</h3>
+    <p>对 \(c(x,y)=\tfrac12|x-y|^2\)，展开平方项后，置换下纯 \(x\) 项和纯 \(y\) 项相消，故 \(c\)-循环单调性恰好等价于内积的循环单调性。</p>
+
+    <h3>布雷尼耶定理</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">布雷尼耶定理.</span> 设 \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\)，并且 \(\mu\ll\mathcal L^d\)。则存在下半连续凸函数 \(u\)，使得
+        \[
+        T=\nabla u,\qquad T_\#\mu=\nu.
+        \]
+        计划 \((\operatorname{id},T)_\#\mu\) 是代价 \(\tfrac12|x-y|^2\) 的唯一最优计划。因此 \(T\) 在 \(\mu\)-几乎处处意义下是唯一最优映射。</p>
+    </div>
+
     <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Quadratic cost converts \(c\)-cyclical monotonicity into ordinary cyclical monotonicity of the map. Rockafellar's 定理 identifies cyclically monotone maps as subgradients of 凸函数; absolute continuity selects a gradient 几乎处处.</p>
+        <p><span class="statement-title">证明.</span> 第 3 页保证存在最优计划 \(\pi\)。其支撑为 \(c\)-循环单调集；展开二次代价后，罗卡费拉定理给出凸函数 \(u\)，使 \(\operatorname{supp}\pi\subset\partial u\)。</p>
+        <p>凸函数在其有效域内部局部利普希茨，故由拉德马赫定理几乎处处可微。由于 \(\mu\ll\mathcal L^d\)，对 \(\mu\)-几乎处处的 \(x\)，有 \(\partial u(x)=\{\nabla u(x)\}\)。分解 \(\pi=\mu(\mathrm dx)\pi_x(\mathrm dy)\)，支撑包含关系强制 \(\pi_x=\delta_{\nabla u(x)}\)。所以 \(\pi=(\operatorname{id},\nabla u)_\#\mu\)，并且 \((\nabla u)_\#\mu=\nu\)。</p>
+        <p>若 \(\widetilde\pi\) 也是最优计划，则平均计划 \((\pi+\widetilde\pi)/2\) 仍最优，也必须是图像型计划。但其条件分布为 \(\tfrac12\delta_{\nabla u(x)}+\tfrac12\widetilde\pi_x\)，只有当 \(\widetilde\pi_x=\delta_{\nabla u(x)}\) 时才是狄拉克测度，故最优计划唯一。</p>
     </div>
 
-    <h3>说明</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Brenier's 定理 is the main bridge between 最优传输 and 凸 analysis.</p>
+    <h3>反向最优性</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 若 \(u\) 凸，\(\nabla u\) 在 \(\mu\)-几乎处处存在，且 \(T=\nabla u\) 满足 \(T_\#\mu=\nu\)，则 \(T\) 对二次代价最优。</p>
     </div>
 
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="下一页" next_url="/notes/optimal-transport/displacement-interpolation/" %}
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 沿一个循环求和次梯度不等式，可见 \(\partial u\) 的图像循环单调，故 \(T\) 的图像关于二次代价 \(c\)-循环单调。也可用芬歇尔不等式 \(u(x)+u^*(y)\ge x\cdot y\)，它在 \(y=\nabla u(x)\) 时取等号，从而产生在图像上接触代价的对偶势。互补松弛给出最优性。</p>
+    </div>
+
+    <h3>逆传输与勒让德对偶</h3>
+    <p>若 \(\mu,\nu\) 都绝对连续，则反向最优映射为 \(\nabla u^*\)，其中
+    \[
+    u^*(y)=\sup_x\{x\cdot y-u(x)\}.
+    \]
+    在可微点，
+    \[
+    y=\nabla u(x)\quad\Longleftrightarrow\quad x=\nabla u^*(y).
+    \]</p>
+
+    <h3>高斯传输</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">命题.</span> 设 \(\mu=N(m_0,\Sigma_0)\)、\(\nu=N(m_1,\Sigma_1)\)，协方差均正定。则
+        \[
+        T(x)=m_1+A(x-m_0),\quad
+        A=\Sigma_0^{-1/2}(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\Sigma_0^{-1/2},
+        \]
+        且
+        \[
+        W_2^2=|m_0-m_1|^2+
+        \operatorname{tr}\!\left(\Sigma_0+\Sigma_1
+        -2(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\right).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> \(A\) 对称正定，因此 \(T\) 是某个凸二次函数的梯度。直接计算得 \(A\Sigma_0A^{\mathsf T}=\Sigma_1\)，故 \(T_\#\mu=\nu\)，由上一命题知其最优。展开 \(\mathbb E|X-T(X)|^2\) 并利用协方差恒等式即得距离公式。</p>
+    </div>
+
+    <h3>极分解</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">极分解定理.</span> 设 \(\mu\ll\mathcal L^d\)、\(S\in L^2(\mu;\mathbb R^d)\)，并令 \(\nu=S_\#\mu\)。则
+        \[
+        S=\nabla u\circ s
+        \]
+        在 \(\mu\)-几乎处处成立，其中 \(\nabla u\) 是从 \(\mu\) 到 \(\nu\) 的布雷尼耶映射，且 \(s_\#\mu=\mu\)。</p>
+    </div>
+
+    <p>这是矩阵极分解的非线性对应：保测映射 \(s\) 扮演正交因子的角色，凸函数梯度则扮演正因子的角色。</p>
+
+    <h3>绝对连续性为何重要</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">例.</span> 若 \(\mu=\delta_0\)、\(\nu=\tfrac12(\delta_{-1}+\delta_1)\)，最优计划不可能由映射诱导。更一般地，支撑在低维曲面上的源测度可能在正质量集合上落入 \(\partial u\) 的多值部分。绝对连续性利用凸函数的勒贝格几乎处处可微性排除了这种歧义。</p>
+    </div>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/one-dimensional-transport/" next_label="下一页" next_url="/notes/optimal-transport/monge-ampere-equation/" %}
 </div>
 
 <hr>

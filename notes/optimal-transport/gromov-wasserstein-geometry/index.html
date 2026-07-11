@@ -1,0 +1,797 @@
+---
+layout: default
+breadcrumb_child_label_en: "28. Gromov--Wasserstein geometry"
+breadcrumb_child_label_fr: "28. Géométrie de Gromov--Wasserstein"
+breadcrumb_child_label_zh: "28. 格罗莫夫--瓦瑟斯坦几何"
+---
+
+<div class="note-page" data-lang="en">
+    <h2><a href="{{ '/notes/optimal-transport/gromov-wasserstein-geometry/' | relative_url }}">28. Gromov--Wasserstein geometry</a></h2>
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/multi-marginal-and-martingale-transport/" %}
+
+    <p>Classical transport compares measures whose points already live in a common space and can be charged by a cross-space cost \(c(x,y)\). Gromov--Wasserstein geometry removes that common coordinate system. It compares two metric-measure spaces by asking whether pairs of points have similar internal distances under a probabilistic correspondence.</p>
+
+    <h3>Metric-measure spaces and their equivalence</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A metric-measure space is a triple
+        \[
+        \mathsf X=(X,d_X,\mu_X),
+        \]
+        where \((X,d_X)\) is a Polish metric space and
+        \(\mu_X\in\mathcal P(X)\). Two such spaces are <em>isomorphic</em> if there are full-measure subsets \(X_0,Y_0\) and a bijection \(T:X_0\to Y_0\) such that
+        \[
+        T_\#\mu_X=\mu_Y,\qquad
+        d_Y(Tx,Tx')=d_X(x,x').
+        \]</p>
+    </div>
+
+    <p>Only the intrinsic distance table and its probability weights matter. Rotating, translating, relabeling, or isometrically embedding the entire space does not change its metric-measure isomorphism class.</p>
+
+    <h3>Distortion of a coupling</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \(1\le p<\infty\) and
+        \(\pi\in\Pi(\mu_X,\mu_Y)\). Its \(p\)-distortion is
+        \[
+        \operatorname{dis}_p(\pi)
+        =
+        \left[
+        \iint
+        |d_X(x,x')-d_Y(y,y')|^p
+        \,\mathrm d\pi(x,y)\,\mathrm d\pi(x',y')
+        \right]^{1/p}.
+        \]
+        In this note the Gromov--Wasserstein distance is
+        \[
+        \operatorname{GW}_p(\mathsf X,\mathsf Y)
+        =
+        \inf_{\pi\in\Pi(\mu_X,\mu_Y)}
+        \operatorname{dis}_p(\pi).
+        \]
+        Some references insert a factor \(1/2\); all formulas below use the convention displayed here.</p>
+    </div>
+
+    <p>A draw \((x,y)\sim\pi\) declares \(x\) and \(y\) probabilistic counterparts. Drawing two such pairs independently lets the objective compare the within-\(X\) distance \(d_X(x,x')\) with the within-\(Y\) distance \(d_Y(y,y')\). No distance between \(x\) and \(y\) is required.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence of an optimal correspondence.</span> If \(X,Y\) are compact, then the infimum defining \(\operatorname{GW}_p\) is attained.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The set \(\Pi(\mu_X,\mu_Y)\) is weakly compact. If \(\pi_n\Rightarrow\pi\), then
+        \(\pi_n\otimes\pi_n\Rightarrow\pi\otimes\pi\). The distortion integrand is continuous and bounded on
+        \((X\times Y)^2\), so its integral converges. The objective is therefore continuous on a compact set.</p>
+    </div>
+
+    <h3>The metric theorem</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> On isomorphism classes of compact metric-measure spaces,
+        \(\operatorname{GW}_p\) is a metric.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Nonnegativity and symmetry are immediate. If the spaces are isomorphic through \(T\), then
+        \((\operatorname{id},T)_\#\mu_X\) has zero distortion.</p>
+
+        <p>For the triangle inequality, let
+        \(\pi_{XY}\in\Pi(\mu_X,\mu_Y)\) and
+        \(\pi_{YZ}\in\Pi(\mu_Y,\mu_Z)\). The gluing lemma produces a law
+        \(\eta\) on \(X\times Y\times Z\) with these two marginals. Let
+        \(\pi_{XZ}\) be its \((X,Z)\)-marginal. Minkowski's inequality in
+        \(L^p(\eta\otimes\eta)\) gives
+        \[
+        \operatorname{dis}_p(\pi_{XZ})
+        \le
+        \operatorname{dis}_p(\pi_{XY})
+        +
+        \operatorname{dis}_p(\pi_{YZ}),
+        \]
+        because \(d_X-d_Z=(d_X-d_Y)+(d_Y-d_Z)\). Taking infima proves the triangle inequality.</p>
+
+        <p>Finally suppose \(\operatorname{GW}_p=0\). By compactness an optimal \(\pi\) exists with zero distortion. Hence
+        \[
+        d_X(x,x')=d_Y(y,y')
+        \]
+        for \((\pi\otimes\pi)\)-almost every pair
+        \(((x,y),(x',y'))\). After removing a null set, this holds throughout the support relation. If one \(x\) corresponded to both \(y\) and \(\tilde y\), setting the two \(X\)-coordinates equal would give \(d_Y(y,\tilde y)=0\), hence \(y=\tilde y\); similarly in the other direction. The relation is therefore the graph of a measure-preserving isometry between the supports.</p>
+    </div>
+
+    <h3>Finite spaces and a quadratic assignment problem</h3>
+
+    <p>Let \(X=\{x_i\}_{i=1}^n\), \(Y=\{y_j\}_{j=1}^m\), with weights
+    \(a_i,b_j\), and distance matrices \(D^X,D^Y\). A coupling is a nonnegative matrix \(P\) satisfying
+    \(P\mathbf1_m=a\) and \(P^{\mathsf T}\mathbf1_n=b\). Then
+    \[
+    \operatorname{GW}_p^p
+    =
+    \min_{P}
+    \sum_{i,k=1}^n\sum_{j,\ell=1}^m
+    |D^X_{ik}-D^Y_{j\ell}|^pP_{ij}P_{k\ell}.
+    \]
+    Unlike discrete Kantorovich transport, this objective is quadratic and generally nonconvex.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Quadratic expansion.</span> For \(p=2\),
+        \[
+        \operatorname{dis}_2^2(P)
+        =
+        \sum_{i,k}(D^X_{ik})^2a_ia_k
+        +
+        \sum_{j,\ell}(D^Y_{j\ell})^2b_jb_\ell
+        -
+        2\sum_{i,k,j,\ell}
+        D^X_{ik}D^Y_{j\ell}P_{ij}P_{k\ell}.
+        \]
+        Thus minimizing distortion is equivalent to maximizing the correlation of the two distance matrices under \(P\otimes P\).</p>
+    </div>
+
+    <p>If the weights are uniform and \(P\) is restricted to permutation matrices, this becomes a quadratic assignment problem. The relaxed coupling polytope allows soft correspondences and spaces with different numbers of points, but it does not make the objective convex.</p>
+
+    <h3>Intrinsic lower bounds</h3>
+
+    <p>Let
+    \[
+    \rho_X=(d_X)_\#(\mu_X\otimes\mu_X)
+    \]
+    be the distribution of the distance between two independent points of \(\mathsf X\), and define \(\rho_Y\) similarly.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Distance-distribution bound.</span>
+        \[
+        W_p(\rho_X,\rho_Y)
+        \le \operatorname{GW}_p(\mathsf X,\mathsf Y).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Every \(\pi\in\Pi(\mu_X,\mu_Y)\) makes
+        \[
+        \bigl(d_X(x,x'),d_Y(y,y')\bigr)_\#(\pi\otimes\pi)
+        \]
+        a coupling of \(\rho_X,\rho_Y\). Its \(p\)-cost is exactly
+        \(\operatorname{dis}_p^p(\pi)\). Minimize first over all couplings of the distance distributions, then over \(\pi\).</p>
+    </div>
+
+    <p>A sharper hierarchy can compare pointwise eccentricities
+    \[
+    e_X(x)=\left(\int d_X(x,x')^p\,\mathrm d\mu_X(x')\right)^{1/p}.
+    \]
+    Reverse Minkowski implies that the Wasserstein distance between
+    \((e_X)_\#\mu_X\) and \((e_Y)_\#\mu_Y\) is also bounded by
+    \(\operatorname{GW}_p\). Such invariants are inexpensive certificates, but equality need not hold because they discard higher-order geometry.</p>
+
+    <h3>Gromov--Wasserstein geodesics</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Displacement interpolation of metrics.</span> Let \(\pi^\star\) be optimal between compact spaces \(\mathsf X,\mathsf Y\). For \(0<t<1\), put
+        \[
+        \mathsf Z_t
+        =
+        (X\times Y,d_t,\pi^\star),\qquad
+        d_t((x,y),(x',y'))
+        =
+        (1-t)d_X(x,x')+t\,d_Y(y,y').
+        \]
+        With the natural endpoint identifications,
+        \[
+        \operatorname{GW}_p(\mathsf Z_s,\mathsf Z_t)
+        =
+        |t-s|\,\operatorname{GW}_p(\mathsf X,\mathsf Y).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Couple \(\mathsf Z_s\) and \(\mathsf Z_t\) by using the same \((x,y)\) at both times. Since
+        \(d_t-d_s=(t-s)(d_Y-d_X)\), this coupling has distortion
+        \(|t-s|\operatorname{GW}_p(\mathsf X,\mathsf Y)\), proving the upper bound. Applying this upper bound to the three pieces
+        \(\mathsf X\to\mathsf Z_s\to\mathsf Z_t\to\mathsf Y\), their upper bounds sum exactly to
+        \(\operatorname{GW}_p(\mathsf X,\mathsf Y)\). The triangle inequality forces equality in every piece.</p>
+    </div>
+
+    <p>The interpolation changes the metric itself rather than moving points through a fixed ambient space. This is the intrinsic analogue of displacement interpolation.</p>
+
+    <h3>Gromov--Monge maps and relaxation</h3>
+
+    <p>If a measure-preserving map \(T:X\to Y\) exists, its distortion is
+    \[
+    \left[
+    \iint
+    |d_X(x,x')-d_Y(Tx,Tx')|^p
+    \,\mathrm d\mu_X(x)\,\mathrm d\mu_X(x')
+    \right]^{1/p}.
+    \]
+    Minimizing over such \(T\) is the Gromov--Monge problem. Replacing the graph coupling
+    \((\operatorname{id},T)_\#\mu_X\) by an arbitrary \(\pi\) gives the Gromov--Wasserstein relaxation. As in classical transport, relaxation ensures compactness, but here even the relaxed objective remains nonlinear in \(\pi\).</p>
+
+    <h3>Entropic computation and its limitation</h3>
+
+    <p>A common numerical objective is
+    \[
+    \operatorname{GW}_{p,\varepsilon}^p
+    =
+    \inf_{\pi\in\Pi(\mu_X,\mu_Y)}
+    \left\{
+    \operatorname{dis}_p^p(\pi)
+    +
+    \varepsilon\operatorname{KL}
+    (\pi\,\|\,\mu_X\otimes\mu_Y)
+    \right\}.
+    \]
+    Linearizing the quadratic distortion at the current coupling produces an ordinary entropic transport subproblem, which can be solved by Sinkhorn scaling. Alternating or conditional-gradient schemes repeat this step.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">What entropy does not fix.</span> Entropic regularization makes each linearized subproblem smooth and numerically stable, but the full Gromov--Wasserstein objective remains nonconvex. Iterations may converge to different stationary points from different initializations; a small primal update is not a certificate of global optimality.</p>
+    </div>
+
+    <h3>Features, barycenters, and structured data</h3>
+
+    <p>If points also carry comparable features \(f_X(x),f_Y(y)\) in a common feature space with distance \(\delta\), fused Gromov--Wasserstein transport minimizes
+    \[
+    (1-\alpha)\int\delta(f_X(x),f_Y(y))^p\,\mathrm d\pi
+    +
+    \alpha\iint|d_X(x,x')-d_Y(y,y')|^p
+    \,\mathrm d\pi\,\mathrm d\pi.
+    \]
+    The endpoints \(\alpha=0\) and \(\alpha=1\) retain only feature matching and only intrinsic geometry, respectively.</p>
+
+    <p>A Gromov--Wasserstein barycenter minimizes
+    \[
+    \mathsf Z\longmapsto
+    \sum_{r=1}^R\lambda_r
+    \operatorname{GW}_p^p(\mathsf X_r,\mathsf Z)
+    \]
+    over metric-measure spaces in a chosen model class. Unlike a Wasserstein barycenter, both the representative points and their internal distance matrix may be unknown.</p>
+
+    <h3>Empirical metric-measure spaces</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Comparison on a common ambient space.</span> If
+        \(\mu,\nu\in\mathcal P_p(X)\) on the same metric space, then
+        \[
+        \operatorname{GW}_p((X,d,\mu),(X,d,\nu))
+        \le 2W_p(\mu,\nu).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(\gamma\) couple \(\mu,\nu\). For two independent draws from \(\gamma\),
+        \[
+        |d(x,x')-d(y,y')|
+        \le d(x,y)+d(x',y').
+        \]
+        Minkowski gives
+        \(\operatorname{dis}_p(\gamma)\le2(\int d(x,y)^p\,\mathrm d\gamma)^{1/p}\). Infimize over \(\gamma\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Empirical consistency.</span> If \(X\) is compact and
+        \(\widehat\mu_n=n^{-1}\sum_{i=1}^n\delta_{X_i}\) for i.i.d. \(X_i\sim\mu\), then
+        \[
+        \operatorname{GW}_p((X,d,\widehat\mu_n),(X,d,\mu))
+        \longrightarrow0
+        \quad\text{almost surely}.
+        \]
+        Indeed, compactness gives \(W_p(\widehat\mu_n,\mu)\to0\).</p>
+    </div>
+
+    <p>Consistency does not by itself give a dimension-free rate, an identifiable pointwise correspondence, or reliable global optimization. Statistical error, symmetry-induced nonidentifiability, and numerical nonconvexity are three separate sources of uncertainty.</p>
+
+    <h3>Relation to Gromov--Hausdorff geometry</h3>
+
+    <p>Gromov--Hausdorff distance controls the largest distortion of a correspondence; Gromov--Wasserstein distance controls an \(L^p\) average distortion weighted by probability. The former is sensitive to every point, while the latter may ignore sets of very small mass. This distinction explains both the statistical robustness and the possible geometric blindness of the measure-weighted formulation.</p>
+
+    {% include note-topic-nav.html back_label="Back" back_url="/notes/optimal-transport/" prev_label="Last page" prev_url="/notes/optimal-transport/multi-marginal-and-martingale-transport/" %}
+</div>
+
+<div class="note-page" data-lang="fr">
+    <h2><a href="{{ '/notes/optimal-transport/gromov-wasserstein-geometry/' | relative_url }}">28. Géométrie de Gromov--Wasserstein</a></h2>
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/multi-marginal-and-martingale-transport/" %}
+
+    <p>Le transport classique compare des mesures dont les points vivent déjà dans un espace commun. La géométrie de Gromov--Wasserstein supprime ce système de coordonnées commun. Elle compare deux espaces métriques mesurés en demandant si les distances internes entre paires de points sont semblables sous une correspondance probabiliste.</p>
+
+    <h3>Espaces métriques mesurés</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Un espace métrique mesuré est
+        \[
+        \mathsf X=(X,d_X,\mu_X),
+        \]
+        où \((X,d_X)\) est polonais et \(\mu_X\in\mathcal P(X)\). Deux espaces sont <em>isomorphes</em> s'il existe des sous-ensembles de mesure pleine et une bijection \(T\) entre eux telle que
+        \[
+        T_\#\mu_X=\mu_Y,\qquad
+        d_Y(Tx,Tx')=d_X(x,x').
+        \]</p>
+    </div>
+
+    <p>Seuls la table intrinsèque des distances et ses poids probabilistes importent. Une rotation, une translation, un réétiquetage ou un plongement isométrique ne change pas la classe d'isomorphisme.</p>
+
+    <h3>Distorsion d'un couplage</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Définition.</span> Pour \(1\le p<\infty\) et
+        \(\pi\in\Pi(\mu_X,\mu_Y)\), posons
+        \[
+        \operatorname{dis}_p(\pi)
+        =
+        \left[
+        \iint|d_X(x,x')-d_Y(y,y')|^p
+        \,\mathrm d\pi(x,y)\,\mathrm d\pi(x',y')
+        \right]^{1/p},
+        \]
+        puis
+        \[
+        \operatorname{GW}_p(\mathsf X,\mathsf Y)
+        =
+        \inf_{\pi\in\Pi(\mu_X,\mu_Y)}
+        \operatorname{dis}_p(\pi).
+        \]
+        Certaines références ajoutent un facteur \(1/2\); nous n'en mettons pas.</p>
+    </div>
+
+    <p>Un tirage \((x,y)\sim\pi\) déclare \(x,y\) correspondants de manière probabiliste. Deux tirages indépendants permettent de comparer \(d_X(x,x')\) à \(d_Y(y,y')\), sans jamais définir une distance entre \(x\) et \(y\).</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence.</span> Si \(X,Y\) sont compacts, une correspondance optimale existe.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> L'ensemble des couplages est faiblement compact. De
+        \(\pi_n\Rightarrow\pi\) suit
+        \(\pi_n\otimes\pi_n\Rightarrow\pi\otimes\pi\). L'intégrande de distorsion est continu borné sur \((X\times Y)^2\), donc l'objectif est continu sur un compact.</p>
+    </div>
+
+    <h3>Le théorème métrique</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Théorème.</span> Sur les classes d'isomorphisme d'espaces métriques mesurés compacts, \(\operatorname{GW}_p\) est une distance.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> La positivité et la symétrie sont immédiates. Une isométrie mesurée \(T\) produit le couplage de graphe
+        \((\operatorname{id},T)_\#\mu_X\) de distorsion nulle.</p>
+
+        <p>Pour l'inégalité triangulaire, recollons
+        \(\pi_{XY}\) et \(\pi_{YZ}\) en une loi \(\eta\) sur \(X\times Y\times Z\), et notons \(\pi_{XZ}\) sa marginale. Minkowski dans \(L^p(\eta\otimes\eta)\) donne
+        \[
+        \operatorname{dis}_p(\pi_{XZ})
+        \le
+        \operatorname{dis}_p(\pi_{XY})
+        +
+        \operatorname{dis}_p(\pi_{YZ}),
+        \]
+        puisque \(d_X-d_Z=(d_X-d_Y)+(d_Y-d_Z)\). Prenons les infimums.</p>
+
+        <p>Enfin, si \(\operatorname{GW}_p=0\), un couplage optimal \(\pi\) a distorsion nulle. Sur son support,
+        \(d_X(x,x')=d_Y(y,y')\). Un même \(x\) ne peut correspondre à deux points distincts \(y,\tilde y\), car cela donnerait \(d_Y(y,\tilde y)=0\); réciproquement pour \(y\). Le support est donc le graphe d'une isométrie qui préserve la mesure.</p>
+    </div>
+
+    <h3>Espaces finis et affectation quadratique</h3>
+
+    <p>Pour des espaces finis pondérés, un couplage est une matrice \(P\ge0\) telle que
+    \(P\mathbf1_m=a\) et \(P^{\mathsf T}\mathbf1_n=b\), et
+    \[
+    \operatorname{GW}_p^p
+    =
+    \min_P
+    \sum_{i,k,j,\ell}
+    |D^X_{ik}-D^Y_{j\ell}|^pP_{ij}P_{k\ell}.
+    \]
+    L'objectif est quadratique et généralement non convexe.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Développement quadratique.</span> Pour \(p=2\),
+        \[
+        \operatorname{dis}_2^2(P)
+        =
+        \sum_{i,k}(D^X_{ik})^2a_ia_k
+        +
+        \sum_{j,\ell}(D^Y_{j\ell})^2b_jb_\ell
+        -
+        2\sum_{i,k,j,\ell}D^X_{ik}D^Y_{j\ell}P_{ij}P_{k\ell}.
+        \]
+        Minimiser la distorsion revient à maximiser la corrélation des matrices de distances sous \(P\otimes P\).</p>
+    </div>
+
+    <p>Avec des poids uniformes et \(P\) restreinte aux permutations, on retrouve l'affectation quadratique. La relaxation autorise des correspondances souples et des nombres de points différents, mais ne rend pas le problème convexe.</p>
+
+    <h3>Bornes inférieures intrinsèques</h3>
+
+    <p>Soit \(\rho_X=(d_X)_\#(\mu_X\otimes\mu_X)\), la loi de la distance entre deux points indépendants.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Borne par les lois de distances.</span>
+        \[
+        W_p(\rho_X,\rho_Y)
+        \le\operatorname{GW}_p(\mathsf X,\mathsf Y).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Tout \(\pi\) induit, par \(\pi\otimes\pi\), un couplage des variables
+        \(d_X(x,x')\) et \(d_Y(y,y')\). Son coût est exactement
+        \(\operatorname{dis}_p^p(\pi)\). Il suffit de prendre les infimums.</p>
+    </div>
+
+    <p>On peut aussi comparer les excentricités
+    \[
+    e_X(x)=\left(\int d_X(x,x')^p\,\mathrm d\mu_X(x')\right)^{1/p}.
+    \]
+    Minkowski inverse borne la distance de Wasserstein entre leurs lois par
+    \(\operatorname{GW}_p\). Ces invariants donnent des certificats rapides mais perdent la géométrie d'ordre supérieur.</p>
+
+    <h3>Géodésiques de Gromov--Wasserstein</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Interpolation des métriques.</span> Soit \(\pi^\star\) optimale. Pour \(0<t<1\), posons
+        \[
+        \mathsf Z_t=(X\times Y,d_t,\pi^\star),\qquad
+        d_t=(1-t)d_X+t\,d_Y.
+        \]
+        Alors
+        \[
+        \operatorname{GW}_p(\mathsf Z_s,\mathsf Z_t)
+        =
+        |t-s|\,\operatorname{GW}_p(\mathsf X,\mathsf Y).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Couplons les temps \(s,t\) en utilisant le même \((x,y)\). Puisque
+        \(d_t-d_s=(t-s)(d_Y-d_X)\), sa distorsion vaut
+        \(|t-s|\operatorname{GW}_p(\mathsf X,\mathsf Y)\). Les majorations obtenues pour
+        \(\mathsf X\to\mathsf Z_s\to\mathsf Z_t\to\mathsf Y\) somment exactement à la distance des extrémités; l'inégalité triangulaire force donc l'égalité.</p>
+    </div>
+
+    <p>Cette interpolation modifie la métrique elle-même au lieu de déplacer des points dans un espace ambiant fixe.</p>
+
+    <h3>Problème de Gromov--Monge</h3>
+
+    <p>Si \(T_\#\mu_X=\mu_Y\), sa distorsion est
+    \[
+    \left[
+    \iint|d_X(x,x')-d_Y(Tx,Tx')|^p
+    \,\mathrm d\mu_X(x)\,\mathrm d\mu_X(x')
+    \right]^{1/p}.
+    \]
+    Le problème de Gromov--Monge minimise sur ces applications. Autoriser tout couplage remplace le couplage de graphe par sa relaxation de Gromov--Wasserstein. La compacité est gagnée, mais l'objectif relaxé reste non linéaire.</p>
+
+    <h3>Calcul entropique et non-convexité</h3>
+
+    <p>La régularisation courante est
+    \[
+    \inf_{\pi\in\Pi(\mu_X,\mu_Y)}
+    \left\{
+    \operatorname{dis}_p^p(\pi)
+    +
+    \varepsilon\operatorname{KL}
+    (\pi\,\|\,\mu_X\otimes\mu_Y)
+    \right\}.
+    \]
+    La linéarisation de la distorsion quadratique produit à chaque itération un problème entropique ordinaire résolu par l'algorithme de Sinkhorn.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Limite essentielle.</span> L'entropie lisse et stabilise chaque sous-problème linéarisé, mais l'objectif global reste non convexe. Des initialisations différentes peuvent conduire à des points stationnaires différents; la convergence des itérés ne certifie pas l'optimalité globale.</p>
+    </div>
+
+    <h3>Caractéristiques et barycentres</h3>
+
+    <p>Si les points portent des caractéristiques comparables \(f_X,f_Y\), le transport de Gromov--Wasserstein fusionné minimise
+    \[
+    (1-\alpha)\int\delta(f_X(x),f_Y(y))^p\,\mathrm d\pi
+    +
+    \alpha\iint|d_X(x,x')-d_Y(y,y')|^p
+    \,\mathrm d\pi\,\mathrm d\pi.
+    \]
+    Il interpole entre l'appariement des caractéristiques et celui de la géométrie intrinsèque.</p>
+
+    <p>Un barycentre de Gromov--Wasserstein minimise
+    \[
+    \mathsf Z\longmapsto\sum_r\lambda_r
+    \operatorname{GW}_p^p(\mathsf X_r,\mathsf Z).
+    \]
+    Ici les points représentants et leur matrice de distances internes peuvent tous deux être inconnus.</p>
+
+    <h3>Espaces métriques mesurés empiriques</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Comparaison dans un espace commun.</span> Pour
+        \(\mu,\nu\in\mathcal P_p(X)\),
+        \[
+        \operatorname{GW}_p((X,d,\mu),(X,d,\nu))
+        \le2W_p(\mu,\nu).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Démonstration.</span> Pour deux tirages indépendants d'un couplage \(\gamma\),
+        \[
+        |d(x,x')-d(y,y')|\le d(x,y)+d(x',y').
+        \]
+        Minkowski donne
+        \(\operatorname{dis}_p(\gamma)\le2(\int d(x,y)^p\,\mathrm d\gamma)^{1/p}\). Prenons l'infimum.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Convergence empirique.</span> Si \(X\) est compact et
+        \(\widehat\mu_n=n^{-1}\sum_i\delta_{X_i}\), alors
+        \[
+        \operatorname{GW}_p((X,d,\widehat\mu_n),(X,d,\mu))
+        \to0
+        \quad\text{presque sûrement},
+        \]
+        car \(W_p(\widehat\mu_n,\mu)\to0\).</p>
+    </div>
+
+    <p>La convergence n'offre ni taux sans dimension, ni correspondance ponctuelle identifiable, ni garantie d'optimisation globale. Erreur statistique, non-identifiabilité par symétrie et non-convexité numérique sont trois difficultés distinctes.</p>
+
+    <h3>Relation à la géométrie de Gromov--Hausdorff</h3>
+
+    <p>La distance de Gromov--Hausdorff contrôle la plus grande distorsion d'une correspondance; Gromov--Wasserstein contrôle une distorsion moyenne \(L^p\) pondérée par la probabilité. La première voit chaque point, tandis que la seconde peut négliger des ensembles de très petite masse.</p>
+
+    {% include note-topic-nav.html back_label="Retour" back_url="/notes/optimal-transport/" prev_label="Page précédente" prev_url="/notes/optimal-transport/multi-marginal-and-martingale-transport/" %}
+</div>
+
+<div class="note-page" data-lang="zh">
+    <h2><a href="{{ '/notes/optimal-transport/gromov-wasserstein-geometry/' | relative_url }}">28. 格罗莫夫--瓦瑟斯坦几何</a></h2>
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/multi-marginal-and-martingale-transport/" %}
+
+    <p>经典传输比较已经处在共同空间中的测度，因此可以用跨空间代价 \(c(x,y)\) 衡量点对。格罗莫夫--瓦瑟斯坦几何取消共同坐标系：它借助概率对应，比较两个度量测度空间内部点对距离是否相似。</p>
+
+    <h3>度量测度空间及其等价性</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 度量测度空间是三元组
+        \[
+        \mathsf X=(X,d_X,\mu_X),
+        \]
+        其中 \((X,d_X)\) 为波兰度量空间，\(\mu_X\in\mathcal P(X)\)。若存在满测度子集 \(X_0,Y_0\) 及双射 \(T:X_0\to Y_0\)，使
+        \[
+        T_\#\mu_X=\mu_Y,\qquad
+        d_Y(Tx,Tx')=d_X(x,x'),
+        \]
+        则称两个空间同构。</p>
+    </div>
+
+    <p>只有内禀距离表及其概率权重具有意义。旋转、平移、重新编号或把整个空间等距嵌入别处，都不改变它的度量测度同构类。</p>
+
+    <h3>耦合的畸变</h3>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">定义.</span> 对 \(1\le p<\infty\) 和
+        \(\pi\in\Pi(\mu_X,\mu_Y)\)，定义
+        \[
+        \operatorname{dis}_p(\pi)
+        =
+        \left[
+        \iint|d_X(x,x')-d_Y(y,y')|^p
+        \,\mathrm d\pi(x,y)\,\mathrm d\pi(x',y')
+        \right]^{1/p},
+        \]
+        以及
+        \[
+        \operatorname{GW}_p(\mathsf X,\mathsf Y)
+        =
+        \inf_{\pi\in\Pi(\mu_X,\mu_Y)}
+        \operatorname{dis}_p(\pi).
+        \]
+        有些文献在右侧加入 \(1/2\)；本页全部公式采用上述无因子的规范。</p>
+    </div>
+
+    <p>一次抽样 \((x,y)\sim\pi\) 把 \(x,y\) 声明为概率意义下的对应点。独立抽取两个这样的点对，就能比较空间内距离 \(d_X(x,x')\) 与 \(d_Y(y,y')\)，而完全不需要定义 \(x\) 和 \(y\) 之间的距离。</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">最优对应的存在性.</span> 若 \(X,Y\) 紧，则定义 \(\operatorname{GW}_p\) 的下确界可以达到。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> \(\Pi(\mu_X,\mu_Y)\) 弱紧。若
+        \(\pi_n\Rightarrow\pi\)，则
+        \(\pi_n\otimes\pi_n\Rightarrow\pi\otimes\pi\)。畸变被积函数在
+        \((X\times Y)^2\) 上连续有界，所以目标函数在紧集上连续。</p>
+    </div>
+
+    <h3>度量定理</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">定理.</span> 在紧度量测度空间的同构类上，
+        \(\operatorname{GW}_p\) 是一个度量。</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 非负性与对称性显然。若 \(T\) 是保测等距映射，则图耦合
+        \((\operatorname{id},T)_\#\mu_X\) 的畸变为零。</p>
+
+        <p>为证三角不等式，把
+        \(\pi_{XY}\) 与 \(\pi_{YZ}\) 拼接成 \(X\times Y\times Z\) 上的分布 \(\eta\)，并取其 \((X,Z)\)-边缘 \(\pi_{XZ}\)。在
+        \(L^p(\eta\otimes\eta)\) 中使用闵可夫斯基不等式：
+        \[
+        \operatorname{dis}_p(\pi_{XZ})
+        \le
+        \operatorname{dis}_p(\pi_{XY})
+        +
+        \operatorname{dis}_p(\pi_{YZ}),
+        \]
+        因为 \(d_X-d_Z=(d_X-d_Y)+(d_Y-d_Z)\)。取下确界即得结论。</p>
+
+        <p>最后设 \(\operatorname{GW}_p=0\)。紧性给出畸变为零的最优 \(\pi\)，故在其支撑上
+        \(d_X(x,x')=d_Y(y,y')\)。若同一 \(x\) 对应两个点 \(y,\tilde y\)，令两个 \(X\)-坐标相等可得
+        \(d_Y(y,\tilde y)=0\)，故 \(y=\tilde y\)；反向同理。因此支撑关系是一个保测等距双射的图。</p>
+    </div>
+
+    <h3>有限空间与二次指派问题</h3>
+
+    <p>设有限空间的权重为 \(a_i,b_j\)，距离矩阵为 \(D^X,D^Y\)。耦合是满足
+    \(P\mathbf1_m=a\)、\(P^{\mathsf T}\mathbf1_n=b\) 的非负矩阵，而
+    \[
+    \operatorname{GW}_p^p
+    =
+    \min_P
+    \sum_{i,k,j,\ell}
+    |D^X_{ik}-D^Y_{j\ell}|^pP_{ij}P_{k\ell}.
+    \]
+    与离散康托罗维奇问题不同，该目标是二次且通常非凸的。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">二次展开.</span> 当 \(p=2\) 时，
+        \[
+        \operatorname{dis}_2^2(P)
+        =
+        \sum_{i,k}(D^X_{ik})^2a_ia_k
+        +
+        \sum_{j,\ell}(D^Y_{j\ell})^2b_jb_\ell
+        -
+        2\sum_{i,k,j,\ell}D^X_{ik}D^Y_{j\ell}P_{ij}P_{k\ell}.
+        \]
+        因而极小化畸变等价于最大化两个距离矩阵在 \(P\otimes P\) 下的相关性。</p>
+    </div>
+
+    <p>若权重均匀且把 \(P\) 限制为置换矩阵，就得到二次指派问题。耦合松弛允许软对应以及点数不同的空间，但不会把目标变成凸函数。</p>
+
+    <h3>内禀下界</h3>
+
+    <p>令
+    \[
+    \rho_X=(d_X)_\#(\mu_X\otimes\mu_X)
+    \]
+    为 \(\mathsf X\) 中两个独立点之间距离的分布。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">距离分布下界.</span>
+        \[
+        W_p(\rho_X,\rho_Y)
+        \le\operatorname{GW}_p(\mathsf X,\mathsf Y).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 每个 \(\pi\) 都通过 \(\pi\otimes\pi\) 诱导
+        \(d_X(x,x')\) 与 \(d_Y(y,y')\) 的耦合，其 \(p\) 次代价恰为
+        \(\operatorname{dis}_p^p(\pi)\)。先对全部距离分布耦合取下确界，再对 \(\pi\) 取下确界。</p>
+    </div>
+
+    <p>还可以比较逐点偏心率
+    \[
+    e_X(x)=\left(\int d_X(x,x')^p\,\mathrm d\mu_X(x')\right)^{1/p}.
+    \]
+    反向闵可夫斯基不等式说明
+    \((e_X)_\#\mu_X\) 与 \((e_Y)_\#\mu_Y\) 的瓦瑟斯坦距离也不超过
+    \(\operatorname{GW}_p\)。这些不变量便于计算，但会丢失高阶几何。</p>
+
+    <h3>格罗莫夫--瓦瑟斯坦测地线</h3>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">度量的位移插值.</span> 设 \(\pi^\star\) 为紧空间
+        \(\mathsf X,\mathsf Y\) 间的最优耦合。对 \(0<t<1\)，令
+        \[
+        \mathsf Z_t=(X\times Y,d_t,\pi^\star),\qquad
+        d_t((x,y),(x',y'))
+        =(1-t)d_X(x,x')+t\,d_Y(y,y').
+        \]
+        则
+        \[
+        \operatorname{GW}_p(\mathsf Z_s,\mathsf Z_t)
+        =
+        |t-s|\,\operatorname{GW}_p(\mathsf X,\mathsf Y).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 在时刻 \(s,t\) 使用相同的 \((x,y)\) 构造耦合。由于
+        \(d_t-d_s=(t-s)(d_Y-d_X)\)，其畸变等于
+        \(|t-s|\operatorname{GW}_p(\mathsf X,\mathsf Y)\)，给出上界。把这一上界用于
+        \(\mathsf X\to\mathsf Z_s\to\mathsf Z_t\to\mathsf Y\)，三段上界之和恰等于端点距离；三角不等式迫使每段都取等号。</p>
+    </div>
+
+    <p>此插值改变度量本身，而不是在固定环境空间中移动点；它是内禀版本的位移插值。</p>
+
+    <h3>格罗莫夫--蒙日映射与松弛</h3>
+
+    <p>若存在 \(T:X\to Y\) 满足 \(T_\#\mu_X=\mu_Y\)，其畸变为
+    \[
+    \left[
+    \iint|d_X(x,x')-d_Y(Tx,Tx')|^p
+    \,\mathrm d\mu_X(x)\,\mathrm d\mu_X(x')
+    \right]^{1/p}.
+    \]
+    在这些 \(T\) 上极小化就是格罗莫夫--蒙日问题。把图耦合
+    \((\operatorname{id},T)_\#\mu_X\) 换成任意 \(\pi\)，即得格罗莫夫--瓦瑟斯坦松弛。松弛带来紧性，但目标仍关于 \(\pi\) 非线性。</p>
+
+    <h3>熵计算及其局限</h3>
+
+    <p>常用数值目标为
+    \[
+    \inf_{\pi\in\Pi(\mu_X,\mu_Y)}
+    \left\{
+    \operatorname{dis}_p^p(\pi)
+    +
+    \varepsilon\operatorname{KL}
+    (\pi\,\|\,\mu_X\otimes\mu_Y)
+    \right\}.
+    \]
+    在当前耦合处线性化二次畸变，会得到一个普通熵传输子问题，可用辛克霍恩缩放求解。</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">熵不能消除的问题.</span> 熵正则化使每个线性化子问题平滑且数值稳定，但完整的格罗莫夫--瓦瑟斯坦目标仍非凸。不同初值可能收敛到不同驻点；迭代变化很小并不是全局最优证书。</p>
+    </div>
+
+    <h3>特征、重心与结构化数据</h3>
+
+    <p>若点还带有共同特征空间中的可比特征 \(f_X,f_Y\)，融合格罗莫夫--瓦瑟斯坦传输极小化
+    \[
+    (1-\alpha)\int\delta(f_X(x),f_Y(y))^p\,\mathrm d\pi
+    +
+    \alpha\iint|d_X(x,x')-d_Y(y,y')|^p
+    \,\mathrm d\pi\,\mathrm d\pi.
+    \]
+    它在特征匹配与内禀几何匹配之间插值。</p>
+
+    <p>格罗莫夫--瓦瑟斯坦重心极小化
+    \[
+    \mathsf Z\longmapsto
+    \sum_r\lambda_r\operatorname{GW}_p^p(\mathsf X_r,\mathsf Z).
+    \]
+    与普通瓦瑟斯坦重心不同，代表点及其内部距离矩阵都可能是未知的。</p>
+
+    <h3>经验度量测度空间</h3>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">共同环境空间中的比较.</span> 若
+        \(\mu,\nu\in\mathcal P_p(X)\)，则
+        \[
+        \operatorname{GW}_p((X,d,\mu),(X,d,\nu))
+        \le2W_p(\mu,\nu).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">证明.</span> 从耦合 \(\gamma\) 独立抽取两次，则
+        \[
+        |d(x,x')-d(y,y')|\le d(x,y)+d(x',y').
+        \]
+        闵可夫斯基不等式给出
+        \(\operatorname{dis}_p(\gamma)\le2(\int d(x,y)^p\,\mathrm d\gamma)^{1/p}\)。对 \(\gamma\) 取下确界即可。</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">经验相合性.</span> 若 \(X\) 紧，且
+        \(\widehat\mu_n=n^{-1}\sum_i\delta_{X_i}\) 是 \(\mu\) 的经验测度，则
+        \[
+        \operatorname{GW}_p((X,d,\widehat\mu_n),(X,d,\mu))
+        \longrightarrow0
+        \quad\text{几乎必然},
+        \]
+        因为 \(W_p(\widehat\mu_n,\mu)\to0\)。</p>
+    </div>
+
+    <p>相合性本身既不给出无维数速率，也不给出可识别的逐点对应，更不保证全局数值最优。统计误差、对称性造成的不可识别性和数值非凸性是三个彼此独立的不确定性来源。</p>
+
+    <h3>与格罗莫夫--豪斯多夫几何的关系</h3>
+
+    <p>格罗莫夫--豪斯多夫距离控制一个对应的最大畸变；格罗莫夫--瓦瑟斯坦距离控制由概率加权的 \(L^p\) 平均畸变。前者对每个点都敏感，后者可能忽略质量极小的集合；这同时解释了测度加权形式的统计稳健性与潜在几何盲点。</p>
+
+    {% include note-topic-nav.html back_label="返回" back_url="/notes/optimal-transport/" prev_label="上一页" prev_url="/notes/optimal-transport/multi-marginal-and-martingale-transport/" %}
+</div>
+
+<hr>
