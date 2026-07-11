@@ -1,0 +1,197 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 6. Displacement convexity and gradient flows"
+breadcrumb_child_label_fr: "Cours 6. Convexité par déplacement et flots de gradient"
+breadcrumb_child_label_zh: "课程 6. 位移凸性与梯度流"
+---
+
+<div data-lang="en"><h2><a href="{{ '/notes/optimal-transport/course-gradient-flows/' | relative_url }}">Course 6. Displacement convexity and gradient flows</a></h2>{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-dynamic-transport/" next_label="Next chapter" next_url="/notes/optimal-transport/course-computational-transport/" %}</div>
+<div data-lang="fr"><h2>Cours 6. Convexité par déplacement et flots de gradient</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-dynamic-transport/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-computational-transport/" %}</div>
+<div data-lang="zh"><h2>课程 6. 位移凸性与梯度流</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-dynamic-transport/" next_label="下一章" next_url="/notes/optimal-transport/course-computational-transport/" %}</div>
+
+<article class="note-page">
+    <p>Wasserstein geometry turns several diffusion and aggregation equations into steepest-descent curves of energies on probability measures. The key ingredients are first variations, convexity along displacement geodesics, and the minimizing-movement scheme of Jordan, Kinderlehrer, and Otto.</p>
+
+    <h3>1. First variations and formal gradients</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> An energy \(\mathcal F\) has first variation \(\delta\mathcal F/\delta\rho\) if for smooth perturbations \(\sigma\) of zero total mass,
+        \[
+        \left.\frac{\mathrm d}{\mathrm d\varepsilon}\right|_{\varepsilon=0}
+        \mathcal F(\rho+\varepsilon\sigma)
+        =\int\frac{\delta\mathcal F}{\delta\rho}\,\sigma\,\mathrm dx.
+        \]</p>
+    </div>
+
+    <p>A Wasserstein gradient flow chooses the velocity
+    \[
+    v_t=-\nabla\frac{\delta\mathcal F}{\delta\rho}(\rho_t).
+    \]
+    Substituting into the continuity equation gives the formal PDE
+    \[
+    \partial_t\rho
+    =\nabla\cdot\left(\rho\nabla\frac{\delta\mathcal F}{\delta\rho}\right).
+    \]</p>
+
+    <h3>2. Four basic energies</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Potential energy.</span>
+        \[
+        \mathcal V(\rho)=\int V(x)\rho(x)\,\mathrm dx,\qquad
+        \frac{\delta\mathcal V}{\delta\rho}=V.
+        \]
+        Its flow is \(\partial_t\rho=\nabla\cdot(\rho\nabla V)\), deterministic drift down the potential.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Boltzmann entropy.</span>
+        \[
+        \mathcal H(\rho)=\int\rho\log\rho\,\mathrm dx,\qquad
+        \frac{\delta\mathcal H}{\delta\rho}=1+\log\rho.
+        \]
+        Since \(\rho\nabla\log\rho=\nabla\rho\), its flow is the heat equation \(\partial_t\rho=\Delta\rho\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Internal energy.</span> For \(m&gt;1\),
+        \[
+        \mathcal U_m(\rho)=\frac1{m-1}\int\rho^m\,\mathrm dx
+        \]
+        generates \(\partial_t\rho=\Delta(\rho^m)\), the porous-medium equation.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Interaction energy.</span>
+        \[
+        \mathcal W(\rho)=\frac12\iint W(x-y)\rho(x)\rho(y)\,\mathrm dx\,\mathrm dy,
+        \qquad
+        \frac{\delta\mathcal W}{\delta\rho}=W*\rho.
+        \]
+        Its flow is \(\partial_t\rho=\nabla\cdot(\rho\nabla(W*\rho))\).</p>
+    </div>
+
+    <p>Combining entropy and potential energy gives
+    \[
+    \partial_t\rho=\Delta\rho+\nabla\cdot(\rho\nabla V),
+    \]
+    the Fokker-Planck equation with invariant density proportional to \(e^{-V}\), when normalizable.</p>
+
+    <h3>3. Displacement convexity</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> An energy \(\mathcal F:\mathcal P_2(\mathbb R^d)\to(-\infty,\infty]\) is \(\lambda\)-geodesically convex if along every constant-speed \(W_2\)-geodesic \(\mu_t\),
+        \[
+        \mathcal F(\mu_t)
+        \le(1-t)\mathcal F(\mu_0)+t\mathcal F(\mu_1)
+        -\frac\lambda2t(1-t)W_2^2(\mu_0,\mu_1).
+        \]</p>
+    </div>
+
+    <p>If \(V\) is \(\lambda\)-convex in Euclidean space, then \(\mu\mapsto\int V\,\mathrm d\mu\) is \(\lambda\)-geodesically convex. If \(W\) is convex, the interaction energy is geodesically convex under the usual symmetry assumptions. For internal energies \(\int f(\rho)\,\mathrm dx\), McCann's sufficient condition is that
+    \[
+    s\longmapsto s^d f(s^{-d})
+    \]
+    is convex and nonincreasing on \((0,\infty)\).</p>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Potential-energy calculation.</span> If \(\mu_t=((1-t)x+ty)_\#\pi\) and
+        \[
+        V((1-t)x+ty)\le(1-t)V(x)+tV(y)-\frac\lambda2t(1-t)|x-y|^2,
+        \]
+        integration against an optimal \(\pi\) gives the geodesic-convexity inequality.</p>
+    </div>
+
+    <h3>4. The JKO minimizing-movement scheme</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Given a time step \(\tau&gt;0\) and \(\rho^0\), define recursively
+        \[
+        \rho^{k+1}\in\operatorname*{argmin}_{\rho\in\mathcal P_2}
+        \left\{\mathcal F(\rho)+\frac1{2\tau}W_2^2(\rho,\rho^k)\right\}.
+        \]
+        This is the Jordan-Kinderlehrer-Otto scheme.</p>
+    </div>
+
+    <p>The squared-distance term penalizes moving too far in one step, while \(\mathcal F\) drives descent. Comparing the minimizer with \(\rho^k\) gives the discrete energy inequality
+    \[
+    \mathcal F(\rho^{k+1})
+    +\frac1{2\tau}W_2^2(\rho^{k+1},\rho^k)
+    \le\mathcal F(\rho^k).
+    \]
+    Summation controls both the energy and the total squared metric increments, providing compactness for time interpolations.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Minimizing movements.</span> Under properness, lower semicontinuity, coercivity, and suitable geodesic convexity assumptions, piecewise-constant interpolations of the JKO iterates converge as \(\tau\downarrow0\) to the Wasserstein gradient flow of \(\mathcal F\).</p>
+    </div>
+
+    <h3>5. Euler-Lagrange equation for one JKO step</h3>
+    <p>Assume the minimizer \(\rho^{k+1}\) is regular and the optimal map \(T\) transports \(\rho^{k+1}\) to \(\rho^k\). Perturb \(\rho^{k+1}\) by \(x\mapsto x+\varepsilon\xi(x)\). The first variation gives
+    \[
+    \int\nabla\frac{\delta\mathcal F}{\delta\rho}(\rho^{k+1})\cdot\xi\,\rho^{k+1}\,\mathrm dx
+    \frac1\tau\int(x-T(x))\cdot\xi(x)\,\rho^{k+1}(x)\,\mathrm dx=0.
+    \]
+    Hence
+    \[
+    \frac{T(x)-x}{\tau}
+    =\nabla\frac{\delta\mathcal F}{\delta\rho}(\rho^{k+1})(x).
+    \]
+    Moving backward to \(\rho^k\) therefore has the opposite of the gradient-flow velocity, exactly as an implicit Euler step should.</p>
+
+    <h3>6. Metric slope and energy dissipation</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The descending metric slope is
+        \[
+        |\partial\mathcal F|(\mu)
+        =\limsup_{\nu\to\mu}
+        \frac{[\mathcal F(\mu)-\mathcal F(\nu)]_+}{W_2(\mu,\nu)}.
+        \]</p>
+    </div>
+
+    <p>A sufficiently regular gradient flow satisfies the energy-dissipation identity
+    \[
+    \mathcal F(\mu_T)
+    +\frac12\int_0^T|\dot\mu_t|^2\,\mathrm dt
+    +\frac12\int_0^T|\partial\mathcal F|^2(\mu_t)\,\mathrm dt
+    =\mathcal F(\mu_0).
+    \]
+    This is the metric-space analogue of
+    \(\frac{\mathrm d}{\mathrm dt}F(x_t)=-|\dot x_t|^2=-|\nabla F(x_t)|^2\).</p>
+
+    <h3>7. Evolution variational inequalities</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A curve \(\mu_t\) satisfies the \(\operatorname{EVI}_\lambda\) for \(\mathcal F\) if for every comparison measure \(\nu\),
+        \[
+        \frac12\frac{\mathrm d}{\mathrm dt}W_2^2(\mu_t,\nu)
+        +\frac\lambda2W_2^2(\mu_t,\nu)
+        \le\mathcal F(\nu)-\mathcal F(\mu_t)
+        \]
+        for almost every \(t&gt;0\).</p>
+    </div>
+
+    <p>EVI solutions are unique. Applying the inequality to two flows and adding yields the contraction estimate
+    \[
+    W_2(\mu_t,\tilde\mu_t)\le e^{-\lambda t}W_2(\mu_0,\tilde\mu_0).
+    \]
+    Thus positive geodesic convexity gives exponential stability.</p>
+
+    <h3>8. Entropy, Fisher information, and convergence</h3>
+    <p>For entropy relative to \(\gamma(\mathrm dx)=Z^{-1}e^{-V(x)}\,\mathrm dx\),
+    \[
+    \operatorname{Ent}_\gamma(\rho)=\int\rho\log\frac{\rho}{\gamma}\,\mathrm dx,
+    \]
+    the squared metric slope is formally the relative Fisher information
+    \[
+    I_\gamma(\rho)=\int\left|\nabla\log\frac{\rho}{\gamma}\right|^2\rho\,\mathrm dx.
+    \]
+    Along Fokker-Planck flow,
+    \[
+    \frac{\mathrm d}{\mathrm dt}\operatorname{Ent}_\gamma(\rho_t)=-I_\gamma(\rho_t).
+    \]
+    Logarithmic Sobolev inequalities convert this dissipation into exponential convergence of entropy, while Talagrand inequalities convert entropy control into \(W_2\) control.</p>
+
+    <h3>9. What is formal and what is rigorous</h3>
+    <p>The first-variation PDE calculations assume smooth positive densities. The minimizing-movement, metric-slope, and EVI frameworks are designed to survive without that smoothness. A careful proof of a particular PDE flow must check lower semicontinuity, compactness of sublevels, the relevant convexity notion, and identification of the limiting subdifferential. Writing down the formal Wasserstein gradient is the beginning of the argument, not the end.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-dynamic-transport/" next_label="Next chapter" next_url="/notes/optimal-transport/course-computational-transport/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-dynamic-transport/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-computational-transport/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-dynamic-transport/" next_label="下一章" next_url="/notes/optimal-transport/course-computational-transport/" %}</div>
+
+<hr>

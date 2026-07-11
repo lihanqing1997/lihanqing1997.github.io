@@ -1,0 +1,162 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 3. Wasserstein metrics and geodesics"
+breadcrumb_child_label_fr: "Cours 3. Métriques et géodésiques de Wasserstein"
+breadcrumb_child_label_zh: "课程 3. 瓦瑟斯坦度量与测地线"
+---
+
+<div data-lang="en"><h2><a href="{{ '/notes/optimal-transport/course-wasserstein-geometry/' | relative_url }}">Course 3. Wasserstein metrics and geodesics</a></h2>{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-duality-and-optimality/" next_label="Next chapter" next_url="/notes/optimal-transport/course-quadratic-transport/" %}</div>
+<div data-lang="fr"><h2>Cours 3. Métriques et géodésiques de Wasserstein</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-duality-and-optimality/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-quadratic-transport/" %}</div>
+<div data-lang="zh"><h2>课程 3. 瓦瑟斯坦度量与测地线</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-duality-and-optimality/" next_label="下一章" next_url="/notes/optimal-transport/course-quadratic-transport/" %}</div>
+
+<article class="note-page">
+    <p>When the cost is a power of the ground distance, the optimal value is itself a distance between probability measures. This chapter proves the metric properties, explains the topology induced by \(W_p\), derives the one-dimensional quantile formula, and constructs geodesics by moving particles along optimal couplings.</p>
+
+    <h3>1. Definition and elementary bounds</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Let \((X,d)\) be Polish and \(p\ge1\). For \(\mu,\nu\in\mathcal P_p(X)\), define
+        \[
+        W_p(\mu,\nu)=\left(\inf_{\pi\in\Pi(\mu,\nu)}
+        \int_{X\times X}d(x,y)^p\,\mathrm d\pi(x,y)\right)^{1/p}.
+        \]</p>
+    </div>
+
+    <p>The value is finite. Indeed, the product coupling gives
+    \[
+    d(x,y)^p\le2^{p-1}\bigl[d(x,x_0)^p+d(y,x_0)^p\bigr],
+    \]
+    whose integral is finite. Existence from Chapter 1 gives an optimal coupling because \(d^p\) is continuous and nonnegative.</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Comparison of orders.</span> If \(1\le q\le p\) and \(\mu,\nu\in\mathcal P_p(X)\), then \(W_q(\mu,\nu)\le W_p(\mu,\nu)\).</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For every coupling \(\pi\), Lyapunov's inequality on the probability space \((X\times X,\pi)\) gives
+        \((\int d^q\,\mathrm d\pi)^{1/q}\le(\int d^p\,\mathrm d\pi)^{1/p}\). Take infima.</p>
+    </div>
+
+    <h3>2. \(W_p\) is a metric</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> The function \(W_p\) is a metric on \(\mathcal P_p(X)\).</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Nonnegativity and symmetry are immediate. If \(W_p(\mu,\nu)=0\), an optimal plan \(\pi\) satisfies \(d(x,y)=0\) \(\pi\)-almost everywhere, so it is concentrated on the diagonal. Its two marginals are therefore equal, giving \(\mu=\nu\).</p>
+        <p>For the triangle inequality, take optimal plans \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) and \(\pi_{23}\in\Pi(\mu_2,\mu_3)\). Glue them to a law \(\gamma\) of \((X_1,X_2,X_3)\), and let \(\pi_{13}\) be its \((1,3)\)-marginal. Minkowski's inequality gives
+        \[
+        \begin{aligned}
+        W_p(\mu_1,\mu_3)
+        &\le\left(\int d(X_1,X_3)^p\,\mathrm d\gamma\right)^{1/p}\\
+        &\le\left(\int[d(X_1,X_2)+d(X_2,X_3)]^p\,\mathrm d\gamma\right)^{1/p}\\
+        &\le W_p(\mu_1,\mu_2)+W_p(\mu_2,\mu_3).
+        \end{aligned}
+        \]</p>
+    </div>
+
+    <h3>3. The topology of \(W_p\)</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Convergence characterization.</span> Fix \(x_0\in X\). For \(\mu_n,\mu\in\mathcal P_p(X)\), the following are equivalent:
+        </p>
+        <ol>
+            <li>\(W_p(\mu_n,\mu)\to0\).</li>
+            <li>\(\mu_n\rightharpoonup\mu\) narrowly and \(\int d(x,x_0)^p\,\mathrm d\mu_n\to\int d(x,x_0)^p\,\mathrm d\mu\).</li>
+            <li>\(\mu_n\rightharpoonup\mu\) and the \(p\)-moment tails are uniformly integrable:
+            \[
+            \lim_{R\to\infty}\sup_n\int_{\{d(x,x_0)&gt;R\}}d(x,x_0)^p\,\mathrm d\mu_n=0.
+            \]</li>
+        </ol>
+    </div>
+
+    <p>One direction follows by coupling random variables \(X_n,X\) with \(\mathbb E d(X_n,X)^p\to0\), which implies convergence in probability and controls moments. For the converse, truncate the metric at a large radius, use narrow convergence for the bounded part, and use uniform integrability for the tails. Equivalently, a Skorokhod representation plus uniform integrability turns almost-sure convergence into \(L^p\) convergence.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Warning.</span> Narrow convergence alone is not enough. The measures
+        \[
+        \mu_n=(1-n^{-p})\delta_0+n^{-p}\delta_n
+        \]
+        converge narrowly to \(\delta_0\), but \(W_p(\mu_n,\delta_0)^p=1\). A vanishing amount of mass can remain far enough away to retain a nonvanishing transport cost.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Completeness and separability.</span> If \(X\) is complete and separable, then \((\mathcal P_p(X),W_p)\) is complete and separable.</p>
+    </div>
+    <p>Completeness is proved by gluing a rapidly Cauchy subsequence into random variables \((X_n)\) satisfying \(\sum_n\mathbb E[d(X_n,X_{n+1})^p]^{1/p}&lt;\infty\). Then \(X_n\) converges in \(L^p\) to an \(X\)-valued limit. Separability follows by approximating measures with finitely supported measures on a countable dense subset of \(X\).</p>
+
+    <h3>4. One-dimensional optimal transport</h3>
+    <p>For \(\mu\in\mathcal P(\mathbb R)\), write \(F_\mu(x)=\mu((-\infty,x])\) and define the generalized quantile
+    \[
+    F_\mu^{-1}(u)=\inf\{x:F_\mu(x)\ge u\},\qquad 0&lt;u&lt;1.
+    \]</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Monotone rearrangement.</span> For \(p\ge1\) and \(\mu,\nu\in\mathcal P_p(\mathbb R)\),
+        \[
+        W_p(\mu,\nu)^p=\int_0^1|F_\mu^{-1}(u)-F_\nu^{-1}(u)|^p\,\mathrm du.
+        \]
+        The coupling \((F_\mu^{-1},F_\nu^{-1})_\#\mathcal L^1|_{(0,1)}\) is optimal.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The proposed coupling has the correct marginals by the quantile transform. For \(x_1&lt;x_2\) and \(y_1&lt;y_2\), convexity of \(t\mapsto|t|^p\) gives the Monge inequality
+        \[
+        |x_1-y_1|^p+|x_2-y_2|^p\le|x_1-y_2|^p+|x_2-y_1|^p.
+        \]
+        Thus crossing pairs can be uncrossed without increasing cost. Repeating this exchange in the discrete case yields the monotone matching. Approximation by empirical quantiles and lower semicontinuity extend the result to arbitrary measures.</p>
+    </div>
+
+    <p>If \(\mu\) has no atoms, the optimal map is \(T=F_\nu^{-1}\circ F_\mu\). For empirical measures with equal weights, the formula says to sort both samples and pair equal ranks.</p>
+
+    <h3>5. Displacement interpolation</h3>
+    <p>Assume now that \(X=\mathbb R^d\). Let \(\pi\) be an optimal coupling for \(W_p(\mu_0,\mu_1)\), and define
+    \[
+    \mu_t=((1-t)x+ty)_\#\pi,\qquad 0\le t\le1.
+    \]</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Constant-speed geodesic.</span> The curve \((\mu_t)\) satisfies
+        \[
+        W_p(\mu_s,\mu_t)=|t-s|W_p(\mu_0,\mu_1)
+        \]
+        for all \(s,t\in[0,1]\).</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The law of \(((1-s)x+sy,(1-t)x+ty)\) is a coupling of \(\mu_s,\mu_t\), hence
+        \[
+        W_p(\mu_s,\mu_t)\le|t-s|\left(\int|x-y|^p\,\mathrm d\pi\right)^{1/p}.
+        \]
+        Applying these upper bounds to the segments \([0,s]\), \([s,t]\), and \([t,1]\), then using the triangle inequality between \(\mu_0\) and \(\mu_1\), forces equality in every segment.</p>
+    </div>
+
+    <p>If the optimal plan is induced by a map \(T\), then \(\mu_t=((1-t)\mathrm{id}+tT)_\#\mu_0\). This is displacement interpolation. It differs from the linear mixture \((1-t)\mu_0+t\mu_1\), which fades mass out at one location and in at another instead of moving it through space.</p>
+
+    <h3>6. Two explicit families</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Translations.</span> If \(\nu=(x\mapsto x+a)_\#\mu\), then the translation map is optimal for every \(p\ge1\), and \(W_p(\mu,\nu)=|a|\). The lower bound follows from Jensen:
+        \[
+        \int|x-y|^p\,\mathrm d\pi\ge\left|\int(x-y)\,\mathrm d\pi\right|^p=|a|^p.
+        \]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Gaussian measures.</span> For Gaussian laws \(N(m_0,C_0)\) and \(N(m_1,C_1)\) on \(\mathbb R^d\),
+        \[
+        W_2^2=|m_0-m_1|^2+\operatorname{tr}\!\left(C_0+C_1-2(C_1^{1/2}C_0C_1^{1/2})^{1/2}\right).
+        \]
+        When \(C_0\) is positive definite, the optimal map is affine. This formula reduces to \(|m_0-m_1|^2+(\sigma_0-\sigma_1)^2\) in one dimension.</p>
+    </div>
+
+    <h3>7. Wasserstein barycenters</h3>
+    <p>Given measures \(\mu_1,\ldots,\mu_N\in\mathcal P_2(\mathbb R^d)\) and weights \(\lambda_i&gt;0\) summing to one, a Wasserstein barycenter minimizes
+    \[
+    \nu\longmapsto\sum_{i=1}^N\lambda_iW_2^2(\nu,\mu_i).
+    \]
+    This is the analogue of a weighted Euclidean mean in the nonlinear metric space \(\mathcal P_2\). In one dimension its quantile is \(\sum_i\lambda_iF_{\mu_i}^{-1}\). In higher dimensions existence follows from the direct method, while uniqueness needs additional absolute-continuity assumptions.</p>
+
+    <h3>8. Geometric perspective</h3>
+    <p>The space \(\mathcal P_p(X)\) remembers both probability and the geometry of \(X\). Weak convergence controls where mass goes, moment convergence controls how far it travels, and optimal couplings determine geodesics. The next chapter specializes to \(p=2\), where convex analysis identifies optimal maps and exposes the Monge-Ampere equation.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-duality-and-optimality/" next_label="Next chapter" next_url="/notes/optimal-transport/course-quadratic-transport/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-duality-and-optimality/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-quadratic-transport/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-duality-and-optimality/" next_label="下一章" next_url="/notes/optimal-transport/course-quadratic-transport/" %}</div>
+
+<hr>

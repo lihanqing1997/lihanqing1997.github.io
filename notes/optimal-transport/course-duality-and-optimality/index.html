@@ -1,0 +1,164 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 2. Duality and optimality conditions"
+breadcrumb_child_label_fr: "Cours 2. Dualité et conditions d'optimalité"
+breadcrumb_child_label_zh: "课程 2. 对偶性与最优性条件"
+---
+
+<div data-lang="en">
+    <h2><a href="{{ '/notes/optimal-transport/course-duality-and-optimality/' | relative_url }}">Course 2. Duality and optimality conditions</a></h2>
+    {% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-foundations-and-existence/" next_label="Next chapter" next_url="/notes/optimal-transport/course-wasserstein-geometry/" %}
+</div>
+<div data-lang="fr"><h2>Cours 2. Dualité et conditions d'optimalité</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-foundations-and-existence/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-wasserstein-geometry/" %}</div>
+<div data-lang="zh"><h2>课程 2. 对偶性与最优性条件</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-foundations-and-existence/" next_label="下一章" next_url="/notes/optimal-transport/course-wasserstein-geometry/" %}</div>
+
+<article class="note-page">
+    <p>Kantorovich duality converts an optimization over probability measures into an optimization over functions. Besides equality of values, the dual produces certificates of optimality, reveals the geometry of optimal supports, and connects transport to convex analysis and partial differential equations.</p>
+
+    <h3>1. Monge and Kantorovich formulations</h3>
+    <p>For a Borel cost \(c:X\times Y\to(-\infty,\infty]\), Monge's problem is
+    \[
+    \inf_{T_\#\mu=\nu}\int_X c(x,T(x))\,\mathrm d\mu(x).
+    \]
+    It may be infeasible and its feasible set is not convex. Kantorovich's relaxation is
+    \[
+    \mathsf P=\inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi.
+    \]
+    Every transport map yields a plan \((\mathrm{id},T)_\#\mu\), so \(\mathsf P\) is no larger than the Monge value.</p>
+
+    <h3>2. The dual problem and weak duality</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A pair of functions \((\varphi,\psi)\) is dual feasible if
+        \[
+        \varphi(x)+\psi(y)\le c(x,y)
+        \]
+        for all \(x,y\), with \(\varphi\in L^1(\mu)\) and \(\psi\in L^1(\nu)\). The dual value is
+        \[
+        \mathsf D=\sup_{\varphi\oplus\psi\le c}
+        \left\{\int_X\varphi\,\mathrm d\mu+\int_Y\psi\,\mathrm d\nu\right\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Weak duality.</span> One always has \(\mathsf D\le\mathsf P\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(\pi\in\Pi(\mu,\nu)\) and \(\varphi\oplus\psi\le c\), then
+        \[
+        \int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu
+        =\int[\varphi(x)+\psi(y)]\,\mathrm d\pi(x,y)
+        \le\int c\,\mathrm d\pi.
+        \]
+        Taking the supremum over feasible potentials and then the infimum over couplings gives the claim.</p>
+    </div>
+
+    <h3>3. Strong duality</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Kantorovich duality.</span> Let \(X,Y\) be Polish and let \(c:X\times Y\to[0,\infty]\) be lower semicontinuous. Then
+        \[
+        \inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm d\pi
+        =\sup_{\varphi\oplus\psi\le c}
+        \left(\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu\right),
+        \]
+        where the supremum may be taken over integrable measurable potentials. The primal infimum is attained. Dual attainment requires additional hypotheses and should not be assumed automatically.</p>
+    </div>
+
+    <p>On finite spaces this is exactly strong duality for linear programming. If \(\mu=(a_i)_{i=1}^m\), \(\nu=(b_j)_{j=1}^n\), and \(C=(c_{ij})\), the primal and dual are
+    \[
+    \min_{P_{ij}\ge0}\sum_{ij}c_{ij}P_{ij},\quad
+    \sum_jP_{ij}=a_i,\quad\sum_iP_{ij}=b_j,
+    \]
+    and
+    \[
+    \max_{u_i+v_j\le c_{ij}}\sum_i a_i u_i+\sum_j b_j v_j.
+    \]</p>
+
+    <p>For general Polish spaces, a standard proof first establishes duality for bounded continuous costs by a separation argument, approximates a nonnegative lower-semicontinuous cost monotonically from below by bounded continuous costs, and then uses compactness of \(\Pi(\mu,\nu)\) to exchange the approximation limit with the primal minimum.</p>
+
+    <h3>4. The \(c\)-transform</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For \(\varphi:X\to[-\infty,\infty]\), define its \(c\)-transform on \(Y\) by
+        \[
+        \varphi^c(y)=\inf_{x\in X}\{c(x,y)-\varphi(x)\}.
+        \]
+        Then \(\varphi(x)+\varphi^c(y)\le c(x,y)\). A function is \(c\)-concave if it is a \(c\)-transform of some function.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For fixed \(\varphi\), the largest \(\psi\) satisfying \(\varphi\oplus\psi\le c\) is \(\psi=\varphi^c\). Consequently, whenever the expressions are integrable, the dual can be reduced to the one-potential problem
+        \[
+        \sup_\varphi\left\{\int\varphi\,\mathrm d\mu+\int\varphi^c\,\mathrm d\nu\right\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Feasibility gives \(\psi(y)\le c(x,y)-\varphi(x)\) for every \(x\). Taking the infimum in \(x\) yields \(\psi\le\varphi^c\). Conversely, the definition of \(\varphi^c\) gives feasibility.</p>
+    </div>
+
+    <h3>5. Complementary slackness</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Optimality certificate.</span> Suppose \(\pi\in\Pi(\mu,\nu)\) and \((\varphi,\psi)\) is dual feasible. If
+        \[
+        \varphi(x)+\psi(y)=c(x,y)\qquad\pi\text{-almost everywhere},
+        \]
+        then \(\pi\) and \((\varphi,\psi)\) are primal and dual optimal.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Equality on the support of \(\pi\) implies
+        \[
+        \int c\,\mathrm d\pi=\int(\varphi\oplus\psi)\,\mathrm d\pi
+        =\int\varphi\,\mathrm d\mu+\int\psi\,\mathrm d\nu.
+        \]
+        Weak duality places every dual value below every primal value, so equality forces both to be optimal.</p>
+    </div>
+
+    <p>For a \(c\)-concave \(\varphi\), define the \(c\)-superdifferential
+    \[
+    \partial^c\varphi=\{(x,y):\varphi(x)+\varphi^c(y)=c(x,y)\}.
+    \]
+    An optimal plan is therefore often characterized by concentration on \(\partial^c\varphi\).</p>
+
+    <h3>6. Cyclical monotonicity</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A set \(\Gamma\subseteq X\times Y\) is \(c\)-cyclically monotone if for every \(N\ge2\), every \((x_i,y_i)\in\Gamma\), and every permutation \(\sigma\),
+        \[
+        \sum_{i=1}^N c(x_i,y_i)\le\sum_{i=1}^N c(x_i,y_{\sigma(i)}).
+        \]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every subset of a \(c\)-superdifferential is \(c\)-cyclically monotone.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \((x_i,y_i)\in\partial^c\varphi\), equality gives \(c(x_i,y_i)=\varphi(x_i)+\varphi^c(y_i)\). Feasibility gives \(\varphi(x_i)+\varphi^c(y_{\sigma(i)})\le c(x_i,y_{\sigma(i)})\). Summing and using that a permutation preserves \(\sum_i\varphi^c(y_i)\) proves the inequality.</p>
+    </div>
+
+    <p>Under standard regularity assumptions on a finite-valued continuous cost, an optimal plan is concentrated on a \(c\)-cyclically monotone set. Conversely, a plan concentrated on the \(c\)-superdifferential of an integrable potential is optimal. The second statement is the practical sufficiency direction and follows immediately from complementary slackness.</p>
+
+    <h3>7. The \(W_1\) dual formula</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Kantorovich-Rubinstein theorem.</span> If \((X,d)\) is Polish and \(\mu,\nu\in\mathcal P_1(X)\), then
+        \[
+        W_1(\mu,\nu)=\sup_{\operatorname{Lip}(f)\le1}\int_X f\,\mathrm d(\mu-\nu).
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof idea.</span> For \(c=d\), if \(f\) is \(1\)-Lipschitz then \(f(x)-f(y)\le d(x,y)\), so \((f,-f)\) is dual feasible. Conversely, starting from a feasible pair, replace one potential by its \(d\)-transform. The resulting potential is \(1\)-Lipschitz and the two-potential objective reduces to the displayed one-function expression.</p>
+    </div>
+
+    <h3>8. A two-point calculation</h3>
+    <p>Let \(X=Y=\{0,1\}\), \(c(i,j)=|i-j|\), \(\mu=(a,1-a)\), and \(\nu=(b,1-b)\). At least \(|a-b|\) units of mass must cross between the two points, and the coupling that leaves \(\min(a,b)\) at \(0\) and \(\min(1-a,1-b)\) at \(1\) attains this amount. Hence \(W_1(\mu,\nu)=|a-b|\). The dual function \(f(0)=0,f(1)=\operatorname{sign}(b-a)\) is \(1\)-Lipschitz and attains the same value.</p>
+
+    <h3>9. Proof strategy to remember</h3>
+    <p>Duality arguments repeatedly follow four steps. First derive weak duality by integrating a pointwise inequality. Second optimize one potential through the \(c\)-transform. Third prove or invoke strong duality under explicit compactness and lower-semicontinuity assumptions. Finally identify the optimal support through equality in the dual constraint. This pattern reappears in Brenier's theorem, Monge-Ampere equations, and entropic transport.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-foundations-and-existence/" next_label="Next chapter" next_url="/notes/optimal-transport/course-wasserstein-geometry/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-foundations-and-existence/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-wasserstein-geometry/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-foundations-and-existence/" next_label="下一章" next_url="/notes/optimal-transport/course-wasserstein-geometry/" %}</div>
+
+<hr>
