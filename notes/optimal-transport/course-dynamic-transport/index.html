@@ -1,0 +1,163 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 5. Dynamic transport and the continuity equation"
+breadcrumb_child_label_fr: "Cours 5. Transport dynamique et équation de continuité"
+breadcrumb_child_label_zh: "课程 5. 动态传输与连续性方程"
+---
+
+<div data-lang="en"><h2><a href="{{ '/notes/optimal-transport/course-dynamic-transport/' | relative_url }}">Course 5. Dynamic transport and the continuity equation</a></h2>{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-quadratic-transport/" next_label="Next chapter" next_url="/notes/optimal-transport/course-gradient-flows/" %}</div>
+<div data-lang="fr"><h2>Cours 5. Transport dynamique et équation de continuité</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-quadratic-transport/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-gradient-flows/" %}</div>
+<div data-lang="zh"><h2>课程 5. 动态传输与连续性方程</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-quadratic-transport/" next_label="下一章" next_url="/notes/optimal-transport/course-gradient-flows/" %}</div>
+
+<article class="note-page">
+    <p>The Kantorovich problem compares only initial and final measures. The dynamic formulation resolves the transport into a time-dependent density and velocity field. For quadratic cost, the squared Wasserstein distance is the least kinetic energy needed to move one measure into the other.</p>
+
+    <h3>1. The continuity equation</h3>
+    <p>For a smooth density \(\rho_t(x)\) transported by a smooth velocity \(v_t(x)\), conservation of mass reads
+    \[
+    \partial_t\rho_t+\nabla\cdot(\rho_t v_t)=0.
+    \]
+    The weak formulation extends this equation to arbitrary probability measures.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A narrowly continuous curve \(t\mapsto\mu_t\in\mathcal P(\mathbb R^d)\) and a Borel velocity field \(v_t:\mathbb R^d\to\mathbb R^d\) solve the continuity equation if
+        \[
+        \int_0^1\int_{\mathbb R^d}
+        \left[\partial_t\zeta(t,x)+\nabla\zeta(t,x)\cdot v_t(x)\right]
+        \,\mathrm d\mu_t(x)\,\mathrm dt=0
+        \]
+        for every \(\zeta\in C_c^\infty((0,1)\times\mathbb R^d)\). Endpoint terms are included when test functions do not vanish at \(t=0,1\).</p>
+    </div>
+
+    <p>If \(X_t\) solves the ordinary differential equation \(\dot X_t=v_t(X_t)\) and \(\mu_t=(X_t)_\#\mu_0\), then the chain rule proves the weak equation:
+    \[
+    \frac{\mathrm d}{\mathrm dt}\int\zeta(t,x)\,\mathrm d\mu_t(x)
+    =\int[\partial_t\zeta+\nabla\zeta\cdot v_t]\,\mathrm d\mu_t.
+    \]</p>
+
+    <h3>2. Action and admissible curves</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> The kinetic action of an admissible pair \((\mu_t,v_t)\) is
+        \[
+        \mathcal A(\mu,v)=\int_0^1\int_{\mathbb R^d}|v_t(x)|^2\,\mathrm d\mu_t(x)\,\mathrm dt.
+        \]
+        More generally, the \(p\)-action uses \(|v|^p\).</p>
+    </div>
+
+    <p>The measure-valued momentum \(m_t=v_t\mu_t\) is often preferable in optimization. With \(\mu_t=\rho_t\,\mathrm dx\), the action becomes \(\int|m_t|^2/\rho_t\), interpreted as \(+\infty\) where \(m_t\) is not absolutely continuous with respect to \(\rho_t\). The map \((\rho,m)\mapsto|m|^2/\rho\) is jointly convex, so the dynamic problem is a convex optimization problem.</p>
+
+    <h3>3. The Benamou-Brenier formula</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Benamou-Brenier theorem.</span> For \(\mu_0,\mu_1\in\mathcal P_2(\mathbb R^d)\),
+        \[
+        W_2^2(\mu_0,\mu_1)
+        =\inf\left\{
+        \int_0^1\int|v_t|^2\,\mathrm d\mu_t\,\mathrm dt:
+        \partial_t\mu_t+\nabla\cdot(v_t\mu_t)=0,\
+        \mu_{t=0}=\mu_0,\ \mu_{t=1}=\mu_1
+        \right\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Upper bound.</span> Let \(\pi\) be an optimal coupling and place a probability measure on straight paths \(\omega_{x,y}(t)=(1-t)x+ty\) by sampling \((x,y)\sim\pi\). Its time marginal is \(\mu_t=((1-t)x+ty)_\#\pi\), and each particle has velocity \(y-x\). The induced Eulerian velocity is the conditional mean of \(y-x\) given the current position. Jensen's inequality shows
+        \[
+        \int_0^1\int|v_t|^2\,\mathrm d\mu_t\,\mathrm dt
+        \le\int|y-x|^2\,\mathrm d\pi=W_2^2(\mu_0,\mu_1).
+        \]</p>
+        <p><span class="statement-title">Lower bound.</span> A superposition principle represents every finite-action solution of the continuity equation by a probability measure on absolutely continuous particle paths \(\omega\), with \(\dot\omega(t)=v_t(\omega(t))\) almost everywhere. The endpoint law is a coupling \(\pi\) of \(\mu_0,\mu_1\). For each path, Cauchy-Schwarz gives
+        \[
+        |\omega(1)-\omega(0)|^2
+        \le\int_0^1|\dot\omega(t)|^2\,\mathrm dt.
+        \]
+        Integrating over paths gives \(W_2^2(\mu_0,\mu_1)\le\mathcal A(\mu,v)\). Combining the bounds proves the formula.</p>
+    </div>
+
+    <h3>4. Absolutely continuous curves in Wasserstein space</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A curve \(\mu_t\) is \(2\)-absolutely continuous in \((\mathcal P_2,W_2)\) if there exists \(g\in L^2(0,1)\) such that
+        \[
+        W_2(\mu_s,\mu_t)\le\int_s^t g(r)\,\mathrm dr.
+        \]
+        Its metric derivative is
+        \[
+        |\dot\mu_t|=\lim_{h\to0}\frac{W_2(\mu_{t+h},\mu_t)}{|h|}
+        \]
+        whenever the limit exists.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Velocity characterization.</span> A curve \(\mu_t\) is \(2\)-absolutely continuous if and only if it admits a velocity field \(v_t\in L^2(\mu_t)\) solving the continuity equation with \(\int_0^1\|v_t\|_{L^2(\mu_t)}^2\,\mathrm dt&lt;\infty\). Among all such velocities there is a unique minimal-norm velocity, and
+        \[
+        |\dot\mu_t|=\|v_t\|_{L^2(\mu_t)}
+        \quad\text{for almost every }t.
+        \]</p>
+    </div>
+
+    <p>The tangent space at \(\mu\) is naturally identified with
+    \[
+    T_\mu\mathcal P_2=\overline{\{\nabla\phi:\phi\in C_c^\infty(\mathbb R^d)\}}^{L^2(\mu)}.
+    \]
+    Components orthogonal to gradients do not change the measure to first order and only increase kinetic energy.</p>
+
+    <h3>5. Geodesics and velocity potentials</h3>
+    <p>Along a smooth \(W_2\)-geodesic, the minimal velocity has gradient form \(v_t=\nabla\phi_t\). Formally, the pair satisfies
+    \[
+    \partial_t\mu_t+\nabla\cdot(\mu_t\nabla\phi_t)=0,\qquad
+    \partial_t\phi_t+\tfrac12|\nabla\phi_t|^2=0.
+    \]
+    The second equation is the Hamilton-Jacobi equation. Its gradient is the pressureless Euler equation
+    \[
+    \partial_t v_t+(v_t\cdot\nabla)v_t=0,
+    \]
+    expressing that particles travel at constant velocity along straight geodesics.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Translation.</span> If \(\mu_t=(x\mapsto x+ta)_\#\mu_0\), then \(v_t\equiv a\), the continuity equation holds, and the action is \(|a|^2=W_2^2(\mu_0,\mu_1)\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Dilation.</span> If \(T(x)=\lambda x\) with \(\lambda&gt;0\), then \(X_t(x)=(1-t+t\lambda)x\). The Eulerian velocity is
+        \[
+        v_t(z)=\frac{\lambda-1}{1-t+t\lambda}z.
+        \]
+        This example is useful for checking continuity-equation calculations and scaling laws.</p>
+    </div>
+
+    <h3>6. Dynamic duality</h3>
+    <p>The Benamou-Brenier problem has a Hamilton-Jacobi dual:
+    \[
+    \frac12W_2^2(\mu_0,\mu_1)
+    =\sup_\phi\left\{
+    \int\phi_1\,\mathrm d\mu_1-\int\phi_0\,\mathrm d\mu_0:
+    \partial_t\phi+\tfrac12|\nabla\phi|^2\le0
+    \right\}.
+    \]
+    To see weak duality, differentiate \(\int\phi_t\,\mathrm d\mu_t\), use the continuity equation, and complete the square:
+    \[
+    \partial_t\phi+\nabla\phi\cdot v
+    \le \partial_t\phi+\tfrac12|\nabla\phi|^2+\tfrac12|v|^2
+    \le\tfrac12|v|^2.
+    \]</p>
+
+    <h3>7. Otto's formal Riemannian calculus</h3>
+    <p>For smooth positive densities, a tangent vector \(\dot\rho\) is represented by a potential \(\phi\) through
+    \[
+    \dot\rho=-\nabla\cdot(\rho\nabla\phi).
+    \]
+    The formal metric is
+    \[
+    \langle\dot\rho_1,\dot\rho_2\rangle_\rho
+    =\int\nabla\phi_1\cdot\nabla\phi_2\,\rho\,\mathrm dx.
+    \]
+    This is not merely notation. Its induced path length is exactly \(W_2\), and it predicts the correct gradient-flow PDEs. Rigorous metric-gradient-flow theory replaces the formal differential geometry when densities or energies are nonsmooth.</p>
+
+    <h3>8. Static and dynamic viewpoints</h3>
+    <p>The static optimizer is a joint law of endpoints. The dynamic optimizer is a least-action path of measures. Straight-line interpolation of an optimal endpoint plan connects them. The dynamic language is indispensable for tangent vectors, gradient flows, fluid formulations, and numerical solvers based on continuity equations.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-quadratic-transport/" next_label="Next chapter" next_url="/notes/optimal-transport/course-gradient-flows/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-quadratic-transport/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-gradient-flows/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-quadratic-transport/" next_label="下一章" next_url="/notes/optimal-transport/course-gradient-flows/" %}</div>
+
+<hr>

@@ -1,0 +1,157 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 4. Quadratic transport and Brenier's theorem"
+breadcrumb_child_label_fr: "Cours 4. Transport quadratique et théorème de Brenier"
+breadcrumb_child_label_zh: "课程 4. 二次传输与 Brenier 定理"
+---
+
+<div data-lang="en"><h2><a href="{{ '/notes/optimal-transport/course-quadratic-transport/' | relative_url }}">Course 4. Quadratic transport, convexity, and Brenier's theorem</a></h2>{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-wasserstein-geometry/" next_label="Next chapter" next_url="/notes/optimal-transport/course-dynamic-transport/" %}</div>
+<div data-lang="fr"><h2>Cours 4. Transport quadratique et théorème de Brenier</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-wasserstein-geometry/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-dynamic-transport/" %}</div>
+<div data-lang="zh"><h2>课程 4. 二次传输、凸性与 Brenier 定理</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-wasserstein-geometry/" next_label="下一章" next_url="/notes/optimal-transport/course-dynamic-transport/" %}</div>
+
+<article class="note-page">
+    <p>Quadratic cost is exceptional because its dual constraint can be rewritten as the defining inequality of convex conjugacy. This turns optimal transport into a theorem about gradients and subgradients of convex functions.</p>
+
+    <h3>1. Convex-analytic preliminaries</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A proper lower-semicontinuous convex function \(u:\mathbb R^d\to(-\infty,\infty]\) has Legendre transform
+        \[
+        u^*(y)=\sup_{x\in\mathbb R^d}\{x\cdot y-u(x)\}.
+        \]
+        Its subdifferential at \(x\) is
+        \[
+        \partial u(x)=\{y:u(z)\ge u(x)+y\cdot(z-x)\text{ for all }z\}.
+        \]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Fenchel-Young inequality.</span> For all \(x,y\),
+        \[
+        u(x)+u^*(y)\ge x\cdot y,
+        \]
+        with equality if and only if \(y\in\partial u(x)\), equivalently \(x\in\partial u^*(y)\).</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The inequality follows immediately because \(u^*(y)\) is the supremum of \(z\cdot y-u(z)\), including the choice \(z=x\). Equality means \(x\) attains that supremum, which rearranges exactly to the subgradient inequality.</p>
+    </div>
+
+    <h3>2. Quadratic duality becomes convex duality</h3>
+    <p>Take \(c(x,y)=\tfrac12|x-y|^2\). A feasible pair satisfies
+    \[
+    \varphi(x)+\psi(y)\le\tfrac12|x|^2+\tfrac12|y|^2-x\cdot y.
+    \]
+    Define
+    \[
+    u(x)=\tfrac12|x|^2-\varphi(x),\qquad
+    v(y)=\tfrac12|y|^2-\psi(y).
+    \]
+    Then feasibility is \(u(x)+v(y)\ge x\cdot y\). Optimizing the potentials replaces \(v\) by \(u^*\). Equality in the transport dual constraint is therefore equivalent to
+    \[
+    u(x)+u^*(y)=x\cdot y
+    \quad\Longleftrightarrow\quad y\in\partial u(x).
+    \]</p>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Optimality criterion.</span> If \(\pi\in\Pi(\mu,\nu)\) is concentrated on the graph of the subdifferential of a convex function \(u\), then \(\pi\) is optimal for quadratic cost, provided the relevant second moments are finite.</p>
+    </div>
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Set \(\varphi(x)=\tfrac12|x|^2-u(x)\) and \(\psi(y)=\tfrac12|y|^2-u^*(y)\). Fenchel-Young gives dual feasibility. Equality holds when \(y\in\partial u(x)\), so complementary slackness proves optimality.</p>
+    </div>
+
+    <h3>3. Brenier's theorem</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Brenier's theorem.</span> Let \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\), and assume that \(\mu\) is absolutely continuous with respect to Lebesgue measure. Then there exists a convex function \(u\) such that \(T=\nabla u\) satisfies \(T_\#\mu=\nu\). Moreover,
+        \[
+        (\mathrm{id},T)_\#\mu
+        \]
+        is the unique optimal coupling for the quadratic cost, and \(T\) is the unique optimal transport map \(\mu\)-almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof architecture.</span> Existence gives an optimal plan \(\pi\). Quadratic duality provides a convex \(u\) such that \(\pi\) is concentrated on \(\partial u\). A convex function is differentiable Lebesgue-almost everywhere on the interior of its effective domain. Since \(\mu\ll\mathcal L^d\), \(\partial u(x)=\{\nabla u(x)\}\) for \(\mu\)-almost every \(x\). Therefore the conditional law of \(y\) given \(x\) is a Dirac mass at \(\nabla u(x)\), and
+        \[
+        \pi=(\mathrm{id},\nabla u)_\#\mu.
+        \]
+        Every optimal plan is concentrated on the same type of subgradient graph and hence is induced by its barycentric map. If \(T_1,T_2\) were two optimal maps, the average of their graph plans would also be optimal but would have conditional law \(\tfrac12\delta_{T_1(x)}+\tfrac12\delta_{T_2(x)}\). The graph property forces \(T_1=T_2\) \(\mu\)-almost everywhere.</p>
+    </div>
+
+    <p>The absolute-continuity assumption is essential for this conclusion. If the source has atoms, mass splitting may be unavoidable and an optimal plan need not be induced by a map.</p>
+
+    <h3>4. Inverse maps and Legendre duality</h3>
+    <p>If \(\nu\) is also absolutely continuous, then \(S=\nabla u^*\) transports \(\nu\) back to \(\mu\), and
+    \[
+    \nabla u^*(\nabla u(x))=x\quad\mu\text{-almost everywhere},\qquad
+    \nabla u(\nabla u^*(y))=y\quad\nu\text{-almost everywhere}.
+    \]
+    This is the almost-everywhere inverse relation encoded by equality in Fenchel-Young.</p>
+
+    <h3>5. The Monge-Ampere equation</h3>
+    <p>Suppose \(\mu=\rho_0(x)\,\mathrm dx\), \(\nu=\rho_1(y)\,\mathrm dy\), and \(u\) is smooth and strictly convex. Since \(T=\nabla u\) and \(T_\#\mu=\nu\), the change-of-variables formula yields
+    \[
+    \rho_0(x)=\rho_1(\nabla u(x))\det D^2u(x).
+    \]
+    Thus the transport potential solves the Monge-Ampere equation
+    \[
+    \det D^2u(x)=\frac{\rho_0(x)}{\rho_1(\nabla u(x))}.
+    \]</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Weak interpretation.</span> Brenier's theorem does not require \(u\) to be twice differentiable. For a convex \(u\), define its Monge-Ampere measure by
+        \[
+        \operatorname{MA}_u(A)=\mathcal L^d(\partial u(A)).
+        \]
+        The smooth determinant formula is a special case. Alexandrov solutions use this measure-theoretic interpretation.</p>
+    </div>
+
+    <h3>6. Regularity is a separate theorem</h3>
+    <p>Brenier's theorem gives an almost-everywhere map but not automatically a continuous or smooth one. Regularity depends on the geometry of the supports and quantitative bounds on the densities. Roughly, when source and target domains are suitably convex and the densities are bounded above and below away from zero, interior regularity follows from Monge-Ampere theory. Nonconvex targets, vanishing densities, or singular measures can produce discontinuities.</p>
+
+    <div class="math-statement warning">
+        <p><span class="statement-title">Common error.</span> The statement “the optimal map is the gradient of a convex function” does not imply that the map is smooth. Convex functions are differentiable almost everywhere, but their gradients can be discontinuous. Existence, uniqueness, and regularity are three distinct questions.</p>
+    </div>
+
+    <h3>7. Explicit examples</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Translation.</span> If \(\nu=(x\mapsto x+a)_\#\mu\), take \(u(x)=\tfrac12|x|^2+a\cdot x\). Then \(\nabla u(x)=x+a\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">One dimension.</span> Every nondecreasing function is the derivative of a convex function. Brenier's map therefore reduces to monotone rearrangement:
+        \[
+        T(x)=F_\nu^{-1}(F_\mu(x))
+        \]
+        whenever \(\mu\) is atomless.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Gaussian laws.</span> If \(C_0\) is positive definite, the optimal map from \(N(m_0,C_0)\) to \(N(m_1,C_1)\) is
+        \[
+        T(x)=m_1+A(x-m_0),\qquad
+        A=C_0^{-1/2}(C_0^{1/2}C_1C_0^{1/2})^{1/2}C_0^{-1/2}.
+        \]
+        The matrix \(A\) is symmetric positive semidefinite, so \(T\) is the gradient of a convex quadratic function.</p>
+    </div>
+
+    <h3>8. Semi-discrete transport</h3>
+    <p>If \(\mu\) has a density and \(\nu=\sum_{j=1}^n b_j\delta_{y_j}\), the optimal map sends each \(x\) to one of the sites \(y_j\). Dual weights \(w_j\) define Laguerre cells
+    \[
+    L_j(w)=\{x:\tfrac12|x-y_j|^2-w_j\le\tfrac12|x-y_k|^2-w_k\text{ for all }k\}.
+    \]
+    The correct weights make \(\mu(L_j(w))=b_j\). This converts a transport problem into a convex finite-dimensional optimization and is central in computational geometry.</p>
+
+    <h3>9. Conceptual summary</h3>
+    <p>Quadratic transport is governed by a chain of equivalences:
+    \[
+    \text{dual equality}
+    \Longleftrightarrow y\in\partial u(x)
+    \Longrightarrow y=\nabla u(x)\ \mu\text{-a.e.}
+    \Longrightarrow \text{Monge-Ampere under smoothness}.
+    \]
+    The first arrow is convex duality, the second uses absolute continuity of the source, and the last uses change of variables. Keeping these logical steps separate prevents most common misunderstandings of Brenier theory.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-wasserstein-geometry/" next_label="Next chapter" next_url="/notes/optimal-transport/course-dynamic-transport/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-wasserstein-geometry/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-dynamic-transport/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-wasserstein-geometry/" next_label="下一章" next_url="/notes/optimal-transport/course-dynamic-transport/" %}</div>
+
+<hr>

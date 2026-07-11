@@ -1,0 +1,151 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 8. Statistics, exercises, and further reading"
+breadcrumb_child_label_fr: "Cours 8. Statistique, exercices et lectures"
+breadcrumb_child_label_zh: "课程 8. 统计、习题与延伸阅读"
+---
+
+<div data-lang="en"><h2><a href="{{ '/notes/optimal-transport/course-statistics-exercises/' | relative_url }}">Course 8. Statistics, applications, exercises, and further reading</a></h2>{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-computational-transport/" next_label="Course contents" next_url="/notes/optimal-transport/" %}</div>
+<div data-lang="fr"><h2>Cours 8. Statistique, exercices et lectures</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-computational-transport/" next_label="Sommaire" next_url="/notes/optimal-transport/" %}</div>
+<div data-lang="zh"><h2>课程 8. 统计、习题与延伸阅读</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-computational-transport/" next_label="课程目录" next_url="/notes/optimal-transport/" %}</div>
+
+<article class="note-page">
+    <p>This final chapter connects optimal transport to probability and statistics, explains its main limitations, and provides exercises with solutions. The exercises are part of the course rather than decoration: they test the compactness, duality, geometric, dynamic, and computational arguments developed earlier.</p>
+
+    <h3>1. Transport inequalities</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A reference measure \(\mu\) satisfies a \(T_2(C)\) inequality if
+        \[
+        W_2^2(\nu,\mu)\le2C\,\operatorname{KL}(\nu\,\|\,\mu)
+        \]
+        for every \(\nu\ll\mu\), where
+        \[
+        \operatorname{KL}(\nu\,\|\,\mu)=\int\log\left(\frac{\mathrm d\nu}{\mathrm d\mu}\right)\,\mathrm d\nu.
+        \]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Talagrand inequality for strongly log-concave measures.</span> If
+        \[
+        \mu(\mathrm dx)=Z^{-1}e^{-V(x)}\,\mathrm dx
+        \]
+        on \(\mathbb R^d\) and \(D^2V\succeq\lambda I\) for some \(\lambda&gt;0\), then
+        \[
+        W_2^2(\nu,\mu)\le\frac{2}{\lambda}\operatorname{KL}(\nu\,\|\,\mu).
+        \]</p>
+    </div>
+
+    <p>Transport inequalities convert an information discrepancy into a geometric discrepancy. Combined with the Kantorovich-Rubinstein duality, a \(T_1\) inequality yields concentration bounds for Lipschitz observables. Combined with entropy dissipation, \(T_2\) gives convergence in \(W_2\) for Fokker-Planck and sampling dynamics.</p>
+
+    <h3>2. Empirical measures and sample complexity</h3>
+    <p>For i.i.d. samples \(X_1,\ldots,X_n\sim\mu\), define
+    \[
+    \widehat\mu_n=\frac1n\sum_{i=1}^n\delta_{X_i}.
+    \]
+    Under a finite \(p\)-moment, \(W_p(\widehat\mu_n,\mu)\to0\) almost surely. This follows from the law of large numbers for narrow convergence plus convergence and uniform integrability of empirical \(p\)-moments.</p>
+
+    <p>The rate can be slow in high dimension. For regular \(d\)-dimensional distributions and \(d&gt;2p\), the characteristic scale is \(n^{-1/d}\) for \(W_p\). This is the curse of dimensionality. Low-dimensional structure, smoothness, projections, regularization, or model assumptions are needed to obtain faster behavior in genuinely high-dimensional problems.</p>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">One dimension is special.</span> The quantile representation reduces empirical transport to an empirical-process problem. This often yields root-\(n\)-type behavior under regularity assumptions, far faster than the generic high-dimensional rate.</p>
+    </div>
+
+    <h3>3. Statistical uses</h3>
+    <ul>
+        <li><strong>Two-sample comparison.</strong> \(W_p(\widehat\mu_n,\widehat\nu_m)\) detects changes in location, scale, and shape, but calibration depends on dimension and regularization.</li>
+        <li><strong>Distributional robustness.</strong> Wasserstein balls define uncertainty sets around an empirical law. Duality often turns worst-case expectations over the ball into tractable regularized objectives.</li>
+        <li><strong>Barycenters and aggregation.</strong> Wasserstein barycenters average distributions while preserving geometric features such as translated peaks.</li>
+        <li><strong>Domain adaptation.</strong> A coupling aligns source and target feature distributions. The scientific validity depends on whether the chosen ground cost represents meaningful cross-domain similarity.</li>
+        <li><strong>Generative modeling.</strong> Wasserstein objectives provide geometrically meaningful gradients when supports are separated, especially through the \(W_1\) dual.</li>
+        <li><strong>Bayesian computation.</strong> Wasserstein distances compare posterior approximations and quantify perturbations, but should not replace problem-specific loss functions without justification.</li>
+    </ul>
+
+    <h3>4. Modeling choices and limitations</h3>
+    <ol>
+        <li><strong>The ground metric is part of the model.</strong> Rescaling coordinates changes transport costs. Units, feature weights, and invariances must be specified.</li>
+        <li><strong>Outliers can be expensive.</strong> Large \(p\) strongly penalizes distant mass. Robust, trimmed, or unbalanced variants may be preferable.</li>
+        <li><strong>High-dimensional estimation is difficult.</strong> Exact OT can have poor sample complexity even when optimization is solved perfectly.</li>
+        <li><strong>Entropic OT changes the estimand.</strong> It improves computation and smoothness but introduces regularization bias.</li>
+        <li><strong>A coupling is not automatically causal.</strong> An optimal statistical matching is determined by marginals and cost; it does not identify a causal correspondence without additional assumptions.</li>
+    </ol>
+
+    <h3>5. Exercises</h3>
+    <ol>
+        <li><strong>Moment bound.</strong> Prove directly that the product coupling has finite \(p\)-cost when \(\mu,\nu\in\mathcal P_p(X)\).</li>
+        <li><strong>Diagonal plans.</strong> Show that a coupling of \(\mu,\nu\) concentrated on \(\{(x,x)\}\) implies \(\mu=\nu\).</li>
+        <li><strong>Dirac endpoint.</strong> Prove \(W_p(\mu,\delta_y)^p=\int d(x,y)^p\,\mathrm d\mu(x)\).</li>
+        <li><strong>Bernoulli transport.</strong> On \(\{0,1\}\) with distance \(|x-y|\), compute \(W_p\) between Bernoulli laws with success probabilities \(a\) and \(b\).</li>
+        <li><strong>Uniform intervals.</strong> Find the optimal map from the uniform law on \([0,1]\) to the uniform law on \([2,5]\), and compute \(W_2^2\).</li>
+        <li><strong>Translation lower bound.</strong> If \(\nu=(x\mapsto x+a)_\#\mu\), prove \(W_2(\mu,\nu)=|a|\) using only Jensen's inequality and the translation coupling.</li>
+        <li><strong>Dual certificate.</strong> Let \(c(x,y)=|x-y|\). Show that every \(1\)-Lipschitz \(f\) gives a feasible dual pair \((f,-f)\).</li>
+        <li><strong>Two Gaussians in one dimension.</strong> Compute \(W_2^2(N(m_0,\sigma_0^2),N(m_1,\sigma_1^2))\).</li>
+        <li><strong>Geodesic action.</strong> For the translation curve \(\mu_t=(x\mapsto x+ta)_\#\mu_0\), verify the continuity equation and Benamou-Brenier action.</li>
+        <li><strong>Entropy flow.</strong> Starting from \(\mathcal H(\rho)=\int\rho\log\rho\), derive the heat equation formally.</li>
+        <li><strong>Sinkhorn marginals.</strong> If \(u=a\oslash(Kv)\), show that \(\operatorname{diag}(u)K\operatorname{diag}(v)\) has row sums \(a\).</li>
+        <li><strong>Complementary slackness.</strong> In a finite transport problem, prove that a feasible \(P\) and feasible \((f,g)\) are optimal if \(P_{ij}&gt;0\) implies \(f_i+g_j=C_{ij}\).</li>
+    </ol>
+
+    <h3>6. Solutions</h3>
+    <ol>
+        <li>For \(x_0\in X\), use
+        \[
+        d(x,y)^p\le2^{p-1}[d(x,x_0)^p+d(y,x_0)^p]
+        \]
+        and integrate against \(\mu\otimes\nu\).</li>
+        <li>For any Borel \(A\), diagonal concentration gives
+        \[
+        \mu(A)=\pi(A\times X)=\pi(A\times A)=\pi(X\times A)=\nu(A).
+        \]</li>
+        <li>There is only one coupling with second marginal \(\delta_y\): \(\mu\otimes\delta_y\). Evaluating its cost gives the formula.</li>
+        <li>Exactly \(|a-b|\) mass must cross between \(0\) and \(1\). Since every crossing has \(d^p=1\),
+        \[
+        W_p^p=|a-b|,\qquad W_p=|a-b|^{1/p}.
+        \]</li>
+        <li>Quantiles are \(F_\mu^{-1}(u)=u\) and \(F_\nu^{-1}(u)=2+3u\). Thus \(T(x)=2+3x\), and
+        \[
+        W_2^2=\int_0^1(2+2u)^2\,\mathrm du=\frac{28}{3}.
+        \]</li>
+        <li>The translation coupling gives \(W_2^2\le|a|^2\). Every coupling satisfies
+        \[
+        \int|x-y|^2\,\mathrm d\pi\ge\left|\int(x-y)\,\mathrm d\pi\right|^2=|a|^2
+        \]
+        because the means differ by \(a\).</li>
+        <li>The Lipschitz condition is \(f(x)-f(y)\le|x-y|\), which is precisely \(f(x)+[-f(y)]\le c(x,y)\).</li>
+        <li>Use the quantile representation \(m+\sigma\Phi^{-1}(u)\):
+        \[
+        W_2^2=(m_0-m_1)^2+(\sigma_0-\sigma_1)^2,
+        \]
+        because \(\int_0^1\Phi^{-1}(u)\,\mathrm du=0\) and \(\int_0^1\Phi^{-1}(u)^2\,\mathrm du=1\).</li>
+        <li>The velocity is \(v_t\equiv a\). For a test function, differentiation of \(\int\zeta(t,x+ta)\,\mathrm d\mu_0(x)\) gives the weak continuity equation. The action is \(\int_0^1\int|a|^2\,\mathrm d\mu_t\,\mathrm dt=|a|^2\).</li>
+        <li>The first variation is \(1+\log\rho\), so
+        \[
+        \partial_t\rho=\nabla\cdot(\rho\nabla\log\rho)=\Delta\rho.
+        \]</li>
+        <li>The \(i\)th row sum is \(u_i(Kv)_i=[a_i/(Kv)_i](Kv)_i=a_i\).</li>
+        <li>Complementary slackness gives
+        \[
+        \langle C,P\rangle
+        =\sum_{ij}(f_i+g_j)P_{ij}
+        =a^\top f+b^\top g.
+        \]
+        Weak duality then forces equality of the primal and dual optima.</li>
+    </ol>
+
+    <h3>7. A serious reading sequence</h3>
+    <ol>
+        <li>Cedric Villani, <em>Topics in Optimal Transportation</em>, for duality, \(c\)-convexity, and early theory.</li>
+        <li>Filippo Santambrogio, <em>Optimal Transport for Applied Mathematicians</em>, for a direct route from measures to PDE and applications.</li>
+        <li>Luigi Ambrosio, Nicola Gigli, and Giuseppe Savare, <em>Gradient Flows</em>, for metric gradient flows and the rigorous dynamic theory.</li>
+        <li>Cedric Villani, <em>Optimal Transport: Old and New</em>, for broad geometric and analytic developments.</li>
+        <li>Gabriel Peyre and Marco Cuturi, <em>Computational Optimal Transport</em>, for discrete, entropic, and algorithmic methods.</li>
+    </ol>
+
+    <h3>8. Mastery checklist</h3>
+    <p>You should now be able to define couplings and pushforwards, prove existence of optimal plans, derive weak duality, use \(c\)-transforms and complementary slackness, prove the metric property of \(W_p\), compute one-dimensional transport, explain Brenier's theorem and its assumptions, derive the Benamou-Brenier formula, identify basic Wasserstein gradient flows, derive Sinkhorn scaling, and separate optimization error from statistical and regularization error. Those abilities form a durable foundation for reading research papers in optimal transport.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-computational-transport/" next_label="Course contents" next_url="/notes/optimal-transport/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-computational-transport/" next_label="Sommaire" next_url="/notes/optimal-transport/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-computational-transport/" next_label="课程目录" next_url="/notes/optimal-transport/" %}</div>
+
+<hr>

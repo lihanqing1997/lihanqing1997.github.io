@@ -1,0 +1,165 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 1. Foundations, couplings, and existence"
+breadcrumb_child_label_fr: "Cours 1. Fondements, couplages et existence"
+breadcrumb_child_label_zh: "课程 1. 基础、耦合与存在性"
+---
+
+<div data-lang="en">
+    <h2><a href="{{ '/notes/optimal-transport/course-foundations-and-existence/' | relative_url }}">Course 1. Foundations, couplings, and existence</a></h2>
+    {% include note-topic-nav.html back_label="Course contents" back_url="/notes/optimal-transport/" next_label="Next chapter" next_url="/notes/optimal-transport/course-duality-and-optimality/" %}
+</div>
+<div data-lang="fr">
+    <h2>Cours 1. Fondements, couplages et existence</h2>
+    <p>Le cours détaillé est actuellement rédigé en anglais.</p>
+    {% include note-topic-nav.html back_label="Sommaire" back_url="/notes/optimal-transport/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-duality-and-optimality/" %}
+</div>
+<div data-lang="zh">
+    <h2>课程 1. 基础、耦合与存在性</h2>
+    <p>完整课程正文目前以英文撰写。</p>
+    {% include note-topic-nav.html back_label="课程目录" back_url="/notes/optimal-transport/" next_label="下一章" next_url="/notes/optimal-transport/course-duality-and-optimality/" %}
+</div>
+
+<article class="note-page">
+    <p>Optimal transport compares probability measures by asking how mass may be rearranged from one distribution into another. This chapter builds the measure-theoretic machinery needed to make that question precise and proves the basic existence theorem by the direct method of the calculus of variations.</p>
+
+    <h3>1. The ambient setting</h3>
+    <p>A <em>Polish space</em> is a topological space whose topology is induced by a complete separable metric. Euclidean spaces, separable Banach spaces, complete Riemannian manifolds, and countable discrete spaces are standard examples. Polish spaces are broad enough for applications and regular enough for tightness, disintegration, and measurable selection theorems.</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For a Polish space \(X\), let \(\mathcal P(X)\) denote the Borel probability measures on \(X\). If \(p\ge 1\), \(x_0\in X\), and \(d\) is a compatible metric, define
+        \[
+        \mathcal P_p(X)=\left\{\mu\in\mathcal P(X):\int_X d(x,x_0)^p\,\mathrm d\mu(x)&lt;\infty\right\}.
+        \]
+        The choice of \(x_0\) does not affect the class \(\mathcal P_p(X)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(x_1\in X\), then \(d(x,x_1)^p\le 2^{p-1}[d(x,x_0)^p+d(x_0,x_1)^p]\). Thus a finite \(p\)-moment about one point implies a finite \(p\)-moment about every point.</p>
+    </div>
+
+    <h3>2. Pushforwards, marginals, and deterministic transport</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> If \(T:X\to Y\) is Borel measurable and \(\mu\in\mathcal P(X)\), the pushforward \(T_\#\mu\in\mathcal P(Y)\) is defined by
+        \[
+        T_\#\mu(B)=\mu(T^{-1}(B)),\qquad B\subseteq Y\text{ Borel}.
+        \]
+        Equivalently, \(\int_Y f\,\mathrm d(T_\#\mu)=\int_X f\circ T\,\mathrm d\mu\) for every bounded Borel \(f\).</p>
+    </div>
+
+    <p>A map \(T\) transports \(\mu\) to \(\nu\) when \(T_\#\mu=\nu\). The associated joint law is \((\mathrm{id},T)_\#\mu\). It is concentrated on the graph of \(T\), and its first and second marginals are \(\mu\) and \(\nu\).</p>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A coupling or transport plan between \(\mu\in\mathcal P(X)\) and \(\nu\in\mathcal P(Y)\) is a measure \(\pi\in\mathcal P(X\times Y)\) satisfying
+        \[
+        (p_X)_\#\pi=\mu,\qquad (p_Y)_\#\pi=\nu.
+        \]
+        The set of all such plans is denoted \(\Pi(\mu,\nu)\).</p>
+    </div>
+
+    <p>The set \(\Pi(\mu,\nu)\) is never empty because the independent product \(\mu\otimes\nu\) is a coupling. A deterministic plan is a very special coupling. This relaxation from maps to plans is the decisive step from Monge's problem to Kantorovich's problem.</p>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Let \(\mu=\delta_0\) and \(\nu=\tfrac12\delta_{-1}+\tfrac12\delta_1\). No map can push \(\mu\) to \(\nu\), because the image of a Dirac measure under a map is again a Dirac measure. The plan \(\delta_0\otimes\nu\), however, is a coupling. Plans can split mass; maps cannot.</p>
+    </div>
+
+    <h3>3. Narrow convergence and tightness</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A sequence \(\mu_n\in\mathcal P(X)\) converges narrowly to \(\mu\), written \(\mu_n\rightharpoonup\mu\), if
+        \[
+        \int_X f\,\mathrm d\mu_n\longrightarrow\int_X f\,\mathrm d\mu
+        \]
+        for every bounded continuous \(f:X\to\mathbb R\).</p>
+    </div>
+
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> A family \(\mathcal K\subseteq\mathcal P(X)\) is tight if for every \(\varepsilon&gt;0\) there is a compact set \(K_\varepsilon\subseteq X\) such that \(\mu(K_\varepsilon)\ge1-\varepsilon\) for all \(\mu\in\mathcal K\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Prokhorov's theorem.</span> On a Polish space, a family of probability measures is relatively compact for narrow convergence if and only if it is tight.</p>
+    </div>
+
+    <p>The Portmanteau theorem gives the lower-semicontinuity principle used throughout transport. If \(\mu_n\rightharpoonup\mu\) and \(f:X\to(-\infty,\infty]\) is lower semicontinuous and bounded below, then
+    \[
+    \int f\,\mathrm d\mu\le\liminf_{n\to\infty}\int f\,\mathrm d\mu_n.
+    \]</p>
+
+    <h3>4. Compactness of the coupling set</h3>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(X,Y\) are Polish and \(\mu\in\mathcal P(X)\), \(\nu\in\mathcal P(Y)\), then \(\Pi(\mu,\nu)\) is narrowly compact.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Choose compact \(K_X\subseteq X\) and \(K_Y\subseteq Y\) with \(\mu(K_X)\ge1-\varepsilon/2\) and \(\nu(K_Y)\ge1-\varepsilon/2\). For every \(\pi\in\Pi(\mu,\nu)\),
+        \[
+        \pi((K_X\times K_Y)^c)\le\pi(K_X^c\times Y)+\pi(X\times K_Y^c)
+        =\mu(K_X^c)+\nu(K_Y^c)\le\varepsilon.
+        \]
+        Hence \(\Pi(\mu,\nu)\) is tight and therefore relatively compact by Prokhorov. It is also closed. Indeed, if \(\pi_n\rightharpoonup\pi\), then for every bounded continuous \(f\) on \(X\), \(\int f(x)\,\mathrm d\pi_n=\int f\,\mathrm d\mu\), and passage to the limit preserves the first marginal. The same argument preserves the second marginal. Thus \(\pi\in\Pi(\mu,\nu)\).</p>
+    </div>
+
+    <h3>5. Kantorovich's problem and existence</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> Given a Borel cost \(c:X\times Y\to(-\infty,\infty]\), the Kantorovich value is
+        \[
+        \mathsf K_c(\mu,\nu)=\inf_{\pi\in\Pi(\mu,\nu)}\int_{X\times Y}c(x,y)\,\mathrm d\pi(x,y).
+        \]</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Existence theorem.</span> Let \(X,Y\) be Polish, let \(c:X\times Y\to[0,\infty]\) be lower semicontinuous, and let \(\mu\in\mathcal P(X)\), \(\nu\in\mathcal P(Y)\). Then the Kantorovich problem admits an optimal plan.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If the infimum is infinite, every coupling is optimal. Otherwise choose a minimizing sequence \((\pi_n)\subseteq\Pi(\mu,\nu)\). Compactness of the coupling set gives a narrowly convergent subsequence \(\pi_{n_k}\rightharpoonup\pi\in\Pi(\mu,\nu)\). Since \(c\) is nonnegative and lower semicontinuous, Portmanteau yields
+        \[
+        \int c\,\mathrm d\pi\le\liminf_{k\to\infty}\int c\,\mathrm d\pi_{n_k}=\mathsf K_c(\mu,\nu).
+        \]
+        Therefore \(\pi\) attains the infimum.</p>
+    </div>
+
+    <p>The nonnegativity assumption can be replaced by a lower bound \(c(x,y)\ge a(x)+b(y)\) with \(a\in L^1(\mu)\) and \(b\in L^1(\nu)\). Subtracting \(a(x)+b(y)\) changes every feasible objective by the same finite constant and reduces the problem to a nonnegative cost.</p>
+
+    <h3>6. Disintegration and the gluing lemma</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Disintegration theorem.</span> If \(X,Y\) are Polish and \(\pi\in\mathcal P(X\times Y)\) has first marginal \(\mu\), then there exists a \(\mu\)-almost everywhere uniquely defined measurable family \(x\mapsto\pi_x\in\mathcal P(Y)\) such that
+        \[
+        \int h(x,y)\,\mathrm d\pi(x,y)=\int_X\left(\int_Y h(x,y)\,\mathrm d\pi_x(y)\right)\mathrm d\mu(x)
+        \]
+        for every nonnegative Borel \(h\). We write \(\pi(\mathrm dx,\mathrm dy)=\mu(\mathrm dx)\pi_x(\mathrm dy)\).</p>
+    </div>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Gluing lemma.</span> Let \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) and \(\pi_{23}\in\Pi(\mu_2,\mu_3)\). There exists \(\gamma\in\mathcal P(X_1\times X_2\times X_3)\) whose \((1,2)\)-marginal is \(\pi_{12}\) and whose \((2,3)\)-marginal is \(\pi_{23}\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Disintegrate around the common marginal:
+        \(\pi_{12}(\mathrm dx_1,\mathrm dx_2)=\mu_2(\mathrm dx_2)k_1(x_2,\mathrm dx_1)\) and
+        \(\pi_{23}(\mathrm dx_2,\mathrm dx_3)=\mu_2(\mathrm dx_2)k_3(x_2,\mathrm dx_3)\). Define
+        \[
+        \gamma(\mathrm dx_1,\mathrm dx_2,\mathrm dx_3)
+        =\mu_2(\mathrm dx_2)k_1(x_2,\mathrm dx_1)k_3(x_2,\mathrm dx_3).
+        \]
+        Integrating out \(x_3\) or \(x_1\) gives the required marginals.</p>
+    </div>
+
+    <p>The gluing lemma is the probabilistic composition rule behind the triangle inequality for Wasserstein distance. It couples \(X_1\) and \(X_3\) conditionally independently given the intermediate variable \(X_2\).</p>
+
+    <h3>7. Three models to keep in mind</h3>
+    <ol>
+        <li><strong>Finite spaces.</strong> A coupling is a nonnegative matrix \(P=(P_{ij})\) with prescribed row and column sums. Optimal transport is a linear program.</li>
+        <li><strong>Absolutely continuous measures on \(\mathbb R^d\).</strong> For quadratic cost, optimal plans are often induced by gradients of convex functions. This is Brenier's theory.</li>
+        <li><strong>Probability laws on a metric space.</strong> For \(c=d^p\), the optimal value defines the Wasserstein metric \(W_p\), turning probability measures into a geometric space.</li>
+    </ol>
+
+    <h3>8. What has been established</h3>
+    <p>At this point all primal objects are rigorous. Couplings exist, the feasible set is compact, lower-semicontinuous costs attain their minimum, and plans can be disintegrated and glued. The next chapter develops the dual problem and the conditions that identify an optimal plan without searching over all couplings.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Course contents" back_url="/notes/optimal-transport/" next_label="Next chapter" next_url="/notes/optimal-transport/course-duality-and-optimality/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Sommaire" back_url="/notes/optimal-transport/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-duality-and-optimality/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="课程目录" back_url="/notes/optimal-transport/" next_label="下一章" next_url="/notes/optimal-transport/course-duality-and-optimality/" %}</div>
+
+<hr>

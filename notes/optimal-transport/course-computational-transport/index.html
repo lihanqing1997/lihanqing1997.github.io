@@ -1,0 +1,170 @@
+---
+layout: default
+breadcrumb_child_label_en: "Course 7. Discrete, entropic, and computational transport"
+breadcrumb_child_label_fr: "Cours 7. Transport discret, entropique et numérique"
+breadcrumb_child_label_zh: "课程 7. 离散、熵正则与计算最优传输"
+---
+
+<div data-lang="en"><h2><a href="{{ '/notes/optimal-transport/course-computational-transport/' | relative_url }}">Course 7. Discrete, entropic, and computational transport</a></h2>{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-gradient-flows/" next_label="Next chapter" next_url="/notes/optimal-transport/course-statistics-exercises/" %}</div>
+<div data-lang="fr"><h2>Cours 7. Transport discret, entropique et numérique</h2><p>Le cours détaillé est actuellement rédigé en anglais.</p>{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-gradient-flows/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-statistics-exercises/" %}</div>
+<div data-lang="zh"><h2>课程 7. 离散、熵正则与计算最优传输</h2><p>完整课程正文目前以英文撰写。</p>{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-gradient-flows/" next_label="下一章" next_url="/notes/optimal-transport/course-statistics-exercises/" %}</div>
+
+<article class="note-page">
+    <p>Computational optimal transport begins with a linear program, but modern large-scale methods usually add entropy, exploit geometry, or replace the exact cost by a structured approximation. This chapter derives the main algorithms and explains what their numerical outputs actually approximate.</p>
+
+    <h3>1. The discrete transport polytope</h3>
+    <p>Let
+    \[
+    \mu=\sum_{i=1}^m a_i\delta_{x_i},\qquad
+    \nu=\sum_{j=1}^n b_j\delta_{y_j},
+    \]
+    where \(a\in\mathbb R_+^m\), \(b\in\mathbb R_+^n\), and both sum to one. With \(C_{ij}=c(x_i,y_j)\), a coupling is a matrix
+    \[
+    U(a,b)=\{P\in\mathbb R_+^{m\times n}:P\mathbf1_n=a,\ P^\top\mathbf1_m=b\}.
+    \]
+    The discrete Kantorovich problem is
+    \[
+    \operatorname{OT}(a,b)=\min_{P\in U(a,b)}\langle C,P\rangle.
+    \]</p>
+
+    <p>This is a finite-dimensional linear program with \(mn\) variables and \(m+n-1\) independent equality constraints. Extreme-point solutions are sparse, with at most \(m+n-1\) positive entries in a nondegenerate basic solution. Generic linear programming and network-flow algorithms compute exact optimizers, but dense problems become expensive as \(m,n\) grow.</p>
+
+    <h3>2. Discrete duality and optimality</h3>
+    <p>The dual problem is
+    \[
+    \max_{f\in\mathbb R^m,g\in\mathbb R^n}
+    \left\{a^\top f+b^\top g:f_i+g_j\le C_{ij}\right\}.
+    \]
+    Strong linear-programming duality gives equality of values. Complementary slackness says
+    \[
+    P_{ij}&gt;0\quad\Longrightarrow\quad f_i+g_j=C_{ij}.
+    \]
+    Thus a primal plan together with feasible potentials certifies optimality when equality holds on every positive entry.</p>
+
+    <h3>3. Entropic regularization</h3>
+    <div class="math-statement definition">
+        <p><span class="statement-title">Definition.</span> For \(\varepsilon&gt;0\), define
+        \[
+        \operatorname{OT}_\varepsilon(a,b)
+        =\min_{P\in U(a,b)}
+        \left\{\langle C,P\rangle
+        \varepsilon\sum_{i,j}P_{ij}(\log P_{ij}-1)\right\},
+        \]
+        with \(0\log0=0\).</p>
+    </div>
+
+    <p>The entropy term is strictly convex on positive matrices, so the minimizer is unique when \(a,b\) have positive entries. It favors diffuse plans and smooths the nonsmooth linear program. As \(\varepsilon\downarrow0\), regularized values converge to the unregularized value, and cluster points of \(P_\varepsilon\) are optimal unregularized plans. When several exact optimizers exist, the regularization selects the one of maximal entropy under this convention.</p>
+
+    <h3>4. KKT derivation of Sinkhorn scaling</h3>
+    <p>Introduce multipliers \(f_i,g_j\) for the row and column constraints. Stationarity in \(P_{ij}\) gives
+    \[
+    C_{ij}+\varepsilon\log P_{ij}-f_i-g_j=0,
+    \]
+    hence
+    \[
+    P_{ij}=\exp(f_i/\varepsilon)\exp(-C_{ij}/\varepsilon)\exp(g_j/\varepsilon).
+    \]
+    With \(K_{ij}=e^{-C_{ij}/\varepsilon}\), \(u_i=e^{f_i/\varepsilon}\), and \(v_j=e^{g_j/\varepsilon}\),
+    \[
+    P_\varepsilon=\operatorname{diag}(u)K\operatorname{diag}(v).
+    \]</p>
+
+    <p>The marginal equations are
+    \[
+    u\odot(Kv)=a,\qquad v\odot(K^\top u)=b.
+    \]
+    This yields Sinkhorn's alternating scaling:
+    \[
+    u\leftarrow a\oslash(Kv),\qquad
+    v\leftarrow b\oslash(K^\top u),
+    \]
+    where multiplication and division are componentwise.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Sinkhorn convergence.</span> If \(a,b\) are positive and \(K\) has strictly positive entries, alternating row and column scaling converges, up to the invariance \((u,v)\mapsto(\lambda u,\lambda^{-1}v)\), to scalings whose matrix has marginals \(a,b\).</p>
+    </div>
+
+    <h3>5. The entropic dual</h3>
+    <p>Eliminating \(P\) gives the smooth concave dual
+    \[
+    \max_{f,g}
+    \left\{
+    a^\top f+b^\top g
+    -\varepsilon\sum_{i,j}
+    \exp\left(\frac{f_i+g_j-C_{ij}}{\varepsilon}\right)
+    \right\}.
+    \]
+    Alternating exact maximization in \(f\) and \(g\) is equivalent to Sinkhorn scaling. The dual potentials are identifiable only up to adding a constant to \(f\) and subtracting it from \(g\).</p>
+
+    <h3>6. Numerically stable implementation</h3>
+    <p>When \(\varepsilon\) is small or costs are large, \(K_{ij}=e^{-C_{ij}/\varepsilon}\) may underflow. Work with logarithmic potentials instead. The \(f\)-update can be written
+    \[
+    f_i=\varepsilon\log a_i
+    -\varepsilon\operatorname{LSE}_j\left(\frac{g_j-C_{ij}}{\varepsilon}\right),
+    \]
+    where \(\operatorname{LSE}(z)=\log\sum_j e^{z_j}\) is evaluated after subtracting \(\max_jz_j\). The \(g\)-update is analogous.</p>
+
+    <pre><code>initialize f = 0, g = 0
+repeat
+    f_i = eps * log(a_i) - eps * logsumexp_j((g_j - C_ij) / eps)
+    g_j = eps * log(b_j) - eps * logsumexp_i((f_i - C_ij) / eps)
+until row and column residuals are small
+P_ij = exp((f_i + g_j - C_ij) / eps)</code></pre>
+
+    <p>A useful stopping criterion is
+    \[
+    \|P\mathbf1-a\|_1+\|P^\top\mathbf1-b\|_1.
+    \]
+    Objective changes alone can be misleading because potentials can drift by additive constants.</p>
+
+    <h3>7. Bias, sample effects, and Sinkhorn divergences</h3>
+    <p>For \(\varepsilon&gt;0\), the regularized self-cost \(\operatorname{OT}_\varepsilon(a,a)\) generally is not zero. The debiased Sinkhorn divergence is
+    \[
+    S_\varepsilon(a,b)
+    =\operatorname{OT}_\varepsilon(a,b)
+    -\tfrac12\operatorname{OT}_\varepsilon(a,a)
+    -\tfrac12\operatorname{OT}_\varepsilon(b,b).
+    \]
+    It removes the leading entropic self-bias while retaining smoothness and fast scaling algorithms.</p>
+
+    <p>The parameter \(\varepsilon\) controls a three-way tradeoff. Smaller values more closely approximate exact OT but are less stable and require more iterations. Larger values are smoother and statistically easier to estimate but blur geometric matchings. Reporting \(\varepsilon\) relative to the scale of \(C\) is essential.</p>
+
+    <h3>8. Acceleration and structure</h3>
+    <ul>
+        <li><strong>Convolutional kernels.</strong> On regular grids with translation-invariant costs, multiplying by \(K\) can use convolutions or FFT structure instead of forming a dense matrix.</li>
+        <li><strong>Low-rank approximations.</strong> Nyström, random-feature, and factored-kernel methods reduce the cost of matrix-vector products when \(K\) is approximately low rank.</li>
+        <li><strong>Multiscale methods.</strong> Coarse solutions initialize finer grids and localize the active transport region.</li>
+        <li><strong>Stochastic optimization.</strong> Semi-dual formulations permit minibatch gradients when one measure is discrete or when samples arrive online.</li>
+        <li><strong>Epsilon scaling.</strong> Solve a sequence of problems with decreasing \(\varepsilon\), warm-starting each from the previous potentials.</li>
+    </ul>
+
+    <h3>9. Semi-discrete dual optimization</h3>
+    <p>When \(\mu\) is continuous and \(\nu=\sum_jb_j\delta_{y_j}\), quadratic transport is controlled by Laguerre cells \(L_j(g)\). A concave dual objective has gradient
+    \[
+    \frac{\partial\mathcal D}{\partial g_j}=b_j-\mu(L_j(g)).
+    \]
+    Thus optimizing the dual adjusts cell weights until every cell receives the prescribed mass. Newton and quasi-Newton methods can be highly effective when cell geometry is available.</p>
+
+    <h3>10. Unbalanced and partial transport</h3>
+    <p>Classical OT requires equal total mass and exact marginal constraints. Unbalanced transport relaxes them, often with Kullback-Leibler penalties:
+    \[
+    \min_{P\ge0}
+    \langle C,P\rangle
+    +\tau_1\operatorname{KL}(P\mathbf1\,\|\,a)
+    +\tau_2\operatorname{KL}(P^\top\mathbf1\,\|\,b)
+    +\varepsilon\operatorname{KL}(P\,\|\,a\otimes b).
+    \]
+    Generalized Sinkhorn updates solve this problem. Partial transport instead moves only a prescribed amount of mass. These variants are appropriate when mass can appear, disappear, or represent unmatched observations.</p>
+
+    <h3>11. Differentiating through transport</h3>
+    <p>Entropic OT is smooth in costs and weights under positivity assumptions. The envelope theorem identifies derivatives of the optimal value with optimal primal or dual variables. This makes Sinkhorn losses usable inside larger learning systems. Numerical gradients should be checked against marginal residuals, because differentiating an unconverged inner solve produces biased outer gradients.</p>
+
+    <h3>12. What an algorithm returns</h3>
+    <p>An exact linear solver returns an optimal sparse coupling for the discrete measures supplied. Sinkhorn returns the unique entropic optimizer for a chosen \(\varepsilon\), not the exact OT plan. A sample-based computation approximates transport between empirical measures, not automatically between the population laws. Distinguishing optimization error, regularization bias, discretization error, and sampling error is part of a mathematically correct computational analysis.</p>
+</article>
+
+<div data-lang="en">{% include note-topic-nav.html back_label="Previous chapter" back_url="/notes/optimal-transport/course-gradient-flows/" next_label="Next chapter" next_url="/notes/optimal-transport/course-statistics-exercises/" %}</div>
+<div data-lang="fr">{% include note-topic-nav.html back_label="Chapitre précédent" back_url="/notes/optimal-transport/course-gradient-flows/" next_label="Chapitre suivant" next_url="/notes/optimal-transport/course-statistics-exercises/" %}</div>
+<div data-lang="zh">{% include note-topic-nav.html back_label="上一章" back_url="/notes/optimal-transport/course-gradient-flows/" next_label="下一章" next_url="/notes/optimal-transport/course-statistics-exercises/" %}</div>
+
+<hr>
