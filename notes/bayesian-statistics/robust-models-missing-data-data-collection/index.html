@@ -1,15 +1,14 @@
 ---
-layout: default
+layout: note-detail
 breadcrumb_child_label_en: "8. Robust models, missing data, and data collection"
 breadcrumb_child_label_fr: "8. Modèles robustes, données manquantes et collecte"
 breadcrumb_child_label_zh: "8. 稳健模型、缺失数据与数据收集"
+note_back_url: "/notes/bayesian-statistics/"
+note_prev_url: "/notes/bayesian-statistics/bayesian-regression-and-glms/"
+note_next_url: "/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/"
 ---
 
-<div class="note-page" data-lang="en">
-    <h2>8. Robust models, missing data, and data collection</h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" next_label="Next page" next_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" %}
-
-    <p>Robust Bayesian modeling changes the likelihood or prior so that inference is less brittle under outliers, missingness, or data-collection mechanisms.</p>
+<p>Robust Bayesian modeling changes the likelihood or prior so that inference is less brittle under outliers, missingness, or data-collection mechanisms.</p>
 
     <h3>Heavy-tailed observation models</h3>
 
@@ -69,144 +68,3 @@ P(R\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}},\psi)=P(R\mid Y_{\mathrm{obs}},\psi).
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> This is the same factorization logic as missing-data ignorability: once the design likelihood involves no unknown parameter shared with the response model, it contributes only a multiplicative factor independent of the target parameter.</p>
     </div>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/bayesian-statistics/" prev_label="Last page" prev_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" next_label="Next page" next_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" %}
-</div>
-
-<div class="note-page" data-lang="fr">
-    <h2>8. Modèles robustes, données manquantes et collecte</h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" next_label="Page suivante" next_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" %}
-
-    <p>Robust Bayesian modeling changes the likelihood or prior so that inference is less brittle under outliers, missingness, or data-collection mechanisms.</p>
-
-    <h3>Heavy-tailed observation models</h3>
-
-    <p>A common robust move is to replace Gaussian errors with heavier-tailed errors.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The Student \(t_\nu\) error model can be represented as
-\[
-Y_i\mid\theta,\lambda_i\sim N(\theta,\sigma^2/\lambda_i),\qquad
-\lambda_i\sim\operatorname{Gamma}(\nu/2,\nu/2).
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Integrating out \(\lambda_i\) gives the Student \(t_\nu\) density for \(Y_i-\theta\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The normal density contributes \(\lambda_i^{1/2}\exp\{-\lambda_i(y_i-\theta)^2/(2\sigma^2)\}\). Multiplication by the gamma density gives a gamma kernel in \(\lambda_i\). Integrating the gamma kernel yields a power term of the form \((1+(y_i-\theta)^2/(\nu\sigma^2))^{-(\nu+1)/2}\).</p>
-    </div>
-
-    <h3>Missing data mechanisms</h3>
-
-    <p>Bayesian missing-data analysis models the unobserved data jointly with the observed data.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Let \(Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})\) and let \(R\) be the missingness pattern. The mechanism is missing at random if
-\[
-P(R\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}},\psi)=P(R\mid Y_{\mathrm{obs}},\psi).
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under missing at random and parameter distinctness between \(\theta\) and \(\psi\), likelihood-based inference for \(\theta\) may ignore the missingness mechanism.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The observed likelihood factors into a term involving \(\theta\) through \(\int p_\theta(y_{\mathrm{obs}},y_{\mathrm{mis}})\,\mathrm{d}y_{\mathrm{mis}}\) and a term involving \(\psi\) through the missingness model. If the parameter spaces are distinct and the prior factorizes, the posterior for \(\theta\) is proportional to the first factor times its prior.</p>
-    </div>
-
-    <h3>Contamination neighborhoods</h3>
-
-    <p>Robustness can be formalized by asking how posterior summaries change under local perturbations of the model.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Mixture contamination, scale mixtures, and bounded-influence likelihoods all reduce sensitivity to observations that would dominate a thin-tailed Gaussian likelihood.</p>
-    </div>
-
-    <h3>Data-collection design</h3>
-
-    <p>The sampling design can be included in the joint law rather than treated as an afterthought.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If the design is ignorable given observed covariates, then conditioning on the design variables can be sufficient for posterior inference about the response model.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> This is the same factorization logic as missing-data ignorability: once the design likelihood involves no unknown parameter shared with the response model, it contributes only a multiplicative factor independent of the target parameter.</p>
-    </div>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/bayesian-statistics/" prev_label="Page précédente" prev_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" next_label="Page suivante" next_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" %}
-</div>
-
-<div class="note-page" data-lang="zh">
-    <h2>8. 稳健模型、缺失数据与数据收集</h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" next_label="下一页" next_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" %}
-
-    <p>Robust Bayesian modeling changes the likelihood or prior so that inference is less brittle under outliers, missingness, or data-collection mechanisms.</p>
-
-    <h3>Heavy-tailed observation models</h3>
-
-    <p>A common robust move is to replace Gaussian errors with heavier-tailed errors.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The Student \(t_\nu\) error model can be represented as
-\[
-Y_i\mid\theta,\lambda_i\sim N(\theta,\sigma^2/\lambda_i),\qquad
-\lambda_i\sim\operatorname{Gamma}(\nu/2,\nu/2).
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Integrating out \(\lambda_i\) gives the Student \(t_\nu\) density for \(Y_i-\theta\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The normal density contributes \(\lambda_i^{1/2}\exp\{-\lambda_i(y_i-\theta)^2/(2\sigma^2)\}\). Multiplication by the gamma density gives a gamma kernel in \(\lambda_i\). Integrating the gamma kernel yields a power term of the form \((1+(y_i-\theta)^2/(\nu\sigma^2))^{-(\nu+1)/2}\).</p>
-    </div>
-
-    <h3>Missing data mechanisms</h3>
-
-    <p>Bayesian missing-data analysis models the unobserved data jointly with the observed data.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Let \(Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})\) and let \(R\) be the missingness pattern. The mechanism is missing at random if
-\[
-P(R\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}},\psi)=P(R\mid Y_{\mathrm{obs}},\psi).
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> Under missing at random and parameter distinctness between \(\theta\) and \(\psi\), likelihood-based inference for \(\theta\) may ignore the missingness mechanism.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The observed likelihood factors into a term involving \(\theta\) through \(\int p_\theta(y_{\mathrm{obs}},y_{\mathrm{mis}})\,\mathrm{d}y_{\mathrm{mis}}\) and a term involving \(\psi\) through the missingness model. If the parameter spaces are distinct and the prior factorizes, the posterior for \(\theta\) is proportional to the first factor times its prior.</p>
-    </div>
-
-    <h3>Contamination neighborhoods</h3>
-
-    <p>Robustness can be formalized by asking how posterior summaries change under local perturbations of the model.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Mixture contamination, scale mixtures, and bounded-influence likelihoods all reduce sensitivity to observations that would dominate a thin-tailed Gaussian likelihood.</p>
-    </div>
-
-    <h3>Data-collection design</h3>
-
-    <p>The sampling design can be included in the joint law rather than treated as an afterthought.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If the design is ignorable given observed covariates, then conditioning on the design variables can be sufficient for posterior inference about the response model.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> This is the same factorization logic as missing-data ignorability: once the design likelihood involves no unknown parameter shared with the response model, it contributes only a multiplicative factor independent of the target parameter.</p>
-    </div>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/bayesian-statistics/" prev_label="上一页" prev_url="/notes/bayesian-statistics/bayesian-regression-and-glms/" next_label="下一页" next_url="/notes/bayesian-statistics/posterior-predictive-checks-model-criticism/" %}
-</div>
-
-<hr>

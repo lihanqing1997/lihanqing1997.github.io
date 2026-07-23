@@ -1,15 +1,13 @@
 ---
-layout: default
+layout: note-detail
 breadcrumb_child_label_en: "1. Survival functions, hazards, and censoring"
 breadcrumb_child_label_fr: "1. Fonctions de survie, risques instantanés et censure"
 breadcrumb_child_label_zh: "1. 生存函数、风险率与删失"
+note_back_url: "/notes/survival-analysis/"
+note_next_url: "/notes/survival-analysis/kaplan-meier-nelson-aalen/"
 ---
 
-<div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/survival-analysis/survival-functions-hazards-censoring/' | relative_url }}">1. Survival functions, hazards, and censoring</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" next_label="Next page" next_url="/notes/survival-analysis/kaplan-meier-nelson-aalen/" %}
-
-    <h3>Survival law</h3>
+<h3>Survival law</h3>
 
     <p>Survival analysis studies a nonnegative event time \(T\), often observed incompletely. The mathematical object is not only the distribution of \(T\), but the way information is lost through censoring and delayed observation.</p>
 <div class="math-statement definition">
@@ -49,104 +47,3 @@ L_T=\prod_{i=1}^n f_T(x_i)^{\Delta_i}S_T(x_i)^{1-\Delta_i}
     </div><div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Censoring removes the right tail after observation has begun; truncation changes which subjects enter the sample. They are different missingness mechanisms and cannot be interchanged.</p>
     </div>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/survival-analysis/" next_label="Next page" next_url="/notes/survival-analysis/kaplan-meier-nelson-aalen/" %}
-</div>
-
-<div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/survival-analysis/survival-functions-hazards-censoring/' | relative_url }}">1. Fonctions de survie, risques instantanés et censure</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" next_label="Page suivante" next_url="/notes/survival-analysis/kaplan-meier-nelson-aalen/" %}
-
-    <h3>Survival law</h3>
-
-    <p>Survival analysis studies a nonnegative event time \(T\), often observed incompletely. The mathematical object is not only the distribution of \(T\), but the way information is lost through censoring and delayed observation.</p>
-<div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> For \(T\ge0\), the survival function, distribution function, density, hazard, and cumulative hazard are
-\[
-S(t)=P(T>t),\quad F(t)=P(T\le t),\quad f(t)=F'(t),\quad
-\lambda(t)=\lim_{h\downarrow0}{P(t\le T<t+h\mid T\ge t)\over h},\quad
-\Lambda(t)=\int_0^t\lambda(u)\,\mathrm{d}u.
-\]</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(T\) has absolutely continuous law and \(S(t)>0\), then \(S(t)=\exp\{-\Lambda(t)\}\) and \(f(t)=\lambda(t)S(t)\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Since \(S'(t)=-f(t)=-\lambda(t)S(t)\), we have \((\log S)'(t)=-\lambda(t)\). Integrating from \(0\) to \(t\), using \(S(0)=1\) for no atom at zero, gives \(S(t)=\exp\{-\Lambda(t)\}\). The identity for \(f\) follows from the definition of the hazard.</p>
-    </div>
-    <h3>Censoring</h3>
-
-    <p>The basic observation is usually \(X=T\wedge C\) and \(\Delta=1\{T\le C\}\), where \(C\) is a censoring time. Without assumptions on \(C\), the distribution of \(T\) is not identifiable.</p>
-<div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> Right censoring is independent if \(T\perp C\), or conditionally independent given covariates \(Z\), meaning \(T\perp C\mid Z\). In counting-process notation this is often stated as noninformative censoring: after conditioning on the observed history, the censoring mechanism does not change the event intensity.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Independent censoring is not a cosmetic assumption. It is the statement that the observed risk set at time \(t\) is a representative sample of subjects whose event times exceed \(t\), after conditioning on the covariates included in the model.</p>
-    </div>
-    <h3>Likelihood under independent right censoring</h3>
-    <p>The first useful calculation is the likelihood contribution of a censored observation. It explains why the pair \((X,\Delta)\), rather than \(X\) alone, is the statistical observation.</p>
-<div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(X=T\wedge C\), \(\Delta=1\{T\le C\}\), and \(T\perp C\), then the part of the likelihood involving the law of \(T\) is
-\[
-L_T=\prod_{i=1}^n f_T(x_i)^{\Delta_i}S_T(x_i)^{1-\Delta_i}
-=\prod_{i=1}^n \lambda_T(x_i)^{\Delta_i}\exp\{-\Lambda_T(x_i)\}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> The joint density of \((X,\Delta)\) factors as \(f_T(x)S_C(x)\) when \(\Delta=1\), and \(S_T(x)f_C(x)\) when \(\Delta=0\). The censoring factors contain no parameter of the \(T\)-law. Finally use \(f=\lambda S\) and \(S=\exp(-\Lambda)\).</p>
-    </div>
-    <h3>Left truncation and delayed entry</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> With delayed entry \(A\), subject \(i\) is observed only if \(T_i\ge A_i\). The risk indicator becomes \(Y_i(t)=1\{A_i\le t\le X_i\}\), so likelihood and martingale formulas condition on survival to the entry time.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Censoring removes the right tail after observation has begun; truncation changes which subjects enter the sample. They are different missingness mechanisms and cannot be interchanged.</p>
-    </div>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/survival-analysis/" next_label="Page suivante" next_url="/notes/survival-analysis/kaplan-meier-nelson-aalen/" %}
-</div>
-
-<div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/survival-analysis/survival-functions-hazards-censoring/' | relative_url }}">1. 生存函数、风险率与删失</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" next_label="下一页" next_url="/notes/survival-analysis/kaplan-meier-nelson-aalen/" %}
-
-    <h3>Survival law</h3>
-
-    <p>Survival analysis studies a nonnegative event time \(T\), often observed incompletely. The mathematical object is not only the distribution of \(T\), but the way information is lost through censoring and delayed observation.</p>
-<div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> For \(T\ge0\), the survival function, distribution function, density, hazard, and cumulative hazard are
-\[
-S(t)=P(T>t),\quad F(t)=P(T\le t),\quad f(t)=F'(t),\quad
-\lambda(t)=\lim_{h\downarrow0}{P(t\le T<t+h\mid T\ge t)\over h},\quad
-\Lambda(t)=\int_0^t\lambda(u)\,\mathrm{d}u.
-\]</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If \(T\) has absolutely continuous law and \(S(t)>0\), then \(S(t)=\exp\{-\Lambda(t)\}\) and \(f(t)=\lambda(t)S(t)\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Since \(S'(t)=-f(t)=-\lambda(t)S(t)\), we have \((\log S)'(t)=-\lambda(t)\). Integrating from \(0\) to \(t\), using \(S(0)=1\) for no atom at zero, gives \(S(t)=\exp\{-\Lambda(t)\}\). The identity for \(f\) follows from the definition of the hazard.</p>
-    </div>
-    <h3>Censoring</h3>
-
-    <p>The basic observation is usually \(X=T\wedge C\) and \(\Delta=1\{T\le C\}\), where \(C\) is a censoring time. Without assumptions on \(C\), the distribution of \(T\) is not identifiable.</p>
-<div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> Right censoring is independent if \(T\perp C\), or conditionally independent given covariates \(Z\), meaning \(T\perp C\mid Z\). In counting-process notation this is often stated as noninformative censoring: after conditioning on the observed history, the censoring mechanism does not change the event intensity.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Independent censoring is not a cosmetic assumption. It is the statement that the observed risk set at time \(t\) is a representative sample of subjects whose event times exceed \(t\), after conditioning on the covariates included in the model.</p>
-    </div>
-    <h3>Likelihood under independent right censoring</h3>
-    <p>The first useful calculation is the likelihood contribution of a censored observation. It explains why the pair \((X,\Delta)\), rather than \(X\) alone, is the statistical observation.</p>
-<div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> If \(X=T\wedge C\), \(\Delta=1\{T\le C\}\), and \(T\perp C\), then the part of the likelihood involving the law of \(T\) is
-\[
-L_T=\prod_{i=1}^n f_T(x_i)^{\Delta_i}S_T(x_i)^{1-\Delta_i}
-=\prod_{i=1}^n \lambda_T(x_i)^{\Delta_i}\exp\{-\Lambda_T(x_i)\}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> The joint density of \((X,\Delta)\) factors as \(f_T(x)S_C(x)\) when \(\Delta=1\), and \(S_T(x)f_C(x)\) when \(\Delta=0\). The censoring factors contain no parameter of the \(T\)-law. Finally use \(f=\lambda S\) and \(S=\exp(-\Lambda)\).</p>
-    </div>
-    <h3>Left truncation and delayed entry</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> With delayed entry \(A\), subject \(i\) is observed only if \(T_i\ge A_i\). The risk indicator becomes \(Y_i(t)=1\{A_i\le t\le X_i\}\), so likelihood and martingale formulas condition on survival to the entry time.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Censoring removes the right tail after observation has begun; truncation changes which subjects enter the sample. They are different missingness mechanisms and cannot be interchanged.</p>
-    </div>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/survival-analysis/" next_label="下一页" next_url="/notes/survival-analysis/kaplan-meier-nelson-aalen/" %}
-</div>
-
-<hr>

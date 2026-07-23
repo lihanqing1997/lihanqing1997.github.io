@@ -1,15 +1,13 @@
 ---
-layout: default
+layout: note-detail
 breadcrumb_child_label_en: "21. Partially observable problems"
 breadcrumb_child_label_fr: "21. Problèmes partiellement observables"
 breadcrumb_child_label_zh: "21. 部分可观测问题"
+note_back_url: "/notes/reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
 ---
 
-<div class="note-page" data-lang="en">
-    <h2><a href="{{ '/notes/reinforcement-learning/partially-observable-problems/' | relative_url }}">21. Partially observable problems</a></h2>
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
-
-    <p>Partial observability breaks the ordinary Markov property at the observation level. The correct state for planning is the belief distribution over hidden states.</p>
+<p>Partial observability breaks the ordinary Markov property at the observation level. The correct state for planning is the belief distribution over hidden states.</p>
 
     <h3>POMDP model</h3>
 
@@ -66,138 +64,3 @@ and the belief transition kernel is induced by prediction and Bayes update. Thus
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Recurrent networks, filters, and predictive-state representations can be viewed as approximations to belief-state inference. Their statistical difficulty is that representation learning and control are coupled.</p>
     </div>
-
-    {% include note-topic-nav.html back_label="Back" back_url="/notes/reinforcement-learning/" prev_label="Last page" prev_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
-</div>
-
-<div class="note-page" data-lang="fr">
-    <h2><a href="{{ '/notes/reinforcement-learning/partially-observable-problems/' | relative_url }}">21. Problèmes partiellement observables</a></h2>
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
-
-    <p>Partial observability breaks the ordinary Markov property at the observation level. The correct state for planning is the belief distribution over hidden states.</p>
-
-    <h3>POMDP model</h3>
-
-    <p>The agent sees observations generated from a latent Markov state.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> A partially observable Markov decision process has latent states \(S_t\), actions \(A_t\), transitions \(P(S_{t+1}\mid S_t,A_t)\), observations \(O_t\) generated from an observation kernel, and rewards depending on latent states and actions. The history \(H_t=(O_0,A_0,\ldots,O_t)\) is observed; \(S_t\) is not.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> A policy based only on the current observation is generally not Markov-optimal, because the observation may not contain all information about the latent state.</p>
-    </div>
-
-    <h3>Belief states</h3>
-
-    <p>The posterior distribution of the latent state is a sufficient statistic for control.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Définition.</span> The belief state is
-\[
-b_t(B)=P(S_t\in B\mid H_t).
-\]
-Bayes filtering updates \(b_t\) using the action, transition kernel, and new observation likelihood.</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Théorème.</span> The belief process is fully observed and Markov controlled: \(b_{t+1}\) depends on the past only through \((b_t,A_t,O_{t+1})\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Given \(b_t\) and \(A_t\), the predictive law of \(S_{t+1}\) is obtained by integrating the transition kernel against \(b_t\). Observing \(O_{t+1}\) applies Bayes' rule to this predictive law. The earlier history enters only through \(b_t\), so the belief update is Markov.</p>
-    </div>
-
-    <h3>Belief MDP</h3>
-
-    <p>Planning in a POMDP can be reformulated as planning in a continuous-state MDP over beliefs.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The expected reward under belief \(b\) and action \(a\) is
-\[
-\bar r(b,a)=\int r(s,a)b(\mathrm{d}s),
-\]
-and the belief transition kernel is induced by prediction and Bayes update. Thus the POMDP becomes a fully observed belief MDP.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Preuve.</span> Conditional on the history, the latent state distribution is \(b\). Taking conditional expectation of reward gives \(\bar r\). The next belief is a measurable function of the current belief, action, and random observation, which defines the belief transition kernel.</p>
-    </div>
-
-    <h3>Memory and recurrent policies</h3>
-
-    <p>Approximate solutions often replace exact beliefs by learned memory states.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remarque.</span> Recurrent networks, filters, and predictive-state representations can be viewed as approximations to belief-state inference. Their statistical difficulty is that representation learning and control are coupled.</p>
-    </div>
-
-    {% include note-topic-nav.html back_label="Retour" back_url="/notes/reinforcement-learning/" prev_label="Page précédente" prev_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
-</div>
-
-<div class="note-page" data-lang="zh">
-    <h2><a href="{{ '/notes/reinforcement-learning/partially-observable-problems/' | relative_url }}">21. 部分可观测问题</a></h2>
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
-
-    <p>Partial observability breaks the ordinary Markov property at the observation level. The correct state for planning is the belief distribution over hidden states.</p>
-
-    <h3>POMDP model</h3>
-
-    <p>The agent sees observations generated from a latent Markov state.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> A partially observable Markov decision process has latent states \(S_t\), actions \(A_t\), transitions \(P(S_{t+1}\mid S_t,A_t)\), observations \(O_t\) generated from an observation kernel, and rewards depending on latent states and actions. The history \(H_t=(O_0,A_0,\ldots,O_t)\) is observed; \(S_t\) is not.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> A policy based only on the current observation is generally not Markov-optimal, because the observation may not contain all information about the latent state.</p>
-    </div>
-
-    <h3>Belief states</h3>
-
-    <p>The posterior distribution of the latent state is a sufficient statistic for control.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">定义.</span> The belief state is
-\[
-b_t(B)=P(S_t\in B\mid H_t).
-\]
-Bayes filtering updates \(b_t\) using the action, transition kernel, and new observation likelihood.</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">定理.</span> The belief process is fully observed and Markov controlled: \(b_{t+1}\) depends on the past only through \((b_t,A_t,O_{t+1})\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Given \(b_t\) and \(A_t\), the predictive law of \(S_{t+1}\) is obtained by integrating the transition kernel against \(b_t\). Observing \(O_{t+1}\) applies Bayes' rule to this predictive law. The earlier history enters only through \(b_t\), so the belief update is Markov.</p>
-    </div>
-
-    <h3>Belief MDP</h3>
-
-    <p>Planning in a POMDP can be reformulated as planning in a continuous-state MDP over beliefs.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">命题.</span> The expected reward under belief \(b\) and action \(a\) is
-\[
-\bar r(b,a)=\int r(s,a)b(\mathrm{d}s),
-\]
-and the belief transition kernel is induced by prediction and Bayes update. Thus the POMDP becomes a fully observed belief MDP.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">证明.</span> Conditional on the history, the latent state distribution is \(b\). Taking conditional expectation of reward gives \(\bar r\). The next belief is a measurable function of the current belief, action, and random observation, which defines the belief transition kernel.</p>
-    </div>
-
-    <h3>Memory and recurrent policies</h3>
-
-    <p>Approximate solutions often replace exact beliefs by learned memory states.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">说明.</span> Recurrent networks, filters, and predictive-state representations can be viewed as approximations to belief-state inference. Their statistical difficulty is that representation learning and control are coupled.</p>
-    </div>
-
-    {% include note-topic-nav.html back_label="返回" back_url="/notes/reinforcement-learning/" prev_label="上一页" prev_url="/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/" %}
-</div>
-
-<hr>
