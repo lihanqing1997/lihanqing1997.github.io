@@ -676,7 +676,7 @@ function bayesianStatistics() {
     <path d="${linePath(prior)}" class="blue" stroke-width="3.7"/>
     ${observations.map((x, i) => `<circle cx="${x}" cy="${446 + (i % 2) * 32}" r="${i === 2 ? 6.5 : 4.8}"
       fill="${i === 2 ? C.ink : C.gold}" opacity="0.78"/>`).join("\n")}
-    <path d="M 400 348 C 416 396, 430 438, 445 510 C 454 556, 455 579, 456 610"
+    <path d="M 400 348 C 414 390, 428 430, 442 478 C 448 500, 451 520, 453 540"
       class="ink" marker-end="url(#open-arrow)" opacity="0.62"/>
     <path d="${linePath(posteriorFill, true)}" fill="${C.paleRed}" opacity="0.24"/>
     <path d="${linePath(posterior)}" class="red" stroke-width="4"/>
