@@ -1,138 +1,25 @@
 ---
-layout: default
+layout: research-bridge
+bridge_title_en: "Curse of dimensionality"
+bridge_title_fr: "Malédiction de la dimension"
+bridge_title_zh: "维数灾难"
+bridge_intro_en: "Dimension-dependent approximation, covering, estimation, and sample-complexity phenomena are developed as mathematical background in the statistical learning notes."
+bridge_intro_fr: "Les phénomènes d'approximation, de recouvrement, d'estimation et de complexité d'échantillonnage dépendant de la dimension sont développés comme fondements mathématiques dans les notes d'apprentissage statistique."
+bridge_intro_zh: "依赖维数的逼近、覆盖、估计与样本复杂度现象，作为数学基础整理在统计学习笔记中。"
+note_1_url: "/notes/statistical-learning/covering-numbers-and-entropy/"
+note_1_en: "Covering numbers and entropy"
+note_1_fr: "Nombres de recouvrement et entropie"
+note_1_zh: "覆盖数与熵"
+note_2_url: "/notes/statistical-learning/minimax-rates-oracle-inequalities/"
+note_2_en: "Minimax rates and oracle inequalities"
+note_2_fr: "Taux minimax et inégalités oracle"
+note_2_zh: "极小极大速度与 oracle 不等式"
+note_3_url: "/notes/statistical-learning/high-dimensional-sparsity/"
+note_3_en: "High-dimensional sparsity"
+note_3_fr: "Parcimonie en grande dimension"
+note_3_zh: "高维稀疏性"
+project_url: "/research/bayesian-inference/bernstein-von-mises-theorem/"
+project_en: "See the sparse GLM project, where structural sparsity replaces ambient dimension by an effective support size."
+project_fr: "Voir le projet sur les GLM parcimonieux, où la parcimonie structurelle remplace la dimension ambiante par une taille effective de support."
+project_zh: "查看稀疏广义线性模型项目，其中结构稀疏性以有效支持集大小替代环境维数。"
 ---
-
-<div class="note-page" data-lang="en">
-    <h2>Curse of dimensionality</h2>
-    {% include research-topic-nav.html back_label="Back" back_url="/research/high-dimensional-probability/" next_label="Next page" next_url="/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-
-    <p>The curse of dimensionality means that many geometric and statistical tasks become exponentially harder as the ambient dimension \(d\) grows.</p>
-
-    <figure class="research-figure">
-        <svg viewBox="0 0 620 260" role="img" aria-label="Grid points grow rapidly with dimension">
-            <line x1="70" y1="75" x2="210" y2="75" stroke="#28466f" stroke-width="3"></line>
-            <circle cx="70" cy="75" r="4" fill="#28466f"></circle><circle cx="105" cy="75" r="4" fill="#28466f"></circle><circle cx="140" cy="75" r="4" fill="#28466f"></circle><circle cx="175" cy="75" r="4" fill="#28466f"></circle><circle cx="210" cy="75" r="4" fill="#28466f"></circle>
-            <text x="140" y="112" font-size="15" text-anchor="middle">m</text>
-            <g transform="translate(255 25)">
-                <rect x="0" y="0" width="130" height="130" fill="none" stroke="#28466f" stroke-width="2"></rect>
-                <g fill="#28466f">
-                    <circle cx="0" cy="0" r="3"></circle><circle cx="32.5" cy="0" r="3"></circle><circle cx="65" cy="0" r="3"></circle><circle cx="97.5" cy="0" r="3"></circle><circle cx="130" cy="0" r="3"></circle>
-                    <circle cx="0" cy="32.5" r="3"></circle><circle cx="32.5" cy="32.5" r="3"></circle><circle cx="65" cy="32.5" r="3"></circle><circle cx="97.5" cy="32.5" r="3"></circle><circle cx="130" cy="32.5" r="3"></circle>
-                    <circle cx="0" cy="65" r="3"></circle><circle cx="32.5" cy="65" r="3"></circle><circle cx="65" cy="65" r="3"></circle><circle cx="97.5" cy="65" r="3"></circle><circle cx="130" cy="65" r="3"></circle>
-                    <circle cx="0" cy="97.5" r="3"></circle><circle cx="32.5" cy="97.5" r="3"></circle><circle cx="65" cy="97.5" r="3"></circle><circle cx="97.5" cy="97.5" r="3"></circle><circle cx="130" cy="97.5" r="3"></circle>
-                    <circle cx="0" cy="130" r="3"></circle><circle cx="32.5" cy="130" r="3"></circle><circle cx="65" cy="130" r="3"></circle><circle cx="97.5" cy="130" r="3"></circle><circle cx="130" cy="130" r="3"></circle>
-                </g>
-            </g>
-            <text x="320" y="180" font-size="15" text-anchor="middle">m²</text>
-            <g transform="translate(440 35)" fill="none" stroke="#28466f" stroke-width="2">
-                <rect x="0" y="30" width="105" height="105"></rect>
-                <path d="M0 30 L35 0 L140 0 L105 30"></path>
-                <path d="M105 30 L140 0 L140 105 L105 135"></path>
-                <g fill="#28466f" stroke="none">
-                    <circle cx="18" cy="48" r="3"></circle><circle cx="52" cy="48" r="3"></circle><circle cx="86" cy="48" r="3"></circle>
-                    <circle cx="18" cy="82" r="3"></circle><circle cx="52" cy="82" r="3"></circle><circle cx="86" cy="82" r="3"></circle>
-                    <circle cx="18" cy="116" r="3"></circle><circle cx="52" cy="116" r="3"></circle><circle cx="86" cy="116" r="3"></circle>
-                    <circle cx="48" cy="18" r="3"></circle><circle cx="82" cy="18" r="3"></circle><circle cx="116" cy="18" r="3"></circle>
-                </g>
-            </g>
-            <text x="512" y="180" font-size="15" text-anchor="middle">m³</text>
-            <text x="310" y="230" font-size="16" text-anchor="middle">points grow as mᵈ</text>
-        </svg>
-        <figcaption>A modest resolution in each coordinate becomes an enormous grid in dimension \(d\).</figcaption>
-    </figure>
-
-    <h3>Grid intuition</h3>
-    <p>To place \(m\) grid points on each coordinate of \([0,1]^d\), one needs \(m^d\) total points. If a Lipschitz function \(f\) is approximated by nearest-neighbor interpolation with mesh width \(h\), then \(|f(x)-f(x_i)|\le Lh\). Achieving error \(\varepsilon\) therefore requires roughly \(h\le\varepsilon/L\), hence \(n\asymp \varepsilon^{-d}\) points.</p>
-
-    <h3>Volume effect</h3>
-    <p>The volume of a Euclidean ball is</p>
-    <p>\[\operatorname{Vol}(B_d(r))=\frac{\pi^{d/2}}{\Gamma(d/2+1)}r^d.\]</p>
-    <p>The factor \(r^d\) means small radius reductions are severe in high dimension. Local neighborhoods become sparse unless the sample size grows very quickly.</p>
-
-    <h3>Statistical consequence</h3>
-    <p>For nonparametric estimation of a \(\beta\)-smooth function in \(d\) dimensions, the typical minimax mean-square rate has the form</p>
-    <p>\[n^{-2\beta/(2\beta+d)}.\]</p>
-    <p>As \(d\) increases, the exponent decreases. This is why structure such as sparsity, additivity, low rank, or manifold assumptions is essential in high-dimensional statistics.</p>
-
-    {% include research-topic-nav.html back_label="Back" back_url="/research/high-dimensional-probability/" next_label="Next page" next_url="/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-</div>
-
-<div class="note-page" data-lang="fr">
-    <h2>Malédiction de la dimension</h2>
-    {% include research-topic-nav.html back_label="Retour" back_url="/research/high-dimensional-probability/" next_label="Page suivante" next_url="/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-
-    <p>La malédiction de la dimension désigne le fait que beaucoup de problèmes géométriques et statistiques deviennent exponentiellement plus difficiles lorsque la dimension \(d\) augmente.</p>
-
-    <figure class="research-figure">
-        <svg viewBox="0 0 620 260" role="img" aria-label="Les points de grille croissent vite avec la dimension">
-            <line x1="70" y1="75" x2="210" y2="75" stroke="#28466f" stroke-width="3"></line>
-            <circle cx="70" cy="75" r="4" fill="#28466f"></circle><circle cx="105" cy="75" r="4" fill="#28466f"></circle><circle cx="140" cy="75" r="4" fill="#28466f"></circle><circle cx="175" cy="75" r="4" fill="#28466f"></circle><circle cx="210" cy="75" r="4" fill="#28466f"></circle>
-            <text x="140" y="112" font-size="15" text-anchor="middle">m</text>
-            <g transform="translate(255 25)">
-                <rect x="0" y="0" width="130" height="130" fill="none" stroke="#28466f" stroke-width="2"></rect>
-                <g fill="#28466f"><circle cx="0" cy="0" r="3"></circle><circle cx="32.5" cy="0" r="3"></circle><circle cx="65" cy="0" r="3"></circle><circle cx="97.5" cy="0" r="3"></circle><circle cx="130" cy="0" r="3"></circle><circle cx="0" cy="32.5" r="3"></circle><circle cx="32.5" cy="32.5" r="3"></circle><circle cx="65" cy="32.5" r="3"></circle><circle cx="97.5" cy="32.5" r="3"></circle><circle cx="130" cy="32.5" r="3"></circle><circle cx="0" cy="65" r="3"></circle><circle cx="32.5" cy="65" r="3"></circle><circle cx="65" cy="65" r="3"></circle><circle cx="97.5" cy="65" r="3"></circle><circle cx="130" cy="65" r="3"></circle><circle cx="0" cy="97.5" r="3"></circle><circle cx="32.5" cy="97.5" r="3"></circle><circle cx="65" cy="97.5" r="3"></circle><circle cx="97.5" cy="97.5" r="3"></circle><circle cx="130" cy="97.5" r="3"></circle><circle cx="0" cy="130" r="3"></circle><circle cx="32.5" cy="130" r="3"></circle><circle cx="65" cy="130" r="3"></circle><circle cx="97.5" cy="130" r="3"></circle><circle cx="130" cy="130" r="3"></circle></g>
-            </g>
-            <text x="320" y="180" font-size="15" text-anchor="middle">m²</text>
-            <g transform="translate(440 35)" fill="none" stroke="#28466f" stroke-width="2"><rect x="0" y="30" width="105" height="105"></rect><path d="M0 30 L35 0 L140 0 L105 30"></path><path d="M105 30 L140 0 L140 105 L105 135"></path><g fill="#28466f" stroke="none"><circle cx="18" cy="48" r="3"></circle><circle cx="52" cy="48" r="3"></circle><circle cx="86" cy="48" r="3"></circle><circle cx="18" cy="82" r="3"></circle><circle cx="52" cy="82" r="3"></circle><circle cx="86" cy="82" r="3"></circle><circle cx="18" cy="116" r="3"></circle><circle cx="52" cy="116" r="3"></circle><circle cx="86" cy="116" r="3"></circle><circle cx="48" cy="18" r="3"></circle><circle cx="82" cy="18" r="3"></circle><circle cx="116" cy="18" r="3"></circle></g></g>
-            <text x="512" y="180" font-size="15" text-anchor="middle">m³</text>
-            <text x="310" y="230" font-size="16" text-anchor="middle">nombre de points : mᵈ</text>
-        </svg>
-        <figcaption>Une résolution modeste dans chaque coordonnée devient une grille énorme en dimension \(d\).</figcaption>
-    </figure>
-
-    <h3>Idée de grille</h3>
-    <p>Mettre \(m\) points par coordonnée dans \([0,1]^d\) demande \(m^d\) points. Si une fonction lipschitzienne \(f\) est approchée par le plus proche voisin avec pas \(h\), alors \(|f(x)-f(x_i)|\le Lh\). Pour obtenir l'erreur \(\varepsilon\), il faut donc environ \(h\le\varepsilon/L\), donc \(n\asymp \varepsilon^{-d}\) points.</p>
-
-    <h3>Effet de volume</h3>
-    <p>Le volume d'une boule euclidienne vaut</p>
-    <p>\[\operatorname{Vol}(B_d(r))=\frac{\pi^{d/2}}{\Gamma(d/2+1)}r^d.\]</p>
-    <p>Le facteur \(r^d\) rend les petits voisinages très pauvres en grande dimension, sauf si la taille d'échantillon augmente très vite.</p>
-
-    <h3>Conséquence statistique</h3>
-    <p>Pour estimer une fonction \(\beta\)-régulière en dimension \(d\), le taux minimax quadratique typique est</p>
-    <p>\[n^{-2\beta/(2\beta+d)}.\]</p>
-    <p>Quand \(d\) augmente, l'exposant diminue. Il faut donc exploiter de la structure : parcimonie, additivité, rang faible ou hypothèse de variété.</p>
-
-    {% include research-topic-nav.html back_label="Retour" back_url="/research/high-dimensional-probability/" next_label="Page suivante" next_url="/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-</div>
-
-<div class="note-page" data-lang="zh">
-    <h2>维数灾难</h2>
-    {% include research-topic-nav.html back_label="返回" back_url="/research/high-dimensional-probability/" next_label="下一页" next_url="/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-
-    <p>维数灾难指许多几何和统计任务会随环境维数 \(d\) 增大而指数级变难。</p>
-
-    <figure class="research-figure">
-        <svg viewBox="0 0 620 260" role="img" aria-label="网格点数随维数快速增长">
-            <line x1="70" y1="75" x2="210" y2="75" stroke="#28466f" stroke-width="3"></line>
-            <circle cx="70" cy="75" r="4" fill="#28466f"></circle><circle cx="105" cy="75" r="4" fill="#28466f"></circle><circle cx="140" cy="75" r="4" fill="#28466f"></circle><circle cx="175" cy="75" r="4" fill="#28466f"></circle><circle cx="210" cy="75" r="4" fill="#28466f"></circle>
-            <text x="140" y="112" font-size="15" text-anchor="middle">m</text>
-            <g transform="translate(255 25)">
-                <rect x="0" y="0" width="130" height="130" fill="none" stroke="#28466f" stroke-width="2"></rect>
-                <g fill="#28466f"><circle cx="0" cy="0" r="3"></circle><circle cx="32.5" cy="0" r="3"></circle><circle cx="65" cy="0" r="3"></circle><circle cx="97.5" cy="0" r="3"></circle><circle cx="130" cy="0" r="3"></circle><circle cx="0" cy="32.5" r="3"></circle><circle cx="32.5" cy="32.5" r="3"></circle><circle cx="65" cy="32.5" r="3"></circle><circle cx="97.5" cy="32.5" r="3"></circle><circle cx="130" cy="32.5" r="3"></circle><circle cx="0" cy="65" r="3"></circle><circle cx="32.5" cy="65" r="3"></circle><circle cx="65" cy="65" r="3"></circle><circle cx="97.5" cy="65" r="3"></circle><circle cx="130" cy="65" r="3"></circle><circle cx="0" cy="97.5" r="3"></circle><circle cx="32.5" cy="97.5" r="3"></circle><circle cx="65" cy="97.5" r="3"></circle><circle cx="97.5" cy="97.5" r="3"></circle><circle cx="130" cy="97.5" r="3"></circle><circle cx="0" cy="130" r="3"></circle><circle cx="32.5" cy="130" r="3"></circle><circle cx="65" cy="130" r="3"></circle><circle cx="97.5" cy="130" r="3"></circle><circle cx="130" cy="130" r="3"></circle></g>
-            </g>
-            <text x="320" y="180" font-size="15" text-anchor="middle">m²</text>
-            <g transform="translate(440 35)" fill="none" stroke="#28466f" stroke-width="2"><rect x="0" y="30" width="105" height="105"></rect><path d="M0 30 L35 0 L140 0 L105 30"></path><path d="M105 30 L140 0 L140 105 L105 135"></path><g fill="#28466f" stroke="none"><circle cx="18" cy="48" r="3"></circle><circle cx="52" cy="48" r="3"></circle><circle cx="86" cy="48" r="3"></circle><circle cx="18" cy="82" r="3"></circle><circle cx="52" cy="82" r="3"></circle><circle cx="86" cy="82" r="3"></circle><circle cx="18" cy="116" r="3"></circle><circle cx="52" cy="116" r="3"></circle><circle cx="86" cy="116" r="3"></circle><circle cx="48" cy="18" r="3"></circle><circle cx="82" cy="18" r="3"></circle><circle cx="116" cy="18" r="3"></circle></g></g>
-            <text x="512" y="180" font-size="15" text-anchor="middle">m³</text>
-            <text x="310" y="230" font-size="16" text-anchor="middle">点数按 mᵈ 增长</text>
-        </svg>
-        <figcaption>每个坐标方向上并不高的分辨率，在 \(d\) 维中会变成巨大的网格。</figcaption>
-    </figure>
-
-    <h3>网格直观</h3>
-    <p>若在 \([0,1]^d\) 的每个坐标方向放 \(m\) 个网格点，总点数为 \(m^d\)。若用网格最近邻近似 Lipschitz 函数 \(f\)，网格宽度为 \(h\)，则 \(|f(x)-f(x_i)|\le Lh\)。要达到误差 \(\varepsilon\)，大约需要 \(h\le\varepsilon/L\)，因此样本量 \(n\asymp \varepsilon^{-d}\)。</p>
-
-    <h3>体积效应</h3>
-    <p>欧氏球体积为</p>
-    <p>\[\operatorname{Vol}(B_d(r))=\frac{\pi^{d/2}}{\Gamma(d/2+1)}r^d.\]</p>
-    <p>其中 \(r^d\) 说明半径稍微变小，体积在高维中会急剧变小。因此局部邻域会非常稀疏，除非样本量增长很快。</p>
-
-    <h3>统计后果</h3>
-    <p>估计 \(d\) 维 \(\beta\)-光滑函数时，典型极小极大均方误差速度为</p>
-    <p>\[n^{-2\beta/(2\beta+d)}.\]</p>
-    <p>当 \(d\) 增大，指数变小。因此高维统计必须利用结构，例如稀疏性、可加性、低秩或流形假设。</p>
-
-    {% include research-topic-nav.html back_label="返回" back_url="/research/high-dimensional-probability/" next_label="下一页" next_url="/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-</div>
-
-<hr>
