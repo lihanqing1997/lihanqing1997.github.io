@@ -1,0 +1,36 @@
+{% assign current_project = site.data.research_projects[page.research_project] %}
+{% assign current_topic = site.data.research_topics[current_project.topic] %}
+{% if current_project.previous %}
+    {% assign previous_project = site.data.research_projects[current_project.previous] %}
+{% endif %}
+{% if current_project.next %}
+    {% assign next_project = site.data.research_projects[current_project.next] %}
+{% endif %}
+
+{% case include.lang %}
+{% when "fr" %}
+    {% assign back_label = "Retour" %}
+    {% assign previous_label = "Page précédente" %}
+    {% assign next_label = "Page suivante" %}
+    {% assign nav_aria = "Navigation des projets de recherche" %}
+{% when "zh" %}
+    {% assign back_label = "返回" %}
+    {% assign previous_label = "上一页" %}
+    {% assign next_label = "下一页" %}
+    {% assign nav_aria = "研究项目导航" %}
+{% else %}
+    {% assign back_label = "Back" %}
+    {% assign previous_label = "Last page" %}
+    {% assign next_label = "Next page" %}
+    {% assign nav_aria = "Research project navigation" %}
+{% endcase %}
+
+<nav class="note-nav" aria-label="{{ nav_aria }}">
+    <a href="{{ current_topic.url | relative_url }}">{{ back_label }}</a>
+    {% if previous_project %}
+        <a href="{{ previous_project.url | relative_url }}">{{ previous_label }}</a>
+    {% endif %}
+    {% if next_project %}
+        <a href="{{ next_project.url | relative_url }}">{{ next_label }}</a>
+    {% endif %}
+</nav>

@@ -1,0 +1,159 @@
+---
+layout: default
+research_project: robust_serial_correlation
+---
+
+<div class="research-page" data-lang="en">
+    <h2>Robust serial-correlation inference</h2>
+    {% include research-project-nav.html lang="en" %}
+
+    <p class="research-lead">Residual serial-correlation tests are often derived as though innovations were homoscedastic, weakly dependent on the regressors, and square-integrable. Financial and environmental time series routinely violate those assumptions. These projects use empirical likelihood to retain likelihood-ratio-style calibration while allowing GARCH-type heteroscedasticity, dependence between modeled processes, and, after weighting, innovations with possibly infinite variance.</p>
+
+    <h3>Serial correlation as a constrained moment problem</h3>
+    <p>An autoregressive model with exogenous variables can be written schematically as</p>
+    <p>\[
+        Y_t
+        =
+        \mu+\sum_{j=1}^{p}\phi_jY_{t-j}
+        +\beta^\top X_t+\varepsilon_t.
+    \]</p>
+    <p>For lags \(1,\ldots,q\), the null hypothesis of no residual serial correlation is encoded by moment restrictions such as</p>
+    <p>\[
+        E\{\varepsilon_t(\eta)\varepsilon_{t-k}(\eta)\}=0,
+        \qquad k=1,\ldots,q,
+    \]</p>
+    <p>where \(\eta=(\mu,\phi,\beta)\) contains nuisance parameters. The challenge is that estimating \(\eta\), allowing conditional heteroscedasticity, and permitting dependence involving the exogenous process all change the covariance structure of these sample moments.</p>
+
+    <h3>Profile empirical likelihood for the ARX model</h3>
+    <p>Let \(g_t(\eta,\rho)\) collect the estimating equations for the model parameters and the lagged residual products, with \(\rho=(\rho_1,\ldots,\rho_q)\). Empirical likelihood assigns probabilities \(p_t\) to observations and maximizes</p>
+    <p>\[
+        R(\eta,\rho)
+        =
+        \max_{\substack{p_t\ge0,\ \sum_tp_t=1\\
+        \sum_tp_tg_t(\eta,\rho)=0}}
+        \prod_{t=1}^n(np_t).
+    \]</p>
+    <p>Profiling over \(\eta\) leaves a likelihood-ratio statistic for \(\rho\). The 2022 paper constructs this statistic for autoregressive exogenous models with possible GARCH errors and proves a chi-square limit under conditions that allow heteroscedasticity and correlation between the ARX and exogenous processes. The profile step is essential: plugging in nuisance estimates without accounting for their estimating equations generally gives the wrong calibration.</p>
+
+    <h3>Weighted empirical likelihood under infinite variance</h3>
+    <p>The later general \(d\)-factor model allows heavier tails. Ordinary residual-product moments may then fail to have finite variance, so the standard quadratic empirical-likelihood expansion is no longer justified. A predictable or data-dependent weight \(w_t\) replaces \(g_t\) by</p>
+    <p>\[
+        g_t^{\,w}(\eta,\rho)=w_tg_t(\eta,\rho),
+    \]</p>
+    <p>with weights chosen to control extreme observations while preserving the null moment restriction. The weighted empirical-likelihood statistic recovers an asymptotic chi-square law under substantially weaker moment assumptions, including settings with possibly infinite innovation variance. The unweighted and weighted procedures therefore address different regimes rather than serving as interchangeable numerical variants.</p>
+
+    <h3>From asymptotic calibration to diagnostics</h3>
+    <p>The papers establish Wilks-type limits and then examine finite-sample size and power by simulation. Applications to financial and environmental series illustrate why residual dependence, conditional heteroscedasticity, and tail behavior must be diagnosed together. A rejection identifies inadequacy of the serial-correlation restrictions; it does not by itself identify whether the remedy should be additional dynamics, a different volatility model, or a revised exogenous specification.</p>
+
+    <div class="research-paper">
+        <p><strong>ARX paper.</strong> Hanqing Li, Xiaohui Liu, Yuting Chen, and Yawen Fan, <a href="https://doi.org/10.3390/e24081076">“Testing for serial correlation in autoregressive exogenous models with possible GARCH errors”</a>, <em>Entropy</em>, 2022.</p>
+        <p><strong>Factor-model paper.</strong> Yawen Fan, Xiaohui Liu, Ting Luo, Yao Rao, and Hanqing Li, <a href="https://doi.org/10.1080/02664763.2023.2231175">“Testing serial correlation in a general d-factor model with possible infinite variance”</a>, <em>Journal of Applied Statistics</em>, 2024.</p>
+        <p><strong>Background.</strong> <a href="{{ '/notes/statistical-inference/empirical-likelihood-estimating-equations/' | relative_url }}">Empirical likelihood and estimating equations</a>, <a href="{{ '/notes/statistical-inference/robust-inference/' | relative_url }}">robust inference</a>, and <a href="{{ '/notes/statistical-inference/misspecification-robust-covariance/' | relative_url }}">misspecification and robust covariance</a>.</p>
+    </div>
+
+    {% include research-project-nav.html lang="en" %}
+</div>
+
+<div class="research-page" data-lang="fr">
+    <h2>Inférence robuste sur la corrélation sérielle</h2>
+    {% include research-project-nav.html lang="fr" %}
+
+    <p class="research-lead">Les tests de corrélation sérielle des résidus sont souvent établis comme si les innovations étaient homoscédastiques, faiblement dépendantes des régresseurs et de carré intégrable. Les séries financières et environnementales violent fréquemment ces hypothèses. Ces projets utilisent la vraisemblance empirique pour conserver une calibration de type rapport de vraisemblance tout en autorisant une hétéroscédasticité de type GARCH, une dépendance entre les processus modélisés et, après pondération, des innovations dont la variance peut être infinie.</p>
+
+    <h3>La corrélation sérielle comme problème de moments contraints</h3>
+    <p>Un modèle autorégressif avec variables exogènes s'écrit schématiquement</p>
+    <p>\[
+        Y_t
+        =
+        \mu+\sum_{j=1}^{p}\phi_jY_{t-j}
+        +\beta^\top X_t+\varepsilon_t.
+    \]</p>
+    <p>Pour les retards \(1,\ldots,q\), l'absence de corrélation sérielle résiduelle est exprimée par</p>
+    <p>\[
+        E\{\varepsilon_t(\eta)\varepsilon_{t-k}(\eta)\}=0,
+        \qquad k=1,\ldots,q,
+    \]</p>
+    <p>où \(\eta=(\mu,\phi,\beta)\) contient les paramètres de nuisance. L'estimation de \(\eta\), l'hétéroscédasticité conditionnelle et la dépendance avec le processus exogène modifient conjointement la covariance de ces moments empiriques.</p>
+
+    <h3>Vraisemblance empirique profilée pour le modèle ARX</h3>
+    <p>Soit \(g_t(\eta,\rho)\) le vecteur des équations d'estimation du modèle et des produits résiduels retardés, avec \(\rho=(\rho_1,\ldots,\rho_q)\). La vraisemblance empirique attribue des probabilités \(p_t\) aux observations et maximise</p>
+    <p>\[
+        R(\eta,\rho)
+        =
+        \max_{\substack{p_t\ge0,\ \sum_tp_t=1\\
+        \sum_tp_tg_t(\eta,\rho)=0}}
+        \prod_{t=1}^n(np_t).
+    \]</p>
+    <p>Le profilage en \(\eta\) donne une statistique de rapport de vraisemblance pour \(\rho\). L'article de 2022 construit ce test pour des modèles autorégressifs exogènes avec erreurs GARCH possibles et démontre une limite du chi carré sous des conditions permettant l'hétéroscédasticité et la corrélation entre les processus ARX et exogène. Ignorer les équations d'estimation des paramètres de nuisance conduit en général à une calibration incorrecte.</p>
+
+    <h3>Vraisemblance empirique pondérée sous variance infinie</h3>
+    <p>Le modèle factoriel général ultérieur admet des queues plus lourdes. Les produits de résidus ordinaires peuvent alors ne pas avoir de variance finie, ce qui invalide l'expansion quadratique usuelle. Un poids prévisible ou dépendant des données \(w_t\) remplace \(g_t\) par</p>
+    <p>\[
+        g_t^{\,w}(\eta,\rho)=w_tg_t(\eta,\rho),
+    \]</p>
+    <p>de façon à maîtriser les observations extrêmes tout en préservant la restriction de moment sous l'hypothèse nulle. La statistique pondérée retrouve une limite du chi carré sous des hypothèses de moments beaucoup plus faibles, y compris lorsque la variance des innovations peut être infinie. Les procédures pondérée et non pondérée correspondent donc à des régimes distincts.</p>
+
+    <h3>De la calibration asymptotique au diagnostic</h3>
+    <p>Les articles établissent des limites de type Wilks, puis étudient la taille et la puissance en échantillon fini. Les applications financières et environnementales montrent pourquoi la dépendance résiduelle, l'hétéroscédasticité conditionnelle et les queues doivent être diagnostiquées ensemble. Un rejet indique que les restrictions de corrélation sérielle sont inadéquates; il ne précise pas si la correction doit prendre la forme d'une dynamique supplémentaire, d'un autre modèle de volatilité ou d'une nouvelle spécification exogène.</p>
+
+    <div class="research-paper">
+        <p><strong>Article ARX.</strong> Hanqing Li, Xiaohui Liu, Yuting Chen et Yawen Fan, <a href="https://doi.org/10.3390/e24081076">“Testing for serial correlation in autoregressive exogenous models with possible GARCH errors”</a>, <em>Entropy</em>, 2022.</p>
+        <p><strong>Article sur le modèle factoriel.</strong> Yawen Fan, Xiaohui Liu, Ting Luo, Yao Rao et Hanqing Li, <a href="https://doi.org/10.1080/02664763.2023.2231175">“Testing serial correlation in a general d-factor model with possible infinite variance”</a>, <em>Journal of Applied Statistics</em>, 2024.</p>
+        <p><strong>Fondements.</strong> <a href="{{ '/notes/statistical-inference/empirical-likelihood-estimating-equations/' | relative_url }}">Vraisemblance empirique et équations d'estimation</a>, <a href="{{ '/notes/statistical-inference/robust-inference/' | relative_url }}">inférence robuste</a>, et <a href="{{ '/notes/statistical-inference/misspecification-robust-covariance/' | relative_url }}">mauvaise spécification et covariance robuste</a>.</p>
+    </div>
+
+    {% include research-project-nav.html lang="fr" %}
+</div>
+
+<div class="research-page" data-lang="zh">
+    <h2>稳健序列相关推断</h2>
+    {% include research-project-nav.html lang="zh" %}
+
+    <p class="research-lead">许多残差序列相关检验默认创新项同方差、与回归变量弱相关并且具有有限二阶矩，但金融与环境时间序列经常违反这些假设。这些工作利用经验似然保留似然比式的校准，同时允许 GARCH 型异方差、模型过程之间的相关性，并在加权后允许创新项具有无穷方差。</p>
+
+    <h3>作为约束矩问题的序列相关</h3>
+    <p>带外生变量的自回归模型可以示意性地写为</p>
+    <p>\[
+        Y_t
+        =
+        \mu+\sum_{j=1}^{p}\phi_jY_{t-j}
+        +\beta^\top X_t+\varepsilon_t.
+    \]</p>
+    <p>对于滞后 \(1,\ldots,q\)，无残差序列相关的原假设可表示为矩约束</p>
+    <p>\[
+        E\{\varepsilon_t(\eta)\varepsilon_{t-k}(\eta)\}=0,
+        \qquad k=1,\ldots,q,
+    \]</p>
+    <p>其中 \(\eta=(\mu,\phi,\beta)\) 包含干扰参数。对 \(\eta\) 的估计、条件异方差以及与外生过程的相关性会共同改变这些样本矩的协方差结构。</p>
+
+    <h3>ARX 模型的剖面经验似然</h3>
+    <p>令 \(g_t(\eta,\rho)\) 汇集模型参数的估计方程与滞后残差乘积，其中 \(\rho=(\rho_1,\ldots,\rho_q)\)。经验似然为每个观测赋予概率 \(p_t\)，并最大化</p>
+    <p>\[
+        R(\eta,\rho)
+        =
+        \max_{\substack{p_t\ge0,\ \sum_tp_t=1\\
+        \sum_tp_tg_t(\eta,\rho)=0}}
+        \prod_{t=1}^n(np_t).
+    \]</p>
+    <p>对 \(\eta\) 剖面化后得到关于 \(\rho\) 的似然比统计量。2022 年的论文针对可能具有 GARCH 误差的自回归外生变量模型构造该统计量，并在允许异方差以及 ARX 过程与外生过程相关的条件下证明渐近卡方极限。剖面步骤不可省略：若只代入干扰参数估计量而不计入其估计方程，通常会得到错误的校准。</p>
+
+    <h3>无穷方差下的加权经验似然</h3>
+    <p>后续的一般 \(d\) 因子模型允许更重的尾部。此时，普通残差乘积可能没有有限方差，标准的经验似然二次展开不再成立。通过可预测或数据依赖的权重 \(w_t\)，将 \(g_t\) 替换为</p>
+    <p>\[
+        g_t^{\,w}(\eta,\rho)=w_tg_t(\eta,\rho),
+    \]</p>
+    <p>可以在保留原假设矩约束的同时控制极端观测。加权经验似然统计量在显著更弱的矩条件下重新获得渐近卡方分布，其中包括创新项可能具有无穷方差的情形。因此，加权与不加权程序对应不同的尾部区间，而不只是可以任意互换的数值版本。</p>
+
+    <h3>从渐近校准到模型诊断</h3>
+    <p>两篇论文首先建立 Wilks 型极限，再通过模拟考察有限样本下的检验水平与功效。金融和环境数据的应用说明，残差依赖、条件异方差与尾部行为必须联合诊断。拒绝原假设表明序列相关约束不充分，但它本身不能判断应当增加动态项、改变波动模型，还是修正外生变量的设定。</p>
+
+    <div class="research-paper">
+        <p><strong>ARX 论文。</strong> Hanqing Li、Xiaohui Liu、Yuting Chen 与 Yawen Fan，<a href="https://doi.org/10.3390/e24081076">“Testing for serial correlation in autoregressive exogenous models with possible GARCH errors”</a>，<em>Entropy</em>，2022。</p>
+        <p><strong>因子模型论文。</strong> Yawen Fan、Xiaohui Liu、Ting Luo、Yao Rao 与 Hanqing Li，<a href="https://doi.org/10.1080/02664763.2023.2231175">“Testing serial correlation in a general d-factor model with possible infinite variance”</a>，<em>Journal of Applied Statistics</em>，2024。</p>
+        <p><strong>数学背景。</strong> <a href="{{ '/notes/statistical-inference/empirical-likelihood-estimating-equations/' | relative_url }}">经验似然与估计方程</a>、<a href="{{ '/notes/statistical-inference/robust-inference/' | relative_url }}">稳健推断</a>以及<a href="{{ '/notes/statistical-inference/misspecification-robust-covariance/' | relative_url }}">模型误设与稳健协方差</a>。</p>
+    </div>
+
+    {% include research-project-nav.html lang="zh" %}
+</div>
+
+<hr>

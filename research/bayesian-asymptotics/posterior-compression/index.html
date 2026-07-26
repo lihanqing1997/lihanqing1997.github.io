@@ -1,0 +1,255 @@
+---
+layout: default
+research_project: posterior_compression
+---
+
+<div class="research-page" data-lang="en">
+    <h2>Posterior compression under predictor redundancy</h2>
+    {% include research-project-nav.html lang="en" %}
+
+    <p class="research-lead">Bayesian model averaging produces a posterior distribution on model supports. Under predictor redundancy, many supports may encode essentially the same signal. The resulting predictive distribution can be stable even when exact-support probabilities are diffuse and sensitive. This project treats the difficulty as a reporting problem after fitting: replace a long atom-level summary by a small collection of support regions, while measuring exactly what information the report loses.</p>
+
+    <figure class="research-project-figure">
+        {% include research-compression-figure.html aria_label="Many posterior support atoms grouped into a small number of soft support regions" %}
+        <figcaption>Many nearly interchangeable support atoms are represented by a few hard or soft regions; residual atoms remain visible through the unrestricted-posterior fallback component.</figcaption>
+    </figure>
+
+    <h3>The reference posterior is not refitted</h3>
+    <p>Let \(\mathcal S\subseteq\{0,1\}^p\) be the support space and let \(P\) denote the fitted marginal posterior on \(\mathcal S\). In a support-indexed regression model,</p>
+    <p>\[
+        P(S\mid Y)
+        \propto
+        \pi(S)\int L_S(\vartheta_S;Y)\,
+        \pi_S(\mathrm d\vartheta_S).
+    \]</p>
+    <p>The compression stage does not alter \(\pi(S)\), refit the within-model posterior, or define a new scientific target. It constructs a separate reporting law \(Q\) and compares \(Q\) with the reference law \(P\). This distinction separates posterior reporting from dilution priors, determinantal priors, alternative samplers, and predictive submodel selection.</p>
+
+    <h3>Support kernels and region components</h3>
+    <p>A support kernel is a bounded function \(\kappa_j:\mathcal S\to[0,1]\). Indicator kernels \(\kappa_j=\mathbf 1_{R_j}\) represent hard regions; nonbinary kernels represent soft metric balls, neighborhoods, modules, intervals, or posterior clusters. Define the retained kernel mass and the normalized region component by</p>
+    <p>\[
+        m_j=E_P\{\kappa_j(S)\},
+        \qquad
+        P_j(\mathrm dS)=\frac{\kappa_j(S)}{m_j}\,P(\mathrm dS),
+        \qquad m_j&gt;0.
+    \]</p>
+    <p>Include a fallback component \(\kappa_0\equiv1\), so \(P_0=P\). For mixture weights \(q=(q_0,\ldots,q_J)\) on the simplex, the compressed reporting law is</p>
+    <p>\[
+        Q_q=\sum_{j=0}^Jq_jP_j.
+    \]</p>
+    <p>The fallback weight \(q_0\) has a direct diagnostic meaning. If it remains large, the proposed regions explain only a small part of the reference posterior, even when the numerical distortion of \(Q_q\) is small.</p>
+
+    <h3>The density ratio makes distortion computable</h3>
+    <p>Because every component is obtained by reweighting \(P\), the density ratio is explicit:</p>
+    <p>\[
+        r_q(S)=\frac{\mathrm dQ_q}{\mathrm dP}(S)
+        =
+        q_0+\sum_{j=1}^Jq_j\frac{\kappa_j(S)}{m_j}.
+    \]</p>
+    <p>Consequently, the principal support-space discrepancies require expectations under the reference posterior only:</p>
+    <p>\[
+        \|Q_q-P\|_{\mathrm{TV}}
+        =\frac12E_P|r_q-1|,
+        \qquad
+        D_{\mathrm{KL}}(Q_q\|P)=E_P(r_q\log r_q),
+    \]</p>
+    <p>\[
+        D_{\mathrm{KL}}(P\|Q_q)=-E_P\log r_q
+    \]</p>
+    <p>whenever the latter is finite. For every bounded posterior functional \(f\),</p>
+    <p>\[
+        |E_{Q_q}f-E_Pf|
+        \le 2\|f\|_\infty\|Q_q-P\|_{\mathrm{TV}}.
+    \]</p>
+    <p>Passing support laws through the model-specific posterior predictive kernel cannot increase total variation. The same diagnostic therefore controls bounded predictive summaries without requiring the regression model to be refitted.</p>
+
+    <h3>Hard regions reveal the mass-distortion tradeoff</h3>
+    <p>For one hard region \(R\), let \(Q=P(\,\cdot\mid R)\) and \(m=P(R)\). Then</p>
+    <p>\[
+        \|Q-P\|_{\mathrm{TV}}=1-m,
+        \qquad
+        D_{\mathrm{KL}}(Q\|P)=-\log m.
+    \]</p>
+    <p>Thus retained mass is already an exact error diagnostic. Reverse Kullback-Leibler divergence is infinite unless \(P(R)=1\), because a hard truncation assigns zero mass outside \(R\). Soft kernels and the fallback component avoid this singularity while retaining a concise regional description.</p>
+
+    <h3>Why regions can beat lists of exact supports</h3>
+    <p>Suppose several highly correlated predictors can substitute for one another. The posterior may then place moderate mass on many supports separated by small Hamming or structured distances. An exact-support list spends one reporting unit on every interchangeable atom. A region can encode the common lower-resolution statement, such as “one variable from this wavelength interval” or “this graph neighborhood is involved,” with a single object. Compression is useful only if this reduction in reporting cost is accompanied by small TV and KL distortion and a modest fallback weight.</p>
+
+    <h3>Region dictionaries and validation</h3>
+    <p>The framework covers fixed hard regions, metric-ball regions, posterior-cluster regions, and pooled-pruned dictionaries. Candidate regions may be learned from posterior draws, so construction and evaluation must be separated. The paper uses split-sample stages for dictionary construction, retained-mass estimation, mixture-weight fitting, and optional final evaluation. The reported diagnostics assess fidelity to the chosen reference posterior; they do not conceal Monte Carlo error or certify that the reference Bayesian model itself is scientifically correct.</p>
+
+    <div class="research-paper">
+        <p><strong>Paper.</strong> Hanqing Li, Xuewen Lu, and Yuting Chen, <a href="https://arxiv.org/abs/2606.21080">“Bayesian model averaging under predictor redundancy via density-ratio posterior compression”</a>, arXiv:2606.21080, 2026.</p>
+        <p><strong>Code.</strong> <a href="https://github.com/lihanqing1997/bayesian-model-averaging-under-predictor-redundancy">Simulation, diagnostic, and reproducibility repository</a>.</p>
+        <p><strong>Background.</strong> <a href="{{ '/notes/bayesian-statistics/bayesian-model-averaging/' | relative_url }}">Bayesian model averaging</a>, <a href="{{ '/notes/bayesian-statistics/posterior-compression-density-ratio-diagnostics/' | relative_url }}">posterior compression and density-ratio diagnostics</a>, and <a href="{{ '/notes/bayesian-statistics/dilution-priors-dpp-projection-predictive/' | relative_url }}">redundancy-aware priors and predictive projection</a>.</p>
+    </div>
+
+    {% include research-project-nav.html lang="en" %}
+</div>
+
+<div class="research-page" data-lang="fr">
+    <h2>Compression a posteriori sous redondance des prédicteurs</h2>
+    {% include research-project-nav.html lang="fr" %}
+
+    <p class="research-lead">La moyenne bayésienne de modèles produit une loi a posteriori sur les supports. Sous redondance des prédicteurs, plusieurs supports peuvent représenter presque le même signal. La loi prédictive peut alors être stable tandis que les probabilités des supports exacts restent diffuses et sensibles. Ce projet considère la difficulté comme un problème de représentation après ajustement: remplacer un long résumé atomique par quelques régions de l'espace des supports, tout en mesurant exactement l'information perdue.</p>
+
+    <figure class="research-project-figure">
+        {% include research-compression-figure.html aria_label="De nombreux supports a posteriori sont regroupés en un petit nombre de régions souples" %}
+        <figcaption>De nombreux supports presque interchangeables sont représentés par quelques régions dures ou souples; les atomes résiduels restent présents grâce à la composante de repli égale à la loi a posteriori non restreinte.</figcaption>
+    </figure>
+
+    <h3>La loi a posteriori de référence n'est pas réajustée</h3>
+    <p>Soit \(\mathcal S\subseteq\{0,1\}^p\) l'espace des supports et soit \(P\) la loi a posteriori marginale ajustée sur \(\mathcal S\). Dans une régression indexée par le support,</p>
+    <p>\[
+        P(S\mid Y)
+        \propto
+        \pi(S)\int L_S(\vartheta_S;Y)\,
+        \pi_S(\mathrm d\vartheta_S).
+    \]</p>
+    <p>La compression ne modifie ni \(\pi(S)\), ni la loi a posteriori interne à chaque modèle, ni la cible scientifique. Elle construit une loi de représentation \(Q\), distincte, puis la compare à \(P\). On distingue ainsi la représentation a posteriori des priors de dilution, des priors déterminantaux, des nouveaux algorithmes d'échantillonnage et de la sélection de sous-modèles prédictifs.</p>
+
+    <h3>Noyaux de supports et composantes régionales</h3>
+    <p>Un noyau de supports est une fonction bornée \(\kappa_j:\mathcal S\to[0,1]\). Un indicateur \(\kappa_j=\mathbf 1_{R_j}\) décrit une région dure; un noyau non binaire décrit une boule métrique souple, un voisinage, un module, un intervalle ou un cluster a posteriori. Définissons</p>
+    <p>\[
+        m_j=E_P\{\kappa_j(S)\},
+        \qquad
+        P_j(\mathrm dS)=\frac{\kappa_j(S)}{m_j}\,P(\mathrm dS),
+        \qquad m_j&gt;0.
+    \]</p>
+    <p>On ajoute le noyau de repli \(\kappa_0\equiv1\), donc \(P_0=P\). Pour des poids \(q=(q_0,\ldots,q_J)\) sur le simplexe, la loi comprimée est</p>
+    <p>\[
+        Q_q=\sum_{j=0}^Jq_jP_j.
+    \]</p>
+    <p>Le poids de repli \(q_0\) est lui-même un diagnostic. S'il reste grand, les régions proposées n'expliquent qu'une petite partie de la loi de référence, même si la distorsion numérique de \(Q_q\) est faible.</p>
+
+    <h3>Le rapport de densités rend la distorsion calculable</h3>
+    <p>Chaque composante étant une repondération de \(P\), le rapport de densités est explicite:</p>
+    <p>\[
+        r_q(S)=\frac{\mathrm dQ_q}{\mathrm dP}(S)
+        =
+        q_0+\sum_{j=1}^Jq_j\frac{\kappa_j(S)}{m_j}.
+    \]</p>
+    <p>Les principaux écarts s'écrivent alors comme des espérances sous la loi de référence:</p>
+    <p>\[
+        \|Q_q-P\|_{\mathrm{TV}}
+        =\frac12E_P|r_q-1|,
+        \qquad
+        D_{\mathrm{KL}}(Q_q\|P)=E_P(r_q\log r_q),
+    \]</p>
+    <p>\[
+        D_{\mathrm{KL}}(P\|Q_q)=-E_P\log r_q
+    \]</p>
+    <p>lorsque cette dernière quantité est finie. Pour toute fonctionnelle bornée \(f\),</p>
+    <p>\[
+        |E_{Q_q}f-E_Pf|
+        \le 2\|f\|_\infty\|Q_q-P\|_{\mathrm{TV}}.
+    \]</p>
+    <p>Le passage par le noyau prédictif propre à chaque modèle ne peut augmenter la variation totale. Le même diagnostic contrôle donc les résumés prédictifs bornés sans réajuster la régression.</p>
+
+    <h3>Les régions dures exposent le compromis masse-distorsion</h3>
+    <p>Pour une région dure \(R\), posons \(Q=P(\,\cdot\mid R)\) et \(m=P(R)\). Alors</p>
+    <p>\[
+        \|Q-P\|_{\mathrm{TV}}=1-m,
+        \qquad
+        D_{\mathrm{KL}}(Q\|P)=-\log m.
+    \]</p>
+    <p>La masse retenue est donc déjà une mesure exacte de l'erreur. La divergence de Kullback-Leibler dans l'autre sens est infinie sauf si \(P(R)=1\), car la troncature attribue une masse nulle hors de \(R\). Les noyaux souples et la composante de repli évitent cette singularité tout en conservant une description concise.</p>
+
+    <h3>Pourquoi les régions peuvent remplacer les listes de supports</h3>
+    <p>Si plusieurs prédicteurs très corrélés se substituent les uns aux autres, la loi a posteriori peut répartir une masse modérée sur de nombreux supports voisins. Une liste exacte consomme une unité de description pour chaque atome interchangeable. Une région exprime en un seul objet l'énoncé de résolution plus faible, par exemple « une variable de cet intervalle spectral » ou « ce voisinage du graphe intervient ». La compression n'est utile que si cette économie s'accompagne de faibles distorsions TV et KL et d'un poids de repli modeste.</p>
+
+    <h3>Dictionnaires de régions et validation</h3>
+    <p>Le cadre couvre les régions dures fixes, les boules métriques, les clusters a posteriori et les dictionnaires mutualisés puis élagués. Les régions candidates pouvant être apprises à partir de tirages a posteriori, leur construction et leur évaluation doivent être séparées. L'article utilise des étapes distinctes pour construire le dictionnaire, estimer les masses, ajuster les poids et effectuer éventuellement une évaluation finale. Les diagnostics mesurent la fidélité à la loi de référence choisie; ils ne masquent pas l'erreur de Monte Carlo et ne certifient pas la justesse scientifique du modèle bayésien de référence.</p>
+
+    <div class="research-paper">
+        <p><strong>Article.</strong> Hanqing Li, Xuewen Lu et Yuting Chen, <a href="https://arxiv.org/abs/2606.21080">“Bayesian model averaging under predictor redundancy via density-ratio posterior compression”</a>, arXiv:2606.21080, 2026.</p>
+        <p><strong>Code.</strong> <a href="https://github.com/lihanqing1997/bayesian-model-averaging-under-predictor-redundancy">Dépôt de simulations, diagnostics et reproductibilité</a>.</p>
+        <p><strong>Fondements.</strong> <a href="{{ '/notes/bayesian-statistics/bayesian-model-averaging/' | relative_url }}">Moyenne bayésienne de modèles</a>, <a href="{{ '/notes/bayesian-statistics/posterior-compression-density-ratio-diagnostics/' | relative_url }}">compression a posteriori et diagnostics par rapport de densités</a>, et <a href="{{ '/notes/bayesian-statistics/dilution-priors-dpp-projection-predictive/' | relative_url }}">priors tenant compte de la redondance et projection prédictive</a>.</p>
+    </div>
+
+    {% include research-project-nav.html lang="fr" %}
+</div>
+
+<div class="research-page" data-lang="zh">
+    <h2>预测变量冗余下的后验压缩</h2>
+    {% include research-project-nav.html lang="zh" %}
+
+    <p class="research-lead">贝叶斯模型平均在模型支持空间上产生后验分布。当预测变量存在冗余时，许多支持集可能表达几乎相同的信号。此时，预测分布可以保持稳定，而精确支持集的后验概率却十分分散且敏感。本项目将这一困难视为拟合完成后的表述问题：用少量支持区域替代冗长的逐原子概括，并精确计算这种表述损失了多少信息。</p>
+
+    <figure class="research-project-figure">
+        {% include research-compression-figure.html aria_label="大量后验支持集原子被归纳为少数几个软支持区域" %}
+        <figcaption>大量近乎可互换的支持集原子由少量硬区域或软区域表示；未被区域解释的原子通过无限制后验的回退分量得到保留。</figcaption>
+    </figure>
+
+    <h3>参考后验不会被重新拟合</h3>
+    <p>令 \(\mathcal S\subseteq\{0,1\}^p\) 为支持空间，\(P\) 为已经拟合得到的 \(\mathcal S\) 上的边际后验。在逐支持集的回归模型中，</p>
+    <p>\[
+        P(S\mid Y)
+        \propto
+        \pi(S)\int L_S(\vartheta_S;Y)\,
+        \pi_S(\mathrm d\vartheta_S).
+    \]</p>
+    <p>压缩阶段既不修改 \(\pi(S)\)，也不重新拟合模型内后验，更不会重新定义科学目标。它只构造一个独立的表述分布 \(Q\)，并将 \(Q\) 与参考分布 \(P\) 比较。因此，后验表述与稀释先验、行列式先验、替代采样器以及预测子模型选择有清楚的区别。</p>
+
+    <h3>支持核与区域分量</h3>
+    <p>支持核是有界函数 \(\kappa_j:\mathcal S\to[0,1]\)。指示核 \(\kappa_j=\mathbf 1_{R_j}\) 表示硬区域；非二元核可表示软度量球、邻域、模块、区间或后验聚类。定义保留核质量及归一化区域分量</p>
+    <p>\[
+        m_j=E_P\{\kappa_j(S)\},
+        \qquad
+        P_j(\mathrm dS)=\frac{\kappa_j(S)}{m_j}\,P(\mathrm dS),
+        \qquad m_j&gt;0.
+    \]</p>
+    <p>再加入回退核 \(\kappa_0\equiv1\)，于是 \(P_0=P\)。对于单纯形上的混合权重 \(q=(q_0,\ldots,q_J)\)，压缩表述分布为</p>
+    <p>\[
+        Q_q=\sum_{j=0}^Jq_jP_j.
+    \]</p>
+    <p>回退权重 \(q_0\) 本身具有诊断意义。如果它仍然很大，那么即使 \(Q_q\) 的数值失真很小，所提出的区域也只解释了参考后验的一小部分。</p>
+
+    <h3>密度比使失真可以直接计算</h3>
+    <p>由于每个分量都是对 \(P\) 的重新加权，密度比具有显式形式：</p>
+    <p>\[
+        r_q(S)=\frac{\mathrm dQ_q}{\mathrm dP}(S)
+        =
+        q_0+\sum_{j=1}^Jq_j\frac{\kappa_j(S)}{m_j}.
+    \]</p>
+    <p>因此，主要的支持空间差异只需要计算参考后验下的期望：</p>
+    <p>\[
+        \|Q_q-P\|_{\mathrm{TV}}
+        =\frac12E_P|r_q-1|,
+        \qquad
+        D_{\mathrm{KL}}(Q_q\|P)=E_P(r_q\log r_q),
+    \]</p>
+    <p>\[
+        D_{\mathrm{KL}}(P\|Q_q)=-E_P\log r_q,
+    \]</p>
+    <p>其中最后一式要求散度有限。对任意有界后验泛函 \(f\)，</p>
+    <p>\[
+        |E_{Q_q}f-E_Pf|
+        \le 2\|f\|_\infty\|Q_q-P\|_{\mathrm{TV}}.
+    \]</p>
+    <p>将支持集分布通过逐模型后验预测核映射，不会增大总变差距离。因此，同一诊断也能控制有界预测概括，而不需要重新拟合回归模型。</p>
+
+    <h3>硬区域揭示质量与失真的权衡</h3>
+    <p>对单个硬区域 \(R\)，令 \(Q=P(\,\cdot\mid R)\)、\(m=P(R)\)。则</p>
+    <p>\[
+        \|Q-P\|_{\mathrm{TV}}=1-m,
+        \qquad
+        D_{\mathrm{KL}}(Q\|P)=-\log m.
+    \]</p>
+    <p>因此，保留质量本身就是精确的误差诊断。除非 \(P(R)=1\)，反方向的 Kullback-Leibler 散度为无穷，因为硬截断在 \(R\) 之外赋予零质量。软支持核与回退分量既可避免这一奇异性，也能保留简洁的区域表述。</p>
+
+    <h3>区域为何能够优于精确支持集列表</h3>
+    <p>若干高度相关的预测变量可以相互替代时，后验可能在许多 Hamming 距离或结构距离较小的支持集上分配中等质量。精确列表必须为每一个可互换原子付出一个表述单位，而一个区域可以用单一对象表达分辨率较低但更稳定的结论，例如“该波长区间中有一个变量起作用”或“该图邻域与响应有关”。只有当表述成本的下降伴随较小的总变差与 KL 失真，并且回退权重适中时，压缩才真正有效。</p>
+
+    <h3>区域字典与验证</h3>
+    <p>该框架覆盖固定硬区域、度量球区域、后验聚类区域以及合并后剪枝的区域字典。候选区域可能从后验抽样中学习，因此构造与评价必须分离。论文使用分样本步骤分别完成字典构造、保留质量估计、混合权重拟合以及可选的最终评价。这些诊断衡量的是相对于所选参考后验的忠实度；它们既不会隐藏蒙特卡洛误差，也不能证明参考贝叶斯模型本身在科学上正确。</p>
+
+    <div class="research-paper">
+        <p><strong>论文。</strong> Hanqing Li、Xuewen Lu 与 Yuting Chen，<a href="https://arxiv.org/abs/2606.21080">“Bayesian model averaging under predictor redundancy via density-ratio posterior compression”</a>，arXiv:2606.21080，2026。</p>
+        <p><strong>代码。</strong> <a href="https://github.com/lihanqing1997/bayesian-model-averaging-under-predictor-redundancy">模拟、诊断与可重复性材料</a>。</p>
+        <p><strong>数学背景。</strong> <a href="{{ '/notes/bayesian-statistics/bayesian-model-averaging/' | relative_url }}">贝叶斯模型平均</a>、<a href="{{ '/notes/bayesian-statistics/posterior-compression-density-ratio-diagnostics/' | relative_url }}">后验压缩与密度比诊断</a>以及<a href="{{ '/notes/bayesian-statistics/dilution-priors-dpp-projection-predictive/' | relative_url }}">冗余感知先验与预测投影</a>。</p>
+    </div>
+
+    {% include research-project-nav.html lang="zh" %}
+</div>
+
+<hr>

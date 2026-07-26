@@ -6,13 +6,26 @@
     <title>{{ site.name }}</title>
 
     {% if site.highlighter %}
-        <link rel='stylesheet' href='{{ site.url }}/assets/css/syntax.css' type='text/css'>
+        <link rel='stylesheet' href='{{ "/assets/css/syntax.css" | relative_url }}' type='text/css'>
     {% endif %}
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    {% if page.redirect_to %}
+        <meta name="robots" content="noindex, follow">
+        <link rel="canonical" href="{{ page.redirect_to | absolute_url }}">
+        <meta http-equiv="refresh" content="0; url={{ page.redirect_to | relative_url }}">
+        <script>window.location.replace({{ page.redirect_to | relative_url | jsonify }});</script>
+    {% else %}
+        {% if page.layout == "research-bridge" %}
+            <meta name="robots" content="noindex, follow">
+        {% elsif page.robots %}
+            <meta name="robots" content="{{ page.robots }}">
+        {% endif %}
+        <link rel="canonical" href="{{ page.url | absolute_url }}">
+    {% endif %}
     <script>
         window.MathJax = {
             tex: {
@@ -443,9 +456,12 @@
         }
 
         .research-section {
-            border-top: 1px solid var(--site-rule);
             margin-top: 1.75em;
-            padding-top: 0.25em;
+        }
+
+        .research-section + .research-section {
+            border-top: 1px solid var(--site-rule-soft);
+            padding-top: 0.35em;
         }
 
         .research-section > h2 {
@@ -463,6 +479,51 @@
         .research-entry p {
             line-height: 1.58;
             margin: 0.38em 0;
+        }
+
+        .research-theme-title a,
+        .research-theme-title a:visited {
+            color: var(--site-heading);
+            text-decoration-color: rgba(23, 63, 114, 0.36);
+        }
+
+        .research-theme-title a:hover {
+            color: var(--site-link);
+            text-decoration-color: currentColor;
+        }
+
+        .research-theme-thesis {
+            font-size: 1.01em;
+            line-height: 1.62;
+            max-width: 840px;
+        }
+
+        .research-projects {
+            margin-top: 1.15em;
+        }
+
+        .research-overlap {
+            color: var(--site-muted);
+            line-height: 1.55;
+            margin-top: 1em;
+            max-width: 830px;
+        }
+
+        .research-equation {
+            margin: 0.8em 0;
+        }
+
+        .research-foundations {
+            margin-top: 2em;
+            max-width: 850px;
+        }
+
+        .research-foundations h2 {
+            font-size: 1.28rem;
+        }
+
+        .research-redirect {
+            min-height: 12rem;
         }
 
         .research-meta {
@@ -729,11 +790,13 @@
     {% include header.html %}
 
     {% assign show_breadcrumbs = false %}
-    {% if page.url contains "/research/" and page.url != "/research/" %}
-        {% assign show_breadcrumbs = true %}
-    {% elsif page.url contains "/notes/" and page.url != "/notes/" %}
-        {% assign show_breadcrumbs = true %}
-    {% endif %}
+    {% unless page.hide_breadcrumbs %}
+        {% if page.url contains "/research/" and page.url != "/research/" %}
+            {% assign show_breadcrumbs = true %}
+        {% elsif page.url contains "/notes/" and page.url != "/notes/" %}
+            {% assign show_breadcrumbs = true %}
+        {% endif %}
+    {% endunless %}
 
     <main class="site-main{% if show_breadcrumbs %} has-breadcrumb{% endif %}">
         {% include breadcrumbs.html %}

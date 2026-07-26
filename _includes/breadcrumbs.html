@@ -18,79 +18,28 @@
     {% assign section_label_fr = "Recherche" %}
     {% assign section_label_zh = "研究" %}
 
-    {% if current_url contains "/research/bayesian-inference/" %}
-        {% assign parent_url = "/research/bayesian-inference/" %}
-        {% assign parent_label_en = "Bayesian inference" %}
-        {% assign parent_label_fr = "Inférence bayésienne" %}
-        {% assign parent_label_zh = "贝叶斯推断" %}
-        {% if current_url contains "/contractions/" %}
-            {% assign child_url = "/research/bayesian-inference/contractions/" %}
-            {% assign child_label_en = "Contractions" %}
-            {% assign child_label_fr = "Contractions" %}
-            {% assign child_label_zh = "后验收缩" %}
-        {% elsif current_url contains "/bernstein-von-mises-theorem/" %}
-            {% assign child_url = "/research/bayesian-inference/bernstein-von-mises-theorem/" %}
-            {% assign child_label_en = "Bernstein-von Mises theorem" %}
-            {% assign child_label_fr = "Théorème de Bernstein-von Mises" %}
-            {% assign child_label_zh = "Bernstein-von Mises 定理" %}
-        {% endif %}
-    {% elsif current_url contains "/research/high-dimensional-probability/" %}
-        {% assign parent_url = "/research/high-dimensional-probability/" %}
-        {% assign parent_label_en = "High-dimensional probability" %}
-        {% assign parent_label_fr = "Probabilités en grande dimension" %}
-        {% assign parent_label_zh = "高维概率" %}
-        {% if current_url contains "/curse-of-dimensionality/" %}
-            {% assign child_url = "/research/high-dimensional-probability/curse-of-dimensionality/" %}
-            {% assign child_label_en = "Curse of dimensionality" %}
-            {% assign child_label_fr = "Malédiction de la dimension" %}
-            {% assign child_label_zh = "维数灾难" %}
-        {% elsif current_url contains "/blessing-of-dimensionality/" %}
-            {% assign child_url = "/research/high-dimensional-probability/blessing-of-dimensionality/" %}
-            {% assign child_label_en = "Blessing of dimensionality" %}
-            {% assign child_label_fr = "Bénédiction de la dimension" %}
-            {% assign child_label_zh = "维数祝福" %}
-        {% elsif current_url contains "/lasso-theory/" %}
-            {% assign child_url = "/research/high-dimensional-probability/lasso-theory/" %}
-            {% assign child_label_en = "Lasso theory" %}
-            {% assign child_label_fr = "Théorie du lasso" %}
-            {% assign child_label_zh = "Lasso 理论" %}
-        {% endif %}
-    {% elsif current_url contains "/research/nonparametric-statistics/" %}
-        {% assign parent_url = "/research/nonparametric-statistics/" %}
-        {% assign parent_label_en = "Nonparametric statistics" %}
-        {% assign parent_label_fr = "Statistique non paramétrique" %}
-        {% assign parent_label_zh = "非参数统计" %}
-        {% if current_url contains "/minimax-rates/" %}
-            {% assign child_url = "/research/nonparametric-statistics/minimax-rates/" %}
-            {% assign child_label_en = "Minimax rates" %}
-            {% assign child_label_fr = "Taux minimax" %}
-            {% assign child_label_zh = "Minimax 速度" %}
-        {% elsif current_url contains "/empirical-likelihood/" %}
-            {% assign child_url = "/research/nonparametric-statistics/empirical-likelihood/" %}
-            {% assign child_label_en = "Empirical likelihood" %}
-            {% assign child_label_fr = "Vraisemblance empirique" %}
-            {% assign child_label_zh = "经验似然" %}
-        {% elsif current_url contains "/bootstrapping/" %}
-            {% assign child_url = "/research/nonparametric-statistics/bootstrapping/" %}
-            {% assign child_label_en = "Bootstrapping" %}
-            {% assign child_label_fr = "Bootstrap" %}
-            {% assign child_label_zh = "Bootstrap" %}
-        {% elsif current_url contains "/jackknife/" %}
-            {% assign child_url = "/research/nonparametric-statistics/jackknife/" %}
-            {% assign child_label_en = "Jackknife" %}
-            {% assign child_label_fr = "Jackknife" %}
-            {% assign child_label_zh = "Jackknife" %}
-        {% endif %}
-    {% elsif current_url contains "/research/machine-learning/" %}
-        {% assign parent_url = "/research/machine-learning/" %}
-        {% assign parent_label_en = "Machine learning" %}
-        {% assign parent_label_fr = "Apprentissage automatique" %}
-        {% assign parent_label_zh = "机器学习" %}
-        {% if current_url contains "/density-ratio-learning/" %}
-            {% assign child_url = "/research/machine-learning/density-ratio-learning/" %}
-            {% assign child_label_en = "Density-ratio learning" %}
-            {% assign child_label_fr = "Apprentissage par ratio de densités" %}
-            {% assign child_label_zh = "密度比学习" %}
+    {% if page.research_project %}
+        {% assign research_project = site.data.research_projects[page.research_project] %}
+        {% assign research_topic = site.data.research_topics[research_project.topic] %}
+        {% assign parent_url = research_topic.url %}
+        {% assign parent_label_en = research_topic.title.en %}
+        {% assign parent_label_fr = research_topic.title.fr %}
+        {% assign parent_label_zh = research_topic.title.zh %}
+        {% assign child_url = research_project.url %}
+        {% assign child_label_en = research_project.title.en %}
+        {% assign child_label_fr = research_project.title.fr %}
+        {% assign child_label_zh = research_project.title.zh %}
+    {% elsif page.research_topic %}
+        {% assign research_topic = site.data.research_topics[page.research_topic] %}
+        {% assign parent_url = research_topic.url %}
+        {% assign parent_label_en = research_topic.title.en %}
+        {% assign parent_label_fr = research_topic.title.fr %}
+        {% assign parent_label_zh = research_topic.title.zh %}
+        {% if page.bridge_title_en %}
+            {% assign child_url = current_url %}
+            {% assign child_label_en = page.bridge_title_en %}
+            {% assign child_label_fr = page.bridge_title_fr %}
+            {% assign child_label_zh = page.bridge_title_zh %}
         {% endif %}
     {% endif %}
 

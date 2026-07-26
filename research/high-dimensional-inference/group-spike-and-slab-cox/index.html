@@ -1,0 +1,231 @@
+---
+layout: default
+research_project: group_cox
+---
+
+<div class="research-page" data-lang="en">
+    <h2>Group spike-and-slab lasso for Cox regression</h2>
+    {% include research-project-nav.html lang="en" %}
+
+    <p class="research-lead">Genomic, clinical, and other modern survival studies may contain more covariates than observed failures, with variables naturally organized into pathways, factors, or basis blocks. This project adapts the spike-and-slab lasso to group selection in the Cox proportional hazards model, so the inferential unit is a scientifically meaningful group rather than an isolated coefficient.</p>
+
+    <h3>Cox partial likelihood in grouped coordinates</h3>
+    <p>For subject \(i\), let \(N_i(t)\) be the failure counting process, \(Y_i(t)\) the at-risk indicator, and \(x_i\in\mathbb R^p\) the covariate vector. The proportional hazards model has intensity</p>
+    <p>\[
+        \lambda_i(t\mid\mathcal F_{t^-})
+        =
+        Y_i(t)\lambda_0(t)\exp(x_i^\top\beta).
+    \]</p>
+    <p>Profiling out the baseline hazard \(\lambda_0\) gives the Cox partial log-likelihood</p>
+    <p>\[
+        \ell_{\mathrm{Cox}}(\beta)
+        =
+        \sum_{i:\delta_i=1}
+        \left[
+            x_i^\top\beta
+            -
+            \log\!\left\{
+                \sum_{j\in\mathcal R(T_i)}
+                \exp(x_j^\top\beta)
+            \right\}
+        \right].
+    \]</p>
+    <p>Partition \(\beta=(\beta_{G_1},\ldots,\beta_{G_m})\) according to prespecified groups. Selection should then decide whether an entire block contributes to risk, while shrinkage within an included block stabilizes estimation.</p>
+
+    <h3>A latent group indicator creates adaptive shrinkage</h3>
+    <p>For each group \(g\), introduce \(\gamma_g\in\{0,1\}\). Schematically, a group spike-and-slab lasso prior has density</p>
+    <p>\[
+        \pi(\beta_{G_g}\mid\gamma_g)
+        \propto
+        \exp\{-\lambda_{\gamma_g}\|\beta_{G_g}\|_2\},
+        \qquad
+        \lambda_0\gg\lambda_1,
+    \]</p>
+    <p>so an excluded group receives the steep spike penalty \(\lambda_0\), while an included group receives the flatter slab penalty \(\lambda_1\). The posterior inclusion probability \(p_g=P(\gamma_g=1\mid\beta_{G_g},Y)\) interpolates between those regimes instead of imposing one common tuning parameter on every group.</p>
+
+    <h3>Expectation-maximization and coordinate-wise updates</h3>
+    <p>In the expectation step, the latent indicators are replaced by their current posterior inclusion probabilities. This produces an adaptive group penalty of the schematic form</p>
+    <p>\[
+        \lambda_g^{(k)}
+        =
+        \{1-p_g^{(k)}\}\lambda_0
+        +
+        p_g^{(k)}\lambda_1.
+    \]</p>
+    <p>The maximization step solves a penalized partial-likelihood problem,</p>
+    <p>\[
+        \max_\beta
+        \left\{
+            \ell_{\mathrm{Cox}}(\beta)
+            -
+            \sum_{g=1}^m
+            \lambda_g^{(k)}\|\beta_{G_g}\|_2
+        \right\},
+    \]</p>
+    <p>using coordinate-wise or block-coordinate updates. Small groups with little likelihood support are driven toward the spike, while strongly supported groups experience the slab penalty. The inclusion probabilities provide a group-level uncertainty summary in addition to a selected coefficient vector.</p>
+
+    <h3>Selection, prediction, and oracle behavior</h3>
+    <p>The theoretical target is stronger than prediction alone. A useful high-dimensional result must control the partial-likelihood score, establish enough curvature on sparse group cones, prevent large false models through prior or penalty complexity, and separate active groups from the spike. The presentation reports Bayesian oracle properties for group selection and prediction. These properties should be read together: good risk prediction does not by itself imply recovery of the scientifically relevant groups.</p>
+
+    <h3>Statistical role of the method</h3>
+    <p>The method is designed for settings in which grouping is supplied by scientific structure, such as gene pathways, clinical factor blocks, or groups of basis coefficients. It is not a procedure for discovering the groups themselves. Its contribution is to combine Cox risk-set geometry, group-level posterior inclusion, and a computationally tractable spike-and-slab optimization scheme.</p>
+
+    <div class="research-paper">
+        <p><strong>Presentation.</strong> Hanqing Li and Xuewen Lu, <a href="https://ssc.ca/en/meeting/annual/presentation/group-spike-and-slab-lasso-high-dimensional-cox-proportional-hazards">“Group spike-and-slab lasso for high-dimensional Cox proportional hazards models”</a>, Statistical Society of Canada Annual Meeting, 2025.</p>
+        <p><strong>Background.</strong> <a href="{{ '/notes/survival-analysis/cox-proportional-hazards-model/' | relative_url }}">Cox proportional hazards model</a>, <a href="{{ '/notes/survival-analysis/high-dimensional-cox-regression/' | relative_url }}">high-dimensional Cox regression</a>, and <a href="{{ '/notes/statistical-learning/high-dimensional-sparsity/' | relative_url }}">high-dimensional sparsity and structured selection</a>.</p>
+    </div>
+
+    {% include research-project-nav.html lang="en" %}
+</div>
+
+<div class="research-page" data-lang="fr">
+    <h2>Lasso spike-and-slab groupé pour la régression de Cox</h2>
+    {% include research-project-nav.html lang="fr" %}
+
+    <p class="research-lead">Les études modernes de survie en génomique, en clinique et dans d'autres domaines peuvent comporter plus de covariables que d'événements observés, avec une organisation naturelle en voies biologiques, facteurs ou blocs de bases. Ce projet adapte le lasso spike-and-slab à la sélection par groupes dans le modèle à risques proportionnels de Cox, de sorte que l'unité d'inférence soit un groupe scientifiquement interprétable plutôt qu'un coefficient isolé.</p>
+
+    <h3>Vraisemblance partielle de Cox en coordonnées groupées</h3>
+    <p>Pour le sujet \(i\), soient \(N_i(t)\) le processus de comptage des événements, \(Y_i(t)\) l'indicateur de risque et \(x_i\in\mathbb R^p\) le vecteur de covariables. Le modèle a pour intensité</p>
+    <p>\[
+        \lambda_i(t\mid\mathcal F_{t^-})
+        =
+        Y_i(t)\lambda_0(t)\exp(x_i^\top\beta).
+    \]</p>
+    <p>Après profilage du risque de base \(\lambda_0\), la log-vraisemblance partielle est</p>
+    <p>\[
+        \ell_{\mathrm{Cox}}(\beta)
+        =
+        \sum_{i:\delta_i=1}
+        \left[
+            x_i^\top\beta
+            -
+            \log\!\left\{
+                \sum_{j\in\mathcal R(T_i)}
+                \exp(x_j^\top\beta)
+            \right\}
+        \right].
+    \]</p>
+    <p>On partitionne \(\beta=(\beta_{G_1},\ldots,\beta_{G_m})\) selon des groupes fixés. La sélection décide si un bloc entier contribue au risque, tandis que le rétrécissement interne stabilise l'estimation des groupes retenus.</p>
+
+    <h3>Un indicateur latent de groupe produit un rétrécissement adaptatif</h3>
+    <p>Pour chaque groupe \(g\), introduisons \(\gamma_g\in\{0,1\}\). Schématiquement, le prior spike-and-slab groupé satisfait</p>
+    <p>\[
+        \pi(\beta_{G_g}\mid\gamma_g)
+        \propto
+        \exp\{-\lambda_{\gamma_g}\|\beta_{G_g}\|_2\},
+        \qquad
+        \lambda_0\gg\lambda_1.
+    \]</p>
+    <p>Un groupe exclu subit la forte pénalité spike \(\lambda_0\), tandis qu'un groupe inclus reçoit la pénalité slab plus faible \(\lambda_1\). La probabilité d'inclusion a posteriori \(p_g=P(\gamma_g=1\mid\beta_{G_g},Y)\) permet de passer continûment entre ces régimes.</p>
+
+    <h3>Espérance-maximisation et mises à jour par coordonnées</h3>
+    <p>À l'étape d'espérance, les indicateurs latents sont remplacés par leurs probabilités d'inclusion courantes, ce qui donne la pénalité adaptative</p>
+    <p>\[
+        \lambda_g^{(k)}
+        =
+        \{1-p_g^{(k)}\}\lambda_0
+        +
+        p_g^{(k)}\lambda_1.
+    \]</p>
+    <p>L'étape de maximisation résout</p>
+    <p>\[
+        \max_\beta
+        \left\{
+            \ell_{\mathrm{Cox}}(\beta)
+            -
+            \sum_{g=1}^m
+            \lambda_g^{(k)}\|\beta_{G_g}\|_2
+        \right\},
+    \]</p>
+    <p>par mises à jour coordonnées ou par blocs. Les groupes peu soutenus par la vraisemblance sont attirés vers le spike, tandis que les groupes nettement soutenus subissent la pénalité slab. Les probabilités d'inclusion donnent aussi un résumé de l'incertitude au niveau des groupes.</p>
+
+    <h3>Sélection, prédiction et comportement oracle</h3>
+    <p>La cible théorique dépasse la seule prédiction. Un résultat en grande dimension doit contrôler le score de la vraisemblance partielle, obtenir une courbure suffisante sur des cônes parcimonieux groupés, pénaliser les grands faux modèles et séparer les groupes actifs du spike. La communication présente des propriétés bayésiennes de type oracle pour la sélection et la prédiction. Une bonne prédiction du risque ne suffit pas, à elle seule, à garantir la récupération des groupes scientifiquement pertinents.</p>
+
+    <h3>Rôle statistique de la méthode</h3>
+    <p>La méthode vise les situations où les groupes sont fournis par la structure scientifique: voies génétiques, blocs de facteurs cliniques ou groupes de coefficients de base. Elle ne cherche pas à découvrir ces groupes. Sa contribution est d'associer la géométrie des ensembles à risque de Cox, l'inclusion a posteriori par groupes et une optimisation spike-and-slab calculable.</p>
+
+    <div class="research-paper">
+        <p><strong>Communication.</strong> Hanqing Li et Xuewen Lu, <a href="https://ssc.ca/en/meeting/annual/presentation/group-spike-and-slab-lasso-high-dimensional-cox-proportional-hazards">“Group spike-and-slab lasso for high-dimensional Cox proportional hazards models”</a>, congrès annuel de la Société statistique du Canada, 2025.</p>
+        <p><strong>Fondements.</strong> <a href="{{ '/notes/survival-analysis/cox-proportional-hazards-model/' | relative_url }}">Modèle à risques proportionnels de Cox</a>, <a href="{{ '/notes/survival-analysis/high-dimensional-cox-regression/' | relative_url }}">régression de Cox en grande dimension</a>, et <a href="{{ '/notes/statistical-learning/high-dimensional-sparsity/' | relative_url }}">parcimonie en grande dimension et sélection structurée</a>.</p>
+    </div>
+
+    {% include research-project-nav.html lang="fr" %}
+</div>
+
+<div class="research-page" data-lang="zh">
+    <h2>Cox 回归的分组尖峰-厚尾 Lasso</h2>
+    {% include research-project-nav.html lang="zh" %}
+
+    <p class="research-lead">现代基因组学、临床及其他生存研究中，协变量数量可能多于实际观察到的失效事件，而且变量往往自然地组织为生物通路、因子或基函数块。本项目将尖峰-厚尾 Lasso 扩展到 Cox 比例风险模型的分组选择，使推断单位成为具有科学含义的变量组，而不是孤立的系数。</p>
+
+    <h3>分组坐标下的 Cox 偏似然</h3>
+    <p>对个体 \(i\)，令 \(N_i(t)\) 为失效计数过程，\(Y_i(t)\) 为风险集指示过程，\(x_i\in\mathbb R^p\) 为协变量。比例风险模型的强度为</p>
+    <p>\[
+        \lambda_i(t\mid\mathcal F_{t^-})
+        =
+        Y_i(t)\lambda_0(t)\exp(x_i^\top\beta).
+    \]</p>
+    <p>剖面化基准风险 \(\lambda_0\) 后，Cox 偏对数似然为</p>
+    <p>\[
+        \ell_{\mathrm{Cox}}(\beta)
+        =
+        \sum_{i:\delta_i=1}
+        \left[
+            x_i^\top\beta
+            -
+            \log\!\left\{
+                \sum_{j\in\mathcal R(T_i)}
+                \exp(x_j^\top\beta)
+            \right\}
+        \right].
+    \]</p>
+    <p>按照预先给定的变量组将 \(\beta\) 分割为 \((\beta_{G_1},\ldots,\beta_{G_m})\)。选择步骤判断整个变量块是否影响风险，而组内收缩则稳定已纳入组的估计。</p>
+
+    <h3>潜在分组指示变量产生自适应收缩</h3>
+    <p>对每一组 \(g\)，引入 \(\gamma_g\in\{0,1\}\)。分组尖峰-厚尾 Lasso 先验可示意性地写为</p>
+    <p>\[
+        \pi(\beta_{G_g}\mid\gamma_g)
+        \propto
+        \exp\{-\lambda_{\gamma_g}\|\beta_{G_g}\|_2\},
+        \qquad
+        \lambda_0\gg\lambda_1.
+    \]</p>
+    <p>未纳入的变量组受到陡峭的尖峰惩罚 \(\lambda_0\)，已纳入组则受到较平缓的厚尾惩罚 \(\lambda_1\)。后验纳入概率 \(p_g=P(\gamma_g=1\mid\beta_{G_g},Y)\) 使每一组在两个收缩状态之间自适应变化，而不是对所有组使用同一个调节参数。</p>
+
+    <h3>EM 算法与逐坐标更新</h3>
+    <p>在期望步骤中，以当前的后验纳入概率替代潜在指示变量，由此得到示意性的自适应分组惩罚</p>
+    <p>\[
+        \lambda_g^{(k)}
+        =
+        \{1-p_g^{(k)}\}\lambda_0
+        +
+        p_g^{(k)}\lambda_1.
+    \]</p>
+    <p>最大化步骤求解</p>
+    <p>\[
+        \max_\beta
+        \left\{
+            \ell_{\mathrm{Cox}}(\beta)
+            -
+            \sum_{g=1}^m
+            \lambda_g^{(k)}\|\beta_{G_g}\|_2
+        \right\},
+    \]</p>
+    <p>并采用逐坐标或分块坐标更新。似然支持较弱的组被推向尖峰，证据较强的组则承受厚尾惩罚。除选出的系数向量外，纳入概率还直接给出组层面的不确定性概括。</p>
+
+    <h3>选择、预测与 oracle 性质</h3>
+    <p>理论目标不止是预测。高维结果需要控制偏似然分数，在稀疏分组锥上建立足够曲率，通过先验或惩罚复杂度排除过大的错误模型，并将活跃组与尖峰分离。该报告给出了关于分组选择和预测的贝叶斯 oracle 性质。这两方面必须同时理解：良好的风险预测本身并不意味着能够恢复科学上相关的变量组。</p>
+
+    <h3>该方法的统计定位</h3>
+    <p>该方法适用于分组由科学结构预先提供的情形，例如基因通路、临床因子块或成组的基函数系数；它本身并不负责发现变量组。其贡献在于将 Cox 风险集几何、分组后验纳入概率以及可计算的尖峰-厚尾优化方案结合起来。</p>
+
+    <div class="research-paper">
+        <p><strong>报告。</strong> Hanqing Li 与 Xuewen Lu，<a href="https://ssc.ca/en/meeting/annual/presentation/group-spike-and-slab-lasso-high-dimensional-cox-proportional-hazards">“Group spike-and-slab lasso for high-dimensional Cox proportional hazards models”</a>，加拿大统计学会年会，2025。</p>
+        <p><strong>数学背景。</strong> <a href="{{ '/notes/survival-analysis/cox-proportional-hazards-model/' | relative_url }}">Cox 比例风险模型</a>、<a href="{{ '/notes/survival-analysis/high-dimensional-cox-regression/' | relative_url }}">高维 Cox 回归</a>以及<a href="{{ '/notes/statistical-learning/high-dimensional-sparsity/' | relative_url }}">高维稀疏性与结构化选择</a>。</p>
+    </div>
+
+    {% include research-project-nav.html lang="zh" %}
+</div>
+
+<hr>
