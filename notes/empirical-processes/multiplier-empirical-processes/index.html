@@ -2,33 +2,152 @@
 layout: note-detail
 breadcrumb_child_label_en: "18. Multiplier empirical processes"
 breadcrumb_child_label_fr: "18. Processus empiriques à multiplicateurs"
-breadcrumb_child_label_zh: "18. Multiplier 经验过程"
+breadcrumb_child_label_zh: "18. 乘子经验过程"
 note_back_url: "/notes/empirical-processes/"
 note_prev_url: "/notes/empirical-processes/changing-classes/"
 note_next_url: "/notes/empirical-processes/bootstrap-empirical-processes/"
 ---
 
-<p>Multiplier processes attach external random weights to the sample. They support weighted bootstrap, wild bootstrap, and conditional Gaussian approximation.</p>
+<p>Multiplier processes keep the observations fixed and randomize their influence through external weights. They provide a computational approximation to a Gaussian empirical-process limit and, unlike resampling observations, can be adapted to heteroskedastic scores and estimated influence functions.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> With i.i.d. weights \(\xi_i\) satisfying \(E\xi_i=0\) and \(E\xi_i^2=1\), a multiplier process is \(\mathbb G_n^\xi f=n^{-1/2}\sum_{i=1}^n\xi_i f(X_i)\), often centered conditionally on the data.</p>
-    </div>
+<h3>Centered multiplier processes</h3>
 
-    <h3>Conditional Gaussian approximation</h3>
-    <ul>
-        <li>Conditional weak convergence asks whether the weighted process mimics the same Gaussian limit as \(\mathbb G_n\).</li>
-        <li>Multiplier inequalities mirror empirical maximal inequalities with extra moment conditions on \(\xi_i\).</li>
-        <li>The process is useful when resampling observations directly is inconvenient or when heteroskedasticity matters.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\xi_1,\ldots,\xi_n\) be i.i.d., independent of the data, with
+  \[
+  E\xi_i=0,\qquad E\xi_i^2=1.
+  \]
+  The conditionally centered multiplier process is
+  \[
+  \mathbb G_n^\xi f
+  =
+  \frac1{\sqrt n}\sum_{i=1}^n
+  \xi_i\{f(X_i)-P_nf\},
+  \qquad f\in\mathcal F.
+  \]</p>
+</div>
 
-    <h3>Weight choices</h3>
-    <p>Use multiplier processes for bootstrap confidence bands, high-dimensional suprema, and statistics whose asymptotic law is a Gaussian-process functional.</p>
+<p>Centering by \(P_nf\) ensures invariance under addition of constants and gives conditional covariance
+\[
+E_\xi(\mathbb G_n^\xi f\,\mathbb G_n^\xi g)
+=P_n\{(f-P_nf)(g-P_ng)\}.
+\]
+This converges to the covariance of the \(P\)-Brownian bridge whenever the relevant products obey a uniform law of large numbers.</p>
 
-    <!-- expanded-learning -->
-    <h3>Multiplier CLT condition</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A multiplier CLT usually requires the original class to be Donsker and the weights to have enough moments. Conditional on the data, \(\mathbb G_n^\xi\) should be asymptotically tight and have the same covariance as the limiting Gaussian process.</p>
-    </div>
+<h3>The multiplier central limit theorem</h3>
 
-    <h3>Rademacher and Gaussian multipliers</h3>
-    <p>Gaussian multipliers are analytically convenient; Rademacher multipliers connect to symmetrization; centered exponential or multinomial weights connect to bootstrap schemes. The choice of weights changes computation more than the limiting target.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The Lorentz \(L_{2,1}\) norm of a random variable is
+  \[
+  \|\xi\|_{2,1}
+  =
+  \int_0^\infty\sqrt{P(|\xi|>t)}\,\mathrm{d}t.
+  \]
+  A finite \(2+\delta\) moment implies \(\|\xi\|_{2,1}<\infty\), while a finite second moment alone need not.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (multiplier Donsker theorem).</span> Let \(\mathcal F\) be a measurable \(P\)-Donsker class and let the multipliers satisfy
+  \[
+  E\xi=0,\qquad E\xi^2=1,\qquad\|\xi\|_{2,1}<\infty.
+  \]
+  Then, conditionally on \(X_1,X_2,\ldots\),
+  \[
+  \mathbb G_n^\xi\rightsquigarrow\mathbb G_P
+  \qquad\text{in }\ell^\infty(\mathcal F),
+  \]
+  in probability, in the bounded-Lipschitz metric.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For fixed \(f_1,\ldots,f_k\), conditional Lindeberg–Feller applies to
+  \[
+  n^{-1/2}\xi_i
+  \bigl(f_1(X_i)-P_nf_1,\ldots,f_k(X_i)-P_nf_k\bigr)^\top.
+  \]
+  The conditional covariance converges by the law of large numbers. Truncate the multipliers at successively increasing levels. The bounded part is controlled by symmetrization and the asymptotic equicontinuity of the original Donsker class; the \(L_{2,1}\) condition makes the sum of truncation errors finite across dyadic levels. This proves conditional asymptotic equicontinuity. Finite-dimensional convergence plus tightness identifies \(\mathbb G_P\). \(\square\)</p>
+</div>
+
+<h3>Conditional convergence</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(BL_1\) be the functions
+  \(h:\ell^\infty(\mathcal F)\to[-1,1]\) with Lipschitz constant at most \(1\). Conditional weak convergence in probability means
+  \[
+  \sup_{h\in BL_1}
+  \left|
+    E_\xi h(\mathbb G_n^\xi)-Eh(\mathbb G_P)
+  \right|
+  \xrightarrow{p}0,
+  \]
+  together with the corresponding asymptotic measurability condition when outer expectations are needed.</p>
+</div>
+
+<p>This formulation says that the random conditional law generated by the multipliers consistently estimates the fixed law of the Gaussian bridge. It is stronger than showing that the unconditional joint distribution has the right marginal limit.</p>
+
+<h3>Multiplier inequalities</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(|\xi|_{(1)}\geq\cdots\geq|\xi|_{(n)}\) denote ordered multiplier magnitudes. For a class containing \(0\), a multiplier inequality bounds
+  \[
+  E\left\|
+    \frac1{\sqrt n}\sum_{i=1}^n\xi_i\{f(X_i)-Pf\}
+  \right\|_{\mathcal F}
+  \]
+  by weighted partial-sample Rademacher suprema. In particular, if
+  \[
+  E\left\|
+    \frac1{\sqrt k}\sum_{i=1}^k\varepsilon_i
+    \{f(X_i)-Pf\}
+  \right\|_{\mathcal F}
+  \leq C
+  \quad\text{uniformly in }k,
+  \]
+  then the multiplier supremum is bounded by a constant multiple of
+  \(C\|\xi\|_{2,1}\).</p>
+</div>
+
+<p>The Lorentz norm appears because the proof decomposes multipliers by order statistics and sums contributions over tail levels. This is the multiplier analogue of chaining over geometric resolutions.</p>
+
+<h3>Gaussian and Rademacher weights</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Gaussian multiplier).</span> If \(\xi_i\sim N(0,1)\), then conditionally on the data \(\mathbb G_n^\xi\) is exactly Gaussian with empirical covariance kernel. Simulation requires only drawing a Gaussian vector and evaluating weighted sums. This is often the cleanest approximation for simultaneous confidence bands.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Rademacher multiplier).</span> If \(\xi_i\in\{-1,1\}\) with equal probabilities, the process is the same sign process used in symmetrization, after empirical centering. It is computationally stable and automatically bounded.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (wild weights).</span> In heteroskedastic regression, an asymptotically linear statistic may have score contributions
+  \(\hat\psi_i\) with observation-specific conditional variances. The wild multiplier statistic
+  \[
+  T_n^\xi=\frac1{\sqrt n}\sum_{i=1}^n\xi_i\hat\psi_i
+  \]
+  preserves those magnitudes while randomizing signs. Mammen, Rademacher, or Gaussian weights are common choices; their first two moments determine the first-order limit, while higher moments affect finite-sample accuracy.</p>
+</div>
+
+<h3>Estimated influence functions</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose an estimator indexed by \(t\in T\) satisfies uniformly
+  \[
+  \sqrt n\{\hat\theta_n(t)-\theta_0(t)\}
+  =\mathbb G_n\psi_t+o_p(1)
+  \quad\text{in }\ell^\infty(T),
+  \]
+  where \(\Psi=\{\psi_t:t\in T\}\) is \(P\)-Donsker. If estimated influence functions satisfy
+  \[
+  \sup_{t\in T}\|\hat\psi_t-\psi_t\|_{P_n,2}=o_p(1)
+  \]
+  and belong with high probability to a class on which the multiplier process is asymptotically equicontinuous, then
+  \[
+  t\mapsto\frac1{\sqrt n}\sum_{i=1}^n
+  \xi_i\{\hat\psi_t(X_i)-P_n\hat\psi_t\}
+  \]
+  conditionally converges to the same Gaussian limit.</p>
+</div>
+
+<p>Quantiles of \(\sup_{t\in T}|\mathbb G_n^\xi\hat\psi_t|\) can then calibrate simultaneous confidence bands. The theorem also explains the two required checks: the original linear representation must be uniform, and replacing \(\psi_t\) by \(\hat\psi_t\) must be valid for the multiplier process, not only in pointwise \(L_2\).</p>

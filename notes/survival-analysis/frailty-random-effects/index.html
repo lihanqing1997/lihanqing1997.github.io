@@ -1,39 +1,208 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "9. Frailty and random effects"
-breadcrumb_child_label_fr: "9. Fragilité et effets aléatoires"
-breadcrumb_child_label_zh: "9. 脆弱性与随机效应"
+breadcrumb_child_label_en: "14. Frailty and random effects"
+breadcrumb_child_label_fr: "14. Fragilité et effets aléatoires"
+breadcrumb_child_label_zh: "14. 脆弱性与随机效应"
 note_back_url: "/notes/survival-analysis/"
-note_prev_url: "/notes/survival-analysis/time-dependent-covariates-risk-sets/"
+note_prev_url: "/notes/survival-analysis/recurrent-event-models/"
 note_next_url: "/notes/survival-analysis/semiparametric-efficiency-cox/"
 ---
 
-<h3>Shared frailty</h3>
+<p>Frailty models introduce latent positive heterogeneity into an event intensity. They can represent shared cluster dependence or unmeasured subject susceptibility, but marginalizing the latent variable changes the hazard structure. Conditional and population-level interpretations must therefore be separated.</p>
 
-    <p>Frailty models introduce latent heterogeneity. They are survival analogues of random-effects models, but the random effect enters multiplicatively in the hazard.</p>
+<h3>Multiplicative frailty</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A shared frailty model for cluster \(g\) has
+<p><span class="statement-title">Definition.</span> A multiplicative frailty model is
 \[
-\lambda_{ig}(t\mid Z_{ig},W_g)=W_g\lambda_0(t)\exp(Z_{ig}^\top\beta),
+\lambda(t\mid Z,U)
+=U\lambda_0(t)e^{\beta^\top Z},
+\qquad U>0,
 \]
-where \(W_g>0\) is a cluster-level random variable, often normalized by \(E W_g=1\).</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(W\sim\operatorname{Gamma}(a,a)\), then \(E W=1\) and \(\operatorname{var}(W)=1/a\). Marginal survival conditional on \(Z=z\) is
+where \(U\) is independent of \(Z\), commonly normalized by \(EU=1\). Write
 \[
-E\exp\{-W\Lambda_0(t)e^{z^\top\beta}\}=\left(1+{\Lambda_0(t)e^{z^\top\beta}\over a}\right)^{-a}.
+\mathcal L_U(s)=E(e^{-sU})
+\]
+for its Laplace transform.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (marginal survival and hazard).</span> Conditional and marginal survival are
+\[
+S(t\mid Z,U)
+=e^{-Ue^{\beta^\top Z}\Lambda_0(t)},
+\qquad
+S_m(t\mid Z)
+=\mathcal L_U\{e^{\beta^\top Z}\Lambda_0(t)\}.
+\]
+If \(\mathcal L_U\) is differentiable, the marginal hazard is
+\[
+\lambda_m(t\mid Z)
+=\lambda_0(t)e^{\beta^\top Z}
+\frac{-\mathcal L_U'\{e^{\beta^\top Z}\Lambda_0(t)\}}
+{\mathcal L_U\{e^{\beta^\top Z}\Lambda_0(t)\}}.
 \]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use the Laplace transform of a gamma random variable: \(E e^{-sW}=(1+s/a)^{-a}\). Substitute \(s=\Lambda_0(t)e^{z^\top\beta}\).</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Frailty induces dependence between event times in the same cluster. Ignoring this dependence can underestimate uncertainty even if the regression coefficient is approximately unbiased.</p>
-    </div>
-    <h3>Marginal dependence</h3>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrating the conditional hazard gives the first survival formula. Taking expectation over \(U\) gives the Laplace transform. Differentiate
+\(-\log S_m(t\mid Z)\) with respect to \(t\), using
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}
+\{e^{\beta^\top Z}\Lambda_0(t)\}
+=e^{\beta^\top Z}\lambda_0(t).
+\]</p>
+</div>
+
+<h3>Gamma frailty</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+U\sim\operatorname{Gamma}(1/\theta,\text{ rate }1/\theta),
+\qquad EU=1,\quad\operatorname{Var}(U)=\theta.
+\]
+Then
+\[
+\mathcal L_U(s)=(1+\theta s)^{-1/\theta},
+\]
+so
+\[
+S_m(t\mid Z)
+=\{1+\theta e^{\beta^\top Z}\Lambda_0(t)\}^{-1/\theta},
+\]
+\[
+\lambda_m(t\mid Z)
+=\frac{\lambda_0(t)e^{\beta^\top Z}}
+{1+\theta e^{\beta^\top Z}\Lambda_0(t)}.
+\]
+For \(z_1,z_0\), the marginal hazard ratio is
+\[
+e^{\beta^\top(z_1-z_0)}
+\frac{1+\theta e^{\beta^\top z_0}\Lambda_0(t)}
+{1+\theta e^{\beta^\top z_1}\Lambda_0(t)},
+\]
+which varies with time unless \(\theta=0\) or the covariate contrast is null.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Derivation.</span> The gamma Laplace transform follows by integrating
+\[
+\frac{(1/\theta)^{1/\theta}}{\Gamma(1/\theta)}
+u^{1/\theta-1}e^{-u/\theta}e^{-su}
+\]
+over \(u>0\). Substitute it into the general theorem and differentiate. The time variation in the marginal hazard ratio is a selection effect: highly frail individuals fail earlier, so later risk sets are enriched for lower frailty.</p>
+</div>
+
+<h3>Posterior frailty among survivors</h3>
+
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Shared frailty induces positive association among event times in the same cluster. Conditional on \(W_g\) the subjects are independent, but marginally a large \(W_g\) simultaneously increases all hazards in the cluster.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Conditional survival probabilities factor given \(W_g\). After integrating out \(W_g\), products of decreasing functions of the same positive random variable are positively associated; high frailty lowers all conditional survivals together.</p>
-    </div>
-    <h3>Identifiability of frailty variance</h3>
+<p><span class="statement-title">Proposition.</span> Under gamma frailty, conditional on survival beyond \(t\),
+\[
+U\mid(T>t,Z)
+\sim\operatorname{Gamma}\left(
+\frac1\theta,\quad
+\text{rate }\frac1\theta+e^{\beta^\top Z}\Lambda_0(t)
+\right),
+\]
+and therefore
+\[
+E\{U\mid T>t,Z\}
+=\frac{1}
+{1+\theta e^{\beta^\top Z}\Lambda_0(t)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Bayes' formula multiplies the gamma density by the survival likelihood
+\(e^{-u e^{\beta^\top Z}\Lambda_0(t)}\). This preserves the gamma shape and adds \(e^{\beta^\top Z}\Lambda_0(t)\) to the rate. The displayed mean is shape divided by rate.</p>
+</div>
+
+<h3>Shared frailty and cluster dependence</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For members \(j=1,\ldots,m_k\) of cluster \(k\),
+\[
+\lambda_{kj}(t\mid U_k,Z_{kj})
+=U_kY_{kj}(t)\lambda_0(t)e^{\beta^\top Z_{kj}}.
+\]
+Conditional on \(U_k\), event times are independent; marginally they are positively associated.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For two members with cumulative conditional hazards
+\(H_j(t_j)=e^{\beta^\top Z_j}\Lambda_0(t_j)\),
+\[
+P(T_1>t_1,T_2>t_2\mid Z_1,Z_2)
+=\mathcal L_U\{H_1(t_1)+H_2(t_2)\}.
+\]
+Under gamma frailty, the induced survival copula is Clayton and Kendall's concordance is
+\[
+\tau_K=\frac{\theta}{\theta+2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional independence gives
+\[
+P(T_1>t_1,T_2>t_2\mid U)
+=e^{-U(H_1+H_2)}.
+\]
+Expectation over \(U\) gives the joint survival. Substituting the gamma Laplace transform yields the Clayton survival copula. Its Kendall's tau follows from the Archimedean-copula identity
+\(\tau_K=1+4\int_0^1\varphi(u)/\varphi'(u)\,\mathrm{d}u\) with gamma-frailty generator.</p>
+</div>
+
+<h3>Likelihood and estimation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (cluster likelihood).</span> Let cluster \(k\) have total event count \(D_k\) and total frailty-free cumulative exposure
+\[
+H_k(\beta,\Lambda_0)
+=\sum_j\int
+Y_{kj}(t)e^{\beta^\top Z_{kj}(t)}
+\,\mathrm{d}\Lambda_0(t).
+\]
+After integrating out \(U_k\), its likelihood contribution contains
+\[
+(-1)^{D_k}\mathcal L_U^{(D_k)}\{H_k(\beta,\Lambda_0)\}
+\prod_j\prod_{t:\Delta N_{kj}(t)=1}
+e^{\beta^\top Z_{kj}(t)}\,\mathrm{d}\Lambda_0(t).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on \(U_k=u\), the cluster likelihood contains
+\[
+u^{D_k}e^{-uH_k}
+\prod_{\text{events}}
+e^{\beta^\top Z_{kj}(t)}\,\mathrm{d}\Lambda_0(t).
+\]
+Since
+\[
+E(U^{D_k}e^{-sU})
+=(-1)^{D_k}\mathcal L_U^{(D_k)}(s),
+\]
+integrating over \(u\) gives the formula.</p>
+</div>
+
+<p>Estimation may use penalized partial likelihood, EM or Laplace approximation, Gaussian quadrature, or full Bayesian integration. Each method makes a distributional choice for \(U\); a cluster-robust sandwich estimator without frailty instead targets an average relative-risk parameter and does not estimate latent heterogeneity.</p>
+
+<h3>Identifiability and interpretation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (scale normalization).</span> Without fixing the scale of \(U\), frailty and baseline hazard are not separately identifiable: for every \(c>0\),
+\[
+U\lambda_0(t)
+=\left(\frac{U}{c}\right)\{c\lambda_0(t)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The transformed pair gives the same conditional intensity for every subject and therefore the same observation law. A normalization such as \(EU=1\) is necessary.</p>
+</div>
+
+<p>Even after normalization, one event per independent subject provides little information about the shape of a frailty distribution without parametric restrictions: baseline heterogeneity and frailty mixing can mimic one another. Repeated events or clustered members provide within-cluster replication and stronger identification.</p>
+
 <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Frailty variance is weakly identified when clusters are small or follow-up is short. Apparent heterogeneity can also be produced by omitted fixed covariates, so frailty should be read as a dependence model, not automatically as a biological random effect.</p>
-    </div>
+<p><span class="statement-title">Scientific distinction.</span> A frailty variance is not automatically “unmeasured confounding.” Frailty is a model for latent outcome dependence. Confounding concerns common causes of treatment and outcome and requires an assignment model or causal assumptions. Adding a random effect can improve dependence modeling while leaving a causal bias untouched.</p>
+</div>

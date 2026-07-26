@@ -39,3 +39,162 @@ Also \(I(X;Y\mid Z)\ge0\), with equality if and only if \(X\) and \(Y\) are cond
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The equation \(I(X;Y\mid Z)=0\) is often more useful than the factorization itself: it turns conditional independence into an inequality statement stable under limiting and convexity arguments.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Equivalent representations</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For discrete \(X,Y\),
+  \[
+  \begin{aligned}
+  I(X;Y)
+  &=D(P_{XY}\|P_XP_Y)\\
+  &=H(X)-H(X\mid Y)\\
+  &=H(Y)-H(Y\mid X)\\
+  &=H(X)+H(Y)-H(X,Y).
+  \end{aligned}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand
+  \[
+  \log\frac{p(x,y)}{p(x)p(y)}
+  =\log p(x,y)-\log p(x)-\log p(y)
+  \]
+  and integrate. Rearranging with the entropy chain rule gives the other forms.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \(I(X;Y)\ge0\), with equality exactly when \(X\) and \(Y\) are independent.</p>
+</div>
+
+<h3>Information density</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The information density is
+  \[
+  \imath_{X;Y}(x;y)=
+  \log\frac{p_{Y\mid X}(y\mid x)}{p_Y(y)}
+  =\log\frac{p_{XY}(x,y)}{p_X(x)p_Y(y)}.
+  \]
+  Mutual information is its expectation. Information density can be negative for particular pairs even though its mean is nonnegative.</p>
+</div>
+
+<h3>Conditional mutual information</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span>
+  \[
+  I(X;Y\mid Z)
+  =\mathbb E_ZD(P_{XY\mid Z}\|
+  P_{X\mid Z}P_{Y\mid Z})
+  =H(X\mid Z)-H(X\mid Y,Z)\ge0.
+  \]
+  Equality holds exactly when
+  \(X\perp\!\!\!\perp Y\mid Z\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the mutual-information identity conditionally at each \(Z=z\) and average. Nonnegativity and equality follow from conditional KL divergence.</p>
+</div>
+
+<h3>Chain rules</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span>
+  \[
+  I(X;Y,Z)=I(X;Z)+I(X;Y\mid Z),
+  \]
+  and more generally
+  \[
+  I(X;Y_1,\ldots,Y_n)
+  =\sum_{i=1}^nI(X;Y_i\mid Y_1,\ldots,Y_{i-1}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write
+  \(I(X;Y,Z)=H(X)-H(X\mid Y,Z)\), add and subtract
+  \(H(X\mid Z)\), and iterate.</p>
+</div>
+
+<h3>Mutual information as expected posterior change</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  I(X;Y)=
+  \mathbb E_YD(P_{X\mid Y}\|P_X)
+  =\mathbb E_XD(P_{Y\mid X}\|P_Y).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Disintegrate the joint KL
+  \(D(P_{XY}\|P_XP_Y)\) first with respect to \(Y\), then with respect to \(X\), using the relative-entropy chain rule.</p>
+</div>
+
+<p>Thus information is the expected KL movement from prior to posterior, or equivalently the expected distinguishability of a conditional output law from the output mixture.</p>
+
+<h3>Entropy bounds</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  I(X;Y)\le\min\{H(X),H(Y)\}.
+  \]
+  Equality \(I(X;Y)=H(X)\) holds exactly when \(X\) is a function of \(Y\) almost surely.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \(I(X;Y)=H(X)-H(X\mid Y)\le H(X)\), and symmetrically. Equality means \(H(X\mid Y)=0\).</p>
+</div>
+
+<h3>Interaction information can have either sign</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The three-variable interaction information is
+  \[
+  I(X;Y;Z)=I(X;Y)-I(X;Y\mid Z),
+  \]
+  a symmetric quantity that can be positive or negative.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(X,Y\) be independent fair bits and
+  \(Z=X\oplus Y\). Then \(I(X;Y)=0\), but given \(Z\), one bit determines the other, so
+  \(I(X;Y\mid Z)=\log2\). Hence
+  \(I(X;Y;Z)=-\log2\), expressing synergistic information not present in any pair alone.</p>
+</div>
+
+<h3>Total correlation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For
+  \(X_1,\ldots,X_n\), total correlation is
+  \[
+  \operatorname{TC}(X_1,\ldots,X_n)
+  =D\!\left(P_{X_1,\ldots,X_n}\middle\|
+  \prod_iP_{X_i}\right)
+  =\sum_iH(X_i)-H(X_1,\ldots,X_n).
+  \]
+  It is nonnegative and vanishes exactly at mutual independence.</p>
+</div>
+
+<h3>Gaussian mutual information</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If \((X,Y)\) is jointly Gaussian with correlation \(\rho\), then
+  \[
+  I(X;Y)=-\frac12\log(1-\rho^2).
+  \]
+  More generally, for Gaussian vectors,
+  \[
+  I(X;Y)=\frac12\log
+  \frac{\det\Sigma_X\det\Sigma_Y}{\det\Sigma_{XY}}.
+  \]
+  This follows by inserting Gaussian differential entropies; unlike correlation, mutual information detects arbitrary dependence outside the Gaussian family.</p>
+</div>

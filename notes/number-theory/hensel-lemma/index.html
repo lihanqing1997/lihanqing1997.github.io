@@ -8,24 +8,99 @@ note_prev_url: "/notes/number-theory/valuations-and-p-adic-numbers/"
 note_next_url: "/notes/number-theory/diophantine-approximation/"
 ---
 
-<p>Hensel lemma records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>Hensel's lemma is the \(p\)-adic analogue of Newton's method and the
+implicit-function theorem. A simple solution modulo \(p\) lifts uniquely to
+solutions modulo every \(p^n\) and hence to a root in \(\mathbb Z_p\).</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Hensel lemma lifts approximate roots modulo powers of a prime to exact roots in \(\mathbb Z_p\).</p>
-    </div>
+<h3>Simple-root lifting</h3>
 
-    <h3>Hensel lemma</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f(a)\equiv0\pmod p\) and \(f'(a)\not\equiv0\pmod p\), then there is a unique \(p\)-adic root \(\alpha\equiv a\pmod p\).</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Hensel).</span> Let
+\(f\in\mathbb Z_p[x]\). If \(a_1\in\mathbb Z\) satisfies
+\[
+f(a_1)\equiv0\pmod p,\qquad f'(a_1)\not\equiv0\pmod p,
+\]
+then there is a unique \(a\in\mathbb Z_p\) such that
+\[
+f(a)=0,\qquad a\equiv a_1\pmod p.
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Construct corrections recursively modulo \(p^n\). The nonzero derivative is invertible modulo \(p\), so each correction is uniquely solvable. Completeness gives the limit.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Suppose
+\(f(a_n)\equiv0\pmod{p^n}\). Seek
+\(a_{n+1}=a_n+t_np^n\). Taylor expansion gives
+\[
+f(a_{n+1})
+\equiv f(a_n)+t_np^nf'(a_n)\pmod{p^{n+1}}.
+\]
+Because \(f'(a_n)\) is a unit modulo \(p\), there is a unique
+\(t_n\bmod p\) making the right side zero. Thus
+\(a_{n+1}\equiv a_n\pmod{p^n}\), so \((a_n)\) is Cauchy and converges to a
+root. The same linear congruence proves uniqueness at each level and hence in
+\(\mathbb Z_p\).</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Hensel lemma is Newton's method in nonarchimedean geometry. It is the basic local lifting tool.</p>
-    </div>
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Solve \(x^2=2\) in
+\(\mathbb Z_7\). Since \(3^2\equiv2\pmod7\) and \(2\cdot3\not\equiv0\),
+there is a unique root congruent to \(3\). To lift modulo \(49\), write
+\(x=3+7t\):
+\[
+x^2-2\equiv7+42t=7(1+6t)\pmod{49},
+\]
+so \(t\equiv1\pmod7\) and \(x\equiv10\pmod{49}\).</p>
+</div>
+
+<h3>Newton form</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+|f(a_0)|_p<|f'(a_0)|_p^2,
+\]
+then Newton iteration
+\[
+a_{n+1}=a_n-\frac{f(a_n)}{f'(a_n)}
+\]
+is defined, converges quadratically in the valuation, and its limit is the
+unique root in the corresponding ball.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Taylor expansion and
+the ultrametric inequality show that \(f'(a_n)\) keeps the same absolute
+value and
+\[
+\left|\frac{f(a_{n+1})}{f'(a_{n+1})^2}\right|_p
+\le
+\left|\frac{f(a_n)}{f'(a_n)^2}\right|_p^2.
+\]
+Thus increments tend to zero geometrically in valuation, making the sequence
+Cauchy. The same estimate applied to two roots in the ball gives uniqueness.</p>
+</div>
+
+<h3>Factorization form</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Hensel factorization lemma.</span> If a monic
+polynomial satisfies
+\[
+\overline f=\overline g\,\overline h\quad\text{in }\mathbb F_p[x],
+\qquad\gcd(\overline g,\overline h)=1,
+\]
+then there are unique monic \(g,h\in\mathbb Z_p[x]\), reducing to the given
+factors, such that \(f=gh\).</p>
+</div>
+
+<p>This form lifts a coprime factorization rather than one root. It is central
+to decomposing primes in local extensions and to algorithms for factoring
+polynomials over \(\mathbb Q_p\).</p>
+
+<h3>Local solvability and its limits</h3>
+
+<p>Hensel's lemma turns a nonsingular solution over the residue field into a
+\(p\)-adic one. Singular roots need separate analysis: \(f'(a)\equiv0\pmod p\)
+may allow no lift, several lifts, or a whole \(p\)-adic family. Local
+solvability for every \(p\) and over \(\mathbb R\) is necessary for a rational
+solution, but not sufficient for arbitrary Diophantine equations.</p>

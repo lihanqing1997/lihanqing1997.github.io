@@ -8,24 +8,149 @@ note_prev_url: "/notes/causal-inference/back-door-adjustment/"
 note_next_url: "/notes/causal-inference/front-door-adjustment/"
 ---
 
-<p>Do-calculus records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Do-calculus is a sound and complete symbolic calculus for identifying interventional distributions from a causal graph. It manipulates actions and observations by applying conditional-independence statements in surgically modified graphs.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Do-calculus is a set of graphical rules for transforming interventional distributions into observational or simpler interventional distributions.</p>
-    </div>
+<h3>Graph surgery notation</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If repeated application of do-calculus removes all intervention operators from a target causal query, then the query is identifiable from the observational distribution.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  \(G_{\overline X}\) deletes arrows into \(X\);
+  \(G_{\underline X}\) deletes arrows out of \(X\);
+  and \(G_{\overline X,\underline Z}\) performs both operations.
+  For \(Z\) and conditioning set \(W\), let
+  \[
+  Z(W)=Z\setminus\operatorname{An}(W)_{G_{\overline X}}
+  \]
+  when stating Rule 3.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Each rule is justified by d-separation in a graph modified by deleting or adding intervention arrows. Soundness follows from the Markov factorization of intervention distributions.</p>
-    </div>
+<h3>Rule 1: insertion and deletion of observations</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Do-calculus is an identification calculus. It does not require parametric modeling, but it does require the causal graph.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Rule 1.</span> If
+  \[
+  Y\perp_d Z\mid X,W
+  \quad\text{in }G_{\overline X},
+  \]
+  then
+  \[
+  p(y\mid\operatorname{do}(x),z,w)
+  =
+  p(y\mid\operatorname{do}(x),w).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In the postintervention model represented by \(G_{\overline X}\), the global Markov theorem gives
+  \(Y\perp Z\mid X,W\). Conditioning on the fixed intervention value \(x\) yields the equality.</p>
+</div>
+
+<h3>Rule 2: action-observation exchange</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Rule 2.</span> If
+  \[
+  Y\perp_d Z\mid X,W
+  \quad\text{in }G_{\overline X,\underline Z},
+  \]
+  then
+  \[
+  p(y\mid\operatorname{do}(x),\operatorname{do}(z),w)
+  =
+  p(y\mid\operatorname{do}(x),z,w).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Removing outgoing arrows from \(Z\) neutralizes its downstream causal influence while testing whether the mechanism assigning \(Z\) carries additional information about \(Y\). The d-separation condition makes the conditional law of \(Y\) invariant to whether the value \(z\) was observed or externally set, after \(X,W\) are fixed.</p>
+</div>
+
+<h3>Rule 3: insertion and deletion of actions</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Rule 3.</span> If
+  \[
+  Y\perp_d Z\mid X,W
+  \quad\text{in }G_{\overline X,\overline{Z(W)}},
+  \]
+  then
+  \[
+  p(y\mid\operatorname{do}(x),\operatorname{do}(z),w)
+  =
+  p(y\mid\operatorname{do}(x),w).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The modified graph removes incoming arrows to those \(Z\)-nodes that are not ancestors of the conditioning variables after intervention on \(X\). The stated separation means their intervention cannot change the conditional distribution of \(Y\) given \(X,W\). Nodes ancestral to \(W\) are excluded from deletion because intervening on them can alter selection into \(W=w\).</p>
+</div>
+
+<h3>Back-door adjustment from the rules</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(Z\) satisfies the
+  back-door criterion,
+  \[
+  p(y\mid\operatorname{do}(x))
+  =\sum_zp(y\mid x,z)p(z).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand
+  \[
+  p(y\mid\operatorname{do}(x))
+  =\sum_zp(y\mid\operatorname{do}(x),z)
+  p(z\mid\operatorname{do}(x)).
+  \]
+  Rule 2 exchanges action \(x\) for observation \(x\) in the first factor because \(Z\) blocks back-door paths. Rule 3 removes the action from the second factor because \(Z\) has no descendants of \(X\). This gives \(p(y\mid x,z)p(z)\).</p>
+</div>
+
+<h3>Front-door identification as a derivation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under the front-door graphical criterion for mediator \(M\),
+  \[
+  p(y\mid\operatorname{do}(x))
+  =
+  \sum_m p(m\mid x)
+  \sum_{x'}p(y\mid m,x')p(x').
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> First,
+  \(p(m\mid\operatorname{do}(x))=p(m\mid x)\) by Rule 2 because there is no unblocked back-door path from \(X\) to \(M\). Second, all directed \(X\to Y\) paths pass through \(M\), so after intervening on \(M\), Rule 3 removes the action on \(X\). Finally, back-door paths from \(M\) to \(Y\) are blocked by \(X\), so
+  \[
+  p(y\mid\operatorname{do}(m))
+  =\sum_{x'}p(y\mid m,x')p(x').
+  \]
+  Sum over the interventional mediator distribution.</p>
+</div>
+
+<h3>Identification and the ID algorithm</h3>
+
+<p>In semi-Markovian models with latent confounding represented by bidirected edges, the ID algorithm recursively decomposes interventional queries into districts, applies ancestral restriction, and detects hedge structures. It returns an observed-data functional exactly when the query is identifiable.</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A hedge for
+  \(P_x(y)\) is a pair of nested confounded forests satisfying specific root and intervention conditions. Its presence witnesses two causal models with the same observational law but different target intervention laws.</p>
+</div>
+
+<h3>Completeness</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For causal effects in semi-Markovian graphical models, if a query is identifiable from the observational distribution, then it can be derived by do-calculus together with ordinary probability manipulations.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The ID algorithm is complete: failure occurs exactly when it finds a hedge, which constructs observationally equivalent models disagreeing on the query. Every successful recursive ID step can be represented as an application of a do-calculus rule and marginalization or conditioning. Therefore every identifiable query has a do-calculus derivation.</p>
+</div>
+
+<h3>Conditional effects and selection bias</h3>
+
+<p>Identifying \(p(y\mid\operatorname{do}(x),z)\) is not equivalent to identifying the joint \(p(y,z\mid\operatorname{do}(x))\) and dividing if \(z\) is post-treatment or affected by selection. The IDC algorithm first uses Rule 2 to move eligible conditioned variables into interventions and then invokes ID. Similar extensions handle transportability by adding selection nodes.</p>
+
+<h3>What do-calculus does not provide</h3>
+
+<p>The calculus answers whether and how a population interventional distribution is a functional of observed distributions. It does not choose a finite-sample estimator, guarantee positivity, control nuisance estimation, or validate the graph. Identification is the first layer; estimation and sensitivity are separate layers.</p>

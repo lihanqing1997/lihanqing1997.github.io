@@ -8,24 +8,149 @@ note_prev_url: "/notes/optimization/lagrange-multipliers/"
 note_next_url: "/notes/optimization/kkt-conditions/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Fenchel conjugates and Fenchel duality.</p>
+<p>Conjugacy describes a convex function through all of its affine lower
+bounds. It converts slopes into points, infimal problems into supremal ones,
+and regularization penalties into explicit dual constraints.</p>
 
-    <h3>Fenchel conjugate</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Fenchel conjugate of \(f\) is \(f^*(y)=\sup_x\{\langle y,x\rangle-f(x)\}\). It records all affine minorants of \(f\).</p>
-    </div>
+<h3>Affine minorants and the conjugate</h3>
 
-    <h3>Fenchel inequality</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For every \(x,y\), \(f(x)+f^*(y)\ge\langle x,y\rangle\). Equality holds exactly when \(y\in\partial f(x)\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> For
+    \(f:\mathbb R^d\to(-\infty,+\infty]\), its Fenchel conjugate is
+    \[
+    f^*(y)=\sup_{x\in\mathbb R^d}
+    \{\langle y,x\rangle-f(x)\}.
+    \]
+    The biconjugate is
+    \(f^{**}(x)=\sup_y\{\langle y,x\rangle-f^*(y)\}\).</p>
+</div>
 
-    <h3>Fenchel dual problem</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(\inf_x f(Ax)+g(x)\), the Fenchel dual is \(\sup_y -f^*(y)-g^*(-A^\top y)\), under the usual regularity conditions. Strong duality follows when the primal and dual problems have no separating gap.</p>
-    </div>
+<p>Regardless of whether \(f\) is convex, \(f^*\) is convex and lower
+semicontinuous because it is a supremum of affine continuous functions.</p>
 
-    <h3>Information connection</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Legendre duality in information geometry and log-partition/entropy duality in exponential families are Fenchel duality in smooth coordinates.</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Fenchel-Young inequality and
+    equality.</span> For every \(x,y\),
+    \[
+    f(x)+f^*(y)\ge\langle x,y\rangle.
+    \]
+    If \(f\) is proper and convex, equality holds if and only if
+    \(y\in\partial f(x)\), equivalently \(x\in\partial f^*(y)\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The definition of the
+    supremum gives
+    \(f^*(y)\ge\langle y,x\rangle-f(x)\). Equality means that \(x\) maximizes
+    \(z\mapsto\langle y,z\rangle-f(z)\), which is equivalent to
+    \[
+    f(z)\ge f(x)+\langle y,z-x\rangle\qquad(z\in\mathbb R^d).
+    \]
+    This is exactly \(y\in\partial f(x)\). Rewriting the same equality as
+    \(f^*(y)+f(x)=\langle x,y\rangle\) gives
+    \(x\in\partial f^*(y)\).</p>
+</div>
+
+<h3>Conjugates worth recognizing</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Quadratic and norm.</span> For
+    \(f(x)=\frac12x^\top Qx\), \(Q\succ0\),
+    \[
+    f^*(y)=\frac12y^\top Q^{-1}y.
+    \]
+    For a norm \(\|\cdot\|\) with dual norm \(\|\cdot\|_*\),
+    \[
+    (\lambda\|\cdot\|)^*(y)
+    =\iota_{\{y:\|y\|_*\le\lambda\}}(y).
+    \]
+    The second formula follows because
+    \(\sup_x\{\langle y,x\rangle-\lambda\|x\|\}\) is zero when
+    \(\|y\|_*\le\lambda\) and is \(+\infty\) after scaling a direction that
+    violates the dual-norm inequality.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Log-sum-exp and entropy.</span> For
+    \(f(x)=\log\sum_{i=1}^m e^{x_i}\),
+    \[
+    f^*(p)=
+    \begin{cases}
+    \sum_i p_i\log p_i,&p_i\ge0,\ \sum_i p_i=1,\\
+    +\infty,&\text{otherwise}.
+    \end{cases}
+    \]
+    At an interior simplex point, stationarity in \(x\) gives
+    \(p_i=e^{x_i}/\sum_j e^{x_j}\); substitution yields negative entropy.
+    This dual pair underlies exponential families, softmax, and entropic
+    mirror descent.</p>
+</div>
+
+<h3>Recovering a closed convex function</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Fenchel-Moreau theorem.</span> A proper
+    function \(f:\mathbb R^d\to(-\infty,+\infty]\) satisfies
+    \(f=f^{**}\) if and only if it is convex and lower semicontinuous.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Fenchel-Young gives
+    \(f^{**}\le f\). Suppose \(f\) is proper, closed, and convex and fix
+    \(x_0\) and \(r<f(x_0)\). The point \((x_0,r)\) lies strictly below the
+    closed convex epigraph of \(f\), so strict separation supplies
+    \((y,\alpha)\ne0\) and \(c\) with
+    \[
+    \langle y,x_0\rangle+\alpha r>c
+    \ge\langle y,x\rangle+\alpha t
+    \quad(t\ge f(x)).
+    \]
+    Necessarily \(\alpha<0\); normalize to \(\alpha=-1\). Then
+    \(\langle y,x\rangle-f(x)\le c\), so \(f^*(y)\le c\), while
+    \(\langle y,x_0\rangle-f^*(y)>r\). Hence \(f^{**}(x_0)>r\). Letting
+    \(r\uparrow f(x_0)\) proves \(f^{**}(x_0)\ge f(x_0)\). Conversely,
+    every biconjugate is convex and lower semicontinuous.</p>
+</div>
+
+<h3>Dualizing a composite objective</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Fenchel-Rockafellar duality.</span> Let
+    \(f:\mathbb R^m\to(-\infty,+\infty]\) and
+    \(g:\mathbb R^d\to(-\infty,+\infty]\) be proper, closed, and convex, and
+    let \(A:\mathbb R^d\to\mathbb R^m\) be linear. The primal problem
+    \[
+    \inf_x\{f(Ax)+g(x)\}
+    \]
+    has dual
+    \[
+    \sup_y\{-f^*(y)-g^*(-A^\top y)\}.
+    \]
+    If \(A(\operatorname{dom}g)\) meets
+    \(\operatorname{ri}(\operatorname{dom}f)\), the two values agree and the
+    dual supremum is attained whenever finite.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Use
+    \(f(Ax)=\sup_y\{\langle y,Ax\rangle-f^*(y)\}\). Interchanging infimum and
+    supremum formally gives
+    \[
+    \sup_y\left\{-f^*(y)+
+      \inf_x[\langle A^\top y,x\rangle+g(x)]\right\}
+    =\sup_y\{-f^*(y)-g^*(-A^\top y)\}.
+    \]
+    This immediately proves weak duality. For strong duality, apply the
+    supporting-hyperplane theorem to the closed perturbation value function
+    \(u\mapsto\inf_x\{f(Ax+u)+g(x)\}\). The relative-interior condition makes
+    this function continuous at \(u=0\), so it has a supporting slope there;
+    that slope is a dual optimizer and closes the gap.</p>
+</div>
+
+<p>At primal-dual optimality, Fenchel-Young equality gives
+\[
+y^\star\in\partial f(Ax^\star),\qquad
+-A^\top y^\star\in\partial g(x^\star).
+\]
+These inclusions are both an optimality certificate and the starting point for
+primal-dual splitting algorithms.</p>

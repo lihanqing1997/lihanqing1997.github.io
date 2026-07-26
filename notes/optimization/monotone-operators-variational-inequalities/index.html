@@ -8,24 +8,141 @@ note_prev_url: "/notes/optimization/sparse-optimization-coordinate-proximal-meth
 note_next_url: "/notes/optimization/em-mm-algorithms/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Monotone operators and variational inequalities.</p>
+<p>Monotone-operator theory removes the distinction between gradients,
+subgradients, normal cones, and equilibrium maps. Optimization becomes the
+problem of finding a zero of a set-valued operator, and many algorithms become
+fixed-point iterations of its resolvent.</p>
 
-    <h3>Monotone operator</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An operator \(T\) is monotone if \(\langle u-v,x-y\rangle\ge0\) whenever \(u\in T(x)\) and \(v\in T(y)\). Subdifferentials of convex functions are monotone.</p>
-    </div>
+<h3>Monotonicity and maximality</h3>
 
-    <h3>Variational inequality</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The variational inequality \(\operatorname{VI}(C,F)\) asks for \(x^\star\in C\) such that \(\langle F(x^\star),x-x^\star\rangle\ge0\) for all \(x\in C\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A set-valued operator
+    \(T:\mathbb R^d\rightrightarrows\mathbb R^d\) is monotone if
+    \[
+    \langle u-v,x-y\rangle\ge0
+    \quad\text{whenever }u\in T(x),\ v\in T(y).
+    \]
+    It is maximal monotone if its graph is not properly contained in the graph
+    of another monotone operator.</p>
+</div>
 
-    <h3>Resolvent</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For maximal monotone \(T\), the resolvent \((I+\eta T)^{-1}\) is single-valued and firmly nonexpansive. Proximal maps are resolvents of subdifferentials.</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Convex subdifferentials are
+    monotone.</span> If \(f\) is proper and convex, then \(\partial f\) is
+    monotone. If \(f\) is also closed, \(\partial f\) is maximal monotone.</p>
+</div>
 
-    <h3>Unifying role</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Gradient descent, proximal point, projected methods, saddle-point algorithms, and equilibrium problems can all be written as finding zeros or variational inequalities of monotone operators.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For
+    \(u\in\partial f(x)\) and \(v\in\partial f(y)\),
+    \[
+    f(y)\ge f(x)+\langle u,y-x\rangle,\qquad
+    f(x)\ge f(y)+\langle v,x-y\rangle.
+    \]
+    Adding gives \(\langle u-v,x-y\rangle\ge0\). For maximality, suppose
+    \((x,u)\) is monotonically related to the graph of \(\partial f\).
+    Minimize
+    \(z\mapsto f(z)-\langle u,z\rangle+\frac12\|z-x\|^2\).
+    Its minimizer \(p\) satisfies
+    \(u+x-p\in\partial f(p)\). Monotonicity of \((x,u)\) with this graph point
+    gives \(-\|x-p\|^2\ge0\), hence \(p=x\) and \(u\in\partial f(x)\).</p>
+</div>
+
+<h3>Variational inequalities as zero problems</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Given a closed convex
+    set \(C\) and a map \(F:C\to\mathbb R^d\), the problem
+    \(\operatorname{VI}(C,F)\) asks for \(x^\star\in C\) such that
+    \[
+    \langle F(x^\star),x-x^\star\rangle\ge0
+    \qquad(x\in C).
+    \]</p>
+</div>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Normal-cone formulation.</span>
+    \(x^\star\) solves \(\operatorname{VI}(C,F)\) if and only if
+    \[
+    0\in F(x^\star)+N_C(x^\star).
+    \]
+    When \(F=\nabla f\) for convex \(f\), this is exactly constrained
+    minimization. A general monotone \(F\) can describe games and equilibria
+    that have no scalar potential.</p>
+</div>
+
+<h3>Resolvents are firmly nonexpansive</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Minty resolvent theorem.</span> If \(T\)
+    is maximal monotone and \(\eta>0\), then
+    \[
+    J_{\eta T}=(I+\eta T)^{-1}
+    \]
+    is defined on all of \(\mathbb R^d\), is single-valued, and satisfies
+    \[
+    \|J_{\eta T}x-J_{\eta T}y\|^2
+    \le\langle J_{\eta T}x-J_{\eta T}y,x-y\rangle.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Surjectivity of
+    \(I+\eta T\) is Minty's characterization of maximal monotonicity in finite
+    dimensions. Let \(p=J_{\eta T}x\) and \(q=J_{\eta T}y\). Then
+    \((x-p)/\eta\in T(p)\) and \((y-q)/\eta\in T(q)\). Monotonicity gives
+    \[
+    \langle(x-p)-(y-q),p-q\rangle\ge0,
+    \]
+    which rearranges to firm nonexpansiveness. It also proves uniqueness.</p>
+</div>
+
+<p>For \(T=\partial f\), the resolvent is
+\(\operatorname{prox}_{\eta f}\). For \(T=N_C\), it is projection onto \(C\).</p>
+
+<h3>The proximal-point iteration</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Fejer convergence.</span> Suppose
+    \(T\) is maximal monotone and \(T^{-1}(0)\ne\varnothing\). The iteration
+    \[
+    x_{k+1}=J_{\eta T}x_k
+    \]
+    satisfies, for every zero \(x^\star\),
+    \[
+    \|x_{k+1}-x^\star\|^2
+    \le\|x_k-x^\star\|^2-\|x_{k+1}-x_k\|^2.
+    \]
+    In finite dimensions, \(x_k\) converges to a zero of \(T\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Since
+    \(J_{\eta T}x^\star=x^\star\), firm nonexpansiveness gives
+    \[
+    \|x_{k+1}-x^\star\|^2
+    \le\langle x_{k+1}-x^\star,x_k-x^\star\rangle.
+    \]
+    Apply
+    \(2\langle a,b\rangle=\|a\|^2+\|b\|^2-\|a-b\|^2\)
+    and rearrange. Distances to the zero set decrease and the increments tend
+    to zero. Every cluster point is a zero by closedness of the graph; Fejer
+    monotonicity then forces the whole finite-dimensional sequence to converge.</p>
+</div>
+
+<h3>Forward-backward and extragradient splitting</h3>
+
+<p>For \(0\in A(x)+B(x)\), with \(A\) maximal monotone and \(B\) sufficiently
+cocoercive, forward-backward splitting is
+\[
+x_{k+1}=J_{\eta A}(x_k-\eta Bx_k).
+\]
+Proximal gradient is the case \(A=\partial g\), \(B=\nabla f\).
+For merely monotone Lipschitz \(B\), a single forward step may fail; the
+extragradient correction
+\[
+y_k=P_C(x_k-\eta F(x_k)),\qquad
+x_{k+1}=P_C(x_k-\eta F(y_k))
+\]
+evaluates the field at the predicted point and restores convergence for
+monotone variational inequalities.</p>

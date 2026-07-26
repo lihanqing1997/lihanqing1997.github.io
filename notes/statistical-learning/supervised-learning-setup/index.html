@@ -93,3 +93,126 @@ in probability or almost surely. It is \(P\)-Donsker if the empirical process \(
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Learning bounds usually need Glivenko-Cantelli behavior. Distributional refinements, uncertainty quantification, and localized asymptotics need Donsker or related empirical-process control.</p>
     </div>
+
+<h3>Conditional decision problems</h3>
+
+<p>Supervised prediction is a family of decision problems indexed by the observed feature. This conditional formulation produces Bayes rules pointwise and explains why different losses target different features of the conditional law \(P_{Y\mid X=x}\).</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A regular conditional distribution \(P_{Y\mid X=x}\) induces the conditional risk
+  \[
+  r(a,x)=\int_{\mathcal Y}\ell(a,y)\,P_{Y\mid X=x}(\mathrm{d}y).
+  \]
+  A measurable predictor \(f^*\) is a <em>Bayes rule</em> if
+  \[
+  f^*(x)\in\operatorname*{argmin}_{a\in\mathcal A_0}r(a,x)
+  \quad\text{for }P_X\text{-almost every }x.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If a measurable Bayes selector \(f^*\) exists, then \(R(f^*)\le R(f)\) for every measurable predictor \(f\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By disintegration and the defining pointwise inequality,
+  \[
+  R(f)-R(f^*)
+  =\int_{\mathcal X}\{r(f(x),x)-r(f^*(x),x)\}\,P_X(\mathrm{d}x)\ge0.
+  \]
+  The argument also shows that equality is possible only where the two actions have equal conditional risk.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For squared loss and \(Y\in L^2(P)\),
+  \[
+  r(a,x)=\operatorname{Var}(Y\mid X=x)+\{a-\mathbb E(Y\mid X=x)\}^2,
+  \]
+  so \(f^*(x)=\mathbb E(Y\mid X=x)\). For absolute loss, every conditional median is optimal. For binary zero-one loss, \(f^*(x)=\mathbf 1\{\eta(x)\ge1/2\}\), where \(\eta(x)=P(Y=1\mid X=x)\).</p>
+</div>
+
+<h3>Learning rules and sources of randomness</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A learning rule is a measurable map
+  \[
+  \mathsf A_n:(\mathcal X\times\mathcal Y)^n\longrightarrow\mathcal F,
+  \qquad D_n\longmapsto\hat f_{D_n}.
+  \]
+  Its conditional generalization error is
+  \[
+  R(\hat f_{D_n})=\mathbb E\!\left[\ell(\hat f_{D_n}(X),Y)\mid D_n\right],
+  \]
+  where \((X,Y)\sim P\) is independent of \(D_n\). Its expected risk is
+  \(\mathbb E_{D_n}R(\hat f_{D_n})\).</p>
+</div>
+
+<p>The distinction between conditioning on the training data and averaging over repeated training samples is essential. A high-probability risk bound controls the random fitted rule; an expectation bound alone may hide rare catastrophic samples.</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence \(\hat f_n\) is risk consistent over a class of distributions \(\mathcal P\) if, for every \(P\in\mathcal P\),
+  \[
+  R_P(\hat f_n)-\inf_fR_P(f)\xrightarrow{P}0.
+  \]
+  It is universally consistent when \(\mathcal P\) contains every distribution satisfying only the integrability conditions required by the loss.</p>
+</div>
+
+<h3>From uniform laws to consistency</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal F_n\) be possibly increasing classes, let
+  \(f_n^*\in\operatorname*{argmin}_{f\in\mathcal F_n}R(f)\), and suppose
+  \[
+  \Delta_n=\sup_{f\in\mathcal F_n}|R_n(f)-R(f)|\xrightarrow{P}0,
+  \qquad
+  \eta_n\xrightarrow{P}0.
+  \]
+  If \(\hat f_n\) is an \(\eta_n\)-approximate ERM over \(\mathcal F_n\), then
+  \[
+  R(\hat f_n)-\inf_fR(f)
+  \le 2\Delta_n+\eta_n+
+  \left\{\inf_{f\in\mathcal F_n}R(f)-\inf_fR(f)\right\}.
+  \]
+  Consequently, if the final approximation term tends to zero, \(\hat f_n\) is risk consistent.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The basic ERM inequality gives
+  \(R(\hat f_n)-R(f_n^*)\le2\Delta_n+\eta_n\). Add
+  \(R(f_n^*)-\inf_fR(f)\), which is exactly the approximation term. Each term on the right converges to zero by assumption.</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> This sieve argument exposes a genuine tradeoff. Enlarging \(\mathcal F_n\) decreases approximation error but usually increases \(\Delta_n\). Rates arise by balancing these two quantities, while computation contributes the separate term \(\eta_n\).</p>
+</div>
+
+<h3>Train, validation, and test samples</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(D_{\mathrm{test}}=\{Z_i'\}_{i=1}^m\) be independent of all training and model-selection operations, and assume \(0\le\ell\le M\). Conditional on the fitted predictor \(\hat f\),
+  \[
+  \widehat R_{\mathrm{test}}(\hat f)=\frac1m\sum_{i=1}^m\ell_{\hat f}(Z_i')
+  \]
+  is unbiased for \(R(\hat f)\), and
+  \[
+  P\!\left(\left|\widehat R_{\mathrm{test}}(\hat f)-R(\hat f)\right|>t
+  \,\middle|\,\hat f\right)
+  \le2\exp\!\left(-\frac{2mt^2}{M^2}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(\hat f\), the test losses are iid, bounded by \(M\), and have common mean \(R(\hat f)\). Conditional unbiasedness and Hoeffding's inequality give the claims. Independence fails if the test set is repeatedly consulted during model development, in which case the displayed guarantee no longer applies to the finally selected rule.</p>
+</div>
+
+<h3>Randomized prediction</h3>
+
+<p>A randomized rule is a Markov kernel \(Q(\mathrm{d}a\mid x)\) from features to actions. Its risk is linear in \(Q\):
+\[
+R(Q)=\int\ell(a,y)\,Q(\mathrm{d}a\mid x)P(\mathrm{d}x,\mathrm{d}y).
+\]
+When the action set is convex and \(a\mapsto\ell(a,y)\) is convex, Jensen's inequality shows that the deterministic barycenter \(f_Q(x)=\int a\,Q(\mathrm{d}a\mid x)\) has no larger risk. Randomization nevertheless remains useful for aggregation, PAC-Bayes analysis, mixed decisions, and nonconvex action spaces.</p>
+
+<h3>Prerequisites and interfaces</h3>
+
+<p>The uniform laws used here are developed in <a href="{{ '/notes/empirical-processes/empirical-measures-and-gc/' | relative_url }}">empirical measures and Glivenko-Cantelli theory</a>. Conditional Bayes actions and randomized rules are treated abstractly in <a href="{{ '/notes/statistical-decision-theory/decision-problems-rules-risks/' | relative_url }}">decision problems, rules, and risks</a>. The next pages turn the decomposition above into quantitative bounds through concentration and complexity.</p>

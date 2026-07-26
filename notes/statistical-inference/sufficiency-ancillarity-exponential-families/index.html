@@ -1,48 +1,224 @@
 ---
 layout: note-detail
 breadcrumb_child_label_en: "3. Sufficiency, ancillarity, and exponential families"
-breadcrumb_child_label_fr: "3. Suffisance, ancillary et familles exponentielles"
+breadcrumb_child_label_fr: "3. Suffisance, ancillarité et familles exponentielles"
 breadcrumb_child_label_zh: "3. 充分性、辅助性与指数族"
 note_back_url: "/notes/statistical-inference/"
 note_prev_url: "/notes/statistical-inference/likelihood-score-information/"
 note_next_url: "/notes/statistical-inference/point-estimation-principles/"
 ---
 
-<p>Sufficiency and ancillarity describe what parts of the data carry information about the parameter and what parts describe the sampling geometry but not the parameter itself.</p>
+<p>Sufficiency asks whether a statistic preserves the entire experiment; ancillarity asks whether a statistic has a parameter-free distribution. Completeness is a uniqueness property of expectations. Together these notions explain why certain exact procedures reduce the data without losing information and why some reductions admit unique unbiased estimators.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A statistic \(T(X)\) is sufficient for \(\theta\) if the conditional distribution of \(X\) given \(T(X)\) does not depend on \(\theta\). It is ancillary if the distribution of \(T(X)\) does not depend on \(\theta\).</p>
-    </div>
+<h3>Sufficiency and factorization</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Factorization theorem.</span> In a dominated model with joint density \(p_\theta(x)\), \(T\) is sufficient if and only if
-        \[
-        p_\theta(x)=g_\theta(T(x))h(x)
-        \]
-        for some nonnegative functions \(g_\theta\) and \(h\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If the factorization holds, the conditional density of \(X\) given \(T=t\) is proportional to \(g_\theta(t)h(x)\) on the fiber \(\{x:T(x)=t\}\). The factor \(g_\theta(t)\) is constant on the fiber and cancels in normalization, so the conditional law is parameter-free. Conversely, if the conditional law given \(T\) is parameter-free, write the joint density as conditional density given \(T\) times the marginal density of \(T\); the second factor depends on \(\theta\) only through \(T\).</p>
-    </div>
-
-    <h3>Exponential families</h3>
-    <p>A \(k\)-parameter exponential family has density
-    \[
-    p_\eta(x)=\exp\{\eta^\top T(x)-A(\eta)\}h(x).
-    \]
-    The statistic \(T\) is sufficient by factorization. If the natural parameter space contains an open set, the family is often regular enough that \(A'(\eta)=E_\eta T(X)\) and \(A''(\eta)=\operatorname{Var}_\eta T(X)\).</p>
-
-
-    <h3>Likelihood principle and conditionality</h3>
-
-    <p>The likelihood principle says that all evidence about a parameter contained in the observation is carried by the likelihood function up to proportionality. This principle explains why Bayesian posterior inference ignores the sampling plan after conditioning on the observed data, while frequentist error probabilities usually do not.</p>
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Two experiments \(E_1,E_2\) with observations \(x_1,x_2\) give the same likelihood evidence about \(\theta\) if \(L_1(\theta;x_1)=cL_2(\theta;x_2)\) for all \(\theta\) and some \(c>0\) independent of \(\theta\). The likelihood principle requires identical inferential conclusions in that case.</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Bayes posterior distributions with the same prior obey the likelihood principle in dominated models.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The posterior density is proportional to prior density times likelihood. Multiplying the likelihood by a positive constant independent of \(\theta\) changes only the normalizing constant, hence the posterior law is unchanged.</p>
-    </div>
-    <h3>Completeness and Basu</h3>
-    <p>A statistic \(T\) is complete if \(E_\theta a(T)=0\) for all \(\theta\) implies \(a(T)=0\) a.s. for all \(\theta\). In classical exact inference, complete sufficiency supports uniqueness of unbiased estimators. Basu’s theorem says that a complete sufficient statistic is independent of every ancillary statistic.</p>
+  <p><span class="statement-title">Definition (sufficiency).</span> A statistic \(T:\mathcal X\to\mathcal T\) is sufficient for \(\{P_\theta\}\) if there is a Markov kernel \(K(t,\mathrm{d}x)\), independent of \(\theta\), that is a version of the conditional law
+  \[
+  P_\theta(X\in\mathrm{d}x\mid T)=K(T,\mathrm{d}x)
+  \]
+  for every \(\theta\). Equivalently, the original experiment can be reconstructed from the reduced experiment \(\{P_\theta\circ T^{-1}\}\) by a parameter-free randomization.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Neyman-Fisher factorization theorem.</span> Suppose the model is dominated by a \(\sigma\)-finite measure \(\mu\) and regular conditional distributions exist. Then \(T\) is sufficient if and only if versions of the densities can be written
+  \[
+  p_\theta(x)=g_\theta(T(x))h(x),
+  \]
+  where \(h\ge0\) is independent of \(\theta\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If the factorization holds, define the finite measure \(\nu(\mathrm{d}x)=h(x)\mu(\mathrm{d}x)\). Disintegrate \(\nu\) along \(T\):
+  \[
+  \nu(\mathrm{d}x)=K(T(x),\mathrm{d}x)\,\nu_T(\mathrm{d}T(x)).
+  \]
+  Multiplication by \(g_\theta(T(x))\) changes only the marginal law of \(T\), not the conditional kernel \(K\); hence \(T\) is sufficient. Conversely, sufficiency gives
+  \[
+  P_\theta(\mathrm{d}x)=K(T(x),\mathrm{d}x)\,P_{\theta,T}(\mathrm{d}T(x)).
+  \]
+  Choose a dominating mixture \(Q\) of the model and let \(Q_T\) be its \(T\)-marginal. The Radon-Nikodym derivative \(\mathrm{d}P_{\theta,T}/\mathrm{d}Q_T\) depends on \(x\) only through \(T(x)\), while \(\mathrm{d}Q/\mathrm{d}\mu\) is parameter-free. Their product supplies \(g_\theta(T(x))h(x)\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (normal reduction).</span> If \(X_1,\ldots,X_n\) are i.i.d. \(N(\mu,\sigma^2)\), then
+  \[
+  \prod_{i=1}^n p_{\mu,\sigma}(x_i)
+  =(2\pi\sigma^2)^{-n/2}
+  \exp\!\left[-\frac{\sum_i(x_i-\bar x)^2+n(\bar x-\mu)^2}{2\sigma^2}\right].
+  \]
+  Therefore \((\bar X,\sum_i(X_i-\bar X)^2)\) is sufficient for \((\mu,\sigma^2)\). If \(\sigma^2\) is known, \(\bar X\) alone is sufficient for \(\mu\).</p>
+</div>
+
+<h3>Minimal sufficiency</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sufficient statistic \(T\) is minimal sufficient if, for every sufficient statistic \(S\), there is a measurable \(f\) such that \(T=f(S)\) almost surely under every \(P_\theta\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Likelihood-ratio criterion.</span> In a dominated model, suppose a statistic \(T\) satisfies
+  \[
+  T(x)=T(y)
+  \quad\Longleftrightarrow\quad
+  \frac{p_\theta(x)}{p_\theta(y)}
+  \text{ is independent of }\theta
+  \]
+  whenever the ratio is defined. Then \(T\) is minimal sufficient.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(\theta_0\) with a positive reference density on the common support. The criterion implies
+  \[
+  \frac{p_\theta(x)}{p_{\theta_0}(x)}
+  =g_\theta(T(x)),
+  \]
+  so factorization proves sufficiency. If \(S\) is sufficient, its factorization makes \(p_\theta(x)/p_{\theta_0}(x)\) a function of \(S(x)\) for every \(\theta\). Hence \(S(x)=S(y)\) implies the ratio criterion and therefore \(T(x)=T(y)\). Thus \(T\) is a function of \(S\).</p>
+</div>
+
+<h3>Rao-Blackwellization and completeness</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Rao-Blackwell theorem.</span> Let \(T\) be sufficient and let \(U\) estimate \(g(\theta)\). For every convex loss \(L(\theta,a)\),
+  \[
+  U^\star=\mathbb E_\theta[U\mid T]
+  \]
+  can be chosen independently of \(\theta\), and
+  \[
+  \mathbb E_\theta L(\theta,U^\star)
+  \le \mathbb E_\theta L(\theta,U).
+  \]
+  Under squared error, \(\operatorname{Var}_\theta(U^\star)\le\operatorname{Var}_\theta(U)\), with equality exactly when \(U\) is \(T\)-measurable almost surely.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Sufficiency makes the conditional law of \(X\), hence the conditional expectation of \(U\), parameter-free once \(T\) is fixed. Conditional Jensen gives
+  \[
+  L(\theta,\mathbb E[U\mid T])
+  \le\mathbb E[L(\theta,U)\mid T].
+  \]
+  Taking expectations proves the risk inequality. For squared loss, the conditional variance decomposition
+  \[
+  \operatorname{Var}(U)
+  =\operatorname{Var}\{\mathbb E(U\mid T)\}
+  +\mathbb E\{\operatorname{Var}(U\mid T)\}
+  \]
+  gives the sharper statement.</p>
+</div>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (completeness).</span> A statistic \(T\) is complete for \(\{P_\theta\}\) if
+  \[
+  \mathbb E_\theta a(T)=0\ \text{for every }\theta
+  \quad\Longrightarrow\quad
+  a(T)=0\quad P_\theta\text{-a.s. for every }\theta
+  \]
+  for every integrable measurable \(a\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Lehmann-Scheffe theorem.</span> If \(T\) is complete and sufficient and \(U=u(T)\) is unbiased for \(g(\theta)\), then \(U\) is the unique unbiased estimator of \(g(\theta)\) that is a function of \(T\), and it has minimum variance among all unbiased estimators.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Rao-Blackwellization maps any unbiased estimator \(V\) to \(V^\star=\mathbb E(V\mid T)\), which remains unbiased and cannot have larger variance. Both \(V^\star\) and \(U\) are functions of \(T\), and
+  \[
+  \mathbb E_\theta(V^\star-U)=0\quad\text{for all }\theta.
+  \]
+  Completeness forces \(V^\star=U\) almost surely. Thus \(\operatorname{Var}_\theta(U)\le\operatorname{Var}_\theta(V)\), and uniqueness follows in the same way.</p>
+</div>
+
+<h3>Exponential families</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A \(k\)-parameter natural exponential family has densities
+  \[
+  p_\eta(x)=\exp\{\eta^\top T(x)-A(\eta)\}h(x),
+  \qquad
+  A(\eta)=\log\int e^{\eta^\top T(x)}h(x)\,\mu(\mathrm{d}x),
+  \]
+  for \(\eta\) in the natural parameter space
+  \[
+  \mathcal N=\left\{\eta:\int e^{\eta^\top T}h\,\mathrm{d}\mu\lt\infty\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Cumulant identities.</span> At every interior point where differentiation is justified,
+  \[
+  \nabla A(\eta)=\mathbb E_\eta T,\qquad
+  \nabla^2A(\eta)=\operatorname{Cov}_\eta(T).
+  \]
+  Hence \(A\) is convex, and it is strictly convex whenever no nonzero linear combination of \(T\) is almost surely constant.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(Z(\eta)=e^{A(\eta)}\). Differentiating \(Z\) gives
+  \[
+  \partial_jA=\frac{\partial_jZ}{Z}
+  =\frac{\int T_j e^{\eta^\top T}h\,\mathrm{d}\mu}
+  {\int e^{\eta^\top T}h\,\mathrm{d}\mu}
+  =\mathbb E_\eta T_j.
+  \]
+  Differentiating once more yields
+  \(\partial_{jk}^2A=\mathbb E_\eta(T_jT_k)-\mathbb E_\eta T_j\,\mathbb E_\eta T_k\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Completeness of a full exponential family.</span> If the natural parameter space contains a nonempty open set in \(\mathbb R^k\), then the natural statistic \(T\) is complete, subject to the common-support representation above.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Suppose \(\mathbb E_\eta a(T)=0\) throughout an open set \(U\). Fix \(\eta_0\in U\). Then
+  \[
+  0=e^{A(\eta)}\mathbb E_\eta a(T)
+  =\int a(T)e^{(\eta-\eta_0)^\top T}\,\nu_{\eta_0}(\mathrm{d}x),
+  \]
+  where \(\nu_{\eta_0}(\mathrm{d}x)=e^{\eta_0^\top T(x)}h(x)\mu(\mathrm{d}x)\). This is the moment-generating transform of the finite signed measure induced by \(a(T)\nu_{\eta_0}\). It vanishes in a neighborhood of the origin, so uniqueness of Laplace transforms makes that signed measure zero. Therefore \(a(T)=0\) almost surely.</p>
+</div>
+
+<p>A curved exponential family restricts \(\eta\) to a lower-dimensional surface. The open-set argument then fails, and the natural statistic need not be complete even though it remains sufficient.</p>
+
+<h3>Ancillarity and Basu independence</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A statistic \(A(X)\) is ancillary if its distribution is the same under every \(P_\theta\). It carries no marginal information about \(\theta\), although conditioning on it can change the precision or relevance of another statistic.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Basu theorem.</span> Every complete sufficient statistic \(T\) is independent of every ancillary statistic \(A\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a measurable set \(B\) in the range of \(A\), sufficiency gives a parameter-free version
+  \[
+  q_B(T)=P_\theta(A\in B\mid T).
+  \]
+  Since \(A\) is ancillary, \(P_\theta(A\in B)=c_B\) is constant in \(\theta\). Therefore
+  \[
+  \mathbb E_\theta\{q_B(T)-c_B\}=0
+  \]
+  for every \(\theta\). Completeness implies \(q_B(T)=c_B\) almost surely, which is exactly \(P_\theta(A\in B\mid T)=P_\theta(A\in B)\). A monotone-class argument extends from generating sets \(B\) to the full sigma-field.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For a normal sample with unknown \(\mu\) and known \(\sigma^2\), \(\bar X\) is complete sufficient for \(\mu\), while the centered residual direction
+  \[
+  \frac{(X_1-\bar X,\ldots,X_n-\bar X)}
+  {\{\sum_i(X_i-\bar X)^2\}^{1/2}}
+  \]
+  is ancillary. Basu's theorem yields their independence without a direct Gaussian covariance calculation.</p>
+</div>
+
+<h3>Likelihood and conditionality</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Likelihood principle.</span> If observations \(x_1,x_2\) from possibly different experiments produce proportional likelihoods,
+  \[
+  L_1(\theta;x_1)=c(x_1,x_2)L_2(\theta;x_2)
+  \quad\text{for every }\theta,
+  \]
+  then they should lead to the same evidential conclusion about \(\theta\).</p>
+</div>
+
+<p>Bayesian updating with a fixed prior obeys this principle because the proportionality constant cancels in posterior normalization. Frequentist procedures are calibrated over repetitions of an experiment, so stopping rules and sampling plans can change their error probabilities even when the observed likelihoods are proportional. Sufficiency, conditionality, and frequentist calibration are therefore related but not interchangeable ideas.</p>

@@ -8,52 +8,210 @@ note_prev_url: "/notes/probability-theory/multidimensional-brownian-motion/"
 note_next_url: "/notes/probability-theory/continuous-time-martingales-local-martingales/"
 ---
 
-<p>Brownian motion and parabolic PDEs are linked by the heat semigroup. Probabilistic conditioning becomes analytic evolution.</p>
+<p>Brownian transition probabilities form the heat semigroup, and Brownian stopping transforms boundary data into harmonic functions. Ito's formula translates the Laplacian into infinitesimal expected change; Feynman-Kac adds killing and source terms. Probability thereby supplies both representations and uniqueness arguments for elliptic and parabolic PDEs.</p>
 
-    <h3>Heat semigroup</h3>
+<h3>The heat kernel</h3>
 
-    <p>Brownian transition densities solve the heat equation.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For bounded measurable \(f\),
+  \[
+  P_tf(x)=\mathbb E_xf(B_t)
+  =\int_{\mathbb R^d}f(y)p_t(x,y)\,\mathrm{d} y,
+  \]
+  where
+  \[
+  p_t(x,y)
+  =(2\pi t)^{-d/2}
+  \exp\!\left(-\frac{\|y-x\|^2}{2t}\right).
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For bounded measurable \(f\), define \(P_tf(x)=\mathbb E_x f(B_t)\). In \(\mathbb R^d\),
-\[
-P_tf(x)=\int_{\mathbb R^d}f(y)(2\pi t)^{-d/2}e^{-|y-x|^2/(2t)}\,\mathrm{d}y.
-\]</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (Gaussian semigroup).</span>
+  \[
+  p_{t+s}(x,z)
+  =
+  \int_{\mathbb R^d}p_t(x,y)p_s(y,z)\,\mathrm{d} y,
+  \]
+  and consequently \(P_{t+s}=P_tP_s\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The sum of independent
+  \(N_d(0,tI_d)\) and \(N_d(0,sI_d)\) vectors is
+  \(N_d(0,(t+s)I_d)\). Convolution of their densities gives the kernel identity, and Fubini gives the operator identity.</p>
+</div>
 
-    <h3>Generator of Brownian motion</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (heat equation).</span> If \(f\) is bounded and continuous, then for \(t>0\),
+  \[
+  u(t,x)=P_tf(x)
+  \]
+  is smooth and satisfies
+  \[
+  \partial_tu=\frac12\Delta u,
+  \qquad
+  u(t,\cdot)\to f
+  \]
+  locally uniformly at continuity points as \(t\downarrow0\).</p>
+</div>
 
-    <p>The infinitesimal generator is one half of the Laplacian.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Direct differentiation of the Gaussian density gives
+  \[
+  \partial_tp_t(x,y)=\frac12\Delta_xp_t(x,y).
+  \]
+  For \(t\ge\varepsilon>0\), every derivative is dominated by an integrable polynomial times a Gaussian, so differentiation under the integral is valid. Approximate-identity convergence of \(p_t\) gives the initial condition.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For \(f\in C_b^2(\mathbb R^d)\),
-\[
-\lim_{t\downarrow0}\frac{P_tf(x)-f(x)}{t}=\frac12\Delta f(x).
-\]</p>
-    </div>
+<h3>The Brownian generator</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use Taylor expansion \(f(x+h)=f(x)+\nabla f(x)\cdot h+\frac12h^\top D^2f(x)h+o(|h|^2)\). With \(h=B_t-B_0\), the linear term has mean zero and \(\mathbb E[h_ih_j]=t\delta_{ij}\), yielding \(\frac12t\Delta f(x)+o(t)\). Divide by \(t\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For
+  \(f\in C_b^2(\mathbb R^d)\) with uniformly continuous second derivatives,
+  \[
+  \lim_{t\downarrow0}
+  \left\|
+  \frac{P_tf-f}{t}-\frac12\Delta f
+  \right\|_\infty=0.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taylor's formula gives, uniformly in \(x\),
+  \[
+  f(x+h)
+  =f(x)+\nabla f(x)^\top h
+  +\frac12h^\top\nabla^2f(x)h+r(x,h),
+  \]
+  with \(r(x,h)=o(\|h\|^2)\) uniformly as \(h\to0\). Put
+  \(h=\sqrt t\,Z\), \(Z\sim N_d(0,I_d)\). The linear term has mean zero and
+  \[
+  \mathbb E[h^\top\nabla^2f(x)h]
+  =t\,\operatorname{tr}\nabla^2f(x)=t\Delta f(x).
+  \]
+  Split the remainder on \(\{\|h\|\le\delta\}\) and its Gaussian tail to show
+  \(\sup_x\mathbb E|r(x,h)|=o(t)\).</p>
+</div>
 
-    <h3>Dirichlet problem</h3>
+<h3>Harmonic measure and the Dirichlet problem</h3>
 
-    <p>Exit distributions represent harmonic functions.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For an open domain
+  \(D\subset\mathbb R^d\), let
+  \[
+  \tau_D=\inf\{t\ge0:B_t\notin D\}.
+  \]
+  The exit distribution
+  \[
+  \omega_D^x(A)=P_x(B_{\tau_D}\in A)
+  \]
+  on \(\partial D\) is harmonic measure.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(D\) is a regular bounded domain, \(\tau_D=\inf\{t:B_t\notin D\}\), and \(g\) is continuous on \(\partial D\), then
-\[
-u(x)=\mathbb E_x g(B_{\tau_D})
-\]
-solves \(\Delta u=0\) in \(D\) with boundary values \(g\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (probabilistic Dirichlet representation).</span> Let \(D\) be bounded and regular for Brownian motion, and let \(g\in C(\partial D)\). Then
+  \[
+  u(x)=\mathbb E_xg(B_{\tau_D})
+  =\int_{\partial D}g(y)\omega_D^x(\mathrm{d} y)
+  \]
+  is harmonic in \(D\), continuous on \(\overline D\), and equals \(g\) on the boundary. It is the unique function with these properties.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For smooth \(u\), Itô's formula gives \(u(B_{t\wedge\tau_D})=u(x)+\int_0^{t\wedge\tau_D}\nabla u(B_s)\,\mathrm{d}B_s+\frac12\int_0^{t\wedge\tau_D}\Delta u(B_s)\,\mathrm{d}s\). Harmonicity makes the drift vanish, so optional stopping identifies \(u(x)\) with expected boundary values. The general result follows by approximation and regularity of the domain.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(U\Subset D\) and
+  \(\tau_U\) is its exit time, the strong Markov property gives
+  \[
+  u(x)
+  =\mathbb E_x[
+  \mathbb E_{B_{\tau_U}}g(B_{\tau_D})]
+  =\mathbb E_xu(B_{\tau_U}).
+  \]
+  Taking \(U\) to be a ball proves the mean-value property, hence harmonicity. Boundary regularity gives
+  \(B_{\tau_D}\to z\) in probability when \(x\to z\in\partial D\), so continuity of \(g\) yields the boundary value. If \(v\) is another solution, then
+  \(v(B_{t\wedge\tau_D})\) is a bounded martingale by Ito's formula. Optional stopping gives
+  \(v(x)=\mathbb E_xg(B_{\tau_D})=u(x)\).</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Feynman-Kac adds potentials and source terms, turning PDE solutions into weighted Brownian expectations.</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (mean-value property).</span> If \(h\) is harmonic on a neighborhood of the closed ball
+  \(\overline B(x,r)\), then
+  \[
+  h(x)
+  =
+  \mathbb E_xh(B_{\tau_{B(x,r)}})
+  =
+  \frac1{|\partial B(x,r)|}
+  \int_{\partial B(x,r)}h(y)\,\mathrm{d}S(y).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Optional stopping gives the first equality. Rotational invariance of Brownian motion makes its exit point from a ball centered at \(x\), when started at \(x\), uniform on the sphere, giving the second.</p>
+</div>
+
+<h3>The Poisson problem and occupation time</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(D\) is a bounded regular domain and \(f\) is bounded continuous. Then
+  \[
+  u(x)=\mathbb E_x\int_0^{\tau_D}f(B_s)\,\mathrm{d} s
+  \]
+  solves, under standard regularity,
+  \[
+  -\frac12\Delta u=f\quad\text{in }D,
+  \qquad
+  u=0\quad\text{on }\partial D.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(u\in C^2(D)\cap C(\overline D)\) solves the PDE, Ito's formula at
+  \(t\wedge\tau_D\) gives
+  \[
+  \mathbb Eu(B_{t\wedge\tau_D})-u(x)
+  =
+  -\mathbb E\int_0^{t\wedge\tau_D}f(B_s)\,\mathrm{d} s.
+  \]
+  Let \(t\to\infty\); the boundary term tends to zero and dominated convergence gives the representation. Conversely, the strong Markov property gives the dynamic programming identity on every compactly contained subdomain; standard elliptic regularity then identifies the generator equation.</p>
+</div>
+
+<h3>Feynman-Kac formula</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(V\) be bounded below and sufficiently regular, and let \(f\) be bounded. Define
+  \[
+  u(t,x)
+  =
+  \mathbb E_x\!\left[
+  \exp\!\left\{-\int_0^tV(B_s)\,\mathrm{d} s\right\}
+  f(B_t)\right].
+  \]
+  Then \(u\) solves
+  \[
+  \partial_tu
+  =\frac12\Delta u-Vu,
+  \qquad u(0,x)=f(x).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Assume first that \(u\) is
+  \(C^{1,2}\). For fixed \(T\), apply Ito's product rule to
+  \[
+  Y_s=
+  \exp\!\left\{-\int_0^sV(B_r)\,\mathrm{d} r\right\}
+  u(T-s,B_s).
+  \]
+  Its drift is
+  \[
+  e^{-\int_0^sV}
+  \left\{-\partial_tu+\frac12\Delta u-Vu\right\}(T-s,B_s)\,\mathrm{d} s,
+  \]
+  which vanishes by the PDE. Thus \(Y_s\) is a martingale, and comparing
+  \(s=0\) with \(s=T\) gives the expectation formula. Conversely, the Markov property yields the semigroup with killing; differentiating it at zero identifies the generator
+  \(\frac12\Delta-V\), and parabolic regularity supplies the classical solution under the stated assumptions.</p>
+</div>
+
+<p>For a general diffusion, the Laplacian is replaced by its generator
+\(b^\top\nabla+\frac12\operatorname{tr}(a\nabla^2)\). The same martingale calculation is the basic bridge from stochastic differential equations to elliptic and parabolic PDEs.</p>

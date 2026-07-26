@@ -8,27 +8,159 @@ note_prev_url: "/notes/empirical-processes/entropy-of-smooth-classes/"
 note_next_url: "/notes/empirical-processes/entropy-and-maximal-inequalities/"
 ---
 
-<p>Chaining bounds a supremum by approximating the index set at successively finer scales. It is the conceptual engine behind entropy integrals.</p>
+<p>A single \(\varepsilon\)-net approximates the process only at one resolution. Chaining uses a nested sequence of nets and represents every coordinate as a sum of increments from coarse to fine scales. Each increment is small; the number of possible increments grows with resolution. The entropy integral is the accumulated price of this size–multiplicity tradeoff.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a sub-Gaussian process \(Z_t\), a Dudley-type bound has the form \(E\sup_{s,t\in T}|Z_s-Z_t|\lesssim \int_0^{\operatorname{diam}(T)}\sqrt{\log N(\varepsilon,T,d)}\,\mathrm{d}\varepsilon\).</p>
-    </div>
+<h3>Sub-Gaussian processes</h3>
 
-    <h3>Entropy integrals</h3>
-    <ul>
-        <li>The entropy integral sums oscillations from coarse to fine approximations.</li>
-        <li>Generic chaining sharpens Dudley bounds by optimizing admissible sequences rather than fixed nets.</li>
-        <li>Gaussian comparison transfers bounds between processes with ordered covariance metrics.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A centered process \(Z=\{Z_t:t\in T\}\) is sub-Gaussian with respect to a semimetric \(d\) if
+  \[
+  E\exp\{\lambda(Z_t-Z_s)\}
+  \leq\exp\{\lambda^2d(s,t)^2/2\}
+  \]
+  for every \(s,t\in T\) and \(\lambda\in\mathbb R\).</p>
+</div>
 
-    <h3>Dudley and generic chaining</h3>
-    <p>Chaining explains why entropy appears under a square root in CLT and maximal-inequality conditions.</p>
+<p>A centered Gaussian process is sub-Gaussian for its canonical metric
+\[
+d(s,t)=\{E(Z_s-Z_t)^2\}^{1/2}.
+\]
+Conditional Rademacher processes are sub-Gaussian for \(d_n(f,g)=\|f-g\|_{P_n,2}\). Thus one geometric argument treats both Gaussian limits and symmetrized empirical processes.</p>
 
-    <!-- expanded-learning -->
-    <h3>Telescoping chain</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Lemma.</span> The proof idea is to choose nets \(T_0,T_1,\ldots\) with mesh sizes decreasing geometrically and write \(Z_t\) as a telescoping sum of increments between projections. The expected supremum becomes a sum of maximal increments over the nets.</p>
-    </div>
+<h3>Dudley's entropy bound</h3>
 
-    <h3>Dudley versus generic chaining</h3>
-    <p>Dudley's bound is often not sharp, but it explains the square-root entropy integral. Generic chaining replaces fixed-scale nets by optimized admissible sequences and is sharper for irregular geometries.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Dudley).</span> Let \(Z\) be a separable, centered, sub-Gaussian process on \((T,d)\). For every \(t_0\in T\),
+  \[
+  E\sup_{t\in T}|Z_t-Z_{t_0}|
+  \leq
+  C\int_0^{\operatorname{diam}(T)}
+  \sqrt{\log\{2N(\varepsilon,T,d)\}}\,\mathrm{d}\varepsilon
+  \]
+  for a universal constant \(C\), whenever the integral is finite.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put \(D=\operatorname{diam}(T)\), \(\delta_j=2^{-j}D\), and choose a minimal \(\delta_j\)-net \(T_j\), with \(T_0=\{t_0\}\). Select \(\pi_j(t)\in T_j\) with \(d(t,\pi_jt)\leq\delta_j\). Separability permits passage from finite levels to \(T\), and
+  \[
+  Z_t-Z_{t_0}
+  =\sum_{j\geq1}\{Z_{\pi_jt}-Z_{\pi_{j-1}t}\}.
+  \]
+  At level \(j\), every increment has sub-Gaussian scale at most
+  \[
+  d(\pi_jt,\pi_{j-1}t)
+  \leq\delta_j+\delta_{j-1}\leq3\delta_{j-1},
+  \]
+  and there are at most \(|T_j||T_{j-1}|\) possible pairs. The finite-class maximal inequality therefore yields
+  \[
+  E\sup_t|Z_{\pi_jt}-Z_{\pi_{j-1}t}|
+  \lesssim
+  \delta_{j-1}\sqrt{\log\{2|T_j||T_{j-1}|\}}.
+  \]
+  Summing over \(j\) and using monotonicity of covering numbers gives
+  \[
+  E\sup_t|Z_t-Z_{t_0}|
+  \lesssim\sum_{j\geq1}
+  \delta_j\sqrt{\log\{2N(\delta_j,T,d)\}}.
+  \]
+  This dyadic sum is bounded by a constant multiple of the stated integral. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (continuity).</span> If
+  \[
+  \lim_{\delta\downarrow0}
+  \int_0^\delta\sqrt{\log N(\varepsilon,T,d)}\,\mathrm{d}\varepsilon=0,
+  \]
+  then \(Z\) has a version with bounded, uniformly \(d\)-continuous sample paths.</p>
+</div>
+
+<p>Apply Dudley's argument to the restricted pairs \(d(s,t)\leq\delta\). The expected modulus tends to zero; a subsequence and Borel–Cantelli yield uniform continuity of a separable version.</p>
+
+<h3>Truncated chains</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For every \(a>0\),
+  \[
+  E\sup_{t\in T}|Z_t-Z_{t_0}|
+  \lesssim
+  E\sup_{t\in T}|Z_t-Z_{\pi_a t}|
+  +\int_a^D\sqrt{\log N(\varepsilon,T,d)}\,\mathrm{d}\varepsilon,
+  \]
+  where \(\pi_a t\) is an \(a\)-net projection.</p>
+</div>
+
+<p>Truncation is useful when entropy diverges at zero or increments cease to be sub-Gaussian below a sample-dependent scale. One handles the unresolved remainder by an envelope or Bernstein bound and optimizes \(a\).</p>
+
+<h3>Sudakov minoration</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Sudakov).</span> Let \(Z\) be a centered Gaussian process with canonical metric \(d\). Then
+  \[
+  E\sup_{t\in T}Z_t
+  \geq c\sup_{\varepsilon>0}
+  \varepsilon\sqrt{\log M(\varepsilon,T,d)}
+  \]
+  for a universal constant \(c>0\).</p>
+</div>
+
+<p>Dudley gives an upper bound by adding all scales; Sudakov says that any single scale containing many well-separated points already forces a large supremum. Together they show why metric entropy is not merely a proof artifact.</p>
+
+<h3>Gaussian comparison</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Sudakov–Fernique).</span> Let \(\{X_t:t\in T\}\) and \(\{Y_t:t\in T\}\) be separable centered Gaussian processes. If
+  \[
+  E(X_s-X_t)^2\leq E(Y_s-Y_t)^2
+  \qquad\text{for all }s,t\in T,
+  \]
+  then
+  \[
+  E\sup_{t\in T}X_t\leq E\sup_{t\in T}Y_t.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> First take finite \(T=\{1,\ldots,m\}\) and replace the maximum by
+  \[
+  F_\beta(x)=\beta^{-1}\log\sum_{j=1}^me^{\beta x_j}.
+  \]
+  Interpolate \(Z(u)=\sqrt u\,X+\sqrt{1-u}\,Y\). Gaussian integration by parts expresses
+  \(\frac{\mathrm{d}}{\mathrm{d}u}EF_\beta(Z(u))\) as a weighted sum of differences between the increment variances of \(X\) and \(Y\). The weights have the sign that makes this derivative nonpositive under the assumed ordering. Integrate from \(0\) to \(1\), then let \(\beta\to\infty\). Finite approximations and separability extend the conclusion to general \(T\). \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Gaussian width of a sphere).</span> For \(g\sim N_d(0,I_d)\) and \(Z_t=g^\top t\) on \(T=S^{d-1}\),
+  \[
+  \sup_{t\in S^{d-1}}Z_t=\|g\|_2,
+  \qquad
+  E\|g\|_2\asymp\sqrt d.
+  \]
+  The sphere has \(\log N(\varepsilon)\asymp d\log(1/\varepsilon)\), so Dudley's integral also gives order \(\sqrt d\). Here the entropy upper bound is sharp in order.</p>
+</div>
+
+<h3>Generic chaining</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An admissible sequence \((T_k)_{k\geq0}\) satisfies
+  \[
+  |T_0|=1,\qquad |T_k|\leq2^{2^k}.
+  \]
+  The generic chaining functional is
+  \[
+  \gamma_2(T,d)
+  =
+  \inf_{(T_k)}
+  \sup_{t\in T}\sum_{k\geq0}2^{k/2}d(t,T_k).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (majorizing measures).</span> For every centered Gaussian process with canonical metric \(d\),
+  \[
+  E\sup_{t\in T}(Z_t-Z_{t_0})\asymp\gamma_2(T,d),
+  \]
+  with universal comparison constants.</p>
+</div>
+
+<p>Dudley's integral chooses nets according only to their worst covering radius. Generic chaining allocates approximating points unevenly across the geometry and is sharp for every Gaussian process. In most statistical applications Dudley is simpler and adequate; \(\gamma_2\) becomes essential for irregular, anisotropic, or high-dimensional index sets.</p>

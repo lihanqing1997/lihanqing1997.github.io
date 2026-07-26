@@ -46,3 +46,163 @@ for \(\Delta\) in a cone \(\|\Delta_{S^c}\|_1\le c\|\Delta_S\|_1\) and for \(\be
 <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A BvM theorem is a second-order statement. It normally requires a first-order contraction theorem first, because the posterior must lie in the region where sparse curvature and Taylor expansion are valid.</p>
     </div>
+
+<h3>Canonical GLM likelihood geometry</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For fixed design rows \(x_i^\top\),
+\[
+\ell_n(\beta)
+=\sum_{i=1}^n
+\{y_ix_i^\top\beta-b(x_i^\top\beta)\}
+\]
+up to dispersion and parameter-free terms. The score and negative Hessian are
+\[
+U_n(\beta)
+=X^\top\{y-\mu(\beta)\},
+\]
+\[
+H_n(\beta)
+=X^\top W(\beta)X,
+\qquad
+W_{ii}(\beta)=b''(x_i^\top\beta).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (local quadratic bounds).</span> If on a neighborhood \(\mathcal B\),
+\[
+0<m\le b''(x_i^\top\beta)\le M<\infty
+\]
+for all \(i,\beta\in\mathcal B\), then
+\[
+\frac m2\|X(\beta-\beta_0)\|_2^2
+\le
+-\ell_n(\beta)+\ell_n(\beta_0)
++U_n(\beta_0)^\top(\beta-\beta_0)
+\le
+\frac M2\|X(\beta-\beta_0)\|_2^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply Taylor's theorem along the segment between \(\beta_0\) and \(\beta\):
+\[
+-\ell_n(\beta)+\ell_n(\beta_0)
++U_n(\beta_0)^\top(\beta-\beta_0)
+=\frac12(\beta-\beta_0)^\top
+X^\top W(\widetilde\beta)X
+(\beta-\beta_0).
+\]
+Bound the diagonal weights.</p>
+</div>
+
+<h3>Logistic curvature loss</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For logistic regression,
+\[
+b''(\eta)
+=\frac{e^\eta}{(1+e^\eta)^2}
+\le\frac14,
+\]
+and \(b''(\eta)\to0\) as \(|\eta|\to\infty\). Thus global strong convexity is impossible without restricting linear predictors.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate
+\(b(\eta)=\log(1+e^\eta)\). The Bernoulli variance
+\(p(1-p)\) is at most \(1/4\) and tends to zero as \(p\to0\) or \(1\).</p>
+</div>
+
+<p>Posterior contraction must first confine \(\beta\) to a region where enough fitted probabilities remain away from zero and one on informative design directions. Sparse restricted curvature is therefore both local and truth-dependent.</p>
+
+<h3>Poisson curvature and tails</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For Poisson regression,
+\[
+b''(\eta)=e^\eta.
+\]
+Curvature can vanish for very negative predictors and explode for very positive predictors. Uniform Taylor control requires bounds on
+\[
+\max_i|x_i^\top(\beta-\beta_0)|
+\]
+and on the true intensity range.</p>
+</div>
+
+<h3>Sparse GLM contraction</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (schematic).</span> Suppose \(\beta_0\) is \(s_0\)-sparse, the design satisfies a weighted restricted eigenvalue condition at truth, covariates are controlled, and a spike-and-slab prior has compatible complexity and slab mass. If
+\[
+s_0\log p=o(n),
+\]
+then
+\[
+\Pi\left(
+\frac{\|X(\beta-\beta_0)\|_2}{\sqrt n}
+>M\sqrt{\frac{s_0\log p}{n}}
+\middle|Y
+\right)\to0.
+\]
+Weighted restricted eigenvalues convert this to
+\(\ell^2\)-coefficient contraction.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Score concentration controls
+\[
+\|X^\top(Y-\mu_0)\|_\infty
+\]
+at order \(\sqrt{n\log p}\). Local likelihood curvature converts prediction displacement into KL separation. Sparse covering entropy and model prior cost are
+\(s_0\log p\), while the slab supplies local mass. Apply the general contraction theorem within a predictor-bounded sieve.</p>
+</div>
+
+<h3>Self-concordant likelihood control</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For logistic loss along direction \(u\), the third derivative satisfies
+\[
+|\nabla^3\ell_n(\beta)[u,u,u]|
+\le
+\max_i|x_i^\top u|\,
+u^\top H_n(\beta)u.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The third derivative is
+\[
+-\sum_i b'''(x_i^\top\beta)(x_i^\top u)^3.
+\]
+For logistic \(b\),
+\[
+|b'''(\eta)|\le b''(\eta).
+\]
+Factor one \(\max_i|x_i^\top u|\) and recognize the Hessian quadratic form.</p>
+</div>
+
+<p>This generalized self-concordance controls Hessian change by local predictor displacement and can yield sharper LAN remainders than a global third-derivative bound.</p>
+
+<h3>High-dimensional BvM scale</h3>
+
+<p>On a support of size \(s\), posterior local radius is typically
+\[
+\|\beta_S-\beta_{0,S}\|_2
+=O_P(\sqrt{s/n}),
+\]
+conditional on support, or
+\[
+O_P(\sqrt{s\log p/n})
+\]
+uniformly across supports. A cubic remainder then suggests restrictions between
+\(s\), \(\log p\), maximum row norm, and \(n\). The exact BvM condition differs between logistic, Poisson, and Gaussian models because their curvature derivatives differ.</p>
+
+<h3>Separation and sparse priors</h3>
+
+<p>A proper sparse prior makes a logistic posterior proper under separation, but selection probabilities and moments can still be sensitive to slab tails. A thin slab may force finite estimates yet over-shrink true large coefficients; a very diffuse slab may create a large model-evidence penalty. Separation is therefore a regime in which prior choice remains first order rather than disappearing under BvM.</p>
+
+<h3>Unknown dispersion and nuisance parameters</h3>
+
+<p>For noncanonical or overdispersed GLMs, dispersion and nuisance functions alter score covariance and information. A sparse BvM theorem for \(\beta\) must either estimate them fast enough, prove orthogonality, or include them in the local Gaussian block. Plugging in a dispersion estimate without accounting for its uncertainty is a separate approximation.</p>

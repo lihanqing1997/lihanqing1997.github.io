@@ -8,47 +8,205 @@ note_prev_url: "/notes/survival-analysis/survival-functions-hazards-censoring/"
 note_next_url: "/notes/survival-analysis/counting-processes-martingales/"
 ---
 
-<h3>Risk sets</h3>
+<p>The Kaplan-Meier estimator reconstructs survival by multiplying empirical conditional survival probabilities. The Nelson-Aalen estimator instead adds empirical hazard increments. Their finite-sample forms are elementary; their rigorous large-sample theory is most transparent through the counting-process martingales introduced on the next page.</p>
 
-    <p>Nonparametric survival estimation begins by separating two processes: who is at risk immediately before a time \(t\), and whether an event occurs at \(t\).</p>
+<h3>Risk sets and observed failures</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For subject \(i\), let \(N_i(t)=1\{X_i\le t,\Delta_i=1\}\) and \(Y_i(t)=1\{X_i\ge t\}\). At an event time \(t_j\), write \(d_j=\sum_i \Delta_i1\{X_i=t_j\}\) and \(r_j=\sum_i1\{X_i\ge t_j\}\).</p>
-    </div><div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under independent right censoring, the Kaplan-Meier estimator is
+<p><span class="statement-title">Definition.</span> For independently right-censored observations \((X_i,\Delta_i)\), define
 \[
-\widehat S(t)=\prod_{t_j\le t}\left(1-{d_j\over r_j}\right),
+N_i(t)=1\{X_i\le t,\Delta_i=1\},\qquad
+Y_i(t)=1\{X_i\ge t\},
 \]
-and the Nelson-Aalen estimator of the cumulative hazard is
+and \(N(t)=\sum_iN_i(t)\), \(Y(t)=\sum_iY_i(t)\). If
+\(t_1<\cdots<t_m\) are the distinct observed failure times, put
 \[
-\widehat\Lambda(t)=\sum_{t_j\le t}{d_j\over r_j}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> At time \(t_j\), conditional on being in the risk set, the empirical conditional survival probability across the jump is \(1-d_j/r_j\). Multiplying these conditional survival estimates gives the product-limit form. Since \(\mathrm{d}\Lambda(t)\) is the conditional event probability over an infinitesimal interval, its empirical jump at \(t_j\) is \(d_j/r_j\), giving Nelson-Aalen.</p>
-    </div>
-    <h3>Connection between the two estimators</h3>
-<div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> When jumps are small, \(-\log \widehat S(t)=\widehat\Lambda(t)+O_p(\sum_{t_j\le t}d_j^2/r_j^2)\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use \(-\log(1-x)=x+O(x^2)\) uniformly for small \(x\), and substitute \(x=d_j/r_j\) in the product formula for \(\widehat S\).</p>
-    </div>
-    <h3>Greenwood variance and log-scale intervals</h3>
+d_j=\Delta N(t_j),\qquad r_j=Y(t_j).
+\]
+With delayed entry \(A_i\), replace \(Y_i(t)\) by \(1\{A_i\le t\le X_i\}\).</p>
+</div>
+
+<p>The convention \(Y_i(t)=1\{X_i\ge t\}\) makes a subject failing at \(t\) a member of the risk set immediately before \(t\).</p>
+
+<h3>The product-limit likelihood</h3>
+
 <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For fixed \(t\) before the last time with a nonempty risk set, Greenwood's formula estimates the variance of the Kaplan-Meier estimator by
+<p><span class="statement-title">Theorem (Kaplan-Meier NPMLE).</span> Assign a conditional failure probability \(q_j=P(T=t_j\mid T\ge t_j)\) at each observed failure time. The nonparametric likelihood is
 \[
-\widehat{\operatorname{var}}\{\widehat S(t)\}
-=\widehat S(t)^2\sum_{t_j\le t}{d_j\over r_j(r_j-d_j)}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Work on the log product scale. Since \(\log\widehat S(t)=\sum_{t_j\le t}\log(1-d_j/r_j)\), a first-order delta calculation gives increments with variance \(d_j/\{r_j(r_j-d_j)\}\). Multiplying by \(\widehat S(t)^2\) returns to the survival scale.</p>
-    </div>
-    <h3>Asymptotic process viewpoint</h3>
+L(q_1,\ldots,q_m)
+=\prod_{j=1}^m q_j^{d_j}(1-q_j)^{r_j-d_j},
+\]
+up to factors not involving \(q\). Its maximizer is
+\(\widehat q_j=d_j/r_j\), and the resulting product-limit estimator is
+\[
+\widehat S(t)
+=\prod_{t_j\le t}\left(1-\frac{d_j}{r_j}\right).
+\]
+If the largest observation is censored, the mass remaining beyond it is not identified; \(\widehat S\) is nevertheless uniquely determined before that endpoint.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> A subject failing at \(t_j\) contributes \(q_j\) after surviving all earlier event times. A subject known to survive through \(t_j\) contributes \(1-q_j\). Regrouping all individual contributions at each \(t_j\) gives the displayed binomial likelihood. Its log is
+\[
+\ell_j(q_j)=d_j\log q_j+(r_j-d_j)\log(1-q_j),
+\]
+which is strictly concave and has maximizer \(q_j=d_j/r_j\) when \(0<d_j<r_j\), with boundary cases obtained continuously. Multiplication of the estimated conditional survival probabilities yields \(\widehat S\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Suppose the ordered observations are
+\[
+(2,1),(3,0),(4,1),(5,1),(6,0).
+\]
+At failures \(2,4,5\), the risk-set sizes are \(5,3,2\). Therefore
+\[
+\widehat S(t)=
+\begin{cases}
+1,&t<2,\\
+4/5,&2\le t<4,\\
+(4/5)(2/3)=8/15,&4\le t<5,\\
+(4/5)(2/3)(1/2)=4/15,&t\ge5.
+\end{cases}
+\]
+The censored observation at time \(3\) reduces later risk sets but causes no survival jump.</p>
+</div>
+
+<h3>Nelson-Aalen cumulative hazard</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The Nelson-Aalen estimator is
+\[
+\widehat\Lambda(t)
+=\int_{(0,t]}\frac{1\{Y(u)>0\}}{Y(u)}\,\mathrm{d}N(u)
+=\sum_{t_j\le t}\frac{d_j}{r_j}.
+\]
+Its product-integral transform
+\[
+\prod_{(0,t]}\{1-\mathrm{d}\widehat\Lambda(u)\}
+\]
+equals \(\widehat S(t)\) exactly.</p>
+</div>
+
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The Nelson-Aalen error admits the martingale representation
+<p><span class="statement-title">Proposition.</span> If
+\(\max_{t_j\le t}d_j/r_j\le c<1\), then
+\[
+0\le-\log\widehat S(t)-\widehat\Lambda(t)
+\le \frac{1}{2(1-c)}
+\sum_{t_j\le t}\left(\frac{d_j}{r_j}\right)^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For \(0\le x\le c<1\),
+\[
+0\le-\log(1-x)-x
+=\sum_{k\ge2}\frac{x^k}{k}
+\le \frac{x^2}{2(1-x)}
+\le\frac{x^2}{2(1-c)}.
+\]
+Apply this inequality to every hazard jump and sum.</p>
+</div>
+
+<h3>Martingale representation and consistency</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Assume independent censoring and a continuous event hazard \(\lambda\). Then
+\[
+M_i(t)=N_i(t)-\int_0^tY_i(u)\lambda(u)\,\mathrm{d}u
+\]
+is a martingale, and on any interval on which \(Y(u)>0\),
 \[
 \widehat\Lambda(t)-\Lambda(t)
-=\int_0^t {1\over Y_\cdot(u)}\,\mathrm{d}M_\cdot(u)+R_n(t),
+=\int_0^t\frac{1}{Y(u)}\,\mathrm{d}M(u),
+\qquad M=\sum_{i=1}^nM_i.
 \]
-where \(R_n(t)\) is a smaller order term on intervals where \(Y_\cdot(u)\) is of order \(n\).</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This representation is the bridge from product-limit estimators to the counting-process central limit theory used for Cox regression.</p>
-    </div>
+If \(Y(t)/n\to y(t)\) uniformly in probability on \([0,\tau]\), with
+\(\inf_{t\le\tau}y(t)>0\), then
+\[
+\sup_{t\le\tau}|\widehat\Lambda(t)-\Lambda(t)|
+\xrightarrow{P}0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Summing
+\(\mathrm{d}N_i=Y_i\lambda\,\mathrm{d}t+\mathrm{d}M_i\) gives
+\[
+\mathrm{d}N=Y\lambda\,\mathrm{d}t+\mathrm{d}M.
+\]
+Divide by \(Y\) and integrate to obtain the exact representation. Its predictable quadratic variation is
+\[
+\left\langle\widehat\Lambda-\Lambda\right\rangle(t)
+=\int_0^t\frac{\lambda(u)}{Y(u)}\,\mathrm{d}u=O_P(n^{-1}).
+\]
+Lenglart's or Doob's inequality makes the martingale supremum \(o_P(1)\). The event that \(Y\) vanishes before \(\tau\) has probability tending to zero by the positive-risk assumption.</p>
+</div>
+
+<h3>Gaussian limits and variance estimation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Nelson-Aalen limit).</span> Under the preceding assumptions and a martingale Lindeberg condition,
+\[
+\sqrt n\{\widehat\Lambda-\Lambda\}
+\rightsquigarrow W\circ V
+\quad\text{in }D[0,\tau],
+\qquad
+V(t)=\int_0^t\frac{\lambda(u)}{y(u)}\,\mathrm{d}u,
+\]
+where \(W\) is standard Brownian motion. A consistent variance estimator for
+\(\widehat\Lambda(t)\) is
+\[
+\widehat V_\Lambda(t)
+=\int_0^t\frac{1}{Y(u)^2}\,\mathrm{d}N(u)
+=\sum_{t_j\le t}\frac{d_j}{r_j^2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The scaled martingale has predictable variation
+\[
+n\int_0^t\frac{\lambda(u)}{Y(u)}\,\mathrm{d}u
+\xrightarrow{P}V(t).
+\]
+Its jumps are bounded by \(\sqrt n/Y(u)=O_P(n^{-1/2})\), so the martingale functional central limit theorem applies. Replacing the compensator \(Y\lambda\,\mathrm{d}u\) by \(\mathrm{d}N\) gives \(\widehat V_\Lambda\); their difference is a martingale integral of smaller order.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Greenwood formula).</span> For the Kaplan-Meier estimator,
+\[
+\widehat{\operatorname{Var}}\{\widehat S(t)\}
+=\widehat S(t)^2
+\sum_{t_j\le t}
+\frac{d_j}{r_j(r_j-d_j)}.
+\]
+When ties are asymptotically negligible,
+\[
+\sqrt n\{\widehat S(t)-S(t)\}
+=-S(t)\sqrt n\{\widehat\Lambda(t)-\Lambda(t)\}+o_P(1).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on each risk set, the estimated hazard jump \(d_j/r_j\) has binomial variance approximately \(q_j(1-q_j)/r_j\). The derivative of \(\log(1-q_j)\) is \(-1/(1-q_j)\), so its delta-method contribution is
+\[
+\frac{q_j}{r_j(1-q_j)}
+\approx\frac{d_j}{r_j(r_j-d_j)}.
+\]
+Orthogonality of martingale increments permits summation; the exponential delta method returns to the survival scale. The functional expansion follows from Hadamard differentiability of \(\Lambda\mapsto e^{-\Lambda}\) in the continuous-hazard case.</p>
+</div>
+
+<h3>Pointwise intervals and simultaneous bands</h3>
+
+<p>A normal interval on the raw survival scale can leave \([0,1]\). The complementary log-log transform
+\[
+g(s)=\log\{-\log s\}
+\]
+maps \((0,1)\) to \(\mathbb R\) and respects cumulative-hazard geometry. If
+\(\widehat\sigma^2(t)\) is Greenwood's variance, then
+\[
+\widehat{\operatorname{se}}\{g(\widehat S(t))\}
+=\frac{\widehat\sigma(t)}
+       {|\widehat S(t)\log\widehat S(t)|}.
+\]
+Transforming a normal interval for \(g(S(t))\) back gives a pointwise interval inside \([0,1]\). Simultaneous Hall-Wellner or equal-precision bands instead use the functional Gaussian limit and a supremum critical value; replacing a pointwise \(z\)-quantile by the same number does not produce simultaneous coverage.</p>

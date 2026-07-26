@@ -5,6 +5,7 @@ breadcrumb_child_label_fr: "21. Problèmes partiellement observables"
 breadcrumb_child_label_zh: "21. 部分可观测问题"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
+note_next_url: "/notes/reinforcement-learning/linear-quadratic-control/"
 ---
 
 <p>Partial observability breaks the ordinary Markov property at the observation level. The correct state for planning is the belief distribution over hidden states.</p>
@@ -64,3 +65,86 @@ and the belief transition kernel is induced by prediction and Bayes update. Thus
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Recurrent networks, filters, and predictive-state representations can be viewed as approximations to belief-state inference. Their statistical difficulty is that representation learning and control are coupled.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Hidden-state control</h3>
+
+<p>A POMDP augments an MDP with observations:
+\[
+S_{t+1}\sim P(\cdot\mid S_t,A_t),\qquad
+O_{t+1}\sim G(\cdot\mid S_{t+1},A_t).
+\]
+The controller sees
+\(H_t=(O_0,A_0,\ldots,A_{t-1},O_t)\), not \(S_t\). A policy is a kernel from
+observable histories to actions.</p>
+
+<h3>Bayesian filtering and the belief MDP</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (belief-state reduction).</span> Let
+\[
+b_t(B)=\mathbb P(S_t\in B\mid H_t)
+\]
+be the filtering distribution. Under known kernels, \(b_{t+1}\) is a
+deterministic measurable function
+\(\tau(b_t,A_t,O_{t+1})\). The process \(b_t\) is a fully observed controlled
+Markov process, and no history-dependent policy can outperform a policy that
+depends only on \(b_t\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Prediction and Bayes update give
+\[
+\bar b_{t+1}(\mathrm{d}s')
+=\int P(\mathrm{d}s'\mid s,A_t)b_t(\mathrm{d}s),
+\]
+\[
+b_{t+1}(\mathrm{d}s')
+=\frac{G(\mathrm{d}O_{t+1}\mid s',A_t)\bar b_{t+1}(\mathrm{d}s')}
+{\int G(\mathrm{d}O_{t+1}\mid x,A_t)\bar b_{t+1}(\mathrm{d}x)}.
+\]
+Conditional on \(b_t,A_t\), the next observation and belief law do not depend
+on earlier history. Expected immediate reward is
+\(\bar r(b,a)=\int r(s,a)b(\mathrm{d}s)\). Markovization on the belief space
+therefore preserves every additive return.</p>
+</div>
+
+<h3>Piecewise-linear convex finite-horizon values</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> In a finite POMDP with
+finite horizon and reward maximization, the optimal value is piecewise linear
+and convex in the belief:
+\[
+V_h^*(b)=\max_{\alpha\in\Gamma_h}\alpha^\top b
+\]
+for a finite set of alpha-vectors \(\Gamma_h\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> At the terminal stage the value
+is the maximum over action-reward vectors, hence has the form. Assume the next
+stage has alpha-vectors. For each current action and each mapping from possible
+observations to next-stage alpha-vectors, expand expected reward plus next
+value before normalizing the Bayes update. The resulting expression is linear
+in the current belief. Maximizing over finitely many action/continuation plans
+produces a finite maximum of linear functions.</p>
+</div>
+
+<h3>Dimensional and statistical difficulty</h3>
+
+<p>The belief simplex is continuous even when hidden state and observation
+spaces are finite, and the number of alpha-vectors can grow exponentially with
+horizon. Point-based value iteration retains vectors useful on sampled beliefs;
+particle filters approximate beliefs in large models. Errors now arise from
+filtering, value approximation, and planning, and they interact.</p>
+
+<h3>Memory, predictive states, and identifiability</h3>
+
+<p>A recurrent policy compresses history into a learned state, but without
+guarantees that this state is sufficient. Predictive-state representations use
+conditional distributions of future observations as state coordinates and can
+avoid latent-state nonidentifiability. Off-policy learning is particularly
+delicate: two latent models may induce the same behavior-policy observation law
+but different target-policy values. Sequential overlap plus observability or
+identification assumptions are therefore necessary, not merely more data.</p>

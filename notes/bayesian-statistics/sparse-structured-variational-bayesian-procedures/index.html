@@ -5,6 +5,7 @@ breadcrumb_child_label_fr: "33. Procédures bayésiennes parcimonieuses, structu
 breadcrumb_child_label_zh: "33. 稀疏、结构化与变分贝叶斯程序"
 note_back_url: "/notes/bayesian-statistics/"
 note_prev_url: "/notes/bayesian-statistics/semiparametric-nonparametric-bvm/"
+note_next_url: "/notes/bayesian-statistics/sparse-priors-and-shrinkage/"
 ---
 
 <p>Modern Bayesian procedures often combine sparsity, structure, and variational approximation. The mathematical question is whether computationally tractable posteriors still concentrate near the truth with calibrated uncertainty.</p>
@@ -71,3 +72,161 @@ or richer block factorizations that preserve known dependence.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Pinsker's inequality converts KL error into total variation error. Total variation controls bounded expectation differences, while posterior contraction controls the target posterior mass outside the \(\varepsilon_n\)-ball.</p>
     </div>
+
+<h3>Spike-and-slab variational families</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A coordinatewise spike-and-slab variational distribution has
+\[
+q(\beta,z)
+=\prod_{j=1}^p
+\left[
+\gamma_jq_j(\beta_j)1\{z_j=1\}
++(1-\gamma_j)\delta_0(\beta_j)1\{z_j=0\}
+\right],
+\]
+where \(\gamma_j\in[0,1]\) approximates posterior inclusion probability. Structured variants retain dependence within groups or through a sparse covariance graph.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The expected variational model size is
+\[
+E_q|S|=\sum_{j=1}^p\gamma_j,
+\]
+and its entropy contains the Bernoulli term
+\[
+-\sum_j\{
+\gamma_j\log\gamma_j+
+(1-\gamma_j)\log(1-\gamma_j)
+\}
+\]
+plus conditional slab entropies.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Since
+\(|S|=\sum_jz_j\), linearity gives the first identity. Entropy of a product is the sum of factor entropies, and each mixed discrete-continuous factor decomposes into Bernoulli entropy plus \(\gamma_j\) times slab entropy.</p>
+</div>
+
+<h3>Variational contraction from a comparison distribution</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (oracle variational bound).</span> Let
+\(\widehat Q\) minimize
+\[
+\operatorname{KL}\{Q\|\Pi(\cdot\mid X^{(n)})\}
+\]
+over \(\mathcal Q\). Suppose there exists \(Q^\star\in\mathcal Q\), concentrated in a \(d\)-ball of radius \(\varepsilon_n\) around truth, such that
+\[
+\operatorname{KL}(Q^\star\|\Pi)
++E_{Q^\star}K_n(P_0,P_\theta)
+\le Cn\varepsilon_n^2.
+\]
+Under an exponential testing condition for loss \(d^2\), one obtains
+\[
+E_0E_{\widehat Q}
+d^2(P_\theta,P_0)
+\lesssim\varepsilon_n^2
+\]
+up to constants and testing remainders.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The variational optimum is no worse in posterior KL than \(Q^\star\). Use the ELBO identity to express this comparison as empirical loss plus prior KL. An exponential test or PAC-Bayes change-of-measure inequality converts the empirical criterion into expected statistical loss uniformly over \(Q\). The comparison-distribution bound yields the rate.</p>
+</div>
+
+<p>The theorem does not require \(\widehat Q\) to be close to the exact posterior in total variation. It proves statistical accuracy directly through one well-chosen variational approximation to truth.</p>
+
+<h3>Sparse linear-regression rate</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (schematic).</span> In
+\[
+Y=X\beta_0+\varepsilon,\qquad
+\varepsilon\sim N(0,\sigma^2I_n),
+\]
+suppose \(\beta_0\) is \(s_0\)-sparse, the design satisfies a sparse compatibility condition, and a spike-and-slab variational family uses a complexity prior and slabs with sufficient local mass. Then
+\[
+E_{\widehat Q}
+\frac{\|X(\beta-\beta_0)\|_2^2}{n}
+=O_{P_0}\left(
+\frac{s_0\log p}{n}
+\right),
+\]
+and typically
+\[
+E_{\widehat Q}\|\beta-\beta_0\|_2^2
+=O_{P_0}\left(
+\frac{s_0\log p}{n}
+\right)
+\]
+under restricted eigenvalues.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Choose \(Q^\star\) supported on the true model, with slab factors in balls of radius \(n^{-1/2}\) around active coefficients. Prior and entropy cost is
+\[
+O\{s_0\log p\},
+\]
+matching the sparse model count. Gaussian likelihood KL is proportional to prediction loss. Apply the oracle variational theorem, then restricted eigenvalues convert prediction to coefficient loss.</p>
+</div>
+
+<h3>Selection and thresholding</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Rate-optimal prediction does not imply
+\[
+\gamma_j\to1\quad(j\in S_0),
+\qquad
+\gamma_j\to0\quad(j\notin S_0).
+\]
+Selection additionally requires beta-min separation, design incoherence, and enough variational flexibility to distinguish correlated alternatives. Thresholding at \(\gamma_j>1/2\) is a decision rule whose loss should be specified.</p>
+</div>
+
+<h3>Mean-field underdispersion in sparse models</h3>
+
+<p>Even if support probabilities are accurate, factorized slabs omit posterior dependence within a selected model. For a linear functional \(a^\top\beta\),
+\[
+\operatorname{Var}_q(a^\top\beta)
+=\sum_ja_j^2\operatorname{Var}_q(\beta_j)
+\]
+omits
+\[
+2\sum_{j<k}a_ja_k
+\operatorname{Cov}_\Pi(\beta_j,\beta_k\mid X).
+\]
+Correlated designs can make this omission first order. Richer low-rank covariance factors or post-selection Gaussian correction can restore local dependence.</p>
+
+<h3>Optimization stationarity is not statistical validity</h3>
+
+<p>Coordinate-ascent fixed points can be local optima. Let
+\[
+\mathcal L^\star=\sup_{Q\in\mathcal Q}\mathcal L(Q),
+\qquad
+\delta_{\mathrm{opt}}
+=\mathcal L^\star-\mathcal L(\widehat Q_{\mathrm{alg}}).
+\]
+A statistical theorem for the global variational optimum extends to the algorithmic output only if
+\[
+\delta_{\mathrm{opt}}
+=o_P(n\varepsilon_n^2)
+\]
+in the scale used by the oracle inequality. Initialization sensitivity and multiple restarts are therefore part of the inferential error analysis.</p>
+
+<h3>Structured sparsity</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (group spike-and-slab).</span> Partition coefficients into groups \(G_1,\ldots,G_m\), introduce
+\[
+z_g\sim\operatorname{Bernoulli}(\gamma_g),
+\]
+and conditionally use a multivariate slab on \(\beta_{G_g}\). The complexity rate becomes
+\[
+\frac{s_G\log m+\sum_{g\in S_G}|G_g|}{n},
+\]
+where \(s_G\) is the number of active groups. A coordinatewise variational family cannot represent all-or-none group inclusion without additional coupling.</p>
+</div>
+
+<h3>Calibration strategies</h3>
+
+<p>Possible corrections include linear-response covariance, importance weighting of variational draws, refitting an exact sampler on selected coordinates, bootstrap calibration, and one-step debiasing of a target functional. Each addresses a different discrepancy. A correction should be validated for the reported functional, not justified by a generic claim that variational Bayes is “close.”</p>

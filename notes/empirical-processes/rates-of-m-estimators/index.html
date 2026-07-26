@@ -8,27 +8,185 @@ note_prev_url: "/notes/empirical-processes/m-estimators-consistency/"
 note_next_url: "/notes/empirical-processes/sieve-and-penalized-estimators/"
 ---
 
-<p>Rates balance deterministic curvature against stochastic oscillation over shrinking neighborhoods of the target.</p>
+<p>After consistency has localized an \(M\)-estimator, its rate is determined by a competition. The population criterion falls away from its maximum, while the empirical criterion oscillates over a neighborhood. The estimator cannot escape to a radius where deterministic loss uniformly dominates stochastic gain.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A typical rate theorem bounds \(E^*\sup_{d(\theta,\theta_0)<\delta}|\mathbb G_n(m_\theta-m_{\theta_0})|\) by a modulus \(\phi_n(\delta)\), then solves a balance equation between \(\phi_n(\delta)\) and deterministic curvature.</p>
-    </div>
+<h3>Curvature and the local modulus</h3>
 
-    <h3>Curvature and stochastic modulus</h3>
-    <ul>
-        <li>Quadratic curvature with \(n^{-1/2}\delta\)-scale stochastic oscillation gives the usual \(n^{-1/2}\) rate.</li>
-        <li>Weaker curvature or rougher classes lead to cube-root and other nonstandard rates.</li>
-        <li>The local class \(\{m_\theta-m_{\theta_0}:d(\theta,\theta_0)<\delta\}\) is the main object.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For
+  \(M_n(\theta)=P_nm_\theta\), \(M(\theta)=Pm_\theta\), define the local difference class
+  \[
+  \mathcal M_\delta
+  =
+  \{m_\theta-m_{\theta_0}:d(\theta,\theta_0)\leq\delta\}
+  \]
+  and its stochastic modulus
+  \[
+  \phi_n(\delta)
+  \geq
+  E^*\|\mathbb G_n\|_{\mathcal M_\delta}.
+  \]</p>
+</div>
 
-    <h3>Regular and cube-root rates</h3>
-    <p>Use rate theorems after consistency is known, when the question becomes how fast the estimator enters local neighborhoods.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (rate theorem).</span> Suppose:</p>
+  <ol>
+    <li>\(\hat\theta_n\to_p\theta_0\) and
+    \[
+    M_n(\hat\theta_n)
+    \geq M_n(\theta_0)-O_p(\delta_n^\alpha);
+    \]</li>
+    <li>for some \(\alpha>0\), \(c>0\), and all nearby \(\theta\),
+    \[
+    M(\theta)-M(\theta_0)
+    \leq-c\,d(\theta,\theta_0)^\alpha;
+    \]</li>
+    <li>\(\phi_n(\delta)/\delta^\beta\) is nonincreasing for some
+    \(0<\beta<\alpha\);</li>
+    <li>\(\delta_n\downarrow0\) satisfies
+    \[
+    \phi_n(\delta_n)\lesssim
+    \sqrt n\,\delta_n^\alpha.
+    \]</li>
+  </ol>
+  <p>Then
+  \[
+  d(\hat\theta_n,\theta_0)=O_p(\delta_n).
+  \]</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Rate balance</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A representative rate theorem assumes \(P(m_\theta-m_{\theta_0})\lesssim-d^2(\theta,\theta_0)\) and a local stochastic modulus \(\phi_n(\delta)\). The rate \(r_n\) is chosen so that \(r_n^2\phi_n(1/r_n)\lesssim \sqrt n\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Consider shells
+  \[
+  S_{j,n}
+  =
+  \{\theta:2^{j-1}\delta_n<d(\theta,\theta_0)\leq2^j\delta_n\}.
+  \]
+  If \(\hat\theta_n\in S_{j,n}\), near-optimality and curvature imply that
+  \[
+  \sup_{\theta\in S_{j,n}}
+  |\mathbb G_n(m_\theta-m_{\theta_0})|
+  \gtrsim
+  \sqrt n\,2^{j\alpha}\delta_n^\alpha
+  \]
+  up to the smaller optimization error. Markov's inequality and the local maximal bound give probability at most
+  \[
+  \frac{\phi_n(2^j\delta_n)}
+       {\sqrt n\,2^{j\alpha}\delta_n^\alpha}
+  \leq
+  C2^{-j(\alpha-\beta)}
+  \frac{\phi_n(\delta_n)}
+       {\sqrt n\,\delta_n^\alpha}
+  \lesssim2^{-j(\alpha-\beta)}.
+  \]
+  The tail sum over \(j\geq J\) tends to zero as \(J\to\infty\). Thus
+  \(d(\hat\theta_n,\theta_0)/\delta_n\) is tight. \(\square\)</p>
+</div>
 
-    <h3>Parametric and cube-root balances</h3>
-    <p>For regular parametric models, the local stochastic fluctuation is nearly linear in \(\delta\), giving \(r_n=\sqrt n\). In cube-root problems, the local process is rougher and curvature balances at \(r_n=n^{1/3}\).</p>
+<p>The balancing equation
+\[
+\phi_n(\delta_n)\asymp\sqrt n\,\delta_n^\alpha
+\]
+is the memorable part, but it is only justified after curvature, localization, and the monotonicity needed for peeling have been established.</p>
+
+<h3>The regular root-\(n\) regime</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Suppose the criterion has quadratic curvature,
+  \[
+  M(\theta)-M(\theta_0)\leq-c\|\theta-\theta_0\|^2,
+  \]
+  and is \(L_2(P)\)-Lipschitz,
+  \[
+  \|m_\theta-m_{\theta_0}\|_{P,2}
+  \lesssim\|\theta-\theta_0\|.
+  \]
+  A finite-dimensional entropy bound gives
+  \(\phi_n(\delta)\lesssim\delta\). Balancing
+  \[
+  \delta_n\asymp\sqrt n\,\delta_n^2
+  \]
+  yields \(\delta_n=n^{-1/2}\).</p>
+</div>
+
+<p>Once root-\(n\) localization is known, a second-order Taylor expansion of the population criterion and a linear expansion of the empirical process usually produce asymptotic normality.</p>
+
+<h3>Cube-root asymptotics</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In many threshold or maximum-score criteria, changing \(\theta\) by distance \(\delta\) changes the indicator only on a set of probability \(O(\delta)\). Hence
+  \[
+  \|m_\theta-m_{\theta_0}\|_{P,2}
+  \asymp\delta^{1/2}
+  \]
+  and the local empirical modulus is
+  \(\phi_n(\delta)\asymp\delta^{1/2}\). With quadratic population curvature,
+  \[
+  \delta_n^{1/2}
+  \asymp\sqrt n\,\delta_n^2,
+  \]
+  so
+  \[
+  \delta_n\asymp n^{-1/3}.
+  \]</p>
+</div>
+
+<p>The slower rate is not caused by flatter deterministic curvature; it comes from rougher stochastic increments. Pointwise discontinuity makes two nearby parameters differ on a thin region, whose Bernoulli fluctuation has standard deviation proportional to the square root of its probability.</p>
+
+<h3>Argmax limits</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (argmax continuous mapping).</span> Let
+  \[
+  Z_n(h)
+  =
+  a_n\{M_n(\theta_0+r_n^{-1}h)-M_n(\theta_0)\},
+  \qquad h\in K_n.
+  \]
+  Suppose \(Z_n\rightsquigarrow Z\) locally uniformly on \(\mathbb R^d\), \(Z\) has almost surely a unique maximizer \(\hat h\), and the maximizers
+  \(r_n(\hat\theta_n-\theta_0)\) are tight. Then
+  \[
+  r_n(\hat\theta_n-\theta_0)
+  \rightsquigarrow\hat h=\arg\max_hZ(h).
+  \]</p>
+</div>
+
+<p>Tightness comes from the rate theorem. Local process convergence identifies the shape of the limit. Uniqueness prevents the argmax map from being discontinuous at the limiting sample path.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Chernoff-type limit).</span> In one-dimensional cube-root problems the rescaled criterion often converges to
+  \[
+  Z(h)=\sigma W(h)-c h^2,
+  \]
+  where \(W\) is two-sided Brownian motion. Then
+  \[
+  n^{1/3}(\hat\theta_n-\theta_0)
+  \rightsquigarrow
+  \arg\max_{h\in\mathbb R}\{\sigma W(h)-ch^2\}.
+  \]
+  Brownian scaling shows this law equals
+  \((\sigma/c)^{2/3}\) times a universal Chernoff random variable, up to the normalization convention.</p>
+</div>
+
+<h3>Entropy-generated nonparametric rates</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose a local class has entropy
+  \[
+  \log N(\varepsilon,\mathcal M_\delta,L_2(P))
+  \lesssim\varepsilon^{-\gamma},
+  \qquad0<\gamma<2,
+  \]
+  and its \(L_2\)-diameter is order \(\delta\). Chaining gives
+  \[
+  \phi_n(\delta)\lesssim
+  \int_0^\delta\varepsilon^{-\gamma/2}\,\mathrm{d}\varepsilon
+  \asymp\delta^{1-\gamma/2}.
+  \]
+  Under quadratic curvature,
+  \[
+  \delta_n\asymp n^{-1/(2+\gamma)}.
+  \]</p>
+</div>
+
+<p>At the critical exponent \(\gamma=2\), logarithmic factors appear; above it, the global entropy integral diverges and a truncated or model-specific local bound is necessary. Rates should therefore be derived from the actual localized class, not read mechanically from a global smoothness label.</p>

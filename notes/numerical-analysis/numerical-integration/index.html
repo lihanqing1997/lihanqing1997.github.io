@@ -34,3 +34,86 @@ note_next_url: "/notes/numerical-analysis/adaptive-integration/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> No single quadrature rule is universally best. Oscillation, endpoint singularities, high dimension, and nonsmoothness each require specialized transformations or adaptive strategies.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Interpolatory quadrature</h3>
+
+<p>Choose nodes \(x_i\) and integrate the interpolant:
+\[
+\int_a^bf(x)\,\mathrm{d}x
+\approx\sum_{i=0}^nw_if(x_i),
+\qquad
+w_i=\int_a^b\ell_i(x)\,\mathrm{d}x.
+\]
+The rule is exact on \(\mathcal P_n\). Symmetry can increase the degree of
+exactness by canceling odd moments.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (composite trapezoid error).</span>
+For \(f\in C^2[a,b]\) and a uniform mesh of width \(h=(b-a)/N\),
+\[
+\int_a^bf(x)\,\mathrm{d}x-T_N(f)
+=-\frac{b-a}{12}h^2f''(\xi)
+\]
+for some \(\xi\in(a,b)\), and therefore
+\[
+|\text{error}|
+\le\frac{b-a}{12}h^2\|f''\|_\infty.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> On each subinterval, integrate
+the linear-interpolation remainder
+\[
+f(x)-I_1f(x)
+=\frac{f''(\xi_x)}2(x-x_j)(x-x_{j+1}).
+\]
+The integral of the quadratic factor is \(-h^3/6\), giving local error
+\(-h^3f''(\xi_j)/12\). Sum and apply the weighted mean-value theorem.</p>
+</div>
+
+<h3>Gaussian quadrature</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(x_1,\ldots,x_n\) be the
+zeros of the degree-\(n\) orthogonal polynomial for positive weight \(w\).
+There are positive weights \(\omega_i\) such that
+\[
+\int_a^bf(x)w(x)\,\mathrm{d}x
+\approx\sum_{i=1}^n\omega_if(x_i)
+\]
+is exact for every polynomial of degree at most \(2n-1\). No \(n\)-node rule
+has a higher degree of exactness.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Divide
+\(p\in\mathcal P_{2n-1}\) as \(p=q\phi_n+r\), with
+\(q,r\in\mathcal P_{n-1}\). Orthogonality makes
+\(\int q\phi_nw=0\), while \(\phi_n(x_i)=0\), so both integral and quadrature
+reduce to \(r\), interpolated exactly at the \(n\) nodes. A polynomial
+\(\prod_i(x-x_i)^2\) proves that degree \(2n\) cannot be exact for a positive
+weight.</p>
+</div>
+
+<h3>Peano kernels</h3>
+
+<p>If a linear quadrature error functional \(L\) annihilates
+\(\mathcal P_{m-1}\), then
+\[
+L(f)=\int_a^bf^{(m)}(t)K(t)\,\mathrm{d}t,
+\qquad
+K(t)=L\left(\frac{(\,\cdot-t)_+^{m-1}}{(m-1)!}\right).
+\]
+This Peano-kernel representation yields sharp norm bounds and clarifies the
+sign of an error. It replaces repeated appeals to an unspecified intermediate
+point when the derivative changes sign.</p>
+
+<h3>Periodic analytic functions</h3>
+
+<p>For periodic \(f\) analytic in a strip around the real axis, the composite
+trapezoid rule converges exponentially. Fourier modes sampled on an equispaced
+grid alias, and all nonmultiples of the grid frequency cancel exactly. This
+explains why a nominally second-order rule can be spectrally accurate in the
+periodic analytic setting.</p>

@@ -62,3 +62,87 @@ where the critic estimates \(v_{\pi_\theta}\), \(q_{\pi_\theta}\), or \(A_{\pi_\
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Compatible function approximation and advantage centering are designed to make the critic's approximation error orthogonal to policy-score directions, thereby reducing gradient bias.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Coupled recursions</h3>
+
+<p>An actor--critic algorithm estimates a value object \(w\) while updating
+policy parameter \(\theta\):
+\[
+w_{t+1}=w_t+\beta_t H(w_t,\theta_t,Z_{t+1}),
+\]
+\[
+\theta_{t+1}
+=\theta_t+\alpha_t
+\widehat A_t(w_t)\nabla_\theta\log\pi_{\theta_t}(A_t\mid S_t).
+\]
+The critic turns delayed returns into a lower-variance approximate advantage;
+its error can bias the actor.</p>
+
+<h3>Two-time-scale principle</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (ODE limit, schematic).</span> Suppose
+the state-action chain is uniformly ergodic over a compact parameter set,
+mean fields are Lipschitz, noise has controlled second moments,
+\[
+\sum_t\alpha_t=\sum_t\beta_t=\infty,\quad
+\sum_t(\alpha_t^2+\beta_t^2)<\infty,\quad
+\frac{\alpha_t}{\beta_t}\to0,
+\]
+and for each fixed \(\theta\), the critic ODE
+\(\dot w=\bar H(w,\theta)\) has a globally stable equilibrium \(w^*(\theta)\).
+Then the critic tracks \(w^*(\theta_t)\), while actor limit points follow
+\[
+\dot\theta=\bar G(\theta,w^*(\theta))
+\]
+after projection to the parameter set.</p>
+</div>
+
+<p>This theorem is an application of two-time-scale stochastic approximation.
+The condition \(\alpha_t/\beta_t\to0\) means the critic sees the actor as nearly
+fixed, while the actor sees the critic as nearly equilibrated. It is not enough
+that both step sizes merely decrease.</p>
+
+<h3>When the actor direction is exact</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (compatible critic).</span> Let
+\(\phi_\theta=\nabla_\theta\log\pi_\theta\), and choose \(w\) to minimize
+\[
+E_{d^\pi}\{A^\pi(S,A)-w^\top\phi_\theta(S,A)\}^2.
+\]
+Then
+\[
+E_{d^\pi}\{\phi_\theta\,w^\top\phi_\theta\}
+=E_{d^\pi}(\phi_\theta A^\pi)
+=(1-\gamma)\nabla J(\theta).
+\]
+Thus replacing advantage by the fitted compatible critic preserves the exact
+policy gradient.</p>
+</div>
+
+<p>An arbitrary value network does not satisfy this orthogonality identity.
+Approximation error may introduce a nonvanishing actor bias even with infinite
+data.</p>
+
+<h3>Bias from bootstrapping and shared data</h3>
+
+<p>Actor and critic use the same evolving Markov trajectory. Valid analysis
+must control temporal dependence, nonstationarity as \(\theta_t\) changes,
+bootstrapping bias, and estimation error in \(w_t\). Experience replay changes
+the sampling distribution and usually makes updates off-policy; importance
+weights or emphatic corrections may be required for the theorem targeted by
+the algorithm.</p>
+
+<h3>Average-reward actor--critic</h3>
+
+<p>For an ergodic continuing task with average reward \(\bar r(\theta)\), the
+differential value solves a Poisson equation
+\[
+h^\pi=r_\pi-\bar r(\pi)\mathbf1+P_\pi h^\pi,
+\]
+with a normalization such as \(d_\pi^\top h^\pi=0\). Policy gradients use the
+differential action value and stationary occupancy. This is not obtained by
+substituting \(\gamma=1\) into discounted formulas because values are defined
+only up to constants and mixing controls the effective horizon.</p>

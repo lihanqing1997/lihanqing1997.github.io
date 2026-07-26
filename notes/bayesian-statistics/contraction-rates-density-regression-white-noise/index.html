@@ -56,3 +56,196 @@ Y_j=\theta_j+n^{-1/2}Z_j,\qquad Z_j\stackrel{\mathrm{iid}}{\sim}N(0,1).
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Hierarchical priors on truncation, bandwidth, or scale can adapt if their hyperprior mass matches the optimal bias-variance balance over a range of regularities.</p>
     </div>
+
+<h3>Gaussian white-noise sequence model</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The white-noise experiment
+\[
+\mathrm{d}Y(t)=f_0(t)\,\mathrm{d}t
++n^{-1/2}\,\mathrm{d}W(t)
+\]
+becomes, in an orthonormal basis,
+\[
+Y_j=\theta_{0j}+n^{-1/2}\varepsilon_j,
+\qquad
+\varepsilon_j\stackrel{\mathrm{iid}}{\sim}N(0,1).
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (minimax Sobolev rate).</span> Over
+\[
+\Theta_\beta(R)
+=\left\{\theta:
+\sum_jj^{2\beta}\theta_j^2\le R^2
+\right\},
+\]
+the minimax squared \(\ell^2\)-risk is of order
+\[
+n^{-2\beta/(2\beta+1)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Upper-bound proof.</span> Estimate the first \(J\) coefficients by \(Y_j\) and set the rest to zero. Then
+\[
+E\|\widehat\theta-\theta_0\|_2^2
+=\frac Jn+\sum_{j>J}\theta_{0j}^2
+\le\frac Jn+R^2J^{-2\beta}.
+\]
+Choosing
+\[
+J\asymp n^{1/(2\beta+1)}
+\]
+gives the rate. A matching Assouad or Fano construction on the first \(J\) coordinates gives the lower bound.</p>
+</div>
+
+<h3>Conjugate Gaussian prior rate</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Assign
+\[
+\theta_j\sim N(0,j^{-1-2\alpha}).
+\]
+The posterior mean has shrinkage
+\[
+\widehat\theta_j
+=\frac{n}{n+j^{1+2\alpha}}Y_j,
+\]
+with effective cutoff
+\[
+J_n\asymp n^{1/(1+2\alpha)}.
+\]
+If truth has Sobolev regularity \(\beta\), its squared error is governed by
+\[
+J_n/n+J_n^{-2\beta},
+\]
+up to shrinkage-transition terms. The optimal match is \(\alpha=\beta\), yielding
+\[
+n^{-2\beta/(2\beta+1)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The posterior formula follows from Gaussian conjugacy. Below \(J_n\), likelihood precision dominates prior precision and variance contributes roughly \(J_n/n\). Above \(J_n\), strong shrinkage leaves truth-tail bias bounded by \(J_n^{-2\beta}\). Balance at \(\alpha=\beta\).</p>
+</div>
+
+<h3>Fixed-design nonparametric regression</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span>
+\[
+Y_i=f_0(x_i)+\varepsilon_i,
+\qquad
+\varepsilon_i\sim N(0,\sigma^2).
+\]
+The empirical prediction norm is
+\[
+\|f-f_0\|_n^2
+=\frac1n\sum_{i=1}^n
+\{f(x_i)-f_0(x_i)\}^2.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For Gaussian regression, the average KL divergence and variance between \(f_0\) and \(f\) are proportional to
+\[
+\|f-f_0\|_n^2.
+\]
+Thus the general contraction theorem naturally yields prediction-norm contraction.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For one observation with equal variance,
+\[
+K\{N(f_0(x_i),\sigma^2),
+N(f(x_i),\sigma^2)\}
+=\frac{\{f(x_i)-f_0(x_i)\}^2}{2\sigma^2}.
+\]
+Sum and divide by \(n\). The log likelihood ratio variance is likewise proportional to the squared mean difference.</p>
+</div>
+
+<p>Converting empirical prediction to \(L^2(P_X)\) or supremum norm requires design regularity and function-class control. Random-design regression directly induces the \(L^2(P_X)\) metric in expectation.</p>
+
+<h3>Density estimation rate calculation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (histogram heuristic made explicit).</span> For a \(\beta\)-Hölder density on \([0,1]\), a regular histogram with \(J\) bins has approximation error
+\[
+\|f_{0,J}-f_0\|_1\lesssim J^{-\beta}
+\]
+for \(0<\beta\le1\), while estimating \(J\) probabilities has stochastic Hellinger scale
+\[
+\sqrt{J/n}.
+\]
+Balancing gives
+\[
+J\asymp n^{1/(2\beta+1)},
+\qquad
+\varepsilon_n\asymp
+n^{-\beta/(2\beta+1)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Hölder continuity bounds within-bin variation by \(CJ^{-\beta}\), giving approximation error. A multinomial vector of dimension \(J\) has aggregate squared error order \(J/n\), and local Hellinger distance has the same scale under density bounds. Equate squared bias \(J^{-2\beta}\) and variance \(J/n\).</p>
+</div>
+
+<h3>Classification and binary regression</h3>
+
+<p>For
+\[
+Y\mid X=x\sim\operatorname{Bernoulli}\{\eta(x)\},
+\]
+KL divergence is locally equivalent to
+\[
+\|\eta-\eta_0\|_{L^2(P_X)}^2
+\]
+when \(\eta\) stays away from zero and one. A prior on a latent link
+\[
+\eta(x)=\Psi\{f(x)\}
+\]
+inherits contraction from \(f\) if \(\Psi\) is Lipschitz on posterior-relevant ranges. Classification excess risk can be faster than regression-function error under a margin condition controlling
+\[
+P_X(|\eta_0(X)-1/2|\le t).
+\]</p>
+
+<h3>Inverse problems</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> In a linear inverse problem,
+\[
+Y_j=\kappa_j\theta_{0j}+n^{-1/2}\varepsilon_j,
+\qquad
+\kappa_j\asymp j^{-r}.
+\]
+The forward observation attenuates high-frequency coefficients.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> A truncated estimator has risk
+\[
+\frac1n\sum_{j\le J}\kappa_j^{-2}
++\sum_{j>J}\theta_{0j}^2
+\asymp
+\frac{J^{2r+1}}n+J^{-2\beta}.
+\]
+Balancing gives
+\[
+J\asymp n^{1/(2\beta+2r+1)},
+\qquad
+\varepsilon_n
+\asymp n^{-\beta/(2\beta+2r+1)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Estimating
+\(\theta_j\) requires dividing noise by \(\kappa_j\), giving variance
+\(n^{-1}\kappa_j^{-2}\). Sum polynomial singular values and add Sobolev tail bias, then balance.</p>
+</div>
+
+<h3>Logarithmic factors</h3>
+
+<p>Log factors arise from prior small-ball probabilities, random dimension penalties, tail truncation, adaptation over smoothness, or sup-norm testing. They are not always proof artifacts. A claimed minimax rate should specify whether it is exact, up to logarithms, pointwise in smoothness, or adaptive across a scale.</p>

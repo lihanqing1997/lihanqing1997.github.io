@@ -72,3 +72,161 @@ where \(p(y_i\mid y_{-i})\) is the posterior predictive density fitted without o
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The criterion is a concave optimization problem in the weights for logarithmic score because the log of a positive affine combination is concave. The resulting weights target predictive performance rather than posterior model probabilities.</p>
     </div>
+
+<h3>Bayes factors and prior sensitivity</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For models \(M_0,M_1\),
+\[
+BF_{10}
+=\frac{m_1(y)}{m_0(y)}
+=\frac{\int p_1(y\mid\theta_1)
+\pi_1(\mathrm{d}\theta_1)}
+{\int p_0(y\mid\theta_0)
+\pi_0(\mathrm{d}\theta_0)}.
+\]
+Posterior model odds satisfy
+\[
+\frac{P(M_1\mid y)}{P(M_0\mid y)}
+=BF_{10}\frac{P(M_1)}{P(M_0)}.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (regular Bayes-factor expansion).</span> If model \(M_k\) has regular dimension \(d_k\), then
+\[
+2\log BF_{10}
+=2\{\ell_1(\widehat\theta_1)-\ell_0(\widehat\theta_0)\}
+-(d_1-d_0)\log n
++O_P(1),
+\]
+where the \(O_P(1)\) term contains prior densities and information determinants.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply the Laplace expansion
+\[
+\log m_k(y)
+=\ell_k(\widehat\theta_k)
+-\frac{d_k}{2}\log n+O_P(1)
+\]
+to each model and subtract.</p>
+</div>
+
+<p>The \(O_P(1)\) prior term can matter greatly in finite samples, especially for weakly identified parameters. Bayes-factor robustness must be assessed by varying scientifically plausible proper priors, not by quoting only a BIC approximation.</p>
+
+<h3>Jeffreys-Lindley phenomenon</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+\bar X\mid\theta\sim N(\theta,1/n).
+\]
+Compare \(H_0:\theta=0\) with
+\(H_1:\theta\sim N(0,\tau^2)\). Then
+\[
+BF_{01}
+=\sqrt{1+n\tau^2}
+\exp\left[
+-\frac{n^2\tau^2\bar X^2}
+{2(1+n\tau^2)}
+\right].
+\]
+If \(z=\sqrt n\,\bar X\) is held fixed while \(n\to\infty\), then
+\[
+BF_{01}\sim\sqrt n\,\tau\,e^{-z^2/2}\to\infty.
+\]
+Thus a fixed frequentist \(z\)-value can coexist with increasing posterior support for the point null.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Derivation.</span> Under \(H_0\),
+\(\bar X\sim N(0,1/n)\); under \(H_1\), integrating \(\theta\) gives
+\(\bar X\sim N(0,\tau^2+1/n)\). Taking the ratio of these two normal densities gives the formula.</p>
+</div>
+
+<h3>Expected log predictive density</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Leave-one-out expected log predictive density is estimated by
+\[
+\widehat{\operatorname{elpd}}_{\mathrm{loo}}
+=\sum_{i=1}^n
+\log p(y_i\mid y_{-i}),
+\]
+where
+\[
+p(y_i\mid y_{-i})
+=\int p(y_i\mid\theta)
+\Pi(\mathrm{d}\theta\mid y_{-i}).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Under exchangeable sampling, the expectation of one leave-one-out term equals the expected log score of a posterior predictive distribution trained on \(n-1\) fresh observations.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> By exchangeability, for each \(i\), the pair
+\((Y_i,Y_{-i})\) has the same law as a fresh test observation and an independent training sample of size \(n-1\), after relabeling. Taking expectations gives the claim.</p>
+</div>
+
+<h3>Importance approximation and Pareto diagnostics</h3>
+
+<p>From full posterior draws \(\theta^{(s)}\sim\Pi(\cdot\mid y)\),
+\[
+p(y_i\mid y_{-i})
+=\left[
+E_{\Pi(\cdot\mid y)}
+\left\{\frac1{p(y_i\mid\theta)}\right\}
+\right]^{-1}.
+\]
+The raw importance ratios
+\[
+r_i^{(s)}=\frac1{p(y_i\mid\theta^{(s)})}
+\]
+can have heavy tails. Pareto-smoothed importance sampling regularizes their largest values and estimates a generalized-Pareto tail shape \(k\). Large \(k\) signals that deleting observation \(i\) moves the posterior too far for stable importance reweighting; exact refitting or \(K\)-fold cross-validation is then safer.</p>
+
+<h3>WAIC and effective complexity</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The widely applicable information criterion uses
+\[
+\operatorname{lppd}
+=\sum_i\log E_{\Pi(\cdot\mid y)}
+p(y_i\mid\theta),
+\]
+\[
+p_{\mathrm{WAIC}}
+=\sum_i\operatorname{Var}_{\Pi(\cdot\mid y)}
+\{\log p(y_i\mid\theta)\},
+\]
+and
+\[
+\widehat{\operatorname{elpd}}_{\mathrm{WAIC}}
+=\operatorname{lppd}-p_{\mathrm{WAIC}}.
+\]</p>
+</div>
+
+<p>WAIC is asymptotically related to leave-one-out prediction, including in some singular models, but its finite-sample variance expansion can fail with influential observations. Pointwise diagnostics and LOO are usually more informative than one aggregate criterion.</p>
+
+<h3>Stacking predictive distributions</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Given leave-one-out predictive densities \(p_{k,-i}(y_i)\), stacking solves
+\[
+\widehat w
+\in\arg\max_{w\in\Delta_{K-1}}
+\sum_{i=1}^n
+\log\left\{
+\sum_{k=1}^Kw_kp_{k,-i}(y_i)
+\right\}.
+\]
+The objective is concave in \(w\); it is strictly concave when the predictive vectors distinguish every feasible direction.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Each summand is the logarithm of a positive affine function of \(w\), hence concave. Its Hessian is a negative semidefinite rank-one matrix. Summing gives strict negativity on directions not annihilated by all predictive vectors.</p>
+</div>
+
+<p>Posterior model probabilities estimate belief in a model index under an \(M\)-closed assumption that one listed model generated the data. Stacking chooses a predictive mixture under an \(M\)-open view in which every listed model may be wrong. These are different inferential goals, so their weights need not agree.</p>

@@ -75,3 +75,181 @@ holds whenever the terms are well-defined.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Dependence contributes covariance terms to uncertainty in linear functionals. A product approximation sets cross-covariances to zero, so the induced variance of sums or contrasts may be too small unless the missing covariance happens to vanish.</p>
     </div>
+
+<h3>ELBO decomposition</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+\pi(\theta\mid x)
+=\frac{p(x,\theta)}{p(x)}
+\]
+and let \(q\) be any density dominated by the posterior. Then
+\[
+\log p(x)
+=\mathcal L(q)
++\operatorname{KL}\{q\|\pi(\cdot\mid x)\},
+\]
+where
+\[
+\mathcal L(q)
+=E_q\log p(x,\theta)-E_q\log q(\theta)
+\]
+is the evidence lower bound.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\[
+\operatorname{KL}(q\|\pi)
+=E_q\log q-E_q\log p(x,\theta)+\log p(x).
+\]
+Rearrange. Nonnegativity of KL gives
+\(\mathcal L(q)\le\log p(x)\).</p>
+</div>
+
+<h3>Mean-field coordinate updates</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For a product family
+\[
+q(\theta)=\prod_{j=1}^mq_j(\theta_j),
+\]
+holding \(q_{-j}\) fixed, the ELBO-maximizing factor satisfies
+\[
+\log q_j^\star(\theta_j)
+=E_{q_{-j}}\log p(x,\theta)+C_j.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Terms depending on \(q_j\) are
+\[
+\int q_j(\theta_j)
+E_{q_{-j}}\log p(x,\theta)\,\mathrm{d}\theta_j
+-\int q_j\log q_j.
+\]
+Adding a Lagrange multiplier for normalization and taking the functional derivative gives
+\[
+E_{q_{-j}}\log p-\log q_j-1+\lambda=0.
+\]
+Exponentiation and normalization yield the update.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Exact coordinate updates never decrease the ELBO, and every limit point satisfying regularity is coordinatewise stationary. They need not reach the global optimum because the product-family ELBO is generally nonconcave jointly in all factors.</p>
+</div>
+
+<h3>A Gaussian mean-field calculation</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let the target be
+\[
+\pi(\theta)=N_2(0,\Sigma),\qquad
+\Sigma=
+\begin{bmatrix}1&\rho\\\rho&1\end{bmatrix}.
+\]
+The reverse-KL optimal product Gaussian
+\[
+q=N(m_1,v_1)\otimes N(m_2,v_2)
+\]
+has
+\[
+m_1=m_2=0,\qquad
+v_1=v_2=1-\rho^2.
+\]
+Thus each variational marginal variance is smaller than the true marginal variance \(1\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The target precision is
+\[
+\Sigma^{-1}
+=\frac1{1-\rho^2}
+\begin{bmatrix}1&-\rho\\-\rho&1\end{bmatrix}.
+\]
+The mean-field coordinate update for \(\theta_1\) has precision
+\((\Sigma^{-1})_{11}=1/(1-\rho^2)\) and mean
+\(\rho E_q\theta_2\); symmetrically for \(\theta_2\). The fixed point has zero means and variance \(1-\rho^2\).</p>
+</div>
+
+<h3>Reverse and forward KL geometry</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (separated mixture).</span> Let
+\[
+\pi=\frac12N(-a,1)+\frac12N(a,1)
+\]
+with large \(a\), and approximate by one Gaussian.</p>
+<ul>
+<li>Minimizing \(\operatorname{KL}(q\|\pi)\) can choose one mode, because placing mass in the low-density valley is heavily penalized while omitting another target mode is not directly penalized under expectation \(q\).</li>
+<li>Minimizing \(\operatorname{KL}(\pi\|q)\) matches target moments, giving approximately \(N(0,1+a^2)\), which covers both modes and the low-density valley.</li>
+</ul>
+</div>
+
+<p>“Mode seeking” and “mass covering” are useful tendencies, not universal theorems for every variational family. The direction of KL determines which distribution supplies the expectation and therefore which support errors are costly.</p>
+
+<h3>Stochastic gradients and reparameterization</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (pathwise gradient).</span> Suppose
+\[
+\theta=T_\lambda(\varepsilon),
+\qquad \varepsilon\sim r,
+\]
+and differentiation may pass under the integral. Then
+\[
+\nabla_\lambda E_{q_\lambda}f(\theta,\lambda)
+=E_r\left[
+\nabla_\theta f\{T_\lambda(\varepsilon),\lambda\}
+\nabla_\lambda T_\lambda(\varepsilon)
++\nabla_\lambda f\{T_\lambda(\varepsilon),\lambda\}
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Rewrite the expectation as
+\[
+\int f\{T_\lambda(\varepsilon),\lambda\}r(\varepsilon)
+\,\mathrm{d}\varepsilon.
+\]
+Differentiate under the integral and apply the chain rule.</p>
+</div>
+
+<p>For a location-scale Gaussian,
+\(\theta=\mu+L\varepsilon\), \(\varepsilon\sim N(0,I)\). Pathwise gradients usually have lower variance than score-function gradients because they use local derivatives of the log joint, but they require a differentiable simulator.</p>
+
+<h3>Variational uncertainty under regular asymptotics</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose the exact local posterior is approximately
+\[
+N_d(\widehat\theta,(nI)^{-1}).
+\]
+The reverse-KL projection onto diagonal Gaussians has covariance
+\[
+\frac1n
+\operatorname{diag}\left(
+\frac1{I_{11}},\ldots,\frac1{I_{dd}}
+\right),
+\]
+not the diagonal of \(I^{-1}/n\) in general.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Repeat the Gaussian mean-field calculation with target precision \(nI\). Each factor's optimal precision is the corresponding diagonal precision \(nI_{jj}\).</p>
+</div>
+
+<p>When parameters are correlated, \(1/I_{jj}\le(I^{-1})_{jj}\), so credible intervals are too narrow. Linear-response corrections, importance weighting, richer covariance families, or calibrated bootstrap methods can improve uncertainty, but each introduces additional assumptions and computation.</p>
+
+<h3>Three separable errors</h3>
+
+<p>A practical variational result contains:</p>
+<ol>
+<li><em>statistical error:</em> the exact posterior differs from the data-generating target;</li>
+<li><em>approximation error:</em> the best member of \(\mathcal Q\) differs from the exact posterior;</li>
+<li><em>optimization error:</em> the algorithm has not reached the best member of \(\mathcal Q\).</li>
+</ol>
+
+<p>An ELBO trace diagnoses only the third. Enlarging \(\mathcal Q\) may reduce the second while worsening the optimization landscape. Theoretical guarantees should state which of these errors they control and in which metric.</p>

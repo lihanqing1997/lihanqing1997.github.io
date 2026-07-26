@@ -67,3 +67,121 @@ Compare this with \(n^{-1}\sum_i\mathbb E\,\ell(A(S),Z_i)\). Each term differs b
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Compare the two regularized objectives for samples differing in one point. Strong convexity controls the distance between minimizers, while Lipschitzness converts that distance into a difference in losses. Since only one empirical term changes, the factor \(1/n\) appears.</p>
     </div>
+
+<h3>Replace-one and remove-one conventions</h3>
+
+<p>Two conventions coexist. Replace-one stability compares samples of equal size that differ at one coordinate. Remove-one stability compares \(S\) with \(S\setminus\{Z_i\}\). Their constants differ slightly, but under regularity they encode the same principle. Proofs must state which convention is used because exchangeability identities depend on it.</p>
+
+<h3>A high-probability bound with explicit constants</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose
+  \(0\le\ell\le M\) and \(A\) has replace-one uniform stability \(\beta\). Then, with probability at least \(1-\delta\),
+  \[
+  R(A(S))-R_n(A(S))
+  \le \beta+(2n\beta+M)
+  \sqrt{\frac{\log(1/\delta)}{2n}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write
+  \(G(S)=R(A(S))-R_n(A(S))\). Its expectation is at most \(\beta\).
+  Replacing \(Z_i\) changes the population-risk term by at most \(\beta\).
+  Among empirical terms, \(n-1\) shared observations each change by at most
+  \(\beta/n\), while the replaced term changes by at most \(M/n\). Hence
+  \[
+  |G(S)-G(S^{(i)})|\le2\beta+M/n.
+  \]
+  McDiarmid's inequality gives
+  \(G-\mathbb EG\le(2n\beta+M)\sqrt{\log(1/\delta)/(2n)}\).</p>
+</div>
+
+<p>This classical bound is informative when \(\beta=O(1/n)\), but its
+\(\sqrt n\,\beta\) term can be suboptimal. Sharper exponential inequalities for stable algorithms recover rates closer to
+\(\beta\log n\log(1/\delta)+M\sqrt{\log(1/\delta)/n}\).</p>
+
+<h3>Average stability and excess risk</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The expected leave-one-out stability is
+  \[
+  \operatorname{stab}(A)=
+  \frac1n\sum_{i=1}^n
+  \mathbb E\left[
+  \ell(A(S^{(-i)}),Z_i)-\ell(A(S),Z_i)\right].
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For ERM under a convex smooth loss, expected average stability often equals the expected optimism
+  \[
+  \mathbb E\{R(A(S))-R_n(A(S))\}
+  \]
+  up to the convention used for sample size.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Replace a fresh test point in the population risk by a uniformly selected training index using exchangeability. The fitted rule trained without that index has the same joint law as a rule trained on an independent sample of size \(n-1\) evaluated at a fresh point. Subtract and add its loss at the omitted observation. Averaging produces the leave-one-out difference.</p>
+</div>
+
+<h3>Stability of stochastic gradient methods</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose each
+  \(\ell(\cdot,z)\) is convex, \(L\)-Lipschitz, and \(\gamma\)-smooth. Couple two runs of stochastic gradient descent on neighboring datasets with the same sampled indices:
+  \[
+  w_{t+1}=w_t-\eta_t\nabla\ell(w_t,Z_{I_t}),
+  \qquad \eta_t\le2/\gamma.
+  \]
+  Then after \(T\) steps,
+  \[
+  \sup_z\mathbb E|\ell(w_T,z)-\ell(w_T',z)|
+  \le\frac{2L^2}{n}\sum_{t=1}^T\eta_t.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Gradient descent on a convex
+  \(\gamma\)-smooth function is nonexpansive for \(\eta\le2/\gamma\).
+  Thus the coupled distance can increase only when the sampled index is the differing example, an event of probability \(1/n\); in that case the increase is at most \(2L\eta_t\). Recursion gives
+  \(\mathbb E\|w_T-w_T'\|\le(2L/n)\sum_t\eta_t\).
+  Apply \(L\)-Lipschitzness of the test loss.</p>
+</div>
+
+<p>The bound grows with training time. Early stopping is therefore simultaneously an optimization choice and a stability regularizer.</p>
+
+<h3>Strong convexity removes time dependence</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If the population of per-example objectives is additionally \(\mu\)-strongly convex, contractive recursions yield SGD stability of order
+  \[
+  \frac{L^2}{\mu n}
+  \]
+  under suitable decreasing step sizes, uniformly over long training horizons.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Strong convexity turns the nonexpansive factor into \(1-\mu\eta_t\). The neighboring-example shock at time \(t\) has size \(2L\eta_t/n\), but it is multiplied by
+  \(\prod_{s>t}(1-\mu\eta_s)\) before the final iterate. Summing this damped impulse response is \(O(L/(\mu n))\), and Lipschitzness supplies the second factor \(L\).</p>
+</div>
+
+<h3>Stability does not imply good approximation</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> The algorithm that always returns the zero predictor has stability \(0\), yet it may have arbitrarily poor risk. Stability controls the generalization gap
+  \(R(\widehat f)-R_n(\widehat f)\); it does not control empirical optimization error or approximation error. A complete excess-risk result must combine all three.</p>
+</div>
+
+<h3>Differential privacy as randomized stability</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> An
+  \(\varepsilon\)-differentially private algorithm satisfies, for neighboring samples \(S,S'\),
+  \[
+  P(A(S)\in B)\le e^\varepsilon P(A(S')\in B)
+  \]
+  for every measurable output event \(B\). For bounded losses, this multiplicative distributional stability implies expectation generalization bounds of order \(e^\varepsilon-1\), with stronger high-probability statements available under approximate privacy.</p>
+</div>
+
+<p>Uniform stability is a pointwise deterministic comparison of losses; differential privacy compares output laws. Neither subsumes the other without extra assumptions, but both formalize limited dependence on one individual observation.</p>

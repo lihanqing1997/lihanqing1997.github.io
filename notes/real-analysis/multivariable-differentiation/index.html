@@ -15,7 +15,27 @@ note_next_url: "/notes/real-analysis/inverse-and-implicit-function-theorems/"
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> A map \(f:U\subset\mathbb R^d\to\mathbb R^m\) is differentiable at \(x\) if there is a linear map \(Df(x)\) such that
 \[
-f(x+h)=f(x)+Df(x)h+o(\|h\|).
+f(x+h)=f(x)+Df(x)h+r(h),
+\qquad
+\frac{\|r(h)\|}{\|h\|}\longrightarrow0.
+\]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> The derivative \(Df(x)\), when it exists, is unique; differentiability implies continuity at \(x\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If linear maps \(A,B\) both satisfy the definition, then for every fixed \(v\),
+\[
+\|(A-B)v\|
+=\frac{\|(A-B)(tv)\|}{|t|}
+=o(1)
+\]
+as \(t\to0\), hence \((A-B)v=0\). Thus \(A=B\). Moreover,
+\[
+\|f(x+h)-f(x)\|
+\le\|Df(x)\|\,\|h\|+o(\|h\|)\longrightarrow0.
 \]</p>
     </div>
 
@@ -30,7 +50,23 @@ f(x+h)=f(x)+Df(x)h+o(\|h\|).
     <h3>Partial derivatives are not enough</h3>
     <p>Partial derivatives see only coordinate directions.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Existence of all partial derivatives at a point does not imply differentiability. A common sufficient condition is existence of partial derivatives in a neighborhood together with continuity of those partial derivatives at the point.</p>
+        <p><span class="statement-title">Remark.</span> Existence of all partial derivatives at a point does not imply even continuity. For
+\[
+f(x,y)=
+\begin{cases}
+\dfrac{xy}{x^2+y^2},&(x,y)\ne(0,0),\\
+0,&(x,y)=(0,0),
+\end{cases}
+\]
+both partial derivatives at the origin are zero, but \(f(t,t)=1/2\). Even existence of every directional derivative is insufficient: for
+\[
+g(x,y)=
+\begin{cases}
+\dfrac{x^3}{x^2+y^2},&(x,y)\ne(0,0),\\
+0,&(x,y)=(0,0),
+\end{cases}
+\]
+the directional derivative at \(0\) in direction \(v=(a,b)\) is \(a^3/(a^2+b^2)\), which is not linear in \(v\) and therefore cannot be a Fréchet derivative.</p>
     </div>
 
     <div class="math-statement theorem">
@@ -38,7 +74,28 @@ f(x+h)=f(x)+Df(x)h+o(\|h\|).
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(f(x+h)-f(x)\) as a telescoping sum changing one coordinate at a time. The one-dimensional mean value theorem expresses each difference using the corresponding partial derivative at an intermediate point. Continuity of the partial derivatives at \(x\) turns the sum into \(\sum_j \partial_j f(x)h_j+o(\|h\|)\).</p>
+        <p><span class="statement-title">Proof.</span> It is enough to treat scalar \(f\), component by component. Put
+\[
+x^{(j)}=x+(h_1,\ldots,h_j,0,\ldots,0).
+\]
+Then
+\[
+f(x+h)-f(x)=\sum_{j=1}^d\bigl(f(x^{(j)})-f(x^{(j-1)})\bigr).
+\]
+The one-dimensional mean value theorem gives intermediate points \(\xi_j\) on the \(j\)-th coordinate segment such that
+\[
+f(x^{(j)})-f(x^{(j-1)})
+=\partial_jf(\xi_j)h_j.
+\]
+Because \(\|\xi_j-x\|\le\|h\|\), continuity at \(x\) gives
+\[
+\max_j|\partial_jf(\xi_j)-\partial_jf(x)|\longrightarrow0.
+\]
+Hence the difference from \(\sum_j\partial_jf(x)h_j\) is bounded by
+\[
+\max_j|\partial_jf(\xi_j)-\partial_jf(x)|\sum_j|h_j|
+\le\sqrt d\,o(1)\|h\|=o(\|h\|).
+\]</p>
     </div>
 
     <h3>Chain rule</h3>
@@ -61,6 +118,14 @@ f(x+h)=f(x)+Df(x)h+o(\|h\|).
         <p><span class="statement-title">Proof.</span> Define \(\gamma(t)=f(y+t(x-y))\). Then \(\gamma'(t)=Df(y+t(x-y))(x-y)\), so \(\|\gamma'(t)\|\le M\|x-y\|\). Integrating \(\gamma'\) from \(0\) to \(1\) gives the estimate.</p>
     </div>
 
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark.</span> There is generally no vector-valued identity
+\[
+f(x)-f(y)=Df(z)(x-y)
+\]
+for one intermediate point \(z\). The scalar mean value theorem applies after pairing with a linear functional, while the norm inequality above follows by integrating along the segment.</p>
+    </div>
+
     <h3>Second-order expansion</h3>
     <p>Hessians encode local curvature.</p>
     <div class="math-statement theorem">
@@ -72,4 +137,44 @@ f(x+h)=f(x)+\nabla f(x)^\top h+\frac12 h^\top \nabla^2 f(x)h+o(\|h\|^2).
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Apply the one-dimensional Taylor theorem to \(\phi(t)=f(x+th)\) at \(t=0\). Then \(\phi'(0)=\nabla f(x)^\top h\) and \(\phi''(0)=h^\top\nabla^2 f(x)h\), while continuity of the Hessian gives the Peano remainder.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (symmetry of mixed partials).</span> If \(\partial_i\partial_j f\) and \(\partial_j\partial_i f\) exist on a neighborhood of \(x\) and are continuous at \(x\), then
+\[
+\partial_i\partial_jf(x)=\partial_j\partial_if(x).
+\]
+Thus the Hessian of a \(C^2\) scalar function is symmetric.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Restrict to the two relevant coordinates and consider the rectangular increment
+\[
+\Delta(h,k)=f(x+he_i+ke_j)-f(x+he_i)-f(x+ke_j)+f(x).
+\]
+Applying the one-dimensional mean value theorem first in direction \(e_i\) and then \(e_j\) gives
+\[
+\Delta(h,k)=hk\,\partial_j\partial_if(\xi_{h,k})
+\]
+for a point \(\xi_{h,k}\) in the rectangle. Reversing the order gives
+\[
+\Delta(h,k)=hk\,\partial_i\partial_jf(\eta_{h,k}).
+\]
+As \(h,k\to0\), both intermediate points approach \(x\); continuity and division by \(hk\) yield equality.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (second-order optimality).</span> If \(x\) is an interior local minimizer of a twice differentiable \(f:\mathbb R^d\to\mathbb R\), then
+\[
+\nabla f(x)=0,\qquad h^\top\nabla^2f(x)h\ge0\quad\text{for every }h.
+\]
+Conversely, if \(\nabla f(x)=0\) and \(\nabla^2f(x)\) is positive definite, then \(x\) is a strict local minimizer.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For fixed \(h\), the one-dimensional function \(t\mapsto f(x+th)\) has a local minimum at \(0\), so its first derivative vanishes and its second derivative is nonnegative. This gives the necessary conditions. If the Hessian is positive definite, compactness of the unit sphere gives \(\lambda>0\) with \(h^\top\nabla^2f(x)h\ge\lambda\|h\|^2\). The second-order expansion then yields
+\[
+f(x+h)-f(x)\ge\frac{\lambda}{4}\|h\|^2>0
+\]
+for all sufficiently small nonzero \(h\).</p>
     </div>

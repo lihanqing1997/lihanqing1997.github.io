@@ -21,7 +21,22 @@ note_next_url: "/notes/real-analysis/sigma-algebras-and-measures/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(DF(x)=DF(x_0)(I+DF(x_0)^{-1}(DF(x)-DF(x_0)))\). For \(x\) close enough, the norm of the perturbation is below \(1\), so the inverse exists by the Neumann series.</p>
+        <p><span class="statement-title">Proof.</span> Put \(A=DF(x_0)\). Then
+\[
+DF(x)=A\left[I+A^{-1}(DF(x)-A)\right].
+\]
+Continuity lets us choose a neighborhood on which
+\[
+\|A^{-1}(DF(x)-A)\|\le q<1.
+\]
+For every operator \(E\) with \(\|E\|<1\),
+\[
+(I+E)^{-1}=\sum_{k=0}^{\infty}(-E)^k
+\]
+in operator norm. Hence \(DF(x)\) is invertible there, and
+\[
+\|DF(x)^{-1}\|\le\frac{\|A^{-1}\|}{1-q}.
+\]</p>
     </div>
 
     <h3>Inverse function theorem</h3>
@@ -31,7 +46,36 @@ note_next_url: "/notes/real-analysis/sigma-algebras-and-measures/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> After translating and applying the linear inverse, reduce to \(F(x)=x+R(x)\) with \(DR(0)\) small. For \(y\) near \(0\), solve \(x=y-R(x)\) by the contraction mapping theorem on a small ball. This gives existence and uniqueness. Differentiability of the inverse follows from the identity \(F^{-1}(F(x+h))-F^{-1}(F(x))=h\) and the expansion of \(F\), yielding \(D(F^{-1})(F(x))=DF(x)^{-1}\).</p>
+        <p><span class="statement-title">Proof.</span> Translate so that \(x_0=F(x_0)=0\), and replace \(F\) by \(DF(0)^{-1}F\). It remains to consider
+\[
+F(x)=x+R(x),\qquad R(0)=0,\qquad DR(0)=0.
+\]
+Choose \(r>0\) so that \(\|DR(x)\|\le q<1/2\) on \(\overline B(0,r)\). The mean value inequality gives
+\[
+\|R(x)-R(z)\|\le q\|x-z\|.
+\]
+For \(\|y\|\le(1-q)r\), define \(T_y(x)=y-R(x)\). Since \(\|R(x)\|\le q\|x\|\), \(T_y\) maps \(\overline B(0,r)\) into itself, and it is a \(q\)-contraction. Banach's fixed-point theorem gives a unique \(x\) in the ball with \(F(x)=y\).</p>
+        <p>Also,
+\[
+\|F(x)-F(z)\|
+\ge(1-q)\|x-z\|,
+\]
+so \(F\) is injective on the ball and its local inverse is Lipschitz. Let \(y=F(x)\), \(k=F(x+h)-F(x)\). Since \(\|h\|\le(1-q)^{-1}\|k\|\),
+\[
+k=DF(x)h+o(\|h\|)
+\quad\Longrightarrow\quad
+h=DF(x)^{-1}k+o(\|k\|).
+\]
+Thus \(D(F^{-1})(y)=DF(x)^{-1}\). Continuity of \(DF\) and continuity of matrix inversion make this derivative continuous.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (local bi-Lipschitz estimate).</span> After shrinking \(U_0\), constants \(0<c\le C<\infty\) exist such that
+\[
+c\|x-z\|\le\|F(x)-F(z)\|\le C\|x-z\|,
+\qquad x,z\in U_0.
+\]
+Thus the theorem supplies not only a local inverse but quantitative stability of that inverse.</p>
     </div>
 
     <h3>Implicit function theorem</h3>
@@ -41,7 +85,23 @@ note_next_url: "/notes/real-analysis/sigma-algebras-and-measures/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Define \(F(x,y)=(x,G(x,y))\). Its derivative with respect to \((x,y)\) is block triangular with invertible diagonal blocks \(I\) and \(D_yG(a,b)\), hence invertible. Apply the inverse function theorem to \(F\). The inverse has form \((u,v)\mapsto (u,\psi(u,v))\), and setting \(v=0\) gives \(\varphi(u)=\psi(u,0)\).</p>
+        <p><span class="statement-title">Proof.</span> Define
+\[
+F(x,y)=(x,G(x,y)).
+\]
+At \((a,b)\),
+\[
+DF(a,b)=
+\begin{pmatrix}
+I_p&0\\
+D_xG(a,b)&D_yG(a,b)
+\end{pmatrix},
+\]
+which is invertible because it is block triangular with invertible diagonal blocks. The inverse function theorem gives a local \(C^1\) inverse. Since the first component of \(F\) is \(x\), that inverse must have the form
+\[
+F^{-1}(u,v)=(u,\psi(u,v)).
+\]
+Setting \(\varphi(u)=\psi(u,0)\) gives \(G(u,\varphi(u))=0\). Conversely, local injectivity of \(F\) shows that every nearby solution of \(G(x,y)=0\) has \(y=\varphi(x)\).</p>
     </div>
 
     <h3>Derivative of the implicit map</h3>
@@ -57,8 +117,22 @@ D\varphi(x)=-[D_yG(x,\varphi(x))]^{-1}D_xG(x,\varphi(x)).
         <p><span class="statement-title">Proof.</span> Differentiate the identity \(G(x,\varphi(x))=0\). The chain rule gives \(D_xG+D_yG\,D\varphi=0\). Since \(D_yG\) is invertible, solve for \(D\varphi\).</p>
     </div>
 
-    <h3>Use in local asymptotics</h3>
-    <p>Many estimators are defined implicitly by first-order conditions.</p>
+    <h3>Estimating equations and argmin sensitivity</h3>
+    <p>Many estimators are local solutions of score equations or first-order optimality conditions.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The implicit function theorem is the deterministic mechanism behind differentiability of argmin and estimating-equation maps. It explains why a nonsingular Hessian or information matrix yields stable local solutions.</p>
+        <p><span class="statement-title">Remark.</span> Suppose \(\Psi(\theta,\eta)=0\) defines \(\theta=\theta(\eta)\). If \(D_\theta\Psi\) is nonsingular, then
+\[
+D\theta(\eta)
+=-[D_\theta\Psi(\theta(\eta),\eta)]^{-1}
+D_\eta\Psi(\theta(\eta),\eta).
+\]
+For \(\Psi=\nabla_\theta M\), the inverse derivative is the inverse Hessian. This formula is the deterministic ancestor of influence-function calculations and local expansions for \(M\)- and \(Z\)-estimators; see <a href="{{ '/notes/statistical-inference/m-estimators-z-estimators/' | relative_url }}">Statistical inference</a>.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (a regular level set).</span> Let \(G(x,y)=x^2+y^2-1\). At a point \((a,b)\) on the unit circle with \(b\ne0\), \(D_yG(a,b)=2b\ne0\), so the circle is locally the graph \(y=\varphi(x)\), and
+\[
+\varphi'(x)=-\frac{2x}{2\varphi(x)}=-\frac{x}{\varphi(x)}.
+\]
+The failure at \((\pm1,0)\) does not mean the circle is singular; it means that there one should solve for \(x\) as a function of \(y\).</p>
     </div>

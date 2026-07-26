@@ -31,3 +31,127 @@ note_next_url: "/notes/information-theory/variational-characterization-rate-dist
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> For any code, let \(J\) be the message. Then \(\log M\ge I(X^n;J)\ge I(X^n;\widehat X^n)\). Chain rules and convexity reduce \(n^{-1}I(X^n;\widehat X^n)\) to a single-letter lower bound at the average distortion, giving \(R\ge R(D)\).</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Lossy block codes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An \((n,M,D)\) lossy source code has encoder
+  \(f_n(X^n)\in\{1,\ldots,M\}\), decoder reconstruction
+  \(\widehat X^n\), and average per-letter distortion
+  \[
+  d_n(X^n,\widehat X^n)=
+  \frac1n\sum_{i=1}^nd(X_i,\widehat X_i).
+  \]</p>
+</div>
+
+<h3>Achievability by random covering</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For an iid finite-alphabet source, every
+  \(R>R(D)\) is achievable with excess-distortion probability
+  \[
+  P\{d_n(X^n,\widehat X^n)>D+\varepsilon\}\to0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose a test channel
+  \(P_{\widehat X\mid X}\) with distortion below \(D+\varepsilon/2\) and information \(I(X;\widehat X)<R\). Generate
+  \(M=e^{nR}\) reconstruction codewords independently from
+  \(P_{\widehat X}^n\). For a typical source sequence, each random reconstruction is jointly typical with probability approximately
+  \(e^{-nI(X;\widehat X)}\). The probability that none is jointly typical is bounded by
+  \[
+  \{1-e^{-n(I+\delta)}\}^{e^{nR}}
+  \le\exp\{-e^{n(R-I-\delta)}\}\to0.
+  \]
+  Joint typicality makes empirical distortion close to its expectation. Average over codebooks and select a deterministic one.</p>
+</div>
+
+<h3>Converse by single-letterization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every code with expected distortion at most \(D\) satisfies
+  \[
+  \frac1n\log M\ge R(D).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  \log M\ge H(f_n(X^n))\ge I(X^n;\widehat X^n).
+  \]
+  Because the source is iid,
+  \[
+  I(X^n;\widehat X^n)
+  =H(X^n)-H(X^n\mid\widehat X^n)
+  \ge\sum_{i=1}^n\{H(X_i)-H(X_i\mid\widehat X_i)\}
+  =\sum_iI(X_i;\widehat X_i).
+  \]
+  Each term is at least \(R(D_i)\), where
+  \(D_i=\mathbb Ed(X_i,\widehat X_i)\). Convexity and Jensen give
+  \[
+  \frac1n\sum_iR(D_i)\ge
+  R\left(\frac1n\sum_iD_i\right)\ge R(D).
+  \]</p>
+</div>
+
+<h3>Excess-distortion converse</h3>
+
+<p>If rate is below \(R(D)\), excess-distortion probability tends to one under regular finite-alphabet conditions: this is the strong converse. A type-covering proof shows that each reconstruction \(y^n\) covers only an exponentially small fraction of source sequences within distortion \(D\), and \(e^{nR}\) codewords cannot cover the typical source set when \(R<R(D)\).</p>
+
+<h3>Type-covering lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a source type \(Q_X\), there exists a codebook covering every sequence in \(T_{Q_X}\) within distortion \(D\) with size
+  \[
+  \exp\{nR(Q_X,D)+O(\log n)\},
+  \]
+  where
+  \[
+  R(Q_X,D)=
+  \min_{V_{\widehat X\mid X}:Q_XVd\le D}
+  I_{Q_XV}(X;\widehat X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Draw reconstruction sequences from a suitable type. A fixed source sequence is covered with probability exponential in
+  \(-nI_Q(X;\widehat X)\). A random codebook slightly larger than this reciprocal leaves exponentially few uncovered sequences; expurgate or add codewords for the remainder. Polynomially many types contribute only \(O(\log n)\) overhead.</p>
+</div>
+
+<h3>d-tilted information</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If \(\lambda^*=-R'(D)>0\) and
+  \(P_{\widehat X}^*\) is optimal, the d-tilted information is
+  \[
+  \jmath_X(x,D)=
+  -\log\mathbb E_{\widehat X^*}
+  \exp\{\lambda^*(D-d(x,\widehat X^*))\}.
+  \]
+  It satisfies \(\mathbb E\jmath_X(X,D)=R(D)\).</p>
+</div>
+
+<h3>Second-order rate-distortion</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under regularity, the minimum code size with excess-distortion probability at most \(\epsilon\) obeys
+  \[
+  \log M_n^*(D,\epsilon)
+  =
+  nR(D)+\sqrt{nV(D)}\,
+  \Phi^{-1}(1-\epsilon)+O(\log n),
+  \]
+  where
+  \[
+  V(D)=\operatorname{Var}\{\jmath_X(X,D)\}.
+  \]</p>
+</div>
+
+<p>Rate-distortion dispersion is the lossy analogue of varentropy and channel dispersion.</p>
+
+<h3>Average versus excess distortion</h3>
+
+<p>An expected-distortion constraint permits rare catastrophic reconstructions if compensated elsewhere. An excess-distortion criterion controls a quantile. They share the same first-order \(R(D)\) for regular memoryless sources but differ at finite blocklength and for heavy-tailed or nonergodic sources.</p>

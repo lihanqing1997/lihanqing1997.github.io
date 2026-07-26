@@ -8,26 +8,148 @@ note_prev_url: "/notes/statistical-decision-theory/approximation-by-exponential-
 note_next_url: "/notes/statistical-decision-theory/lower-bounds/"
 ---
 
-<p>Product experiments are the main application field for Le Cam's general theory. The log likelihood is a sum, but the summands need not be identically distributed.</p>
+<p>Independent product experiments are not necessarily identically distributed. Different instruments, covariates, exposure times, or noise levels contribute unequal information. Hellinger tensorization and triangular-array central limit theorems replace the single-distribution i.i.d. argument.</p>
 
-    <h3>Product experiment</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A product experiment has \(P_{\theta,n}=\bigotimes_{j=1}^{m_n}P_{\theta,j,n}\). The log likelihood ratio decomposes as</p>
-        <p>\[
-\log\frac{\mathrm{d}P_{\theta,n}}{\mathrm{d}P_{\theta_0,n}}
-=\sum_{j=1}^{m_n}\log\frac{\mathrm{d}P_{\theta,j,n}}{\mathrm{d}P_{\theta_0,j,n}}.
+<h3>Triangular product experiments</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A triangular product experiment has
+  \[
+  P_{n,\theta}
+  =
+  \bigotimes_{i=1}^{m_n}P_{ni,\theta}.
+  \]
+  Relative to \(\theta_0\),
+  \[
+  \log\frac{\mathrm{d}P_{n,\theta}}
+                {\mathrm{d}P_{n,\theta_0}}
+  =
+  \sum_{i=1}^{m_n}
+  \log\frac{\mathrm{d}P_{ni,\theta}}
+                {\mathrm{d}P_{ni,\theta_0}}.
+  \]</p>
+</div>
+
+<p>Independence gives additive log likelihoods, additive KL divergences, and multiplicative Hellinger affinities. It does not guarantee a Gaussian limit: one must ensure no component remains macroscopically influential.</p>
+
+<h3>Infinitesimal arrays</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a fixed parameter pair
+  \((\theta,\theta')\), the product array is Hellinger infinitesimal if
+  \[
+  \max_{1\leq i\leq m_n}
+  H^2(P_{ni,\theta},P_{ni,\theta'})
+  \longrightarrow0.
+  \]</p>
+</div>
+
+<p>This prevents one observation from deciding the hypothesis by itself. Combined with convergence of the sum of component Hellinger contributions, it leads to an infinitely divisible likelihood-ratio limit; a Lindeberg condition selects the Gaussian case.</p>
+
+<h3>Componentwise quadratic mean expansions</h3>
+
+<p>Suppose each component has a local square-root expansion
+\[
+\sqrt{\frac{\mathrm{d}P_{ni,\theta_0+t}}
+             {\mathrm{d}P_{ni,\theta_0}}}
+=
+1+\frac12t^\top\dot\ell_{ni}+r_{ni}(t)
+\quad\text{in }L_2(P_{ni,\theta_0}),
+\]
+with
+\[
+E_{\theta_0}\dot\ell_{ni}=0,
+\qquad
+I_{ni}=E_{\theta_0}
+(\dot\ell_{ni}\dot\ell_{ni}^\top).
+\]
+Let
+\[
+I_n=\sum_{i=1}^{m_n}I_{ni}.
 \]</p>
-    </div>
 
-    <h3>Infinitesimal component condition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The array is infinitesimal if each single component contributes negligibly to Hellinger distance for fixed parameter pairs. This prevents one observation from dominating the limit.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (triangular LAN).</span> Assume \(I_n\) is nonsingular and choose local shifts
+  \[
+  t_n=I_n^{-1/2}h.
+  \]
+  Suppose:</p>
+  <ol>
+    <li>the accumulated quadratic-mean remainders are negligible;</li>
+    <li>for every \(\varepsilon>0\),
+    \[
+    \sum_{i=1}^{m_n}
+    E_{\theta_0}\!\left[
+      \|I_n^{-1/2}\dot\ell_{ni}\|^2
+      1\{\|I_n^{-1/2}\dot\ell_{ni}\|>\varepsilon\}
+    \right]\to0;
+    \]</li>
+    <li>
+    \[
+    I_n^{-1/2}
+    \left(\sum_iI_{ni}\right)
+    I_n^{-1/2}=I_p.
+    \]</li>
+  </ol>
+  <p>Then
+  \[
+  \log\frac{\mathrm{d}P_{n,\theta_0+I_n^{-1/2}h}}
+                {\mathrm{d}P_{n,\theta_0}}
+  =
+  h^\top\Delta_n-\frac12\|h\|^2+o_p(1),
+  \]
+  where
+  \[
+  \Delta_n
+  =
+  \sum_i I_n^{-1/2}\dot\ell_{ni}
+  \rightsquigarrow N_p(0,I_p).
+  \]</p>
+</div>
 
-    <h3>Central limit mechanism</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Once log likelihoods are sums of negligible independent terms, triangular-array CLTs and Hellinger control give Gaussian or infinitely divisible likelihood-ratio limits.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Expand each square-root likelihood ratio and then
+  \(2\log(1+s_{ni})\) as in the i.i.d. DQM proof. Summing linear terms gives \(\Delta_n\); the normalization of component densities supplies the quadratic drift. The displayed Lindeberg condition gives the triangular-array multivariate CLT and makes the sum of large score contributions negligible. The accumulated DQM remainder controls all remaining terms. \(\square\)</p>
+</div>
 
-    <h3>Non-i.i.d. local asymptotics</h3>
-    <p>The same LAN and minimax conclusions hold when information accumulates unevenly across observations, provided the product experiment has the right likelihood-ratio limit.</p>
+<h3>Heteroscedastic normal regression</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let
+  \[
+  Y_{ni}=x_{ni}^\top\beta+\varepsilon_{ni},
+  \qquad
+  \varepsilon_{ni}\sim N(0,\sigma_{ni}^2)
+  \]
+  independently, with known variances. The score and information are
+  \[
+  \dot\ell_{ni}
+  =\frac{x_{ni}\varepsilon_{ni}}{\sigma_{ni}^2},
+  \qquad
+  I_n=\sum_i\frac{x_{ni}x_{ni}^\top}{\sigma_{ni}^2}.
+  \]
+  If
+  \[
+  \max_i
+  \left\|
+  I_n^{-1/2}\frac{x_{ni}}{\sigma_{ni}}
+  \right\|\to0,
+  \]
+  no design point dominates, and LAN holds at rate \(I_n^{1/2}\). The efficient estimator is weighted least squares.</p>
+</div>
+
+<h3>Information accumulation at unequal rates</h3>
+
+<p>Different parameter directions can accumulate information at different rates. A matrix normalization \(r_n\), not a scalar \(\sqrt n\), is then natural:
+\[
+r_n^{-\top}I_nr_n^{-1}\to I.
+\]
+Weak identification appears when one eigenvalue of \(I_n\) grows slowly or remains bounded; the corresponding local scale is wider and may have a nonstandard limit.</p>
+
+<h3>Gaussian versus jump limits</h3>
+
+<p>For infinitesimal independent likelihood increments, the possible limits are governed by a Lévy–Khintchine decomposition. A Lindeberg condition removes jumps and yields LAN. If rare increments retain finite total intensity, a Poisson or compound-Poisson component survives. Thus “independent and numerous” is not enough for Gaussianity; the tail allocation of likelihood information determines the limit experiment.</p>
+
+<h3>Decision consequences</h3>
+
+<p>Once the triangular experiment converges to a Gaussian shift with information \(I\), the same local asymptotic minimax and convolution theorems apply. The proof depends only on likelihood-ratio convergence, not on identical distributions. What changes is the construction and estimation of the accumulated information matrix.</p>

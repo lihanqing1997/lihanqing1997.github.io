@@ -66,3 +66,180 @@ note_next_url: "/notes/bayesian-statistics/mixture-priors-density-estimation/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Hierarchical Gaussian process priors place a prior on scale parameters so that the posterior can adapt to unknown regularity, but adaptation requires enough hyperprior mass near the scale that balances bias and variance.</p>
     </div>
+
+<h3>Gaussian measures and covariance operators</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A process
+\(W=(W_t)_{t\in T}\) is Gaussian if every finite vector
+\((W_{t_1},\ldots,W_{t_k})\) is multivariate normal. It is determined by
+\[
+m(t)=EW_t,\qquad
+K(s,t)=\operatorname{Cov}(W_s,W_t),
+\]
+where \(K\) is symmetric and positive semidefinite:
+\[
+\sum_{i,j}a_ia_jK(t_i,t_j)\ge0.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Karhunen-Loève representation).</span> Let \(K\) be a continuous covariance kernel on a compact domain with eigenpairs
+\((\lambda_j,\phi_j)\) in \(L^2\). Then
+\[
+W(t)=m(t)+\sum_{j\ge1}
+\sqrt{\lambda_j}Z_j\phi_j(t),
+\qquad Z_j\stackrel{\mathrm{iid}}{\sim}N(0,1),
+\]
+with convergence in \(L^2(\Omega\times T)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The covariance operator is compact, self-adjoint, and positive, so the spectral theorem supplies eigenpairs. Coefficients
+\[
+Z_j=\lambda_j^{-1/2}
+\int(W-m)\phi_j
+\]
+are centered jointly Gaussian with identity covariance and hence independent. Parseval's identity makes the mean-square remainder equal the tail sum of eigenvalues, which vanishes.</p>
+</div>
+
+<h3>Reproducing kernel Hilbert space</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The RKHS \(\mathbb H_K\) is the completion of finite linear combinations of
+\[
+K_t(\cdot)=K(t,\cdot)
+\]
+under
+\[
+\left\langle
+\sum_ia_iK_{t_i},
+\sum_jb_jK_{s_j}
+\right\rangle_{\mathbb H}
+=\sum_{i,j}a_ib_jK(t_i,s_j).
+\]
+It satisfies the reproducing identity
+\[
+h(t)=\langle h,K_t\rangle_{\mathbb H}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> In the Karhunen-Loève basis,
+\[
+\mathbb H_K
+=\left\{
+h=\sum_jh_j\phi_j:
+\sum_j\frac{h_j^2}{\lambda_j}<\infty
+\right\},
+\]
+with norm squared equal to the displayed sum.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The covariance operator maps
+\(\phi_j\) to \(\lambda_j\phi_j\). Its square-root range consists of coefficients
+\(h_j=\sqrt{\lambda_j}a_j\) for \((a_j)\in\ell^2\), giving norm
+\(\sum a_j^2=\sum h_j^2/\lambda_j\).</p>
+</div>
+
+<h3>Cameron-Martin shift</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(\mathcal L(W)\) be a centered Gaussian measure on a separable Banach space. The shifted law of \(W+h\) is equivalent to the law of \(W\) if \(h\in\mathbb H_K\), and mutually singular if \(h\notin\mathbb H_K\). For \(h\in\mathbb H_K\), the Radon-Nikodym derivative has the formal form
+\[
+\frac{\mathrm{d}\mathcal L(W+h)}
+{\mathrm{d}\mathcal L(W)}(W)
+=\exp\left\{
+\langle W,h\rangle_{\mathbb H}
+-\frac12\|h\|_{\mathbb H}^2
+\right\},
+\]
+where the first term is interpreted as the associated Gaussian linear functional.</p>
+</div>
+
+<p>The RKHS therefore measures the exponential cost of translating the prior toward an approximating function. Typical GP draws usually lie outside their RKHS, just as Brownian paths are almost surely nondifferentiable while its RKHS consists of absolutely continuous paths with square-integrable derivative.</p>
+
+<h3>Support theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The support of a centered Gaussian measure in a separable Banach space \(\mathbb B\) is the \(\mathbb B\)-closure of its RKHS:
+\[
+\operatorname{supp}\mathcal L(W)
+=\overline{\mathbb H_K}^{\,\mathbb B}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Cameron-Martin equivalence implies that every neighborhood of an RKHS element has positive probability whenever a neighborhood of zero does. Closure extends this inclusion. Conversely, a point outside the closed RKHS can be separated by a continuous linear functional that vanishes on the RKHS. That functional has zero Gaussian variance and hence is almost surely zero under the prior, excluding a neighborhood of the point.</p>
+</div>
+
+<h3>Concentration function</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For truth \(f_0\in\mathbb B\),
+\[
+\varphi_{f_0}(\varepsilon)
+=\inf_{\substack{h\in\mathbb H_K\\
+\|h-f_0\|_{\mathbb B}<\varepsilon}}
+\frac12\|h\|_{\mathbb H_K}^2
+-\log P(\|W\|_{\mathbb B}<\varepsilon).
+\]
+The first term is approximation cost; the second is centered small-ball cost.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (GP contraction template).</span> In a regular Gaussian or regression experiment, if
+\[
+\varphi_{f_0}(\varepsilon_n)
+\lesssim n\varepsilon_n^2,
+\]
+and suitable sieve entropy and tail conditions hold, then the posterior contracts at rate \(\varepsilon_n\) in the experiment's natural metric.</p>
+</div>
+
+<h3>Conjugate GP regression</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+f\sim\operatorname{GP}(m,K),\qquad
+y_i=f(x_i)+\varepsilon_i,\quad
+\varepsilon_i\sim N(0,\sigma^2).
+\]
+Write \(K_X=(K(x_i,x_j))\),
+\(k_\star=(K(x_\star,x_i))\), and
+\(m_X=(m(x_i))\). Then
+\[
+f(x_\star)\mid y
+\sim N\left(
+m(x_\star)+
+k_\star^\top(K_X+\sigma^2I)^{-1}(y-m_X),
+\right.
+\]
+\[
+\left.
+K(x_\star,x_\star)
+-k_\star^\top(K_X+\sigma^2I)^{-1}k_\star
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The joint vector
+\((f(x_\star),y)\) is Gaussian with covariance blocks
+\[
+\begin{bmatrix}
+K(x_\star,x_\star)&k_\star^\top\\
+k_\star&K_X+\sigma^2I
+\end{bmatrix}.
+\]
+Apply the conditional multivariate-normal formula.</p>
+</div>
+
+<h3>Kernel regularity and rescaling</h3>
+
+<p>Matérn kernels have polynomial spectral tails and finite smoothness controlled by their order; squared-exponential kernels have exponentially decaying spectra and analytic RKHS functions. A fixed overly smooth prior can still estimate rough truths, but may do so at a suboptimal rate because RKHS approximation is expensive. A rescaled process
+\[
+W^a(t)=W(at)
+\]
+changes effective length scale and RKHS geometry. A hyperprior on \(a\) can adapt when it allocates enough mass near the oracle scale while controlling extreme scales. Posterior learning of a length scale is a concentration problem, not merely maximizing a covariance marginal likelihood.</p>

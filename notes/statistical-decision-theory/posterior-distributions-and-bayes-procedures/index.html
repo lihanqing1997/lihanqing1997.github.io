@@ -8,22 +8,146 @@ note_prev_url: "/notes/statistical-decision-theory/tests-and-confidence-sets-gau
 note_next_url: "/notes/statistical-decision-theory/sequential-experiments/"
 ---
 
-<p>Le Cam treats posterior distributions through joint laws and decision risks. Bernstein-von Mises becomes an approximation of posterior experiments by Gaussian shifts.</p>
+<p>A posterior distribution is an input to a decision rule, not itself a decision. The loss determines which posterior functional is optimal. In regular finite-dimensional experiments, the Bernstein–von Mises theorem approximates the local posterior by the Gaussian shift posterior and thereby links Bayes procedures to frequentist efficiency.</p>
 
-    <h3>Posterior risk minimization</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given posterior \(\Pi(\mathrm{d}\theta\mid X)\), a Bayes action minimizes \(\int L(\theta,a)\,\Pi(\mathrm{d}\theta\mid X)\). The estimator depends on the loss, not only on the posterior distribution.</p>
-    </div>
+<h3>Posterior Bayes actions</h3>
 
-    <h3>Bernstein-von Mises approximation</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In regular finite-dimensional models with suitable priors, the posterior of \(\sqrt n(\theta-\hat\theta_n)\) is asymptotically \(N(0,I_{\theta_0}^{-1})\) in probability under \(P_{\theta_0}\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under prior \(\Pi\), let
+  \(\Pi(\mathrm{d}\theta\mid X=x)\) be a posterior. If a measurable action
+  \(a^*(x)\) minimizes
+  \[
+  \rho(a\mid x)
+  =
+  \int L(\theta,a)\Pi(\mathrm{d}\theta\mid x)
+  \]
+  almost surely under the prior predictive law, then \(a^*\) is Bayes.</p>
+</div>
 
-    <h3>LAN and prior stability</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The LAN expansion makes the likelihood locally Gaussian, while prior mass and continuity replace the prior by its value at \(\theta_0\). Normalizing the local likelihood gives the Gaussian posterior limit.</p>
-    </div>
+<p>Squared loss gives the posterior mean, absolute loss a posterior median, asymmetric linear loss a posterior quantile, and \(0\)-\(1\) loss on a finite parameter set a posterior mode. Credible sets require a set-valued loss or a posterior-content constraint plus a size criterion.</p>
 
-    <h3>Decision-theoretic consequence</h3>
-    <p>Posterior means, medians, and credible ellipsoids inherit frequentist first-order behavior only through this local experiment approximation.</p>
+<h3>Local posterior coordinates</h3>
+
+<p>At a true interior parameter \(\theta_0\), write
+\[
+h=\sqrt n(\theta-\theta_0).
+\]
+The posterior density of \(h\) is proportional to
+\[
+\exp\left\{
+\ell_n(\theta_0+h/\sqrt n)-\ell_n(\theta_0)
+\right\}
+\pi(\theta_0+h/\sqrt n).
+\]
+LAN approximates the likelihood factor by
+\[
+\exp\{h^\top\Delta_n-\tfrac12h^\top Ih\},
+\]
+which is the kernel of
+\[
+N_p(I^{-1}\Delta_n,I^{-1}).
+\]</p>
+
+<h3>Bernstein–von Mises theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (regular parametric form).</span> Suppose:</p>
+  <ol>
+    <li>the i.i.d. model is LAN at an interior \(\theta_0\) with nonsingular \(I_{\theta_0}\);</li>
+    <li>the prior has a density continuous and positive at \(\theta_0\);</li>
+    <li>the posterior concentrates in \(n^{-1/2}M_n\)-neighborhoods for every \(M_n\to\infty\);</li>
+    <li>the LAN remainder is uniform on bounded local sets and tails are controlled.</li>
+  </ol>
+  <p>Then
+  \[
+  \left\|
+  \Pi\!\left(
+    \sqrt n(\theta-\theta_0)\in\cdot\mid X^{(n)}
+  \right)
+  -
+  N_p(I_{\theta_0}^{-1}\Delta_n,I_{\theta_0}^{-1})
+  \right\|_{\mathrm{TV}}
+  \xrightarrow{P_{\theta_0}}0.
+  \]
+  Equivalently, if
+  \(\hat\theta_n=\theta_0+n^{-1/2}I^{-1}\Delta_n+o_p(n^{-1/2})\),
+  \[
+  \Pi\!\left(
+    \sqrt n(\theta-\hat\theta_n)\in\cdot\mid X^{(n)}
+  \right)
+  \to
+  N_p(0,I^{-1})
+  \]
+  in total variation in probability.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Posterior concentration discards the region \(\|h\|>M_n\). On every fixed ball, uniform LAN and prior continuity replace the unnormalized posterior density by
+  \[
+  \pi(\theta_0)
+  \exp\{h^\top\Delta_n-\tfrac12h^\top Ih\}.
+  \]
+  Completing the square identifies the Gaussian center
+  \(I^{-1}\Delta_n\). Dominated tail bounds show convergence of normalizing constants and \(L_1\)-convergence of densities. Let the fixed ball grow slowly to obtain total variation convergence. \(\square\)</p>
+</div>
+
+<h3>Bayes estimators and efficient risk</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under squared loss and suitable posterior moment convergence, the posterior mean satisfies
+  \[
+  \sqrt n(\hat\theta_{\mathrm{Bayes}}-\theta_0)
+  =
+  I^{-1}\Delta_n+o_p(1)
+  \rightsquigarrow N_p(0,I^{-1}).
+  \]
+  It is therefore regular and locally asymptotically minimax.</p>
+</div>
+
+<p>Total-variation convergence alone controls bounded posterior functionals. Posterior means involve an unbounded function and require uniform integrability of posterior local moments.</p>
+
+<h3>Credible ellipsoids and frequentist coverage</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> A posterior ellipsoid
+  \[
+  C_n=
+  \left\{
+  \theta:
+  n(\theta-\hat\theta_n)^\top I(\theta-\hat\theta_n)
+  \leq\chi_{p,1-\alpha}^2
+  \right\}
+  \]
+  has posterior probability \(1-\alpha+o_p(1)\) and frequentist coverage
+  \[
+  P_{\theta_0}(\theta_0\in C_n)\to1-\alpha.
+  \]</p>
+</div>
+
+<p>The first claim uses the centered posterior Gaussian approximation; the second uses the sampling limit of the efficient center. Their agreement is a theorem, not a generic property of credible sets.</p>
+
+<h3>Posterior decisions under general loss</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let the local loss converge:
+  \[
+  L_n(\theta,a)
+  =
+  \ell\{\sqrt n(a-\theta)\}.
+  \]
+  If posterior distributions and the relevant loss integrals converge to the Gaussian shift posterior decision problem, then local Bayes actions converge to minimizers of
+  \[
+  a\mapsto
+  E\ell(a-H),
+  \qquad
+  H\sim N(I^{-1}\Delta,I^{-1}).
+  \]</p>
+</div>
+
+<p>For nonquadratic loss, the limit action need not be the Gaussian mean. Decision convergence requires uniqueness or stability of the argmin and moment control appropriate to \(\ell\).</p>
+
+<h3>Failure regimes</h3>
+
+<p>Bernstein–von Mises can fail at boundaries, under nonidentifiability, in growing dimension, for nonparametric functionals with semiparametric bias, under model misspecification, or when the prior suppresses neighborhoods of the truth. In misspecified regular models, posterior covariance can involve inverse expected Hessian while the estimator's sampling covariance has a sandwich form, so unadjusted credible sets need not have nominal coverage.</p>
+
+<p>The dedicated <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a> note develops posterior consistency, contraction, nonparametric Bernstein–von Mises phenomena, misspecification, computation, and prior design. Here the emphasis is the decision-theoretic relation between posterior experiments and frequentist local risks.</p>

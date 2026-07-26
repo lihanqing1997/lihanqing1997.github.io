@@ -32,3 +32,131 @@ Changing the universal machine changes \(K\) by at most an additive constant.</p
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> For computable sources, expected prefix complexity is bounded above by entropy plus a source-dependent constant. Entropy is therefore the distributional version of shortest description, while \(K(x)\) is an individual-sequence version.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Prefix Kolmogorov complexity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Fix a universal prefix Turing machine \(U\). The prefix complexity of a finite binary string \(x\) is
+  \[
+  K_U(x)=\min\{|p|:U(p)=x\}.
+  \]
+  Prefix-free programs satisfy Kraft, so \(2^{-K_U(x)}\) behaves like a subprobability mass.</p>
+</div>
+
+<h3>Invariance theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every prefix machine \(M\), there is a constant \(c_M\) such that
+  \[
+  K_U(x)\le K_M(x)+c_M
+  \quad\text{for every }x.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Universality lets \(U\) simulate \(M\) from a fixed self-delimiting description of \(M\) followed by an \(M\)-program. The interpreter description has constant length independent of \(x\).</p>
+</div>
+
+<h3>Incompressible strings</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Among binary strings of length \(n\), at least
+  \(2^n-2^{n-c}\) satisfy
+  \[
+  K(x)\ge n-c.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> There are fewer than
+  \(2^{n-c}\) binary programs shorter than \(n-c\). Each halting program outputs at most one string, so fewer than that many strings have complexity below \(n-c\).</p>
+</div>
+
+<h3>Uncomputability</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> \(K(x)\) is not computable.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(K\) were computable, a program given \(n\) could search lexicographically for the first string \(x_n\) with \(K(x_n)>n\). The description “run this fixed search with input \(n\)” has length \(O(\log n)\), so
+  \(K(x_n)\le O(\log n)\), contradicting \(K(x_n)>n\) for large \(n\).</p>
+</div>
+
+<h3>Conditional complexity and algorithmic mutual information</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  \(K(x\mid y)\) is the shortest program outputting \(x\) with \(y\) as auxiliary input. Algorithmic mutual information is
+  \[
+  I_K(x:y)=K(x)+K(y)-K(x,y),
+  \]
+  up to logarithmic or constant convention terms.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The symmetry-of-information identity is
+  \[
+  K(x,y)=K(x)+K(y\mid x,K(x))+O(1),
+  \]
+  and symmetrically with \(x,y\) exchanged.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Enumerate pairs having bounded joint complexity and group them by the number sharing a given first component. A self-delimiting index within the group, together with \(x,K(x)\), describes \(y\). Kraft counting bounds exceptional group sizes and gives both directions up to constants.</p>
+</div>
+
+<h3>Universal semimeasure and coding theorem</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The universal a priori semimeasure is
+  \[
+  m(x)=\sum_{p:U(p)=x}2^{-|p|}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Coding theorem.</span>
+  \[
+  K(x)=-\log_2m(x)+O(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The shortest program contributes
+  \(2^{-K(x)}\), so \(m(x)\ge2^{-K(x)}\). Conversely, \(m\) is a lower-semicomputable semimeasure. A Shannon-Fano code for any such semimeasure can be simulated by the universal machine, giving
+  \(K(x)\le-\log_2m(x)+O(1)\).</p>
+</div>
+
+<h3>Expected complexity of random samples</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(P\) is computable and
+  \(X^n\sim P^n\), then
+  \[
+  \mathbb EK(X^n)=nH_2(P)+O(\log n),
+  \]
+  with convention-dependent lower-order terms.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> A program can encode \(n\) self-delimitingly and then use an effective Shannon code for \(P^n\), giving the upper bound. For the lower bound, prefix complexity lengths satisfy Kraft, so the source-coding lower bound gives
+  \(\mathbb EK(X^n)\ge H_2(X^n)=nH_2(P)\).</p>
+</div>
+
+<h3>Martin-Löf randomness</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> An infinite binary sequence \(\omega\) is Martin-Löf random for the fair-coin law if and only if there is \(c\) such that
+  \[
+  K(\omega_1^n)\ge n-c
+  \quad\text{for every }n.
+  \]</p>
+</div>
+
+<p>This turns effective randomness tests into incompressibility of every prefix. It is stronger than merely having limiting frequency one half.</p>
+
+<h3>What algorithmic complexity does not do</h3>
+
+<p>\(K(x)\) depends on a universal machine only through an additive constant, which is negligible asymptotically but can dominate short strings. It is uncomputable, so practical compressors provide upper bounds rather than exact values. Shannon entropy describes an ensemble average under a probability law; Kolmogorov complexity describes one finite object. Their asymptotic agreement for computable sources does not erase this distinction.</p>

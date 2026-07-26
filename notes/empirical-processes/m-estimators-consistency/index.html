@@ -8,27 +8,175 @@ note_prev_url: "/notes/empirical-processes/z-estimators/"
 note_next_url: "/notes/empirical-processes/rates-of-m-estimators/"
 ---
 
-<p>M-estimators optimize empirical criteria. Consistency follows when empirical criteria converge uniformly to a population criterion with a well-separated optimum.</p>
+<p>An \(M\)-estimator is defined by optimization rather than an equation. Uniform laws of large numbers ensure that the random objective has the same global shape as its population limit; identification then forces every approximate maximizer into the target neighborhood.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An approximate M-estimator \(\hat\theta\) satisfies \(P_nm_{\hat\theta}\ge \sup_{\theta\in\Theta}P_nm_\theta-o_p(1)\).</p>
-    </div>
+<h3>Exact and approximate maximizers</h3>
 
-    <h3>Argmax consistency</h3>
-    <ul>
-        <li>A GC condition for \(\{m_\theta:\theta\in\Theta\}\) makes \(P_nm_\theta\) uniformly close to \(Pm_\theta\).</li>
-        <li>Identification requires \(Pm_{\theta_0}\) to dominate \(Pm_\theta\) away from \(\theta_0\).</li>
-        <li>Compactness can be replaced by local arguments and tightness of \(\hat\theta\).</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \[
+  M_n(\theta)=P_nm_\theta,
+  \qquad
+  M(\theta)=Pm_\theta.
+  \]
+  A sequence \(\hat\theta_n\) is an approximate \(M\)-estimator if
+  \[
+  M_n(\hat\theta_n)
+  \geq\sup_{\theta\in\Theta}M_n(\theta)-o_p(1).
+  \]</p>
+</div>
 
-    <h3>Separation argument</h3>
-    <p>This page provides the consistency half of M-estimation; rates and limit distributions need local empirical-process refinements.</p>
+<p>The definition accommodates numerical error, nonattainment of the supremum, and measurable approximate selectors. For rates, the optimization error must be smaller than the criterion gap at the target rate.</p>
 
-    <!-- expanded-learning -->
-    <h3>Argmax consistency theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The argmax consistency theorem says: if \(M_n\to M\) uniformly in probability, \(\hat\theta_n\) nearly maximizes \(M_n\), and \(M\) has a unique well-separated maximizer \(\theta_0\), then \(\hat\theta_n\to\theta_0\).</p>
-    </div>
+<h3>The argmax consistency theorem</h3>
 
-    <h3>Proof by contradiction</h3>
-    <p>The proof is a contradiction argument. If \(\hat\theta_n\) stays away from \(\theta_0\), separation makes \(M(\theta_0)-M(\hat\theta_n)\) positive; uniform convergence transfers this gap to \(M_n\), contradicting near maximality.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \((\Theta,d)\) be a semimetric space. Suppose:</p>
+  <ol>
+    <li>
+    \[
+    \sup_{\theta\in\Theta}|M_n(\theta)-M(\theta)|
+    \xrightarrow{p}0;
+    \]</li>
+    <li>for every \(\varepsilon>0\),
+    \[
+    M(\theta_0)>
+    \sup_{d(\theta,\theta_0)\geq\varepsilon}M(\theta);
+    \]</li>
+    <li>\(\hat\theta_n\) approximately maximizes \(M_n\).</li>
+  </ol>
+  <p>Then \(d(\hat\theta_n,\theta_0)\to_p0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(\varepsilon>0\) and define the positive gap
+  \[
+  \Delta_\varepsilon
+  =
+  M(\theta_0)
+  -\sup_{d(\theta,\theta_0)\geq\varepsilon}M(\theta)>0.
+  \]
+  On the event
+  \(\|M_n-M\|_\Theta<\Delta_\varepsilon/3\),
+  every \(\theta\) outside the \(\varepsilon\)-ball satisfies
+  \[
+  M_n(\theta)
+  \leq M(\theta_0)-2\Delta_\varepsilon/3
+  \leq M_n(\theta_0)-\Delta_\varepsilon/3.
+  \]
+  If the optimization error is smaller than \(\Delta_\varepsilon/3\), an approximate maximizer cannot lie outside that ball. Both events have probability tending to one. \(\square\)</p>
+</div>
+
+<h3>Obtaining the uniform law</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (compact Lipschitz criterion).</span> Suppose \(\Theta\subset\mathbb R^d\) is compact,
+  \[
+  |m_\theta(x)-m_\eta(x)|
+  \leq L(x)\|\theta-\eta\|,
+  \qquad PL<\infty,
+  \]
+  and \(P|m_{\theta_0}|<\infty\) for one \(\theta_0\). Then
+  \[
+  \sup_{\theta\in\Theta}|P_nm_\theta-Pm_\theta|
+  \to0
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Cover \(\Theta\) by finitely many balls of radius \(\delta\), centered at \(\theta_1,\ldots,\theta_N\). For every \(\theta\) in the ball around \(\theta_j\),
+  \[
+  |(P_n-P)(m_\theta-m_{\theta_j})|
+  \leq\delta(P_nL+PL).
+  \]
+  Therefore
+  \[
+  \sup_\theta|(P_n-P)m_\theta|
+  \leq\max_j|(P_n-P)m_{\theta_j}|
+  +\delta(P_nL+PL).
+  \]
+  The finite maximum tends to zero and \(P_nL\to PL\) almost surely. Let \(\delta\downarrow0\). \(\square\)</p>
+</div>
+
+<p>For nonparametric criteria, one instead verifies that
+\(\{m_\theta:\theta\in\Theta\}\) is Glivenko–Cantelli by bracketing, VC structure, monotonicity, or an envelope-and-continuity theorem.</p>
+
+<h3>Noncompact parameter spaces</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Global compactness can be replaced by:</p>
+  <ol>
+    <li>for every \(\eta>0\), a compact \(K_\eta\subset\Theta\) such that
+    \(P(\hat\theta_n\in K_\eta)\geq1-\eta+o(1)\);</li>
+    <li>uniform convergence on each \(K_\eta\);</li>
+    <li>separation of \(\theta_0\) within \(K_\eta\).</li>
+  </ol>
+  <p>Then \(\hat\theta_n\to_p\theta_0\).</p>
+</div>
+
+<p>Tightness of \(\hat\theta_n\) often follows from coercivity:
+\[
+\sup_{d(\theta,\theta_0)>R}M(\theta)
+\longrightarrow-\infty
+\quad\text{as }R\to\infty,
+\]
+together with a uniform stochastic bound on outer shells.</p>
+
+<h3>Maximum likelihood under correct specification</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(p_\theta\) be densities and
+  \(m_\theta(x)=\log p_\theta(x)\). Under \(P=P_{\theta_0}\),
+  \[
+  M(\theta)-M(\theta_0)
+  =
+  -D_{\mathrm{KL}}(P_{\theta_0}\|P_\theta)
+  \leq0.
+  \]
+  Equality holds only when \(P_\theta=P_{\theta_0}\). Thus model identifiability supplies the population separation, while a uniform law for log-likelihoods supplies stochastic approximation.</p>
+</div>
+
+<h3>Misspecified criteria and pseudo-truth</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If \(P\) is outside the likelihood model, the same estimator converges, under suitable conditions, to
+  \[
+  \theta^\dagger
+  \in\arg\max_\theta P\log p_\theta
+  =\arg\min_\theta D_{\mathrm{KL}}(P\|P_\theta).
+  \]
+  Consistency is then relative to a pseudo-true projection, not to a claim that the model is correct. If the minimizer is unique and separated, the argmax theorem is unchanged.</p>
+</div>
+
+<h3>Least squares</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For regression functions \(g_\theta\), minimizing
+  \(P_n(Y-g_\theta(X))^2\) targets
+  \[
+  \theta_0\in\arg\min_\theta P(Y-g_\theta(X))^2.
+  \]
+  If \(g_0(x)=E(Y\mid X=x)\) lies in the class, then
+  \[
+  P(Y-g_\theta(X))^2-P(Y-g_0(X))^2
+  =P\{g_\theta(X)-g_0(X)\}^2.
+  \]
+  The population criterion gap is exactly squared \(L_2(P_X)\)-distance, so identification and curvature are transparent.</p>
+</div>
+
+<h3>Set identification</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If the population maximizer set
+  \[
+  \Theta_0=\arg\max_{\theta\in\Theta}M(\theta)
+  \]
+  is not a singleton, uniform convergence and separation from \(\Theta_0\) imply
+  \[
+  d(\hat\theta_n,\Theta_0)\to_p0,
+  \]
+  but do not determine a unique limit point within \(\Theta_0\).</p>
+</div>
+
+<p>Consistency is therefore logically separate from asymptotic normality. The next page adds local curvature and a stochastic modulus to determine how rapidly an \(M\)-estimator approaches the identified set or point.</p>

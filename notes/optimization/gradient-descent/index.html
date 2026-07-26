@@ -8,24 +8,168 @@ note_prev_url: "/notes/optimization/saddle-points-minimax-formulations/"
 note_next_url: "/notes/optimization/accelerated-gradient-methods/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Gradient descent.</p>
+<p>Gradient descent repeatedly minimizes the smoothness-based quadratic upper
+model of the objective. Its analysis is a model case for optimization proofs:
+derive one-step descent, identify a quantity that telescopes, and convert that
+quantity into objective or parameter error.</p>
 
-    <h3>Gradient step</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Gradient descent iterates \(x_{k+1}=x_k-\eta_k\nabla f(x_k)\). The direction \(-\nabla f(x_k)\) is the steepest descent direction for the Euclidean norm.</p>
-    </div>
+<h3>The Euclidean steepest-descent direction</h3>
 
-    <h3>Descent for smooth functions</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\) is \(L\)-smooth and \(0<\eta\le1/L\), then \(f(x_{k+1})\le f(x_k)-\frac{\eta}{2}\|\nabla f(x_k)\|^2\). Hence the gradient norm must become small along bounded-below descent sequences.</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Steepest local decrease.</span> If
+    \(\nabla f(x)\ne0\), then
+    \[
+    \operatorname*{arg\,min}_{\|v\|\le1}
+    \langle\nabla f(x),v\rangle
+    =-\frac{\nabla f(x)}{\|\nabla f(x)\|}.
+    \]
+    Equivalently, minimizing
+    \(\langle\nabla f(x),s\rangle+\frac1{2\eta}\|s\|^2\) gives
+    \(s=-\eta\nabla f(x)\).</p>
+</div>
 
-    <h3>Convex rate</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\) is convex and \(L\)-smooth, fixed step \(1/L\) gives \(f(x_k)-f^\star\le L\|x_0-x^\star\|^2/(2k)\). If \(f\) is also \(\mu\)-strongly convex, the rate is linear with factor at most \(1-\mu/L\).</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Cauchy-Schwarz gives
+    \(\langle\nabla f(x),v\rangle\ge-\|\nabla f(x)\|\|v\|\), and equality holds
+    at the displayed unit vector. The quadratic model has gradient
+    \(\nabla f(x)+s/\eta\), whose unique zero is
+    \(s=-\eta\nabla f(x)\).</p>
+</div>
 
-    <h3>Geometry</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Gradient descent depends on the chosen inner product. Changing coordinates without changing the metric changes the algorithm; natural gradient fixes this for statistical models.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Gradient descent with
+    steps \(\eta_k>0\) is
+    \[
+    x_{k+1}=x_k-\eta_k\nabla f(x_k).
+    \]</p>
+</div>
+
+<h3>Descent and nonconvex stationarity</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Descent estimate.</span> If \(f\) is
+    \(L\)-smooth and \(0<\eta\le1/L\), then
+    \[
+    f(x_{k+1})
+    \le f(x_k)-\eta\left(1-\frac{L\eta}{2}\right)
+       \|\nabla f(x_k)\|^2
+    \le f(x_k)-\frac\eta2\|\nabla f(x_k)\|^2.
+    \]
+    If \(f\) is bounded below, then
+    \[
+    \min_{0\le j<k}\|\nabla f(x_j)\|^2
+    \le\frac{2(f(x_0)-\inf f)}{\eta k}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Apply the descent lemma with
+    \(y=x-\eta\nabla f(x)\):
+    \[
+    f(y)\le f(x)-\eta\|\nabla f(x)\|^2
+       +\frac{L\eta^2}{2}\|\nabla f(x)\|^2.
+    \]
+    Summing the resulting decrease from \(j=0\) to \(k-1\) gives
+    \[
+    \frac\eta2\sum_{j=0}^{k-1}\|\nabla f(x_j)\|^2
+    \le f(x_0)-f(x_k)\le f(x_0)-\inf f.
+    \]
+    The smallest summand is no larger than the average.</p>
+</div>
+
+<p>This theorem guarantees approach to first-order stationarity, not to a
+global minimum. For a nonconvex objective, the limit can be a local minimum or,
+under exceptional initialization, a saddle point.</p>
+
+<h3>The \(1/k\) rate for smooth convex objectives</h3>
+
+<div class="math-statement lemma">
+    <p><span class="statement-title">Three-point inequality.</span> If \(f\) is
+    convex and \(L\)-smooth and
+    \(x^+=x-L^{-1}\nabla f(x)\), then for every \(z\),
+    \[
+    f(x^+)-f(z)
+    \le\frac L2\bigl(\|x-z\|^2-\|x^+-z\|^2\bigr).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Smoothness and convexity
+    give, respectively,
+    \[
+    f(x^+)\le f(x)+\langle\nabla f(x),x^+-x\rangle
+       +\frac L2\|x^+-x\|^2,
+    \]
+    \[
+    f(z)\ge f(x)+\langle\nabla f(x),z-x\rangle.
+    \]
+    Subtract and use
+    \(\nabla f(x)=L(x-x^+)\). Expanding
+    \(2\langle x-x^+,x^+-z\rangle\) as a difference of three squared norms
+    yields the claim.</p>
+</div>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Convex convergence rate.</span> If
+    \(x^\star\) minimizes a convex \(L\)-smooth function and gradient descent
+    uses \(\eta=1/L\), then for \(k\ge1\),
+    \[
+    f(x_k)-f^\star
+    \le\frac{L\|x_0-x^\star\|^2}{2k}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The three-point inequality
+    with \(z=x^\star\) gives
+    \[
+    f(x_{j+1})-f^\star
+    \le\frac L2(\|x_j-x^\star\|^2-\|x_{j+1}-x^\star\|^2).
+    \]
+    Sum over \(j=0,\ldots,k-1\). Since the objective values decrease,
+    \(k(f(x_k)-f^\star)\) is at most the sum of the \(k\) gaps. The squared
+    distances telescope, leaving the displayed bound.</p>
+</div>
+
+<h3>Linear convergence under strong convexity</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Strongly convex rate.</span> If \(f\) is
+    \(\mu\)-strongly convex and \(L\)-smooth, then the step \(1/L\) satisfies
+    \[
+    f(x_k)-f^\star
+    \le\left(1-\frac\mu L\right)^k
+       (f(x_0)-f^\star).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Strong convexity with
+    \(y=x^\star\), followed by minimizing the resulting quadratic in
+    \(\|x-x^\star\|\), gives the Polyak-Lojasiewicz inequality
+    \[
+    \|\nabla f(x)\|^2\ge2\mu(f(x)-f^\star).
+    \]
+    The descent estimate at step \(1/L\) therefore yields
+    \[
+    f(x_{k+1})-f^\star
+    \le f(x_k)-f^\star-\frac1{2L}\|\nabla f(x_k)\|^2
+    \le\left(1-\frac\mu L\right)(f(x_k)-f^\star).
+    \]
+    Iterate the recursion.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Spectral behavior on a quadratic.</span>
+    For \(f(x)=\frac12x^\top Qx\), \(Q\succ0\), the error obeys
+    \(e_{k+1}=(I-\eta Q)e_k\). In an eigenbasis,
+    \(e_{k,i}=(1-\eta\lambda_i)^ke_{0,i}\). Thus convergence occurs exactly
+    when \(0<\eta<2/\lambda_{\max}(Q)\), and the best constant step is
+    \(2/(\lambda_{\min}+\lambda_{\max})\). Elongated curvature creates slow,
+    alternating motion in the high-curvature directions.</p>
+</div>
+
+<p>The phrase “steepest descent” is metric-dependent. Changing the inner
+product changes the gradient vector representing the same differential. Mirror
+descent, natural gradient, and Newton's method exploit this fact by replacing
+Euclidean geometry with one adapted to the problem.</p>

@@ -8,49 +8,181 @@ note_prev_url: "/notes/probability-theory/uniform-integrability-martingale-conve
 note_next_url: "/notes/probability-theory/martingale-clt/"
 ---
 
-<p>Square-integrable martingales have an \(L^2\) geometry. Orthogonal increments generate predictable quadratic variation, the discrete ancestor of continuous-time bracket processes.</p>
+<p>Square-integrable martingales carry a Hilbert-space geometry. Their increments are orthogonal in \(L^2\); realized squared increments form quadratic variation; and conditional squared increments form its predictable compensator. These objects separate observed path variation from its conditional variance budget.</p>
 
-    <h3>Orthogonal increments</h3>
+<h3>Orthogonal martingale increments</h3>
 
-    <p>\(L^2\) martingales behave like sums of orthogonal differences.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(M_n\in L^2\) be a martingale and
+  \(\Delta M_k=M_k-M_{k-1}\). If \(j<k\), then
+  \[
+  \mathbb E[\Delta M_j\Delta M_k]=0.
+  \]
+  More generally, \(\Delta M_k\) is orthogonal to every
+  \(Y\in L^2(\mathcal F_{k-1})\).</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> If \(M_n\in L^2\) is a martingale, define increments \(\Delta M_k=M_k-M_{k-1}\). Then \(\mathbb E[\Delta M_k\mid\mathcal F_{k-1}]=0\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \(\mathbb E[\Delta M_k\mid\mathcal F_{k-1}]=0\),
+  \[
+  \mathbb E[Y\Delta M_k]
+  =\mathbb E\!\left[
+  Y\,\mathbb E(\Delta M_k\mid\mathcal F_{k-1})\right]=0.
+  \]
+  Take \(Y=\Delta M_j\), which is
+  \(\mathcal F_j\subseteq\mathcal F_{k-1}\)-measurable.</p>
+</div>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (martingale Pythagoras identity).</span> For \(m<n\),
+  \[
+  \mathbb E|M_n-M_m|^2
+  =\sum_{k=m+1}^n\mathbb E(\Delta M_k)^2.
+  \]
+  In particular,
+  \[
+  \mathbb EM_n^2
+  =\mathbb EM_0^2+\sum_{k=1}^n\mathbb E(\Delta M_k)^2.
+  \]</p>
+</div>
 
-    <h3>Variance decomposition</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand
+  \(M_n-M_m=\sum_{k=m+1}^n\Delta M_k\). All cross terms vanish by orthogonality.</p>
+</div>
 
-    <p>The second moment splits into conditional variances of increments.</p>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> A square-integrable martingale converges in \(L^2\) if and only if
+  \[
+  \sum_{k=1}^{\infty}\mathbb E(\Delta M_k)^2<\infty,
+  \]
+  equivalently \(\sup_n\mathbb EM_n^2<\infty\).</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a square-integrable martingale,
-\[
-\mathbb E M_n^2=\mathbb E M_0^2+\sum_{k=1}^n\mathbb E(\Delta M_k)^2.
-\]</p>
-    </div>
+<h3>Optional and predictable quadratic variation</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(j\lt k\), \(\mathbb E[\Delta M_j\Delta M_k]=\mathbb E[\Delta M_j\mathbb E(\Delta M_k\mid\mathcal F_{k-1})]=0\), since \(\Delta M_j\) is \(\mathcal F_{k-1}\)-measurable. Expanding \(M_n=M_0+\sum_k\Delta M_k\) in \(L^2\) gives the identity.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(M_0=0\), define
+  \[
+  [M]_n=\sum_{k=1}^n(\Delta M_k)^2,
+  \qquad
+  \langle M\rangle_n
+  =\sum_{k=1}^n
+  \mathbb E[(\Delta M_k)^2\mid\mathcal F_{k-1}].
+  \]
+  The first quantity is the realized, or optional, quadratic variation. The second is predictable quadratic variation, also called the bracket.</p>
+</div>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Both
+  \[
+  M_n^2-[M]_n
+  \quad\text{and}\quad
+  M_n^2-\langle M\rangle_n
+  \]
+  are martingales. Consequently,
+  \([M]_n-\langle M\rangle_n\) is a martingale and
+  \[
+  \mathbb E[M]_n=\mathbb E\langle M\rangle_n=\mathbb EM_n^2.
+  \]</p>
+</div>
 
-    <h3>Predictable quadratic variation</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \[
+  \Delta(M_n^2)
+  =2M_{n-1}\Delta M_n+(\Delta M_n)^2,
+  \]
+  subtracting \(\Delta[M]_n=(\Delta M_n)^2\) leaves
+  \(2M_{n-1}\Delta M_n\), whose conditional mean is zero. Subtracting instead
+  \[
+  \Delta\langle M\rangle_n
+  =\mathbb E[(\Delta M_n)^2\mid\mathcal F_{n-1}]
+  \]
+  also leaves a conditionally centered increment. The expectation identities follow at time \(n\).</p>
+</div>
 
-    <p>The compensator of squared martingale increments is predictable.</p>
+<p>The distinction matters when conditional variances are random. The path records \([M]_n\); before observing increment \(n\), the process forecasts its variance through
+\(\Delta\langle M\rangle_n\). Martingale central limit theorems normalize by this predictable variance.</p>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Define
-\[
-\langle M\rangle_n=\sum_{k=1}^n\mathbb E[(\Delta M_k)^2\mid\mathcal F_{k-1}].
-\]
-Then \(M_n^2-\langle M\rangle_n\) is a martingale when \(M_0=0\).</p>
-    </div>
+<h3>Covariation and orthogonality</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The increment of \(M_n^2\) is \(2M_{n-1}\Delta M_n+(\Delta M_n)^2\). Conditional expectation given \(\mathcal F_{n-1}\) kills the first term and leaves \(\mathbb E[(\Delta M_n)^2\mid\mathcal F_{n-1}]\). Subtracting the increment of \(\langle M\rangle\) gives conditional mean zero.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For square-integrable martingales \(M,N\) starting at zero, define
+  \[
+  [M,N]_n=\sum_{k=1}^n\Delta M_k\Delta N_k,
+  \]
+  \[
+  \langle M,N\rangle_n
+  =\sum_{k=1}^n
+  \mathbb E[\Delta M_k\Delta N_k\mid\mathcal F_{k-1}].
+  \]
+  Polarization gives
+  \[
+  [M,N]=\frac14([M+N]-[M-N]),
+  \]
+  and similarly for predictable brackets.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In continuous time, \(\langle M\rangle\) becomes the predictable bracket and controls stochastic integrals.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The process
+  \(M_nN_n-\langle M,N\rangle_n\) is a martingale. If
+  \(\langle M,N\rangle_n=0\) for every \(n\), the martingales are strongly orthogonal.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Use
+  \[
+  \Delta(MN)_n
+  =M_{n-1}\Delta N_n+N_{n-1}\Delta M_n
+  +\Delta M_n\Delta N_n.
+  \]
+  The first two terms have conditional mean zero; the conditional mean of the last is
+  \(\Delta\langle M,N\rangle_n\).</p>
+</div>
+
+<h3>Isometry for martingale transforms</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(H_k\) be predictable and suppose
+  \(\sum_{k\le n}\mathbb E[H_k^2(\Delta M_k)^2]<\infty\). Then
+  \[
+  \mathbb E(H\mathbin{\cdot}M)_n^2
+  =
+  \mathbb E\sum_{k=1}^nH_k^2(\Delta M_k)^2
+  =
+  \mathbb E\sum_{k=1}^nH_k^2
+  \Delta\langle M\rangle_k.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The transformed increments
+  \(H_k\Delta M_k\) are orthogonal, so Pythagoras gives the first equality. For the second,
+  \[
+  \mathbb E[H_k^2(\Delta M_k)^2]
+  =
+  \mathbb E\!\left[
+  H_k^2\mathbb E((\Delta M_k)^2\mid\mathcal F_{k-1})\right].
+  \]</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (simple random walk).</span> For
+  \(M_n=\sum_{k=1}^n\xi_k\) with independent symmetric
+  \(\xi_k\in\{-1,1\}\),
+  \[
+  [M]_n=\langle M\rangle_n=n.
+  \]
+  For conditionally heteroskedastic differences
+  \(\Delta M_k=\sigma_k\varepsilon_k\), where
+  \(\sigma_k\in\mathcal F_{k-1}\) and
+  \(\mathbb E[\varepsilon_k^2\mid\mathcal F_{k-1}]=1\),
+  \[
+  [M]_n=\sum_k\sigma_k^2\varepsilon_k^2,
+  \qquad
+  \langle M\rangle_n=\sum_k\sigma_k^2.
+  \]
+  The first is realized variation; the second is its predictable conditional mean.</p>
+</div>

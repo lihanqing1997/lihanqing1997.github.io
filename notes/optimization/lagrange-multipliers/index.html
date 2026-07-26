@@ -8,24 +8,135 @@ note_prev_url: "/notes/optimization/existence-coercivity-error-bounds/"
 note_next_url: "/notes/optimization/fenchel-conjugates-duality/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Lagrange multipliers.</p>
+<p>An equality constraint restricts motion to a lower-dimensional surface.
+At a regular constrained minimum, the objective gradient must be normal to that
+surface. Lagrange multipliers are the coordinates of this normal vector in the
+basis supplied by the constraint gradients.</p>
 
-    <h3>Equality-constrained problem</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(\min f(x)\) subject to \(h(x)=0\), the Lagrangian is \(\mathcal L(x,\lambda)=f(x)+\lambda^\top h(x)\). Multipliers price the constraints.</p>
-    </div>
+<h3>Regular level sets and feasible velocities</h3>
 
-    <h3>Multiplier rule</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(x^\star\) locally solves the equality-constrained problem and \(Dh(x^\star)\) has full row rank, then there exists \(\lambda^\star\) such that \(\nabla_x\mathcal L(x^\star,\lambda^\star)=0\) and \(h(x^\star)=0\).</p>
-    </div>
+<p>Consider
+\[
+\min_{x\in\mathbb R^d} f(x)
+\quad\text{subject to}\quad h(x)=0,
+\]
+where \(h=(h_1,\ldots,h_m):\mathbb R^d\to\mathbb R^m\) and \(m\le d\).
+Assume \(f\) and \(h\) are continuously differentiable near a feasible point
+\(x^\star\).</p>
 
-    <h3>Tangent-space proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> At a constrained local minimum, \(\nabla f(x^\star)\) annihilates every tangent vector \(v\) with \(Dh(x^\star)v=0\). Linear algebra says the annihilator of this kernel is the row span of \(Dh(x^\star)\), giving \(\nabla f+Dh^\top\lambda=0\).</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Tangent space of a regular level
+    set.</span> If the Jacobian \(Dh(x^\star)\) has row rank \(m\), then
+    \(M=\{x:h(x)=0\}\) is locally a \(C^1\) manifold of dimension \(d-m\), and
+    \[
+    T_M(x^\star)=\ker Dh(x^\star).
+    \]</p>
+</div>
 
-    <h3>Interpretation</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Multipliers are not algorithmic artifacts. They are coordinates for normals to the feasible manifold and become dual variables in convex optimization.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The implicit function theorem
+    gives local coordinates in which \(M\) is the graph of a \(C^1\) function,
+    hence a \(C^1\) manifold of dimension \(d-m\). If
+    \(\gamma:(-\varepsilon,\varepsilon)\to M\) is differentiable with
+    \(\gamma(0)=x^\star\), differentiating
+    \(h(\gamma(t))=0\) gives
+    \(Dh(x^\star)\gamma'(0)=0\). Conversely, the graph coordinates construct a
+    curve in \(M\) with any prescribed velocity in the kernel.</p>
+</div>
+
+<h3>The multiplier equation</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> The Lagrangian is
+    \[
+    \mathcal L(x,\lambda)=f(x)+\lambda^\top h(x),
+    \qquad \lambda\in\mathbb R^m.
+    \]</p>
+</div>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Lagrange multiplier theorem.</span> If
+    \(x^\star\) is a local constrained minimizer and
+    \(\operatorname{rank}Dh(x^\star)=m\), then there is a unique
+    \(\lambda^\star\in\mathbb R^m\) such that
+    \[
+    h(x^\star)=0,\qquad
+    \nabla f(x^\star)+Dh(x^\star)^\top\lambda^\star=0.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For every
+    \(v\in T_M(x^\star)\), choose a feasible curve with velocity \(v\).
+    Local minimality of \(f(\gamma(t))\) gives
+    \(\langle\nabla f(x^\star),v\rangle=0\). Hence
+    \(\nabla f(x^\star)\) lies in
+    \[
+    (\ker Dh(x^\star))^\perp
+    =\operatorname{range}Dh(x^\star)^\top.
+    \]
+    Thus \(-\nabla f(x^\star)=Dh(x^\star)^\top\lambda^\star\) for some
+    multiplier. Full row rank makes \(Dh(x^\star)^\top\) injective, so the
+    multiplier is unique.</p>
+</div>
+
+<p>Without the rank condition, a multiplier may fail to exist or may not be
+unique. For minimizing \(f(x)=x\) subject to \(h(x)=x^2=0\), the unique feasible
+point is a global minimizer, but \(h'(0)=0\) and the equation
+\(1+\lambda h'(0)=0\) has no solution.</p>
+
+<h3>Curvature along the constraint surface</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Second-order necessary condition.</span>
+    Suppose \(f,h_1,\ldots,h_m\) are \(C^2\), the rank condition holds, and
+    \((x^\star,\lambda^\star)\) satisfies the multiplier equation at a local
+    constrained minimum. Then
+    \[
+    v^\top\nabla_{xx}^2\mathcal L(x^\star,\lambda^\star)v\ge0
+    \qquad\text{for every }v\in\ker Dh(x^\star).
+    \]
+    If the inequality is strict for every nonzero tangent vector, then
+    \(x^\star\) is a strict constrained local minimizer.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Let \(\gamma(t)\) be a
+    feasible \(C^2\) curve with \(\gamma(0)=x^\star\) and
+    \(\gamma'(0)=v\). Since \(h(\gamma(t))=0\),
+    \(f(\gamma(t))=\mathcal L(\gamma(t),\lambda^\star)\). Differentiating twice
+    and using \(\nabla_x\mathcal L(x^\star,\lambda^\star)=0\) gives
+    \[
+    \frac{\mathrm{d}^2}{\mathrm{d}t^2}
+    f(\gamma(t))\bigg|_{t=0}
+    =v^\top\nabla_{xx}^2\mathcal L(x^\star,\lambda^\star)v.
+    \]
+    A one-dimensional local minimum has nonnegative second derivative. The
+    strict condition, combined with a local parametrization of the level set
+    and Taylor's theorem, gives quadratic increase along all feasible
+    directions.</p>
+</div>
+
+<h3>Rayleigh quotients as a constrained eigenvalue problem</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> Let \(A=A^\top\). To
+    minimize \(x^\top Ax\) subject to \(x^\top x=1\), use
+    \[
+    \mathcal L(x,\lambda)=x^\top Ax-\lambda(x^\top x-1).
+    \]
+    Stationarity gives \(Ax=\lambda x\). At an eigenvector \(q_i\), tangent
+    vectors satisfy \(q_i^\top v=0\), and
+    \[
+    v^\top\nabla^2_{xx}\mathcal L(q_i,\lambda_i)v
+    =2v^\top(A-\lambda_iI)v.
+    \]
+    This is nonnegative for every tangent \(v\) precisely at an eigenvector
+    associated with the smallest eigenvalue. Thus the multiplier is the
+    optimal value and the constrained curvature recovers the spectral
+    ordering.</p>
+</div>
+
+<p>Multipliers therefore carry both geometry and sensitivity. In a perturbed
+problem \(h(x)=u\), the multiplier is, under regularity, the negative derivative
+of the value function with respect to \(u\).</p>

@@ -27,7 +27,15 @@ note_next_url: "/notes/real-analysis/lebesgue-measurable-functions/"
     <h3>Regularity</h3>
     <p>Regularity means measurable sets can be approximated by topologically nice sets.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A finite Borel measure \(\mu\) on a metric space is regular if \(\mu(A)=\inf\{\mu(U):A\subset U,\ U\text{ open}\}\) and \(\mu(A)=\sup\{\mu(K):K\subset A,\ K\text{ compact}\}\) for Borel \(A\).</p>
+        <p><span class="statement-title">Definition.</span> A Borel measure \(\mu\) is outer regular if
+\[
+\mu(A)=\inf\{\mu(U):A\subset U,\ U\text{ open}\},
+\]
+and inner regular on a class of sets if
+\[
+\mu(A)=\sup\{\mu(K):K\subset A,\ K\text{ compact}\}.
+\]
+A finite Borel measure is regular when both identities hold for every Borel \(A\).</p>
     </div>
 
     <div class="math-statement theorem">
@@ -35,7 +43,11 @@ note_next_url: "/notes/real-analysis/lebesgue-measurable-functions/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\mathcal C\) be the Borel sets satisfying inner and outer regularity. Intervals and boxes satisfy regularity by elementary approximation from slightly larger open boxes and slightly smaller compact boxes. The class \(\mathcal C\) is a monotone class under finite measure continuity, so the monotone class theorem extends regularity to all Borel sets.</p>
+        <p><span class="statement-title">Proof.</span> First, every open \(U\subset\mathbb R^d\) is a countable union of closed dyadic cubes contained in \(U\). Finite measure continuity from below therefore gives
+\[
+\mu(U)=\sup\{\mu(K):K\subset U,\ K\text{ compact}\}.
+\]
+Let \(\mathcal C\) be the sets that are both inner and outer regular. The preceding argument puts all open sets in \(\mathcal C\). If \(A\in\mathcal C\), finite total mass turns inner approximation of \(A\) into outer approximation of \(A^c\), and conversely, so \(\mathcal C\) is closed under complements. Disjoint countable unions are handled by approximating finitely many pieces from within and controlling the remaining measure tail. Thus \(\mathcal C\) is a sigma-algebra containing the open sets, hence all Borel sets.</p>
     </div>
 
     <h3>Radon measures</h3>
@@ -49,21 +61,46 @@ note_next_url: "/notes/real-analysis/lebesgue-measurable-functions/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Restrict the measure to compact boxes, where it is finite and regular. Exhaust \(\mathbb R^d\) by increasing compact boxes and pass regularity through the exhaustion using monotone convergence.</p>
+        <p><span class="statement-title">Proof.</span> Let \(Q_n=[-n,n]^d\). Local finiteness gives \(\mu(Q_n)<\infty\), so the restriction of \(\mu\) to \(Q_n\) is regular by the finite theorem. For open \(U\),
+\[
+\mu(U)=\lim_n\mu(U\cap Q_n),
+\]
+and each term can be approximated from below by a compact subset of \(U\cap Q_n\); this proves inner regularity. For a Borel \(A\), choose \(n\) so that the portion of \(A\) relevant to any prescribed finite truncation lies in \(Q_n\), apply outer regularity there, and then exhaust. This yields global outer regularity, while compact finiteness is assumed.</p>
     </div>
 
     <h3>Support</h3>
     <p>The support is the closed set where the measure cannot be locally ignored.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The support of a Borel measure \(\mu\) on a metric space is the complement of the largest open set of measure zero. Equivalently, \(x\in\operatorname{supp}\mu\) if every open ball around \(x\) has positive measure.</p>
+        <p><span class="statement-title">Definition.</span> For a Borel measure on a second-countable space,
+\[
+\operatorname{supp}\mu
+=\{x:\mu(U)>0\text{ for every open neighborhood }U\ni x\}.
+\]
+Equivalently, it is the complement of the largest open \(\mu\)-null set.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The union of all open null sets is open and null when the space has a countable base, because it is the union of countably many basis elements with measure zero. Taking its complement gives the stated characterization.</p>
+        <p><span class="statement-title">Proof.</span> Let \(\{B_n\}\) be a countable base and let
+\[
+N=\bigcup_{\mu(B_n)=0}B_n.
+\]
+Then \(N\) is open and null. Every open null set is a union of basis elements, each of which is null, so it lies in \(N\). Hence \(N\) is the largest open null set, and its complement consists exactly of points whose every neighborhood has positive measure.</p>
     </div>
 
-    <h3>Weak convergence bridge</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> If
+\[
+\mu=\sum_{n=1}^{\infty}2^{-n}\delta_{q_n},
+\]
+where \(\{q_n\}\) enumerates \(\mathbb Q\), then \(\operatorname{supp}\mu=\mathbb R\): every open interval contains some \(q_n\) and therefore has positive mass. The support may be much larger than the set of atoms.</p>
+    </div>
+
+    <h3>Continuous approximation of indicators</h3>
     <p>Regularity makes measures visible to continuous test functions.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> On metric spaces, regularity is what allows approximation of indicators by continuous functions. This is the technical heart behind portmanteau theorems and weak convergence.</p>
+        <p><span class="statement-title">Remark.</span> If \(K\subset U\) with \(K\) compact and \(U\) open in a metric space, then
+\[
+\varphi(x)=\frac{d(x,U^c)}{d(x,U^c)+d(x,K)}
+\]
+is continuous, equals \(1\) on \(K\), and vanishes on \(U^c\). Regularity lets \(K\) and \(U\) approximate a measurable set in measure, so continuous functions approximate its indicator. This is the mechanism behind the portmanteau theorem in <a href="{{ '/notes/real-analysis/weak-convergence-of-measures/' | relative_url }}">Weak convergence of measures</a>.</p>
     </div>

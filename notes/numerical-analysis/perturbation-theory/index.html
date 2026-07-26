@@ -34,3 +34,101 @@ note_next_url: "/notes/numerical-analysis/discretization-consistency-convergence
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Perturbation bounds are usually obtained by linearizing the defining equation, solving the linearized equation, and then bounding the neglected higher-order term. The same template recurs in roots, eigenpairs, singular values, and discretized differential equations.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Linear systems</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\(Ax=b\), and suppose
+\((A+\Delta A)(x+\Delta x)=b+\Delta b\). If
+\(\|A^{-1}\Delta A\|<1\), then
+\[
+\frac{\|\Delta x\|}{\|x\|}
+\le
+\frac{\kappa(A)}
+{1-\|A^{-1}\Delta A\|}
+\left(
+\frac{\|\Delta A\|}{\|A\|}
++\frac{\|\Delta b\|}{\|b\|}
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Subtraction gives
+\[
+(A+\Delta A)\Delta x=\Delta b-\Delta A x.
+\]
+The Neumann-series bound
+\[
+\|(A+\Delta A)^{-1}\|
+\le\frac{\|A^{-1}\|}{1-\|A^{-1}\Delta A\|}
+\]
+and \(\|b\|\le\|A\|\|x\|\) yield the result.</p>
+</div>
+
+<h3>Simple eigenvalues</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (first-order eigenvalue
+perturbation).</span> Let \(Ax=\lambda x\) and
+\(y^*A=\lambda y^*\), with \(y^*x\ne0\). For \(A(t)=A+tE\), a differentiable
+simple eigenvalue branch satisfies
+\[
+\lambda'(0)=\frac{y^*Ex}{y^*x}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate
+\(A(t)x(t)=\lambda(t)x(t)\) at zero and left-multiply by \(y^*\). Terms
+containing \(x'(0)\) cancel because \(y^*A=\lambda y^*\), leaving the formula.</p>
+</div>
+
+<p>The eigenvalue condition number is
+\[
+\kappa(\lambda)=\frac{\|x\|\|y\|}{|y^*x|}.
+\]
+For a normal matrix, left and right eigenvectors coincide orthogonally and
+\(\kappa(\lambda)=1\). Nonnormal matrices can have extremely sensitive
+eigenvalues despite moderate entries.</p>
+
+<h3>Bauer--Fike and pseudospectra</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Bauer--Fike).</span> If
+\(A=V\Lambda V^{-1}\), then every eigenvalue \(\mu\) of \(A+E\) satisfies
+\[
+\min_{\lambda\in\sigma(A)}|\mu-\lambda|
+\le\kappa(V)\|E\|.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If
+\(\mu\notin\sigma(A)\), singularity of
+\(\mu I-A-E\) implies
+\[
+1\le\|(\mu I-A)^{-1}E\|
+\le\|V\|\|V^{-1}\|\|E\|
+\max_j|\mu-\lambda_j|^{-1}.
+\]
+Rearrange.</p>
+</div>
+
+<p>The \(\varepsilon\)-pseudospectrum
+\[
+\sigma_\varepsilon(A)
+=\{z:\|(zI-A)^{-1}\|>\varepsilon^{-1}\}
+\]
+equals the union of spectra of \(A+E\) over \(\|E\|<\varepsilon\). It reveals
+nonnormal transient amplification invisible from eigenvalues alone.</p>
+
+<h3>Least-squares sensitivity</h3>
+
+<p>For full-column-rank \(A\), \(x=A^\dagger b\). Perturbations parallel to
+\(\operatorname{col}(A)\) behave like a linear solve, while perturbing \(A\)
+also rotates the column space. When the residual is large, the sensitivity can
+scale like \(\kappa(A)^2\). This is why normal equations, which explicitly
+square the condition number, are risky for ill-conditioned problems.</p>

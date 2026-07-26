@@ -47,3 +47,138 @@ The second factor is the Bayes factor.</p>
 <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> BMA can have excellent predictive behavior even when posterior mass does not concentrate on a single model. This distinction matters when predictors are redundant or when several models approximate the truth equally well.</p>
     </div>
+
+<h3>Posterior predictive mixture</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For models
+\(M_1,\ldots,M_K\),
+\[
+p(\widetilde y\mid y)
+=\sum_{k=1}^K
+P(M_k\mid y)
+p(\widetilde y\mid y,M_k).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply total probability over the posterior model index:
+\[
+p(\widetilde y\mid y)
+=\sum_k
+\int p(\widetilde y\mid\theta_k,M_k)
+\Pi(\mathrm{d}\theta_k,M_k\mid y).
+\]</p>
+</div>
+
+<h3>Predictive variance decomposition</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Let
+\[
+\mu_k=E(\widetilde Y\mid y,M_k),
+\qquad
+v_k=\operatorname{Var}(\widetilde Y\mid y,M_k),
+\qquad
+w_k=P(M_k\mid y).
+\]
+Then
+\[
+E(\widetilde Y\mid y)=\sum_kw_k\mu_k,
+\]
+\[
+\operatorname{Var}(\widetilde Y\mid y)
+=\sum_kw_kv_k
++\sum_kw_k(\mu_k-\bar\mu)^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply total expectation and total variance conditional on the model index. The second term is between-model uncertainty and disappears after selecting one model.</p>
+</div>
+
+<h3>Posterior inclusion probabilities</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> In variable selection,
+\[
+\operatorname{PIP}_j
+=P(j\in S\mid y)
+=\sum_{S:j\in S}P(S\mid y).
+\]
+Under additive utility for inclusion decisions, thresholding PIPs can be Bayes optimal, with threshold determined by false-inclusion and false-exclusion costs.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If loss is
+\[
+L(S_0,\widehat S)
+=c_{\mathrm{FP}}|\widehat S\setminus S_0|
++c_{\mathrm{FN}}|S_0\setminus\widehat S|,
+\]
+the Bayes action includes variable \(j\) exactly when
+\[
+\operatorname{PIP}_j
+>\frac{c_{\mathrm{FP}}}
+{c_{\mathrm{FP}}+c_{\mathrm{FN}}}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Posterior expected loss separates over coordinates. Inclusion costs
+\(c_{\mathrm{FP}}P(j\notin S_0\mid y)\); exclusion costs
+\(c_{\mathrm{FN}}P(j\in S_0\mid y)\). Compare them.</p>
+</div>
+
+<h3>Median probability model</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (orthogonal prediction setting).</span> In Gaussian linear regression with orthogonal design, common shrinkage structure, and squared-error prediction for future responses with matching design covariance, the model containing all variables with
+\[
+\operatorname{PIP}_j\ge1/2
+\]
+minimizes posterior expected predictive loss among single submodels.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Orthogonality makes predictive risk decompose coordinatewise. For coordinate \(j\), including its posterior conditional estimate is preferable exactly when posterior inclusion probability exceeds one half under symmetric inclusion/exclusion predictive costs. Summing independent coordinate decisions gives the median probability model.</p>
+</div>
+
+<p>The theorem is not universal. Correlated predictors create joint predictive effects, and the optimal submodel need not be formed by marginal PIP thresholding.</p>
+
+<h3>Redundant predictors and dilution</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Suppose \(m\) nearly duplicate predictors produce \(m\) models with almost identical likelihood and prior mass, while one distinct predictor produces one comparable model. A uniform prior over models assigns the redundant predictive direction roughly \(m\) times as much total prior mass. Posterior odds can therefore reflect representation multiplicity rather than distinct predictive evidence.</p>
+</div>
+
+<p>Dilution priors allocate mass to neighborhoods of model space or use determinant/geometry penalties so redundant models share rather than multiply prior support.</p>
+
+<h3>Model-selection consistency</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (finite model list).</span> If one model \(M_{k_0}\) contains the true distribution, every other model is at positive KL distance or is a regular overfitted extension penalized by dimension, and all model priors are positive, then
+\[
+P(M_{k_0}\mid Y^{(n)})\to1
+\]
+under standard identifiability and proper-prior conditions.</p>
+</div>
+
+<p>When several models contain truth, posterior mass can favor the smallest regular true model through Occam factors. Under misspecification, it tends toward models with best KL approximation plus complexity effects. With expanding model spaces, multiplicity priors and signal conditions become essential.</p>
+
+<h3>BMA versus stacking</h3>
+
+<p>BMA weights are posterior probabilities derived from joint model priors and marginal likelihoods. Stacking weights solve
+\[
+\max_{w\in\Delta}
+\sum_i\log\sum_kw_kp_{k,-i}(y_i)
+\]
+and target out-of-sample prediction. If no candidate model is true, stacking can outperform BMA by mixing complementary misspecifications. The two methods answer different questions and should not be evaluated by whether their weights agree.</p>
+
+<h3>Computation over large model spaces</h3>
+
+<p>Exact enumeration is impossible for \(2^p\) subsets. Stochastic search variable selection, MC3, birth-death chains, shotgun search, variational model distributions, and dynamic programming exploit different structure. Posterior model probability estimates must account for unvisited mass; normalizing probabilities only over visited models can create severe overconfidence.</p>
+
+<h3>Reporting model uncertainty</h3>
+
+<p>Report posterior predictive distributions, inclusion probabilities or grouped inclusion probabilities, sensitivity to model and slab priors, and the distribution of model size. A single selected formula conceals between-model uncertainty and can make subsequent standard errors conditional on a decision that the posterior itself regarded as uncertain.</p>

@@ -8,27 +8,180 @@ note_prev_url: "/notes/empirical-processes/functional-delta-method/"
 note_next_url: "/notes/empirical-processes/m-estimators-consistency/"
 ---
 
-<p>Z-estimators solve empirical estimating equations. Empirical processes control the uniform remainder in the linearization.</p>
+<p>A \(Z\)-estimator is defined by making an empirical map approximately zero. The central issue is inversion: uniform convergence locates a root, while differentiability and empirical-process equicontinuity convert the residual equation into an asymptotic linear representation.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Z-estimator satisfies \(P_n\psi_{\hat\theta}=o_p(n^{-1/2})\). If \(P\psi_{\theta_0}=0\) and \(P\psi_\theta\) is differentiable with derivative \(A\), then linearization targets \(A(\hat\theta-\theta_0)\).</p>
-    </div>
+<h3>Approximate roots</h3>
 
-    <h3>Linearization ingredients</h3>
-    <ul>
-        <li>The stochastic term is \(\mathbb G_n\psi_{\theta_0}\).</li>
-        <li>Equicontinuity justifies replacing \(\mathbb G_n\psi_{\hat\theta}\) by \(\mathbb G_n\psi_{\theta_0}\).</li>
-        <li>The final expansion is usually \(\sqrt n(\hat\theta-\theta_0)=-A^{-1}\mathbb G_n\psi_{\theta_0}+o_p(1)\).</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \(\psi_\theta:\mathcal X\to\mathbb R^p\),
+  \[
+  \Psi(\theta)=P\psi_\theta,
+  \qquad
+  \Psi_n(\theta)=P_n\psi_\theta.
+  \]
+  An approximate \(Z\)-estimator \(\hat\theta_n\) satisfies
+  \[
+  \|\Psi_n(\hat\theta_n)\|
+  \leq
+  \inf_{\theta\in\Theta}\|\Psi_n(\theta)\|+o_p(1),
+  \]
+  or, for root-\(n\) linearization,
+  \[
+  \Psi_n(\hat\theta_n)=o_p(n^{-1/2}).
+  \]</p>
+</div>
 
-    <h3>Empirical-process remainder</h3>
-    <p>This page is the empirical-process layer beneath score equations, GMM, estimating equations, and semiparametric influence-function expansions.</p>
+<h3>Consistency of roots</h3>
 
-    <!-- expanded-learning -->
-    <h3>Z-estimator expansion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> A clean proof checks three ingredients: consistency of \(\hat\theta\), differentiability of \(\theta\mapsto P\psi_\theta\), and stochastic equicontinuity of \(\mathbb G_n(\psi_\theta-\psi_{\theta_0})\) near \(\theta_0\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose:</p>
+  <ol>
+    <li>\(\sup_{\theta\in\Theta}\|\Psi_n(\theta)-\Psi(\theta)\|\to_p0\);</li>
+    <li>\(\Psi(\theta_0)=0\), and for every \(\varepsilon>0\),
+    \[
+    \inf_{d(\theta,\theta_0)\geq\varepsilon}
+    \|\Psi(\theta)\|>0;
+    \]</li>
+    <li>\(\|\Psi_n(\hat\theta_n)\|=o_p(1)\).</li>
+  </ol>
+  <p>Then \(\hat\theta_n\to_p\theta_0\).</p>
+</div>
 
-    <h3>Equicontinuity of estimating functions</h3>
-    <p>The empirical-process contribution is the third ingredient. It prevents the empirical noise from changing too much when \(\theta_0\) is replaced by the random \(\hat\theta\). Without it, the Taylor expansion of the estimating equation is not justified uniformly.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On
+  \(d(\hat\theta_n,\theta_0)\geq\varepsilon\),
+  \[
+  \inf_{d(\theta,\theta_0)\geq\varepsilon}\|\Psi(\theta)\|
+  \leq
+  \|\Psi(\hat\theta_n)-\Psi_n(\hat\theta_n)\|
+  +\|\Psi_n(\hat\theta_n)\|.
+  \]
+  The right side is bounded by the uniform discrepancy plus \(o_p(1)\), and therefore tends to zero in probability, contradicting the positive deterministic lower bound. \(\square\)</p>
+</div>
+
+<p>The separation condition allows multiple finite-sample roots but requires the population root to be isolated. On noncompact parameter spaces, it is enough to prove the condition on a compact set that contains \(\hat\theta_n\) with probability tending to one.</p>
+
+<h3>Root-\(n\) linearization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\hat\theta_n\to_p\theta_0\) and \(\Psi_n(\hat\theta_n)=o_p(n^{-1/2})\). Assume:</p>
+  <ol>
+    <li>for a nonsingular matrix \(A\),
+    \[
+    \Psi(\theta)-\Psi(\theta_0)
+    =A(\theta-\theta_0)+o(\|\theta-\theta_0\|);
+    \]</li>
+    <li>
+    \[
+    \sup_{\|\theta-\theta_0\|\leq\delta_n}
+    \frac{
+      |\mathbb G_n(\psi_\theta-\psi_{\theta_0})|
+    }{
+      1+\sqrt n\|\theta-\theta_0\|
+    }
+    \xrightarrow{p}0
+    \]
+    for every deterministic \(\delta_n\downarrow0\);</li>
+    <li>\(P\|\psi_{\theta_0}\|^2<\infty\).</li>
+  </ol>
+  <p>Then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =
+  -A^{-1}\mathbb G_n\psi_{\theta_0}+o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand the estimating equation:
+  \[
+  \begin{aligned}
+  o_p(1)
+  &=\sqrt n\,\Psi_n(\hat\theta_n)\\
+  &=\mathbb G_n\psi_{\theta_0}
+  +\mathbb G_n(\psi_{\hat\theta_n}-\psi_{\theta_0})
+  +\sqrt n\{\Psi(\hat\theta_n)-\Psi(\theta_0)\}.
+  \end{aligned}
+  \]
+  The stochastic differentiability condition makes the second term
+  \(o_p(1+\sqrt n\|\hat\theta_n-\theta_0\|)\). Population differentiability gives
+  \[
+  \sqrt n\{\Psi(\hat\theta_n)-\Psi(\theta_0)\}
+  =
+  A\sqrt n(\hat\theta_n-\theta_0)
+  +o_p(\sqrt n\|\hat\theta_n-\theta_0\|).
+  \]
+  Nonsingularity of \(A\) first implies root-\(n\) tightness, after which both relative remainders become \(o_p(1)\). Rearrangement proves the expansion. \(\square\)</p>
+</div>
+
+<p>The equicontinuity theorem on page 9 gives a simpler sufficient condition:
+\[
+\mathbb G_n(\psi_{\hat\theta_n}-\psi_{\theta_0})=o_p(1).
+\]
+The ratio formulation above is useful because it can establish root-\(n\) tightness and linearization simultaneously.</p>
+
+<h3>Generalized method of moments</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(g(X,\theta)\in\mathbb R^q\), \(q\geq p\), and suppose
+  \(Pg(X,\theta_0)=0\). The GMM estimator minimizes
+  \[
+  Q_n(\theta)=
+  P_ng_\theta^\top W_nP_ng_\theta.
+  \]
+  Its first-order equation is
+  \[
+  \dot G_n(\theta)^\top W_nP_ng_\theta=0.
+  \]
+  If \(G=P\partial_\theta g_{\theta_0}\) has full column rank and \(W_n\to_pW\), then
+  \[
+  \sqrt n(\hat\theta-\theta_0)
+  =
+  -(G^\top WG)^{-1}G^\top W\mathbb G_ng_{\theta_0}
+  +o_p(1).
+  \]
+  With \(\Omega=\operatorname{Var}(g_{\theta_0})\), the choice \(W=\Omega^{-1}\) gives covariance
+  \((G^\top\Omega^{-1}G)^{-1}\).</p>
+</div>
+
+<h3>Nonsmooth estimating equations</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (quantile).</span> A sample \(p\)-quantile approximately solves
+  \[
+  P_n\{1(X\leq\theta)-p\}=0.
+  \]
+  The map \(\theta\mapsto1(X\leq\theta)\) is not pointwise differentiable, but its expectation is:
+  \[
+  P\{1(X\leq\theta)-p\}
+  =F(\theta)-p
+  =f(q_p)(\theta-q_p)+o(|\theta-q_p|).
+  \]
+  Donsker equicontinuity of the indicator class gives
+  \[
+  \sqrt n(\hat q_p-q_p)
+  =
+  -\frac{\mathbb G_n\{1(X\leq q_p)-p\}}{f(q_p)}
+  +o_p(1).
+  \]
+  Thus differentiability of individual criterion functions is unnecessary; differentiability of the population map and stochastic equicontinuity are the relevant properties.</p>
+</div>
+
+<h3>Banach-space roots</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (implicit functional delta method).</span> Let
+  \(\Psi:\mathbb D\times\Theta\to\mathbb E\) satisfy
+  \(\Psi(P,\theta_0)=0\). If \(\Psi\) is Hadamard differentiable in both arguments and the derivative
+  \[
+  A=\partial_\theta\Psi(P,\theta_0):\Theta_0\to\mathbb E_0
+  \]
+  is continuously invertible, then the local solution map \(P\mapsto\theta(P)\) has derivative
+  \[
+  \theta'_P(h)
+  =-A^{-1}\partial_P\Psi(P,\theta_0)[h].
+  \]</p>
+</div>
+
+<p>This implicit-map formulation covers estimating equations whose unknown is a function, such as cumulative hazards or integral-equation estimators. Proving that \(A^{-1}\) exists and is continuous is the functional-analytic part; controlling the empirical map uniformly is the empirical-process part.</p>

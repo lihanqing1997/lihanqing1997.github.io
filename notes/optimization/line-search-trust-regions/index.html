@@ -8,24 +8,139 @@ note_prev_url: "/notes/optimization/gauss-newton-fisher-scoring-irwls/"
 note_next_url: "/notes/optimization/self-concordance-interior-point-newton/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Line search and trust regions.</p>
+<p>Newton and quasi-Newton directions are local proposals. A globalization
+mechanism decides how far to move before the local model becomes unreliable.
+Line search controls step length along a chosen direction; a trust region
+controls the set over which the model is optimized.</p>
 
-    <h3>Line search</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given a descent direction \(p_k\), line search chooses \(\alpha_k>0\) and sets \(x_{k+1}=x_k+\alpha_kp_k\). Armijo and Wolfe conditions balance sufficient decrease with curvature information.</p>
-    </div>
+<h3>Armijo backtracking</h3>
 
-    <h3>Trust region</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Trust-region methods minimize a local model \(m_k(p)\) subject to \(\|p\|\le\Delta_k\), then expand or shrink \(\Delta_k\) according to agreement between actual and predicted decrease.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A direction \(p\) is a
+    descent direction at \(x\) if
+    \(\nabla f(x)^\top p<0\). For \(c_1\in(0,1)\), the Armijo condition is
+    \[
+    f(x+\alpha p)
+    \le f(x)+c_1\alpha\nabla f(x)^\top p.
+    \]
+    Backtracking starts from \(\alpha_0>0\) and replaces
+    \(\alpha\) by \(\rho\alpha\), \(0<\rho<1\), until the inequality holds.</p>
+</div>
 
-    <h3>Global convergence principle</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For smooth bounded-below objectives, standard line-search or trust-region globalization ensures that every accumulation point is first-order stationary, under mild regularity on descent directions or models.</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Finite termination.</span> If \(f\) is
+    differentiable at \(x\) and \(p\) is a descent direction, Armijo
+    backtracking terminates after finitely many reductions.</p>
+</div>
 
-    <h3>Second-order methods</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Newton directions become reliable only when the local quadratic approximation is trusted. These mechanisms decide how much of that local model to believe.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Differentiability gives
+    \[
+    f(x+\alpha p)
+    =f(x)+\alpha\nabla f(x)^\top p+o(\alpha).
+    \]
+    Since \((1-c_1)\nabla f(x)^\top p<0\), the remainder is smaller in
+    magnitude than
+    \(-(1-c_1)\alpha\nabla f(x)^\top p\) for all sufficiently small
+    \(\alpha\). The Armijo inequality then holds, and geometric backtracking
+    eventually reaches such a step.</p>
+</div>
+
+<h3>Wolfe curvature conditions</h3>
+
+<p>The weak Wolfe condition supplements Armijo by
+\[
+\nabla f(x+\alpha p)^\top p
+\ge c_2\nabla f(x)^\top p,\qquad c_1<c_2<1.
+\]
+It prevents a step so short that the directional derivative has barely
+changed. The strong Wolfe condition replaces the left side by its absolute
+value. These conditions are central for BFGS because they imply
+\[
+s^\top y
+=\alpha p^\top[\nabla f(x+\alpha p)-\nabla f(x)]>0,
+\]
+preserving positive definiteness.</p>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Zoutendijk condition.</span> Suppose \(f\)
+    is bounded below on the initial level set and has an \(L\)-Lipschitz
+    gradient there. If \(p_k\) are descent directions and \(\alpha_k\) satisfy
+    the Wolfe conditions, then
+    \[
+    \sum_{k=0}^\infty
+    \cos^2\theta_k\,\|\nabla f(x_k)\|^2<\infty,
+    \qquad
+    \cos\theta_k=
+    \frac{-\nabla f(x_k)^\top p_k}
+      {\|\nabla f(x_k)\|\,\|p_k\|}.
+    \]
+    If \(\cos\theta_k\ge c>0\), then
+    \(\|\nabla f(x_k)\|\to0\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Lipschitz continuity and
+    the Wolfe curvature condition imply the lower step bound
+    \[
+    \alpha_k
+    \ge\frac{(1-c_2)(-\nabla f(x_k)^\top p_k)}
+      {L\|p_k\|^2}.
+    \]
+    Armijo then gives
+    \[
+    f(x_k)-f(x_{k+1})
+    \ge\frac{c_1(1-c_2)}L
+      \frac{(\nabla f(x_k)^\top p_k)^2}{\|p_k\|^2}
+    =\frac{c_1(1-c_2)}L
+      \cos^2\theta_k\|\nabla f(x_k)\|^2.
+    \]
+    Sum over \(k\); the left side is bounded by
+    \(f(x_0)-\inf f\). A uniform angle bound then forces the gradient norms to
+    zero.</p>
+</div>
+
+<h3>Quadratic models inside a trust region</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A trust-region method
+    approximately solves
+    \[
+    \min_{\|p\|\le\Delta_k}
+    m_k(p)=f(x_k)+g_k^\top p+\frac12p^\top B_kp.
+    \]
+    After proposing \(p_k\), it compares actual and predicted decrease:
+    \[
+    \rho_k=
+    \frac{f(x_k)-f(x_k+p_k)}
+      {m_k(0)-m_k(p_k)}.
+    \]
+    A poor ratio rejects the step and shrinks \(\Delta_k\); a ratio near one
+    permits acceptance and possible expansion.</p>
+</div>
+
+<div class="math-statement lemma">
+    <p><span class="statement-title">Cauchy decrease.</span> Minimizing the
+    model along \(-g_k\) within the trust region gives a step \(p_k^C\) with
+    \[
+    m_k(0)-m_k(p_k^C)
+    \ge\frac12\|g_k\|
+      \min\left\{\Delta_k,\frac{\|g_k\|}{\|B_k\|}\right\}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Put \(p=-tg_k\) with
+    \(0\le t\le\Delta_k/\|g_k\|\). The predicted decrease is
+    \(t\|g_k\|^2-\frac12t^2g_k^\top B_kg_k\). If the unconstrained minimizer
+    along the ray occurs before the boundary, substitution gives at least
+    \(\|g_k\|^2/(2\|B_k\|)\); otherwise the boundary step gives at least
+    \(\Delta_k\|g_k\|/2\).</p>
+</div>
+
+<p>If every computed step achieves a fixed fraction of this Cauchy decrease,
+the model Hessians remain bounded, and \(f\) is smooth and bounded below, the
+acceptance-radius rules imply \(\liminf_k\|\nabla f(x_k)\|=0\), with standard
+variants giving full convergence to first-order stationarity. Trust regions
+remain meaningful when \(B_k\) is indefinite because the bounded subproblem can
+exploit negative curvature rather than treating it as an invalid Newton step.</p>

@@ -34,3 +34,91 @@ note_next_url: "/notes/numerical-analysis/initial-value-problems-odes/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Derivative-free methods are not automatically more robust. They trade derivative cost for interpolation, sampling, or finite-difference error, so conditioning and noise still decide what accuracy is realistic.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>The scalar secant method</h3>
+
+<p>Replacing \(f'(x_k)\) by a divided difference gives
+\[
+x_{k+1}
+=x_k-f(x_k)
+\frac{x_k-x_{k-1}}{f(x_k)-f(x_{k-1})}.
+\]
+It uses one new function evaluation per step and no derivative.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(f\in C^2\) near a simple
+root \(x^*\), \(f'(x^*)\ne0\), and the starting points are sufficiently close,
+then the secant method has order
+\[
+\varphi=\frac{1+\sqrt5}{2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Divided-difference error analysis
+gives asymptotically
+\[
+e_{k+1}
+=C e_ke_{k-1}+o(e_ke_{k-1}),
+\qquad
+C=\frac{f''(x^*)}{2f'(x^*)}.
+\]
+If \(|e_{k+1}|\asymp|e_k|^p\), consistency with
+\(|e_ke_{k-1}|\) and
+\(|e_k|\asymp|e_{k-1}|^p\) requires
+\(p=1+1/p\), hence \(p=\varphi\).</p>
+</div>
+
+<h3>Broyden updates</h3>
+
+<p>For systems, maintain an approximate Jacobian \(B_k\). With
+\[
+s_k=x_{k+1}-x_k,\qquad y_k=F(x_{k+1})-F(x_k),
+\]
+the secant condition is \(B_{k+1}s_k=y_k\). The good Broyden update
+\[
+B_{k+1}
+=B_k+\frac{(y_k-B_ks_k)s_k^\top}{s_k^\top s_k}
+\]
+is the smallest Frobenius-norm change satisfying that condition.</p>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof of minimal change.</span> Write
+\(\Delta=B_{k+1}-B_k\). The constraint is
+\(\Delta s=r=y-B_ks\). Among all matrices with \(\Delta s=r\), orthogonal
+projection in Frobenius inner product gives
+\(\Delta=rs^\top/(s^\top s)\); every other feasible change adds a matrix
+annihilating \(s\) and orthogonal to this rank-one update.</p>
+</div>
+
+<h3>Inverse updates and Sherman--Morrison</h3>
+
+<p>Updating an inverse approximation \(H_k\approx F'(x_k)^{-1}\) avoids a new
+factorization. Rank-one formulas cost \(O(n^2)\), but accumulated roundoff and
+poor curvature can make \(H_k\) unreliable. Periodic refactorization or
+preconditioned Krylov solves can be more robust in large problems.</p>
+
+<h3>Superlinear convergence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Dennis--Moré criterion,
+schematic).</span> Let \(x_k\to x^*\), with nonsingular
+\(J^*=F'(x^*)\). A quasi-Newton iteration is superlinear if
+\[
+\frac{\|(B_k-J^*)s_k\|}{\|s_k\|}\to0
+\]
+and the approximate Jacobians remain uniformly nonsingular.</p>
+</div>
+
+<p>The criterion asks for accuracy only along actual steps, not convergence of
+the entire matrix \(B_k\). Broyden updates can accumulate enough directional
+information to satisfy it.</p>
+
+<h3>Relation to optimization</h3>
+
+<p>BFGS and SR1 are quasi-Newton updates for Hessians of scalar objectives and
+exploit symmetry and curvature; general Broyden updates solve vector equations
+without those properties. Their detailed global convergence belongs to the
+<a href="/notes/optimization/quasi-newton-secant-methods/">optimization note</a>;
+here the common structure is secant approximation of a derivative operator.</p>

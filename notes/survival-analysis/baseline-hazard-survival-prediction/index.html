@@ -8,40 +8,241 @@ note_prev_url: "/notes/survival-analysis/large-sample-theory-cox/"
 note_next_url: "/notes/survival-analysis/time-dependent-covariates-risk-sets/"
 ---
 
+<p>Partial likelihood estimates relative risk without specifying the baseline hazard. Absolute survival prediction requires putting that nuisance parameter back. The natural target is the cumulative baseline hazard, whose estimator is a weighted Nelson-Aalen process evaluated at the fitted regression coefficient.</p>
+
 <h3>Breslow estimator</h3>
 
-    <p>After estimating \(\beta\), the baseline cumulative hazard can be estimated by matching observed event counts with model-implied expected event counts.</p>
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Breslow estimator is
+<p><span class="statement-title">Definition.</span> For
 \[
-\widehat\Lambda_0(t)=\int_0^t {\mathrm{d}N_\cdot(u)\over S^{(0)}(u,\hat\beta)}
-=\sum_{u\le t}{dN_\cdot(u)\over \sum_jY_j(u)\exp(Z_j^\top\hat\beta)}.
-\]</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a fixed covariate vector \(z\), the plug-in survival estimator is
-\[
-\widehat S(t\mid z)=\exp\{-\widehat\Lambda_0(t)\exp(z^\top\hat\beta)\}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Under the Cox model, the cumulative hazard at covariate value \(z\) is \(\Lambda(t\mid z)=\Lambda_0(t)\exp(z^\top\beta)\). Substitute \(\widehat\Lambda_0\) and \(\hat\beta\), then use \(S=\exp(-\Lambda)\).</p>
-    </div>
-    <h3>Joint uncertainty</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Uncertainty in \(\widehat S(t\mid z)\) has two sources: the martingale noise in \(\widehat\Lambda_0\) and the regression uncertainty in \(\hat\beta\). Delta-method calculations must keep both pieces.</p>
-    </div>
-    <h3>Influence representation</h3>
-<div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under regularity conditions,
-\[
-\widehat\Lambda_0(t)-\Lambda_0(t)
-=\int_0^t{1\over s^{(0)}(u,\beta_0)}\,\mathrm{d}\overline M(u)
--\dot\Lambda_0(t)^\top(\hat\beta-\beta_0)+o_p(n^{-1/2}),
+S_n^{(0)}(\beta,t)=\sum_{i=1}^nY_i(t)e^{\beta^\top Z_i(t)},
 \]
-where \(\dot\Lambda_0(t)\) is the derivative of the Breslow functional with respect to \(\beta\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Expand the Breslow denominator around \(\beta_0\). The numerator minus its compensator gives the martingale integral. The denominator derivative gives the linear term in \(\hat\beta-\beta_0\); the remaining empirical-process terms are controlled uniformly on compact time intervals.</p>
-    </div>
-    <h3>Prediction bands</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Pointwise intervals for \(S(t\mid z)\) are usually built on the log cumulative-hazard or complementary log-log scale, because these transformations keep back-transformed survival probabilities inside \([0,1]\).</p>
-    </div>
+the Breslow estimator of the cumulative baseline hazard is
+\[
+\widehat\Lambda_0(t;\beta)
+=\int_0^t\frac{\mathrm{d}N(u)}{S_n^{(0)}(\beta,u)}
+=\sum_{t_j\le t}\frac{d_j}{S_n^{(0)}(\beta,t_j)}.
+\]
+The fitted estimator is
+\(\widehat\Lambda_0(t)=\widehat\Lambda_0(t;\widehat\beta)\).</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (profile NPMLE).</span> If the baseline cumulative hazard is allowed to jump only at observed event times and ties are handled by the Breslow convention, then for fixed \(\beta\) its maximizing jump at \(t_j\) is
+\[
+\Delta\widehat\Lambda_0(t_j;\beta)
+=\frac{d_j}{S_n^{(0)}(\beta,t_j)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The full log-likelihood terms involving the jump \(\alpha_j=\Delta\Lambda_0(t_j)\) are
+\[
+d_j\log\alpha_j-\alpha_jS_n^{(0)}(\beta,t_j).
+\]
+This strictly concave function has derivative
+\(d_j/\alpha_j-S_n^{(0)}(\beta,t_j)\), whose zero gives the stated jump. Summing the jumps gives the estimator.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> With a binary covariate and fitted coefficient \(\widehat\beta=\log2\), suppose an event time has three unexposed and two exposed subjects at risk, with one observed failure. The weighted risk-set size is
+\[
+3e^0+2e^{\log2}=7,
+\]
+so the baseline cumulative hazard jumps by \(1/7\). An unexposed subject's fitted cumulative hazard also jumps by \(1/7\), while an exposed subject's jumps by \(2/7\).</p>
+</div>
+
+<h3>Consistency and first-order expansion</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under the regularity conditions of the preceding page,
+\[
+\sup_{t\le\tau}
+|\widehat\Lambda_0(t)-\Lambda_0(t)|
+\xrightarrow{P}0.
+\]
+Moreover,
+\[
+\sqrt n\{\widehat\Lambda_0(t)-\Lambda_0(t)\}
+=\mathbb W_n(t)-B(t)^\top
+\sqrt n(\widehat\beta-\beta_0)+o_P(1)
+\]
+uniformly in \(t\in[0,\tau]\), where
+\[
+\mathbb W_n(t)
+=\frac1{\sqrt n}\sum_{i=1}^n
+\int_0^t\frac{\mathrm{d}M_i(u)}
+{s^{(0)}(\beta_0,u)}
+\]
+and
+\[
+B(t)=\int_0^t
+\frac{s^{(1)}(\beta_0,u)}
+{s^{(0)}(\beta_0,u)}
+\,\mathrm{d}\Lambda_0(u)
+=\int_0^t e(\beta_0,u)\,\mathrm{d}\Lambda_0(u).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> At \(\beta_0\),
+\[
+\widehat\Lambda_0(t;\beta_0)-\Lambda_0(t)
+=\int_0^t
+\frac{\sum_i\mathrm{d}M_i(u)}
+{S_n^{(0)}(\beta_0,u)}.
+\]
+Uniform positive risk and the martingale law of large numbers give consistency. Taylor-expand \(\widehat\Lambda_0(t;\beta)\) in \(\beta\):
+\[
+\frac{\partial}{\partial\beta}
+\widehat\Lambda_0(t;\beta)
+=-\int_0^t
+\frac{S_n^{(1)}(\beta,u)}
+{\{S_n^{(0)}(\beta,u)\}^2}\,\mathrm{d}N(u).
+\]
+At \(\beta_0\), this derivative converges uniformly to \(-B(t)\). Replacing normalized empirical risk-set sums by \(s^{(k)}\) in the martingale term gives \(\mathbb W_n(t)\), and the remainder is \(o_P(1)\).</p>
+</div>
+
+<h3>Joint Gaussian limit</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The pair
+\[
+\left(
+\sqrt n(\widehat\beta-\beta_0),
+\sqrt n(\widehat\Lambda_0-\Lambda_0)
+\right)
+\]
+converges jointly to a centered Gaussian element in
+\(\mathbb R^p\times D[0,\tau]\). An influence function for
+\(\Lambda_0(t)\) is
+\[
+\phi_{\Lambda,t}(O_i)
+=\int_0^t\frac{\mathrm{d}M_i(u)}
+{s^{(0)}(\beta_0,u)}
+-B(t)^\top\phi_\beta(O_i).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Stack the martingale-integral representations of \(\widehat\beta\) and \(\widehat\Lambda_0\). Their predictable covariance functions converge uniformly, and their jumps vanish. The multivariate martingale FCLT gives joint Gaussian convergence. Substitution of the influence representation for \(\widehat\beta\) yields the displayed \(\phi_{\Lambda,t}\).</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (plug-in covariance).</span> A consistent covariance estimator is obtained from empirical influence values
+\[
+\widehat\phi_{\Lambda,t,i}
+=\int_0^t
+\frac{\mathrm{d}\widehat M_i(u)}
+{\mathbb S_n^{(0)}(\widehat\beta,u)}
+-\widehat B(t)^\top\widehat\phi_{\beta,i},
+\]
+using
+\[
+\widehat{\operatorname{Cov}}
+\{\widehat\Lambda_0(s),\widehat\Lambda_0(t)\}
+=\frac1{n^2}\sum_{i=1}^n
+\widehat\phi_{\Lambda,s,i}
+\widehat\phi_{\Lambda,t,i}.
+\]</p>
+</div>
+
+<h3>Conditional survival prediction</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a fixed covariate vector \(z\),
+\[
+\widehat S(t\mid z)
+=\exp\{-\widehat\Lambda_0(t)e^{\widehat\beta^\top z}\}.
+\]
+For a predictable future path \(z(u)\),
+\[
+\widehat S(t\mid z(\cdot))
+=\exp\left\{
+-\int_0^t e^{\widehat\beta^\top z(u)}
+\,\mathrm{d}\widehat\Lambda_0(u)
+\right\},
+\]
+provided the full path is meaningful and available for prediction.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (delta-method influence function).</span> Let
+\[
+H_z(t)=e^{\beta_0^\top z}\Lambda_0(t),
+\qquad S_z(t)=e^{-H_z(t)}.
+\]
+Then
+\[
+\phi_{H_z,t}
+=e^{\beta_0^\top z}
+\{\phi_{\Lambda,t}+\Lambda_0(t)z^\top\phi_\beta\},
+\]
+and
+\[
+\phi_{S_z,t}=-S_z(t)\phi_{H_z,t}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The derivative of
+\((\beta,\Lambda)\mapsto e^{\beta^\top z}\Lambda(t)\) in direction
+\((h,g)\) is
+\[
+e^{\beta^\top z}\{g(t)+\Lambda(t)z^\top h\}.
+\]
+The derivative of \(h\mapsto e^{-h}\) is \(-e^{-h}\). Apply the functional delta method to the joint asymptotic expansion.</p>
+</div>
+
+<h3>Prediction targets and calibration</h3>
+
+<p>Three quantities must not be conflated:</p>
+<ul>
+<li>the linear predictor \(\eta=\beta^\top z\), which ranks relative hazard;</li>
+<li>the absolute risk \(1-S(t\mid z)\), which depends on \(\Lambda_0\) and a time horizon;</li>
+<li>the restricted mean survival time
+\[
+\mu_z(\tau)=\int_0^\tau S(t\mid z)\,\mathrm{d}t,
+\]
+which summarizes survival on the time scale.</li>
+</ul>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\(\widehat S(\cdot\mid z)\) converges uniformly and is bounded by one, then
+\[
+\widehat\mu_z(\tau)
+=\int_0^\tau\widehat S(t\mid z)\,\mathrm{d}t
+\xrightarrow{P}\mu_z(\tau).
+\]
+Its influence function is
+\[
+\phi_{\mu_z,\tau}
+=\int_0^\tau\phi_{S_z,t}\,\mathrm{d}t.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Uniform convergence directly bounds the integral error by
+\(\tau\|\widehat S-S\|_\infty\). The integration map is continuous and linear on \(\ell^\infty[0,\tau]\), so applying it to the process influence expansion gives the second statement.</p>
+</div>
+
+<p>Discrimination assesses ranking, whereas calibration compares predicted and observed risks. A high concordance statistic does not guarantee calibrated absolute risk. External prediction also requires transportability of both relative effects and baseline incidence; re-estimating only \(\Lambda_0\) can recalibrate the overall event rate when relative effects remain stable.</p>
+
+<h3>Pointwise and simultaneous uncertainty</h3>
+
+<p>Pointwise intervals follow from the influence variance at a fixed \(t\), preferably on a monotone transform such as \(\log\{-\log S(t\mid z)\}\). A simultaneous band on \([t_1,t_2]\) requires a critical value for
+\[
+\sup_{t\in[t_1,t_2]}
+\left|
+\frac{\sqrt n\{\widehat S(t\mid z)-S(t\mid z)\}}
+{\widehat\sigma_z(t)}
+\right|.
+\]
+It can be approximated by multiplier draws
+\[
+\frac1{\sqrt n}\sum_{i=1}^n
+\xi_i\widehat\phi_{S_z,t,i},
+\qquad E\xi_i=0,\quad E\xi_i^2=1,
+\]
+conditional on the data. This preserves the covariance across time and is therefore preferable to a collection of unrelated pointwise intervals.</p>

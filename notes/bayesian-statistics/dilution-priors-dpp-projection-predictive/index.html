@@ -37,3 +37,146 @@ note_next_url: "/notes/bayesian-statistics/posterior-compression-density-ratio-d
 <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Projection predictive inference answers a different question from selection consistency: find a small model that preserves the reference posterior predictive distribution. This is often the scientifically stable question under collinearity.</p>
     </div>
+
+<h3>Equivalence classes of redundant models</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let \(d(M,M')\) measure predictive or column-space distance between models. A dilution prior seeks approximately
+\[
+\sum_{M'\in B(M,\varepsilon)}
+\Pi(M')
+\]
+to remain stable when a model representation is duplicated by nearly equivalent predictors.</p>
+</div>
+
+<p>Uniform model priors are uniform over syntactic subsets, not predictive directions. Duplicating one predictor changes posterior prior odds even though the span of possible fitted values changes little.</p>
+
+<h3>Determinantal point-process model prior</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let \(L\succeq0\) be a \(p\times p\) similarity-quality matrix. An \(L\)-ensemble determinantal point process assigns
+\[
+\Pi(S)=\frac{\det(L_S)}{\det(I+L)},
+\qquad S\subseteq[p].
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (normalization).</span>
+\[
+\sum_{S\subseteq[p]}\det(L_S)
+=\det(I+L).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Diagonalize
+\[
+L=U\operatorname{diag}(\lambda_1,\ldots,\lambda_p)U^\top.
+\]
+The sum of all principal minors of size \(k\) is the \(k\)-th elementary symmetric polynomial in the eigenvalues. Summing over \(k\) gives
+\[
+\prod_{j=1}^p(1+\lambda_j)=\det(I+L).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\[
+L_{ij}=q_iq_jv_i^\top v_j
+\]
+with normalized feature vectors \(v_j\), then
+\[
+\det(L_S)
+=\left(\prod_{j\in S}q_j^2\right)
+\det(V_S^\top V_S).
+\]
+The first factor rewards individual quality; the Gram determinant penalizes collinearity.</p>
+</div>
+
+<h3>Fixed-size DPP and model dimension</h3>
+
+<p>A \(k\)-DPP conditions on \(|S|=k\):
+\[
+\Pi(S\mid|S|=k)
+\propto\det(L_S).
+\]
+A separate prior on \(k\) controls model-size complexity. Without it, determinant repulsion alone may still favor overly large or small subsets depending on \(L\)'s spectrum.</p>
+
+<h3>Projection predictive objective</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let a reference posterior draw \(\theta^\star\) define predictive density
+\[
+p^\star(\widetilde y\mid x,\theta^\star).
+\]
+For submodel \(S\), its projected parameter solves
+\[
+\theta_S^\perp(\theta^\star)
+\in\arg\min_{\theta_S}
+E_{x\sim\nu}
+\operatorname{KL}\left\{
+p^\star(\cdot\mid x,\theta^\star)
+\|p_S(\cdot\mid x,\theta_S)
+\right\}.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Gaussian linear projection).</span> Suppose the reference predictive mean is
+\[
+\mu^\star=X\beta^\star
+\]
+and the submodel uses \(X_S\beta_S\) with common Gaussian noise variance. Then
+\[
+\beta_S^\perp
+=(X_S^\top X_S)^\dagger
+X_S^\top X\beta^\star,
+\]
+and the mean-prediction KL loss is proportional to
+\[
+\|(I-P_S)X\beta^\star\|_2^2,
+\qquad
+P_S=X_S(X_S^\top X_S)^\dagger X_S^\top.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> KL divergence between normals with common variance is proportional to squared mean difference:
+\[
+\|X\beta^\star-X_S\beta_S\|_2^2.
+\]
+Least squares gives the pseudoinverse projection, and the residual is the orthogonal complement of the column space of \(X_S\).</p>
+</div>
+
+<p>For GLMs, projection minimizes expected negative log likelihood under reference predictive draws, usually by iteratively reweighted fitting for every reference draw or cluster of draws.</p>
+
+<h3>Forward projection search</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> At each step, add the variable that minimizes cross-validated predictive loss after projection. Stop when the submodel's utility is within a prespecified tolerance of the reference model.</p>
+</div>
+
+<p>The tolerance has a direct predictive interpretation; it is not a posterior probability that omitted coefficients are zero. Search-induced optimism must be corrected by nested cross-validation or by evaluating the complete projection-selection process on held-out folds.</p>
+
+<h3>Reference-model uncertainty</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Projecting each reference posterior draw and retaining the collection
+\[
+\{\theta_S^\perp(\theta^{\star(s)})\}_{s=1}^N
+\]
+propagates uncertainty from the reference predictive distribution into the submodel parameters. Projecting only the reference posterior mean generally understates this uncertainty because projection is nonlinear.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For nonlinear map \(T\),
+\[
+T(E\theta^\star)\ne E\{T(\theta^\star)\}
+\]
+in general, and the single value \(T(E\theta^\star)\) has no between-draw variability. Applying \(T\) drawwise approximates the pushforward posterior.</p>
+</div>
+
+<h3>DPP and projection answer different stages</h3>
+
+<p>A DPP is a prior over candidate models that discourages redundant subsets before or during Bayesian model averaging. Projection predictive inference starts from a fitted reference predictive distribution and seeks a compact surrogate afterward. They can be combined, but determinant prior mass should not be interpreted as projected predictive fidelity, and projection loss should not be interpreted as posterior model probability.</p>

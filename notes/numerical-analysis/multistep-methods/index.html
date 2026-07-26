@@ -34,3 +34,73 @@ note_next_url: "/notes/numerical-analysis/boundary-value-problems/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Adams methods are built from polynomial interpolation of the right-hand side. Backward differentiation formulas approximate \(\mathrm{d}y/\mathrm{d}t\) using backward differences and are important for stiff equations.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Linear multistep form</h3>
+
+<p>A \(k\)-step method is
+\[
+\sum_{j=0}^k\alpha_jy_{n+j}
+=h\sum_{j=0}^k\beta_jf_{n+j}.
+\]
+Define characteristic polynomials
+\[
+\rho(\zeta)=\sum_{j=0}^k\alpha_j\zeta^j,
+\qquad
+\sigma(\zeta)=\sum_{j=0}^k\beta_j\zeta^j.
+\]
+Consistency requires
+\[
+\rho(1)=0,\qquad \rho'(1)=\sigma(1).
+\]</p>
+
+<h3>Zero stability</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (root condition).</span> A linear
+multistep method is zero stable if and only if every root of \(\rho\) lies in
+\(|\zeta|\le1\), and every root on the unit circle is simple.</p>
+</div>
+
+<p>The homogeneous perturbation recurrence has modes
+\(n^\ell\zeta^n\). Roots outside the unit disc grow exponentially; repeated
+unit-modulus roots grow polynomially. The root condition is exactly uniform
+boundedness over a fixed time interval as \(h\to0\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Dahlquist equivalence).</span> A
+consistent linear multistep method is convergent if and only if it is zero
+stable.</p>
+</div>
+
+<p>The proof writes the global error recurrence as the stable propagation of
+local truncation errors. Necessity follows by applying convergence to perturbed
+starting values and the zero differential equation.</p>
+
+<h3>Adams and BDF families</h3>
+
+<p>Adams--Bashforth methods integrate an interpolant through past derivative
+values and are explicit. Adams--Moulton includes the new derivative and is
+implicit. Backward differentiation formulas differentiate an interpolant
+through solution values:
+\[
+\sum_{j=0}^k\alpha_jy_{n+j}=h f_{n+k}.
+\]
+BDF orders one and two are A-stable; orders three through six have large
+stability sectors; BDF is not zero stable above order six.</p>
+
+<h3>Starting and variable steps</h3>
+
+<p>A \(k\)-step method needs \(k-1\) starting values, usually from a Runge--Kutta
+method of comparable order. Low-order starts can pollute global accuracy.
+Variable step sizes change coefficients and invalidate fixed-step root
+analysis; practical solvers control step ratios and use Nordsieck vectors to
+represent scaled derivatives consistently.</p>
+
+<h3>Predictor--corrector and error control</h3>
+
+<p>An explicit Adams predictor can initialize an implicit Adams--Moulton
+corrector. Their difference estimates local error, but repeated correction is
+not equivalent to solving the implicit equation exactly unless converged.
+Modern variable-order solvers select both step and order based on estimated
+work per accuracy.</p>

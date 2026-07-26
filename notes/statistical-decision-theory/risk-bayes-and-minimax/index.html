@@ -8,29 +8,155 @@ note_prev_url: "/notes/statistical-decision-theory/risk-sets-convex-geometry/"
 note_next_url: "/notes/statistical-decision-theory/admissibility-and-complete-classes/"
 ---
 
-<p>Bayes and minimax criteria are not rivals in Le Cam's theory. A least favorable prior gives a lower bound, while a minimax rule gives the matching upper bound.</p>
+<p>Bayes and minimax analysis are dual operations on the risk function. A prior averages risk and produces a lower bound on worst-case performance. A minimax rule supplies an upper bound. A least favorable prior is one for which these bounds meet.</p>
 
-    <h3>Bayes risk</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For prior \(\Pi\), the Bayes risk of \(\delta\) is</p>
-        <p>\[
-r(\Pi,\delta)=\int R(\theta,\delta)\,\mathrm{d}\Pi(\theta).
-\]</p>
-    </div>
+<h3>Bayes and minimax values</h3>
 
-    <h3>Bayes lower bound for minimax risk</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For every prior \(\Pi\),</p>
-        <p>\[
-\inf_\delta\sup_{\theta}R(\theta,\delta)\ge
-\inf_\delta\int R(\theta,\delta)\,\mathrm{d}\Pi(\theta).
-\]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a prior \(\Pi\),
+  \[
+  r(\Pi,\delta)
+  =\int_\Theta R(\theta,\delta)\Pi(\mathrm{d}\theta),
+  \qquad
+  r_\Pi=\inf_\delta r(\Pi,\delta).
+  \]
+  The minimax value is
+  \[
+  r^*=\inf_\delta\sup_{\theta\in\Theta}R(\theta,\delta).
+  \]
+  A least favorable prior maximizes \(r_\Pi\) over priors.</p>
+</div>
 
-    <h3>Proof by averaging the supremum</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For each fixed \(\delta\), the supremum of \(R(\theta,\delta)\) dominates every prior average. Taking \(\inf_\delta\) preserves the inequality.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (weak duality).</span>
+  \[
+  \sup_\Pi\inf_\delta r(\Pi,\delta)
+  \leq
+  \inf_\delta\sup_{\theta\in\Theta}R(\theta,\delta).
+  \]</p>
+</div>
 
-    <h3>Least favorable prior certificate</h3>
-    <p>If \(\Pi^\star\) has a Bayes rule \(\delta^\star\) with constant risk equal to \(r(\Pi^\star,\delta^\star)\), then \(\delta^\star\) is minimax and \(\Pi^\star\) is least favorable.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \((\Pi,\delta)\),
+  \[
+  r(\Pi,\delta)
+  \leq\sup_\theta R(\theta,\delta).
+  \]
+  Taking the infimum over \(\delta\) on the left preserves the inequality, and then taking the supremum over \(\Pi\) gives the result. \(\square\)</p>
+</div>
+
+<h3>A finite minimax theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose the parameter set and the set of nonrandomized rules are finite, and permit randomization over rules. Then
+  \[
+  \sup_{\pi\in\Delta(\Theta)}
+  \inf_{\delta}r(\pi,\delta)
+  =
+  \inf_{\delta}
+  \sup_{\theta\in\Theta}R(\theta,\delta).
+  \]
+  Both extrema are attained.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(A\) be the matrix whose entry \(A_{\theta j}\) is the risk of nonrandomized rule \(j\) at parameter \(\theta\). A randomized rule is a probability vector \(q\), and a prior is a probability vector \(\pi\). The bilinear payoff is
+  \[
+  \pi^\top Aq.
+  \]
+  The simplex sets for \(\pi\) and \(q\) are compact and convex. The finite-dimensional von Neumann minimax theorem gives
+  \[
+  \max_\pi\min_q\pi^\top Aq
+  =
+  \min_q\max_\pi\pi^\top Aq.
+  \]
+  For fixed \(q\), maximizing over the prior simplex selects the largest coordinate of \(Aq\), which is \(\sup_\theta R(\theta,q)\). Compactness gives attainment. \(\square\)</p>
+</div>
+
+<p>On general spaces, equality requires conditions such as compactness of an appropriate rule or risk set, convexity from randomization, and lower semicontinuity. Without them, least favorable priors may exist only as approximating sequences.</p>
+
+<h3>Least favorable priors</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Bayes–minimax certificate).</span> Suppose \(\delta^*\) is Bayes under \(\Pi^*\) and
+  \[
+  \sup_\theta R(\theta,\delta^*)
+  =
+  r(\Pi^*,\delta^*).
+  \]
+  Then \(\delta^*\) is minimax, \(\Pi^*\) is least favorable, and
+  \[
+  r^*=r_{\Pi^*}=r(\Pi^*,\delta^*).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Weak duality and Bayes optimality give
+  \[
+  r_{\Pi^*}
+  \leq\sup_\Pi r_\Pi
+  \leq r^*
+  \leq\sup_\theta R(\theta,\delta^*).
+  \]
+  The first and last quantities are equal by assumption, so every inequality is equality. \(\square\)</p>
+</div>
+
+<p>A constant-risk Bayes rule automatically satisfies the equality. More generally, it is enough that its maximum risk occurs on the support of the prior and equals its prior average.</p>
+
+<h3>Normal mean with bounded parameter space</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Observe
+  \(X\sim N(\theta,\sigma^2)\), \(\theta\in[-m,m]\), under squared-error loss. For the symmetric two-point prior
+  \[
+  \Pi=\tfrac12\delta_{-m}+\tfrac12\delta_m,
+  \]
+  the posterior mean is
+  \[
+  \delta_\Pi(x)
+  =
+  m\tanh\!\left(\frac{mx}{\sigma^2}\right).
+  \]
+  Its Bayes risk gives a computable lower bound on the minimax risk over \([-m,m]\). The exact least favorable prior generally has more support points as \(m/\sigma\) grows, illustrating that a convenient symmetric prior need not be least favorable.</p>
+</div>
+
+<h3>Invariant location estimation</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Gaussian location).</span> Observe
+  \(X\sim N(\theta,\sigma^2)\), \(\theta\in\mathbb R\), under squared loss. The equivariant estimator \(\delta(X)=X\) has constant risk
+  \[
+  R(\theta,\delta)=\sigma^2.
+  \]
+  Proper priors \(N(0,\tau^2)\) have Bayes estimator
+  \[
+  \delta_\tau(X)=\frac{\tau^2}{\tau^2+\sigma^2}X
+  \]
+  and Bayes risk
+  \[
+  r_{\Pi_\tau}
+  =\frac{\tau^2\sigma^2}{\tau^2+\sigma^2}
+  \uparrow\sigma^2
+  \quad\text{as }\tau\to\infty.
+  \]
+  Hence weak duality yields \(r^*\geq\sigma^2\), while \(X\) gives
+  \(r^*\leq\sigma^2\). Therefore \(X\) is minimax. The flat prior is improper, so least favorability is realized by a sequence of increasingly diffuse proper priors.</p>
+</div>
+
+<h3>Saddle points</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A pair \((\Pi^*,\delta^*)\) is a saddle point if
+  \[
+  r(\Pi,\delta^*)
+  \leq r(\Pi^*,\delta^*)
+  \leq r(\Pi^*,\delta)
+  \]
+  for every prior \(\Pi\) and rule \(\delta\).</p>
+</div>
+
+<p>The left inequality says \(\Pi^*\) concentrates on worst-case parameters for \(\delta^*\); the right says \(\delta^*\) is Bayes for \(\Pi^*\). A saddle point is therefore the exact game-theoretic expression of simultaneous minimaxity and least favorability.</p>
+
+<h3>Local asymptotic use</h3>
+
+<p>In asymptotic decision theory, one selects a finite prior on local parameters \(h_1,\ldots,h_k\), proves convergence of the corresponding finite experiments, and transfers the Bayes risk of the limit experiment as a lower bound. Taking richer finite priors or expanding compact local sets then approaches the local minimax value. This finite-prior method avoids assuming a global least favorable prior exists.</p>

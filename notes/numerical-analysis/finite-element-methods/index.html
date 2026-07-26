@@ -34,3 +34,93 @@ note_next_url: "/notes/numerical-analysis/spectral-methods/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Residual-based a posteriori estimates guide adaptive mesh refinement. They measure where the computed solution fails to satisfy the equation or interface conditions strongly enough.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Weak formulation</h3>
+
+<p>For
+\[
+-\nabla\cdot(a\nabla u)+cu=f
+\quad\text{in }\Omega,\qquad u=0\text{ on }\partial\Omega,
+\]
+define \(V=H_0^1(\Omega)\),
+\[
+A(u,v)=\int_\Omega a\nabla u\cdot\nabla v+cu v\,\mathrm{d}x,
+\qquad
+F(v)=\int_\Omega fv\,\mathrm{d}x.
+\]
+The weak problem is \(A(u,v)=F(v)\) for all \(v\in V\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Lax--Milgram).</span> If \(A\) is
+bounded and coercive,
+\[
+|A(u,v)|\le M\|u\|_V\|v\|_V,\qquad
+A(v,v)\ge\alpha\|v\|_V^2,
+\]
+then the weak problem has a unique solution and
+\[
+\|u\|_V\le\alpha^{-1}\|F\|_{V^*}.
+\]</p>
+</div>
+
+<h3>Galerkin approximation and Céa's lemma</h3>
+
+<p>Choose a finite-dimensional \(V_h\subset V\) and solve
+\[
+A(u_h,v_h)=F(v_h)\quad(v_h\in V_h).
+\]</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Céa).</span>
+\[
+\|u-u_h\|_V
+\le\frac M\alpha
+\inf_{v_h\in V_h}\|u-v_h\|_V.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Galerkin orthogonality gives
+\[
+A(u-u_h,v_h)=0\quad(v_h\in V_h).
+\]
+For arbitrary \(v_h\),
+\[
+\alpha\|u-u_h\|_V^2
+\le A(u-u_h,u-u_h)
+=A(u-u_h,u-v_h)
+\le M\|u-u_h\|_V\|u-v_h\|_V.
+\]
+Cancel and take the infimum.</p>
+</div>
+
+<h3>Interpolation error</h3>
+
+<p>For degree-\(p\) conforming elements on a shape-regular mesh,
+\[
+\inf_{v_h\in V_h}\|u-v_h\|_{H^1}
+\le Ch^p|u|_{H^{p+1}}.
+\]
+Therefore Céa gives the same energy-norm order. An Aubin--Nitsche duality
+argument can add one power in \(L_2\) when the dual elliptic problem has
+sufficient regularity:
+\[
+\|u-u_h\|_{L_2}\le Ch^{p+1}|u|_{H^{p+1}}.
+\]</p>
+
+<h3>Assembly and geometry</h3>
+
+<p>Local basis support makes the stiffness matrix sparse. Each element integral
+is pulled back from a reference element by a geometric map; Jacobian factors
+transform gradients and volume. Quadrature must be accurate enough not to
+destroy consistency. Shape regularity prevents degenerate elements and keeps
+inverse inequalities uniform.</p>
+
+<h3>Nonconforming and mixed methods</h3>
+
+<p>When \(V_h\not\subset V\), Strang's lemma adds a consistency term to best
+approximation. Mixed methods introduce flux or pressure variables and require
+an inf--sup condition rather than coercivity. Stabilization can repair an
+unstable pair, but changes the discrete problem and needs its own consistency
+analysis.</p>

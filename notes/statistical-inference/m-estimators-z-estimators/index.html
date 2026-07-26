@@ -8,36 +8,206 @@ note_prev_url: "/notes/statistical-inference/asymptotic-tools/"
 note_next_url: "/notes/statistical-inference/empirical-likelihood-estimating-equations/"
 ---
 
-<p>Many estimators are defined either by optimizing an empirical criterion or by solving estimating equations. These two forms are often equivalent when the criterion is differentiable.</p>
+<p>M-estimation describes estimators obtained from empirical optimization; Z-estimation describes roots of empirical equations. Smooth interior M-estimators are Z-estimators through their first-order conditions, but the broader formulations also cover nonsmooth losses, constrained optima, quantiles, robust estimators, generalized estimating equations, and semiparametric procedures.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An M-estimator approximately maximizes \(P_nm_\theta\). A Z-estimator approximately solves
-        \[
-        P_n\psi_\theta=0.
-        \]
-        When \(m_\theta\) is differentiable, a first-order condition gives \(\psi_\theta=\partial_\theta m_\theta\).</p>
-    </div>
+<h3>Definitions and population targets</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Z-estimator normality.</span> Suppose \(P\psi_{\theta_0}=0\), \(A=\partial_\theta P\psi_\theta|_{\theta_0}\) is nonsingular, and
-        \[
-        P_n\psi_{\hat\theta}=o_p(n^{-1/2}),\qquad
-        P_n\psi_{\hat\theta}-P_n\psi_{\theta_0}-A(\hat\theta-\theta_0)=o_p(n^{-1/2}).
-        \]
-        Then
-        \[
-        \sqrt n(\hat\theta-\theta_0)
-        =-A^{-1}n^{-1/2}\sum_{i=1}^n\psi_{\theta_0}(X_i)+o_p(1).
-        \]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given criteria \(m_\theta:\mathcal X\to\mathbb R\), an M-estimator satisfies
+  \[
+  P_nm_{\hat\theta_n}
+  \ge\sup_{\theta\in\Theta}P_nm_\theta-o_p(1).
+  \]
+  Given estimating functions \(\psi_\theta:\mathcal X\to\mathbb R^d\), a Z-estimator satisfies
+  \[
+  \|P_n\psi_{\hat\theta_n}\|=o_p(n^{-1/2})
+  \]
+  for distribution theory, or merely \(o_p(1)\) for consistency. The population targets maximize \(Pm_\theta\) or solve \(P\psi_\theta=0\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Combine the estimating equation and the linearization:
-        \[
-        0=P_n\psi_{\theta_0}+A(\hat\theta-\theta_0)+o_p(n^{-1/2}).
-        \]
-        Solve for \(\hat\theta-\theta_0\). Multiplying by \(\sqrt n\) yields the expansion; the CLT then gives asymptotic covariance \(A^{-1}BA^{-\top}\), where \(B=P\psi_{\theta_0}\psi_{\theta_0}^\top\).</p>
-    </div>
+<p>The distinction between an empirical definition and a population target is essential under misspecification. An estimator can consistently estimate a well-defined pseudo-true root even when no member of a working parametric family generated the data.</p>
 
-    <h3>Sandwich covariance</h3>
-    <p>The covariance \(A^{-1}BA^{-\top}\) is called sandwich covariance. For a correctly specified likelihood score, \(A=-I\) and \(B=I\), so the sandwich reduces to \(I^{-1}\). Under misspecification, this cancellation fails.</p>
+<h3>Consistency of M-estimators</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Consistency theorem.</span> Let \((\Theta,d)\) be a metric space. Suppose
+  \[
+  \sup_{\theta\in\Theta}|P_nm_\theta-Pm_\theta|\to_p0,
+  \]
+  and, for every \(\varepsilon>0\),
+  \[
+  Pm_{\theta_0}>
+  \sup_{d(\theta,\theta_0)\ge\varepsilon}Pm_\theta.
+  \]
+  Every approximate M-estimator with optimization error \(o_p(1)\) then satisfies \(\hat\theta_n\to_p\theta_0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> This is the argmax theorem applied to \(M_n(\theta)=P_nm_\theta\) and \(M(\theta)=Pm_\theta\). For a fixed \(\varepsilon\), the population separation gives a positive gap. Uniform convergence and the vanishing optimization error preserve that gap with probability tending to one, excluding all approximate maximizers outside the \(\varepsilon\)-ball.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">A compact-parametric uniform law.</span> Suppose \(\Theta\) is compact, \(\theta\mapsto m_\theta(x)\) is continuous for almost every \(x\), and
+  \[
+  \sup_{\theta\in\Theta}|m_\theta(x)|\le M(x),
+  \qquad PM\lt\infty.
+  \]
+  Then
+  \[
+  \sup_{\theta\in\Theta}|P_nm_\theta-Pm_\theta|\to0
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For each \(\delta>0\), compactness supplies a finite parameter net. Pointwise continuity and dominated convergence make the \(L^1(P)\) oscillation over sufficiently small net cells arbitrarily small. Apply the strong law to the finitely many net representatives and to an integrable envelope for the local oscillations, then let the mesh tend to zero.</p>
+</div>
+
+<h3>Z-estimator linearization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Asymptotic linearity of a Z-estimator.</span> Suppose \(\hat\theta_n\to_p\theta_0\), \(P\psi_{\theta_0}=0\), and
+  \[
+  P\psi_\theta
+  =A(\theta-\theta_0)+o(\|\theta-\theta_0\|)
+  \]
+  with nonsingular \(A\). Assume stochastic equicontinuity in the form
+  \[
+  \sqrt n(P_n-P)(\psi_{\hat\theta_n}-\psi_{\theta_0})
+  =o_p\{1+\sqrt n\|\hat\theta_n-\theta_0\|\},
+  \]
+  and \(\sqrt nP_n\psi_{\hat\theta_n}=o_p(1)\). Then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =-A^{-1}\frac1{\sqrt n}
+  \sum_{i=1}^n\psi_{\theta_0}(X_i)+o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Decompose
+  \[
+  P_n\psi_{\hat\theta_n}
+  =P_n\psi_{\theta_0}
+  +P(\psi_{\hat\theta_n}-\psi_{\theta_0})
+  +(P_n-P)(\psi_{\hat\theta_n}-\psi_{\theta_0}).
+  \]
+  The population expansion and stochastic equicontinuity yield
+  \[
+  o_p(n^{-1/2})
+  =P_n\psi_{\theta_0}
+  +A(\hat\theta_n-\theta_0)
+  +o_p(\|\hat\theta_n-\theta_0\|)
+  +o_p\{n^{-1/2}+\|\hat\theta_n-\theta_0\|\}.
+  \]
+  Nonsingularity of \(A\) first implies \(\hat\theta_n-\theta_0=O_p(n^{-1/2})\); substituting that rate back and solving gives the stated expansion.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (sandwich limit).</span> If
+  \[
+  B=P(\psi_{\theta_0}\psi_{\theta_0}^\top)\lt\infty,
+  \]
+  then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  \rightsquigarrow
+  N(0,A^{-1}BA^{-\top}).
+  \]</p>
+</div>
+
+<p>The matrices have distinct meanings: \(A\) is sensitivity of the population equation to the parameter, while \(B\) is variability of its empirical fluctuation. Equality \(B=-A\) is the likelihood information identity and generally fails for arbitrary equations or misspecified likelihoods.</p>
+
+<h3>Smooth M-estimator expansion</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Quadratic M-estimator theorem.</span> Suppose, uniformly for bounded \(h\),
+  \[
+  n\{P_nm_{\theta_0+h/\sqrt n}-P_nm_{\theta_0}\}
+  =h^\top Z_n-\frac12h^\top Vh+o_p(1),
+  \]
+  where \(V\) is positive definite and \(Z_n\rightsquigarrow Z\). If \(\sqrt n(\hat\theta_n-\theta_0)=O_p(1)\) and \(\hat\theta_n\) approximately maximizes the criterion to \(o_p(n^{-1})\), then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =V^{-1}Z_n+o_p(1)
+  \rightsquigarrow V^{-1}Z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Complete the square:
+  \[
+  h^\top Z_n-\frac12h^\top Vh
+  =\frac12Z_n^\top V^{-1}Z_n
+  -\frac12(h-V^{-1}Z_n)^\top V(h-V^{-1}Z_n).
+  \]
+  Positive definiteness makes the maximizer unique at \(V^{-1}Z_n\). Uniform control of the remainder on every compact set and tightness of the empirical maximizer transfer this separation to the random criterion.</p>
+</div>
+
+<h3>Sample quantiles as nonsmooth M- and Z-estimators</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For \(p\in(0,1)\), define the check loss
+  \[
+  \rho_p(u)=u\{p-1_{\{u\lt0\}}\}.
+  \]
+  Any empirical \(p\)-quantile minimizes
+  \[
+  \theta\mapsto P_n\rho_p(X-\theta)
+  \]
+  and solves, in a generalized sense,
+  \[
+  P_n\{1_{\{X\le\theta\}}-p\}=0.
+  \]
+  If \(F(q_p)=p\) and \(f(q_p)>0\), then
+  \[
+  \sqrt n(\hat q_p-q_p)
+  =\frac1{f(q_p)}
+  \frac1{\sqrt n}\sum_{i=1}^n
+  \{p-1_{\{X_i\le q_p\}}\}+o_p(1),
+  \]
+  so its asymptotic variance is \(p(1-p)/f(q_p)^2\).</p>
+</div>
+
+<p>The loss is not differentiable at zero, so a literal Hessian argument is invalid. The expansion follows instead from local linearization of \(F(\theta)-p\) and stochastic equicontinuity of the empirical distribution function.</p>
+
+<h3>One-step estimators</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">One-step correction.</span> Suppose a preliminary estimator \(\tilde\theta_n\) is \(n^{1/4}\)-consistent, \(\|\tilde\theta_n-\theta_0\|=o_p(n^{-1/4})\), and the estimating equation is twice smoothly expandable with derivative \(A\). If \(\hat A_n\to_pA\), define
+  \[
+  \theta_n^{(1)}
+  =\tilde\theta_n-\hat A_n^{-1}P_n\psi_{\tilde\theta_n}.
+  \]
+  Then, under the Z-estimator regularity conditions,
+  \[
+  \sqrt n(\theta_n^{(1)}-\theta_0)
+  =-A^{-1}\frac1{\sqrt n}\sum_{i=1}^n
+  \psi_{\theta_0}(X_i)+o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A second-order expansion gives
+  \[
+  P_n\psi_{\tilde\theta_n}
+  =P_n\psi_{\theta_0}
+  +A(\tilde\theta_n-\theta_0)
+  +O_p(\|\tilde\theta_n-\theta_0\|^2)
+  +o_p(n^{-1/2}).
+  \]
+  The squared preliminary error is \(o_p(n^{-1/2})\). Substitute into the one-step definition: the term \(\tilde\theta_n-\theta_0\) cancels, and replacing \(A\) by \(\hat A_n\) costs \(o_p(n^{-1/2})\).</p>
+</div>
+
+<h3>Estimated nuisance functions</h3>
+
+<p>If \(\psi_{\theta,\eta}\) depends on a nuisance function \(\eta\), then
+\[
+P_n\psi_{\hat\theta,\hat\eta}=0
+\]
+contains both an empirical-process term and a nuisance-estimation bias. Neyman orthogonality,
+\[
+\left.\frac{\mathrm{d}}{\mathrm{d}t}
+P\psi_{\theta_0,\eta_0+t h}\right|_{t=0}=0,
+\]
+removes the first-order nuisance effect. Cross-fitting can then decouple empirical evaluation from nuisance fitting. This is the estimating-equation foundation of modern debiased and double-machine-learning procedures.</p>

@@ -34,3 +34,91 @@ note_next_url: "/notes/numerical-analysis/krylov-subspace-methods/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A small residual is not the same as a small error unless conditioning is controlled. Practical stopping rules combine relative residuals, preconditioned residuals, iteration budgets, and the accuracy required by the outer problem.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Stationary iterations</h3>
+
+<p>Split \(A=M-N\) with easily invertible \(M\). The iteration
+\[
+x_{k+1}=M^{-1}Nx_k+M^{-1}b
+\]
+has error
+\[
+e_{k+1}=Ge_k,\qquad G=M^{-1}N.
+\]</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> A stationary iteration
+converges for every initial vector if and only if
+\[
+\rho(G)<1.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Convergence for every initial
+error is equivalent to \(G^k\to0\). If \(G^k\to0\), every eigenvalue satisfies
+\(\lambda^k\to0\), so \(\rho(G)<1\). Conversely, put \(G\) in Jordan form.
+Every block contributes a polynomial in \(k\) times \(|\lambda|^k\), which
+tends to zero when all \(|\lambda|<1\).</p>
+</div>
+
+<h3>Jacobi and Gauss--Seidel</h3>
+
+<p>With \(A=D-L-U\), Jacobi uses \(M=D\), while Gauss--Seidel uses
+\(M=D-L\). Strict row diagonal dominance guarantees convergence of both.
+For symmetric positive definite \(A\), Gauss--Seidel converges; Jacobi needs
+additional spectral conditions.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (diagonal dominance).</span> If
+\[
+|a_{ii}|>\sum_{j\ne i}|a_{ij}|
+\quad\text{for every }i,
+\]
+then the Jacobi iteration matrix has
+\(\|G_J\|_\infty<1\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Row \(i\) of \(G_J\) has
+off-diagonal entries \(-a_{ij}/a_{ii}\), so its absolute row sum is strictly
+below one.</p>
+</div>
+
+<h3>Richardson iteration</h3>
+
+<p>For symmetric positive definite \(A\),
+\[
+x_{k+1}=x_k+\omega(b-Ax_k)
+\]
+converges when \(0<\omega<2/\lambda_{\max}\). The optimal fixed step is
+\[
+\omega_*=\frac{2}{\lambda_{\min}+\lambda_{\max}},
+\]
+with contraction factor
+\[
+\frac{\kappa_2(A)-1}{\kappa_2(A)+1}.
+\]
+This is gradient descent on
+\(\tfrac12x^\top Ax-b^\top x\); poor conditioning makes contours elongated and
+slows convergence.</p>
+
+<h3>Residuals and stopping</h3>
+
+<p>The residual satisfies \(r_k=Ae_k\), so
+\[
+\frac{\|e_k\|}{\|x\|}
+\le\kappa(A)\frac{\|r_k\|}{\|b\|}.
+\]
+A residual tolerance should therefore account for conditioning and data error.
+Iteration beyond the noise floor can waste work or amplify model error. For
+preconditioned systems, monitor a norm tied to the original residual, not only
+the transformed recurrence.</p>
+
+<h3>Asynchronous iterations</h3>
+
+<p>For contractions in a monotone norm, coordinates may be updated with bounded
+delays and fair scheduling while retaining convergence. This supports parallel
+relaxation. Without contraction or with unbounded stale data, asynchronous
+updates can diverge even if synchronous iteration converges.</p>

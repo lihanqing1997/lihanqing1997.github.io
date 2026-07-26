@@ -82,3 +82,107 @@ A_\pi(s,a)=q_\pi(s,a)-v_\pi(s).
 \]
 The policy gradient can use \(A_\pi\) in place of \(q_\pi\) because \(v_\pi(s)\) is a valid baseline.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Discounted objective and occupancy derivative</h3>
+
+<p>Let \(\pi_\theta(a\mid s)\) be differentiable with parameter-independent
+dynamics, and define
+\[
+J(\theta)=E_\rho^{\pi_\theta}
+\sum_{t\ge0}\gamma^tr(S_t,A_t).
+\]
+Assume bounded rewards, differentiability under the path integral, and support
+that does not change with \(\theta\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (policy gradient).</span>
+\[
+\nabla_\theta J(\theta)
+=\frac1{1-\gamma}
+E_{(S,A)\sim d_\rho^{\pi_\theta}}
+\left[
+Q^{\pi_\theta}(S,A)
+\nabla_\theta\log\pi_\theta(A\mid S)
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For a finite trajectory, the
+likelihood-ratio identity gives
+\[
+\nabla J
+=E\left[
+\sum_{t\ge0}\gamma^tr_t
+\sum_{k=0}^t\nabla\log\pi_\theta(A_k\mid S_k)
+\right].
+\]
+Interchange sums. Rewards before time \(k\) have conditional expectation
+independent of \(A_k\), and their score contribution vanishes. The remaining
+return from \(k\) has conditional mean \(Q^\pi(S_k,A_k)\). Thus
+\[
+\nabla J
+=\sum_{k\ge0}\gamma^k
+E[Q^\pi(S_k,A_k)\nabla\log\pi(A_k\mid S_k)],
+\]
+which is the occupancy form.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary (advantage form).</span> For any
+state-only baseline \(b(s)\),
+\[
+\nabla J
+=\frac1{1-\gamma}E_{d^\pi}
+\{[Q^\pi(S,A)-b(S)]\nabla\log\pi(A\mid S)\}.
+\]
+Taking \(b=V^\pi\) gives the advantage form.</p>
+</div>
+
+<h3>Compatible approximation and natural gradient</h3>
+
+<p>Let the policy score be
+\(\phi_\theta(s,a)=\nabla_\theta\log\pi_\theta(a\mid s)\), and define the
+discounted Fisher matrix
+\[
+F(\theta)=E_{d^\pi}\{\phi_\theta\phi_\theta^\top\}.
+\]
+If \(w\) is the least-squares projection of \(A^\pi\) onto
+\(w^\top\phi_\theta\), its normal equations are
+\[
+Fw=E_{d^\pi}(\phi_\theta A^\pi)
+=(1-\gamma)\nabla J.
+\]
+Hence \(w=(1-\gamma)F^{-1}\nabla J\): compatible advantage regression
+directly estimates the natural-gradient direction.</p>
+
+<h3>Deterministic policy gradient</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For a differentiable
+deterministic policy \(a=\mu_\theta(s)\), under regularity,
+\[
+\nabla_\theta J(\theta)
+=\frac1{1-\gamma}
+E_{S\sim d_{\rho,S}^{\mu_\theta}}
+\left[
+\nabla_\theta\mu_\theta(S)
+\nabla_aQ^{\mu_\theta}(S,a)|_{a=\mu_\theta(S)}
+\right].
+\]</p>
+</div>
+
+<p>This is obtained by differentiating the Bellman equation and unrolling the
+resulting resolvent. It avoids action-space likelihood ratios but requires a
+differentiable critic and can be sensitive to critic extrapolation outside the
+behavior distribution.</p>
+
+<h3>Optimization qualifications</h3>
+
+<p>The theorem provides an exact gradient, not global concavity. Policy
+parametrization creates stationary points, flat directions, and boundary
+effects. Trust regions and natural gradients control local distributional
+change; they do not remove nonconvexity. Convergence claims must distinguish
+exact gradients, Monte Carlo estimates, actor--critic bias, and function
+approximation.</p>

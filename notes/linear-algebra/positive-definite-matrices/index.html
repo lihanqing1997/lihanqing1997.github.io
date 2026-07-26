@@ -75,3 +75,42 @@ note_next_url: "/notes/linear-algebra/matrix-norms-and-condition-numbers/"
         \]
         has eigenvalues \(3\) and \(-1\), so the quadratic form takes negative values.</p>
     </div>
+
+<!-- quality-consolidation -->
+<h3>Sylvester's criterion and Cholesky recursion</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Sylvester).</span> A Hermitian
+\(n\times n\) matrix \(A\) is positive definite if and only if every leading
+principal minor
+\[
+\Delta_k=\det A_{1:k,1:k}
+\]
+is positive.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(A\succ0\), every leading
+principal submatrix is positive definite and has positive eigenvalues, hence
+positive determinant. Conversely, \(\Delta_1>0\). Inductively write
+\[
+A_k=\begin{pmatrix}A_{k-1}&b\\b^*&c\end{pmatrix}.
+\]
+By induction \(A_{k-1}\succ0\), and the determinant identity
+\[
+\Delta_k=\Delta_{k-1}(c-b^*A_{k-1}^{-1}b)
+\]
+makes the Schur complement positive. Completing the square then proves
+\(A_k\succ0\).</p>
+</div>
+
+<p>The same induction computes Cholesky entries:
+\[
+\ell_{jj}
+=\sqrt{a_{jj}-\sum_{k<j}|\ell_{jk}|^2},\qquad
+\ell_{ij}
+=\frac{a_{ij}-\sum_{k<j}\ell_{ik}\overline{\ell_{jk}}}{\ell_{jj}}.
+\]
+Positive definiteness guarantees that every square root is real and
+positive. This is both a proof of existence and a practical
+\(O(n^3)\) algorithm.</p>

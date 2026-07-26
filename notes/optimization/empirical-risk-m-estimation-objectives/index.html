@@ -8,24 +8,135 @@ note_prev_url: "/notes/optimization/em-mm-algorithms/"
 note_next_url: "/notes/optimization/natural-gradient-information-geometric-optimization/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Empirical risk and M-estimation objectives.</p>
+<p>In statistics the objective is random. Optimization determines how well the
+sample criterion is solved; probability determines how that criterion differs
+from its population target. Keeping these two layers separate prevents an
+algorithmic convergence statement from being mistaken for statistical
+consistency.</p>
 
-    <h3>Empirical risk</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given losses \(\ell_\theta(X_i)\), empirical risk minimization chooses \(\hat\theta_n\in\arg\min_\theta P_n\ell_\theta\). M-estimation is this principle in statistical form.</p>
-    </div>
+<h3>Population and empirical criteria</h3>
 
-    <h3>Population target</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The deterministic target is \(\theta_0\in\arg\min_\theta P\ell_\theta\). Consistency compares the random objective \(P_n\ell_\theta\) to \(P\ell_\theta\) uniformly over relevant parameter sets.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> For observations
+    \(X_1,\ldots,X_n\) and losses \(\ell_\theta\), write
+    \[
+    M(\theta)=P\ell_\theta=\mathbb E[\ell_\theta(X)],
+    \qquad
+    M_n(\theta)=P_n\ell_\theta
+      =\frac1n\sum_{i=1}^n\ell_\theta(X_i).
+    \]
+    A population target satisfies
+    \(\theta_0\in\operatorname*{arg\,min}_{\theta\in\Theta}M(\theta)\).
+    An approximate \(M\)-estimator satisfies
+    \[
+    M_n(\widehat\theta_n)
+    \le\inf_{\theta\in\Theta}M_n(\theta)+\varepsilon_n.
+    \]</p>
+</div>
 
-    <h3>Basic consistency theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\sup_{\theta\in\Theta}|P_n\ell_\theta-P\ell_\theta|\to0\) in probability and the population risk is separated away from its unique minimizer \(\theta_0\), then every approximate empirical minimizer converges to \(\theta_0\).</p>
-    </div>
+<p>The population minimizer can be meaningful under misspecification: it is
+the best approximation to the data-generating law under the chosen loss, not
+necessarily a parameter that generated the observations.</p>
 
-    <h3>Optimization-statistics split</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In computation one often returns an approximate minimizer. The final error decomposes into approximation error, optimization error, and statistical error.</p>
-    </div>
+<h3>Uniform convergence and consistency</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Argmin consistency.</span> Suppose
+    \(\Theta\) is compact, \(M\) has unique minimizer \(\theta_0\), and for
+    every \(\delta>0\),
+    \[
+    \inf_{\|\theta-\theta_0\|\ge\delta}
+    [M(\theta)-M(\theta_0)]>0.
+    \]
+    If
+    \[
+    \sup_{\theta\in\Theta}|M_n(\theta)-M(\theta)|
+      \xrightarrow{P}0,\qquad
+    \varepsilon_n=o_P(1),
+    \]
+    then \(\widehat\theta_n\xrightarrow{P}\theta_0\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Fix \(\delta>0\) and let
+    the displayed separation be \(\eta_\delta>0\). On the event
+    \[
+    2\sup_\Theta|M_n-M|+\varepsilon_n<\eta_\delta,
+    \]
+    every \(\theta\) outside \(B(\theta_0,\delta)\) satisfies
+    \[
+    M_n(\theta)
+    >M_n(\theta_0)+\varepsilon_n,
+    \]
+    and therefore cannot be an approximate minimizer. The probability of this
+    event tends to one, so
+    \(P(\|\widehat\theta_n-\theta_0\|\ge\delta)\to0\).</p>
+</div>
+
+<p>Pointwise laws of large numbers are insufficient when the minimizer is
+chosen after looking over all \(\theta\). Uniformity is what controls that
+data-dependent choice. Empirical-process methods supply such bounds for large
+classes of losses.</p>
+
+<h3>Local curvature converts criterion error to parameter error</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Deterministic localization.</span> Suppose
+    on a neighborhood of \(\theta_0\),
+    \[
+    M(\theta)-M(\theta_0)
+    \ge c\|\theta-\theta_0\|^\alpha
+    \]
+    for \(c>0,\alpha\ge1\). If an estimator lies in that neighborhood and
+    satisfies
+    \(M(\widehat\theta)-M(\theta_0)\le\delta\), then
+    \[
+    \|\widehat\theta-\theta_0\|
+    \le(\delta/c)^{1/\alpha}.
+    \]</p>
+</div>
+
+<p>Quadratic curvature corresponds to \(\alpha=2\). Sharp nonsmooth risks can
+have \(\alpha=1\). The curvature exponent changes how stochastic objective
+fluctuations translate into an estimation rate.</p>
+
+<h3>Score expansion and asymptotic linearity</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Smooth \(M\)-estimator expansion.</span>
+    Suppose \(\widehat\theta_n\to_P\theta_0\),
+    \(\nabla M(\theta_0)=0\),
+    \(V=\nabla^2M(\theta_0)\) is nonsingular, and a uniform local Hessian law
+    permits Taylor expansion of \(\nabla M_n\). If
+    \(\nabla M_n(\widehat\theta_n)=o_P(n^{-1/2})\), then
+    \[
+    \sqrt n(\widehat\theta_n-\theta_0)
+    =-V^{-1}\sqrt n\,\nabla M_n(\theta_0)+o_P(1).
+    \]
+    If
+    \(\sqrt n\,\nabla M_n(\theta_0)\Rightarrow N(0,\Sigma)\), the limit
+    covariance is \(V^{-1}\Sigma V^{-\top}\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The mean-value expansion is
+    \[
+    \nabla M_n(\widehat\theta_n)
+    =\nabla M_n(\theta_0)
+      +V_n(\widetilde\theta_n)
+       (\widehat\theta_n-\theta_0),
+    \]
+    where \(\widetilde\theta_n\) lies on the connecting segment. Consistency
+    and the local Hessian law give
+    \(V_n(\widetilde\theta_n)=V+o_P(1)\). Rearrange, multiply by \(\sqrt n\),
+    and apply Slutsky's theorem.</p>
+</div>
+
+<p>The required empirical-process conditions and nonsmooth extensions are
+developed in
+<a href="{{ '/notes/statistical-inference/m-estimators-z-estimators/' | relative_url }}">M- and Z-estimation</a>
+and
+<a href="{{ '/notes/empirical-processes/m-estimators-consistency/' | relative_url }}">empirical-process consistency</a>.
+The optimization requirement
+\(\nabla M_n(\widehat\theta_n)=o_P(n^{-1/2})\) makes the computational
+tolerance explicit.</p>

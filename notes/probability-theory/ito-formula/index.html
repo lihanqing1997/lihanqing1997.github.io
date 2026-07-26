@@ -8,54 +8,142 @@ note_prev_url: "/notes/probability-theory/stochastic-integration-semimartingales
 note_next_url: "/notes/probability-theory/applications-ito-formula/"
 ---
 
-<p>Itô's formula is the chain rule for semimartingales. The extra second-order term is the analytic signature of quadratic variation.</p>
+<p>Ito's formula is Taylor's theorem evaluated on paths whose squared increments do not disappear. The first-order terms become stochastic and finite-variation integrals; quadratic terms converge to covariation; jumps retain the exact nonlinear Taylor remainder.</p>
 
-    <h3>One-dimensional continuous formula</h3>
+<h3>Continuous one-dimensional formula</h3>
 
-    <p>For Brownian-driven processes, the second derivative appears with quadratic variation.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Ito formula).</span> Let
+  \(X=X_0+M+A\) be a continuous semimartingale and
+  \(f\in C^2(\mathbb R)\). Then
+  \[
+  f(X_t)
+  =
+  f(X_0)
+  +\int_0^tf'(X_s)\,\mathrm{d}X_s
+  +\frac12\int_0^tf''(X_s)\,\mathrm{d}[X]_s.
+  \]
+  Since \([X]=[M]\), only the local-martingale part contributes to the second-order term.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> If \(X_t=X_0+\int_0^t b_s\,\mathrm{d}s+\int_0^t\sigma_s\,\mathrm{d}B_s\) and \(f\in C^2\), then
-\[
-f(X_t)=f(X_0)+\int_0^t f'(X_s)\sigma_s\,\mathrm{d}B_s
-+\int_0^t\left(f'(X_s)b_s+\frac12f''(X_s)\sigma_s^2\right)\mathrm{d}s.
-\]</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Stop so that \(X\), \(f'\), and
+  \(f''\) remain bounded on the relevant range. On a partition,
+  \[
+  f(X_{t_{i+1}})-f(X_{t_i})
+  =
+  f'(X_{t_i})\Delta X_i
+  +\frac12f''(X_{t_i})(\Delta X_i)^2+r_i,
+  \]
+  where
+  \[
+  |r_i|
+  \le\frac12\omega_{f''}
+  \!\left(\max_j|\Delta X_j|\right)(\Delta X_i)^2.
+  \]
+  Continuity makes the maximum increment tend to zero in probability, while the sums of squared increments are tight, so
+  \(\sum_i r_i\to0\) in probability. The first sums converge by the definition of semimartingale integration, and the quadratic sums converge to
+  \(\int f''(X_s)\,\mathrm{d}[X]_s\). Remove localization.</p>
+</div>
 
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Ito process).</span> If
+  \[
+  X_t=X_0+\int_0^tb_s\,\mathrm{d} s
+  +\int_0^t\sigma_s\,\mathrm{d}B_s,
+  \]
+  then
+  \[
+  \begin{aligned}
+  f(X_t)=f(X_0)
+  &+\int_0^tf'(X_s)\sigma_s\,\mathrm{d}B_s\\
+  &+\int_0^t
+  \left\{f'(X_s)b_s+\frac12f''(X_s)\sigma_s^2\right\}\mathrm{d} s.
+  \end{aligned}
+  \]</p>
+</div>
 
-    <h3>Taylor expansion proof</h3>
+<h3>Time-dependent and multidimensional forms</h3>
 
-    <p>The formula is Taylor's theorem plus quadratic variation.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(X=(X^1,\ldots,X^d)\) be a continuous semimartingale and
+  \(f\in C^{1,2}([0,T]\times\mathbb R^d)\). Then
+  \[
+  \begin{aligned}
+  f(t,X_t)=f(0,X_0)
+  &+\int_0^t\partial_sf(s,X_s)\,\mathrm{d} s\\
+  &+\sum_i\int_0^t\partial_if(s,X_s)\,\mathrm{d}X_s^i\\
+  &+\frac12\sum_{i,j}\int_0^t
+  \partial_{ij}f(s,X_s)\,\mathrm{d}[X^i,X^j]_s.
+  \end{aligned}
+  \]</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Itô's formula holds for continuous semimartingales, with \(\frac12\int f''(X_s)\,\mathrm{d}[X]_s\) replacing the Brownian variance term.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply multivariate Taylor expansion to
+  \((t,X_t)\). Time has finite variation, so
+  \([t]=[t,X^i]=0\). Spatial quadratic products converge to the covariations. The same modulus-of-continuity remainder bound as in one dimension makes all terms of order higher than two vanish.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply Taylor's formula along a partition:
-\[
-f(X_{t_{i+1}})-f(X_{t_i})=f'(X_{t_i})\Delta X_i+\frac12f''(X_{t_i})(\Delta X_i)^2+r_i.
-\]
-The first-order martingale terms converge to the stochastic integral, finite-variation first-order terms converge pathwise, the squared martingale increments converge to quadratic variation, and the remainder vanishes because continuous semimartingales have controlled quadratic variation.</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (product rule).</span> For continuous semimartingales,
+  \[
+  \mathrm{d}(X_tY_t)
+  =
+  X_t\,\mathrm{d}Y_t+Y_t\,\mathrm{d}X_t
+  +\mathrm{d}[X,Y]_t.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the two-dimensional formula to
+  \(f(x,y)=xy\), whose mixed Hessian entries are one.</p>
+</div>
 
-    <h3>Multidimensional form</h3>
+<h3>Formula with jumps</h3>
 
-    <p>Cross-variation supplies the Hessian contraction.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(X\) be a cadlag semimartingale and \(f\in C^2(\mathbb R)\). Then
+  \[
+  \begin{aligned}
+  f(X_t)=f(X_0)
+  &+\int_0^tf'(X_{s-})\,\mathrm{d}X_s
+  +\frac12\int_0^tf''(X_{s-})\,\mathrm{d}[X]^c_s\\
+  &+\sum_{0<s\le t}
+  \left\{
+  f(X_s)-f(X_{s-})-f'(X_{s-})\Delta X_s
+  \right\}.
+  \end{aligned}
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a continuous \(\mathbb R^d\)-valued semimartingale \(X\) and \(f\in C^2(\mathbb R^d)\),
-\[
-\mathrm{d}f(X_t)=\sum_i\partial_if(X_t)\,\mathrm{d}X_t^i
-+\frac12\sum_{i,j}\partial_{ij}f(X_t)\,\mathrm{d}[X^i,X^j]_t.
-\]</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Separate jumps larger than
+  \(\varepsilon\), of which there are finitely many on compact intervals after localization. Apply the continuous Ito argument between those jumps and insert the exact change
+  \(f(X_s)-f(X_{s-})\) at each jump. The first-order part of each jump is already included in the stochastic integral, leaving the displayed correction. Control the small jumps by the local quadratic bound
+  \[
+  |f(x+h)-f(x)-f'(x)h|\le C h^2,
+  \]
+  then let \(\varepsilon\downarrow0\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use the multivariate Taylor expansion. The linear terms converge to stochastic integrals against each coordinate. Quadratic products of increments converge to covariations \([X^i,X^j]\), while higher-order terms vanish along refining partitions.</p>
-    </div>
+<h3>The differential mnemonic</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Every Itô formula should be read together with the table \(\mathrm{d}B_t^2=\mathrm{d}t\), \(\mathrm{d}t\,\mathrm{d}B_t=0\), and \(\mathrm{d}t^2=0\).</p>
-    </div>
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> For an Ito process
+  \(\mathrm{d}X_t=b_t\,\mathrm{d}t+\sigma_t\,\mathrm{d}B_t\), the rules
+  \[
+  (\mathrm{d}B_t)^2=\mathrm{d}t,\qquad
+  \mathrm{d}t\,\mathrm{d}B_t=0,\qquad
+  (\mathrm{d}t)^2=0
+  \]
+  summarize quadratic-variation limits. They correctly reproduce
+  \[
+  \mathrm{d}f(X_t)
+  =
+  f'(X_t)\,\mathrm{d}X_t
+  +\frac12f''(X_t)\sigma_t^2\,\mathrm{d}t,
+  \]
+  but the theorem and its integrals, not formal infinitesimal algebra, provide the definition.</p>
+</div>

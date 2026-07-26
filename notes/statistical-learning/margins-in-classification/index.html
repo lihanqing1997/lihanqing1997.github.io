@@ -77,3 +77,146 @@ P_X(|\eta(X)-1/2|\le t)\le Ct^\alpha.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> When little mass lies near the boundary, disagreement with the Bayes classifier has excess risk comparable to a stronger distance. This curvature is what enables fast-rate classification bounds.</p>
     </div>
+
+<h3>Two distinct meanings of margin</h3>
+
+<p>The word margin is used for two mathematically different objects. The <em>geometric margin</em> \(Yf(X)/\|f\|\) is a property of a fitted score and its normed function class. The <em>distributional margin</em> \(|2\eta(X)-1|\) is a property of the data-generating law and measures how decisively the Bayes action is determined. Large-margin generalization bounds use the first; low-noise fast rates use the second.</p>
+
+<h3>Distance to a separating hyperplane</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For the affine hyperplane
+  \(H=\{z:w^\top z+b=0\}\) with \(w\ne0\), the signed Euclidean distance from \(x\) to \(H\) is
+  \[
+  \frac{w^\top x+b}{\|w\|_2}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The closest point must lie on the normal line \(x-tw\). Solving
+  \(w^\top(x-tw)+b=0\) gives
+  \(t=(w^\top x+b)/\|w\|_2^2\). The signed length of the displacement along the unit normal \(w/\|w\|_2\) is the displayed ratio.</p>
+</div>
+
+<h3>Scale-sensitive margin classes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A real-valued class \(\mathcal F\)
+  \(\gamma\)-shatters \(x_1,\ldots,x_m\) if there are thresholds \(r_i\) such that for every \(s\in\{-1,1\}^m\), some \(f\in\mathcal F\) satisfies
+  \[
+  s_i\{f(x_i)-r_i\}\ge\gamma,\qquad i=1,\ldots,m.
+  \]
+  The largest such \(m\) is the fat-shattering dimension
+  \(\operatorname{fat}_\gamma(\mathcal F)\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\mathcal F=\{x\mapsto w^\top x:\|w\|_2\le B\}\) on
+  \(\{x:\|x\|_2\le R\}\). Then
+  \[
+  \operatorname{fat}_\gamma(\mathcal F)
+  \le \min\!\left\{p,\left\lfloor\frac{B^2R^2}{\gamma^2}\right\rfloor\right\}
+  \]
+  up to an absolute constant when affine offsets are included.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> If \(m\) points are
+  \(\gamma\)-shattered, average the inequalities over independent random signs and choose the realizing \(w_s\). Duality gives
+  \[
+  m\gamma\le
+  \mathbb E_s\sup_{\|w\|\le B}\sum_{i=1}^m s_iw^\top x_i
+  =B\,\mathbb E_s\Big\|\sum_i s_ix_i\Big\|_2
+  \le BR\sqrt m.
+  \]
+  Hence \(m\le B^2R^2/\gamma^2\). Pseudo-dimension gives the ambient-dimensional bound.</p>
+</div>
+
+<h3>A norm-margin sample bound</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(\|X\|_2\le R\), then with probability at least \(1-\delta\), every \(w\) with \(\|w\|_2\le B\) satisfies
+  \[
+  P(Yw^\top X\le0)
+  \le P_n(Yw^\top X\le\gamma)
+  +\frac{2BR}{\gamma\sqrt n}
+  +3\sqrt{\frac{\log(2/\delta)}{2n}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the preceding ramp-loss bound and the Rademacher estimate
+  \(\widehat{\mathfrak R}_n(\mathcal F)\le
+  B\{\sum_i\|X_i\|^2\}^{1/2}/n\le BR/\sqrt n\).</p>
+</div>
+
+<p>The bound is invariant under simultaneous rescaling of \(w\) and \(\gamma\), because only \(B/\gamma\) matters. It therefore measures normalized geometric separation rather than an arbitrary functional-margin scale.</p>
+
+<h3>Tsybakov and Bernstein conditions</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(g^*=\mathbf1\{\eta\ge1/2\}\), let
+  \(d(g,g^*)=P_X(g\ne g^*)\), and suppose
+  \[
+  P_X(|2\eta(X)-1|\le t)\le Ct^\alpha.
+  \]
+  Then
+  \[
+  d(g,g^*)\le
+  C'\{R(g)-R(g^*)\}^{\alpha/(1+\alpha)}
+  \]
+  and the excess loss
+  \(Z_g=\mathbf1\{g(X)\ne Y\}-\mathbf1\{g^*(X)\ne Y\}\) obeys
+  \[
+  \mathbb EZ_g^2=d(g,g^*)
+  \le C'(\mathbb EZ_g)^{\alpha/(1+\alpha)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(t>0\),
+  \[
+  d(g,g^*)\le P(|2\eta-1|\le t)
+  +P(g\ne g^*,|2\eta-1|>t)
+  \le Ct^\alpha+\frac{R(g)-R(g^*)}{t}.
+  \]
+  Balance the terms with
+  \(t\asymp\{R(g)-R(g^*)\}^{1/(1+\alpha)}\).
+  Since \(Z_g^2=\mathbf1\{g\ne g^*\}\), the variance relation follows.</p>
+</div>
+
+<h3>Massart's bounded-noise regime</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If
+  \(|2\eta(X)-1|\ge h>0\) almost surely, then
+  \[
+  R(g)-R(g^*)\ge h\,P_X(g\ne g^*),
+  \qquad
+  \operatorname{Var}(Z_g)\le h^{-1}\mathbb EZ_g.
+  \]
+  This linear Bernstein condition can yield excess-risk rates of order
+  \(d/n\) for VC classes, rather than the generic \(\sqrt{d/n}\) scale.</p>
+</div>
+
+<h3>Margins under adversarial perturbation</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(f_w(x)=w^\top x+b\), and let perturbations satisfy
+  \(\|\Delta\|\le\rho\) for a norm with dual \(\|\cdot\|_*\). Then
+  \[
+  \inf_{\|\Delta\|\le\rho}y f_w(x+\Delta)
+  =y f_w(x)-\rho\|w\|_*.
+  \]
+  The classification is robust to every such perturbation exactly when its functional margin exceeds \(\rho\|w\|_*\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Hölder's inequality gives
+  \(yw^\top\Delta\ge-\|w\|_*\|\Delta\|\ge-\rho\|w\|_*\). Equality is attained by a dual-norm maximizer in finite dimensions.</p>
+</div>
+
+<p>This identity connects robust classification to norm regularization: the perturbation geometry chooses the dual norm appearing in the robust margin.</p>

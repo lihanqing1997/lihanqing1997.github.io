@@ -34,3 +34,97 @@ note_next_url: "/notes/numerical-analysis/least-squares-problems/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Algorithms built from orthogonal transformations are favored because they do not magnify Euclidean errors. This is why QR and SVD are preferred over normal equations in ill-conditioned least-squares problems.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>QR factorization</h3>
+
+<p>For \(A\in\mathbb R^{m\times n}\), \(m\ge n\), a reduced QR factorization is
+\[
+A=QR,\qquad Q^\top Q=I_n,
+\]
+with \(R\) upper triangular. Householder reflectors
+\[
+H=I-2vv^\top/(v^\top v)
+\]
+zero a column tail while preserving Euclidean norms.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(A\) has full column
+rank, the reduced QR factorization with positive diagonal entries of \(R\) is
+unique.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If
+\(Q_1R_1=Q_2R_2\), then
+\[
+Q_2^\top Q_1=R_2R_1^{-1}.
+\]
+The left side is orthogonal and the right side upper triangular. An upper
+triangular orthogonal matrix is diagonal with entries \(\pm1\); positivity of
+both \(R\) diagonals forces the identity.</p>
+</div>
+
+<p>Householder QR is backward stable. Modified Gram--Schmidt is usually
+acceptable but loses orthogonality proportional to \(\kappa(A)u\);
+classical Gram--Schmidt can lose it proportional to \(\kappa(A)^2u\) unless
+reorthogonalized.</p>
+
+<h3>Singular value decomposition</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (SVD).</span> Every
+\(A\in\mathbb R^{m\times n}\) has
+\[
+A=U\Sigma V^\top,
+\]
+where \(U,V\) are orthogonal and
+\(\sigma_1\ge\cdots\ge\sigma_r>0\) are singular values. Moreover,
+\[
+\|A\|_2=\sigma_1,\qquad
+\|A^\dagger\|_2=\sigma_r^{-1}.
+\]</p>
+</div>
+
+<p>The SVD exposes rank, null spaces, conditioning, and least-squares geometry.
+It is more expensive than QR but is the reliable choice near rank deficiency.</p>
+
+<h3>Optimal low-rank approximation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Eckart--Young--Mirsky).</span> Let
+\[
+A_k=\sum_{j=1}^k\sigma_ju_jv_j^\top.
+\]
+Then among matrices of rank at most \(k\),
+\[
+\min_{\operatorname{rank}B\le k}\|A-B\|_2=\sigma_{k+1},
+\]
+\[
+\min_{\operatorname{rank}B\le k}\|A-B\|_{\mathrm F}
+=\left(\sum_{j>k}\sigma_j^2\right)^{1/2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> \(A_k\) attains the displayed
+errors by orthogonality. For any rank-\(k\) \(B\), its null space intersects
+\(\operatorname{span}(v_1,\ldots,v_{k+1})\) nontrivially; for a unit vector
+\(x\) in that intersection,
+\[
+\|(A-B)x\|=\|Ax\|\ge\sigma_{k+1}.
+\]
+The Frobenius claim follows from unitary invariance and the corresponding
+singular-value inequality.</p>
+</div>
+
+<h3>Rank-revealing factorizations</h3>
+
+<p>Column-pivoted QR,
+\[
+AP=QR,
+\]
+orders columns to expose numerical rank. Strong rank-revealing QR controls
+blocks of \(R\) relative to singular values. Randomized range finding computes
+\(Y=A\Omega\), orthonormalizes it, and factors \(Q^\top A\); oversampling and
+power iterations improve accuracy when singular values decay slowly.</p>

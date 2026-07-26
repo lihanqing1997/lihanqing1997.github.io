@@ -8,24 +8,135 @@ note_prev_url: "/notes/optimization/coordinate-descent-block-methods/"
 note_next_url: "/notes/optimization/mirror-descent-bregman-geometry/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Stochastic gradient methods.</p>
+<p>Stochastic gradient descent replaces an exact gradient by a noisy but cheap
+estimate. Its analysis must balance deterministic contraction against the
+variance injected at every iteration.</p>
 
-    <h3>Unbiased stochastic gradient</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A random vector \(G(x,\xi)\) is an unbiased stochastic gradient if \(\mathbb E[G(x,\xi)\mid x]=\nabla f(x)\). Stochastic gradient descent uses \(x_{k+1}=x_k-\eta_kG(x_k,\xi_k)\).</p>
-    </div>
+<h3>Stochastic first-order oracle</h3>
 
-    <h3>Robbins-Monro step sizes</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For strongly convex objectives with bounded gradient noise, step sizes satisfying \(\sum_k\eta_k=\infty\) and \(\sum_k\eta_k^2<\infty\) can yield almost sure convergence to the minimizer.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Let
+    \(\mathcal F_k\) contain the iterates and randomness observed through time
+    \(k\). A stochastic gradient \(G_k\) at \(x_k\) is conditionally unbiased
+    if
+    \[
+    \mathbb E[G_k\mid\mathcal F_k]=\nabla f(x_k).
+    \]
+    Stochastic gradient descent is
+    \[
+    x_{k+1}=x_k-\eta_kG_k.
+    \]
+    A common noise condition is
+    \(\mathbb E[\|G_k-\nabla f(x_k)\|^2\mid\mathcal F_k]\le\sigma^2\).</p>
+</div>
 
-    <h3>Bias-variance tradeoff</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Constant step sizes converge quickly to a noise neighborhood; decreasing step sizes remove asymptotic bias more slowly. Averaging iterates often improves asymptotic variance.</p>
-    </div>
+<p>For a finite-sum objective
+\(f(x)=n^{-1}\sum_{i=1}^nf_i(x)\), drawing \(I_k\) uniformly and setting
+\(G_k=\nabla f_{I_k}(x_k)\) is unbiased. A mini-batch average reduces the
+conditional variance approximately by the batch size when its draws are
+independent.</p>
 
-    <h3>Statistical interpretation</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> For empirical risk, stochastic gradients replace full sample averages by mini-batches. The algorithmic noise is then deliberately introduced sampling noise, separate from statistical sampling noise.</p>
-    </div>
+<h3>The basic squared-distance recursion</h3>
+
+<div class="math-statement lemma">
+    <p><span class="statement-title">Robbins-Monro recursion.</span> Suppose
+    \(f\) is \(\mu\)-strongly convex with minimizer \(x^\star\), the oracle is
+    unbiased, and
+    \(\mathbb E[\|G_k\|^2\mid\mathcal F_k]\le G^2\). Then
+    \[
+    \mathbb E[\|x_{k+1}-x^\star\|^2\mid\mathcal F_k]
+    \le(1-2\mu\eta_k)\|x_k-x^\star\|^2+\eta_k^2G^2.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Expand the update:
+    \[
+    \|x_{k+1}-x^\star\|^2
+    =\|x_k-x^\star\|^2
+      -2\eta_k\langle G_k,x_k-x^\star\rangle
+      +\eta_k^2\|G_k\|^2.
+    \]
+    Take conditional expectation. Strong convexity and
+    \(\nabla f(x^\star)=0\) imply
+    \(\langle\nabla f(x_k),x_k-x^\star\rangle
+    \ge\mu\|x_k-x^\star\|^2\). Substitute the moment bound.</p>
+</div>
+
+<h3>Decreasing steps and almost-sure convergence</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Robbins-Monro convergence.</span> Under
+    the preceding conditions, if
+    \[
+    \sum_{k=0}^\infty\eta_k=\infty,\qquad
+    \sum_{k=0}^\infty\eta_k^2<\infty,
+    \]
+    then \(x_k\to x^\star\) almost surely. With
+    \(\eta_k=1/(\mu(k+1))\), one obtains
+    \[
+    \mathbb E\|x_k-x^\star\|^2=O\!\left(\frac{G^2}{\mu^2k}\right).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> The squared-distance
+    recursion has the form
+    \[
+    \mathbb E[V_{k+1}\mid\mathcal F_k]
+    \le V_k-2\mu\eta_kV_k+\eta_k^2G^2.
+    \]
+    Since the final terms are summable, the Robbins-Siegmund almost-supermartingale
+    theorem implies that \(V_k\) converges and
+    \(\sum_k\eta_kV_k<\infty\). The divergent sum of \(\eta_k\) forces the
+    limit of \(V_k\) to be zero. For \(\eta_k=1/(\mu(k+1))\), induction in the
+    deterministic expectation recursion yields the stated \(1/k\) bound.</p>
+</div>
+
+<h3>Constant steps reach a noise floor</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Stationary error scale.</span> With a
+    constant step \(0<\eta<1/(2\mu)\), the same recursion gives
+    \[
+    \mathbb E\|x_k-x^\star\|^2
+    \le(1-2\mu\eta)^k\|x_0-x^\star\|^2
+      +\frac{\eta G^2}{2\mu}.
+    \]
+    Thus a larger step contracts faster but leaves a larger asymptotic
+    neighborhood.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Iterate the affine recursion
+    and sum the geometric series:
+    \[
+    \eta^2G^2\sum_{j=0}^{k-1}(1-2\mu\eta)^j
+    \le\frac{\eta G^2}{2\mu}.
+    \]</p>
+</div>
+
+<h3>Polyak-Ruppert averaging</h3>
+
+<p>For smooth stochastic approximation, the averaged iterate
+\[
+\bar x_k=\frac1k\sum_{j=1}^kx_j
+\]
+can attain the optimal \(1/k\) mean-square scale under less delicate step-size
+tuning. Locally, write
+\[
+\nabla f(x)\approx H(x-x^\star),\qquad
+G_k=\nabla f(x_k)+\xi_k.
+\]
+After averaging, the asymptotic covariance is
+\[
+\sqrt{k}(\bar x_k-x^\star)
+\ \Longrightarrow\
+N(0,H^{-1}\Sigma H^{-1}),
+\]
+where \(\Sigma\) is the covariance of the gradient noise at the optimum. This
+is the same sandwich form that appears in asymptotic statistics.</p>
+
+<p>Algorithmic subsampling noise and statistical data noise are distinct. One
+can drive the first to zero by more computation, while the second determines
+the inferential accuracy of the empirical objective itself.</p>

@@ -8,34 +8,169 @@ note_prev_url: "/notes/statistical-decision-theory/decision-problems-rules-risks
 note_next_url: "/notes/statistical-decision-theory/risk-sets-convex-geometry/"
 ---
 
-<p>A statistical test is not only a rule; it is a bounded measurable decision function paired linearly with probability laws.</p>
+<p>A binary test is a bounded measurable decision function. Probability measures act on tests linearly, so testing is naturally expressed through the dual pairing between \(L^1\) densities and \(L^\infty\) functions. This viewpoint connects Neyman–Pearson optimality, total variation, Markov kernels, and comparison of experiments.</p>
 
-    <h3>Randomized test</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For an experiment \((\mathcal X,\mathcal A,\{P_\theta\})\), a randomized test is a measurable function \(\varphi:\mathcal X\to[0,1]\). The value \(\varphi(x)\) is the conditional probability of rejection after observing \(x\).</p>
-    </div>
+<h3>Randomized tests and power functions</h3>
 
-    <h3>Dual pairing</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> In a dominated experiment with densities \(p_\theta\in L^1(\mu)\), tests lie in \(L^\infty(\mu)\) and power is the pairing \(E_\theta\varphi=\langle\varphi,p_\theta\rangle=\int\varphi p_\theta\,\mathrm{d}\mu\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A randomized test is a measurable
+  \[
+  \varphi:\mathcal X\to[0,1].
+  \]
+  Conditional on \(X=x\), the null is rejected with probability \(\varphi(x)\). Its power function is
+  \[
+  \beta_\varphi(\theta)=P_\theta\varphi.
+  \]
+  For \(H_0:\theta\in\Theta_0\), its size is
+  \[
+  \alpha(\varphi)=\sup_{\theta\in\Theta_0}P_\theta\varphi.
+  \]</p>
+</div>
 
-    <h3>Convexity of tests</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The set of randomized tests is convex. Size constraints and power objectives are linear in \(\varphi\). Thus many testing problems are infinite-dimensional linear programs.</p>
-    </div>
+<p>Indicator tests \(1_C\) are nonrandomized. Intermediate values are needed to hit an exact level when the likelihood ratio has an atom at the critical threshold.</p>
 
-    <h3>Neyman-Pearson as separation</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For simple \(P_0\) versus \(P_1\), the most powerful level-\(\alpha\) test is obtained by a supporting hyperplane argument in the dual pairing: reject where the likelihood ratio \(\mathrm{d}P_1/\mathrm{d}P_0\) is large, with boundary randomization if needed.</p>
-    </div>
+<h3>The \(L^1\)–\(L^\infty\) pairing</h3>
 
-    <h3>Total variation</h3>
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> The total variation distance satisfies \(\|P-Q\|_{\mathrm{TV}}=\sup_{0\le\varphi\le1}|P\varphi-Q\varphi|\). Thus distinguishability of experiments is a supremum over bounded tests.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> In a dominated experiment
+  \(P_\theta\ll\mu\), write \(p_\theta=\mathrm{d}P_\theta/\mathrm{d}\mu\in L^1(\mu)\). A test represents an element of the order interval
+  \[
+  \mathcal T=\{\varphi\in L^\infty(\mu):0\leq\varphi\leq1\},
+  \]
+  and
+  \[
+  P_\theta\varphi
+  =
+  \langle p_\theta,\varphi\rangle
+  =
+  \int p_\theta(x)\varphi(x)\,\mu(\mathrm{d}x).
+  \]</p>
+</div>
 
-    <h3>Markov adjoints</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A Markov kernel pushes probability laws forward and pulls tests backward by conditional expectation. Blackwell comparison is therefore naturally expressed by adjoint action on decision functions.</p>
-    </div>
+<p>Size constraints and power objectives are affine in \(\varphi\). A simple-versus-simple testing problem is therefore an infinite-dimensional linear program over the weak-star compact convex set \(\mathcal T\).</p>
+
+<h3>The Neyman–Pearson lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(P_0,P_1\) have densities \(p_0,p_1\) with respect to \(\mu=P_0+P_1\). Choose \(c\geq0\) and \(\gamma\in[0,1]\) so that
+  \[
+  \varphi^*
+  =
+  1\{p_1>cp_0\}
+  +\gamma1\{p_1=cp_0\}
+  \]
+  satisfies \(P_0\varphi^*=\alpha\), whenever exact equality is attainable. Then every test \(\varphi\) with \(P_0\varphi\leq\alpha\) satisfies
+  \[
+  P_1\varphi\leq P_1\varphi^*.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Pointwise,
+  \[
+  (\varphi-\varphi^*)(p_1-cp_0)\leq0:
+  \]
+  where \(p_1>cp_0\), \(\varphi^*=1\); where \(p_1<cp_0\), \(\varphi^*=0\); and the product vanishes on equality. Integrating,
+  \[
+  P_1(\varphi-\varphi^*)
+  \leq cP_0(\varphi-\varphi^*)
+  \leq0.
+  \]
+  \(\square\)</p>
+</div>
+
+<p>The function \(p_1-cp_0\) is a separating normal: the test takes the extreme value \(1\) where the normal is positive and \(0\) where it is negative. Boundary randomization enforces the affine size constraint.</p>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Bayes test).</span> Under prior probabilities \(\pi_0,\pi_1\) and losses \(c_{10}\) for false rejection and \(c_{01}\) for false acceptance, reject precisely when
+  \[
+  \frac{p_1(x)}{p_0(x)}
+  >
+  \frac{\pi_0c_{10}}{\pi_1c_{01}},
+  \]
+  with arbitrary optimal randomization on equality.</p>
+</div>
+
+<h3>Total variation as optimal distinguishability</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For probability measures \(P,Q\),
+  \[
+  \|P-Q\|_{\mathrm{TV}}
+  :=
+  \sup_A|P(A)-Q(A)|
+  =
+  \sup_{0\leq\varphi\leq1}|P\varphi-Q\varphi|
+  =
+  \frac12\int|p-q|\,\mathrm{d}\mu,
+  \]
+  where \(\mu=P+Q\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\nu=P-Q\) and write its Jordan decomposition
+  \(\nu=\nu^+-\nu^-\). Since \(\nu(\mathcal X)=0\),
+  \(\nu^+(\mathcal X)=\nu^-(\mathcal X)\). For \(0\leq\varphi\leq1\),
+  \[
+  \nu\varphi
+  \leq\nu^+\varphi\leq\nu^+(\mathcal X),
+  \]
+  and equality is attained by the indicator of a positive Hahn set, equivalently \(\{p>q\}\). Finally,
+  \[
+  \nu^+(\mathcal X)=\frac12\int|p-q|\,\mathrm{d}\mu.
+  \]
+  Apply the same argument to \(-\nu\). \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (minimum testing error).</span> Under equal prior probabilities and \(0\)-\(1\) loss, the smallest average error in testing \(P\) against \(Q\) is
+  \[
+  \frac12\{1-\|P-Q\|_{\mathrm{TV}}\}.
+  \]</p>
+</div>
+
+<h3>Tests of mixtures and convex hypotheses</h3>
+
+<p>For composite hypotheses, priors \(\Pi_0,\Pi_1\) produce mixture laws
+\[
+P_{\Pi_j}=\int P_\theta\,\Pi_j(\mathrm{d}\theta).
+\]
+Neyman–Pearson applied to \(P_{\Pi_0}\) and \(P_{\Pi_1}\) gives a Bayes test. Least favorable priors turn this Bayes solution into a minimax one when the corresponding risk equalizes appropriately. Thus the convexification of hypotheses by mixtures is not cosmetic; it generates supporting hyperplanes for the testing risk set.</p>
+
+<h3>Adjoints of Markov kernels</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> A Markov kernel
+  \(K:\mathcal X\rightsquigarrow\mathcal Y\) acts on measures by
+  \(P\mapsto PK\) and on bounded decision functions by
+  \[
+  K^*\varphi(x)=\int_{\mathcal Y}\varphi(y)K(x,\mathrm{d}y).
+  \]
+  These actions are adjoint:
+  \[
+  (PK)\varphi=P(K^*\varphi).
+  \]
+  Moreover, \(0\leq\varphi\leq1\) implies
+  \(0\leq K^*\varphi\leq1\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The identity is Tonelli's theorem:
+  \[
+  \int\varphi(y)(PK)(\mathrm{d}y)
+  =
+  \int P(\mathrm{d}x)\int\varphi(y)K(x,\mathrm{d}y).
+  \]
+  Positivity and preservation of constants follow because \(K(x,\cdot)\) is a probability measure. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (data processing for total variation).</span>
+  \[
+  \|PK-QK\|_{\mathrm{TV}}
+  \leq\|P-Q\|_{\mathrm{TV}}.
+  \]
+  </p>
+</div>
+
+<p>Indeed, every test after the transition pulls back to a valid test before it. Randomized post-processing cannot increase distinguishability.</p>

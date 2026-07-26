@@ -5,6 +5,7 @@ breadcrumb_child_label_fr: "20. Bornes PAC-Bayes"
 breadcrumb_child_label_zh: "20. PAC-贝叶斯界"
 note_back_url: "/notes/statistical-learning/"
 note_prev_url: "/notes/statistical-learning/distribution-shift-and-domain-adaptation/"
+note_next_url: "/notes/statistical-learning/compatibility-irrepresentability-support-recovery/"
 ---
 
 <p>PAC-Bayes theory gives high-probability risk bounds for randomized predictors. Its proof is an information inequality plus concentration, not ordinary Bayesian posterior consistency.</p>
@@ -80,3 +81,160 @@ Q_\eta(\mathrm{d}h)\propto e^{-\eta nR_n(h)}P_0(\mathrm{d}h).
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Use the same variational identity with \(\phi=-\eta nR_n(h)\). The minimizing distribution is the exponentially tilted prior, and the minimum value is \(-(\eta n)^{-1}\log P_0e^{-\eta nR_n}\).</p>
     </div>
+
+<h3>The Donsker-Varadhan identity with equality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(P_0e^\phi<\infty\), then
+  \[
+  \log P_0e^\phi
+  =\sup_{Q\ll P_0}\{Q\phi-\operatorname{KL}(Q\|P_0)\}.
+  \]
+  Equality is attained at
+  \[
+  \frac{\mathrm{d}Q^*}{\mathrm{d}P_0}
+  =\frac{e^\phi}{P_0e^\phi}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define \(Q^*\) by the displayed tilt. For arbitrary \(Q\ll P_0\),
+  \[
+  \operatorname{KL}(Q\|Q^*)
+  =\operatorname{KL}(Q\|P_0)-Q\phi+\log P_0e^\phi\ge0.
+  \]
+  Rearrangement proves the upper bound, and \(Q=Q^*\) makes the KL divergence zero.</p>
+</div>
+
+<h3>A Bernoulli-kl PAC-Bayes theorem</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(q,p\in[0,1]\),
+  \[
+  \operatorname{kl}(q\|p)
+  =q\log\frac qp+(1-q)\log\frac{1-q}{1-p}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If losses lie in \([0,1]\), then with probability at least \(1-\delta\), simultaneously for every \(Q\ll P_0\),
+  \[
+  \operatorname{kl}\{R_n(Q)\|R(Q)\}
+  \le\frac{\operatorname{KL}(Q\|P_0)+\log(2\sqrt n/\delta)}{n}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For each fixed hypothesis \(h\), the binomial method of types gives
+  \[
+  \mathbb E\exp\{n\operatorname{kl}(R_n(h)\|R(h))\}\le2\sqrt n.
+  \]
+  Integrate over \(P_0\) and apply Markov's inequality. On the resulting event, use the change-of-measure lemma with
+  \(\phi(h)=n\operatorname{kl}(R_n(h)\|R(h))\).
+  Joint convexity of binary KL and Jensen's inequality yield
+  \[
+  \operatorname{kl}\{QR_n(h)\|QR(h)\}
+  \le Q\operatorname{kl}\{R_n(h)\|R(h)\}.
+  \]</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Pinsker's inequality gives
+  \[
+  R(Q)\le R_n(Q)+
+  \sqrt{\frac{\operatorname{KL}(Q\|P_0)+
+  \log(2\sqrt n/\delta)}{2n}}.
+  \]</p>
+</div>
+
+<h3>A Catoni bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every \(\lambda>0\), with probability at least \(1-\delta\), simultaneously for all \(Q\ll P_0\),
+  \[
+  R(Q)\le
+  \frac{1-\exp\!\left\{-\lambda R_n(Q)
+  -[\operatorname{KL}(Q\|P_0)+\log(1/\delta)]/n\right\}}
+  {1-e^{-\lambda}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For
+  \(U\in[0,1]\), convexity of \(e^{-\lambda U}\) gives
+  \(\mathbb Ee^{-\lambda U}\le1-(1-e^{-\lambda})\mathbb EU\).
+  Apply this independently to empirical losses, rearrange to an exponential supermartingale involving population risk, integrate under the prior, use Markov, and transfer to \(Q\) by Donsker-Varadhan. Solve the resulting inequality for \(R(Q)\).</p>
+</div>
+
+<h3>Gibbs classifiers and majority votes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A Gibbs classifier samples
+  \(h\sim Q\) independently for each prediction. Its risk is \(R(Q)\). A majority vote predicts
+  \[
+  B_Q(x)=\operatorname{sign}\int h(x)\,Q(\mathrm{d}h)
+  \]
+  for \(h(x)\in\{-1,1\}\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  R(B_Q)\le2R(Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If the majority vote is wrong at
+  \((x,y)\), at least half of the \(Q\)-mass assigns the wrong label. Hence
+  \[
+  \mathbf1\{B_Q(x)\ne y\}
+  \le2\int\mathbf1\{h(x)\ne y\}\,Q(\mathrm{d}h).
+  \]
+  Integrate over the data law.</p>
+</div>
+
+<p>The bound can be loose because it ignores dependence among voters. The PAC-Bayes \(C\)-bound additionally uses the first two moments of the vote margin and can exploit low disagreement among accurate voters.</p>
+
+<h3>Localized priors and oracle behavior</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(B(h^*,\varepsilon)\) be a risk-local neighborhood of a comparator \(h^*\), and choose \(Q\) as the prior conditioned on that set. Then
+  \[
+  \operatorname{KL}(Q\|P_0)
+  =\log\frac1{P_0\{B(h^*,\varepsilon)\}}.
+  \]
+  A PAC-Bayes bound therefore balances local approximation error against logarithmic prior mass, mirroring Bayesian contraction theory.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The conditional density is
+  \(\mathbf1_B/P_0(B)\). Integrating its log under \(Q\) gives
+  \(\log\{1/P_0(B)\}\).</p>
+</div>
+
+<h3>Data-dependent priors</h3>
+
+<p>A prior chosen after inspecting the same sample invalidates the standard proof because the prior can encode the empirical minimizer at no KL cost. Valid alternatives include:</p>
+
+<ul>
+  <li>choose the prior from an independent data split;</li>
+  <li>use a hierarchical hyperprior and pay the hyperparameter KL cost;</li>
+  <li>prove a differentially private data-dependent-prior theorem;</li>
+  <li>construct a distribution-dependent localized prior only inside the analysis, not as a sample-adaptive object.</li>
+</ul>
+
+<h3>PAC-Bayes and generalized Bayesian posteriors</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The Gibbs posterior
+  \[
+  Q_\eta(\mathrm{d}h)\propto
+  e^{-\eta nR_n(h)}P_0(\mathrm{d}h)
+  \]
+  minimizes the PAC-Bayes objective, but it equals an ordinary Bayesian posterior only when \(\eta nR_n(h)\) is a negative log-likelihood up to an \(h\)-independent constant. Otherwise it is a generalized posterior defined by a loss.</p>
+</div>
+
+<p>PAC-Bayes bounds are frequentist high-probability statements over the sample, valid for every data-dependent \(Q\) on one event. Bayesian posterior concentration is a statement about a particular likelihood-based random measure under a specified data law. Their variational algebra overlaps, but their inferential meanings remain distinct.</p>

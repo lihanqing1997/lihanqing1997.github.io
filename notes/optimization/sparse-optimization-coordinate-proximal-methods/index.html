@@ -8,24 +8,115 @@ note_prev_url: "/notes/optimization/splitting-methods-admm/"
 note_next_url: "/notes/optimization/monotone-operators-variational-inequalities/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Sparse optimization and coordinate-proximal methods.</p>
+<p>Sparsity is created by a nonsmooth geometry: the \(\ell_1\) ball has corners
+on coordinate subspaces, and its subdifferential contains intervals at zero.
+The same KKT equations drive optimization, screening, and statistical
+support-recovery arguments.</p>
 
-    <h3>Sparse objective</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A typical sparse objective has the form \(\ell(\beta)+\lambda\|\beta\|_1\), where \(\ell\) is a smooth empirical loss. The nonsmooth term induces exact zeros.</p>
-    </div>
+<h3>Lasso optimality coordinate by coordinate</h3>
 
-    <h3>Soft-thresholding update</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For quadratic coordinate models, the lasso coordinate update is soft-thresholding: \(\beta_j\leftarrow S_\lambda(z_j)/a_j\), where \(S_\lambda(z)=\operatorname{sign}(z)(|z|-\lambda)_+\).</p>
-    </div>
+<p>For a differentiable convex loss \(\ell\), consider
+\[
+\widehat\beta\in\operatorname*{arg\,min}_{\beta\in\mathbb R^p}
+\{\ell(\beta)+\lambda\|\beta\|_1\}.
+\]
+The Fermat rule is
+\[
+0\in\nabla\ell(\widehat\beta)+\lambda\partial\|\widehat\beta\|_1.
+\]</p>
 
-    <h3>KKT screening</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> At a lasso optimum, active coordinates satisfy gradient balance, while inactive coordinates satisfy \(|\nabla_j\ell(\beta)|\le\lambda\). These KKT inequalities justify screening and active-set strategies.</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Coordinatewise KKT conditions.</span> A
+    vector \(\widehat\beta\) is optimal if and only if
+    \[
+    \begin{cases}
+    \nabla_j\ell(\widehat\beta)
+      =-\lambda\operatorname{sign}(\widehat\beta_j),
+      &\widehat\beta_j\ne0,\\[3pt]
+    |\nabla_j\ell(\widehat\beta)|\le\lambda,
+      &\widehat\beta_j=0.
+    \end{cases}
+    \]</p>
+</div>
 
-    <h3>High-dimensional link</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Sparse optimization is not merely computational. Its KKT conditions connect directly to variable selection, debiasing, and high-dimensional inference.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The subdifferential of
+    \(|t|\) is \(\{\operatorname{sign}(t)\}\) for \(t\ne0\) and
+    \([-1,1]\) at zero. Since the \(\ell_1\) norm is separable, its
+    subdifferential is the Cartesian product of these coordinate sets.
+    Substituting into the Fermat inclusion gives the two cases.</p>
+</div>
+
+<p>Inactive variables need not have zero loss gradient; the penalty can balance
+any gradient within \([-\lambda,\lambda]\). This interval is what permits
+exact zeros.</p>
+
+<h3>Soft thresholding from a scalar subproblem</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Thresholding formula.</span> For
+    \(a>0\), the unique minimizer of
+    \[
+    \frac a2t^2-bt+\lambda|t|
+    \]
+    is
+    \[
+    t^\star=\frac1aS_\lambda(b),\qquad
+    S_\lambda(b)=\operatorname{sign}(b)(|b|-\lambda)_+.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The optimality inclusion is
+    \(0\in at-b+\lambda\partial|t|\). If \(t>0\), it gives
+    \(t=(b-\lambda)/a\), valid when \(b>\lambda\). If \(t<0\), it gives
+    \(t=(b+\lambda)/a\), valid when \(b<-\lambda\). At \(t=0\), it holds
+    exactly when \(|b|\le\lambda\). Combining the cases yields the formula.</p>
+</div>
+
+<p>This scalar result is simultaneously the lasso coordinate update and the
+proximal map of \(\lambda|\cdot|\). Coordinate descent and proximal gradient
+therefore use the same local operation in different update geometries.</p>
+
+<h3>Structured sparsity through proximal maps</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Group lasso.</span> For a block
+    \(v\in\mathbb R^m\),
+    \[
+    \operatorname{prox}_{\tau\|\cdot\|_2}(v)
+    =\left(1-\frac{\tau}{\|v\|_2}\right)_+v.
+    \]
+    Thus an entire group is set to zero when its Euclidean norm is below the
+    threshold.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Nuclear norm.</span> If
+    \(Y=U\operatorname{diag}(\sigma_i)V^\top\), then
+    \[
+    \operatorname{prox}_{\tau\|\cdot\|_*}(Y)
+    =U\operatorname{diag}((\sigma_i-\tau)_+)V^\top.
+    \]
+    Singular-value thresholding is the matrix analogue of soft thresholding
+    and promotes low rank.</p>
+</div>
+
+<h3>Safe screening from a dual region</h3>
+
+<p>Suppose a computable duality gap confines a dual optimizer
+\(\theta^\star\) to a ball \(B(\theta_c,r)\). For least-squares lasso, the dual
+constraint is \(\|X^\top\theta^\star\|_\infty\le\lambda\). If
+\[
+|X_j^\top\theta_c|+\|X_j\|r<\lambda,
+\]
+then \(|X_j^\top\theta^\star|<\lambda\), so complementary slackness forces
+\(\widehat\beta_j=0\). This is a safe screening rule: it removes a coordinate
+without changing the exact solution.</p>
+
+<p>Optimization conditions alone do not guarantee correct variable selection.
+Statistical support recovery also requires signal strength and design
+conditions, developed in
+<a href="{{ '/notes/statistical-learning/compatibility-irrepresentability-support-recovery/' | relative_url }}">compatibility and irrepresentability</a>.
+The KKT equation is the bridge between the computational and statistical
+arguments.</p>

@@ -8,24 +8,109 @@ note_prev_url: "/notes/causal-inference/d-separation/"
 note_next_url: "/notes/causal-inference/do-calculus/"
 ---
 
-<p>Back-door adjustment records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Back-door adjustment identifies a causal effect by blocking all noncausal paths entering treatment while leaving directed causal paths intact. The criterion formalizes confounder adjustment and also explains why adjusting for mediators or colliders can be harmful.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A set \(Z\) satisfies the back-door criterion for treatment \(A\) and outcome \(Y\) if it blocks all noncausal paths from \(A\) to \(Y\) and contains no descendants of \(A\).</p>
-    </div>
+<h3>The back-door criterion</h3>
 
-    <h3>Back-door formula</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(Z\) satisfies the back-door criterion, then \(P(Y\in B\mid \operatorname{do}(A=a))=\int P(Y\in B\mid A=a,Z=z)\,\mathrm{d}P_Z(z)\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A set \(Z\) satisfies the
+  back-door criterion relative to treatment \(A\) and outcome \(Y\) if:
+  <ol>
+    <li>no member of \(Z\) is a descendant of \(A\);</li>
+    <li>\(Z\) blocks every path between \(A\) and \(Y\) that begins with an arrow into \(A\).</li>
+  </ol></p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> In the mutilated graph for intervention, back-door blocking gives conditional exchangeability of potential outcomes or interventional outcomes given \(Z\). Then apply the adjustment formula.</p>
-    </div>
+<h3>Back-door adjustment theorem</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Back-door adjustment is graphical confounding control. It tells which variables to condition on, not how to estimate after conditioning.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(Z\) satisfies the back-door criterion and the causal Markov model is valid, then
+  \[
+  p(y\mid\operatorname{do}(a))
+  =\int p(y\mid a,z)\,p(z)\,\mathrm{d}z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(G_{\underline A}\) denote the graph with arrows out of \(A\) removed. The back-door criterion implies
+  \(Y\perp_d A\mid Z\) in \(G_{\underline A}\), so action-observation exchange gives
+  \(p(y\mid\operatorname{do}(a),z)=p(y\mid a,z)\).
+  Because \(Z\) contains no descendants of \(A\), intervention on \(A\) does not change its distribution:
+  \(p(z\mid\operatorname{do}(a))=p(z)\).
+  Apply total probability.</p>
+</div>
+
+<h3>Potential-outcome proof</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If the graphical criterion entails
+  \(Y(a)\perp\!\!\!\perp A\mid Z\), then under consistency and positivity,
+  \[
+  \mathbb E Y(a)=\mathbb E\{\mathbb E(Y\mid A=a,Z)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> This is iterated expectation, conditional exchangeability, positivity, and consistency in succession:
+  \[
+  \mathbb EY(a)
+  =\mathbb E[\mathbb E\{Y(a)\mid Z\}]
+  =\mathbb E[\mathbb E\{Y(a)\mid A=a,Z\}]
+  =\mathbb E[\mathbb E(Y\mid A=a,Z)].
+  \]</p>
+</div>
+
+<h3>Common causes and precision variables</h3>
+
+<p>A sufficient adjustment set need not contain every pretreatment variable. Variables causing both \(A\) and \(Y\) must be blocked. A strong predictor of \(Y\) that does not affect \(A\) can improve precision. A variable that affects only \(A\) can amplify finite-sample variance and, under residual unmeasured confounding, may amplify bias. Graphical admissibility and statistical efficiency are separate questions.</p>
+
+<h3>Why mediators are forbidden for total effects</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In \(A\to M\to Y\),
+  \[
+  \sum_m p(y\mid a,m)p(m)
+  \]
+  does not equal the total interventional distribution, whose mediator law is
+  \(p(m\mid a)\). Adjusting for \(M\) blocks the mediated path and targets a different, often cross-world, direct-effect estimand.</p>
+</div>
+
+<h3>M-bias from collider adjustment</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In
+  \(A\leftarrow U_1\to C\leftarrow U_2\to Y\), the only path between
+  \(A\) and \(Y\) contains collider \(C\) and is blocked marginally. Adjusting for \(C\) opens the path and induces association. A variable can be measured before treatment and still be an inappropriate adjustment variable.</p>
+</div>
+
+<h3>The generalized adjustment criterion</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For total effects, the forbidden set contains descendants, in a graph with incoming treatment arrows removed, of nodes lying on proper directed paths from \(A\) to \(Y\). An adjustment set must avoid this forbidden set and block every proper noncausal path from \(A\) to \(Y\).</p>
+</div>
+
+<p>This criterion extends the original back-door condition and allows some descendants of treatment that do not lie on or descend from causal pathways, when they do not create new bias. The original criterion remains a transparent sufficient rule.</p>
+
+<h3>Multiple treatments</h3>
+
+<p>For a joint intervention on treatment vector \(\mathbf A\), a proper back-door path cannot pass through another treatment as part of the intervention's causal effect. The adjustment formula becomes
+\[
+p(y\mid\operatorname{do}(\mathbf a))
+=\int p(y\mid\mathbf a,z)p(z)\,\mathrm{d}z
+\]
+when \(Z\) satisfies the joint adjustment criterion and positivity holds for the treatment vector.</p>
+
+<h3>Minimal versus optimal adjustment sets</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If both \(Z\) and
+  \(Z\cup W\) are valid adjustment sets, adding \(W\) does not change the population identifying functional when all conditional laws are correct, but it can change semiparametric efficiency and finite-sample stability.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Both functionals equal the same interventional distribution by the adjustment theorem. Their estimators condition or weight on different covariate spaces, changing nuisance complexity, residual variance, and overlap.</p>
+</div>
+
+<h3>Adjustment cannot repair structural nonidentification</h3>
+
+<p>If every path-blocking set includes an unmeasured common cause, no observed adjustment formula exists. Parametric regression does not restore nonparametric identification; it extrapolates through model restrictions. Front-door structure, instruments, proxies, negative controls, sensitivity models, or new data may provide alternatives, but each invokes new assumptions.</p>

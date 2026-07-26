@@ -7,24 +7,146 @@ note_back_url: "/notes/causal-inference/"
 note_prev_url: "/notes/causal-inference/sensitivity-analysis/"
 ---
 
-<p>Transportability and external validity records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Transportability asks whether a causal effect learned in a study population can identify an effect in a different target population. Internal validity concerns causal comparison within the study; external validity concerns how that comparison changes across populations.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Transportability asks whether a causal effect learned in one population or environment identifies the effect in another. External validity is the corresponding scientific concern.</p>
-    </div>
+<h3>Study participation as a selection process</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Transport formulas require assumptions about which mechanisms remain invariant across environments and which distributions change. Selection diagrams encode these invariance assumptions graphically.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(S=1\) denote study membership and \(S=0\) the target population. The target ATE is
+  \[
+  \tau_0=\mathbb E\{Y(1)-Y(0)\mid S=0\}.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Augment the causal graph with selection variables marking changed mechanisms. Use do-calculus and ordinary probability transport across stable mechanisms to express the target effect using source experiments and target observations.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Conditional sample exchangeability in treatment effects is
+  \[
+  \mathbb E\{Y(1)-Y(0)\mid X,S=1\}
+  =
+  \mathbb E\{Y(1)-Y(0)\mid X,S=0\}.
+  \]
+  A stronger condition asserts
+  \(Y(a)\perp\!\!\!\perp S\mid X\) for each \(a\).</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A causal estimate is not automatically portable. Transportability makes the extrapolation assumptions explicit.</p>
-    </div>
+<h3>Outcome-standardization transport formula</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose treatment is randomized or exchangeable within the study, consistency holds, sample exchangeability of potential-outcome means holds given \(X\), and study participation is positive on the target covariate support:
+  \[
+  P(S=1\mid X=x)>0\quad\text{for }P(X\mid S=0)\text{-almost every }x.
+  \]
+  Then
+  \[
+  \tau_0=
+  \mathbb E\left[
+  m_1(X,S=1)-m_0(X,S=1)
+  \,\middle|\,S=0\right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Condition the target effect on \(X\). Sample exchangeability replaces the target conditional potential-outcome means by study conditional means. Treatment exchangeability and consistency identify those means as
+  \(m_a(X,S=1)=\mathbb E(Y\mid A=a,X,S=1)\). Average over the target covariate distribution.</p>
+</div>
+
+<h3>Inverse odds of sampling weights</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\pi(X)=P(S=1\mid X)\) and suppose treatment probability in the study is
+  \(e_a(X)=P(A=a\mid X,S=1)\). Then
+  \[
+  \mathbb EY(a)\mid S=0
+  =
+  \frac{1}{P(S=0)}
+  \mathbb E\left[
+  \frac{S\mathbf1(A=a)Y}{e_a(X)}
+  \frac{1-\pi(X)}{\pi(X)}
+  \right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Condition on \(X\). The treatment weight recovers the study conditional mean \(m_a(X,S=1)\). Multiplication by
+  \(S\{1-\pi(X)\}/\pi(X)\) changes the study covariate measure into the unnormalized target measure:
+  \[
+  \mathbb E\left[
+  S\frac{1-\pi(X)}{\pi(X)}g(X)\right]
+  =\mathbb E[(1-S)g(X)].
+  \]
+  Normalize by \(P(S=0)\) and use the transport formula.</p>
+</div>
+
+<h3>Doubly robust transport</h3>
+
+<p>An efficient transport estimator combines study outcome regressions with sampling and treatment weights. Its influence function contains:</p>
+
+<ul>
+  <li>weighted study residuals for each treatment arm;</li>
+  <li>the target-population conditional effect minus its target mean;</li>
+  <li>normalization terms for target membership.</li>
+</ul>
+
+<p>The resulting estimator can be consistent if either the outcome-effect model or the sampling model is correct, under the precise nuisance structure of the chosen transport functional. Cross-fitting permits flexible estimation when product-rate conditions hold.</p>
+
+<h3>Effect modifiers versus prognostic variables</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If a covariate changes outcome levels but not the conditional treatment effect, differences in its distribution across populations do not change the ATE. If it modifies treatment effect, those distribution differences do matter.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write
+  \(m_a(x)=g(x)+a\tau(x)\). The conditional effect is \(\tau(x)\); the common prognostic term \(g(x)\) cancels. Population ATE is the population average of \(\tau(X)\), so only modifiers of \(\tau\) affect transport.</p>
+</div>
+
+<p>In practice, variables predicting selection and outcome can improve precision even if they are not effect modifiers. Identifying a sufficient transport set is a causal question, not merely a variable-selection exercise.</p>
+
+<h3>Selection diagrams</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A selection diagram augments a causal DAG with selection nodes pointing into mechanisms that may differ across populations. Transportability asks whether the target interventional distribution can be expressed using study experimental distributions and target observational distributions.</p>
+</div>
+
+<p>If a selection node points only into baseline \(X\), standardization over target \(X\) may suffice. If outcome mechanisms differ even after conditioning on measured variables, ordinary transport fails unless target outcome information or additional invariance assumptions are available.</p>
+
+<h3>Generalizability versus transportability</h3>
+
+<p>Generalizability often refers to a study sample nested within a known target population, so participation probabilities can be estimated from combined data. Transportability may involve separate study and target samples with only partial variable overlap. The formulas are related, but data fusion and normalization differ.</p>
+
+<h3>Population overlap</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> If the study enrolls only
+  \(X=0\) and the target contains \(X=1\), the conditional effect at \(X=1\) is not learned from the study. A smooth outcome model can extrapolate, but nonparametric transport is unidentified. Sampling weights diverge because \(\pi(1)=0\).</p>
+</div>
+
+<h3>Trial engagement effects</h3>
+
+<p>Participation can itself alter treatment delivery, adherence, monitoring, or outcomes. Then \(S\) is not merely a sampling indicator: potential outcomes should be indexed by trial engagement, such as \(Y(a,s)\). Transporting \(Y(a,1)\) to nonparticipants differs from estimating the real-world intervention \(Y(a,0)\), and an additional engagement-effect assumption is required.</p>
+
+<h3>Data fusion</h3>
+
+<p>Some variables are observed only in the trial and others only in the target sample. Identification may combine outcome models from one source, covariate distributions from another, and validation data linking measurements. Each source receives a sampling indicator and contributes specific conditional distributions. Semiparametric efficiency theory can derive optimal combinations once the fused-data model is explicit.</p>
+
+<h3>Transport sensitivity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A conditional transport-bias function is
+  \[
+  \delta_a(x)=
+  \mathbb E\{Y(a)\mid X=x,S=0\}-
+  \mathbb E\{Y(a)\mid X=x,S=1\}.
+  \]
+  The target mean becomes
+  \[
+  \mathbb E[m_a(X,S=1)+\delta_a(X)\mid S=0].
+  \]</p>
+</div>
+
+<p>Varying \(\delta_1-\delta_0\) over scientifically calibrated ranges directly assesses violations of conditional effect exchangeability.</p>
+
+<h3>Reporting an externally valid claim</h3>
+
+<p>State the study and target populations, the covariates assumed sufficient for transport, their overlap, which mechanisms are assumed invariant, the target intervention, and whether participation itself changes outcomes. External validity is an identified functional only after these coordinates are fixed.</p>

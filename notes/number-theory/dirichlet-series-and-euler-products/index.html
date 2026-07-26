@@ -8,24 +8,115 @@ note_prev_url: "/notes/number-theory/euler-phi-function-and-primitive-roots/"
 note_next_url: "/notes/number-theory/prime-number-theorem/"
 ---
 
-<p>Dirichlet series and Euler products records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>Dirichlet series transform multiplicative arithmetic into complex
+analysis. Their Euler products encode prime factorization, while analytic
+behavior near singularities controls average order and prime distribution.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Dirichlet series has the form \(\sum_{n\ge1}a_n n^{-s}\). Multiplicative coefficients often produce Euler products over primes.</p>
-    </div>
+<h3>Dirichlet series</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(a_n\) is multiplicative and the series converges absolutely, then \(\sum a_n n^{-s}=\prod_p\sum_{k\ge0}a_{p^k}p^{-ks}\).</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The Dirichlet series of
+an arithmetic function \(a(n)\) is
+\[
+D_a(s)=\sum_{n=1}^{\infty}\frac{a(n)}{n^s},
+\qquad s=\sigma+it.
+\]
+Absolute convergence in one half-plane implies uniform convergence on every
+smaller closed half-plane and hence holomorphy there.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Absolute convergence permits rearranging the series. Unique factorization rewrites every integer as a product of prime powers, matching terms in the product expansion.</p>
-    </div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If the relevant series
+converge absolutely, then
+\[
+D_{a*b}(s)=D_a(s)D_b(s).
+\]</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Euler products are analytic expressions of prime factorization. They are the entry point from arithmetic to complex analysis.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Absolute convergence permits
+rearrangement:
+\[
+\sum_{m,n\ge1}\frac{a(m)b(n)}{(mn)^s}
+=\sum_{k\ge1}\frac1{k^s}\sum_{mn=k}a(m)b(n)
+=\sum_{k\ge1}\frac{(a*b)(k)}{k^s}.
+\]</p>
+</div>
+
+<h3>Euler products</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(a\) is multiplicative
+and its Dirichlet series converges absolutely, then
+\[
+D_a(s)=\prod_p\left(\sum_{k=0}^{\infty}
+\frac{a(p^k)}{p^{ks}}\right).
+\]
+If \(a\) is completely multiplicative, this becomes
+\[
+D_a(s)=\prod_p(1-a(p)p^{-s})^{-1}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Expand a finite product over
+\(p\le P\). Unique factorization gives exactly the terms \(a(n)n^{-s}\) whose
+prime divisors are at most \(P\). Absolute convergence allows passage to the
+limit \(P\to\infty\).</p>
+</div>
+
+<h3>The Riemann zeta function</h3>
+
+<p>For \(\sigma>1\),
+\[
+\zeta(s)=\sum_{n\ge1}n^{-s}
+=\prod_p(1-p^{-s})^{-1}.
+\]
+Since no Euler factor vanishes and the logarithm converges absolutely,
+\(\zeta(s)\ne0\) in \(\sigma>1\). Also,
+\[
+\frac1{\zeta(s)}=\sum_{n\ge1}\frac{\mu(n)}{n^s},\qquad
+-\frac{\zeta'(s)}{\zeta(s)}
+=\sum_{n\ge1}\frac{\Lambda(n)}{n^s},
+\]
+where \(\Lambda(p^k)=\log p\) and is zero otherwise.</p>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Logarithmic derivative.</span>
+\[
+\log\zeta(s)=\sum_p\sum_{k\ge1}\frac1{k p^{ks}}.
+\]
+Differentiating termwise gives
+\[
+-\frac{\zeta'}{\zeta}(s)
+=\sum_p\sum_{k\ge1}\frac{\log p}{p^{ks}}
+=\sum_n\frac{\Lambda(n)}{n^s}.
+\]</p>
+</div>
+
+<h3>Partial summation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (Abel summation).</span> If
+\(A(x)=\sum_{n\le x}a_n\) and \(f\in C^1\), then
+\[
+\sum_{n\le x}a_nf(n)
+=A(x)f(x)-\int_1^xA(t)f'(t)\,\mathrm{d}t.
+\]</p>
+</div>
+
+<p>This is discrete integration by parts. Taking \(f(t)=t^{-s}\) links growth
+of \(A(x)\) with analytic continuation or convergence of its Dirichlet
+series. Tauberian theorems provide converses under positivity or boundary
+regularity assumptions.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Since
+\(\sigma_k=\operatorname{id}^k*1\),
+\[
+\sum_{n\ge1}\frac{\sigma_k(n)}{n^s}
+=\zeta(s)\zeta(s-k)
+\]
+for \(\operatorname{Re}s>k+1\). A convolution identity becomes a product of
+two classical analytic functions.</p>
+</div>

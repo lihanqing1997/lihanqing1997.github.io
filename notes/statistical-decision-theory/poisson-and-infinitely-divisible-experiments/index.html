@@ -8,26 +8,154 @@ note_prev_url: "/notes/statistical-decision-theory/shrinkage-and-invariance/"
 note_next_url: "/notes/statistical-decision-theory/global-asymptotic-normality/"
 ---
 
-<p>Not every useful limit is Gaussian. Poisson and infinitely divisible experiments describe rare events, counts, and nonregular local limits.</p>
+<p>Gaussian limits arise from many small centered contributions. Rare events retain their discreteness and lead instead to Poisson, compound-Poisson, or more general infinitely divisible experiments. Their likelihood ratios have exponential form, but their local geometry is not quadratic.</p>
 
-    <h3>Poisson experiment</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Poisson experiment observes a Poisson point process with mean measure \(\mu_\theta\). If \(\mu_\theta\ll\mu_0\), the likelihood ratio has exponential form involving \(\mathrm{d}\mu_\theta/\mathrm{d}\mu_0\).</p>
-    </div>
+<h3>Poisson random measures</h3>
 
-    <h3>Poisson likelihood ratio</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Relative to \(\mu_0\),</p>
-        <p>\[
-\ell_\theta(N)=\int \log\frac{\mathrm{d}\mu_\theta}{\mathrm{d}\mu_0}\,\mathrm{d}N
--\int\left(\frac{\mathrm{d}\mu_\theta}{\mathrm{d}\mu_0}-1\right)\,\mathrm{d}\mu_0.
-\]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A Poisson random measure
+  \(N\) on \((S,\mathcal S)\) with \(\sigma\)-finite mean measure \(\mu\), written
+  \(N\sim\operatorname{PRM}(\mu)\), satisfies:</p>
+  <ol>
+    <li>\(N(A)\sim\operatorname{Poisson}\{\mu(A)\}\) when \(\mu(A)<\infty\);</li>
+    <li>counts on disjoint sets are independent.</li>
+  </ol>
+</div>
 
-    <h3>Compensator calculation</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The likelihood factorizes over observed points, while the normalizing term is the difference of total intensities. This is the point-process analogue of exponential-family normalization.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (Laplace functional).</span> For measurable \(f\geq0\),
+  \[
+  E_\mu\exp\left\{-\int f\,\mathrm{d}N\right\}
+  =
+  \exp\left\{
+    -\int(1-e^{-f})\,\mathrm{d}\mu
+  \right\}.
+  \]</p>
+</div>
 
-    <h3>Nonregular local limits</h3>
-    <p>Boundary parameters, rare-event alternatives, and models with jumps may converge to Poisson or compound-Poisson experiments rather than Gaussian shifts.</p>
+<p>The Laplace functional characterizes the law and plays the role of a moment-generating function for point processes.</p>
+
+<h3>Poisson likelihood ratios</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(N\sim\operatorname{PRM}(\mu_0)\), and suppose
+  \(\mu_\theta\ll\mu_0\) with density \(\lambda_\theta>0\) and
+  \(\int|\lambda_\theta-1|\,\mathrm{d}\mu_0<\infty\). Then
+  \[
+  \log\frac{\mathrm{d}P_{\mu_\theta}}
+                {\mathrm{d}P_{\mu_0}}(N)
+  =
+  \int\log\lambda_\theta\,\mathrm{d}N
+  -\int(\lambda_\theta-1)\,\mathrm{d}\mu_0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a simple function
+  \(\lambda_\theta=\sum_jc_j1_{A_j}\) on disjoint sets, the counts are independent Poisson variables. The ratio of their mass functions is
+  \[
+  \prod_j
+  c_j^{N(A_j)}
+  e^{-\mu_0(A_j)(c_j-1)},
+  \]
+  whose logarithm is the displayed integral. Approximate a general density by simple functions and use the Poisson Laplace functional to pass to the limit. \(\square\)</p>
+</div>
+
+<h3>Hellinger geometry of Poisson laws</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For Poisson random measures with mean measures \(\mu\) and \(\nu\),
+  \[
+  \rho(P_\mu,P_\nu)
+  =
+  \exp\left\{
+  -\frac12\int
+  \left(
+    \sqrt{\frac{\mathrm{d}\mu}{\mathrm{d}\lambda}}
+    -
+    \sqrt{\frac{\mathrm{d}\nu}{\mathrm{d}\lambda}}
+  \right)^2
+  \mathrm{d}\lambda
+  \right\},
+  \]
+  where \(\lambda\) dominates \(\mu,\nu\).</p>
+</div>
+
+<p>Thus the square roots of intensity measures determine the Hellinger geometry. Independent superposition adds intensities, while restrictions to disjoint regions factor the experiment.</p>
+
+<h3>Rare Bernoulli events</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (law of small numbers).</span> Let
+  \(X_{n1},\ldots,X_{nn}\) be independent Bernoulli variables with probabilities \(p_{ni}\), and suppose
+  \[
+  \max_i p_{ni}\to0,
+  \qquad
+  \sum_{i=1}^np_{ni}\to\lambda.
+  \]
+  Then
+  \[
+  \sum_{i=1}^nX_{ni}\rightsquigarrow\operatorname{Poisson}(\lambda).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The probability-generating function is
+  \[
+  \prod_i\{1+p_{ni}(z-1)\}.
+  \]
+  Its logarithm equals
+  \[
+  (z-1)\sum_ip_{ni}
+  +O\!\left(\sum_ip_{ni}^2\right).
+  \]
+  Since \(\sum_ip_{ni}^2\leq(\max_ip_{ni})\sum_ip_{ni}\to0\), the limit is
+  \(\exp\{\lambda(z-1)\}\), the Poisson generating function. \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (boundary experiment).</span> If
+  \(X_i\sim\operatorname{Bernoulli}(\theta/n)\), \(\theta\geq0\), then
+  \[
+  N_n=\sum_iX_i\rightsquigarrow\operatorname{Poisson}(\theta).
+  \]
+  The statistic \(N_n\) is sufficient, so the full binary experiment converges to a Poisson count experiment. The parameter rate is \(n^{-1}\), not \(n^{-1/2}\), and the limit is discrete even though the sample size diverges.</p>
+</div>
+
+<h3>Marked and compound-Poisson limits</h3>
+
+<p>If each rare event carries a mark \(Y\) with law \(F\), the point process converges to a marked Poisson process. Sums of marks have a compound-Poisson law:
+\[
+S=\sum_{j=1}^NY_j,
+\qquad
+N\sim\operatorname{Poisson}(\lambda).
+\]
+Its characteristic function is
+\[
+Ee^{itS}
+=\exp\left\{
+\lambda\int(e^{ity}-1)F(\mathrm{d}y)
+\right\}.
+\]
+Change-point likelihoods and threshold estimators often have compound-Poisson local limits because crossing a local boundary changes only finitely many observations asymptotically.</p>
+
+<h3>Infinitely divisible experiments</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A distribution is infinitely divisible if, for every \(m\), it is the law of a sum of \(m\) i.i.d. variables. Its characteristic exponent has Lévy–Khintchine form
+  \[
+  \log Ee^{itX}
+  =
+  itb-\frac12\sigma^2t^2
+  +\int_{\mathbb R}
+  \left(e^{itx}-1-itx1_{\{|x|\leq1\}}\right)\nu(\mathrm{d}x),
+  \]
+  where \(\nu\) is a Lévy measure.</p>
+</div>
+
+<p>The Gaussian component represents accumulated small fluctuations; the Lévy measure represents jumps. Limit experiments with independently scattered infinitely divisible likelihood processes extend both Gaussian and Poisson cases.</p>
+
+<h3>Decision transfer from non-Gaussian limits</h3>
+
+<p>Once likelihood-ratio vectors converge to a Poisson or infinitely divisible experiment, the same finite-prior argument used in local asymptotic minimax theory transfers its Bayes risks as lower bounds. The optimal procedure may be discrete, asymmetric, or threshold based; forcing a quadratic Gaussian approximation would give the wrong local risk benchmark.</p>

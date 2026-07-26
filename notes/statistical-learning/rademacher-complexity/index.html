@@ -85,3 +85,148 @@ L\,\mathbb E_\varepsilon\sup_{g\in\mathcal G}\frac1n\sum_i\varepsilon_i g(Z_i).
 \]
 Divide by \(n\) and take the conditional expectation over the signs.</p>
     </div>
+
+<h3>A data-dependent generalization theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(0\le g\le1\) for every \(g\in\mathcal G\). With probability at least \(1-\delta\), simultaneously for all \(g\in\mathcal G\),
+  \[
+  Pg\le P_ng+2\widehat{\mathfrak R}_n(\mathcal G)
+  +3\sqrt{\frac{\log(2/\delta)}{2n}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define
+  \(\Phi(Z_1,\ldots,Z_n)=\sup_g(Pg-P_ng)\). Replacing one observation changes
+  \(\Phi\) by at most \(1/n\), so bounded differences gives
+  \[
+  \Phi\le\mathbb E\Phi+\sqrt{\frac{\log(2/\delta)}{2n}}.
+  \]
+  Symmetrization bounds \(\mathbb E\Phi\) by
+  \(2\mathbb E\widehat{\mathfrak R}_n(\mathcal G)\). The empirical complexity itself changes by at most \(1/n\) under one replacement, so a second bounded-differences argument gives
+  \[
+  \mathbb E\widehat{\mathfrak R}_n(\mathcal G)
+  \le\widehat{\mathfrak R}_n(\mathcal G)
+  \sqrt{\frac{\log(2/\delta)}{2n}}.
+  \]
+  Combine the events by a union bound and absorb constants.</p>
+</div>
+
+<h3>Massart's finite-class lemma</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma.</span> Let
+  \(A\subset\mathbb R^n\) be finite and \(r=\max_{a\in A}\|a\|_2\). Then
+  \[
+  \mathbb E_\varepsilon\max_{a\in A}\langle\varepsilon,a\rangle
+  \le r\sqrt{2\log|A|}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(\lambda>0\),
+  \[
+  e^{\lambda\mathbb E\max_a\langle\varepsilon,a\rangle}
+  \le \mathbb E e^{\lambda\max_a\langle\varepsilon,a\rangle}
+  \le\sum_{a\in A}\mathbb Ee^{\lambda\langle\varepsilon,a\rangle}
+  \le |A|e^{\lambda^2r^2/2}.
+  \]
+  Taking logarithms gives
+  \(\mathbb E\max_a\langle\varepsilon,a\rangle
+  \le\log|A|/\lambda+\lambda r^2/2\).
+  Optimize at \(\lambda=\sqrt{2\log|A|}/r\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If
+  \(|g(Z_i)|\le B\) for every \(g\in\mathcal G\), and the sample realizes only
+  \(M\) distinct evaluation vectors \((g(Z_1),\ldots,g(Z_n))\), then
+  \[
+  \widehat{\mathfrak R}_n(\mathcal G)
+  \le B\sqrt{\frac{2\log M}{n}}.
+  \]</p>
+</div>
+
+<h3>Euclidean and sparse linear prediction</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If
+  \(\|w\|_2\le B\) and \(\|Z_i\|_2\le R\), then
+  \[
+  \widehat{\mathfrak R}_n
+  \le\frac{B}{n}\left(\sum_{i=1}^n\|Z_i\|_2^2\right)^{1/2}
+  \le\frac{BR}{\sqrt n}.
+  \]
+  If instead \(\|w\|_1\le B\) and \(\|Z_i\|_\infty\le R\), then
+  \[
+  \widehat{\mathfrak R}_n
+  \lesssim BR\sqrt{\frac{\log(2p)}{n}}.
+  \]
+  Thus an \(\ell^1\) constraint replaces ambient dimension \(p\) by \(\log p\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In the Euclidean case, Jensen and sign orthogonality give
+  \[
+  \mathbb E_\varepsilon\Big\|\sum_i\varepsilon_iZ_i\Big\|_2
+  \le\left(\sum_i\|Z_i\|_2^2\right)^{1/2}.
+  \]
+  For the \(\ell^1\) class, the dual norm is \(\ell^\infty\). Apply the sub-Gaussian maximal inequality to the \(2p\) signed coordinate sums.</p>
+</div>
+
+<h3>Loss contraction and risk bounds</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Suppose
+  \(u\mapsto\ell(u,y)\) is \(L\)-Lipschitz for every \(y\), and let
+  \(\ell\circ\mathcal F=\{(x,y)\mapsto\ell(f(x),y):f\in\mathcal F\}\).
+  Then
+  \[
+  \widehat{\mathfrak R}_n(\ell\circ\mathcal F)
+  \le L\widehat{\mathfrak R}_n(\mathcal F),
+  \]
+  after subtracting the irrelevant constants \(\ell(0,Y_i)\). Consequently an ERM over a bounded loss class has excess risk of order
+  \(\mathfrak R_n(\mathcal F)+\sqrt{\log(1/\delta)/n}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Constants disappear after multiplication by centered Rademacher signs in expectation. Apply the contraction inequality to each coordinate map
+  \(u\mapsto\ell(u,Y_i)-\ell(0,Y_i)\), then combine with the data-dependent generalization theorem and the basic ERM inequality.</p>
+</div>
+
+<h3>Local Rademacher complexity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For an excess-loss class
+  \(\mathcal G\) and \(r>0\), define
+  \[
+  \mathfrak R_n(r)=
+  \mathbb E\sup_{\substack{g\in\mathcal G\\Pg^2\le r}}
+  \frac1n\sum_{i=1}^n\varepsilon_i g(Z_i).
+  \]
+  A sub-root function \(\psi\) is nonnegative, nondecreasing, and has
+  \(\psi(r)/\sqrt r\) nonincreasing. It has a unique positive fixed point
+  \(r_*\) satisfying \(\psi(r_*)=r_*\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Assume \(0\le g\le1\),
+  \(Pg^2\le B\,Pg\), and \(\mathfrak R_n(r)\le\psi(r)\) for a sub-root
+  \(\psi\). Then an ERM satisfies
+  \[
+  Pg_{\widehat f}\lesssim r_*+
+  \frac{B\log(1/\delta)}{n}
+  \]
+  with probability at least \(1-\delta\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The Bernstein condition converts an excess-risk radius into an \(L^2(P)\) radius. On dyadic shells, symmetrization and concentration bound empirical fluctuations by \(\psi(B\,2^jr_*)\), which is at most a constant fraction of \(2^jr_*\) by the sub-root property. Peeling and a union bound show that no function with excess risk substantially above the fixed point can beat \(f^*\) empirically.</p>
+</div>
+
+<h3>Gaussian complexity</h3>
+
+<p>Replacing Rademacher signs by iid standard Gaussians defines Gaussian complexity. Comparison inequalities show that the two complexities agree up to universal constants for symmetric classes. Gaussian processes are often algebraically easier, while signs give sharper bounded-difference arguments and direct data-dependent estimates.</p>
+
+<p>Metric entropy provides a multiscale upper bound for these complexities; that relation is developed on the <a href="{{ '/notes/statistical-learning/covering-numbers-and-entropy/' | relative_url }}">covering numbers and entropy</a> page.</p>

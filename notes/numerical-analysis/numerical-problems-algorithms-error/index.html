@@ -33,3 +33,107 @@ note_next_url: "/notes/numerical-analysis/floating-point-arithmetic/"
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> A typical numerical proof compares three objects: the exact continuum solution, the exact discrete solution, and the computed discrete solution. The first gap is controlled by approximation theory; the second by stability of the discrete algorithm.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Problems, data, and algorithms</h3>
+
+<p>A numerical problem is a map \(F:\mathcal X\to\mathcal Y\) between normed
+data and solution spaces. An algorithm implemented in finite arithmetic
+produces \(\widehat y=A(x)\), which may differ from \(F(x)\) through
+discretization, iteration truncation, measurement error, and rounding. These
+sources should be separated before an error bound is interpreted.</p>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The absolute and relative
+forward errors are
+\[
+\|\widehat y-F(x)\|,
+\qquad
+\frac{\|\widehat y-F(x)\|}{\|F(x)\|},
+\]
+when \(F(x)\ne0\). A backward error is
+\[
+\eta(x,\widehat y)
+=\inf\{\|\delta x\|:\widehat y=F(x+\delta x)\},
+\]
+with a relative version obtained by dividing by \(\|x\|\).</p>
+</div>
+
+<p>Forward error asks whether the answer is close. Backward error asks whether
+the computed answer is exact for nearby data. The latter is often easier to
+prove because it follows the algebra performed by the algorithm.</p>
+
+<h3>Well-posedness and conditioning</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A problem is well posed at
+\(x\) if a solution exists, is locally unique, and depends continuously on the
+data. If \(F\) is Fréchet differentiable, its absolute local condition number is
+\[
+\kappa_{\mathrm{abs}}(x)=\|\mathrm DF(x)\|,
+\]
+and its normwise relative condition number is
+\[
+\kappa_{\mathrm{rel}}(x)
+=\frac{\|x\|}{\|F(x)\|}\|\mathrm DF(x)\|.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (first-order error principle).</span>
+If \(\widehat y=F(x+\delta x)\), \(F\) is differentiable at \(x\), and
+\(\delta x\to0\), then
+\[
+\frac{\|\widehat y-F(x)\|}{\|F(x)\|}
+\le
+\kappa_{\mathrm{rel}}(x)
+\frac{\|\delta x\|}{\|x\|}
++o\!\left(\frac{\|\delta x\|}{\|x\|}\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Fréchet differentiability gives
+\[
+F(x+\delta x)-F(x)
+=\mathrm DF(x)[\delta x]+o(\|\delta x\|).
+\]
+Take norms and insert
+\(\|\delta x\|=(\|\delta x\|/\|x\|)\|x\|\).</p>
+</div>
+
+<h3>Residuals and error estimators</h3>
+
+<p>If a problem is written \(G(y)=0\), the residual is \(r=G(\widehat y)\).
+A small residual implies a small solution error only when the inverse problem
+is conditioned. If \(\mathrm DG(y^*)\) is invertible,
+\[
+\widehat y-y^*
+=\mathrm DG(y^*)^{-1}r+o(\|r\|).
+\]
+For \(Ax=b\), \(r=b-A\widehat x\) and
+\[
+\frac{\|\widehat x-x\|}{\|x\|}
+\le\kappa(A)\frac{\|r\|}{\|b\|}
+\]
+under compatible norms. A tiny residual can coexist with a large error when
+\(A\) is ill conditioned.</p>
+
+<h3>A priori and a posteriori bounds</h3>
+
+<p>An a priori estimate depends on regularity and algorithm parameters before
+computation, such as
+\(\|u-u_h\|\le Ch^p\|u\|_{H^{p+1}}\). An a posteriori estimate uses the
+computed object, typically residuals and local indicators. Adaptive methods
+need a posteriori estimates that are both <em>reliable</em>
+\(\|e\|\le C_{\mathrm rel}\eta\) and <em>efficient</em>
+\(\eta\le C_{\mathrm eff}(\|e\|+\text{oscillation})\).</p>
+
+<h3>Cost and accuracy</h3>
+
+<p>Complexity should state an accuracy target and a computational model. Dense
+Gaussian elimination costs \(O(n^3)\) operations but only \(O(n^2)\) storage;
+an iterative method may cost \(O(\operatorname{nnz}(A))\) per step but require
+a condition-dependent number of steps. Bit complexity also counts precision,
+which may need to grow as conditioning worsens. Operation counts without
+stability and accuracy are incomplete comparisons.</p>

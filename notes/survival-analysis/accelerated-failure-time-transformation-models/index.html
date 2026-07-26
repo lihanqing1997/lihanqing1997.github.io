@@ -1,0 +1,231 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "10. Accelerated failure-time and transformation models"
+breadcrumb_child_label_fr: "10. Modèles à temps de défaillance accéléré et modèles de transformation"
+breadcrumb_child_label_zh: "10. 加速失效时间模型与变换模型"
+note_back_url: "/notes/survival-analysis/"
+note_prev_url: "/notes/survival-analysis/model-diagnostics-and-alternatives/"
+note_next_url: "/notes/survival-analysis/interval-censoring-and-truncation/"
+---
+
+<p>Proportional hazards is one way to compare event-time distributions, not the definition of survival regression. Accelerated failure-time models act directly on the time scale, while transformation models provide a common framework containing proportional hazards and proportional odds.</p>
+
+<h3>Accelerated failure-time structure</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> An accelerated failure-time (AFT) model is
+\[
+\log T=\beta^\top Z+\varepsilon,
+\qquad \varepsilon\perp Z,
+\]
+where the error distribution \(F_\varepsilon\) may be parametric or unspecified. Equivalently,
+\[
+T=e^{\beta^\top Z}T_0,
+\qquad T_0=e^\varepsilon.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(S_0\), \(f_0\), and \(\lambda_0\) are the survival, density, and hazard of \(T_0\), then
+\[
+S(t\mid z)=S_0(te^{-\beta^\top z}),
+\]
+\[
+f(t\mid z)=e^{-\beta^\top z}
+f_0(te^{-\beta^\top z}),
+\]
+\[
+\lambda(t\mid z)=e^{-\beta^\top z}
+\lambda_0(te^{-\beta^\top z}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Since
+\(T=e^{\beta^\top z}T_0\),
+\[
+P(T>t\mid z)=P(T_0>te^{-\beta^\top z}).
+\]
+Differentiate to obtain the density, then divide density by survival for the hazard.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (acceleration factor).</span> For a binary treatment \(A\),
+\[
+\frac{Q_{T\mid A=1}(q)}
+{Q_{T\mid A=0}(q)}
+=e^\beta
+\]
+for every quantile \(q\in(0,1)\). If \(e^\beta=1.4\), every conditional survival quantile is stretched by \(40\%\). This interpretation is global on the time scale, unlike a hazard ratio.</p>
+</div>
+
+<h3>Parametric censored likelihood</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+e_i(\beta)=\log X_i-\beta^\top Z_i.
+\]
+If \(\varepsilon\) has density \(f_\varepsilon(\cdot;\eta)\) and survival
+\(S_\varepsilon(\cdot;\eta)\), the event-time log-likelihood under independent right censoring is
+\[
+\ell(\beta,\eta)
+=\sum_i\left[
+\Delta_i\{\log f_\varepsilon(e_i;\eta)-\log X_i\}
++(1-\Delta_i)\log S_\varepsilon(e_i;\eta)
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The transformation
+\(\varepsilon=\log T-\beta^\top Z\) has Jacobian \(1/t\), so
+\[
+f_T(t\mid Z)=\frac1t
+f_\varepsilon(\log t-\beta^\top Z).
+\]
+The event-time survival is
+\(S_\varepsilon(\log t-\beta^\top Z)\). Substitute these into the right-censoring likelihood.</p>
+</div>
+
+<p>Normal, logistic, and extreme-value errors yield lognormal, log-logistic, and Weibull survival models. Parametric extrapolation beyond observed follow-up is possible only because the chosen error tail supplies it.</p>
+
+<h3>Weibull duality</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The Weibull family is both AFT and proportional hazards. If
+\[
+S_0(t)=e^{-t^\alpha},
+\]
+then the AFT model \(T=e^{\gamma^\top Z}T_0\) satisfies
+\[
+S(t\mid Z)
+=\exp\{-t^\alpha e^{-\alpha\gamma^\top Z}\}
+\]
+and therefore is a Cox model with
+\[
+\beta=-\alpha\gamma,\qquad
+\lambda_0(t)=\alpha t^{\alpha-1}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply the AFT survival identity:
+\[
+S(t\mid Z)=S_0(te^{-\gamma^\top Z})
+=\exp\{-(te^{-\gamma^\top Z})^\alpha\}.
+\]
+The cumulative hazard is
+\(t^\alpha e^{-\alpha\gamma^\top Z}\), which factors into a baseline term and \(e^{\beta^\top Z}\) with \(\beta=-\alpha\gamma\).</p>
+</div>
+
+<p>Outside the Weibull family, an AFT model does not generally have proportional hazards. Agreement of Weibull AFT and PH coefficient signs reflects the minus sign in \(\beta=-\alpha\gamma\): a covariate extending survival decreases hazard.</p>
+
+<h3>Rank-based semiparametric estimation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let residuals
+\[
+e_i(\beta)=\log X_i-\beta^\top Z_i.
+\]
+The Gehan estimating function is
+\[
+U_G(\beta)
+=\sum_{i=1}^n\sum_{j=1}^n
+\Delta_i(Z_i-Z_j)
+1\{e_j(\beta)\ge e_i(\beta)\}.
+\]
+It is the subgradient of a convex rank-loss function, up to sign.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (unbiasedness at the AFT parameter).</span> Under independent censoring after the required conditioning and the AFT model,
+\[
+E\{U_G(\beta_0)\}=0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> At \(\beta_0\), uncensored residual event times share the common error law. For each ordered pair \((i,j)\), exchangeability makes the expected contribution
+\[
+\Delta_i(Z_i-Z_j)1\{e_j\ge e_i\}
+\]
+cancel with its reversed-pair counterpart after accounting for independent censoring through the observed risk indicator. A counting-process derivation writes the rank score as an integral of centered covariates against residual-time martingales, whose expectation is zero.</p>
+</div>
+
+<p>Solving \(U_G(\beta)=0\) gives a root-\(n\) estimator under regularity. Its nonsmooth objective can be handled by linear programming, induced smoothing, or convex optimization. Other weights generate log-rank-type rank estimators with different efficiency across error laws.</p>
+
+<h3>Buckley-James imputation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+Y_i=\log X_i,\qquad e_i(\beta)=Y_i-\beta^\top Z_i.
+\]
+Estimate the residual survival distribution by Kaplan-Meier, and replace a censored log time by
+\[
+\widetilde Y_i(\beta)
+=\beta^\top Z_i+
+E_{\widehat F_\beta}
+\{\varepsilon\mid\varepsilon>e_i(\beta)\}.
+\]
+The Buckley-James estimator solves least-squares normal equations using
+\(\Delta_iY_i+(1-\Delta_i)\widetilde Y_i(\beta)\).</p>
+</div>
+
+<p>This is a self-consistency algorithm: impute conditional residual means under the current coefficient, then refit. It can be unstable near the largest censored residual because the residual tail mean is weakly identified.</p>
+
+<h3>General transformation models</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A semiparametric transformation model has
+\[
+G\{S(t\mid Z)\}=H(t)+\beta^\top Z,
+\]
+where \(G:(0,1)\to\mathbb R\) is known and monotone, while \(H\) is an unknown monotone baseline transformation.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span></p>
+<ul>
+<li>With \(G(s)=\log\{-\log s\}\),
+\[
+\log\{-\log S(t\mid Z)\}
+=\log\Lambda_0(t)+\beta^\top Z,
+\]
+which is proportional hazards.</li>
+<li>With \(G(s)=\log\{(1-s)/s\}\),
+\[
+\operatorname{logit}F(t\mid Z)=H(t)+\beta^\top Z,
+\]
+which is proportional odds.</li>
+</ul>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (proportional odds).</span> In the proportional-odds model,
+\[
+\frac{F(t\mid z_1)/S(t\mid z_1)}
+{F(t\mid z_0)/S(t\mid z_0)}
+=e^{\beta^\top(z_1-z_0)}
+\]
+for every \(t\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Subtract the two transformation equations and exponentiate.</p>
+</div>
+
+<h3>Choosing a regression scale</h3>
+
+<p>PH, AFT, proportional odds, restricted mean, and quantile models encode different invariances:</p>
+<ul>
+<li>PH keeps instantaneous hazard ratios constant;</li>
+<li>AFT keeps ratios of survival quantiles constant;</li>
+<li>proportional odds keeps cumulative event odds ratios constant;</li>
+<li>restricted-mean regression targets
+\(\int_0^\tau S(t\mid Z)\,\mathrm{d}t\);</li>
+<li>quantile regression targets selected conditional event-time quantiles.</li>
+</ul>
+
+<p>The model should follow the scientific contrast and observed shape, not a default software routine. Comparing residual processes, survival-curve crossings, and time-scale interpretations is more informative than choosing solely by one global likelihood value.</p>

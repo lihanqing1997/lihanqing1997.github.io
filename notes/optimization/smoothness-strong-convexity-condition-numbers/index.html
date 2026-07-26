@@ -8,24 +8,146 @@ note_prev_url: "/notes/optimization/convex-functions-subdifferentials/"
 note_next_url: "/notes/optimization/existence-coercivity-error-bounds/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Smoothness, strong convexity, and condition numbers.</p>
+<p>First-order algorithms are governed by two curvature scales. Smoothness
+limits how rapidly the gradient can change; strong convexity prevents the
+objective from becoming too flat. Their ratio is the condition number that
+appears in convergence rates.</p>
 
-    <h3>Smoothness</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A differentiable function is \(L\)-smooth if \(\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|\). Equivalently for twice differentiable \(f\), \(\nabla^2f(x)\preceq LI\).</p>
-    </div>
+<h3>Lipschitz gradients and quadratic upper models</h3>
 
-    <h3>Strong convexity</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A function is \(\mu\)-strongly convex if \(f(y)\ge f(x)+\langle g,y-x\rangle+\frac{\mu}{2}\|y-x\|^2\) for \(g\in\partial f(x)\). For smooth \(f\), this is \(\nabla^2f(x)\succeq\mu I\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A differentiable
+    function \(f:C\to\mathbb R\) on a convex set is \(L\)-smooth if
+    \[
+    \|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|
+    \qquad(x,y\in C).
+    \]</p>
+</div>
 
-    <h3>Descent lemma</h3>
-    <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> If \(f\) is \(L\)-smooth, then \(f(y)\le f(x)+\langle\nabla f(x),y-x\rangle+\frac L2\|y-x\|^2\). Taking \(y=x-L^{-1}\nabla f(x)\) gives guaranteed descent.</p>
-    </div>
+<div class="math-statement lemma">
+    <p><span class="statement-title">Descent lemma.</span> If \(f\) is
+    \(L\)-smooth on a convex set containing the segment \([x,y]\), then
+    \[
+    f(y)\le f(x)+\langle\nabla f(x),y-x\rangle
+    +\frac L2\|y-x\|^2.
+    \]</p>
+</div>
 
-    <h3>Condition number</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The ratio \(\kappa=L/\mu\) governs many convergence rates. Large \(\kappa\) means level sets are elongated, so first-order methods zigzag unless geometry or preconditioning is improved.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Put \(v=y-x\). The
+    fundamental theorem of calculus along the segment gives
+    \[
+    f(y)-f(x)
+    =\int_0^1\langle\nabla f(x+tv),v\rangle\,\mathrm{d}t.
+    \]
+    Subtract \(\langle\nabla f(x),v\rangle\), apply Cauchy-Schwarz and
+    \(L\)-smoothness, and integrate:
+    \[
+    \int_0^1
+    \|\nabla f(x+tv)-\nabla f(x)\|\,\|v\|\,\mathrm{d}t
+    \le\int_0^1Lt\|v\|^2\,\mathrm{d}t
+    =\frac L2\|v\|^2.
+    \]</p>
+</div>
+
+<p>Minimizing this quadratic upper model over \(y\) gives
+\(y=x-L^{-1}\nabla f(x)\) and
+\[
+f\!\left(x-\frac1L\nabla f(x)\right)
+\le f(x)-\frac1{2L}\|\nabla f(x)\|^2.
+\]
+This one inequality supplies the basic descent estimate for gradient methods.</p>
+
+<h3>Strong convexity and quadratic lower models</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A proper convex
+    function \(f\) is \(\mu\)-strongly convex, \(\mu>0\), if
+    \(f-\frac\mu2\|\cdot\|^2\) is convex. Equivalently, for
+    \(g\in\partial f(x)\),
+    \[
+    f(y)\ge f(x)+\langle g,y-x\rangle
+    +\frac\mu2\|y-x\|^2.
+    \]</p>
+</div>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Consequences of strong convexity.</span>
+    A proper lower-semicontinuous \(\mu\)-strongly convex function has at most
+    one minimizer. If \(x^\star\) is its minimizer, then
+    \[
+    f(x)-f(x^\star)\ge\frac\mu2\|x-x^\star\|^2.
+    \]
+    If \(f\) is differentiable, then
+    \[
+    \langle\nabla f(x)-\nabla f(y),x-y\rangle
+    \ge\mu\|x-y\|^2.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> At a minimizer,
+    \(0\in\partial f(x^\star)\), so the defining lower model gives the
+    quadratic-growth inequality. Two distinct minimizers would make its right
+    side strictly positive, a contradiction. In the differentiable case,
+    write the strong-convexity inequality once with \((x,y)\), once with
+    \((y,x)\), and add them; the function values cancel and leave the strong
+    monotonicity inequality.</p>
+</div>
+
+<h3>Hessian bounds and the quadratic model</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Twice-differentiable characterization.</span>
+    Let \(C\) be open and convex and \(f\in C^2(C)\). Then \(f\) is convex,
+    \(\mu\)-strongly convex, or \(L\)-smooth precisely when, respectively,
+    \[
+    \nabla^2f(x)\succeq0,\qquad
+    \nabla^2f(x)\succeq\mu I,\qquad
+    \nabla^2f(x)\preceq LI
+    \quad(x\in C).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Restrict \(f\) to each line
+    \(t\mapsto x+tv\). Its second derivative is
+    \(v^\top\nabla^2f(x+tv)v\). The one-dimensional second-derivative
+    criterion gives the lower bounds. Integrating
+    \[
+    \nabla f(y)-\nabla f(x)
+    =\int_0^1\nabla^2f(x+t(y-x))(y-x)\,\mathrm{d}t
+    \]
+    yields \(L\)-Lipschitz continuity when the operator norm of the Hessian is
+    at most \(L\); the converse follows by taking directional difference
+    quotients.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Quadratic objectives.</span> For
+    \(f(x)=\frac12x^\top Qx-b^\top x\) with symmetric \(Q\succ0\), the
+    smoothness and strong-convexity constants are
+    \(L=\lambda_{\max}(Q)\) and \(\mu=\lambda_{\min}(Q)\). The minimizer is
+    \(x^\star=Q^{-1}b\), and the suboptimality is exactly
+    \[
+    f(x)-f(x^\star)
+    =\frac12(x-x^\star)^\top Q(x-x^\star).
+    \]</p>
+</div>
+
+<h3>Condition number and a change of geometry</h3>
+
+<p>The ratio
+\[
+\kappa=\frac L\mu
+\]
+is the objective condition number. For a quadratic it equals the spectral
+condition number of \(Q\). Large \(\kappa\) means that equal-value contours are
+elongated: curvature is high in some eigendirections and low in others.
+Gradient descent must use a step small enough for the highest curvature while
+making slow progress along the lowest.</p>
+
+<p>An invertible change of variables \(x=Sz\) replaces the Hessian by
+\(S^\top Q S\). Preconditioning, Newton's method, natural gradients, and mirror
+descent can all be read as attempts to choose a geometry in which the effective
+condition number is smaller.</p>

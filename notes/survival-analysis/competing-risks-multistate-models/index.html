@@ -1,0 +1,283 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "12. Competing risks and multistate models"
+breadcrumb_child_label_fr: "12. Risques concurrents et modèles multi-états"
+breadcrumb_child_label_zh: "12. 竞争风险与多状态模型"
+note_back_url: "/notes/survival-analysis/"
+note_prev_url: "/notes/survival-analysis/interval-censoring-and-truncation/"
+note_next_url: "/notes/survival-analysis/recurrent-event-models/"
+---
+
+<p>When more than one event type can occur first, the observable outcome is a pair \((T,J)\): first-event time and cause. A competing event is not ordinary censoring, because it changes the probability that the event of interest can ever be observed. Multistate models generalize this idea from one first transition to an entire transition history.</p>
+
+<h3>Cause-specific hazards and cumulative incidence</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\(J\in\{1,\ldots,K\}\) denote the cause of failure. The cause-specific hazard is
+\[
+\lambda_k(t)
+=\lim_{h\downarrow0}
+\frac{P(t\le T<t+h,J=k\mid T\ge t)}{h}.
+\]
+Define
+\[
+\Lambda_k(t)=\int_0^t\lambda_k(u)\,\mathrm{d}u,
+\qquad
+\lambda_\cdot(t)=\sum_{k=1}^K\lambda_k(t),
+\]
+and the cumulative incidence function
+\[
+F_k(t)=P(T\le t,J=k).
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> In the continuous case,
+\[
+S(t)=P(T>t)
+=\exp\left\{-\sum_{k=1}^K\Lambda_k(t)\right\},
+\]
+and
+\[
+F_k(t)
+=\int_0^tS(u-)\lambda_k(u)\,\mathrm{d}u
+=\int_0^tS(u-)\,\mathrm{d}\Lambda_k(u).
+\]
+Moreover,
+\[
+S(t)+\sum_{k=1}^KF_k(t)=1.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The hazard of any first event is the sum of mutually exclusive cause-specific hazards, so
+\(\mathrm{d}S(t)=-S(t)\sum_k\lambda_k(t)\,\mathrm{d}t\), which gives the survival formula. The probability of being event-free just before \(u\) and then failing from cause \(k\) is
+\(S(u-)\lambda_k(u)\,\mathrm{d}u\). Integration gives \(F_k\). Summing the differential identity over causes yields total probability.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (constant hazards).</span> With two constant cause-specific hazards \(\lambda_1,\lambda_2\),
+\[
+F_1(t)
+=\frac{\lambda_1}{\lambda_1+\lambda_2}
+\{1-e^{-(\lambda_1+\lambda_2)t}\}.
+\]
+Increasing \(\lambda_2\) lowers \(F_1(t)\) even when \(\lambda_1\) is unchanged, because more individuals experience cause 2 before cause 1. A cause-specific hazard and a cumulative incidence answer different questions.</p>
+</div>
+
+<h3>Why competing events are not censoring</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Treating causes \(j\ne k\) as independent right censoring and applying Kaplan-Meier estimates
+\[
+1-\exp\{-\Lambda_k(t)\}
+\]
+in the continuous case, not the cumulative incidence \(F_k(t)\). The two agree only when competing hazards vanish before \(t\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Cause-specific Kaplan-Meier removes competing events from the risk set as if their future cause-\(k\) event times remained observable, so its survival decrement uses only \(\lambda_k\). Its complement is
+\(1-e^{-\Lambda_k(t)}\). The actual cumulative incidence weights
+\(\lambda_k(u)\) by survival from every cause,
+\[
+F_k(t)=\int_0^t
+e^{-\sum_j\Lambda_j(u)}
+\,\mathrm{d}\Lambda_k(u),
+\]
+which is smaller whenever another cumulative hazard is positive.</p>
+</div>
+
+<h3>Nonparametric estimation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+N_{ik}(t)=1\{X_i\le t,\Delta_i=1,J_i=k\},
+\qquad N_k=\sum_iN_{ik}.
+\]
+The cause-specific Nelson-Aalen estimators are
+\[
+\widehat\Lambda_k(t)
+=\int_0^t\frac{\mathrm{d}N_k(u)}{Y(u)}.
+\]
+The overall Kaplan-Meier survival is
+\[
+\widehat S(t)
+=\prod_{u\le t}
+\left\{1-\frac{\mathrm{d}N_\cdot(u)}{Y(u)}\right\}.
+\]
+The Aalen-Johansen cumulative-incidence estimator is
+\[
+\widehat F_k(t)
+=\int_0^t\widehat S(u-)\,
+\frac{\mathrm{d}N_k(u)}{Y(u)}.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under independent censoring and positive limiting risk,
+\[
+\sup_{t\le\tau}
+|\widehat F_k(t)-F_k(t)|
+\xrightarrow{P}0.
+\]
+Furthermore,
+\(\sqrt n(\widehat F_k-F_k)\) has an asymptotically linear martingale representation and converges to a mean-zero Gaussian process.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Each
+\(\widehat\Lambda_k\) is uniformly consistent by its Nelson-Aalen martingale representation. The map
+\[
+(\Lambda_1,\ldots,\Lambda_K)
+\longmapsto
+\int_0^\cdot
+\prod_{(0,u)}\left\{1-\sum_j\mathrm{d}\Lambda_j(v)\right\}
+\mathrm{d}\Lambda_k(u)
+\]
+is continuous at cumulative hazards with controlled jumps, proving consistency. Its Hadamard derivative applied to the joint Nelson-Aalen Gaussian limit gives asymptotic linearity and weak convergence.</p>
+</div>
+
+<h3>Cause-specific regression and subdistribution hazards</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A cause-specific Cox model is
+\[
+\lambda_k(t\mid Z)
+=\lambda_{0k}(t)e^{\beta_k^\top Z}.
+\]
+It models the instantaneous cause-\(k\) rate among subjects still free of every event.</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The subdistribution hazard for cause \(k\) is
+\[
+\widetilde\lambda_k(t)
+=\frac{\mathrm{d}F_k(t)}
+{1-F_k(t-)}.
+\]
+A Fine-Gray model assumes
+\[
+\widetilde\lambda_k(t\mid Z)
+=\widetilde\lambda_{0k}(t)e^{\gamma_k^\top Z}.
+\]
+Its risk set formally retains individuals who have experienced a competing event, with suitable weighting when censoring is present.</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Interpretation.</span> \(\beta_k\) describes etiologic association with the cause-specific rate among event-free subjects. \(\gamma_k\) describes a covariate effect on a transformed cumulative-incidence process. Neither coefficient determines the other, because \(F_k\) depends on all cause-specific hazards. For prediction, directly modeling or combining all cause-specific hazards often gives the clearest coherent probabilities.</p>
+</div>
+
+<h3>Latent failure times are not identified</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If one imagines latent cause-specific times
+\(T_1^\star,\ldots,T_K^\star\) with
+\[
+T=\min_kT_k^\star,\qquad
+J=\arg\min_kT_k^\star,
+\]
+the observed law of \((T,J)\) does not identify their joint distribution without additional assumptions.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The observed subdensity for cause \(k\) is
+\[
+P(T\in\mathrm{d}t,J=k)
+=P(T_k^\star\in\mathrm{d}t,\ T_j^\star>t\ \forall j\ne k).
+\]
+This constrains the joint law only on regions where one component is the minimum. Dependence away from those regions can be altered while preserving every minimum-and-cause probability. Hence many joint latent-time laws induce the same observable distribution.</p>
+</div>
+
+<h3>Finite-state multistate processes</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let \(X(t)\) take values in
+\(\{1,\ldots,m\}\). For \(h\ne j\), define transition counting and risk processes
+\[
+N_{ihj}(t)
+=\#\{u\le t:X_i(u-)=h,X_i(u)=j\},
+\]
+\[
+Y_{ih}(t)=1\{X_i(t-)=h\}.
+\]
+A Markov transition intensity is
+\[
+\lambda_{hj}(t)
+=\lim_{\Delta\downarrow0}
+\frac{P\{X(t+\Delta)=j\mid X(t)=h\}}{\Delta}.
+\]
+Set diagonal entries
+\(\lambda_{hh}(t)=-\sum_{j\ne h}\lambda_{hj}(t)\).</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (product-integral transition law).</span> Let
+\(A(t)\) be the matrix cumulative intensity. The transition matrix from \(s\) to \(t\) is
+\[
+P(s,t)
+=\prod_{(s,t]}\{I+\mathrm{d}A(u)\},
+\]
+the unique solution of
+\[
+P(s,t)=I+\int_s^tP(s,u-)\,\mathrm{d}A(u).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Over a short interval,
+\[
+P(u,u+\mathrm{d}u)=I+\mathrm{d}A(u)+o(\mathrm{d}u).
+\]
+Chapman-Kolmogorov multiplies these conditional transition matrices over a partition. Taking the mesh to zero produces the product integral and its Volterra equation. Standard iteration proves uniqueness.</p>
+</div>
+
+<h3>Aalen-Johansen transition estimator</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Estimate transition cumulative hazards by
+\[
+\mathrm{d}\widehat A_{hj}(t)
+=\frac{\mathrm{d}N_{hj}(t)}{Y_h(t)}
+\quad(h\ne j),
+\qquad
+\mathrm{d}\widehat A_{hh}(t)
+=-\sum_{j\ne h}\mathrm{d}\widehat A_{hj}(t).
+\]
+Then
+\[
+\widehat P(s,t)
+=\prod_{(s,t]}\{I+\mathrm{d}\widehat A(u)\}.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under independent censoring, a Markov transition structure, and positive state-specific risks,
+\[
+\sup_{s\le t\le\tau}
+\|\widehat P(s,t)-P(s,t)\|
+\xrightarrow{P}0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Every off-diagonal Nelson-Aalen estimator converges uniformly by a state-specific martingale argument. The diagonal follows by row-sum constraints. The product-integral map is locally Lipschitz in total variation on bounded cumulative-intensity sets, so uniform convergence of \(\widehat A\) implies uniform convergence of \(\widehat P\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (illness-death model).</span> States are healthy \(0\), ill \(1\), and dead \(2\), with transitions
+\[
+0\to1,\qquad0\to2,\qquad1\to2.
+\]
+The probability of being ill at \(t\) after starting healthy is
+\[
+P_{01}(0,t)
+=\int_0^t
+P_{00}(0,u-)\,\mathrm{d}A_{01}(u)
+P_{11}(u,t).
+\]
+This integrates entry into illness at \(u\), survival healthy until \(u\), and survival in the illness state from \(u\) to \(t\).</p>
+</div>
+
+<p>If future transition risk depends on time since entry into the current state rather than only calendar time and current state, the process is semi-Markov. One must then augment the state or model clock-reset hazards; applying Markov Aalen-Johansen without this distinction changes the estimand.</p>

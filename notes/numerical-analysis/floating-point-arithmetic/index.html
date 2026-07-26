@@ -34,3 +34,107 @@ note_next_url: "/notes/numerical-analysis/conditioning-and-stability/"
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The standard rounding model can be rewritten as an exact operation on slightly perturbed inputs. This observation is the seed of backward error analysis: a computed answer is accepted when it solves a nearby problem and the nearby problem is statistically or physically indistinguishable from the original one.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>The standard model</h3>
+
+<p>For normalized binary floating point with precision \(p\), unit roundoff is
+\(u=2^{-p}\) under rounding to nearest. Away from underflow and overflow,
+\[
+\operatorname{fl}(x)=x(1+\delta),\qquad|\delta|\le u,
+\]
+and for \(\circ\in\{+,-,\times,/\}\),
+\[
+\operatorname{fl}(x\circ y)=(x\circ y)(1+\delta),
+\qquad|\delta|\le u.
+\]
+The relative model for addition is valid for the rounded exact result, even
+though cancellation can make that exact result small relative to the operands.</p>
+
+<h3>Products of rounding factors</h3>
+
+<div class="math-statement lemma">
+<p><span class="statement-title">Lemma.</span> If
+\(|\delta_i|\le u\), \(nu<1\), then
+\[
+\prod_{i=1}^n(1+\delta_i)^{\rho_i}=1+\theta_n,
+\qquad
+|\theta_n|\le\gamma_n:=\frac{nu}{1-nu},
+\]
+for \(\rho_i\in\{-1,1\}\), after harmless adjustment of individual
+\(\delta_i\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For positive factors,
+\[
+\prod_i(1+|\delta_i|)
+\le(1+u)^n\le\frac1{1-nu},
+\]
+using the binomial series comparison. The lower deviation is bounded similarly
+through inverse factors. Combining gives the standard \(\gamma_n\) envelope.</p>
+</div>
+
+<h3>Sequential summation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Naive left-to-right summation
+of \(x_1,\ldots,x_n\) produces
+\[
+\widehat s=\sum_{i=1}^nx_i(1+\theta_{n-i+1}),
+\qquad
+|\theta_k|\le\gamma_k.
+\]
+Hence
+\[
+|\widehat s-\sum_i x_i|
+\le\gamma_n\sum_i|x_i|.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Unroll each rounded addition.
+Each input is multiplied by the rounding factors from its insertion through the
+last addition. Apply the product lemma and the triangle inequality.</p>
+</div>
+
+<p>The relative error bound is
+\[
+\frac{|\widehat s-s|}{|s|}
+\le\gamma_n\frac{\sum_i|x_i|}{|\sum_i x_i|}.
+\]
+The second factor is the condition number of summation and becomes large under
+cancellation. No summation algorithm can recover digits destroyed by
+ill-conditioned data, though pairwise or compensated summation reduces
+algorithmic error.</p>
+
+<h3>Pairwise and compensated summation</h3>
+
+<p>A balanced pairwise tree has depth \(\lceil\log_2n\rceil\), giving an error
+of order \(\gamma_{\lceil\log_2n\rceil}\sum|x_i|\). Kahan summation carries a
+correction for low-order bits and, under standard assumptions, achieves a
+leading error near \(2u\sum|x_i|\), essentially independent of \(n\), plus
+higher-order terms.</p>
+
+<h3>Cancellation and stable reformulation</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For large positive \(x\),
+\[
+\sqrt{x^2+1}-x
+\]
+loses significant digits. Rationalization gives
+\[
+\frac1{\sqrt{x^2+1}+x},
+\]
+which is algebraically identical but avoids subtracting close numbers.
+Stability often comes from changing the formula, not increasing precision.</p>
+</div>
+
+<h3>Underflow, overflow, and subnormals</h3>
+
+<p>The relative-error model fails at gradual underflow, where an absolute error
+bound is more appropriate. Scaling, logarithmic representations, and
+log-sum-exp prevent avoidable range failures. Reproducibility can also depend on
+evaluation order, fused multiply-add, compiler contraction, and parallel
+reduction trees.</p>

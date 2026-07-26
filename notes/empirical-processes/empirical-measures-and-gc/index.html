@@ -8,27 +8,197 @@ note_prev_url: "/notes/empirical-processes/empirical-distribution-functions/"
 note_next_url: "/notes/empirical-processes/donsker-and-gaussian-limits/"
 ---
 
-<p>Glivenko-Cantelli theory is the uniform law of large numbers. It is the main empirical-process tool for consistency.</p>
+<p>A pointwise law of large numbers controls each fixed function. Glivenko-Cantelli theory controls the supremum over a class and is therefore the basic consistency mechanism for extremum estimators, data-dependent choices, and uniform risk approximation.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A class \(\mathcal F\) is \(P\)-Glivenko-Cantelli if \(\|P_n-P\|_{\mathcal F}=\sup_{f\in\mathcal F}|P_nf-Pf|\to0\) in outer probability.</p>
-    </div>
+<h3>Uniform laws and a counterexample</h3>
 
-    <h3>Uniform laws of large numbers</h3>
-    <ul>
-        <li>Finite classes are GC by Hoeffding plus a union bound.</li>
-        <li>Bracketing entropy and uniform entropy turn finite-class arguments into infinite-class theorems.</li>
-        <li>The theorem is distribution-dependent unless the entropy bound is uniform in \(P\).</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A measurable function class \(\mathcal F\) is \(P\)-Glivenko-Cantelli if
+  \[
+  \|P_n-P\|_{\mathcal F}
+  =\sup_{f\in\mathcal F}|P_nf-Pf|
+  \to0
+  \]
+  in outer probability. It is strong \(P\)-Glivenko-Cantelli if convergence holds outer almost surely.</p>
+</div>
 
-    <h3>M-estimator consistency</h3>
-    <p>For consistency of an M-estimator, prove that the criterion class is GC and that the population criterion has a well-separated maximizer.</p>
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample (pointwise does not imply uniform).</span> Let \(P\) be nonatomic and let \(\mathcal F\) contain indicators of all finite subsets of \(\mathcal X\). For each fixed finite \(A\),
+  \[
+  P_n(A)\to P(A)=0.
+  \]
+  But the random finite set \(A_n=\{X_1,\ldots,X_n\}\) belongs to the class and satisfies
+  \[
+  P_n(A_n)=1,\qquad P(A_n)=0.
+  \]
+  Therefore \(\|P_n-P\|_{\mathcal F}=1\) for every \(n\).</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Bracketing Glivenko-Cantelli criterion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A standard sufficient condition is an integrable envelope \(F\) with \(PF<\infty\) and bracketing numbers satisfying \(N_{[]}(\varepsilon,\mathcal F,L_1(P))<\infty\) for every \(\varepsilon>0\). Stronger entropy conditions give rates for the convergence.</p>
-    </div>
+<p>The supremum effectively selects a function after seeing the sample. Complexity restrictions prevent this unrestricted interpolation.</p>
 
-    <h3>Consistency argument</h3>
-    <p>For M-estimation, take \(\mathcal F=\{m_\theta:\theta\in\Theta\}\). GC says the random surface \(P_nm_\theta\) is uniformly close to the deterministic surface \(Pm_\theta\). Then identification of the maximum of \(Pm_\theta\) turns into consistency of the empirical maximizer.</p>
+<h3>Finite bracketing</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A bracket
+  \[
+  [l,u]=\{f:l\le f\le u\}
+  \]
+  has \(L^1(P)\)-size \(P(u-l)\). The bracketing number
+  \[
+  N_{[]}(\varepsilon,\mathcal F,L^1(P))
+  \]
+  is the smallest number of brackets of size below \(\varepsilon\) needed to cover \(\mathcal F\).</p>
+</div>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Finite-bracket lemma.</span> Suppose
+  \[
+  \mathcal F\subseteq\bigcup_{j=1}^N[l_j,u_j],
+  \qquad
+  P(u_j-l_j)\le\varepsilon,
+  \]
+  and all bracket endpoints are integrable. Then
+  \[
+  \limsup_{n\to\infty}
+  \|P_n-P\|_{\mathcal F}
+  \le\varepsilon
+  \]
+  almost surely.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(f\in[l_j,u_j]\), then
+  \[
+  (P_n-P)f
+  \le(P_n-P)u_j+P(u_j-f)
+  \le(P_n-P)u_j+P(u_j-l_j),
+  \]
+  and similarly
+  \[
+  (P_n-P)f
+  \ge(P_n-P)l_j-P(u_j-l_j).
+  \]
+  Hence
+  \[
+  |(P_n-P)f|
+  \le
+  \max\{|(P_n-P)l_j|,|(P_n-P)u_j|\}
+  +\varepsilon.
+  \]
+  Take the supremum over \(f\), then the maximum over finitely many endpoints. The strong law sends that maximum to zero.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Bracketing Glivenko-Cantelli theorem.</span> If
+  \[
+  N_{[]}(\varepsilon,\mathcal F,L^1(P))\lt\infty
+  \quad\text{for every }\varepsilon>0,
+  \]
+  with integrable bracket endpoints and appropriate measurability, then \(\mathcal F\) is strong \(P\)-Glivenko-Cantelli.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the finite-bracket lemma with \(\varepsilon=1/m\) for each integer \(m\). Intersect the resulting countably many probability-one events. On this intersection,
+  \[
+  \limsup_n\|P_n-P\|_{\mathcal F}\le1/m
+  \]
+  for every \(m\), so the limsup is zero.</p>
+</div>
+
+<h3>A compact Lipschitz-parametric criterion</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Parametric uniform law.</span> Let \(\Theta\subseteq\mathbb R^d\) be compact. Suppose
+  \[
+  |f_\theta(x)-f_\eta(x)|
+  \le L(x)\|\theta-\eta\|,
+  \qquad PL\lt\infty,
+  \]
+  and \(P|f_{\theta_0}|\lt\infty\) for one \(\theta_0\). Then
+  \[
+  \sup_{\theta\in\Theta}
+  |(P_n-P)f_\theta|\to0
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Cover compact \(\Theta\) by finitely many Euclidean balls of radius \(\delta\) with centers \(\theta_j\). If \(\theta\) belongs to the \(j\)-th ball, then
+  \[
+  |(P_n-P)(f_\theta-f_{\theta_j})|
+  \le(P_n+P)|f_\theta-f_{\theta_j}|
+  \le\delta(P_n+P)L.
+  \]
+  Consequently,
+  \[
+  \sup_\theta|(P_n-P)f_\theta|
+  \le\max_j|(P_n-P)f_{\theta_j}|
+  +\delta(P_n+P)L.
+  \]
+  The finite maximum tends to zero, and \(P_nL\to PL\). Take the limsup, then let \(\delta\downarrow0\).</p>
+</div>
+
+<h3>Closure properties</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Permanence of Glivenko-Cantelli classes.</span> If \(\mathcal F,\mathcal G\) are \(P\)-Glivenko-Cantelli with integrable envelopes, then:</p>
+  <ul>
+    <li>every subclass of \(\mathcal F\) is Glivenko-Cantelli;</li>
+    <li>\(\mathcal F\cup\mathcal G\) and \(\mathcal F+\mathcal G\) are Glivenko-Cantelli;</li>
+    <li>if the functions are uniformly bounded, \(\mathcal F\mathcal G=\{fg:f\in\mathcal F,g\in\mathcal G\}\) is Glivenko-Cantelli;</li>
+    <li>if \(\varphi\) is uniformly Lipschitz on the common range, \(\varphi\circ\mathcal F\) is Glivenko-Cantelli.</li>
+  </ul>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Subclasses and unions follow from supremum inequalities. For sums,
+  \[
+  \|(P_n-P)(\mathcal F+\mathcal G)\|
+  \le\|P_n-P\|_{\mathcal F}
+  +\|P_n-P\|_{\mathcal G}.
+  \]
+  For products, write
+  \[
+  fg-f'g'
+  =f(g-g')+g'(f-f')
+  \]
+  and use finite brackets or total boundedness with the uniform bounds. The Lipschitz composition follows from
+  \[
+  |\varphi(f)-\varphi(g)|
+  \le L|f-g|
+  \]
+  and the same bracketing argument.</p>
+</div>
+
+<h3>Consistency of extremum estimators</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Argmax consistency.</span> Let
+  \[
+  \hat\theta_n\in\Theta
+  \]
+  satisfy
+  \[
+  P_nm_{\hat\theta_n}
+  \ge\sup_{\theta\in\Theta}P_nm_\theta-o_p(1).
+  \]
+  Suppose \(\{m_\theta:\theta\in\Theta\}\) is \(P\)-Glivenko-Cantelli and, for every \(\varepsilon>0\),
+  \[
+  Pm_{\theta_0}>
+  \sup_{d(\theta,\theta_0)\ge\varepsilon}
+  Pm_\theta.
+  \]
+  Then \(\hat\theta_n\to_p\theta_0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let the population separation outside the \(\varepsilon\)-ball be \(3\eta>0\). On the event
+  \[
+  \sup_\theta|(P_n-P)m_\theta|<\eta
+  \]
+  and with optimization error below \(\eta\), every point outside the ball has empirical criterion at least \(\eta\) below the criterion at \(\theta_0\). Therefore the approximate maximizer lies inside the ball. The Glivenko-Cantelli property makes the event's probability tend to one.</p>
+</div>
+
+<h3>Triangular and random classes</h3>
+
+<p>A fixed-class theorem does not automatically cover \(\mathcal F_n\) that grows with \(n\), nor a random class selected from the data. One needs entropy bounds uniform in \(n\), localization, sample splitting, or a deterministic class containing the random functions with high probability. This distinction becomes central for sieves, high-dimensional models, and estimated nuisance functions.</p>

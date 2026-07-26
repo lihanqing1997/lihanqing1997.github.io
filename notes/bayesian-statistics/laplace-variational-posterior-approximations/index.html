@@ -72,3 +72,120 @@ q^*=\arg\min_{q\in\mathcal Q}\mathrm{KL}(q\,\|\,\Pi(\cdot\mid X)).
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The total variation distance is half the \(L^1\) distance between densities under a common dominating measure. The expectation difference is bounded by \(M\) times that \(L^1\) distance.</p>
     </div>
+
+<h3>Local Gaussian expansion</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Laplace posterior).</span> Let
+\[
+\ell_n^\pi(\theta)=\log p_\theta(x^{(n)})+\log\pi(\theta)
+\]
+have an interior maximizer \(\widehat\theta_{\mathrm{MAP}}\), and let
+\[
+H_n=-\nabla^2\ell_n^\pi(\widehat\theta_{\mathrm{MAP}})
+\]
+be positive definite. If third derivatives are controlled on the posterior concentration neighborhood, then the Laplace approximation is
+\[
+\Pi(\mathrm{d}\theta\mid x)
+\approx
+N_d(\widehat\theta_{\mathrm{MAP}},H_n^{-1})(\mathrm{d}\theta).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Derivation.</span> Taylor's theorem gives
+\[
+\ell_n^\pi(\theta)
+=\ell_n^\pi(\widehat\theta_{\mathrm{MAP}})
+-\frac12(\theta-\widehat\theta_{\mathrm{MAP}})^\top
+H_n(\theta-\widehat\theta_{\mathrm{MAP}})
++R_n(\theta).
+\]
+Neglecting \(R_n\) and normalizing the exponential quadratic gives the stated Gaussian. A rigorous approximation requires posterior mass outside the local region to vanish and the scaled remainder to be uniformly \(o(1)\).</p>
+</div>
+
+<h3>Posterior mean correction</h3>
+
+<p>The mode and mean differ at the next order. In one dimension, write
+\[
+\ell_n^\pi(\theta)
+=\ell_n^\pi(\widehat\theta)
+-\frac{H}{2}u^2+\frac{T}{6}u^3+\cdots,
+\qquad u=\theta-\widehat\theta.
+\]
+Expanding the exponential around the Gaussian kernel gives
+\[
+E(\theta\mid x)-\widehat\theta
+\approx \frac{T}{2H^2}.
+\]
+Thus skewness, represented by the third derivative \(T\), shifts the posterior mean away from the mode. The shift is typically \(O(n^{-1})\) in regular fixed-dimensional models but can matter in small samples or near boundaries.</p>
+
+<h3>Laplace approximation for an integral</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(f\) have a unique interior minimum \(x_0\) with \(f''(x_0)>0\), and let \(g\) be continuous with \(g(x_0)\ne0\). Then
+\[
+\int e^{-nf(x)}g(x)\,\mathrm{d}x
+=e^{-nf(x_0)}
+g(x_0)
+\sqrt{\frac{2\pi}{nf''(x_0)}}
+\{1+o(1)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Outside a small neighborhood of \(x_0\), uniqueness gives an exponentially smaller contribution. Inside it,
+\[
+f(x)=f(x_0)+\frac12f''(x_0)(x-x_0)^2+o((x-x_0)^2).
+\]
+Set \(z=\sqrt{nf''(x_0)}(x-x_0)\), use dominated convergence on expanding bounded regions, and control the Gaussian tails.</p>
+</div>
+
+<h3>Boundary and multimodal failures</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> If a variance component \(\tau\ge0\) has posterior mode at \(\tau=0\), a symmetric normal approximation puts half its mass on impossible negative values. Transforming to \(\log\tau\) does not repair a genuine boundary mode at zero. One must use a boundary-aware approximation, mixture representation, numerical integration, or simulation.</p>
+</div>
+
+<p>For separated modes \(\widehat\theta_k\), a multimodal Laplace approximation sums local contributions:
+\[
+m(x)\approx
+\sum_k
+e^{\ell_n^\pi(\widehat\theta_k)}
+(2\pi)^{d/2}|H_k|^{-1/2}.
+\]
+A single-mode Gaussian can badly distort posterior probabilities even when each local expansion is accurate.</p>
+
+<h3>Approximation metrics</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (Pinsker consequence).</span> If
+\[
+\operatorname{KL}(Q\|\Pi)\le\varepsilon,
+\]
+then
+\[
+\|Q-\Pi\|_{\mathrm{TV}}
+\le\sqrt{\varepsilon/2},
+\]
+and for \(|g|\le M\),
+\[
+|E_Qg-E_\Pi g|
+\le M\sqrt{2\varepsilon}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Pinsker's inequality gives the total-variation bound. The dual characterization
+\[
+|E_Qg-E_\Pi g|
+\le2M\|Q-\Pi\|_{\mathrm{TV}}
+\]
+gives the second inequality.</p>
+</div>
+
+<p>A small reverse KL is therefore strong enough to control bounded expectations, but the optimized ELBO does not reveal the unknown KL value because it differs from \(\log m(x)\) by that value. Internal convergence of an optimization algorithm is not a certificate of posterior accuracy.</p>
+
+<h3>Laplace versus variational approximation</h3>
+
+<p>Laplace uses local curvature at a mode and is asymptotically accurate in regular unimodal fixed-dimensional models. Variational inference chooses the closest member of a restricted family under a specified divergence and can represent non-Gaussian shapes if the family is rich. Laplace has no global optimization gap after a mode is found but can miss other modes; variational methods can cover larger models but add family restriction and optimization error. Both should be checked against simulation, importance correction, or known marginals on representative datasets.</p>

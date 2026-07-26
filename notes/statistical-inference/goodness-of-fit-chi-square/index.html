@@ -8,14 +8,196 @@ note_prev_url: "/notes/statistical-inference/quantiles-order-statistics/"
 note_next_url: "/notes/statistical-inference/bootstrap-jackknife/"
 ---
 
-<p>Goodness-of-fit tests ask whether a whole distributional model is compatible with the data. This page keeps the inference-level tools; empirical-process details are handled in the <a href="{{ '/notes/empirical-processes/' | relative_url }}">empirical processes</a> note.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> For multinomial cell counts \(N_j\) with expected counts \(np_j(\theta)\), Pearson’s statistic is
-    \[
-    X^2=\sum_{j=1}^k\frac{\{N_j-np_j(\hat\theta)\}^2}{np_j(\hat\theta)}.
-    \]</p></div>
-    <div class="math-statement theorem"><p><span class="statement-title">Pearson limit.</span> If the null model is correct, all cell probabilities are positive, and \(d\) parameters are estimated regularly, then
-    \[
-    X^2\rightsquigarrow\chi^2_{k-1-d}.
-    \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The vector of cell proportions has a multivariate normal limit on the \(k-1\) dimensional hyperplane where components sum to zero. Estimating \(d\) regular parameters removes \(d\) additional tangent directions. Pearson’s statistic is the squared norm of the residual in the inverse multinomial covariance metric, hence has \(\chi^2_{k-1-d}\) limit.</p></div>
-    <h3>Continuous goodness-of-fit</h3><p>Kolmogorov-Smirnov and Cramér-von Mises statistics are based on \(F_n-F_0\). Their full theory uses empirical processes, so detailed maximal inequalities and Brownian bridge limits belong to the empirical processes note.</p>
+<p>Goodness-of-fit tests compare an entire observed distribution with a null model. Finite partitions lead to multinomial chi-square geometry; continuous distribution functions lead to empirical-process functionals. Estimating null parameters changes the tangent space and therefore changes the limiting law.</p>
+
+<h3>Multinomial sampling</h3>
+
+<p>Let \(N=(N_1,\ldots,N_k)^\top\sim\operatorname{Multinomial}(n,p)\), where every \(p_j>0\) and \(\sum_jp_j=1\). Put \(\hat p=N/n\) and \(D_p=\operatorname{diag}(p_1,\ldots,p_k)\).</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Multinomial central limit theorem.</span>
+  \[
+  \sqrt n(\hat p-p)
+  \rightsquigarrow
+  N(0,\Sigma_p),
+  \qquad
+  \Sigma_p=D_p-pp^\top.
+  \]
+  The covariance has rank \(k-1\) and null vector \(\mathbf1\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Represent each observation by a one-hot vector \(Z_i\) with \(P(Z_i=e_j)=p_j\). Then \(\hat p=n^{-1}\sum_iZ_i\),
+  \[
+  \mathbb EZ_i=p,\qquad
+  \operatorname{Cov}(Z_i)=D_p-pp^\top.
+  \]
+  Apply the multivariate central limit theorem. Since \(\mathbf1^\top(\hat p-p)=0\), the limit lies in the \(k-1\)-dimensional contrast space.</p>
+</div>
+
+<h3>Pearson statistic for a simple null</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(H_0:p=p^0\), Pearson's statistic is
+  \[
+  X^2
+  =\sum_{j=1}^k\frac{(N_j-np_j^0)^2}{np_j^0}
+  =n(\hat p-p^0)^\top D_{p^0}^{-1}(\hat p-p^0).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Pearson theorem.</span> Under \(H_0\),
+  \[
+  X^2\rightsquigarrow\chi_{k-1}^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \[
+  Z_n=\sqrt nD_p^{-1/2}(\hat p-p).
+  \]
+  Its limiting covariance is
+  \[
+  D_p^{-1/2}\Sigma_pD_p^{-1/2}
+  =I-\sqrt p\,\sqrt p^\top,
+  \]
+  the orthogonal projection onto the complement of \(\sqrt p\), of rank \(k-1\). Therefore \(Z_n\rightsquigarrow\Pi Z\) for \(Z\sim N(0,I_k)\), and
+  \[
+  X^2=\|Z_n\|^2\rightsquigarrow\|\Pi Z\|^2
+  \sim\chi_{k-1}^2.
+  \]</p>
+</div>
+
+<h3>Estimated cell probabilities</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Composite Pearson theorem.</span> Let \(p(\theta)\) be a smooth \(d\)-dimensional multinomial model with full-rank tangent matrix \(\dot p(\theta_0)\), and let \(\hat\theta\) be asymptotically efficient under the multinomial model. Then
+  \[
+  X^2(\hat\theta)
+  =n\{\hat p-p(\hat\theta)\}^\top
+  D_{p(\hat\theta)}^{-1}
+  \{\hat p-p(\hat\theta)\}
+  \rightsquigarrow\chi_{k-1-d}^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Standardize the multinomial fluctuation by \(D_p^{-1/2}\). The total-probability constraint already removes the direction \(\sqrt p\). Fitting \(\theta\) projects the standardized fluctuation onto the \(d\)-dimensional model tangent space
+  \[
+  \mathcal T
+  =\operatorname{span}\{D_p^{-1/2}\dot p(\theta_0)\},
+  \]
+  which lies in \(\sqrt p^\perp\) because \(\mathbf1^\top\dot p=0\). The residual projection has rank \(k-1-d\). Pearson's statistic is its squared norm plus \(o_p(1)\).</p>
+</div>
+
+<h3>Likelihood-ratio deviance</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Pearson-deviance equivalence.</span> The multinomial likelihood-ratio statistic
+  \[
+  G^2=2\sum_{j:N_j>0}
+  N_j\log\frac{N_j}{np_j^0}
+  \]
+  satisfies
+  \[
+  G^2=X^2+o_p(1)
+  \]
+  under a fixed null with all \(p_j^0>0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put \(u_j=(N_j-np_j^0)/(np_j^0)=O_p(n^{-1/2})\). Since
+  \[
+  2(1+u)\log(1+u)
+  =2u+u^2+O(u^3),
+  \]
+  summing \(np_j^0\) times this expansion makes the linear term
+  \(2\sum_j(N_j-np_j^0)=0\). The quadratic term is \(X^2\), and the finite sum of cubic remainders is \(o_p(1)\).</p>
+</div>
+
+<h3>Small expected counts</h3>
+
+<p>The fixed-\(k\) theorem assumes \(np_j\to\infty\) for every cell. Rules such as “all expected counts exceed five” are heuristics, not theorem statements. With sparse tables, growing \(k\), structural zeros, or estimated boundaries, the chi-square approximation can fail. Exact conditional tests, parametric bootstrap, cell combination justified before inspection, or high-dimensional multinomial theory are alternatives.</p>
+
+<h3>Empirical distribution-function tests</h3>
+
+<p>For a fully specified continuous null \(F_0\), define
+\[
+\alpha_n(x)=\sqrt n\{F_n(x)-F_0(x)\}.
+\]
+The probability integral transform reduces the problem to uniforms:
+\[
+\alpha_n(F_0^{-1}(t))
+\rightsquigarrow B(t),\qquad 0\le t\le1,
+\]
+where \(B\) is a Brownian bridge with covariance
+\[
+\operatorname{Cov}\{B(s),B(t)\}
+=\min(s,t)-st.
+\]</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The principal statistics are
+  \[
+  \begin{aligned}
+  D_n&=\sup_x|F_n(x)-F_0(x)|,\\
+  W_n^2&=n\int\{F_n(x)-F_0(x)\}^2\,\mathrm{d}F_0(x),\\
+  A_n^2&=n\int
+  \frac{\{F_n(x)-F_0(x)\}^2}
+  {F_0(x)\{1-F_0(x)\}}
+  \,\mathrm{d}F_0(x).
+  \end{aligned}
+  \]
+  These are the Kolmogorov-Smirnov, Cramer-von Mises, and Anderson-Darling statistics.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Null limits.</span> Under a continuous fully specified \(F_0\),
+  \[
+  \sqrt nD_n\rightsquigarrow\sup_{0\le t\le1}|B(t)|,
+  \]
+  \[
+  W_n^2\rightsquigarrow\int_0^1B(t)^2\,\mathrm{d}t,
+  \qquad
+  A_n^2\rightsquigarrow
+  \int_0^1\frac{B(t)^2}{t(1-t)}\,\mathrm{d}t.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Donsker's theorem gives weak convergence of the uniform empirical process in \(\ell^\infty[0,1]\). The supremum and unweighted \(L^2\) maps are continuous at continuous paths, giving the first two limits by continuous mapping. The Anderson-Darling weight is singular at the endpoints; weighted empirical-process tightness and the Brownian-bridge endpoint rate justify truncation at \([\varepsilon,1-\varepsilon]\) followed by \(\varepsilon\downarrow0\).</p>
+</div>
+
+<p>Kolmogorov-Smirnov emphasizes the largest discrepancy, Cramer-von Mises aggregates squared discrepancy, and Anderson-Darling upweights tails. No one statistic is uniformly most powerful against every distributional departure.</p>
+
+<h3>Composite continuous nulls</h3>
+
+<p>If \(F_0=F_{\hat\theta}\) with parameters estimated from the same data, then
+\[
+\sqrt n\{F_n-F_{\hat\theta}\}
+\]
+equals the Brownian bridge minus its projection onto the model's score-induced tangent functions. Its law depends on the family and estimator; using the fully specified Kolmogorov critical values is generally wrong. A parametric bootstrap that refits \(\theta\) in every sample reproduces this projection under regularity.</p>
+
+<h3>Consistency against fixed alternatives</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Consistency of Kolmogorov-Smirnov.</span> If \(F\ne F_0\), then
+  \[
+  D_n\to\|F-F_0\|_\infty>0
+  \quad\text{almost surely},
+  \]
+  and any test rejecting for \(\sqrt nD_n>c_\alpha\) has power tending to one.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Glivenko-Cantelli gives \(\|F_n-F\|_\infty\to0\) almost surely. The reverse triangle inequality yields
+  \[
+  |D_n-\|F-F_0\|_\infty|
+  \le\|F_n-F\|_\infty\to0.
+  \]
+  Multiplication by \(\sqrt n\) then diverges.</p>
+</div>
+
+<p>The empirical-process results used here, including Brownian bridges, Donsker classes, and bootstrap analogues, are developed in <a href="{{ '/notes/empirical-processes/' | relative_url }}">empirical processes</a>.</p>

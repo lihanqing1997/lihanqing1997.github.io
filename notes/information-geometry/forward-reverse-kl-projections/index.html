@@ -64,3 +64,79 @@ Equivalently, \(\int \partial_i\log q_{\hat\theta}\,\mathrm{d}P=\int \partial_i\
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Projection onto an exponential family and projection onto a mixture family use dual geodesics. Orthogonality under the Fisher metric gives generalized Pythagorean theorems for KL divergence.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Fixing the terminology</h3>
+
+<p>For a target law \(P\) and model \(\mathcal Q\), define
+\[
+Q_{\mathrm I}\in\arg\min_{Q\in\mathcal Q}D(Q\|P),
+\qquad
+Q_{\mathrm M}\in\arg\min_{Q\in\mathcal Q}D(P\|Q).
+\]
+We call these the I-projection and M-projection, respectively. The terms
+“forward” and “reverse” KL are used inconsistently across statistics and
+machine learning, so formulas rather than names should carry the meaning.</p>
+
+<h3>Moment matching for an exponential family</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\(q_\theta(x)=\exp\{\theta^\top T(x)-\psi(\theta)\}h(x)\) be minimal and
+regular. If \(P|T|<\infty\), any interior minimizer of
+\(D(P\|Q_\theta)\) satisfies
+\[
+E_{Q_\theta}T=E_PT.
+\]
+Strict convexity of \(\psi\) makes it unique when the target moment lies in the
+interior mean-parameter space.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Terms independent of \(\theta\)
+drop out:
+\[
+D(P\|Q_\theta)
+=\text{constant}-\theta^\top E_PT+\psi(\theta).
+\]
+Its gradient is \(\nabla\psi(\theta)-E_PT\), and its Hessian is
+\(\operatorname{Cov}_{Q_\theta}(T)\succ0\) by minimality.</p>
+</div>
+
+<h3>Support behavior and mode selection</h3>
+
+<p>If \(D(P\|Q)<\infty\), \(Q\) must be positive wherever \(P\) is positive;
+missing target mass is infinitely penalized. By contrast,
+\(D(Q\|P)\) only integrates where \(Q\) puts mass. In constrained unimodal
+families approximating a separated mixture, this can favor one high-density
+mode. The familiar “mass-covering” versus “mode-seeking” language is therefore
+a support-weighting tendency, not a theorem that applies to every model class.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (Gaussian projection).</span> Among
+all nonsingular Gaussians \(Q=N(m,S)\), minimizing \(D(P\|Q)\) yields
+\[
+m=E_PX,\qquad S=\operatorname{Cov}_P(X),
+\]
+provided the moments exist. Minimizing \(D(Q\|P)\) has no such universal moment
+formula and depends on the detailed shape of \(\log p\).</p>
+</div>
+
+<h3>Pythagorean inequalities</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(\mathcal C\) is convex in
+mixture coordinates and \(Q^*=\arg\min_{Q\in\mathcal C}D(Q\|P)\), then under
+existence and differentiability,
+\[
+D(Q\|P)\ge D(Q\|Q^*)+D(Q^*\|P),
+\qquad Q\in\mathcal C.
+\]
+Equality holds when \(\mathcal C\) is affine in the corresponding dual
+geometry.</p>
+</div>
+
+<p>This inequality is a Bregman projection result. Reversing KL also reverses
+which convexity structure supplies the clean identity. Nonconvex variational
+families may have multiple local projections, so neither uniqueness nor an
+exact Pythagorean theorem is automatic.</p>

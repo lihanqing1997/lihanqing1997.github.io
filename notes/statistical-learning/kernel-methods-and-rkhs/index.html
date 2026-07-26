@@ -91,3 +91,165 @@ and using symmetry of \(K_n\) gives \(K_n(K_n+n\lambda I)\alpha=K_ny\). The disp
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Fast eigenvalue decay means the RKHS behaves like a low-dimensional space at the resolution \(\lambda\). This quantity appears in variance terms for kernel ridge regression.</p>
     </div>
+
+<h3>Moore-Aronszajn construction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every positive-definite kernel
+  \(K\) is the reproducing kernel of a unique Hilbert space of functions on
+  \(\mathcal X\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Begin with the vector space
+  \[
+  \mathcal H_0=\left\{\sum_{i=1}^ma_iK_{x_i}:m<\infty\right\}
+  \]
+  and define
+  \[
+  \left\langle\sum_ia_iK_{x_i},\sum_jb_jK_{y_j}\right\rangle
+  =\sum_{i,j}a_ib_jK(x_i,y_j).
+  \]
+  Positive definiteness makes this a positive semidefinite form; quotient by its null space and complete. For finite sums,
+  \(\langle f,K_x\rangle=f(x)\), and continuity extends this identity to the completion. If two RKHSs have kernel \(K\), the map sending finite kernel sums in one to the same sums in the other is an isometry on dense subspaces, hence extends uniquely.</p>
+</div>
+
+<h3>Feature maps and kernel operations</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> A function \(K\) is positive definite if and only if there is a Hilbert space \(\mathcal H\) and feature map
+  \(\Phi:\mathcal X\to\mathcal H\) such that
+  \(K(x,x')=\langle\Phi(x),\Phi(x')\rangle_{\mathcal H}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If a feature map exists, every Gram quadratic form is the squared norm of \(\sum_i a_i\Phi(x_i)\). Conversely, take \(\mathcal H=\mathcal H_K\) and \(\Phi(x)=K_x\); then the reproducing property gives
+  \(\langle K_x,K_{x'}\rangle=K(x,x')\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Examples.</span>
+  The linear kernel \(K(x,x')=x^\top x'\) recovers linear prediction.
+  The degree-\(m\) polynomial kernel \((c+x^\top x')^m\) corresponds to all monomials up to degree \(m\) with explicit weights.
+  The Gaussian kernel
+  \(K_\sigma(x,x')=\exp\{-\|x-x'\|_2^2/(2\sigma^2)\}\)
+  has an infinite-dimensional feature space and is universal on compact subsets of \(\mathbb R^p\).</p>
+</div>
+
+<h3>Mercer expansion</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal X\) be compact,
+  \(K\) continuous, and \(P_X\) have full support. The integral operator
+  \[
+  (Tf)(x)=\int K(x,x')f(x')\,P_X(\mathrm{d}x')
+  \]
+  is compact, positive, and self-adjoint on \(L^2(P_X)\). There are eigenpairs
+  \((\mu_j,\varphi_j)\) with \(\mu_j\ge0\) such that
+  \[
+  K(x,x')=\sum_{j\ge1}\mu_j\varphi_j(x)\varphi_j(x')
+  \]
+  uniformly under the standard Mercer assumptions, and
+  \[
+  \mathcal H_K=
+  \left\{f=\sum_jf_j\varphi_j:
+  \sum_{\mu_j>0}\frac{f_j^2}{\mu_j}<\infty\right\},
+  \quad
+  \|f\|_{\mathcal H_K}^2=\sum_j\frac{f_j^2}{\mu_j}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The spectral theorem applies to the compact positive operator \(T\). The kernel expansion follows from Mercer's theorem. In feature coordinates
+  \(\Phi(x)=(\sqrt{\mu_j}\varphi_j(x))_j\), a function represented by coefficient vector \(a\in\ell^2\) is
+  \(f(x)=\sum_ja_j\sqrt{\mu_j}\varphi_j(x)\). Thus
+  \(f_j=a_j\sqrt{\mu_j}\) and the Hilbert norm is
+  \(\sum_ja_j^2=\sum_jf_j^2/\mu_j\).</p>
+</div>
+
+<h3>Population kernel ridge regression</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(m(x)=\mathbb E(Y\mid X=x)=\sum_jm_j\varphi_j(x)\). The population minimizer of
+  \[
+  \|f-m\|_{L^2(P_X)}^2+\lambda\|f\|_{\mathcal H_K}^2
+  \]
+  has coefficients
+  \[
+  f_{\lambda,j}=\frac{\mu_j}{\mu_j+\lambda}m_j.
+  \]
+  Its squared bias is
+  \[
+  \|f_\lambda-m\|_2^2
+  =\sum_j\left(\frac{\lambda}{\mu_j+\lambda}\right)^2m_j^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In the Mercer basis, the objective is the sum over \(j\) of
+  \((f_j-m_j)^2+\lambda f_j^2/\mu_j\). Each coordinate is a scalar quadratic; differentiation gives the stated filter.</p>
+</div>
+
+<h3>Effective dimension and a variance bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under bounded-noise and regularity assumptions, kernel ridge regression has the schematic risk bound
+  \[
+  \mathbb E\|\widehat f_\lambda-m\|_{L^2(P_X)}^2
+  \lesssim
+  \underbrace{\|f_\lambda-m\|_2^2}_{\text{regularization bias}}
+  +\underbrace{\frac{\sigma^2\mathcal N(\lambda)}{n}}_{\text{effective variance}}
+  +\text{operator-estimation remainder}.
+  \]
+  If \(\mu_j\asymp j^{-2s}\), then
+  \(\mathcal N(\lambda)\asymp\lambda^{-1/(2s)}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the spectral order.</span> Since
+  \[
+  \mathcal N(\lambda)=\sum_j\frac{\mu_j}{\mu_j+\lambda},
+  \]
+  terms with \(j\lesssim\lambda^{-1/(2s)}\) are of constant order. Beyond that index, the tail is comparable to
+  \(\lambda^{-1}\sum_{j>J}j^{-2s}\asymp
+  \lambda^{-1}J^{1-2s}\asymp J\), provided \(s>1/2\). Both pieces are therefore of order \(J=\lambda^{-1/(2s)}\).</p>
+</div>
+
+<h3>Universality and characteristic kernels</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> On a compact Hausdorff space, a continuous kernel is universal if \(\mathcal H_K\) is dense in
+  \(C(\mathcal X)\) under the sup norm. A bounded kernel is characteristic if the mean embedding
+  \[
+  \mu_P=\int K_x\,P(\mathrm{d}x)
+  \]
+  is injective in \(P\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The maximum mean discrepancy
+  \[
+  \operatorname{MMD}_K(P,Q)
+  =\|\mu_P-\mu_Q\|_{\mathcal H_K}
+  =\sup_{\|f\|_{\mathcal H_K}\le1}|Pf-Qf|
+  \]
+  satisfies
+  \[
+  \operatorname{MMD}_K^2(P,Q)
+  =\mathbb EK(X,X')+\mathbb EK(Y,Y')
+  -2\mathbb EK(X,Y),
+  \]
+  for independent \(X,X'\sim P\) and \(Y,Y'\sim Q\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Hilbert-space duality gives the supremum. Expanding the squared norm of \(\mu_P-\mu_Q\) and using
+  \(\langle K_x,K_y\rangle=K(x,y)\) gives the expectation formula. A characteristic kernel makes this discrepancy zero only when \(P=Q\).</p>
+</div>
+
+<h3>Gaussian processes and RKHSs</h3>
+
+<p>A centered Gaussian process with covariance \(K\) and the RKHS \(\mathcal H_K\) share the same kernel but are not the same object. The RKHS is the Cameron-Martin space of deterministic shifts with absolutely continuous translated Gaussian law. In an infinite-dimensional setting, a Gaussian-process sample lies outside \(\mathcal H_K\) almost surely under typical nondegeneracy conditions. Kernel ridge regression is nevertheless equal to the posterior mean in Gaussian regression with a suitably scaled Gaussian-process prior.</p>
+
+<p>For a fuller measure-theoretic treatment of Gaussian priors and concentration functions, see <a href="{{ '/notes/bayesian-statistics/gaussian-process-priors-rkhs-geometry/' | relative_url }}">Gaussian process priors and RKHS geometry</a>.</p>

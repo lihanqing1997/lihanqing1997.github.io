@@ -8,22 +8,140 @@ note_prev_url: "/notes/statistical-decision-theory/lower-bounds/"
 note_next_url: "/notes/statistical-decision-theory/iid-experiments-and-dqm/"
 ---
 
-<p>Le Cam's product-experiment theory connects naturally to empirical measures. VC bounds provide uniform control needed for minimum-distance estimators.</p>
+<p>Empirical measures provide a constructive route from testing geometry to estimators. A class of sets defines a probability distance; VC complexity controls its empirical fluctuation; minimizing that distance over a model yields finite-sample and asymptotic risk bounds.</p>
 
-    <h3>Empirical measure indexed by sets</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For observations \(X_1,\ldots,X_n\), the empirical measure is \(P_n(A)=n^{-1}\sum_i1_A(X_i)\). Uniform control over \(A\in\mathcal C\) concerns \(\sup_{A\in\mathcal C}|P_nA-PA|\).</p>
-    </div>
+<h3>Set-indexed probability distances</h3>
 
-    <h3>VC uniform law</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\mathcal C\) is a VC class, then \(\sup_{A\in\mathcal C}|P_nA-PA|\to0\) under broad measurability conditions, and exponential inequalities give finite-sample control.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a class
+  \(\mathcal C\) of measurable sets, define
+  \[
+  d_{\mathcal C}(P,Q)
+  =
+  \sup_{A\in\mathcal C}|P(A)-Q(A)|.
+  \]
+  The empirical measure is
+  \[
+  P_n(A)=\frac1n\sum_{i=1}^n1\{X_i\in A\}.
+  \]</p>
+</div>
 
-    <h3>Symmetrization and growth</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Symmetrization reduces deviations to Rademacher averages, while Sauer-Shelah bounds the number of traces of \(\mathcal C\) on the sample by a polynomial in \(n\).</p>
-    </div>
+<p>If \(\mathcal C\) is the class of all measurable sets,
+\(d_{\mathcal C}\) is total variation, but empirical and continuous laws are then maximally far apart. A smaller class trades resolution for estimability.</p>
 
-    <h3>Minimum-distance estimation</h3>
-    <p>Estimators based on minimizing empirical distances over VC classes inherit consistency and rates from these uniform empirical bounds.</p>
+<h3>VC uniform deviation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal C\) have VC dimension \(V<\infty\) and satisfy a standard measurability condition. Universal constants \(c,C>0\) exist such that
+  \[
+  P\left\{
+  \sup_{A\in\mathcal C}|P_n(A)-P(A)|
+  >
+  C\sqrt{\frac{V+t}{n}}
+  \right\}
+  \leq e^{-ct}.
+  \]
+  Consequently,
+  \[
+  E\,d_{\mathcal C}(P_n,P)\lesssim\sqrt{V/n}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Symmetrization bounds the expected supremum by a Rademacher process. Conditional on the pooled sample, only the traces
+  \(\{C\cap\{X_1,\ldots,X_n\}:C\in\mathcal C\}\) matter. Sauer–Shelah bounds their number by
+  \(\sum_{j=0}^V\binom nj\), and the finite-class maximal inequality yields order \(\sqrt{V/n}\). Bounded-difference or Talagrand concentration gives the tail bound. \(\square\)</p>
+</div>
+
+<h3>Minimum-distance estimators</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a model
+  \(\{P_\theta:\theta\in\Theta\}\), a minimum-distance estimator satisfies
+  \[
+  d_{\mathcal C}(P_n,P_{\hat\theta})
+  \leq
+  \inf_{\theta\in\Theta}
+  d_{\mathcal C}(P_n,P_\theta)+\eta_n.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (oracle inequality).</span> Let
+  \[
+  \theta^\circ\in\arg\min_\theta
+  d_{\mathcal C}(P,P_\theta).
+  \]
+  Then
+  \[
+  d_{\mathcal C}(P,P_{\hat\theta})
+  \leq
+  2d_{\mathcal C}(P_n,P)
+  +d_{\mathcal C}(P,P_{\theta^\circ})
+  +\eta_n.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By the triangle inequality and approximate optimality,
+  \[
+  \begin{aligned}
+  d_{\mathcal C}(P,P_{\hat\theta})
+  &\leq d_{\mathcal C}(P,P_n)
+      +d_{\mathcal C}(P_n,P_{\hat\theta})\\
+  &\leq d_{\mathcal C}(P,P_n)
+      +d_{\mathcal C}(P_n,P_{\theta^\circ})+\eta_n\\
+  &\leq2d_{\mathcal C}(P_n,P)
+      +d_{\mathcal C}(P,P_{\theta^\circ})+\eta_n.
+  \end{aligned}
+  \]
+  \(\square\)</p>
+</div>
+
+<p>Under correct specification the approximation term vanishes. If the model is identifiable in \(d_{\mathcal C}\), the estimator is consistent; a quantitative inverse inequality converts probability-distance error into parameter loss.</p>
+
+<h3>Yatracos classes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a dominated density model
+  \(\{p_\theta\}\), the Yatracos class is
+  \[
+  \mathcal Y
+  =
+  \{\{x:p_\theta(x)>p_\eta(x)\}:
+    \theta,\eta\in\Theta\}.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For model laws
+  \(P_\theta,P_\eta\),
+  \[
+  \|P_\theta-P_\eta\|_{\mathrm{TV}}
+  =
+  d_{\mathcal Y}(P_\theta,P_\eta).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The total-variation maximizing set is
+  \(\{p_\theta>p_\eta\}\), which belongs to \(\mathcal Y\). No class supremum can exceed total variation. \(\square\)</p>
+</div>
+
+<p>If the Yatracos class has finite VC dimension, the minimum-distance estimator achieves total-variation error of order \(\sqrt{V/n}\) plus model approximation error.</p>
+
+<h3>Testing from set classes</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Given two model laws \(P,Q\), a set
+  \(A\) with \(P(A)-Q(A)\) near \(d_{\mathcal C}(P,Q)\) yields a test based on \(P_n(A)\). Hoeffding concentration gives exponentially small errors when
+  \[
+  |P(A)-Q(A)|\gg n^{-1/2}.
+  \]</p>
+</div>
+
+<p>For composite hypotheses, finite VC complexity permits uniform tests over separated model sets. Such tests are central both to frequentist minimum-distance estimators and to Bayesian posterior contraction.</p>
+
+<h3>Relation to empirical-process theory</h3>
+
+<p>This chapter isolates the decision-theoretic use of VC control. The full proofs of symmetrization, Sauer–Shelah, entropy, Donsker convergence, and localized maximal inequalities are in <a href="{{ '/notes/empirical-processes/' | relative_url }}">Empirical processes</a>.</p>

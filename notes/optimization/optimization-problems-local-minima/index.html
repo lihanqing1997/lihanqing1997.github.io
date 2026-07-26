@@ -7,24 +7,150 @@ note_back_url: "/notes/optimization/"
 note_next_url: "/notes/optimization/convex-sets-separation/"
 ---
 
-<p>Optimization studies the structure and computation of points where an objective is small, subject to constraints when present.</p>
+<p>Optimization begins with two logically separate questions: does an optimizer
+exist, and how can it be recognized or computed? Even in finite dimensions an
+infimum need not be attained, a stationary point need not minimize anything,
+and a local minimizer need not be globally useful. The distinctions below
+remain important when the objective is a likelihood, risk, energy, or
+variational posterior criterion.</p>
 
-    <h3>Optimization problem</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An optimization problem is specified by a set \(C\) and an objective \(f:C\to\overline{\mathbb R}\). A point \(x^\star\in C\) is a global minimizer if \(f(x^\star)\le f(x)\) for all \(x\in C\); it is a local minimizer if the same inequality holds on \(C\cap U\) for some neighborhood \(U\) of \(x^\star\).</p>
-    </div>
+<h3>Objectives, feasible sets, and attainment</h3>
 
-    <h3>First-order necessary condition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(C\subset\mathbb R^d\) is open, \(f\) is differentiable, and \(x^\star\) is a local minimizer, then \(\nabla f(x^\star)=0\). More generally, every feasible direction has nonnegative directional derivative.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Let
+    \(f:\mathbb R^d\to(-\infty,+\infty]\) be an extended-real-valued function.
+    Its effective domain is
+    \[
+    \operatorname{dom}f=\{x:f(x)<+\infty\}.
+    \]
+    Minimizing \(f\) over a set \(C\subset\mathbb R^d\) is equivalent to
+    minimizing \(f+\iota_C\) over \(\mathbb R^d\), where
+    \(\iota_C(x)=0\) on \(C\) and \(+\infty\) off \(C\). The optimal value and
+    solution set are
+    \[
+    f^\star=\inf_{x\in C}f(x),\qquad
+    X^\star=\operatorname*{arg\,min}_{x\in C}f(x).
+    \]</p>
+</div>
 
-    <h3>Second-order condition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(f\) is twice continuously differentiable on an open set and \(x^\star\) is a local minimizer, then \(\nabla f(x^\star)=0\) and \(\nabla^2 f(x^\star)\) is positive semidefinite. If \(\nabla f(x^\star)=0\) and the Hessian is positive definite, then \(x^\star\) is a strict local minimizer.</p>
-    </div>
+<p>The notation deliberately permits \(X^\star=\varnothing\). For example,
+\(\inf_{x\in\mathbb R}e^x=0\), but no finite \(x\) attains the value. Existence
+therefore cannot be inferred merely from boundedness below.</p>
 
-    <h3>Geometry of nonconvexity</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Local conditions identify candidates, not global solutions. Convexity is the property that turns local optimality into global optimality; without it, algorithms also need initialization, landscape structure, or statistical arguments.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A feasible point
+    \(x^\star\in C\) is a local minimizer if there is \(r>0\) such that
+    \(f(x^\star)\le f(x)\) for every \(x\in C\cap B(x^\star,r)\). It is a strict
+    local minimizer if the inequality is strict for every
+    \(x\ne x^\star\) in that neighborhood. It is isolated if it is the only
+    local minimizer in some neighborhood.</p>
+</div>
+
+<p>Strictness and isolation are different. The function \(f(x)=x^4\) has a
+strict isolated minimum at zero although \(f''(0)=0\); the function
+\(f(x,y)=x^2\) has global minima along the whole line \(x=0\), none of which is
+isolated.</p>
+
+<h3>Feasible directions and the tangent cone</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> The Bouligand tangent
+    cone of \(C\) at \(x\in C\) is
+    \[
+    T_C(x)=\left\{v:\ \exists\,t_n\downarrow0,\ x_n\in C,\ x_n\to x,\quad
+    \frac{x_n-x}{t_n}\to v\right\}.
+    \]
+    When \(C\) is convex,
+    \(T_C(x)=\overline{\{t(y-x):t\ge0,\ y\in C\}}\).</p>
+</div>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">First-order necessary condition.</span>
+    Suppose \(f\) is differentiable at a local minimizer \(x^\star\) relative
+    to \(C\). Then
+    \[
+    \langle\nabla f(x^\star),v\rangle\ge0
+    \qquad\text{for every }v\in T_C(x^\star).
+    \]
+    In particular, if \(x^\star\) is an interior point of \(C\), then
+    \(\nabla f(x^\star)=0\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For
+    \(v\in T_C(x^\star)\), choose \(x_n\in C\) and \(t_n\downarrow0\) as in the
+    definition. Local minimality gives \(f(x_n)-f(x^\star)\ge0\) for all large
+    \(n\). Differentiability yields
+    \[
+    \frac{f(x_n)-f(x^\star)}{t_n}
+    =
+    \left\langle\nabla f(x^\star),
+    \frac{x_n-x^\star}{t_n}\right\rangle
+    +\frac{o(\|x_n-x^\star\|)}{t_n}.
+    \]
+    The last term tends to zero because
+    \(\|x_n-x^\star\|/t_n\to\|v\|\). Passing to the limit proves the
+    inequality. At an interior point, \(T_C(x^\star)=\mathbb R^d\); applying
+    the inequality to \(v\) and \(-v\) forces the gradient to vanish.</p>
+</div>
+
+<h3>Second-order tests and their limits</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Second-order conditions.</span> Let \(f\)
+    be twice differentiable in a neighborhood of an unconstrained stationary
+    point \(x^\star\).</p>
+    <p>(i) If \(x^\star\) is a local minimizer, then
+    \(v^\top\nabla^2f(x^\star)v\ge0\) for every \(v\).</p>
+    <p>(ii) If \(\nabla^2f(x^\star)\) is positive definite, then \(x^\star\) is
+    a strict isolated local minimizer.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For fixed \(v\), Taylor's
+    formula gives
+    \[
+    f(x^\star+tv)-f(x^\star)
+    =\frac{t^2}{2}v^\top\nabla^2f(x^\star)v+o(t^2).
+    \]
+    Local nonnegativity of the left side for both signs of small \(t\) proves
+    (i). For (ii), let
+    \(\lambda_{\min}(\nabla^2f(x^\star))=2c>0\). Continuity of the Hessian
+    gives \(\nabla^2f(x)\succeq cI\) near \(x^\star\). Taylor's theorem along
+    the segment from \(x^\star\) to \(x\) then gives
+    \(f(x)\ge f(x^\star)+\frac c2\|x-x^\star\|^2\), with strict inequality
+    away from \(x^\star\).</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> At the origin,
+    \(f(x,y)=x^2-y^2\) has zero gradient and indefinite Hessian, so it is a
+    saddle. The function \(g(x)=x^3\) has zero gradient and zero Hessian but is
+    not a minimum. The function \(h(x)=x^4\) has the same first two derivatives
+    at zero and is a strict minimum. Thus positive definiteness is sufficient,
+    not necessary, and a semidefinite Hessian is inconclusive.</p>
+</div>
+
+<h3>Why convexity changes the problem</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Local minima of convex functions are
+    global.</span> If \(C\) and \(f:C\to\mathbb R\) are convex, every local
+    minimizer of \(f\) on \(C\) is a global minimizer.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> If \(x^\star\) were locally
+    but not globally minimizing, choose \(y\in C\) with \(f(y)<f(x^\star)\).
+    For \(t\in(0,1)\), convexity gives
+    \[
+    f((1-t)x^\star+ty)
+    \le(1-t)f(x^\star)+tf(y)<f(x^\star).
+    \]
+    Taking \(t\downarrow0\) produces feasible points arbitrarily close to
+    \(x^\star\) with smaller objective value, contradicting local minimality.</p>
+</div>
+
+<p>This is the first reason convexity is central: local information becomes
+global. The next pages develop the geometry of convex feasible sets and the
+first-order calculus of convex objectives.</p>

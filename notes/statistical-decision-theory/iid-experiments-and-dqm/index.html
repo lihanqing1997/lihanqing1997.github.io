@@ -8,26 +8,164 @@ note_prev_url: "/notes/statistical-decision-theory/empirical-measures-and-vc-cla
 note_next_url: "/notes/statistical-decision-theory/consistent-and-root-n-estimation/"
 ---
 
-<p>For i.i.d. models, differentiability in quadratic mean is the clean condition that turns single-observation Hellinger geometry into LAN.</p>
+<p>For i.i.d. experiments, differentiability in quadratic mean is the intrinsic regularity condition. It does not require pointwise differentiability of densities and remains invariant under changes of dominating measure. This chapter develops its Hellinger and tangent-space consequences; the full LAN proof appears in §15.</p>
 
-    <h3>Quadratic mean differentiability</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A dominated model \(p_\theta\) is differentiable in quadratic mean at \(\theta_0\) if there is score \(\dot\ell_{\theta_0}\) such that</p>
-        <p>\[
-\int\left(\sqrt{p_{\theta_0+h}}-\sqrt{p_{\theta_0}}
--\frac12h^\top\dot\ell_{\theta_0}\sqrt{p_{\theta_0}}\right)^2\mathrm{d}\mu=o(\|h\|^2).
-\]</p>
-    </div>
+<h3>Square-root differentiability</h3>
 
-    <h3>DQM implies LAN</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For i.i.d. observations, DQM and nonsingular Fisher information imply LAN with central sequence \(\Delta_n=n^{-1/2}\sum_i\dot\ell_{\theta_0}(X_i)\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A dominated model
+  \(\{p_\theta:\theta\in\Theta\subset\mathbb R^p\}\) is differentiable in quadratic mean at \(\theta_0\) if there is
+  \(\dot\ell_{\theta_0}\in L_2^p(P_{\theta_0})\) such that
+  \[
+  \left\|
+  \sqrt{p_{\theta_0+h}}-\sqrt{p_{\theta_0}}
+  -\frac12h^\top\dot\ell_{\theta_0}\sqrt{p_{\theta_0}}
+  \right\|_{L_2(\mu)}
+  =o(\|h\|).
+  \]</p>
+</div>
 
-    <h3>Square-root density expansion</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The DQM expansion controls Hellinger error for local shifts \(h/\sqrt n\). Summing independent score terms gives the central sequence CLT and the quadratic likelihood term.</p>
-    </div>
+<p>The derivative of the square-root density is one half the score times
+\(\sqrt p\). The factor one half makes the Fisher information four times the squared \(L_2\)-speed of the square-root path.</p>
 
-    <h3>Tangent Hilbert space</h3>
-    <p>The closure of score directions in \(L_2^0(P_{\theta_0})\) is the local tangent space. Fisher information is the squared norm of tangent vectors.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (local Hellinger metric).</span> Under DQM,
+  \[
+  H^2(P_{\theta_0+h},P_{\theta_0})
+  =
+  \frac14h^\top I_{\theta_0}h+o(\|h\|^2),
+  \]
+  where
+  \[
+  I_{\theta_0}
+  =
+  P_{\theta_0}
+  (\dot\ell_{\theta_0}\dot\ell_{\theta_0}^\top).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Take the squared \(L_2\)-norm of the DQM expansion:
+  \[
+  \sqrt{p_{\theta_0+h}}-\sqrt{p_{\theta_0}}
+  =
+  \frac12h^\top\dot\ell_{\theta_0}\sqrt{p_{\theta_0}}
+  +o_{L_2}(\|h\|).
+  \]
+  The squared norm of the leading term is
+  \(\frac14h^\top I_{\theta_0}h\); the cross and remainder terms are
+  \(o(\|h\|^2)\). \(\square\)</p>
+</div>
+
+<h3>A practical sufficient condition</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(p_\theta(x)\) is differentiable in \(\theta\) for \(\mu\)-almost every \(x\), and
+  \[
+  \partial_\theta\sqrt{p_\theta(x)}
+  \]
+  is continuous in \(L_2(\mu)\) at \(\theta_0\). Then the model is DQM with
+  \[
+  \dot\ell_{\theta_0}
+  =
+  2\frac{\partial_\theta\sqrt{p_{\theta_0}}}
+          {\sqrt{p_{\theta_0}}}
+  \]
+  on \(\{p_{\theta_0}>0\}\).</p>
+</div>
+
+<p>This \(L_2\) continuity is stronger than necessary but often easy to verify by dominated convergence.</p>
+
+<h3>Regular examples</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (normal location).</span> For
+  \(N(\theta,\sigma^2)\),
+  \[
+  \dot\ell_\theta(x)=\frac{x-\theta}{\sigma^2},
+  \qquad
+  I_\theta=\sigma^{-2}.
+  \]
+  DQM follows from smoothness of the normal square-root density in \(L_2\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Bernoulli interior).</span> For
+  \(X\sim\operatorname{Bernoulli}(\theta)\), \(0<\theta<1\),
+  \[
+  \dot\ell_\theta(X)
+  =
+  \frac{X-\theta}{\theta(1-\theta)},
+  \qquad
+  I_\theta=\frac1{\theta(1-\theta)}.
+  \]
+  At the boundary \(\theta=0\), the support changes and the root-\(n\) DQM geometry fails; the local count experiment at rate \(n^{-1}\) is Poisson.</p>
+</div>
+
+<h3>Location models with rough densities</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For the location model
+  \(p_\theta(x)=p(x-\theta)\), DQM holds if \(\sqrt p\) is weakly differentiable with derivative in \(L_2\). Then
+  \[
+  \dot\ell_\theta(x)
+  =
+  -2\frac{(\sqrt p)'(x-\theta)}
+          {\sqrt p(x-\theta)}
+  \]
+  on the positive-density set.</p>
+</div>
+
+<p>Pointwise differentiability of \(p\) is not required. Conversely, support boundaries can destroy DQM even when the density formula is smooth inside its support, as in the uniform location model.</p>
+
+<h3>One-dimensional paths and tangent scores</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A differentiable path
+  \(t\mapsto P_t\) through \(P=P_0\) has score \(g\in L_2^0(P)\) if
+  \[
+  \sqrt{\frac{\mathrm{d}P_t}{\mathrm{d}\mu}}
+  =
+  \sqrt{\frac{\mathrm{d}P}{\mathrm{d}\mu}}
+  +\frac t2g\sqrt{\frac{\mathrm{d}P}{\mathrm{d}\mu}}
+  +o_{L_2}(t).
+  \]
+  The tangent space is the closed linear span in \(L_2^0(P)\) of all path scores.</p>
+</div>
+
+<p>In a \(p\)-dimensional parametric model, tangent scores are
+\(h^\top\dot\ell_{\theta_0}\), and
+\[
+\|h^\top\dot\ell_{\theta_0}\|_{P,2}^2
+=h^\top I_{\theta_0}h.
+\]
+In semiparametric models, the tangent space may be infinite dimensional; efficient scores arise by orthogonal projection away from nuisance tangents.</p>
+
+<h3>Stability under statistics</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(T(X)\) is observed instead of \(X\), the score in the reduced experiment is
+  \[
+  E_{\theta_0}(\dot\ell_{\theta_0}(X)\mid T).
+  \]
+  Its information is no larger:
+  \[
+  \operatorname{Var}\{E(\dot\ell\mid T)\}
+  \preceq\operatorname{Var}(\dot\ell).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiate expectations of bounded functions of \(T\):
+  \[
+  \left.\frac{\mathrm{d}}{\mathrm{d}t}
+  E_{\theta_0+th}\varphi(T)\right|_{t=0}
+  =
+  E_{\theta_0}\{\varphi(T)h^\top\dot\ell(X)\}
+  =
+  E_{\theta_0}\{\varphi(T)h^\top E(\dot\ell\mid T)\}.
+  \]
+  This identifies the reduced score. Conditional-variance decomposition gives the information inequality. \(\square\)</p>
+</div>
+
+<p>A statistic is sufficient precisely when it loses no score information for every local direction, under suitable regularity. This is the infinitesimal counterpart of exact Blackwell equivalence.</p>

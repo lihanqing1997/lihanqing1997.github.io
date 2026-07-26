@@ -8,27 +8,182 @@ note_prev_url: "/notes/statistical-decision-theory/gaussian-shift-experiments/"
 note_next_url: "/notes/statistical-decision-theory/local-asymptotic-minimax-theory/"
 ---
 
-<p>LAN is the bridge from a smooth statistical model to a Gaussian shift experiment. It is a statement about the likelihood-ratio process, not only about one estimator.</p>
+<p>Local asymptotic normality is a quadratic approximation of the entire likelihood-ratio process on the root-\(n\) parameter scale. It identifies a Gaussian shift limit and thereby determines local testing power, minimax risk, and the form of regular estimator limits.</p>
 
-    <h3>LAN expansion</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A model is LAN at \(\theta_0\) with information \(I_{\theta_0}\) if, for fixed \(h\),</p>
-        <p>\[
-\log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{(n)}}{\mathrm{d}P_{\theta_0}^{(n)}}
-=h^\top\Delta_n-\frac12h^\top I_{\theta_0}h+o_{P_{\theta_0}}(1),
-\quad \Delta_n\Rightarrow N(0,I_{\theta_0}).
-\]</p>
-    </div>
+<h3>The LAN property</h3>
 
-    <h3>Convergence to Gaussian shift</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The LAN expansion implies weak convergence of the local experiments \(\{P_{\theta_0+h/\sqrt n}^{(n)}:h\in K\}\) to the Gaussian shift experiment with information \(I_{\theta_0}\), for each finite \(K\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence of experiments
+  \(\{P_{n,\theta}:\theta\in\Theta\subset\mathbb R^p\}\) is locally asymptotically normal at \(\theta_0\) with rate matrices \(r_n\) and information \(I\) if, for every fixed \(h\),
+  \[
+  \log\frac{\mathrm{d}P_{n,\theta_0+r_n^{-1}h}}
+                {\mathrm{d}P_{n,\theta_0}}
+  =
+  h^\top\Delta_n-\frac12h^\top Ih+o_{P_{n,\theta_0}}(1),
+  \]
+  where
+  \[
+  \Delta_n\rightsquigarrow N_p(0,I)
+  \quad\text{under }P_{n,\theta_0}.
+  \]
+  In regular i.i.d. models, \(r_n=\sqrt n\,I_p\).</p>
+</div>
 
-    <h3>Likelihood-ratio vector proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(h_1,\ldots,h_k\), the LAN expansion expresses all likelihood ratios as continuous functions of \(\Delta_n\) plus deterministic quadratic terms. The multivariate CLT gives the joint limit.</p>
-    </div>
+<p>The same matrix \(I\) is the covariance of the central sequence and the negative quadratic curvature of the log likelihood. This compatibility ensures that the limiting exponential likelihood ratio has expectation one.</p>
 
-    <h3>Information as local curvature</h3>
-    <p>The matrix \(I_{\theta_0}\) is simultaneously the covariance of the central sequence and the curvature of the log likelihood in local coordinates.</p>
+<h3>Quadratic mean differentiability</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A dominated model
+  \(\{p_\theta:\theta\in\Theta\}\) is differentiable in quadratic mean at \(\theta_0\) if a score
+  \(\dot\ell_{\theta_0}\in L_2^p(P_{\theta_0})\) exists such that
+  \[
+  \int\left[
+  \sqrt{p_{\theta_0+t}}
+  -\sqrt{p_{\theta_0}}
+  -\frac12t^\top\dot\ell_{\theta_0}\sqrt{p_{\theta_0}}
+  \right]^2\mathrm{d}\mu
+  =o(\|t\|^2).
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Quadratic mean differentiability implies
+  \[
+  P_{\theta_0}\dot\ell_{\theta_0}=0,
+  \qquad
+  I_{\theta_0}
+  =
+  P_{\theta_0}
+  (\dot\ell_{\theta_0}\dot\ell_{\theta_0}^\top)
+  <\infty.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The \(L_2\)-norm of every square-root density equals one. Expand
+  \[
+  \|\sqrt{p_{\theta_0+t}}\|_2^2-\|\sqrt{p_{\theta_0}}\|_2^2=0
+  \]
+  using the quadratic-mean expansion. The coefficient of the linear term is
+  \(t^\top P_{\theta_0}\dot\ell_{\theta_0}\), which must vanish for every \(t\). Square integrability of the score is part of the expansion; its second moment defines \(I_{\theta_0}\). \(\square\)</p>
+</div>
+
+<h3>DQM implies LAN for i.i.d. samples</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If the one-observation model is differentiable in quadratic mean at \(\theta_0\), then for i.i.d. observations and every fixed \(h\),
+  \[
+  \log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{\,n}}
+                {\mathrm{d}P_{\theta_0}^{\,n}}
+  =
+  h^\top\Delta_n
+  -\frac12h^\top I_{\theta_0}h
+  +o_{P_{\theta_0}}(1),
+  \]
+  where
+  \[
+  \Delta_n
+  =
+  \frac1{\sqrt n}\sum_{i=1}^n
+  \dot\ell_{\theta_0}(X_i)
+  \rightsquigarrow N_p(0,I_{\theta_0}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Put
+  \[
+  s_{n,h}(x)
+  =
+  \sqrt{\frac{p_{\theta_0+h/\sqrt n}(x)}
+             {p_{\theta_0}(x)}}-1.
+  \]
+  DQM gives
+  \[
+  s_{n,h}
+  =
+  \frac1{2\sqrt n}h^\top\dot\ell_{\theta_0}
+  +r_{n,h},
+  \qquad
+  P_{\theta_0}r_{n,h}^2=o(n^{-1}).
+  \]
+  Since \(\log(p_{\theta_0+h/\sqrt n}/p_{\theta_0})
+  =2\log(1+s_{n,h})\), use
+  \[
+  2\log(1+s)=2s-s^2+O(|s|^3)
+  \]
+  after truncating rare large \(s\). Summing linear terms yields
+  \(h^\top\Delta_n\). The normalization
+  \(P_{\theta_0}(1+s_{n,h})^2=1\) determines the mean correction, and the sum of quadratic terms converges to
+  \(-\frac12h^\top I_{\theta_0}h\). DQM controls the accumulated remainders. The multivariate central limit theorem gives the central-sequence limit. \(\square\)</p>
+</div>
+
+<h3>Weak convergence to the Gaussian shift</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If LAN holds, then for every finite
+  \(K=\{h_0=0,h_1,\ldots,h_k\}\), the local experiments
+  \[
+  \{P_{n,\theta_0+r_n^{-1}h}:h\in K\}
+  \]
+  converge weakly to the Gaussian shift experiment
+  \[
+  \{N_p(Ih,I):h\in K\}
+  \]
+  observed through its canonical statistic.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the base parameter, the vector of log likelihood ratios is
+  \[
+  \left(
+  h_j^\top\Delta_n-\tfrac12h_j^\top Ih_j+o_p(1)
+  \right)_{j=1}^k.
+  \]
+  By the continuous-mapping theorem it converges jointly to the corresponding vector with \(\Delta\sim N(0,I)\). Exponentiation gives the likelihood-ratio vector of the Gaussian shift, whose coordinates have mean one. Apply the likelihood-ratio criterion for weak convergence of experiments. \(\square\)</p>
+</div>
+
+<h3>Local alternatives and the central sequence</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under
+  \(P_{n,\theta_0+r_n^{-1}h}\),
+  \[
+  \Delta_n\rightsquigarrow N_p(Ih,I).
+  \]</p>
+</div>
+
+<p>This follows from Le Cam's third lemma. Local alternatives change the mean of the score but not its covariance to first order.</p>
+
+<h3>Reparameterization</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(\eta=\phi(\theta)\) is differentiable at \(\theta_0\) with nonsingular Jacobian
+  \(J=\partial\phi(\theta_0)/\partial\theta^\top\), then the information in \(\eta\)-coordinates is
+  \[
+  I_\eta=J^{-\top}I_\theta J^{-1}.
+  \]</p>
+</div>
+
+<p>The quadratic form is invariant:
+\[
+h_\theta^\top I_\theta h_\theta
+=h_\eta^\top I_\eta h_\eta,
+\qquad h_\eta=Jh_\theta.
+\]
+Thus LAN information is a coordinate tensor defining the local statistical metric.</p>
+
+<h3>Uniform LAN and local asymptotic quadraticity</h3>
+
+<p>Pointwise LAN holds for each fixed \(h\). Many estimator and minimax arguments need the remainder uniform on compact sets:
+\[
+\sup_{h\in K}
+\left|
+\log\frac{\mathrm{d}P_{n,\theta_0+r_n^{-1}h}}
+          {\mathrm{d}P_{n,\theta_0}}
+-h^\top\Delta_n+\frac12h^\top Ih
+\right|
+\to_p0.
+\]
+Local asymptotic quadraticity allows a random or parameter-dependent information matrix and is useful beyond exactly Gaussian limits. Uniformity must be proved; it does not follow from pointwise LAN alone.</p>

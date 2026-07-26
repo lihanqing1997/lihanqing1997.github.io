@@ -8,24 +8,128 @@ note_prev_url: "/notes/differential-equations/bifurcations/"
 note_next_url: "/notes/differential-equations/sobolev-spaces-and-traces/"
 ---
 
-<p>Distributions and weak derivatives records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>Distributions enlarge functions so differentiation is always defined and
+limits can be differentiated without pointwise regularity. They are the natural
+language for weak PDE solutions, fundamental solutions, and singular sources.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A weak derivative is defined by integration against test functions: \(u\) has weak derivative \(v\) if \(\int u\partial_i\varphi\,\mathrm{d}x=-\int v\varphi\,\mathrm{d}x\) for all test \(\varphi\).</p>
-    </div>
+<h3>Test functions and distributions</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Classical derivatives are weak derivatives, but weak derivatives exist for many nonsmooth functions. Differential equations can therefore be interpreted in distributional form.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\(\Omega\subset\mathbb R^d\) be open.
+\(\mathcal D(\Omega)=C_c^\infty(\Omega)\) carries the topology in which
+\(\varphi_n\to0\) when all supports lie in one compact set and every derivative
+converges uniformly to zero. A distribution is a continuous linear functional
+\[
+T:\mathcal D(\Omega)\to\mathbb R
+\quad\text{or }\mathbb C.
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Classical integration by parts proves agreement for smooth functions. For nonsmooth functions, the identity with all test functions is taken as the definition.</p>
-    </div>
+<p>Every \(f\in L_{\mathrm{loc}}^1(\Omega)\) defines
+\[
+\langle T_f,\varphi\rangle
+=\int_\Omega f(x)\varphi(x)\,\mathrm{d}x.
+\]
+The Dirac mass is
+\(\langle\delta_a,\varphi\rangle=\varphi(a)\) and is not represented by an
+ordinary locally integrable function.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Weak derivatives are the entry point to modern PDE theory because solutions are often not classically differentiable.</p>
-    </div>
+<h3>Distributional derivatives</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a multi-index
+\(\alpha\),
+\[
+\langle D^\alpha T,\varphi\rangle
+=(-1)^{|\alpha|}
+\langle T,D^\alpha\varphi\rangle.
+\]
+This definition is forced by integration by parts and has no boundary term
+because \(\varphi\) is compactly supported.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (jump derivative).</span> For the
+Heaviside function \(H=\mathbf1_{(0,\infty)}\),
+\[
+\langle H',\varphi\rangle
+=-\int_0^\infty\varphi'(x)\,\mathrm{d}x
+=\varphi(0)
+=\langle\delta_0,\varphi\rangle.
+\]
+Thus \(H'=\delta_0\) in distributions.</p>
+</div>
+
+<h3>Convergence and differentiation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(T_n\to T\) in
+\(\mathcal D'(\Omega)\), meaning
+\(\langle T_n,\varphi\rangle\to\langle T,\varphi\rangle\) for every test
+function, then
+\[
+D^\alpha T_n\to D^\alpha T.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\[
+\langle D^\alpha T_n,\varphi\rangle
+=(-1)^{|\alpha|}\langle T_n,D^\alpha\varphi\rangle
+\to
+(-1)^{|\alpha|}\langle T,D^\alpha\varphi\rangle.
+\]</p>
+</div>
+
+<p>This continuity is why weak limits pass through linear differential
+operators even when classical derivatives do not converge.</p>
+
+<h3>Convolution and mollification</h3>
+
+<p>Let \(\rho\in C_c^\infty\), \(\rho\ge0\),
+\(\int\rho=1\), and
+\(\rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)\). For
+\(T\in\mathcal D'\),
+\[
+T*\rho_\varepsilon
+\]
+is smooth on the interior where convolution is defined, and
+\[
+D^\alpha(T*\rho_\varepsilon)
+=(D^\alpha T)*\rho_\varepsilon
+=T*D^\alpha\rho_\varepsilon.
+\]
+Moreover \(T*\rho_\varepsilon\to T\) in distributions. For
+\(f\in L^p_{\mathrm loc}\), mollification also converges in local \(L^p\) for
+\(1\le p<\infty\).</p>
+
+<h3>Fundamental solutions</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A fundamental solution of a
+constant-coefficient operator \(L\) is a distribution \(E\) satisfying
+\[
+LE=\delta_0.
+\]
+Then \(u=E*f\) formally solves \(Lu=f\), because
+\[
+L(E*f)=(LE)*f=\delta_0*f=f.
+\]</p>
+</div>
+
+<p>For \(d\ge3\), the Laplacian has
+\[
+\Phi(x)=\frac1{(2-d)|S^{d-1}|}|x|^{2-d},
+\qquad -\Delta\Phi=\delta_0
+\]
+under the chosen sign convention. The singularity is exactly what produces the
+point source.</p>
+
+<h3>Weak derivatives and Sobolev regularity</h3>
+
+<p>A locally integrable function \(g\) is the weak derivative
+\(D^\alpha f\) if the distributional derivative of \(T_f\) is \(T_g\). Sobolev
+spaces require these weak derivatives to belong to \(L^p\), turning
+distribution theory into quantitative function-space regularity.</p>

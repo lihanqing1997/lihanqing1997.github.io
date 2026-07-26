@@ -17,7 +17,10 @@ note_next_url: "/notes/real-analysis/differentiability-and-taylor-expansion/"
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> A uniformly bounded family of Lipschitz functions with a common Lipschitz constant is equicontinuous. Uniform boundedness alone is not enough.</p>
+        <p><span class="statement-title">Example.</span> A family of Lipschitz functions with a common Lipschitz constant is equicontinuous; no bound on their absolute levels is needed for this conclusion. Conversely, the uniformly bounded family \(f_n(x)=x^n\) on \([0,1]\) is not equicontinuous at \(1\): with \(x_n=1-1/n\),
+\[
+|f_n(1)-f_n(x_n)|=1-(1-1/n)^n\longrightarrow1-e^{-1}.
+\]</p>
     </div>
 
     <h3>Finite nets and oscillation control</h3>
@@ -33,11 +36,17 @@ note_next_url: "/notes/real-analysis/differentiability-and-taylor-expansion/"
     <h3>Arzela-Ascoli theorem</h3>
     <p>Pointwise subsequential compactness plus equicontinuity gives uniform subsequential compactness.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(K\) is compact metric and \(\mathcal F\subset C(K)\) is uniformly bounded and equicontinuous, then every sequence in \(\mathcal F\) has a uniformly convergent subsequence.</p>
+        <p><span class="statement-title">Theorem (Arzela-Ascoli).</span> Let \(K\) be compact metric. If \(\mathcal F\subset C(K)\) is pointwise bounded and equicontinuous, then every sequence in \(\mathcal F\) has a uniformly convergent subsequence. On compact \(K\), pointwise boundedness plus equicontinuity also implies uniform boundedness.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose a countable dense set \(D\subset K\). Uniform boundedness and diagonal extraction produce a subsequence converging at every point of \(D\). Equicontinuity extends this convergence uniformly: choose a finite \(\delta\)-net from the previous lemma, control convergence on the finitely many net points, and use equicontinuity to control the gaps. The uniform limit is continuous.</p>
+        <p><span class="statement-title">Proof.</span> Compact metric spaces are separable: for each \(m\), choose a finite \(1/m\)-net and take the countable union of all net points. Enumerate a resulting dense set as \(D=\{q_1,q_2,\ldots\}\). Given \((f_n)\subset\mathcal F\), pointwise boundedness lets Bolzano-Weierstrass select a subsequence converging at \(q_1\); from it select one converging at \(q_2\), and so on. The diagonal subsequence \((g_n)\) converges at every \(q_j\).</p>
+        <p>Fix \(\varepsilon>0\). Equicontinuity supplies \(\delta>0\) such that \(d(x,y)<\delta\) implies \(|f(x)-f(y)|<\varepsilon/3\) for all \(f\in\mathcal F\). Choose a finite \(\delta\)-net \(q_{j_1},\ldots,q_{j_m}\) from \(D\). Because \(g_n(q_{j_r})\) converges for every \(r\), there is \(N\) such that
+\[
+|g_n(q_{j_r})-g_\ell(q_{j_r})|<\varepsilon/3
+\]
+for all \(n,\ell\ge N\) and all \(r\). For arbitrary \(x\), choose \(q_{j_r}\) within \(\delta\); a three-term estimate gives \(|g_n(x)-g_\ell(x)|<\varepsilon\). Thus \((g_n)\) is uniformly Cauchy and converges uniformly to a continuous function.</p>
+        <p>Finally, fix \(x_0\in K\). Pointwise boundedness gives \(\sup_{f\in\mathcal F}|f(x_0)|<\infty\). Equicontinuity and a finite chain of neighborhoods, or more directly a finite \(\delta\)-net with pointwise bounds at its centers, yield \(\sup_{f,x}|f(x)|<\infty\).</p>
     </div>
 
     <h3>Compactness in \(C(K)\)</h3>
@@ -47,11 +56,17 @@ note_next_url: "/notes/real-analysis/differentiability-and-taylor-expansion/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The forward direction follows because compact sets in \(C(K)\) are totally bounded, and finite approximants are uniformly bounded and equicontinuous up to a small error. The reverse direction is exactly sequential compactness from Arzela-Ascoli, which is equivalent to compactness in the metric space \(C(K)\).</p>
+        <p><span class="statement-title">Proof.</span> The reverse direction is the theorem. For necessity, let \(\overline{\mathcal F}\) be compact. It is bounded in the normed space \(C(K)\), so \(\mathcal F\) is uniformly bounded. Given \(\varepsilon>0\), choose a finite \(\varepsilon/3\)-net \(g_1,\ldots,g_m\) for \(\mathcal F\). Each \(g_j\) is uniformly continuous on compact \(K\); choose one \(\delta>0\) that works for all finitely many \(g_j\). For \(f\in\mathcal F\), select \(g_j\) with \(\|f-g_j\|_\infty<\varepsilon/3\). If \(d(x,y)<\delta\), then
+\[
+|f(x)-f(y)|
+\le |f(x)-g_j(x)|+|g_j(x)-g_j(y)|+|g_j(y)-f(y)|
+<\varepsilon.
+\]
+Thus \(\mathcal F\) is equicontinuous.</p>
     </div>
 
-    <h3>Why statisticians use it</h3>
-    <p>The theorem is a compactness mechanism for deterministic approximations to random functions.</p>
+    <h3>Finite nets behind stochastic equicontinuity</h3>
+    <p>The deterministic proof separates control at finitely many locations from control of oscillations between them.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Equicontinuity estimates are the deterministic ancestor of stochastic equicontinuity. In empirical process theory, tightness of random functions is often proved by probabilistic analogues of finite-net and oscillation control.</p>
+        <p><span class="statement-title">Remark.</span> The same architecture reappears for random functions: finite-dimensional convergence controls values on a finite net, while stochastic equicontinuity controls the gaps. This is the bridge to the tightness criteria in <a href="{{ '/notes/empirical-processes/stochastic-equicontinuity-and-applications/' | relative_url }}">Empirical processes</a>.</p>
     </div>

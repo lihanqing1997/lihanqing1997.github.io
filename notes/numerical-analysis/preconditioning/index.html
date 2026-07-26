@@ -34,3 +34,85 @@ note_next_url: "/notes/numerical-analysis/fixed-point-iteration-bisection/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> There is no universal preconditioner. Effective preconditioning uses structure: ellipticity, graph geometry, block variables, low-rank components, or statistical covariance models.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Equivalent systems and transformed geometry</h3>
+
+<p>Left, right, and split preconditioning solve
+\[
+M^{-1}Ax=M^{-1}b,\qquad
+AM^{-1}y=b,\ x=M^{-1}y,
+\]
+or
+\[
+M_L^{-1}AM_R^{-1}y=M_L^{-1}b.
+\]
+The goal is not to approximate \(A^{-1}\) entrywise, but to make the transformed
+operator easy for the chosen iteration while keeping applications of
+\(M^{-1}\) cheap.</p>
+
+<h3>Spectral equivalence for conjugate gradients</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(A,M\) be symmetric
+positive definite and suppose
+\[
+c\,x^\top Mx
+\le x^\top Ax
+\le C\,x^\top Mx
+\quad\text{for all }x.
+\]
+Then eigenvalues of \(M^{-1}A\) lie in \([c,C]\), so preconditioned CG obeys
+\[
+\frac{\|e_k\|_A}{\|e_0\|_A}
+\le2\left(
+\frac{\sqrt{C/c}-1}{\sqrt{C/c}+1}
+\right)^k.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Generalized eigenvalues satisfy
+\[
+\lambda=\frac{x^\top Ax}{x^\top Mx},
+\]
+so the Rayleigh quotient lies in \([c,C]\). Apply the CG bound to the symmetric
+matrix \(M^{-1/2}AM^{-1/2}\).</p>
+</div>
+
+<h3>Classical preconditioners</h3>
+
+<ul>
+<li>Jacobi scaling uses \(M=\operatorname{diag}(A)\) and corrects units.</li>
+<li>Incomplete LU or Cholesky drops fill during factorization; drop tolerance
+balances cost and quality.</li>
+<li>Multigrid smooths high-frequency error and corrects low-frequency error on
+coarse grids, ideally yielding mesh-independent iteration counts.</li>
+<li>Domain decomposition solves local subproblems and coordinates them through
+overlap or a coarse space.</li>
+<li>Deflation and low-rank corrections remove isolated troublesome spectral
+directions.</li>
+</ul>
+
+<h3>Preconditioning normal and saddle-point systems</h3>
+
+<p>For least squares, preconditioning \(A\) before forming normal equations is
+preferable to preconditioning \(A^\top A\) blindly. Saddle-point matrices
+\[
+\begin{pmatrix}A&B^\top\\B&0\end{pmatrix}
+\]
+need block preconditioners approximating \(A\) and the Schur complement
+\(BA^{-1}B^\top\). Preserving symmetry and definiteness determines whether CG,
+MINRES, or GMRES is applicable.</p>
+
+<h3>Cost model</h3>
+
+<p>A stronger preconditioner is not automatically faster. Total work is
+\[
+\text{setup cost}
++(\text{iterations})\times
+(\text{matrix, preconditioner, and communication cost}).
+\]
+In parallel computation, synchronization and data movement can dominate
+floating-point operations. Reuse across related systems often justifies
+expensive setup.</p>

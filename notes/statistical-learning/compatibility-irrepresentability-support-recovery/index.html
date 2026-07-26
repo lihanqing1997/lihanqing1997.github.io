@@ -4,6 +4,7 @@ breadcrumb_child_label_en: "21. Compatibility, irrepresentability, and support r
 breadcrumb_child_label_fr: "21. Compatibilité, irrepresentability et récupération du support"
 breadcrumb_child_label_zh: "21. 相容性、不可表示条件与支持恢复"
 note_back_url: "/notes/statistical-learning/"
+note_prev_url: "/notes/statistical-learning/pac-bayes-bounds/"
 note_next_url: "/notes/statistical-learning/nonconvex-sparse-penalties/"
 ---
 
@@ -40,3 +41,148 @@ for some \(\eta>0\).</p>
     </div><div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Compare the penalized objective at \(\hat\beta\) and \(\beta^*\). The stochastic term is bounded by \(\lambda\|\Delta\|_1/2\). Rearranging separates active and inactive coordinates and yields the cone condition and inequality.</p>
     </div>
+
+<h3>A hierarchy of design conditions</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For a fixed support \(S\), the following implications hold, with appropriate constants:
+  \[
+  \text{uniform sparse eigenvalue}
+  \Longrightarrow\text{restricted eigenvalue}
+  \Longrightarrow\text{compatibility}.
+  \]
+  Irrepresentability is generally incomparable with restricted eigenvalues: it controls leakage from active to inactive variables rather than prediction curvature on a cone.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A uniform lower eigenvalue bound on all vectors of support size proportional to \(|S|\) extends to the cone by decomposing \(\Delta_{S^c}\) into decreasing coordinate blocks. Restricted eigenvalues give
+  \(\|X\Delta\|/\sqrt n\ge\kappa\|\Delta_S\|_2\), and
+  \(\|\Delta_S\|_1\le\sqrt{|S|}\|\Delta_S\|_2\) yields compatibility.
+  For incomparability, correlated inactive variables can violate irrepresentability while the Gram matrix remains well conditioned on sparse cones; conversely, an active block can be nearly singular even when its projection onto inactive variables is small.</p>
+</div>
+
+<h3>Primal-dual witness construction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(Y=X_S\beta_S^*+\varepsilon\), and suppose \(\Sigma_{SS}\) is invertible.
+  Construct
+  \[
+  \widetilde\beta_{S}
+  =\beta_S^*+
+  \Sigma_{SS}^{-1}
+  \left(\frac{X_S^\top\varepsilon}{n}
+  -\lambda z_S\right),
+  \qquad
+  \widetilde\beta_{S^c}=0,
+  \]
+  where \(z_S=\operatorname{sign}(\beta_S^*)\). Define
+  \[
+  \widetilde z_{S^c}
+  =\Sigma_{S^cS}\Sigma_{SS}^{-1}z_S+
+  \frac1\lambda
+  \left[
+  \frac{X_{S^c}^\top\varepsilon}{n}
+  -\Sigma_{S^cS}\Sigma_{SS}^{-1}
+  \frac{X_S^\top\varepsilon}{n}
+  \right].
+  \]
+  If
+  \(\|\widetilde z_{S^c}\|_\infty<1\) and
+  \(\operatorname{sign}(\widetilde\beta_S)=z_S\), then
+  \(\widetilde\beta\) is the unique Lasso solution and recovers the signed support.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Lasso KKT equations are
+  \[
+  \frac{X^\top(Y-X\beta)}{n}=\lambda z,
+  \quad
+  z_j=\operatorname{sign}(\beta_j)\text{ if }\beta_j\ne0,
+  \quad |z_j|\le1\text{ otherwise}.
+  \]
+  The displayed active solution solves the \(S\)-coordinates. Substitution into the inactive score gives exactly \(\widetilde z_{S^c}\). Strict dual feasibility and active sign agreement verify all KKT conditions. Invertibility on \(S\) and strict complementarity rule out a second fitted active solution.</p>
+</div>
+
+<h3>How irrepresentability leaves room for noise</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If
+  \[
+  \|\Sigma_{S^cS}\Sigma_{SS}^{-1}z_S\|_\infty\le1-\eta
+  \]
+  and the projected-noise term in \(\widetilde z_{S^c}\) has sup norm at most
+  \(\eta\lambda\), then dual feasibility holds, strictly if one inequality is strict.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the triangle inequality to the deterministic leakage and projected-noise terms defining \(\widetilde z_{S^c}\).</p>
+</div>
+
+<h3>The beta-min threshold</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Active sign recovery follows if
+  \[
+  \min_{j\in S}|\beta_j^*|
+  >
+  \left\|
+  \Sigma_{SS}^{-1}
+  \left(\frac{X_S^\top\varepsilon}{n}-\lambda z_S\right)
+  \right\|_\infty.
+  \]
+  A sufficient deterministic condition is
+  \[
+  \beta_{\min}>
+  \|\Sigma_{SS}^{-1}\|_{\infty}
+  \left(\left\|\frac{X_S^\top\varepsilon}{n}\right\|_\infty+\lambda\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The active-coordinate perturbation is the vector added to \(\beta_S^*\) in the primal-dual witness. If every perturbation coordinate is smaller in magnitude than the corresponding signal, no coordinate crosses zero. The matrix-norm inequality gives the sufficient condition.</p>
+</div>
+
+<h3>Necessity for sign consistency</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In a fixed-design asymptotic regime, if Lasso achieves signed support recovery with probability tending to one and the normalized noise vanishes relative to \(\lambda\), then the weak irrepresentable condition
+  \[
+  \|\Sigma_{S^cS}\Sigma_{SS}^{-1}
+  \operatorname{sign}(\beta_S^*)\|_\infty\le1
+  \]
+  is necessary.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On the sign-recovery event, solve the active KKT equation for the active estimation error and substitute it into the inactive KKT inequality. Divide by \(\lambda\). The normalized stochastic terms vanish by assumption, leaving the deterministic inequality in the limit.</p>
+</div>
+
+<h3>Mutual incoherence as a transparent sufficient condition</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose columns are normalized and
+  \[
+  \mu=\max_{j\ne k}|\Sigma_{jk}|.
+  \]
+  If \((2s-1)\mu<1\), every \(s\)-sparse representation is unique. Stronger numerical margins on \(s\mu\) imply restricted-eigenvalue and irrepresentability bounds.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Gershgorin's theorem places eigenvalues of a \(k\times k\) principal block in
+  \([1-(k-1)\mu,1+(k-1)\mu]\). If two \(s\)-sparse representations agreed, their \(2s\)-sparse difference would lie in the null space of a positive-definite \(2s\)-column Gram block, a contradiction.</p>
+</div>
+
+<h3>Prediction, screening, and exact recovery</h3>
+
+<p>The following targets are progressively stronger:</p>
+
+<ul>
+  <li>prediction consistency of \(X\widehat\beta\);</li>
+  <li>estimation consistency in \(\ell^1\) or \(\ell^2\);</li>
+  <li>screening, \(S\subseteq\widehat S\);</li>
+  <li>support recovery, \(\widehat S=S\);</li>
+  <li>signed support recovery.</li>
+</ul>
+
+<p>Prediction may remain possible with identical columns, whereas support recovery is then unidentifiable. Each stronger target needs a correspondingly stronger design and signal condition; a prediction theorem cannot be reported as a variable-selection theorem.</p>

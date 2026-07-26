@@ -1,0 +1,113 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "27. Stochastic games and multi-agent learning"
+breadcrumb_child_label_fr: "27. Jeux stochastiques et apprentissage multi-agent"
+breadcrumb_child_label_zh: "27. 随机博弈与多智能体学习"
+note_back_url: "/notes/reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/average-reward-ergodic-control/"
+---
+
+<p>When several agents affect transitions and rewards, the environment faced by
+one learner changes as the others learn. The correct object is a stochastic
+game, whose solution concept and Bellman operator depend on whether interests
+are opposed, shared, or general-sum.</p>
+
+<h3>Discounted zero-sum stochastic games</h3>
+
+<p>At state \(s\), player 1 chooses \(a\), player 2 chooses \(b\), player 1
+receives \(r(s,a,b)\), and the next state follows
+\(P(\cdot\mid s,a,b)\). Player 2 receives \(-r\). For mixed actions
+\(x\in\Delta(\mathsf A)\), \(y\in\Delta(\mathsf B)\), define
+\[
+(TV)(s)
+=\max_x\min_y
+\sum_{a,b}x_ay_b
+\left\{r(s,a,b)+\gamma P_{ab}V(s)\right\}.
+\]</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Shapley).</span> In a finite
+discounted zero-sum stochastic game, \(T\) is a
+\(\gamma\)-contraction in sup norm. Its unique fixed point is the game value,
+and stationary mixed policies attaining the statewise matrix-game saddle
+points are optimal.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The value of a matrix game is
+one-Lipschitz in the sup norm of its payoff matrix. Therefore
+\[
+\|TV-TW\|_\infty\le\gamma\|V-W\|_\infty.
+\]
+Banach's theorem gives a unique fixed point. Finite-horizon backward induction
+uses the minimax theorem at each state; taking the discounted limit gives
+stationary saddle policies and the fixed-point value.</p>
+</div>
+
+<h3>Minimax Q-learning</h3>
+
+<p>For zero-sum games, the optimal target becomes
+\[
+R_{t+1}+\gamma
+\operatorname{val}\{Q_t(S_{t+1},\cdot,\cdot)\},
+\]
+where \(\operatorname{val}\) solves the next-state matrix game. With full
+state-joint-action exploration and Robbins--Monro step sizes, tabular minimax
+Q-learning inherits contraction-based convergence. Solving a matrix game at
+each update replaces the ordinary maximum.</p>
+
+<h3>Cooperative multi-agent control</h3>
+
+<p>With a shared reward, the joint action
+\(a=(a_1,\ldots,a_n)\) turns the problem into an MDP, but its action space grows
+exponentially. Centralized training with decentralized execution uses global
+state and joint actions for critics while restricting each actor to local
+information. Value decomposition assumes structure such as
+\[
+Q_{\mathrm{tot}}(s,a_1,\ldots,a_n)
+=\sum_iQ_i(o_i,a_i)
+\]
+or monotone mixing. These restrictions enable decentralized greedy actions but
+cannot represent arbitrary strategic complementarities.</p>
+
+<h3>General-sum games and equilibrium</h3>
+
+<p>For general-sum rewards \(r_i\), there may be multiple Nash equilibria with
+different payoffs, and independent policy learning need not converge. A
+stationary Nash equilibrium satisfies, for every player \(i\),
+\[
+J_i(\pi_i^*,\pi_{-i}^*)
+\ge J_i(\pi_i,\pi_{-i}^*)
+\quad\text{for all }\pi_i.
+\]
+Best-response dynamics can cycle even in one-state games. Correlated
+equilibria, coarse correlated equilibria, no-regret learning, and potential
+games provide alternative structures with stronger convergence properties.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (no regret implies coarse correlated
+equilibrium).</span> In a repeated finite game, if every player's external
+regret is \(o(T)\), then every weak limit of the empirical joint-action
+distribution is a coarse correlated equilibrium.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> External regret for player \(i\)
+states that, for every fixed deviation \(a_i'\),
+\[
+\frac1T\sum_{t=1}^T
+\{u_i(a_i',a_{-i,t})-u_i(a_t)\}\le o(1).
+\]
+These are exactly the finite collection of linear coarse-correlated-equilibrium
+inequalities for the empirical distribution. Passing to a weakly convergent
+subsequence preserves them.</p>
+</div>
+
+<h3>Nonstationarity and credit assignment</h3>
+
+<p>From one agent's viewpoint, other learners make transition and reward laws
+nonstationary, invalidating ordinary replay and Markov-chain arguments.
+Counterfactual baselines, difference rewards, opponent modeling, and population
+training address credit and adaptation, but guarantees require an explicit
+game class and solution concept. “Multi-agent performance” without naming the
+equilibrium or regret criterion is mathematically incomplete.</p>

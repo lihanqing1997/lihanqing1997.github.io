@@ -86,3 +86,140 @@ The coefficient of \(\theta^2\) gives \(\tau_n^{-2}\), and the coefficient of \(
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Laplace approximation, Monte Carlo, Markov chain Monte Carlo, Hamiltonian Monte Carlo, and variational Bayes should all be read as different approximations to posterior expectations under the same Bayes formula.</p>
     </div>
+
+<h3>Conjugate exponential-family theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose
+\[
+p_\eta(x)=h(x)
+\exp\{\eta^\top T(x)-A(\eta)\}
+\]
+is a natural exponential family. The prior
+\[
+\pi(\eta\mid\xi,\nu)
+\propto
+\exp\{\eta^\top\xi-\nu A(\eta)\}
+\]
+is conjugate. Given \(x_{1:n}\),
+\[
+\eta\mid x_{1:n}
+\sim\pi\left(
+\eta\ \middle|\
+\xi+\sum_{i=1}^nT(x_i),\,\nu+n
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Multiplying likelihood and prior kernels gives
+\[
+\exp\left[
+\eta^\top\left\{\xi+\sum_iT(x_i)\right\}
+-(\nu+n)A(\eta)
+\right],
+\]
+which is the same prior family with updated hyperparameters.</p>
+</div>
+
+<p>The pair \((\xi,\nu)\) behaves like prior sufficient statistics and prior sample size, but this interpretation is exact only when \(\xi/\nu\) lies in the mean-parameter space and the prior is proper.</p>
+
+<h3>Gamma-Poisson prediction</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+X_i\mid\lambda\stackrel{\mathrm{iid}}{\sim}
+\operatorname{Poisson}(\lambda),
+\qquad
+\lambda\sim\operatorname{Gamma}(a,b)
+\]
+in shape-rate form. Then
+\[
+\lambda\mid x
+\sim\operatorname{Gamma}
+\left(a+\sum_ix_i,b+n\right).
+\]
+For one future count,
+\[
+P(\widetilde X=k\mid x)
+=\frac{\Gamma(a^\star+k)}
+{\Gamma(a^\star)k!}
+\left(\frac{b^\star}{b^\star+1}\right)^{a^\star}
+\left(\frac1{b^\star+1}\right)^k,
+\]
+where \(a^\star=a+\sum_ix_i\) and \(b^\star=b+n\). This is negative binomial, with
+\[
+E(\widetilde X\mid x)=\frac{a^\star}{b^\star},
+\qquad
+\operatorname{Var}(\widetilde X\mid x)
+=\frac{a^\star}{b^\star}
++\frac{a^\star}{(b^\star)^2}.
+\]</p>
+</div>
+
+<h3>Normal model with unknown mean and variance</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+X_i\mid\mu,\sigma^2\sim N(\mu,\sigma^2),
+\]
+\[
+\mu\mid\sigma^2\sim
+N(\mu_0,\sigma^2/\kappa_0),
+\qquad
+\sigma^2\sim\operatorname{InvGamma}(\alpha_0,\beta_0).
+\]
+Then the posterior has parameters
+\[
+\kappa_n=\kappa_0+n,\qquad
+\mu_n=\frac{\kappa_0\mu_0+n\bar X}{\kappa_n},
+\]
+\[
+\alpha_n=\alpha_0+\frac n2,
+\]
+\[
+\beta_n=\beta_0+\frac12\sum_i(X_i-\bar X)^2
++\frac{\kappa_0n}{2\kappa_n}
+(\bar X-\mu_0)^2.
+\]
+The marginal posterior of \(\mu\) is Student \(t_{2\alpha_n}\) with center \(\mu_n\) and scale squared
+\(\beta_n/(\alpha_n\kappa_n)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Complete the square:
+\[
+\sum_i(X_i-\mu)^2
++\kappa_0(\mu-\mu_0)^2
+=\sum_i(X_i-\bar X)^2
++\frac{\kappa_0n}{\kappa_n}(\bar X-\mu_0)^2
++\kappa_n(\mu-\mu_n)^2.
+\]
+The resulting kernel is normal in \(\mu\mid\sigma^2\) and inverse-gamma in \(\sigma^2\). Integrating \(\sigma^2\) produces the Student distribution.</p>
+</div>
+
+<h3>Conditional conjugacy and Gibbs sampling</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose a joint posterior has full conditional distributions
+\[
+\pi(\theta_j\mid\theta_{-j},x).
+\]
+The systematic-scan Gibbs kernel that successively samples each full conditional leaves the joint posterior invariant.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Updating one coordinate from its full conditional leaves \(\pi\) invariant because
+\[
+\int \pi(\mathrm{d}\theta)
+K_j(\theta,\mathrm{d}\theta')
+=\pi(\mathrm{d}\theta').
+\]
+This follows by disintegrating \(\pi\) into
+\(\pi(\mathrm{d}\theta_j\mid\theta_{-j})\pi_{-j}(\mathrm{d}\theta_{-j})\).
+A composition of invariant kernels remains invariant.</p>
+</div>
+
+<p>Conjugate full conditionals can make a hierarchical posterior computationally convenient even when its marginal posterior has no closed form. Invariance alone does not guarantee rapid mixing; dependence between blocks may still make Gibbs updates move slowly.</p>

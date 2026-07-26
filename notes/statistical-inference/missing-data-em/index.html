@@ -8,19 +8,199 @@ note_prev_url: "/notes/statistical-inference/monte-carlo-for-inference/"
 note_next_url: "/notes/statistical-inference/censored-truncated-data/"
 ---
 
-<p>Missing data change the likelihood because the observed data are a coarsening of complete data. EM turns incomplete-data likelihood maximization into repeated conditional expectation and maximization steps.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> Let \(Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})\) be complete data. The observed likelihood is
-    \[
-    L_{\mathrm{obs}}(\theta)=\int p_\theta(Y_{\mathrm{obs}},y_{\mathrm{mis}})\,\mathrm{d}y_{\mathrm{mis}}.
-    \]
-    EM defines
-    \[
-    Q(\theta\mid\theta^{(t)})=E_{\theta^{(t)}}\{\log p_\theta(Y)\mid Y_{\mathrm{obs}}\}.
-    \]</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">EM monotonicity.</span> If \(\theta^{(t+1)}\) maximizes \(Q(\theta\mid\theta^{(t)})\), then \(\ell_{\mathrm{obs}}(\theta^{(t+1)})\ge \ell_{\mathrm{obs}}(\theta^{(t)})\).</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write the observed log-likelihood as
-    \[
-    \ell_{\mathrm{obs}}(\theta)=Q(\theta\mid\theta^{(t)})-\operatorname{KL}\{p_{\theta^{(t)}}(Y_{\mathrm{mis}}\mid Y_{\mathrm{obs}}),p_\theta(Y_{\mathrm{mis}}\mid Y_{\mathrm{obs}})\}+C.
-    \]
-    The KL term is nonnegative and equals zero at \(\theta=\theta^{(t)}\). Increasing \(Q\) therefore cannot decrease \(\ell_{\mathrm{obs}}\).</p></div>
-    <h3>Missingness assumptions</h3><p>MCAR, MAR, and MNAR describe how missingness depends on data. Ignorability requires assumptions about both the missingness mechanism and parameter distinctness; otherwise the missingness process must be modeled.</p>
+<p>Missingness is a stochastic observation mechanism. The observed-data law combines the complete-data distribution with the probability of observing each pattern. Whether that mechanism can be ignored is an identifiability and likelihood-factorization question, not a property conferred by the EM algorithm.</p>
+
+<h3>Observed data and missingness patterns</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(Y=(Y_1,\ldots,Y_k)\) denote complete data and \(R=(R_1,\ldots,R_k)\in\{0,1\}^k\) the response pattern, where \(R_j=1\) means \(Y_j\) is observed. Write \(Y_{\mathrm{obs}}=Y_{\mathrm{obs}}(R)\) and \(Y_{\mathrm{mis}}=Y_{\mathrm{mis}}(R)\). A joint selection model factors as
+  \[
+  p_{\theta,\eta}(y,r)
+  =f_\theta(y)\,\pi_\eta(r\mid y),
+  \]
+  where \(f_\theta\) is the complete-data model and \(\pi_\eta\) is the missingness mechanism.</p>
+</div>
+
+<p>The observed-data density is
+\[
+p_{\theta,\eta}(y_{\mathrm{obs}},r)
+=\int f_\theta(y_{\mathrm{obs}},y_{\mathrm{mis}})
+\pi_\eta(r\mid y_{\mathrm{obs}},y_{\mathrm{mis}})
+\,\mathrm{d}y_{\mathrm{mis}}.
+\]</p>
+
+<h3>MCAR, MAR, and MNAR</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For the realized pattern \(r\):
+  \[
+  \begin{aligned}
+  \text{MCAR:}\quad&
+  \pi_\eta(r\mid y)=\pi_\eta(r),\\
+  \text{MAR:}\quad&
+  \pi_\eta(r\mid y)
+  =\pi_\eta(r\mid y_{\mathrm{obs}}(r)),\\
+  \text{MNAR:}\quad&
+  \pi_\eta(r\mid y)
+  \text{ depends on }y_{\mathrm{mis}}(r)
+  \text{ after conditioning on }y_{\mathrm{obs}}(r).
+  \end{aligned}
+  \]</p>
+</div>
+
+<p>MCAR is strongest and often unrealistic. MAR permits response to depend on observed covariates and outcomes. MNAR is not a single model; it means the observed law does not generally identify the complete-data law without restrictions on the unobserved dependence.</p>
+
+<h3>Likelihood ignorability</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Ignorable-likelihood factorization.</span> Suppose the mechanism is MAR and the parameter space is a product \(\Theta\times H\), so \(\theta\) and \(\eta\) are distinct. Then
+  \[
+  p_{\theta,\eta}(y_{\mathrm{obs}},r)
+  =\pi_\eta(r\mid y_{\mathrm{obs}})
+  \int f_\theta(y_{\mathrm{obs}},y_{\mathrm{mis}})
+  \,\mathrm{d}y_{\mathrm{mis}}.
+  \]
+  Therefore likelihood inference for \(\theta\) can ignore the first factor.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> MAR makes \(\pi_\eta(r\mid y)\) constant as a function of \(y_{\mathrm{mis}}\) for the observed pattern. Pull it outside the observed-density integral. Parameter distinctness makes maximizing or integrating the \(\theta\)-factor separable from the \(\eta\)-factor.</p>
+</div>
+
+<p>Ignorability is likelihood-specific. Bayesian ignorability additionally requires a prior factorization between \(\theta\) and \(\eta\). Frequentist procedures based on complete cases may still be inefficient or biased under MAR because they do not generally equal the observed-likelihood estimator.</p>
+
+<h3>EM construction</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(Y\) be latent complete data and \(X=Y_{\mathrm{obs}}\). With complete log-likelihood \(\ell_c(\theta;Y)\), the EM auxiliary function is
+  \[
+  Q(\theta\mid\theta^{(t)})
+  =\mathbb E_{\theta^{(t)}}[
+  \ell_c(\theta;Y)\mid X].
+  \]
+  The E-step computes \(Q\); the M-step chooses
+  \[
+  \theta^{(t+1)}\in\arg\max_\theta
+  Q(\theta\mid\theta^{(t)}).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">EM monotonicity.</span> Every exact EM update satisfies
+  \[
+  \ell_{\mathrm{obs}}(\theta^{(t+1)})
+  \ge\ell_{\mathrm{obs}}(\theta^{(t)}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \[
+  k_t(y)=p_{\theta^{(t)}}(y\mid X).
+  \]
+  Since
+  \[
+  \ell_{\mathrm{obs}}(\theta)
+  =\ell_c(\theta;y)-\log p_\theta(y\mid X)
+  \]
+  for compatible \(y\), take \(k_t\)-expectations:
+  \[
+  \ell_{\mathrm{obs}}(\theta)
+  =Q(\theta\mid\theta^{(t)})
+  -\mathbb E_{k_t}\log p_\theta(Y\mid X).
+  \]
+  Subtract the same identity at \(\theta^{(t)}\):
+  \[
+  \ell_{\mathrm{obs}}(\theta)
+  -\ell_{\mathrm{obs}}(\theta^{(t)})
+  =Q(\theta\mid\theta^{(t)})
+  -Q(\theta^{(t)}\mid\theta^{(t)})
+  +\operatorname{KL}\{k_t\|p_\theta(\cdot\mid X)\}.
+  \]
+  The KL term is nonnegative. Setting \(\theta=\theta^{(t+1)}\), the M-step makes the \(Q\)-difference nonnegative, proving monotonicity.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Generalized EM.</span> It is enough to choose an update satisfying
+  \[
+  Q(\theta^{(t+1)}\mid\theta^{(t)})
+  \ge Q(\theta^{(t)}\mid\theta^{(t)}).
+  \]
+  Exact maximization is not required for monotonicity.</p>
+</div>
+
+<h3>Gaussian-mixture example</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For
+  \[
+  p_\theta(x)=\sum_{k=1}^K\pi_k
+  \varphi(x;\mu_k,\Sigma_k),
+  \]
+  introduce latent labels \(Z_i\in\{1,\ldots,K\}\). The E-step computes responsibilities
+  \[
+  \tau_{ik}^{(t)}
+  =P_{\theta^{(t)}}(Z_i=k\mid X_i)
+  =\frac{\pi_k^{(t)}
+  \varphi(X_i;\mu_k^{(t)},\Sigma_k^{(t)})}
+  {\sum_{\ell=1}^K\pi_\ell^{(t)}
+  \varphi(X_i;\mu_\ell^{(t)},\Sigma_\ell^{(t)})}.
+  \]
+  The M-step gives
+  \[
+  \pi_k^{(t+1)}=\frac1n\sum_i\tau_{ik}^{(t)},\qquad
+  \mu_k^{(t+1)}
+  =\frac{\sum_i\tau_{ik}^{(t)}X_i}
+  {\sum_i\tau_{ik}^{(t)}},
+  \]
+  with a corresponding weighted covariance update.</p>
+</div>
+
+<p>EM increases the likelihood but can converge to a local maximum or saddle point. In unconstrained Gaussian mixtures the likelihood is unbounded when a component variance collapses at an observation, so monotonicity does not guarantee a meaningful solution.</p>
+
+<h3>Observed information</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Louis identity.</span> Let \(S_c(\theta;Y)=\nabla_\theta\ell_c(\theta;Y)\) and \(J_c(\theta;Y)=-\nabla_\theta^2\ell_c(\theta;Y)\). Then
+  \[
+  J_{\mathrm{obs}}(\theta;X)
+  =\mathbb E_\theta[J_c(\theta;Y)\mid X]
+  -\operatorname{Var}_\theta\{S_c(\theta;Y)\mid X\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fisher's identity gives
+  \[
+  S_{\mathrm{obs}}(\theta;X)
+  =\mathbb E_\theta[S_c(\theta;Y)\mid X].
+  \]
+  Differentiate this conditional expectation. Differentiating the integrand contributes \(-\mathbb E(J_c\mid X)\); differentiating the conditional density contributes the conditional covariance of \(S_c\) with itself. Negating the derivative yields the identity.</p>
+</div>
+
+<p>The second term is missing information. It explains why EM slows when latent variables remain highly uncertain: the observed likelihood has much less curvature than the complete-data criterion.</p>
+
+<h3>Weighting, imputation, and double robustness</h3>
+
+<p>For a scalar outcome \(Y\) observed when \(R=1\), under MAR with response probability
+\[
+\pi(X)=P(R=1\mid X),
+\]
+inverse-probability weighting uses
+\[
+\frac1n\sum_{i=1}^n\frac{R_iY_i}{\hat\pi(X_i)}.
+\]
+Outcome regression imputes \(m(X)=\mathbb E(Y\mid X)\). Their augmented combination
+\[
+\frac1n\sum_{i=1}^n
+\left[
+\hat m(X_i)
++\frac{R_i}{\hat\pi(X_i)}
+\{Y_i-\hat m(X_i)\}
+\right]
+\]
+is consistent if either the response model or the outcome model is correct under suitable positivity. Multiple imputation propagates uncertainty by drawing several completed datasets from an imputation model and combining within- and between-imputation variation; a single deterministic fill-in understates uncertainty.</p>
+
+<h3>Positivity and nonidentifiability</h3>
+
+<p>If \(\pi(X)\) approaches zero, inverse weights explode and the observed data contain little information about outcomes in that region. Under MNAR, different complete-data laws and response mechanisms can induce the same observed-data distribution. Sensitivity parameters, selection models, pattern-mixture models, or external information are then needed; no optimization algorithm can recover information absent from the observed law.</p>

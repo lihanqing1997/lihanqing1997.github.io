@@ -34,3 +34,77 @@ note_next_url: "/notes/numerical-analysis/polynomial-interpolation/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> An order statement such as \(O(h^p)\) describes asymptotic behavior under fixed regularity assumptions. It is not a promise that the visible error decreases at rate \(p\) before the mesh is fine enough or after roundoff dominates.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Continuous and discrete problems</h3>
+
+<p>Let \(L:X\to Y\) define \(Lu=f\), and let
+\(L_h:X_h\to Y_h\) define
+\(L_hu_h=f_h\). Restriction or interpolation maps
+\(R_h:X\to X_h\), \(S_h:Y\to Y_h\) compare the levels. The local truncation
+error is
+\[
+\tau_h(u)=L_hR_hu-S_hLu.
+\]
+Consistency means \(\tau_h(u)\to0\) for sufficiently regular exact solutions.</p>
+
+<h3>Stability converts consistency into convergence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose \(L_h\) is invertible
+and uniformly stable:
+\[
+\|L_h^{-1}\|_{Y_h\to X_h}\le C.
+\]
+If \(L_hu_h=S_hf\) and \(Lu=f\), then
+\[
+\|u_h-R_hu\|_{X_h}
+\le C\|\tau_h(u)\|_{Y_h}.
+\]
+Thus consistency implies convergence.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Subtract:
+\[
+L_h(u_h-R_hu)
+=S_hf-L_hR_hu=-\tau_h(u).
+\]
+Apply the inverse stability bound.</p>
+</div>
+
+<p>This elementary identity is the common skeleton behind finite differences,
+finite elements, quadrature, and time stepping. The norms and regularity class
+must be stated: a scheme can be stable in one norm and unstable in another.</p>
+
+<h3>Lax equivalence for linear evolution schemes</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Lax--Richtmyer, schematic).</span>
+For a well-posed linear initial-value problem and a consistent linear finite-
+difference approximation, stability is equivalent to convergence.</p>
+</div>
+
+<p>The forward implication is the error equation above. For the converse,
+pointwise boundedness of discrete evolution operators on a dense class follows
+from convergence; the uniform boundedness principle upgrades it to an operator
+stability bound. Linearity and well-posedness are essential. Nonlinear schemes
+need different compactness or monotonicity arguments.</p>
+
+<h3>Order and regularity</h3>
+
+<p>A method has consistency order \(p\) if
+\(\|\tau_h(u)\|\le C(u)h^p\). Stability then yields global order \(p\), but
+only when \(u\) has the derivatives used in the Taylor expansion. Corners,
+shocks, layers, and nonsmooth coefficients reduce observed order. A formal
+Taylor calculation is not a convergence theorem without stability and
+regularity.</p>
+
+<h3>Conservation and monotonicity</h3>
+
+<p>For nonlinear conservation laws, weak solutions are nonunique unless an
+entropy condition is imposed. Conservative, consistent, monotone schemes
+converge to the entropy solution under suitable compactness. Here monotonicity
+plays the stabilizing role and supplies discrete maximum principles. This is
+one reason discretizations should preserve structural properties rather than
+only match derivatives formally.</p>

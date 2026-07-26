@@ -2,28 +2,136 @@
 layout: note-detail
 breadcrumb_child_label_en: "11. Contiguity"
 breadcrumb_child_label_fr: "11. Contiguïté"
-breadcrumb_child_label_zh: "11. Contiguity"
+breadcrumb_child_label_zh: "11. 相邻性"
 note_back_url: "/notes/statistical-decision-theory/"
 note_prev_url: "/notes/statistical-decision-theory/likelihood-ratios-hellinger-geometry/"
 note_next_url: "/notes/statistical-decision-theory/weak-convergence-of-experiments/"
 ---
 
-<p>Contiguity is the asymptotic version of absolute continuity that is strong enough to transfer (o_p(1)) statements between changing measures.</p>
+<p>Absolute continuity compares two fixed measures. Contiguity compares changing sequences and asserts that asymptotically impossible events under one sequence remain impossible under the other. It is the precise condition that permits \(o_p(1)\) remainders proved under a null law to remain negligible under local alternatives.</p>
 
-    <h3>Contiguous sequences</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A sequence \(Q_n\) is contiguous with respect to \(P_n\), written \(Q_n\triangleleft P_n\), if \(P_n(A_n)\to0\) implies \(Q_n(A_n)\to0\) for every event sequence \(A_n\).</p>
-    </div>
+<h3>One-sided and mutual contiguity</h3>
 
-    <h3>Likelihood-ratio tightness criterion</h3>
-    <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> If \(Q_n\ll P_n\) with \(L_n=\mathrm{d}Q_n/\mathrm{d}P_n\), then \(Q_n\triangleleft P_n\) when the laws of \(L_n\) under \(P_n\) are tight and have no mass escaping to infinity in the limit.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence \(Q_n\) is contiguous with respect to \(P_n\), written
+  \[
+  Q_n\triangleleft P_n,
+  \]
+  if, for every event sequence \(A_n\),
+  \[
+  P_n(A_n)\to0
+  \quad\Longrightarrow\quad
+  Q_n(A_n)\to0.
+  \]
+  The sequences are mutually contiguous, \(Q_n\triangleleft\triangleright P_n\), if each is contiguous with respect to the other.</p>
+</div>
 
-    <h3>Transfer of negligible events</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(Q_n(A_n)=E_{P_n}L_n1_{A_n}\). On \(\{L_n\le M\}\) this is at most \(MP_n(A_n)\); the complement is controlled by tightness of \(L_n\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(Q_n\triangleleft P_n\) and \(T_n=o_{P_n}(1)\), then
+  \(T_n=o_{Q_n}(1)\). If \(T_n=O_{P_n}(1)\), contiguity alone also implies
+  \(T_n=O_{Q_n}(1)\).</p>
+</div>
 
-    <h3>Local alternatives</h3>
-    <p>LAN alternatives \(P_{\theta_0+h/\sqrt n}^{(n)}\) are typically mutually contiguous with \(P_{\theta_0}^{(n)}\). This is why local power can be computed under one base measure and transferred to another.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(o_p\), apply the definition to
+  \(A_n=\{|T_n|>\varepsilon\}\). For \(O_p\), choose \(M_k\uparrow\infty\) and a subsequence argument: if \(Q_n(|T_n|>M)\) failed to become uniformly small for large \(M\), one could choose \(M_n\uparrow\infty\) with
+  \(P_n(|T_n|>M_n)\to0\) but \(Q_n(|T_n|>M_n)\not\to0\), contradicting contiguity. \(\square\)</p>
+</div>
+
+<h3>Uniform integrability of likelihood ratios</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(Q_n\ll P_n\) with
+  \[
+  L_n=\frac{\mathrm{d}Q_n}{\mathrm{d}P_n}.
+  \]
+  Then
+  \[
+  Q_n\triangleleft P_n
+  \quad\Longleftrightarrow\quad
+  \{L_n:n\geq1\}
+  \text{ is uniformly integrable under }P_n,
+  \]
+  meaning
+  \[
+  \lim_{M\to\infty}\sup_n
+  E_{P_n}\{L_n1(L_n>M)\}=0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If the likelihood ratios are uniformly integrable and \(P_n(A_n)\to0\), then
+  \[
+  Q_n(A_n)
+  =E_{P_n}(L_n1_{A_n})
+  \leq MP_n(A_n)
+  +E_{P_n}\{L_n1(L_n>M)\}.
+  \]
+  Take \(\limsup_n\), then \(M\to\infty\). Conversely, if uniform integrability fails, choose \(M_k\uparrow\infty\) and indices \(n_k\) such that
+  \[
+  E_{P_{n_k}}\{L_{n_k}1(L_{n_k}>M_k)\}\geq\varepsilon.
+  \]
+  Set \(A_{n_k}=\{L_{n_k}>M_k\}\) and \(A_n=\varnothing\) otherwise. Markov's inequality gives
+  \(P_{n_k}(A_{n_k})\leq1/M_k\to0\), while
+  \(Q_{n_k}(A_{n_k})\geq\varepsilon\), contradicting contiguity. \(\square\)</p>
+</div>
+
+<p>Tightness of \(L_n\) under \(P_n\) is not enough. A small probability can carry a very large likelihood ratio and a nonvanishing amount of \(Q_n\)-mass. The relevant condition is tail control weighted by \(L_n\), namely uniform integrability.</p>
+
+<h3>A moment criterion</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If for some \(\eta>0\),
+  \[
+  \sup_nE_{P_n}L_n^{1+\eta}<\infty,
+  \]
+  then \(Q_n\triangleleft P_n\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On \(\{L_n>M\}\),
+  \(L_n\leq M^{-\eta}L_n^{1+\eta}\). Therefore the likelihood-ratio tails are uniformly \(O(M^{-\eta})\). \(\square\)</p>
+</div>
+
+<h3>Local Gaussian shifts</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let
+  \[
+  P_n=N(0,1)^{\otimes n},
+  \qquad
+  Q_n=N(h/\sqrt n,1)^{\otimes n}.
+  \]
+  Then
+  \[
+  \log L_n
+  =
+  h\sqrt n\,\bar X_n-\frac12h^2
+  \rightsquigarrow N(-h^2/2,h^2)
+  \quad\text{under }P_n.
+  \]
+  The limit \(L=\exp(hZ-h^2/2)\) is positive and has mean one. Le Cam's first lemma therefore gives mutual contiguity.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample (fixed separation).</span> If instead
+  \(Q_n=N(\mu,1)^{\otimes n}\) for fixed \(\mu\ne0\), the event
+  \[
+  A_n=\{|\bar X_n-\mu|<|\mu|/3\}
+  \]
+  has \(P_n(A_n)\to0\) and \(Q_n(A_n)\to1\). The sequences are asymptotically singular, not contiguous. The root-\(n\) local scale is exactly the scale at which neither model becomes perfectly distinguishable.</p>
+</div>
+
+<h3>Contiguity and total variation</h3>
+
+<p>If \(\|P_n-Q_n\|_{\mathrm{TV}}\to0\), the sequences are mutually contiguous, but the converse is false. Local normal alternatives are mutually contiguous while their total-variation distance converges to a positive constant depending on \(h\). Contiguity preserves null events; it does not say the experiments are indistinguishable.</p>
+
+<h3>Why local asymptotics needs contiguity</h3>
+
+<p>An expansion such as
+\[
+T_n=\Delta_n+o_{P_{\theta_0}}(1)
+\]
+is initially proved under \(P_{\theta_0}^{(n)}\). If local alternatives are contiguous, the same remainder is
+\(o_{P_{\theta_0+h/\sqrt n}}(1)\). Le Cam's third lemma then changes the law of the leading term \(\Delta_n\). Contiguity and change of measure therefore perform separate jobs: one transfers negligibility, the other calculates the shifted limit.</p>

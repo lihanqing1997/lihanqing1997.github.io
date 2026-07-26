@@ -8,26 +8,176 @@ note_prev_url: "/notes/statistical-decision-theory/deficiency-and-distance/"
 note_next_url: "/notes/statistical-decision-theory/contiguity/"
 ---
 
-<p>Likelihood ratios encode the relative position of measures. Hellinger distance gives a stable geometry for comparing product experiments and proving testing inequalities.</p>
+<p>Likelihood ratios encode an experiment relative to a base measure. Hellinger geometry works with their square roots, placing probability measures on the positive part of the unit sphere in \(L_2\). This geometry is stable under products and gives quantitative bounds for testing, contiguity, and quadratic likelihood approximation.</p>
 
-    <h3>Likelihood ratio process</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Fix \(P_{\theta_0}\). The likelihood ratio process is \(L_\theta=\mathrm{d}P_\theta/\mathrm{d}P_{\theta_0}\) on the part dominated by \(P_{\theta_0}\). Its finite-dimensional laws determine local experiment limits.</p>
-    </div>
+<h3>Likelihood-ratio coordinates</h3>
 
-    <h3>Hellinger distance</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For dominated measures \(P,Q\),</p>
-        <p>\[
-h^2(P,Q)=\frac12\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu
-=1-\int\sqrt{pq}\,\mathrm{d}\mu.
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If \(Q\ll P\), the likelihood ratio is
+  \[
+  L=\frac{\mathrm{d}Q}{\mathrm{d}P}.
+  \]
+  It is nonnegative and satisfies \(E_PL=1\). For an experiment dominated by \(P_{\theta_0}\), the likelihood-ratio process is
+  \[
+  L_\theta
+  =
+  \frac{\mathrm{d}P_\theta}{\mathrm{d}P_{\theta_0}},
+  \qquad\theta\in\Theta.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For a finite parameter set
+  \(\{\theta_0,\theta_1,\ldots,\theta_k\}\), the law under \(P_{\theta_0}\) of
+  \[
+  (L_{\theta_1},\ldots,L_{\theta_k})
+  \]
+  determines the experiment up to Blackwell equivalence.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Map the observation to its likelihood-ratio vector. Its distribution under \(\theta_0\) is \(\mu\), and under \(\theta_j\) it has density \(z_j\) with respect to \(\mu\), because
+  \[
+  E_{\theta_j}f(L)
+  =E_{\theta_0}\{L_{\theta_j}f(L)\}
+  =\int z_jf(z)\mu(\mathrm{d}z).
+  \]
+  The vector is sufficient by factorization. Hence the original experiment is equivalent to this canonical likelihood-ratio experiment. \(\square\)</p>
+</div>
+
+<h3>Hellinger affinity and distance</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For probability measures \(P,Q\), dominated by \(\mu\) with densities \(p,q\), define the Hellinger affinity and distance by
+  \[
+  \rho(P,Q)=\int\sqrt{pq}\,\mathrm{d}\mu,
+  \]
+  \[
+  H^2(P,Q)
+  =
+  \int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu
+  =2\{1-\rho(P,Q)\}.
+  \]</p>
+</div>
+
+<p>The definition is independent of the dominating measure. Since
+\(\|\sqrt p\|_2=\|\sqrt q\|_2=1\), \(H(P,Q)\) is the chordal distance between two unit vectors in \(L_2(\mu)\).</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  \frac12H^2(P,Q)
+  \leq\|P-Q\|_{\mathrm{TV}}
+  \leq H(P,Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \[
+  |\sqrt p-\sqrt q|^2
+  \leq|\sqrt p-\sqrt q|(\sqrt p+\sqrt q)
+  =|p-q|,
+  \]
+  integration and \(\|P-Q\|_{\mathrm{TV}}=\frac12\int|p-q|\) give the first inequality. For the second, Cauchy–Schwarz yields
+  \[
+  \begin{aligned}
+  2\|P-Q\|_{\mathrm{TV}}
+  &=\int|\sqrt p-\sqrt q|(\sqrt p+\sqrt q)\,\mathrm{d}\mu\\
+  &\leq
+  H(P,Q)
+  \left\{\int(\sqrt p+\sqrt q)^2\,\mathrm{d}\mu\right\}^{1/2}\\
+  &\leq2H(P,Q).
+  \end{aligned}
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Testing affinity</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For every test \(0\leq\varphi\leq1\),
+  \[
+  P\varphi+Q(1-\varphi)
+  \geq1-\|P-Q\|_{\mathrm{TV}}
+  \geq1-H(P,Q).
+  \]
+  Thus two measures close in Hellinger distance cannot simultaneously have small type-I and type-II errors.</p>
+</div>
+
+<p>The first lower bound is exact after minimizing over tests. Hellinger distance is often easier to calculate, especially for independent products.</p>
+
+<h3>Product geometry</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For product measures,
+  \[
+  \rho\!\left(\bigotimes_{i=1}^nP_i,
+              \bigotimes_{i=1}^nQ_i\right)
+  =
+  \prod_{i=1}^n\rho(P_i,Q_i).
+  \]
+  Hence
+  \[
+  H^2\!\left(\bigotimes_iP_i,\bigotimes_iQ_i\right)
+  =
+  2\left[
+  1-\prod_{i=1}^n
+  \left\{1-\frac12H^2(P_i,Q_i)\right\}
+  \right]
+  \leq\sum_{i=1}^nH^2(P_i,Q_i).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fubini's theorem factors the integral of the square root of the product densities. The inequality follows from
+  \(1-\prod_i(1-a_i)\leq\sum_i a_i\) for \(0\leq a_i\leq1\). \(\square\)</p>
+</div>
+
+<p>If every component distance is small, then
+\[
+H^2\!\left(\bigotimes_iP_i,\bigotimes_iQ_i\right)
+\sim\sum_iH^2(P_i,Q_i).
+\]
+This near-additivity is a principal reason Hellinger expansions are effective for independent non-identically distributed experiments.</p>
+
+<h3>Likelihood ratios in Hellinger form</h3>
+
+<p>If \(Q\ll P\) with likelihood ratio \(L\), then
+\[
+\rho(P,Q)=E_P\sqrt L,
+\qquad
+H^2(P,Q)=E_P(\sqrt L-1)^2.
+\]
+Thus Hellinger closeness is an \(L_2(P)\) statement about the square-root likelihood ratio. Quadratic mean differentiability takes exactly this form:
+\[
+\sqrt{p_{\theta+t}}
+=\sqrt{p_\theta}
++\frac12t^\top\dot\ell_\theta\sqrt{p_\theta}
++o(\|t\|) \quad\text{in }L_2.
 \]</p>
-    </div>
 
-    <h3>Testing bound from Hellinger affinity</h3>
-    <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> The affinity \(\rho(P,Q)=\int\sqrt{\mathrm{d}P\,\mathrm{d}Q}\) controls testing error: if \(P\) and \(Q\) are close in Hellinger distance, no test can separate them with small errors under both measures.</p>
-    </div>
+<h3>Kullback–Leibler and Hellinger comparison</h3>
 
-    <h3>Product geometry</h3>
-    <p>For independent components, affinities multiply and Hellinger squared distances approximately add. This additivity is why Le Cam's product-experiment arguments use Hellinger sums.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(P\ll Q\), then
+  \[
+  H^2(P,Q)\leq D_{\mathrm{KL}}(P\|Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> With \(u=p/q\), the scalar inequality
+  \[
+  (\sqrt u-1)^2\leq u\log u-u+1
+  \]
+  and integration against \(Q\) give
+  \[
+  H^2(P,Q)
+  \leq\int(p\log(p/q)-p+q)\,\mathrm{d}\mu
+  =D_{\mathrm{KL}}(P\|Q).
+  \]
+  \(\square\)</p>
+</div>
+
+<p>KL divergence is directional and additive for products; Hellinger distance is symmetric and bounded. Le Cam theory uses whichever geometry matches the needed operation, often deriving total-variation control from one of them.</p>

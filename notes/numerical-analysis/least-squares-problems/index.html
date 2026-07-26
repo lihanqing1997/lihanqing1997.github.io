@@ -34,3 +34,85 @@ note_next_url: "/notes/numerical-analysis/eigenvalue-problems/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Weighted least squares changes the geometry of the residual norm. In statistical problems this geometry is often determined by the covariance of the noise, but the numerical question remains how to solve the resulting system stably.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Projection and normal equations</h3>
+
+<p>For full-column-rank \(A\in\mathbb R^{m\times n}\),
+\[
+\widehat x=\arg\min_x\|Ax-b\|_2
+\]
+is characterized by
+\[
+A^\top(A\widehat x-b)=0.
+\]
+Thus \(A\widehat x\) is the orthogonal projection of \(b\) onto
+\(\operatorname{col}(A)\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(A=QR\) is reduced QR,
+\[
+\widehat x=R^{-1}Q^\top b,\qquad
+r=b-A\widehat x=(I-QQ^\top)b.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Orthogonal invariance gives
+\[
+\|Ax-b\|_2^2
+=\|Rx-Q^\top b\|_2^2+\|(I-QQ^\top)b\|_2^2.
+\]
+The first term is uniquely minimized at \(Rx=Q^\top b\).</p>
+</div>
+
+<h3>Why normal equations can lose accuracy</h3>
+
+<p>Forming \(A^\top A\) squares the spectral condition number:
+\[
+\kappa_2(A^\top A)=\kappa_2(A)^2.
+\]
+Cholesky on the normal equations can therefore lose roughly twice as many
+digits as QR. QR is the standard stable method; SVD is preferable when rank is
+uncertain.</p>
+
+<h3>Rank deficiency and minimum norm</h3>
+
+<p>With SVD \(A=U\Sigma V^\top\),
+\[
+A^\dagger=V\Sigma^\dagger U^\top,
+\qquad
+x^\dagger=A^\dagger b
+\]
+is the unique least-squares solution of minimum Euclidean norm. Components
+along small singular values are amplified by \(1/\sigma_j\), exposing both
+ill-conditioning and the need for regularization.</p>
+
+<h3>Statistical covariance and leverage</h3>
+
+<p>In \(b=Ax+\varepsilon\), \(E\varepsilon=0\),
+\(\operatorname{Cov}(\varepsilon)=\sigma^2I\),
+\[
+\operatorname{Cov}(\widehat x)=\sigma^2(A^\top A)^{-1}.
+\]
+The hat matrix \(H=A(A^\top A)^{-1}A^\top=QQ^\top\) has leverage scores
+\(h_{ii}\). Large leverage marks observations that strongly affect the fitted
+subspace. Computing \(H\) explicitly is unnecessary; row norms of \(Q\) give
+its diagonal.</p>
+
+<h3>Regularized least squares</h3>
+
+<p>Tikhonov regularization solves
+\[
+\min_x\|Ax-b\|_2^2+\lambda\|Lx\|_2^2,
+\]
+equivalently the augmented system
+\[
+\min_x
+\left\|
+\begin{pmatrix}A\\\sqrt\lambda L\end{pmatrix}x
+-\begin{pmatrix}b\\0\end{pmatrix}
+\right\|_2.
+\]
+Solving the augmented problem by QR avoids forming
+\(A^\top A+\lambda L^\top L\) and retains a clean backward-error analysis.</p>

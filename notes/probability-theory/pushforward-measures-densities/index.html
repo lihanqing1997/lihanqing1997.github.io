@@ -28,7 +28,35 @@ note_next_url: "/notes/probability-theory/conditional-probability-regular-condit
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The standard proof first handles finite measures by maximizing \(\int g\,\mathrm{d}\mu\) over simple functions whose induced measures are dominated by \(\nu\), or equivalently by Hilbert-space projection for finite measures. The residual measure is shown singular to \(\mu\); absolute continuity forces that residual to vanish. The \(\sigma\)-finite case follows by decomposing the space into finite-measure pieces and patching the derivatives.</p>
+        <p><span class="statement-title">Proof.</span> A complete Hilbert-space proof is given in <a href="{{ '/notes/real-analysis/radon-nikodym-derivatives/' | relative_url }}">Real analysis</a>. In brief, for finite measures set \(\rho=\mu+\nu\). Riesz representation on \(L^2(\rho)\) gives \(h\in[0,1]\) with
+\[
+\nu=h\rho,\qquad \mu=(1-h)\rho.
+\]
+Absolute continuity forces \(\rho(h=1)=0\), so \(f=h/(1-h)\) satisfies \(\nu=f\mu\). Sigma-finite pieces are then pasted, and uniqueness follows by integrating over \(\{f>g\}\) and \(\{g>f\}\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (chain and reciprocal rules).</span> If \(R\ll Q\ll P\), then
+\[
+\frac{\mathrm{d}R}{\mathrm{d}P}
+=\frac{\mathrm{d}R}{\mathrm{d}Q}\frac{\mathrm{d}Q}{\mathrm{d}P}
+\quad P\text{-a.s.}
+\]
+If \(P\) and \(Q\) are equivalent, then
+\[
+\frac{\mathrm{d}P}{\mathrm{d}Q}
+=\left(\frac{\mathrm{d}Q}{\mathrm{d}P}\right)^{-1}
+\quad Q\text{-a.s.}
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Substitute the derivatives into integrals:
+\[
+R(A)=\int_A\frac{\mathrm{d}R}{\mathrm{d}Q}\,\mathrm{d}Q
+=\int_A\frac{\mathrm{d}R}{\mathrm{d}Q}\frac{\mathrm{d}Q}{\mathrm{d}P}\,\mathrm{d}P.
+\]
+Uniqueness gives the chain rule. Apply it to \(P\ll Q\ll P\) to obtain the reciprocal identity.</p>
     </div>
 
 
@@ -45,6 +73,65 @@ note_next_url: "/notes/probability-theory/conditional-probability-regular-condit
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> For \(X=1_A\), the identity is \(Q(A)=\int_AZ\,\mathrm{d}P\). Extend to nonnegative simple functions by linearity, to nonnegative measurable functions by monotone convergence, and to integrable functions by decomposing into positive and negative parts.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (Bayes formula between two laws).</span> If \(P\) and \(Q\) are equivalent and \(Z=\mathrm{d}Q/\mathrm{d}P\), then for a sub-sigma-field \(\mathcal G\) and \(Q\)-integrable \(X\),
+\[
+\mathbb E_Q[X\mid\mathcal G]
+=\frac{\mathbb E_P[ZX\mid\mathcal G]}
+{\mathbb E_P[Z\mid\mathcal G]}
+\quad Q\text{-a.s.},
+\]
+with the ratio interpreted on the set where the denominator is positive.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The right side is \(\mathcal G\)-measurable. For \(G\in\mathcal G\),
+\[
+\mathbb E_Q\!\left[
+\mathbf1_G\frac{\mathbb E_P[ZX\mid\mathcal G]}
+{\mathbb E_P[Z\mid\mathcal G]}
+\right]
+=\mathbb E_P\!\left[
+Z\mathbf1_G\frac{\mathbb E_P[ZX\mid\mathcal G]}
+{\mathbb E_P[Z\mid\mathcal G]}
+\right].
+\]
+Conditioning the factor \(Z\) on \(\mathcal G\) cancels the denominator, leaving \(\mathbb E_P[\mathbf1_GZX]=\mathbb E_Q[\mathbf1_GX]\). This is the defining identity.</p>
+    </div>
+
+    <h3>Densities under smooth transformations</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(X\) have density \(p_X\) on an open \(U\subset\mathbb R^d\), and let \(T:U\to V\) be a \(C^1\) diffeomorphism. Then \(Y=T(X)\) has density
+\[
+p_Y(y)
+=p_X(T^{-1}(y))
+\left|\det DT^{-1}(y)\right|.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For bounded measurable \(g\),
+\[
+\mathbb Eg(Y)
+=\int_Ug(T(x))p_X(x)\,\mathrm{d}x.
+\]
+The multivariable change-of-variables theorem with \(y=T(x)\) turns this into
+\[
+\int_Vg(y)p_X(T^{-1}(y))
+|\det DT^{-1}(y)|\,\mathrm{d}y.
+\]
+Uniqueness of densities gives the formula.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (lognormal law).</span> If \(X\sim N(\mu,\sigma^2)\) and \(Y=e^X\), then \(T^{-1}(y)=\log y\) and \(|(T^{-1})'(y)|=1/y\). Hence
+\[
+p_Y(y)=\frac1{y\sigma\sqrt{2\pi}}
+\exp\!\left[-\frac{(\log y-\mu)^2}{2\sigma^2}\right],
+\qquad y>0.
+\]</p>
     </div>
 
     <div class="math-statement remark">

@@ -8,32 +8,221 @@ note_prev_url: "/notes/empirical-processes/donsker-and-gaussian-limits/"
 note_next_url: "/notes/empirical-processes/covering-and-bracketing-numbers/"
 ---
 
-<p>Asymptotic equicontinuity is the tightness mechanism for indexed processes. It says that close functions have close empirical fluctuations with high probability.</p>
+<p>Weak convergence in \(\ell^\infty(\mathcal F)\) requires more than convergence at every fixed \(f\). Nearby indices must remain statistically indistinguishable at the process scale. This uniform continuity in probability is the mechanism that both proves tightness and permits estimated parameters or nuisance functions to be substituted into empirical processes.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> With semimetric \(\rho\), \(\mathbb G_n\) is asymptotically equicontinuous if \(\lim_{\delta\downarrow0}\limsup_nP^*(\sup_{\rho(f,g)<\delta}|\mathbb G_n f-\mathbb G_n g|>\varepsilon)=0\) for every \(\varepsilon>0\).</p>
-    </div>
+<h3>Moduli of continuity</h3>
 
-    <h3>Increment control</h3>
-    <ul>
-        <li>Finite-dimensional convergence plus asymptotic equicontinuity gives weak convergence in many empirical-process settings.</li>
-        <li>The natural semimetric is often \(\rho_P(f,g)=\{P(f-g)^2\}^{1/2}\).</li>
-        <li>Maximal inequalities and chaining are the standard ways to prove equicontinuity.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a stochastic process \(Z_n=\{Z_n(f):f\in\mathcal F\}\) and a semimetric \(\rho\), define
+  \[
+  \omega_\rho(Z_n,\delta)
+  =
+  \sup_{\rho(f,g)<\delta}|Z_n(f)-Z_n(g)|.
+  \]
+  The sequence \(Z_n\) is <em>asymptotically \(\rho\)-equicontinuous</em> if, for every \(\eta>0\),
+  \[
+  \lim_{\delta\downarrow0}\limsup_{n\to\infty}
+  P^*\{\omega_\rho(Z_n,\delta)>\eta\}=0.
+  \]</p>
+</div>
 
-    <h3>Random-index replacement</h3>
-    <p>In estimator proofs, equicontinuity turns \(\mathbb G_n f_{\hat\theta}\) into \(\mathbb G_n f_{\theta_0}+o_p(1)\) whenever \(\hat\theta\) is close to \(\theta_0\).</p>
-
-    <!-- expanded-learning -->
-    <h3>Equicontinuity criterion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Lemma.</span> A practical sufficient bound is
+<p>For an empirical process, two semimetrics occur naturally:
 \[
-E^*\sup_{\rho(f,g)<\delta}|\mathbb G_n(f-g)|\to0
-\quad\text{as }\delta\downarrow0,
+d_P(f,g)=\|f-g\|_{P,2},
+\qquad
+\rho_P(f,g)=\|(f-g)-P(f-g)\|_{P,2}.
 \]
-uniformly in large \(n\). Markov's inequality then converts the expectation bound into asymptotic equicontinuity.</p>
-    </div>
+The second is the exact standard deviation of \(\mathbb G_n(f-g)\), while \(\rho_P\leq d_P\). Thus equicontinuity in \(d_P\) implies equicontinuity in the topology generally used to describe the Gaussian limit.</p>
 
-    <h3>Estimator linearization</h3>
-    <p>In estimator proofs, first show \(\hat\theta\to\theta_0\). Then apply equicontinuity to the class \(f_\theta-f_{\theta_0}\) to replace random-index empirical terms by fixed-index terms. This is the bridge from consistency to asymptotic normality.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (asymptotic tightness criterion).</span> Suppose \((\mathcal F,\rho)\) is totally bounded. If \(Z_n\) is asymptotically \(\rho\)-equicontinuous and, for every finite \(f_1,\ldots,f_k\), the vectors
+  \[
+  (Z_n(f_1),\ldots,Z_n(f_k))
+  \]
+  form a tight sequence, then \(Z_n\) is asymptotically tight in \(\ell^\infty(\mathcal F)\). If the finite-dimensional distributions converge to those of a tight process \(Z\) with uniformly \(\rho\)-continuous paths, then \(Z_n\rightsquigarrow Z\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Given \(\delta>0\), total boundedness gives a finite \(\delta\)-net \(f_1,\ldots,f_N\). For each \(f\), choose \(\pi_\delta f\) from this net. Then
+  \[
+  \|Z_n\|_{\mathcal F}
+  \leq \max_{1\leq j\leq N}|Z_n(f_j)|
+      +\omega_\rho(Z_n,2\delta).
+  \]
+  The first term is tight because it is finite dimensional, and the second is uniformly negligible for small \(\delta\). The same decomposition bounds oscillations and yields finite approximations to \(Z_n\) in the supremum norm. These approximations prove asymptotic tightness. If finite-dimensional laws converge, every subsequential limit has the same coordinates as \(Z\); uniform continuity makes those coordinates determine the law on \(\ell^\infty(\mathcal F)\). \(\square\)</p>
+</div>
+
+<h3>Expectation and tail criteria</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma.</span> A sufficient condition for asymptotic \(\rho\)-equicontinuity is
+  \[
+  \lim_{\delta\downarrow0}\limsup_{n\to\infty}
+  E^*\omega_\rho(Z_n,\delta)=0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Outer Markov inequality gives, for every \(\eta>0\),
+  \[
+  P^*\{\omega_\rho(Z_n,\delta)>\eta\}
+  \leq \eta^{-1}E^*\omega_\rho(Z_n,\delta).
+  \]
+  Take \(\limsup_n\) and then let \(\delta\downarrow0\). \(\square\)</p>
+</div>
+
+<p>Entropy inequalities are normally used to prove the expectation condition. A local maximal inequality has the schematic form
+\[
+E^*\sup_{\substack{f,g\in\mathcal F\\d_P(f,g)\leq\delta}}
+|\mathbb G_n(f-g)|
+\lesssim
+J(\delta,\mathcal F)
+\frac{J(\delta,\mathcal F)^2}{\delta^2\sqrt n}\|F\|_{P,2},
+\]
+where \(J\) is an entropy integral. Its vanishing as \(\delta\downarrow0\) gives the desired modulus.</p>
+
+<h3>Random indices</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (random-index replacement).</span> Let \(Z_n\) be asymptotically \(\rho\)-equicontinuous, and let \(f_n,g_n\) be possibly random elements of \(\mathcal F\). If
+  \[
+  \rho(f_n,g_n)\xrightarrow{p}0,
+  \]
+  then
+  \[
+  Z_n(f_n)-Z_n(g_n)=o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For fixed \(\delta,\eta>0\),
+  \[
+  \begin{aligned}
+  P^*\{|Z_n(f_n)-Z_n(g_n)|>\eta\}
+  &\leq P^*\{\rho(f_n,g_n)\geq\delta\}\\
+  &\quad+P^*\{\omega_\rho(Z_n,\delta)>\eta\}.
+  \end{aligned}
+  \]
+  The first term tends to zero for each \(\delta\). The iterated limit of the second tends to zero by equicontinuity. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(\mathcal F=\{f_\theta:\theta\in\Theta\}\), \(\hat\theta_n\to_p\theta_0\), and
+  \[
+  \rho(f_\theta,f_{\theta_0})\longrightarrow0
+  \quad\text{as }\theta\to\theta_0,
+  \]
+  then asymptotic equicontinuity of \(\mathbb G_n\) on a neighborhood of \(\theta_0\) yields
+  \[
+  \mathbb G_nf_{\hat\theta_n}
+  =\mathbb G_nf_{\theta_0}+o_p(1).
+  \]</p>
+</div>
+
+<p>This is not an ordinary continuous-mapping argument: both the map \(f\mapsto\mathbb G_nf\) and the index \(f_{\hat\theta_n}\) vary with \(n\). Equicontinuity supplies exactly the uniformity missing from pointwise central limit theorems.</p>
+
+<h3>Linearization of \(Z\)-estimators</h3>
+
+<p>Let \(\psi_\theta:\mathcal X\to\mathbb R^p\), let
+\[
+\Psi(\theta)=P\psi_\theta,
+\qquad
+\Psi_n(\theta)=P_n\psi_\theta,
+\]
+and suppose \(\Psi(\theta_0)=0\). An exact or approximate \(Z\)-estimator satisfies
+\[
+\Psi_n(\hat\theta_n)=o_p(n^{-1/2}).
+\]</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Assume:</p>
+  <ol>
+    <li>\(\hat\theta_n\to_p\theta_0\);</li>
+    <li>\(\Psi\) is differentiable at \(\theta_0\) with nonsingular derivative \(A\), so
+    \[
+    \Psi(\theta)-\Psi(\theta_0)
+    =A(\theta-\theta_0)+o(\|\theta-\theta_0\|);
+    \]</li>
+    <li>the class \(\{\psi_{\theta,j}:\|\theta-\theta_0\|<\delta,\ 1\leq j\leq p\}\) is asymptotically \(L_2(P)\)-equicontinuous at \(\theta_0\);</li>
+    <li>\(P\|\psi_{\theta_0}\|^2<\infty\).</li>
+  </ol>
+  <p>If \(\Psi_n(\hat\theta_n)=o_p(n^{-1/2})\), then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =-A^{-1}\mathbb G_n\psi_{\theta_0}+o_p(1)
+  \rightsquigarrow
+  N_p(0,A^{-1}BA^{-\top}),
+  \]
+  where \(B=P(\psi_{\theta_0}\psi_{\theta_0}^{\top})\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(P_n=P+n^{-1/2}\mathbb G_n\),
+  \[
+  \begin{aligned}
+  o_p(1)
+  &=\sqrt n\,\Psi_n(\hat\theta_n)\\
+  &=\sqrt n\{\Psi(\hat\theta_n)-\Psi(\theta_0)\}
+    +\mathbb G_n\psi_{\theta_0}
+    +\mathbb G_n(\psi_{\hat\theta_n}-\psi_{\theta_0}).
+  \end{aligned}
+  \]
+  The last term is \(o_p(1)\) by the random-index lemma. Differentiability gives
+  \[
+  \sqrt n\{\Psi(\hat\theta_n)-\Psi(\theta_0)\}
+  =A\sqrt n(\hat\theta_n-\theta_0)
+    +o_p\!\left(\sqrt n\|\hat\theta_n-\theta_0\|\right).
+  \]
+  Nonsingularity of \(A\), together with the preceding identity and tightness of \(\mathbb G_n\psi_{\theta_0}\), first implies \(\sqrt n\|\hat\theta_n-\theta_0\|=O_p(1)\). Hence the differentiability remainder is \(o_p(1)\), and rearrangement yields the linear representation. The multivariate central limit theorem and Slutsky's theorem give the stated covariance. \(\square\)</p>
+</div>
+
+<p>This theorem is the empirical-process form of the \(Z\)-estimator expansion developed in <a href="{{ '/notes/statistical-inference/m-estimators-z-estimators/' | relative_url }}">Statistical inference, §7</a>. The present formulation identifies the uniform stochastic condition that justifies replacing the estimated index by its population limit.</p>
+
+<h3>Estimated nuisance functions</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(f_{\eta}\in\mathcal F\), where \(\eta\) may be infinite dimensional. If
+  \[
+  d_P(f_{\hat\eta},f_{\eta_0})\to_p0
+  \]
+  and \(\mathbb G_n\) is asymptotically \(d_P\)-equicontinuous on a fixed class containing \(f_{\hat\eta}\) with probability tending to one, then
+  \[
+  (P_n-P)f_{\hat\eta}
+  =(P_n-P)f_{\eta_0}+o_p(n^{-1/2}).
+  \]</p>
+</div>
+
+<p>The fixed-class qualification matters. Consistency in \(L_2(P)\) alone does not control a function chosen to interpolate the same observations on which the empirical process is evaluated.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample (data-adaptive overfitting).</span> Let \(P\) be atomless, \(f_0=0\), and define
+  \[
+  \hat f_n=1_{\{X_1,\ldots,X_n\}}.
+  \]
+  Then \(\|\hat f_n-f_0\|_{P,2}=0\) almost surely, but
+  \[
+  \mathbb G_n(\hat f_n-f_0)=\sqrt n.
+  \]
+  Thus \(L_2(P)\)-closeness does not justify random-index replacement unless the random functions lie in a class on which the empirical process is equicontinuous. Sample splitting or cross-fitting can restore independence and allow conditional empirical-process arguments, but it does not remove the need to control moments and remainders.</p>
+</div>
+
+<h3>The empirical distribution process</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For \(f_t=1_{(-\infty,t]}\),
+  \[
+  d_P(f_s,f_t)^2=P((s\wedge t,s\vee t])
+  =|F(t)-F(s)|.
+  \]
+  The Donsker theorem therefore implies
+  \[
+  \lim_{\delta\downarrow0}\limsup_n
+  P^*\!\left\{
+    \sup_{|F(t)-F(s)|<\delta}
+    \sqrt n\,|(F_n-F)(t)-(F_n-F)(s)|>\eta
+  \right\}=0.
+  \]
+  In words, the empirical distribution may have jumps, but after scaling it has no persistent oscillation over intervals carrying vanishing \(P\)-mass. Its Gaussian limit has the corresponding uniformly continuous Brownian-bridge paths.</p>
+</div>
+
+<p>Equicontinuity is therefore both a compactness statement and a substitution theorem. The next pages develop covering numbers, symmetrization, VC theory, chaining, and concentration: the main devices used to verify it.</p>

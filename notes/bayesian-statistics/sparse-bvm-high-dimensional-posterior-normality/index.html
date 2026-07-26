@@ -38,3 +38,164 @@ with \(\sup |r_n(S,h)|\to0\) in probability on the posterior local set.</p>
     </div><div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The Gaussian change of variables is local and supportwise. Summing over many supports introduces combinatorial factors, while Taylor remainders scale with sparse radius and dimension. The stated restrictions are exactly the places where dimension growth enters the fixed-dimensional BvM proof.</p>
     </div>
+
+<h3>Oracle posterior normality</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (oracle sparse BvM).</span> Suppose:</p>
+<ol>
+<li>the posterior selects the true support:
+\[
+\Pi(S=S_0\mid X^{(n)})\to1;
+\]</li>
+<li>\(|S_0|=s_0\) and the likelihood restricted to \(S_0\) is uniformly LAN;</li>
+<li>the slab density is locally flat and positive around \(\beta_{0,S_0}\);</li>
+<li>the restricted information
+\(I_{S_0}\) is nonsingular.</li>
+</ol>
+<p>Then
+\[
+\left\|
+\Pi\left(
+\sqrt n(\beta_{S_0}-\widehat\beta_{S_0})
+\in\cdot\mid X^{(n)}
+\right)
+-N_{s_0}(0,I_{S_0}^{-1})
+\right\|_{\mathrm{TV}}
+\to0,
+\]
+and posterior mass on \(\beta_{S_0^c}=0\) tends to one.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on \(S=S_0\), this is a growing-dimensional parametric BvM theorem based on uniform LAN and prior flatness. Selection consistency makes the total posterior differ from its oracle-support conditional posterior by at most
+\[
+2\Pi(S\ne S_0\mid X)
+\]
+in total variation. This term vanishes.</p>
+</div>
+
+<h3>Uniform sparse LAN remainder</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose third derivatives of the log likelihood satisfy, on every \(s\)-sparse direction,
+\[
+\left|
+\nabla^3\ell_n(\beta)[u,u,u]
+\right|
+\le Cn\|u\|_2^3.
+\]
+For local radius
+\[
+\|h\|_2\lesssim\sqrt{s\log p},
+\qquad
+\beta=\beta_0+h/\sqrt n,
+\]
+the Taylor remainder is bounded by
+\[
+C\frac{(s\log p)^{3/2}}{\sqrt n}.
+\]
+Hence a sufficient uniform LAN condition is
+\[
+\frac{(s\log p)^3}{n}\to0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Third-order Taylor remainder is at most
+\[
+Cn\left\|\frac h{\sqrt n}\right\|_2^3
+=C\frac{\|h\|_2^3}{\sqrt n}.
+\]
+Substitute the sparse posterior radius.</p>
+</div>
+
+<p>Sharper self-concordance, design structure, or norm-specific arguments can weaken this condition. It should be derived from the actual likelihood rather than quoted as universal.</p>
+
+<h3>Mixture over plausible supports</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (mixture BvM form).</span> If exact support recovery fails but posterior mass concentrates on a collection
+\(\mathcal S_n\) of small supports and a uniform BvM theorem holds on each, then the posterior can be approximated by
+\[
+\sum_{S\in\mathcal S_n}
+\widehat w_S
+N_S\left(
+\widehat\beta_S,\,
+\frac1nI_S^{-1}
+\right),
+\]
+with point masses at zero outside \(S\), rather than by one full Gaussian.</p>
+</div>
+
+<p>This mixture can remain non-Gaussian for coordinates whose inclusion probabilities do not converge to zero or one. Marginal credible intervals may contain an atom at zero plus a continuous component; replacing them by one normal interval discards model uncertainty.</p>
+
+<h3>Low-dimensional functional BvM without selection</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (functional template).</span> Let
+\[
+\psi(\beta)=a^\top\beta
+\]
+for a fixed loading \(a\). Suppose there is a sparse approximate inverse-information direction \(u_0\) satisfying
+\[
+I(\beta_0)u_0=a,
+\]
+posterior contraction gives
+\[
+\|\beta-\beta_0\|_1
+=O_P\left(
+s_0\sqrt{\frac{\log p}{n}}
+\right),
+\]
+and orthogonalization makes the likelihood remainder \(o_P(n^{-1/2})\). Then a suitably debiased posterior marginal may satisfy
+\[
+\sqrt n\{\psi(\beta)-\widehat\psi\}
+\mid X
+\rightsquigarrow
+N(0,a^\top I^{-1}a)
+\]
+even without exact support recovery.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Shift the parameter along the least-favorable direction \(u_0/\sqrt n\). The orthogonal score
+\[
+u_0^\top\dot\ell_{\beta_0}
+\]
+has variance \(a^\top I^{-1}a\). Sparse contraction and product-rate conditions control nuisance coordinates and LAN remainder. Prior stability under the shift gives the posterior Laplace-transform limit.</p>
+</div>
+
+<h3>Prior flatness on sparse neighborhoods</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A local slab-flatness requirement is
+\[
+\sup_{\substack{S\in\mathcal S_n\\
+\|h\|\le M_n}}
+\left|
+\log
+\frac{g_S(\beta_{0,S}+h/\sqrt n)}
+{g_S(\beta_{0,S})}
+\right|
+=o(1).
+\]
+It prevents the prior from contributing a first-order score on posterior local scales.</p>
+</div>
+
+<p>Strong continuous shrinkage can violate flatness near nonzero coefficients, while diffuse slabs can hurt model selection through a large Occam penalty. Sparse BvM therefore demands a careful balance between enough local flatness for Gaussian shape and enough concentration for support learning.</p>
+
+<h3>Dimension, sparsity, and target hierarchy</h3>
+
+<p>Claims increase in strength:</p>
+<ol>
+<li>prediction or \(\ell^2\) contraction;</li>
+<li>posterior dimension control;</li>
+<li>support recovery;</li>
+<li>Gaussianity conditional on one support;</li>
+<li>oracle full-vector BvM;</li>
+<li>uniform BvM over a sparse class.</li>
+</ol>
+
+<p>A theorem at one level does not imply the next. In particular, minimax contraction at
+\(\sqrt{s\log p/n}\) permits uncertainty among many supports and does not justify oracle covariance.</p>

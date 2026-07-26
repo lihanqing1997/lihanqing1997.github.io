@@ -27,7 +27,37 @@ note_next_url: "/notes/real-analysis/convolution-and-mollifiers/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Approximate \(f\) by a simple function supported on a set of finite measure. Use regularity of Lebesgue measure to approximate each measurable set by compact sets inside and open sets outside with small measure difference. Urysohn-type continuous functions between those compact and open sets approximate the indicators in \(L^p\). Combine linearly.</p>
+        <p><span class="statement-title">Proof.</span> First truncate in value and space:
+\[
+f_n=f\,\mathbf1_{\{|f|\le n\}}\mathbf1_{B(0,n)}.
+\]
+Dominated convergence gives \(f_n\to f\) in \(L^p\). Approximate each bounded, finite-support \(f_n\) by a simple function \(\sum_ja_j\mathbf1_{E_j}\). Regularity gives compact \(K_j\subset E_j\subset U_j\) open with \(m(U_j\setminus K_j)\) arbitrarily small. The explicit continuous cutoff
+\[
+\varphi_j(x)=\frac{d(x,U_j^c)}{d(x,U_j^c)+d(x,K_j)}
+\]
+satisfies \(0\le\varphi_j\le1\), equals \(1\) on \(K_j\), and vanishes outside \(U_j\). Hence
+\[
+\|\varphi_j-\mathbf1_{E_j}\|_p^p
+\le m(U_j\setminus K_j).
+\]
+Finite linear combinations of the \(\varphi_j\) approximate the simple function and belong to \(C_c(\mathbb R^d)\).</p>
+    </div>
+
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma (continuity of translations).</span> If \(1\le p<\infty\) and \(\tau_hf(x)=f(x-h)\), then
+\[
+\|\tau_hf-f\|_p\longrightarrow0
+\qquad(h\to0).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(g\in C_c\), uniform continuity and one fixed compact support neighborhood give \(\|\tau_hg-g\|_p\to0\). Given general \(f\in L^p\), choose \(g\in C_c\) with \(\|f-g\|_p<\varepsilon\). Translation invariance of Lebesgue measure gives
+\[
+\|\tau_hf-f\|_p
+\le2\|f-g\|_p+\|\tau_hg-g\|_p,
+\]
+and then \(h\to0\), \(\varepsilon\to0\).</p>
     </div>
 
     <h3>Smooth approximation by mollifiers</h3>
@@ -37,7 +67,17 @@ note_next_url: "/notes/real-analysis/convolution-and-mollifiers/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Translations are continuous in \(L^p\): \(\|f(\cdot-h)-f\|_p\to0\). Then \(\rho_\varepsilon*f-f=\int \rho_\varepsilon(h)(f(\cdot-h)-f)\,\mathrm{d}h\). Minkowski's integral inequality bounds the \(L^p\) norm by the average of translation errors over \(|h|=O(\varepsilon)\), which tends to zero.</p>
+        <p><span class="statement-title">Proof.</span> Since \(\int\rho_\varepsilon=1\),
+\[
+\rho_\varepsilon*f-f
+=\int\rho_\varepsilon(h)(\tau_hf-f)\,\mathrm{d}h.
+\]
+Minkowski's integral inequality gives
+\[
+\|\rho_\varepsilon*f-f\|_p
+\le\int\rho_\varepsilon(h)\|\tau_hf-f\|_p\,\mathrm{d}h.
+\]
+If \(\operatorname{supp}\rho\subset B(0,R)\), the integral uses only \(|h|\le R\varepsilon\). Translation continuity therefore makes the supremum of the integrand over this ball tend to zero.</p>
     </div>
 
     <h3>Approximation with support control</h3>
@@ -50,8 +90,8 @@ note_next_url: "/notes/real-analysis/convolution-and-mollifiers/"
         <p><span class="statement-title">Proof.</span> For support away from the boundary, extend \(f\) by zero and mollify with \(\varepsilon\) smaller than the distance to the boundary. For general \(f\), multiply by cutoffs \(\chi_k\) supported in \(\Omega\) and equal to \(1\) on an increasing exhaustion; \(\chi_k f\to f\) in \(L^p\), then mollify each cutoff version.</p>
     </div>
 
-    <h3>Proof strategy</h3>
-    <p>Density arguments must keep the norm and topology visible.</p>
+    <h3>Failure of sup-norm density</h3>
+    <p>Density changes with the topology, even when the underlying measurable functions are the same.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A dense class is useful only relative to a topology. Simple functions are dense in \(L^p\), continuous functions may be dense on regular spaces, and smooth compactly supported functions are dense in Euclidean \(L^p\), but not in \(L^\infty\) under the essential sup norm.</p>
+        <p><span class="statement-title">Remark.</span> Smooth functions are not dense in \(L^\infty\) under the essential sup norm. For example, no continuous \(g\) can approximate \(\mathbf1_{[0,\infty)}\) with essential-sup error below \(1/2\): continuity forces values near the jump to pass through the midpoint on sets of positive measure. Thus mollification converges in \(L^p\) for \(p<\infty\), and uniformly only when the original function is uniformly continuous.</p>
     </div>

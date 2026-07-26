@@ -36,3 +36,135 @@ Equality holds in the scalar nondegenerate case when \(X\) and \(Y\) are Gaussia
     <div class="math-statement corollary">
         <p><span class="statement-title">Corollary.</span> EPI implies Gaussian extremality statements and gives a short route to capacity formulas for Gaussian noise channels. It also connects to Fisher information through de Bruijn's identity and Stam's inequality.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Entropy power</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For an absolutely continuous
+  \(X\in\mathbb R^d\), its entropy power is
+  \[
+  N(X)=\frac1{2\pi e}
+  \exp\left\{\frac{2}{d}h(X)\right\}.
+  \]
+  If \(X\sim N(0,\sigma^2I_d)\), then \(N(X)=\sigma^2\).</p>
+</div>
+
+<h3>Entropy power inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(X,Y\in\mathbb R^d\) are independent with densities and finite entropies under standard regularity, then
+  \[
+  N(X+Y)\ge N(X)+N(Y).
+  \]
+  Equality holds for Gaussian \(X,Y\) with proportional covariance matrices.</p>
+</div>
+
+<h3>Equivalent normalized form</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For every
+  \(0\le\lambda\le1\),
+  \[
+  h(\sqrt\lambda X+\sqrt{1-\lambda}Y)
+  \ge\lambda h(X)+(1-\lambda)h(Y)
+  \]
+  after scaling \(X,Y\) so that their entropy powers satisfy the optimizing proportion. More generally this concavity form is equivalent to EPI through rescaling and optimization.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Apply EPI to
+  \(aX+bY\):
+  \[
+  N(aX+bY)\ge a^2N(X)+b^2N(Y).
+  \]
+  Choose scales so the two terms contribute proportions \(\lambda\) and
+  \(1-\lambda\), take logarithms, and use
+  \(h(aX)=h(X)+d\log|a|\). Conversely, optimize the concavity inequality over scaling.</p>
+</div>
+
+<h3>Proof through heat flow</h3>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Add independent Gaussian noise and consider
+  \[
+  X_t=X+\sqrt t\,Z,\qquad
+  Y_t=Y+\sqrt t\,Z'.
+  \]
+  De Bruijn's identity gives
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}t}h(X_t)=\frac12J(X_t).
+  \]
+  The Fisher-information inequality
+  \[
+  \frac1{J(X_t+Y_t)}
+  \ge\frac1{J(X_t)}+\frac1{J(Y_t)}
+  \]
+  controls the derivative of the entropy-power deficit. At large \(t\), Gaussian noise dominates and the inequality becomes equality in the limit. Integrating backward proves nonnegativity of the deficit. Approximation removes smoothness assumptions.</p>
+</div>
+
+<h3>Stam's Fisher-information inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For independent scalar \(X,Y\),
+  \[
+  \frac1{J(X+Y)}
+  \ge\frac1{J(X)}+\frac1{J(Y)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let scores be
+  \(\rho_X=X\)-density log derivatives. The convolution score identity gives
+  \[
+  \rho_{X+Y}(X+Y)=
+  \mathbb E\{\rho_X(X)\mid X+Y\}
+  =\mathbb E\{\rho_Y(Y)\mid X+Y\}.
+  \]
+  For constants \(a+b=1\),
+  \[
+  \rho_{X+Y}(X+Y)=
+  \mathbb E\{a\rho_X(X)+b\rho_Y(Y)\mid X+Y\}.
+  \]
+  Conditional Jensen, independence, and zero score means give
+  \(J(X+Y)\le a^2J(X)+b^2J(Y)\). Minimize over \(a\), obtaining the reciprocal sum.</p>
+</div>
+
+<h3>Gaussian maximum entropy from EPI</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(X_1,X_2,\ldots\) are iid copies of a scalar \(X\) with variance \(\sigma^2\), then
+  \[
+  h\left(\frac{X_1+\cdots+X_n}{\sqrt n}\right)
+  \]
+  is nondecreasing along powers of two and bounded above by
+  \(\tfrac12\log(2\pi e\sigma^2)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply EPI to two independent normalized sums of size \(n\):
+  \[
+  N\left(\frac{S_n+S_n'}{\sqrt{2n}}\right)
+  \ge\frac12N(S_n/\sqrt n)+
+  \frac12N(S_n'/\sqrt n),
+  \]
+  so entropy power does not decrease. Variance stays \(\sigma^2\), and Gaussian maximum entropy gives the upper bound. Under regularity, the entropic central limit theorem strengthens this to convergence.</p>
+</div>
+
+<h3>Vector covariance consequence</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Since
+  \(N(X)\le\{\det\operatorname{Cov}(X)\}^{1/d}\) by Gaussian extremality, EPI links entropy growth under convolution to determinant inequalities for covariance. Equality throughout requires Gaussian summands with proportional covariance.</p>
+</div>
+
+<h3>Conditional EPI</h3>
+
+<p>A conditional EPI requires a conditional independence structure. If
+\(X\perp\!\!\!\perp Y\mid U\), one can derive conditional entropy-power inequalities with care over averaging and exponentiation. Simply conditioning an unconditional EPI is invalid when conditional dependence remains.</p>
+
+<h3>Why EPI is stronger than variance addition</h3>
+
+<p>Variance always adds for independent centered variables:
+\(\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)\).
+Entropy power is at most variance, with equality only for Gaussian laws. EPI says convolution increases the Gaussian-equivalent spread by at least the sum of the individual entropy powers, a statement sensitive to the whole density rather than only second moments.</p>

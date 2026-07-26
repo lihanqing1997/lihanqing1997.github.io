@@ -13,7 +13,7 @@ note_next_url: "/notes/real-analysis/radon-nikodym-derivatives/"
     <h3>Signed measures</h3>
     <p>A signed measure is countably additive but may take negative values.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A signed measure \(\nu\) on \((X,\mathcal A)\) is a countably additive map to \([-\infty,\infty]\) that assumes at most one of \(+\infty\) and \(-\infty\).</p>
+        <p><span class="statement-title">Definition.</span> A finite signed measure \(\nu\) on \((X,\mathcal A)\) is a countably additive map \(\nu:\mathcal A\to\mathbb R\) with \(\nu(\varnothing)=0\). More generally, an extended signed measure may take values in \([-\infty,\infty]\), but it is not allowed to take both \(+\infty\) and \(-\infty\); this prevents undefined expressions under additivity.</p>
     </div>
 
     <div class="math-statement definition">
@@ -27,7 +27,28 @@ note_next_url: "/notes/real-analysis/radon-nikodym-derivatives/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose sets with nearly maximal positive measure among sets of finite positive measure, remove subsets where negativity remains, and iterate with summable errors. The union of extracted positive pieces is positive, and its complement is negative; otherwise one could improve the construction. Uniqueness follows because the intersection of a positive set and a negative set must have signed measure zero.</p>
+        <p><span class="statement-title">Proof.</span> We prove the finite case. Let
+\[
+\alpha=\sup\{\nu(A):A\in\mathcal A\}<\infty.
+\]
+Choose \(A_n\) with \(\nu(A_n)>\alpha-2^{-n}\). If \(B\subset A_n\), then
+\[
+\nu(A_n\setminus B)=\nu(A_n)-\nu(B)\le\alpha,
+\]
+so \(\nu(B)\ge\nu(A_n)-\alpha>-2^{-n}\). Put
+\[
+P_k=\bigcup_{n\ge k}A_n,\qquad P=\bigcap_{k\ge1}P_k.
+\]
+By adding the \(A_n\)'s one at a time and using the lower bound on every subset of \(A_n\),
+\[
+\nu(P_k)\ge\alpha-\sum_{n\ge k}2^{-n}.
+\]
+Since \(P_k\downarrow P\), continuity of a finite signed measure gives \(\nu(P)=\alpha\). If \(B\subset P\), then \(B\subset P_k\) for every \(k\); the same successive-union bound gives \(\nu(B)\ge-\sum_{n\ge k}2^{-n}\), hence \(\nu(B)\ge0\). Thus \(P\) is positive.</p>
+        <p>Let \(N=X\setminus P\). If some \(B\subset N\) had \(\nu(B)>0\), then \(P\cap B=\varnothing\) and
+\[
+\nu(P\cup B)=\alpha+\nu(B)>\alpha,
+\]
+contradicting the definition of \(\alpha\). Hence \(N\) is negative. For uniqueness, if \(P,N\) and \(P',N'\) are two decompositions, then \(P\cap N'\) is both positive and negative, so every subset has measure zero; similarly for \(P'\cap N\). The two decompositions differ only by such null sets.</p>
     </div>
 
     <h3>Jordan decomposition</h3>
@@ -37,7 +58,12 @@ note_next_url: "/notes/real-analysis/radon-nikodym-derivatives/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Given a Hahn decomposition \(X=P\cup N\), define \(\nu^+(A)=\nu(A\cap P)\) and \(\nu^-(A)=-\nu(A\cap N)\). These are positive and mutually singular. If another such decomposition exists, comparing on positive and negative Hahn sets gives equality.</p>
+        <p><span class="statement-title">Proof.</span> Given a Hahn decomposition \(X=P\sqcup N\), define
+\[
+\nu^+(A)=\nu(A\cap P),\qquad
+\nu^-(A)=-\nu(A\cap N).
+\]
+These are positive measures, are concentrated on disjoint sets, and satisfy \(\nu=\nu^+-\nu^-\). The null-set uniqueness of Hahn decompositions makes them independent of the chosen \(P,N\). Alternatively, if \(\nu=\alpha-\beta\) with \(\alpha\perp\beta\), choose disjoint supports \(P,N\). On \(P\), positivity of \(\nu\) forces \(\beta(P)=0\) and \(\alpha(A)=\nu(A)\) for \(A\subset P\); similarly \(\beta(A)=-\nu(A)\) on \(N\). Thus \(\alpha=\nu^+\) and \(\beta=\nu^-\).</p>
     </div>
 
     <h3>Total variation</h3>
@@ -54,8 +80,35 @@ where the supremum is over finite measurable partitions of \(A\).</p>
         <p><span class="statement-title">Proof.</span> The Jordan formula gives \(\sum_i|\nu(A_i)|\le\sum_i(\nu^+(A_i)+\nu^-(A_i))=|\nu|(A)\). Taking the partition by \(A\cap P\) and \(A\cap N\) attains equality.</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> For every bounded measurable \(f\),
+\[
+\left|\int f\,\mathrm{d}\nu\right|
+\le\int|f|\,\mathrm{d}|\nu|.
+\]
+Moreover, \(|\nu|\) is the smallest positive measure \(\lambda\) satisfying \(|\nu(A)|\le\lambda(A)\) for every \(A\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> From \(\nu=\nu^+-\nu^-\),
+\[
+\left|\int f\,\mathrm{d}\nu\right|
+\le\int|f|\,\mathrm{d}\nu^++\int|f|\,\mathrm{d}\nu^-
+=\int|f|\,\mathrm{d}|\nu|.
+\]
+If \(|\nu(A)|\le\lambda(A)\), apply this inequality to every cell in a finite partition of \(A\):
+\[
+\sum_i|\nu(A_i)|\le\sum_i\lambda(A_i)=\lambda(A).
+\]
+Taking the supremum over partitions gives \(|\nu|(A)\le\lambda(A)\).</p>
+    </div>
+
     <h3>Complex measures</h3>
     <p>Complex measures reduce to signed measures through real and imaginary parts.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A complex measure has finite total variation on the whole space by definition. Its variation is the minimal positive measure \(\lambda\) such that \(|\nu(A)|\le\lambda(A)\) for every measurable \(A\).</p>
+        <p><span class="statement-title">Remark.</span> A complex measure is a countably additive \(\nu:\mathcal A\to\mathbb C\). Countable additivity forces its total variation to be finite on \(X\). Unlike the signed case, two pieces do not suffice to attain the variation; nevertheless
+\[
+|\nu|(A)=\sup_{\{A_i\}}\sum_i|\nu(A_i)|
+\]
+defines the minimal dominating positive measure and yields the same integral inequality.</p>
     </div>

@@ -8,46 +8,188 @@ note_prev_url: "/notes/probability-theory/stable-infinitely-divisible-laws/"
 note_next_url: "/notes/probability-theory/discrete-time-martingales/"
 ---
 
-<p>A filtration models the flow of information through time. Stopping times are random times whose occurrence can be decided using only the information available at that time.</p>
+<p>A filtration specifies what is known at each time. Adaptedness prevents a process from using future information; predictability strengthens this to information available immediately before an increment; and a stopping time is a random decision time detectable without looking ahead. These distinctions are the measurable foundation of martingale and stochastic-integration theory.</p>
 
-    <h3>Filtrations and adaptedness</h3>
+<h3>Information flows</h3>
 
-    <p>Processes are compared to the information revealed over time.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> On
+  \((\Omega,\mathcal F,P)\), a filtration indexed by
+  \(T=\mathbb N_0\) or \(\mathbb R_+\) is a family
+  \((\mathcal F_t)_{t\in T}\) such that
+  \[
+  \mathcal F_s\subseteq\mathcal F_t\subseteq\mathcal F
+  \qquad(s\le t).
+  \]
+  A stochastic process \(X=(X_t)\) is adapted if \(X_t\) is
+  \(\mathcal F_t\)-measurable for each \(t\).</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A filtration is an increasing family \((\mathcal F_t)_{t\in T}\) of sub-\(\sigma\)-fields of \(\mathcal F\). A process \(X_t\) is adapted if \(X_t\) is \(\mathcal F_t\)-measurable for every \(t\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The natural filtration of a process \(X\) is
+  \[
+  \mathcal F_t^X=\sigma(X_s:0\le s\le t).
+  \]
+  It is the smallest filtration to which \(X\) is adapted. A filtration in continuous time satisfies the <em>usual conditions</em> if it is complete and right-continuous:
+  \[
+  \mathcal F_t=\mathcal F_{t+}:=\bigcap_{s>t}\mathcal F_s.
+  \]</p>
+</div>
 
+<p>Completion places every subset of a null event in \(\mathcal F_0\). Right continuity rules out information appearing immediately after \(t\) but at no strictly positive delay. Both conditions remove avoidable technical pathologies in continuous-time stopping arguments.</p>
 
-    <h3>Stopping times</h3>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (discrete predictability).</span> A sequence \(H_n\), \(n\ge1\), is predictable if \(H_n\) is
+  \(\mathcal F_{n-1}\)-measurable. Thus the coefficient multiplying the increment from \(n-1\) to \(n\) must be chosen before that increment is observed.</p>
+</div>
 
-    <p>A stopping time cannot look into the future.</p>
+<h3>Stopping times</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A random time \(\tau:T\to[0,\infty]\) is a stopping time if \(\{\tau\le t\}\in\mathcal F_t\) for every \(t\). In discrete time this is equivalent to \(\{\tau=t\}\in\mathcal F_t\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A map
+  \(\tau:\Omega\to T\cup\{\infty\}\) is a stopping time if
+  \[
+  \{\tau\le t\}\in\mathcal F_t
+  \qquad\text{for every }t\in T.
+  \]
+  A random time need not be a stopping time. For example, the last time a random walk visits zero before a fixed horizon generally depends on future observations.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(\{\tau\le t\}\in\mathcal F_t\), then \(\{\tau=t\}=\{\tau\le t\}\setminus\{\tau\le t-1\}\in\mathcal F_t\) in discrete time. Conversely, \(\{\tau\le t\}=\bigcup_{s\le t}\{\tau=s\}\), a finite union of events in \(\mathcal F_t\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (discrete criteria).</span> For
+  \(T=\mathbb N_0\), the following are equivalent:
+  \[
+  \{\tau\le n\}\in\mathcal F_n,\qquad
+  \{\tau=n\}\in\mathcal F_n,\qquad
+  \{\tau>n\}\in\mathcal F_n
+  \]
+  for every \(n\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Complements give the equivalence of the first and third conditions. Also
+  \[
+  \{\tau=n\}=\{\tau\le n\}\setminus\{\tau\le n-1\}\in\mathcal F_n.
+  \]
+  Conversely,
+  \(\{\tau\le n\}=\bigcup_{k=0}^n\{\tau=k\}\in\mathcal F_n\), since
+  \(\mathcal F_k\subseteq\mathcal F_n\).</p>
+</div>
 
-    <h3>Stopped sigma-field</h3>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (closure operations).</span> If
+  \(\sigma,\tau\) are stopping times, then
+  \(\sigma\wedge\tau\) and \(\sigma\vee\tau\) are stopping times. If
+  \(\tau_n\) are stopping times, then \(\inf_n\tau_n\) is a stopping time. Under right continuity of the filtration, \(\sup_n\tau_n\) is also a stopping time whenever the supremum is the increasing limit of \(\tau_n\).</p>
+</div>
 
-    <p>The information available at a random time is itself a sigma-field.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The identities
+  \[
+  \{\sigma\wedge\tau\le t\}
+  =\{\sigma\le t\}\cup\{\tau\le t\},
+  \quad
+  \{\sigma\vee\tau\le t\}
+  =\{\sigma\le t\}\cap\{\tau\le t\}
+  \]
+  prove the first claim, and a countable union handles \(\inf_n\tau_n\). If
+  \(\tau_n\uparrow\tau\), then
+  \[
+  \{\tau\le t\}
+  =\bigcap_{m=1}^{\infty}\bigcup_{N=1}^{\infty}
+  \bigcap_{n\ge N}\{\tau_n<t+1/m\}\in
+  \bigcap_{m}\mathcal F_{t+1/m}=\mathcal F_t.
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a stopping time \(\tau\), define
-\[
-\mathcal F_\tau=\{A\in\mathcal F:A\cap\{\tau\le t\}\in\mathcal F_t\ \text{for all }t\}.
-\]
-If \(X_t\) is adapted and has suitable path regularity, then \(X_\tau\) is \(\mathcal F_\tau\)-measurable.</p>
-    </div>
+<h3>Hitting and entrance times</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The defining class is closed under complements and countable unions because each operation can be intersected with \(\{\tau\le t\}\) and checked inside \(\mathcal F_t\). For simple stopping times, \(X_\tau=\sum_tX_t1_{\{\tau=t\}}\), which is measurable with respect to \(\mathcal F_\tau\). General cases follow by approximation of \(\tau\) by simple stopping times and path regularity.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(X\) be an adapted continuous process with values in a metric space, and let \(F\) be closed. Then
+  \[
+  \tau_F=\inf\{t\ge0:X_t\in F\}
+  \]
+  is a stopping time. If \(G\) is open and \(X\) is adapted with right-continuous paths, then the entrance time
+  \(\tau_G=\inf\{t\ge0:X_t\in G\}\) is a stopping time.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Typical examples are hitting times of closed sets by continuous adapted processes.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For closed \(F\) and continuous paths,
+  \[
+  \{\tau_F\le t\}
+  =
+  \left\{\inf_{0\le s\le t}d(X_s,F)=0\right\}
+  =
+  \left\{\inf_{s\in\mathbb Q\cap[0,t]}d(X_s,F)=0\right\}.
+  \]
+  The final event belongs to \(\mathcal F_t\) because it is determined by countably many adapted coordinates. For open \(G\),
+  \[
+  \{\tau_G<t\}
+  =\bigcup_{s\in\mathbb Q\cap[0,t)}\{X_s\in G\}
+  \in\mathcal F_t,
+  \]
+  where right continuity ensures that an entrance before \(t\) is detected at a nearby rational time. Under a right-continuous filtration,
+  \(\{\tau_G\le t\}=\bigcap_m\{\tau_G<t+1/m\}\in\mathcal F_t\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For an adapted random walk
+  \(S_n\), the first passage time
+  \[
+  \tau_a=\inf\{n\ge0:S_n\ge a\}
+  \]
+  is a stopping time because
+  \(\{\tau_a\le n\}=\{\max_{k\le n}S_k\ge a\}\in\mathcal F_n\).
+  By contrast, \(\sup\{k\le n:S_k=0\}\) is usually not a stopping time: deciding that a visit is the last one requires observing the future through \(n\).</p>
+</div>
+
+<h3>Information at a stopping time</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a stopping time \(\tau\), define
+  \[
+  \mathcal F_\tau
+  =
+  \{A\in\mathcal F:
+  A\cap\{\tau\le t\}\in\mathcal F_t
+  \text{ for every }t\}.
+  \]
+  This is the sigma-field of events decidable by time \(\tau\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The class
+  \(\mathcal F_\tau\) is a sigma-field. If \(\sigma\le\tau\), then
+  \(\mathcal F_\sigma\subseteq\mathcal F_\tau\). In discrete time, an adapted process \(X_n\) satisfies
+  \(X_\tau1_{\{\tau<\infty\}}\in\mathcal F_\tau\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Closure under complements follows from
+  \[
+  A^c\cap\{\tau\le t\}
+  =\{\tau\le t\}\setminus(A\cap\{\tau\le t\}),
+  \]
+  and countable unions commute with intersection by \(\{\tau\le t\}\). If
+  \(A\in\mathcal F_\sigma\) and \(\sigma\le\tau\), then
+  \[
+  A\cap\{\tau\le t\}
+  =(A\cap\{\sigma\le t\})\cap\{\tau\le t\}\in\mathcal F_t.
+  \]
+  Finally, for a Borel set \(B\),
+  \[
+  \{X_\tau\in B,\tau<\infty\}\cap\{\tau\le n\}
+  =\bigcup_{k=0}^n\{X_k\in B,\tau=k\}\in\mathcal F_n.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (stopped process).</span> If \(X\) is adapted and \(\tau\) is a stopping time, then
+  \[
+  X_n^\tau:=X_{n\wedge\tau}
+  \]
+  is adapted in discrete time. The same holds in continuous time for an adapted process with right-continuous paths under the usual conditions.</p>
+</div>
+
+<p>This measurable framework is what makes expressions such as
+\(\mathbb E[M_\tau\mid\mathcal F_\sigma]\) meaningful. The next pages use it to formulate martingale transforms, maximal inequalities, and optional sampling without hidden anticipative assumptions.</p>

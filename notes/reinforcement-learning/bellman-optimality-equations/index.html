@@ -80,3 +80,81 @@ then \(v_\pi=v_*\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> When several actions attain the Bellman maximum at a state, any measurable selection among them is optimal. This is why value functions are often better identified than policies.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Optimal operators</h3>
+
+<p>For bounded \(V\), define
+\[
+(TV)(s)
+=\sup_{a\in\mathsf A(s)}
+\left\{r(s,a)+\gamma\int V(s')P(\mathrm{d}s'\mid s,a)\right\},
+\]
+and for action values,
+\[
+(\mathcal TQ)(s,a)
+=r(s,a)+\gamma\int\sup_bQ(s',b)P(\mathrm{d}s'\mid s,a).
+\]
+Measurable-selection assumptions are needed in general spaces to replace
+suprema by measurable maximizing actions.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Bellman optimality).</span> In a
+finite discounted MDP, \(T\) has a unique fixed point \(V^*\), and
+\[
+V^*(s)=\max_a\{r(s,a)+\gamma P_aV^*(s)\}.
+\]
+Every policy greedy with respect to \(V^*\) is optimal, and every optimal
+policy chooses only actions attaining the maximum on states it visits.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The max inequality
+\(|\max_ax_a-\max_ay_a|\le\max_a|x_a-y_a|\) makes \(T\) a
+\(\gamma\)-contraction, hence it has a unique fixed point. Let \(\pi^*\) select
+a maximizing action. Then
+\(T^{\pi^*}V^*=TV^*=V^*\); uniqueness of the policy-evaluation fixed point gives
+\(V^{\pi^*}=V^*\). For any \(\pi\), \(T^\pi V\le TV\); iterating from \(V^*\)
+or using finite-horizon induction gives \(V^\pi\le V^*\).</p>
+</div>
+
+<h3>Finite-horizon dynamic programming</h3>
+
+<p>With horizon \(H\), terminal value \(V_{H+1}=0\), and possibly
+time-dependent rewards and kernels,
+\[
+V_h^*(s)
+=\max_a\left\{r_h(s,a)+
+E[V_{h+1}^*(S_{h+1})\mid s,a]\right\},
+\quad h=H,\ldots,1.
+\]
+Backward induction proves optimality without contraction. The optimal policy
+is generally nonstationary because remaining time is part of the state.</p>
+
+<h3>Bellman inequalities and verification</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (verification).</span> If a bounded
+function \(U\) satisfies
+\[
+U(s)\ge r(s,a)+\gamma P_aU(s)\quad\text{for every }(s,a),
+\]
+then \(U\ge V^*\). If a policy \(\pi\) attains equality
+\(\pi\)-almost surely at every state, then \(U=V^\pi=V^*\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The inequality is \(U\ge TU\).
+Monotonicity gives \(U\ge T^nU\to V^*\). If \(\pi\) attains equality, then
+\(U=T^\pi U\), so \(U=V^\pi\); combined with the first conclusion this policy
+is optimal.</p>
+</div>
+
+<h3>Nonuniqueness</h3>
+
+<p>The optimal value is unique, but optimal actions and policies need not be.
+Ties define a set-valued greedy correspondence. This matters for
+differentiability: \(V^*\) is a pointwise maximum of smooth functions and may
+be nonsmooth when the maximizing action changes. Entropy regularization
+replaces the maximum by log-sum-exp and makes the greedy policy unique under a
+full-support reference measure.</p>

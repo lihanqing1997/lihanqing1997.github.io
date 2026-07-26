@@ -2,26 +2,42 @@
 layout: note-detail
 breadcrumb_child_label_en: "9. Deficiency and distance between experiments"
 breadcrumb_child_label_fr: "9. Déficience et distance entre expériences"
-breadcrumb_child_label_zh: "9. 实验之间的 Deficiency 与距离"
+breadcrumb_child_label_zh: "9. 实验之间的亏损度与距离"
 note_back_url: "/notes/statistical-decision-theory/"
 note_prev_url: "/notes/statistical-decision-theory/blackwell-comparison-and-transitions/"
 note_next_url: "/notes/statistical-decision-theory/likelihood-ratios-hellinger-geometry/"
 ---
 
-<p>Deficiency turns exact Blackwell comparison into approximate comparison. It is the basic metric language for asymptotic equivalence of experiments.</p>
+<p>Deficiency relaxes exact Blackwell simulation by allowing a uniform total-variation error. It is directional: \(\delta(\mathcal E,\mathcal F)\) measures how well data from \(\mathcal E\) can reproduce \(\mathcal F\). The symmetric Le Cam distance measures approximate equivalence.</p>
 
-    <h3>Deficiency</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For experiments \(\mathcal E=\{P_\theta\}\) and \(\mathcal F=\{Q_\theta\}\), the deficiency of \(\mathcal E\) relative to \(\mathcal F\) is</p>
-        <p>\[
-\delta(\mathcal E,\mathcal F)=\inf_K\sup_{\theta\in\Theta}\|P_\theta K-Q_\theta\|_{\mathrm{TV}}.
-\]</p>
-    </div>
+<h3>Directional deficiency</h3>
 
-    <h3>Le Cam distance</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The symmetric Le Cam distance is \(\Delta(\mathcal E,\mathcal F)=\max\{\delta(\mathcal E,\mathcal F),\delta(\mathcal F,\mathcal E)\}\). Small distance means each experiment can simulate the other with small total-variation error.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For experiments
+  \[
+  \mathcal E=(\mathcal X,\{P_\theta:\theta\in\Theta\}),
+  \qquad
+  \mathcal F=(\mathcal Y,\{Q_\theta:\theta\in\Theta\}),
+  \]
+  define
+  \[
+  \delta(\mathcal E,\mathcal F)
+  =
+  \inf_{K:\mathcal X\rightsquigarrow\mathcal Y}
+  \sup_{\theta\in\Theta}
+  \|P_\theta K-Q_\theta\|_{\mathrm{TV}}.
+  \]
+  The Le Cam distance is
+  \[
+  \Delta(\mathcal E,\mathcal F)
+  =
+  \max\{\delta(\mathcal E,\mathcal F),
+         \delta(\mathcal F,\mathcal E)\}.
+  \]</p>
+</div>
+
+<p>Exact Blackwell dominance \(\mathcal E\succeq_B\mathcal F\) is the case
+\(\delta(\mathcal E,\mathcal F)=0\), up to closure issues on general spaces. The infimum kernel is an approximate simulator.</p>
     <figure class="research-figure">
         <svg viewBox="0 0 520 210" role="img" aria-label="Deficiency measures the best approximate simulation of one experiment by another.">
             <rect x="55" y="70" width="145" height="70" rx="6" fill="#fbfaf6" stroke="#496d8a" stroke-width="2"/>
@@ -38,10 +54,150 @@ note_next_url: "/notes/statistical-decision-theory/likelihood-ratios-hellinger-g
         <figcaption>Deficiency measures the best approximate simulation of one experiment by another.</figcaption>
     </figure>
 
-    <h3>Risk transfer by total variation</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If losses are bounded by one and \(P_\theta K\) is within \(\varepsilon\) of \(Q_\theta\) in total variation, then the risk of any rule changes by at most \(\varepsilon\), uniformly in \(\theta\).</p>
-    </div>
+<h3>Risk transfer</h3>
 
-    <h3>Asymptotic equivalence</h3>
-    <p>A sequence \(\mathcal E_n\) is asymptotically equivalent to \(\mathcal F_n\) when \(\Delta(\mathcal E_n,\mathcal F_n)\to0\). Then bounded-loss decision problems have the same asymptotic value.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(\delta(\mathcal E,\mathcal F)\leq\varepsilon\), then for every decision rule \(\rho\) in \(\mathcal F\) and every loss \(0\leq L\leq C\), a rule \(\delta\) in \(\mathcal E\) exists such that
+  \[
+  R_{\mathcal E}(\theta,\delta)
+  \leq
+  R_{\mathcal F}(\theta,\rho)+C\varepsilon
+  \quad\text{for every }\theta.
+  \]
+  With a kernel attaining error \(\varepsilon\), the absolute risk difference is at most \(C\varepsilon\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose \(K\) with
+  \(\sup_\theta\|P_\theta K-Q_\theta\|_{\mathrm{TV}}\leq\varepsilon+\eta\), and compose it with \(\rho\). Define
+  \[
+  \ell_\theta(y)=\int L(\theta,a)\rho(y,\mathrm{d}a),
+  \qquad0\leq\ell_\theta\leq C.
+  \]
+  Then
+  \[
+  |R_{\mathcal E}(\theta,K\rho)
+   -R_{\mathcal F}(\theta,\rho)|
+  =
+  |(P_\theta K-Q_\theta)\ell_\theta|
+  \leq C(\varepsilon+\eta).
+  \]
+  Let \(\eta\downarrow0\). \(\square\)</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (randomization criterion).</span> For finite parameter sets and standard decision spaces,
+  \[
+  \delta(\mathcal E,\mathcal F)\leq\varepsilon
+  \]
+  if and only if, for every finite action space, every loss
+  \(0\leq L\leq1\), and every rule \(\rho\) in \(\mathcal F\), there is a rule \(\delta\) in \(\mathcal E\) such that
+  \[
+  R_{\mathcal E}(\theta,\delta)
+  \leq R_{\mathcal F}(\theta,\rho)+\varepsilon
+  \quad\text{for all }\theta.
+  \]</p>
+</div>
+
+<p>The forward implication is the risk-transfer theorem. The converse uses separation: if no kernel simulates \(\mathcal F\) within \(\varepsilon\), a bounded finite decision problem separates \(Q\) from the convex set of approximate garblings of \(P\). Deficiency is therefore exactly a worst-case decision-theoretic loss, not merely a convenient probability metric.</p>
+
+<h3>Triangle inequality</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For experiments on the same parameter set,
+  \[
+  \delta(\mathcal E,\mathcal G)
+  \leq
+  \delta(\mathcal E,\mathcal F)
+  +\delta(\mathcal F,\mathcal G),
+  \]
+  and consequently \(\Delta\) is a pseudometric.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose kernels \(K\) from
+  \(\mathcal E\) to \(\mathcal F\) and \(L\) from \(\mathcal F\) to \(\mathcal G\). Data processing for total variation gives
+  \[
+  \begin{aligned}
+  \|P_\theta KL-R_\theta\|_{\mathrm{TV}}
+  &\leq
+  \|(P_\theta K-Q_\theta)L\|_{\mathrm{TV}}
+  +\|Q_\theta L-R_\theta\|_{\mathrm{TV}}\\
+  &\leq
+  \|P_\theta K-Q_\theta\|_{\mathrm{TV}}
+  +\|Q_\theta L-R_\theta\|_{\mathrm{TV}}.
+  \end{aligned}
+  \]
+  Take suprema and infima. Symmetrizing proves the triangle inequality for \(\Delta\). \(\square\)</p>
+</div>
+
+<h3>Product experiments</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(\mathcal E_i,\mathcal F_i\) share parameter \(\theta\), then
+  \[
+  \Delta(\mathcal E_1\otimes\mathcal E_2,
+         \mathcal F_1\otimes\mathcal F_2)
+  \leq
+  \Delta(\mathcal E_1,\mathcal F_1)
+  +\Delta(\mathcal E_2,\mathcal F_2).
+  \]</p>
+</div>
+
+<p>Use product kernels and the tensorization inequality
+\[
+\|P_1\otimes P_2-Q_1\otimes Q_2\|_{\mathrm{TV}}
+\leq
+\|P_1-Q_1\|_{\mathrm{TV}}
++\|P_2-Q_2\|_{\mathrm{TV}}.
+\]
+The bound is useful for assembling asymptotic equivalences block by block, though a linear accumulation can be too crude when the number of blocks grows.</p>
+
+<h3>Restricted parameter sets</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(\Theta_0\subset\Theta\), then
+  \[
+  \delta(\mathcal E|_{\Theta_0},\mathcal F|_{\Theta_0})
+  \leq
+  \delta(\mathcal E,\mathcal F).
+  \]</p>
+</div>
+
+<p>Local asymptotic theory exploits this monotonicity by restricting to
+\(\theta_0+r_n^{-1}K\) for compact \(K\). Uniform global equivalence may fail even when every bounded local parameter set is asymptotically equivalent to a Gaussian shift.</p>
+
+<h3>Bounding deficiency through explicit approximations</h3>
+
+<p>To prove \(\delta(\mathcal E,\mathcal F)\leq\varepsilon\), one constructs a kernel and bounds total variation. Common tools include:</p>
+\[
+\|P-Q\|_{\mathrm{TV}}
+\leq H(P,Q),
+\qquad
+\|P-Q\|_{\mathrm{TV}}
+\leq\sqrt{\tfrac12D_{\mathrm{KL}}(P\|Q)},
+\]
+under the convention
+\[
+H^2(P,Q)=\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu.
+\]
+Couplings give another route:
+\[
+\|P-Q\|_{\mathrm{TV}}
+=\inf_{\mathcal L(X)=P,\mathcal L(Y)=Q}P(X\ne Y).
+\]
+
+<h3>Asymptotic equivalence</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \[
+  \Delta(\mathcal E_n,\mathcal F_n)\to0,
+  \]
+  then every sequence of decision rules with uniformly bounded losses can be transferred between the experiments with uniformly vanishing risk difference. In particular, their Bayes and minimax values differ by \(o(1)\).</p>
+</div>
+
+<p>This is stronger than saying that one statistic has the same limiting distribution in both models. Asymptotic equivalence transfers the entire bounded-loss decision theory, including procedures not known when the equivalence is proved.</p>

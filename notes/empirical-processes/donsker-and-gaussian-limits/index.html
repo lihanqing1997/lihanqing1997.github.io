@@ -8,31 +8,218 @@ note_prev_url: "/notes/empirical-processes/empirical-measures-and-gc/"
 note_next_url: "/notes/empirical-processes/stochastic-equicontinuity-and-applications/"
 ---
 
-<p>Donsker theory is the uniform central limit theorem. It identifies when the empirical process converges to a tight Gaussian process.</p>
+<p>The ordinary central limit theorem controls finitely many empirical averages. A Donsker theorem controls all averages indexed by a function class at once. The essential distinction is tightness: no coordinate may carry appreciable fluctuation while escaping every finite approximation of the class.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(\mathcal F\) is \(P\)-Donsker if \(\mathbb G_n\rightsquigarrow\mathbb G_P\) in \(\ell^\infty(\mathcal F)\), where \(\mathbb G_P\) is centered Gaussian with covariance \(Pfg-PfPg\).</p>
-    </div>
+<h3>The \(P\)-Brownian bridge</h3>
 
-    <h3>Gaussian process limits</h3>
-    <ul>
-        <li>Finite-dimensional CLTs give Gaussian coordinates; asymptotic equicontinuity gives tightness.</li>
-        <li>Entropy conditions with square-root entropy integrals are common sufficient conditions.</li>
-        <li>Donsker classes automatically give GC classes under mild envelope integrability.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\mathcal F\subset L_2(P)\). A <em>\(P\)-Brownian bridge indexed by \(\mathcal F\)</em> is a centered Gaussian process
+  \[
+  \mathbb G_P=\{\mathbb G_Pf:f\in\mathcal F\}
+  \]
+  with covariance
+  \[
+  \operatorname{Cov}(\mathbb G_Pf,\mathbb G_Pg)
+  =P\{(f-Pf)(g-Pg)\}
+  =P(fg)-Pf\,Pg.
+  \]
+  Its canonical semimetric is
+  \[
+  \rho_P(f,g)
+  =\bigl[P\{(f-g)-P(f-g)\}^2\bigr]^{1/2}.
+  \]</p>
+</div>
 
-    <h3>Functionals of Donsker classes</h3>
-    <p>Donsker convergence is the input for distributional limits of functionals such as quantiles, EDF statistics, and smooth plug-in estimators.</p>
-
-    <!-- expanded-learning -->
-    <h3>Bracketing Donsker criterion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A common bracketing condition is
+<p>The process depends only on equivalence classes modulo constants and \(P\)-null sets. Since
 \[
-\int_0^1\sqrt{\log N_{[]}(\varepsilon\|F\|_{P,2},\mathcal F,L_2(P))}\,\mathrm{d}\varepsilon<\infty,
+\rho_P(f,g)\leq \|f-g\|_{P,2},
 \]
-with \(PF^2<\infty\). Under suitable measurability, this implies that \(\mathcal F\) is \(P\)-Donsker.</p>
-    </div>
+\(L_2(P)\)-entropy is a convenient, slightly stronger way to control its paths.</p>
 
-    <h3>Proof structure</h3>
-    <p>The proof has two layers: finite-dimensional CLTs identify the Gaussian covariance, while the entropy integral controls increments \(\mathbb G_n(f-g)\) uniformly over small \(L_2(P)\)-balls.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A class \(\mathcal F\) is <em>\(P\)-pre-Gaussian</em> if its covariance kernel admits a version of \(\mathbb G_P\) whose sample paths are bounded and uniformly continuous on \((\mathcal F,\rho_P)\). It is <em>\(P\)-Donsker</em> if
+  \[
+  \mathbb G_n=\sqrt n(P_n-P)\ \rightsquigarrow\ \mathbb G_P
+  \qquad\text{in }\ell^\infty(\mathcal F),
+  \]
+  in the outer weak-convergence sense described on the preceding pages.</p>
+</div>
+
+<p>Pre-Gaussianity is necessary for the usual Donsker conclusion, but it is not sufficient in full generality. It describes the proposed limit; one must still prevent the empirical process from developing finite-sample oscillations that are absent from that limit.</p>
+
+<h3>Finite-dimensional convergence and tightness</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If every \(f\in\mathcal F\) belongs to \(L_2(P)\), then the finite-dimensional distributions of \(\mathbb G_n\) converge to those of the \(P\)-Brownian bridge. More precisely, for \(f_1,\ldots,f_k\in\mathcal F\),
+  \[
+  (\mathbb G_nf_1,\ldots,\mathbb G_nf_k)
+  \rightsquigarrow
+  (\mathbb G_Pf_1,\ldots,\mathbb G_Pf_k).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(a=(a_1,\ldots,a_k)^\top\in\mathbb R^k\),
+  \[
+  \sum_{j=1}^k a_j\mathbb G_nf_j
+  =\frac1{\sqrt n}\sum_{i=1}^n
+  \left\{\sum_{j=1}^ka_jf_j(X_i)-P\sum_{j=1}^ka_jf_j\right\}.
+  \]
+  The summands are i.i.d., centered, and square integrable. The scalar central limit theorem gives a normal limit with variance
+  \[
+  P\left[\sum_{j=1}^ka_j(f_j-Pf_j)\right]^2.
+  \]
+  The Cramér–Wold device identifies the asserted Gaussian vector and its covariance matrix. \(\square\)</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Donsker criterion).</span> Suppose \((\mathcal F,\rho_P)\) is totally bounded and a version of \(\mathbb G_P\) has bounded, uniformly \(\rho_P\)-continuous paths. Then \(\mathcal F\) is \(P\)-Donsker if
+  \[
+  \lim_{\delta\downarrow0}\limsup_{n\to\infty}
+  P^*\!\left(
+    \sup_{\rho_P(f,g)<\delta}
+    |\mathbb G_nf-\mathbb G_ng|>\eta
+  \right)=0
+  \]
+  for every \(\eta>0\). Conversely, Donsker convergence to such a bridge implies this asymptotic equicontinuity.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(\delta>0\) and choose a finite \(\delta\)-net \(f_1,\ldots,f_N\). Let \(\pi_\delta f\) be a net point satisfying \(\rho_P(f,\pi_\delta f)<\delta\). Then
+  \[
+  \|\mathbb G_n-\mathbb G_n\circ\pi_\delta\|_{\mathcal F}
+  \leq
+  \sup_{\rho_P(f,g)<2\delta}
+  |\mathbb G_nf-\mathbb G_ng|.
+  \]
+  The right side is asymptotically negligible as \(\delta\downarrow0\), whereas \(\mathbb G_n\circ\pi_\delta\) takes only finitely many coordinates and hence converges by the preceding proposition. The same approximation holds for the uniformly continuous Gaussian limit. The approximation theorem for weak convergence now gives \(\mathbb G_n\rightsquigarrow\mathbb G_P\). For the converse, apply asymptotic tightness in \(\ell^\infty(\mathcal F)\) and the fact that compact subsets of \(UC(\mathcal F,\rho_P)\) are uniformly equicontinuous. \(\square\)</p>
+</div>
+
+<p>This theorem isolates the two jobs in every Donsker proof. The multivariate central limit theorem determines the covariance. Entropy, combinatorial structure, or a direct oscillation estimate supplies asymptotic equicontinuity.</p>
+
+<h3>Bracketing entropy</h3>
+
+<p>A bracket \([l,u]\) contains every \(f\) satisfying \(l\leq f\leq u\) pointwise. Its \(L_2(P)\)-width is \(\|u-l\|_{P,2}\), and \(N_{[]}(\varepsilon,\mathcal F,L_2(P))\) is the least number of brackets of width at most \(\varepsilon\) needed to cover \(\mathcal F\).</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (bracketing central limit theorem).</span> Let \(\mathcal F\) be suitably measurable and admit an envelope \(F\) with \(PF^2<\infty\). If
+  \[
+  J_{[]}(1,\mathcal F,L_2(P))
+  :=
+  \int_0^1
+  \sqrt{1+\log N_{[]}\!\left(
+      \varepsilon\|F\|_{P,2},
+      \mathcal F,L_2(P)
+  \right)}
+  \,\mathrm{d}\varepsilon
+  <\infty,
+  \]
+  then \(\mathcal F\) is \(P\)-Donsker.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> At scales \(\delta_j=2^{-j}\), choose nested bracket covers and approximate each \(f\) by a bracket endpoint \(\pi_jf\). The telescoping identity
+  \[
+  f=\pi_0f+\sum_{j=1}^{m}(\pi_jf-\pi_{j-1}f)+(f-\pi_mf)
+  \]
+  separates the process into increments of successively smaller \(L_2(P)\)-size. A finite-class maximal inequality bounds the expected maximum at scale \(j\) by a constant times
+  \[
+  \delta_j\|F\|_{P,2}
+  \sqrt{\log N_{[]}(\delta_j\|F\|_{P,2},\mathcal F,L_2(P))}.
+  \]
+  Summing these terms gives a Riemann-sum version of \(J_{[]}\). The final bracket remainder is controlled using its pointwise order and the square-integrable envelope. Thus the oscillation over sufficiently narrow brackets tends to zero in outer probability. Finite-dimensional convergence and the preceding criterion complete the proof. The chaining and maximal-inequality pages establish each estimate used here.</p>
+</div>
+
+<h3>Uniform covering entropy</h3>
+
+<p>Brackets exploit order and therefore can be inefficient for classes with a strong finite-dimensional or combinatorial geometry. Covering numbers measured uniformly over discrete probability laws give another route. Define
+\[
+J(1,\mathcal F)
+=\sup_Q\int_0^1
+\sqrt{1+\log N\!\left(
+  \varepsilon\|F\|_{Q,2},\mathcal F,L_2(Q)
+\right)}\,\mathrm{d}\varepsilon,
+\]
+where the supremum is over finitely supported probability measures \(Q\) with \(\|F\|_{Q,2}>0\).</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (uniform entropy criterion).</span> Let \(\mathcal F\) be pointwise measurable with measurable envelope \(F\), \(PF^2<\infty\), and \(J(1,\mathcal F)<\infty\). Then \(\mathcal F\) is \(P\)-Donsker.</p>
+</div>
+
+<p>Conditionally on the observations, symmetrization turns \(\mathbb G_n\) into a Rademacher process whose canonical metric is the empirical metric \(L_2(P_n)\). The uniform entropy integral controls this random metric without first comparing \(P_n\) to \(P\). The square-integrability of \(F\) removes the large-envelope tail.</p>
+
+<h3>Examples and permanence</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (distribution functions).</span> For
+  \[
+  \mathcal F=\{1_{(-\infty,t]}:t\in\mathbb R\},
+  \]
+  the class has VC dimension one and satisfies a uniform polynomial covering bound. Consequently it is \(P\)-Donsker for every probability law \(P\). The limit is
+  \[
+  \mathbb G_P1_{(-\infty,t]}=B(F(t)),
+  \]
+  where \(B\) is a standard Brownian bridge and \(F\) is the distribution function of \(P\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (compact parametric class).</span> Suppose \(\Theta\subset\mathbb R^d\) is compact and
+  \[
+  |f_\theta(x)-f_\eta(x)|\leq L(x)\|\theta-\eta\|,
+  \qquad PL^2<\infty,
+  \]
+  while one \(f_{\theta_0}\in L_2(P)\). Euclidean covering of \(\Theta\) gives
+  \[
+  N(\varepsilon,\mathcal F,L_2(P))
+  \leq C\varepsilon^{-d}.
+  \]
+  Since \(\int_0^1\sqrt{\log(C\varepsilon^{-d})}\,\mathrm{d}\varepsilon<\infty\), standard measurability conditions make \(\mathcal F=\{f_\theta:\theta\in\Theta\}\) Donsker.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The following operations preserve the Donsker property whenever the displayed classes have square-integrable envelopes and the relevant maps are measurable:</p>
+  <ol>
+    <li>subclasses and finite unions;</li>
+    <li>finite linear combinations \(a_1\mathcal F_1+\cdots+a_k\mathcal F_k\);</li>
+    <li>the image \(\{\phi\circ f:f\in\mathcal F\}\) under a fixed Lipschitz function \(\phi\);</li>
+    <li>products \(\mathcal F\mathcal G\) when both classes are uniformly bounded.</li>
+  </ol>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Subclasses require no new coordinates. Finite unions and linear combinations are continuous images of the joint process on a finite product of Donsker classes. If \(\phi\) is \(L\)-Lipschitz, then
+  \[
+  \|\phi\circ f-\phi\circ g\|_{Q,2}
+  \leq L\|f-g\|_{Q,2},
+  \]
+  so any applicable entropy bound transfers to the image class. For bounded products,
+  \[
+  |fg-f'g'|
+  \leq \|g\|_\infty|f-f'|+\|f'\|_\infty|g-g'|,
+  \]
+  and a product of nets yields a finite entropy integral. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(\mathcal F\) is \(P\)-Donsker, then
+  \[
+  \|P_n-P\|_{\mathcal F}
+  =n^{-1/2}\|\mathbb G_n\|_{\mathcal F}
+  =O_p(n^{-1/2})=o_p(1).
+  \]
+  Thus every Donsker class is Glivenko–Cantelli in probability.</p>
+</div>
+
+<h3>Why finite-dimensional convergence is insufficient</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> Let \(P\) be atomless and let \(\mathcal F\) contain the indicators of all finite subsets of the sample space. For every fixed \(f=1_A\in\mathcal F\), \(Pf=0\), so \(\mathbb G_nf=0\) almost surely and every fixed finite-dimensional distribution is degenerate. After observing \(X_1,\ldots,X_n\), however, the finite set \(A_n=\{X_1,\ldots,X_n\}\) belongs to the class and
+  \[
+  \sup_{f\in\mathcal F}\mathbb G_nf
+  \geq \mathbb G_n1_{A_n}
+  =\sqrt n.
+  \]
+  Hence the process is not tight. The example exposes both the need for uniform complexity control and the reason outer probability is used for potentially nonmeasurable suprema.</p>
+</div>
+
+<p>Donsker convergence is the reusable input behind Kolmogorov–Smirnov and Cramér–von Mises limits, asymptotic laws for quantiles, and the linearization of semiparametric estimators. The next page makes the random-index replacement in those arguments precise.</p>

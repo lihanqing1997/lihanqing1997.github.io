@@ -8,42 +8,167 @@ note_prev_url: "/notes/probability-theory/brownian-motion-construction/"
 note_next_url: "/notes/probability-theory/reflection-principle-hitting-times/"
 ---
 
-<p>Brownian paths are continuous but extremely irregular. Their sample path properties explain why stochastic calculus differs from ordinary calculus.</p>
+<p>Brownian paths are continuous but live exactly at the boundary where ordinary first-order calculus fails. Their oscillations have order \(\sqrt h\), refined by a logarithmic factor; total variation is infinite; deterministic-partition quadratic variation is time. These facts explain both the correction term in Ito's formula and the geometry of diffusion paths.</p>
 
-    <h3>Holder regularity</h3>
+<h3>Holder continuity below one half</h3>
 
-    <p>Brownian paths are Hölder continuous below order \(1/2\), but not at or above \(1/2\).</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A function \(f\) is Holder continuous of order \(\alpha\in(0,1]\) on \([0,T]\) if
+  \[
+  |f(t)-f(s)|\le C|t-s|^\alpha
+  \]
+  for all \(s,t\), for some finite \(C\). Local Holder continuity means this holds on every compact time interval.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A function \(f\) is locally Hölder of order \(\alpha\) if on each compact time interval \(|f(t)-f(s)|\le C|t-s|^\alpha\) for some finite random or deterministic \(C\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every
+  \(\alpha<1/2\), Brownian paths are locally Holder continuous of order
+  \(\alpha\) almost surely.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(p>2\),
+  \[
+  \mathbb E|B_t-B_s|^p
+  =C_p|t-s|^{p/2}
+  =C_p|t-s|^{1+(p/2-1)}.
+  \]
+  Kolmogorov-Chentsov gives Holder continuity of every order
+  \[
+  \gamma<\frac{p/2-1}{p}=\frac12-\frac1p.
+  \]
+  Given \(\alpha<1/2\), choose \(p>(1/2-\alpha)^{-1}\). Intersecting the resulting probability-one events over rational \(\alpha<1/2\) proves the simultaneous claim.</p>
+</div>
 
-    <h3>Kolmogorov continuity estimate</h3>
+<h3>Sharp modulus of continuity</h3>
 
-    <p>Gaussian moments imply sub-half Hölder regularity.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Levy modulus).</span> On every fixed interval \([0,T]\),
+  \[
+  \limsup_{h\downarrow0}
+  \frac{
+  \sup_{\substack{0\le s<t\le T\\t-s\le h}}
+  |B_t-B_s|}
+  {\sqrt{2h\log(1/h)}}=1
+  \quad\text{almost surely}.
+  \]</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For every \(\alpha\lt1/2\), Brownian paths are locally Hölder continuous of order \(\alpha\) almost surely.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For the upper bound, cover \([0,T]\) by dyadic intervals of length \(2^{-n}\). Reflection and Gaussian tail bounds show that the probability any interval oscillates more than
+  \((1+\varepsilon)\sqrt{2\cdot2^{-n}n\log2}\) is summable after a slightly coarser blocking argument. Borel-Cantelli and chaining control all sufficiently small increments. For the lower bound, use a disjoint collection of increments of length \(h\); their normalized values are independent standard Gaussians, whose maximum is asymptotic to
+  \(\sqrt{2\log(1/h)}\). A second Borel-Cantelli argument completes the proof.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Gaussian moments give \(\mathbb E|B_t-B_s|^p=C_p|t-s|^{p/2}\). Choose \(p\) large enough that \(p/2\gt1\). Kolmogorov-Chentsov yields a modification whose paths are Hölder of every order less than \((p/2-1)/p=1/2-1/p\). Letting \(p\) range over large integers gives every \(\alpha\lt1/2\).</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Brownian paths are almost surely not Holder continuous of order \(1/2\) on any interval.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The ratio of the modulus to
+  \(\sqrt h\) grows like \(\sqrt{2\log(1/h)}\to\infty\), contradicting any finite \(1/2\)-Holder constant.</p>
+</div>
 
-    <h3>Nowhere differentiability</h3>
+<h3>Law of the iterated logarithm</h3>
 
-    <p>Brownian motion is almost surely nowhere differentiable.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Almost surely,
+  \[
+  \limsup_{t\to\infty}
+  \frac{B_t}{\sqrt{2t\log\log t}}=1,
+  \qquad
+  \liminf_{t\to\infty}
+  \frac{B_t}{\sqrt{2t\log\log t}}=-1.
+  \]
+  By time inversion, the analogous local statement is
+  \[
+  \limsup_{t\downarrow0}
+  \frac{B_t}{\sqrt{2t\log\log(1/t)}}=1
+  \]
+  with liminf \(-1\).</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> With probability one, \(t\mapsto B_t\) has no finite derivative at any time \(t\ge0\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> On a geometric time sequence \(t_n=c^n\), Gaussian tails and Borel-Cantelli provide the upper bound. For the lower bound, use independent increments over well-separated geometric blocks and choose \(c\) large enough that the preceding position is negligible relative to the new block. Let \(c\downarrow1\) and control times between grid points by the reflection principle. Time inversion turns the large-time result into the local result.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> At dyadic scales, increments of size \(2^{-n}\) are Gaussian with standard deviation \(2^{-n/2}\), much larger than the differentiable scale \(2^{-n}\). Reflection estimates and Borel-Cantelli show that on every interval there are increments whose ratio \(|B_{t+h}-B_t|/h\) is arbitrarily large. Applying this on a countable base of intervals rules out differentiability anywhere.</p>
-    </div>
+<h3>Nowhere differentiability</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Brownian continuity is topological regularity; quadratic variation, not ordinary variation, is the correct calculus scale.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> With probability one, a Brownian path has no finite derivative at any \(t\ge0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> If a continuous function is differentiable at some \(t\) with derivative bounded by \(M\), then on all sufficiently small neighboring intervals its increments are bounded by a constant times \(M\) times the interval length. On a dyadic mesh, Brownian increments have size
+  \(2^{-n/2}\), whereas this differentiability bound has size
+  \(2^{-n}\). Independence and Gaussian small-ball estimates show that the probability of three consecutive dyadic increments all satisfying such a linear bound is summable over locations and sufficiently sparse scales. Borel-Cantelli rules out a point with a finite derivative. Taking a countable union over integer \(M\) covers every finite derivative.</p>
+</div>
+
+<h3>Quadratic variation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\pi_n=\{0=t_{n,0}<\cdots<t_{n,k_n}=T\}\) be deterministic partitions with mesh
+  \(|\pi_n|\to0\). Then
+  \[
+  Q_n(T)=\sum_{j=1}^{k_n}
+  (B_{t_{n,j}}-B_{t_{n,j-1}})^2
+  \longrightarrow T
+  \quad\text{in }L^2.
+  \]
+  If additionally \(\sum_n|\pi_n|<\infty\), convergence holds almost surely.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independent increments give
+  \[
+  \mathbb EQ_n(T)=\sum_j(t_{n,j}-t_{n,j-1})=T.
+  \]
+  If \(Z\sim N(0,h)\), then
+  \(\operatorname{Var}(Z^2)=2h^2\). Thus
+  \[
+  \operatorname{Var}(Q_n(T))
+  =2\sum_j(t_{n,j}-t_{n,j-1})^2
+  \le2T|\pi_n|\to0.
+  \]
+  This proves \(L^2\)-convergence. Chebyshev gives
+  \[
+  P(|Q_n(T)-T|>\varepsilon)
+  \le\frac{2T|\pi_n|}{\varepsilon^2},
+  \]
+  and summability plus Borel-Cantelli gives the almost-sure assertion.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Brownian paths have infinite total variation on every nontrivial interval almost surely.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a continuous function of finite total variation \(V\), along any partitions with mesh tending to zero,
+  \[
+  \sum_j(\Delta f_j)^2
+  \le\left(\max_j|\Delta f_j|\right)
+  \sum_j|\Delta f_j|
+  \le\left(\max_j|\Delta f_j|\right)V\to0.
+  \]
+  Brownian quadratic variation along dyadic partitions converges instead to \(T>0\), a contradiction.</p>
+</div>
+
+<h3>\(p\)-variation threshold</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Almost surely, Brownian paths have finite \(p\)-variation on compact intervals for every \(p>2\), and infinite \(p\)-variation for \(1\le p\le2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For \(p>2\), choose
+  \(\alpha\in(1/p,1/2)\). Holder continuity gives
+  \[
+  \sum_j|B_{t_j}-B_{t_{j-1}}|^p
+  \le C^p\sum_j|t_j-t_{j-1}|^{\alpha p}
+  \le C^pT^{\alpha p},
+  \]
+  uniformly over partitions. At \(p=2\), adaptive refinements together with Brownian oscillations make the supremum over all partitions infinite even though deterministic refining partitions have quadratic-variation limit \(T\). For \(p<2\), the divergence follows from the \(p=2\) behavior and small-increment comparison.</p>
+</div>
+
+<p>Quadratic variation is therefore not ordinary \(2\)-variation as a supremum over partitions. It is a probabilistic limit along refining partitions, and it is exactly the second-order quantity retained by stochastic calculus.</p>

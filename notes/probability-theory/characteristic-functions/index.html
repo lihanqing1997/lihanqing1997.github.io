@@ -22,6 +22,33 @@ note_next_url: "/notes/probability-theory/weak-law-of-large-numbers/"
 For \(X\in\mathbb R^d\), use \(\varphi_X(t)=\mathbb E e^{i\langle t,X\rangle}\).</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every characteristic function satisfies
+\[
+\varphi_X(0)=1,\qquad
+|\varphi_X(t)|\le1,\qquad
+\varphi_X(-t)=\overline{\varphi_X(t)},
+\]
+and is uniformly continuous. It is positive definite:
+\[
+\sum_{j,k=1}^nc_j\overline{c_k}\,
+\varphi_X(t_j-t_k)\ge0.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The first identities are immediate. Uniform continuity follows from
+\[
+\sup_t|\varphi_X(t+h)-\varphi_X(t)|
+\le\mathbb E|e^{ihX}-1|\longrightarrow0
+\]
+by dominated convergence. Finally,
+\[
+\sum_{j,k}c_j\overline{c_k}\varphi_X(t_j-t_k)
+=\mathbb E\left|\sum_jc_je^{it_jX}\right|^2\ge0.
+\]</p>
+    </div>
+
 
     <h3>Uniqueness and Levy continuity</h3>
 
@@ -32,7 +59,19 @@ For \(X\in\mathbb R^d\), use \(\varphi_X(t)=\mathbb E e^{i\langle t,X\rangle}\).
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Uniqueness follows by convolving the measures with a Gaussian density: equality of characteristic functions implies equality of the smoothed densities by Fourier inversion, and letting the Gaussian variance go to zero recovers the original measures. For the continuity theorem, pointwise convergence plus continuity at zero gives tightness, then every weakly convergent subsequence has characteristic function \(\varphi\), hence the same limit by uniqueness.</p>
+        <p><span class="statement-title">Proof.</span> Let \(\gamma_\varepsilon\) be \(N(0,\varepsilon)\). If \(\varphi_\mu=\varphi_\nu\), then
+\[
+\widehat{\mu*\gamma_\varepsilon}
+=\varphi_\mu(t)e^{-\varepsilon t^2/2}
+=\varphi_\nu(t)e^{-\varepsilon t^2/2}
+=\widehat{\nu*\gamma_\varepsilon}.
+\]
+The product is integrable, so Fourier inversion gives equal smooth densities. As \(\varepsilon\downarrow0\), Gaussian convolution converges weakly to the original measure, proving \(\mu=\nu\).</p>
+        <p>For Levy continuity, continuity of \(\varphi\) at zero yields tightness through a smoothing inequality that bounds
+\[
+\mu_n(|x|>R)
+\]
+by an average of \(1-\operatorname{Re}\varphi_n(t)\) over \(|t|\lesssim1/R\). Every subsequence therefore has a weakly convergent further subsequence. Weak convergence passes characteristic functions to the limit, so every subsequential law has characteristic function \(\varphi\). Uniqueness makes all subsequential limits equal, proving full weak convergence. The limit is automatically a characteristic function.</p>
     </div>
 
 
@@ -45,7 +84,48 @@ For \(X\in\mathbb R^d\), use \(\varphi_X(t)=\mathbb E e^{i\langle t,X\rangle}\).
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For independence, factor \(\mathbb E[e^{itX}e^{itY}]\) into the product of expectations. For moments, differentiate \(e^{itX}\) under the expectation; domination by \(|X|^k\) justifies the interchange near zero.</p>
+        <p><span class="statement-title">Proof.</span> Independence gives
+\[
+\mathbb E[e^{itX}e^{itY}]
+=\mathbb Ee^{itX}\,\mathbb Ee^{itY}.
+\]
+For derivatives,
+\[
+\frac{\mathrm{d}^j}{\mathrm{d}t^j}e^{itX}
+=(iX)^je^{itX},
+\]
+whose absolute value is bounded by \(|X|^j\le1+|X|^k\) for \(j\le k\). Dominated differentiation yields the formula.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (second-order expansion).</span> If \(\mathbb EX=0\) and \(\mathbb EX^2=\sigma^2<\infty\), then
+\[
+\varphi_X(t)=1-\frac{\sigma^2t^2}{2}+o(t^2)
+\qquad(t\to0).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Use
+\[
+e^{iu}=1+iu-\frac{u^2}{2}+u^2r(u),
+\qquad r(u)\to0.
+\]
+After substituting \(u=tX\), the remainder divided by \(t^2\) is \(X^2r(tX)\). A bounded version of \(r\) and dominated convergence with \(X^2\) show its expectation tends to zero.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Canonical characteristic functions.</span>
+\[
+\begin{array}{c|c}
+\text{law}&\varphi(t)\\ \hline
+N(\mu,\sigma^2)&\exp(i\mu t-\sigma^2t^2/2)\\
+\operatorname{Poisson}(\lambda)&\exp(\lambda(e^{it}-1))\\
+\operatorname{Bernoulli}(p)&1-p+pe^{it}\\
+\operatorname{Cauchy}(0,\gamma)&e^{-\gamma|t|}
+\end{array}
+\]
+The Cauchy characteristic function is not differentiable at \(0\), matching the failure of its first absolute moment.</p>
     </div>
 
     <div class="math-statement remark">

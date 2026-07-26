@@ -16,12 +16,48 @@ note_next_url: "/notes/real-analysis/riemann-stieltjes-integration/"
         <p><span class="statement-title">Definition.</span> For a bounded \(f:[a,b]\to\mathbb R\) and partition \(P\), define \(U(f,P)=\sum_i M_i\Delta x_i\) and \(L(f,P)=\sum_i m_i\Delta x_i\), where \(M_i=\sup_{[x_{i-1},x_i]}f\) and \(m_i=\inf_{[x_{i-1},x_i]}f\).</p>
     </div>
 
+    <div class="math-statement lemma">
+        <p><span class="statement-title">Lemma (refinement monotonicity).</span> If \(P'\) refines \(P\), then
+\[
+L(f,P)\le L(f,P')\le U(f,P')\le U(f,P).
+\]
+For any two partitions \(P,Q\), \(L(f,P)\le U(f,Q)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Adding one partition point splits an interval into two. Each new supremum is at most the old supremum and each new infimum at least the old infimum, proving the first chain by iteration. The common refinement \(P\cup Q\) gives
+\[
+L(f,P)\le L(f,P\cup Q)\le U(f,P\cup Q)\le U(f,Q).
+\]</p>
+    </div>
+
     <div class="math-statement theorem">
         <p><span class="statement-title">Theorem.</span> \(f\) is Riemann integrable if and only if for every \(\varepsilon>0\) there is a partition \(P\) with \(U(f,P)-L(f,P)\lt \varepsilon\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Refining partitions lowers upper sums and raises lower sums. The upper integral is the infimum of upper sums and the lower integral is the supremum of lower sums. Equality of these two values is equivalent to being able to make their difference arbitrarily small.</p>
+        <p><span class="statement-title">Proof.</span> Define
+\[
+\overline{\int_a^b}f=\inf_PU(f,P),\qquad
+\underline{\int_a^b}f=\sup_PL(f,P).
+\]
+The lemma gives lower integral \(\le\) upper integral. If \(U(f,P)-L(f,P)<\varepsilon\), then
+\[
+0\le\overline{\int}f-\underline{\int}f
+\le U(f,P)-L(f,P)<\varepsilon,
+\]
+so the two integrals agree. Conversely, if they agree at \(I\), choose \(P_1,P_2\) with \(U(f,P_1)<I+\varepsilon/2\) and \(L(f,P_2)>I-\varepsilon/2\). Their common refinement \(P=P_1\cup P_2\) satisfies \(U(f,P)-L(f,P)<\varepsilon\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (tagged-sum criterion).</span> A bounded \(f\) is Riemann integrable with integral \(I\) if and only if for every \(\varepsilon>0\) there is \(\delta>0\) such that every tagged partition \((P,\xi)\) with mesh \(\|P\|<\delta\) satisfies
+\[
+\left|\sum_i f(\xi_i)\Delta x_i-I\right|<\varepsilon.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof outline.</span> If a partition \(P_0\) has small Darboux gap, then any sufficiently fine tagged partition can cross only finitely many points of \(P_0\). The contribution of crossing intervals is bounded by \(2\|f\|_\infty\) times their total length, while on all remaining intervals the tagged sum is squeezed between the corresponding lower and upper sums. Conversely, if every fine tagged sum is close to \(I\), choose on each interval tags approaching its supremum and infimum. The resulting upper and lower sums must be close, so the Darboux criterion applies.</p>
     </div>
 
     <h3>Continuous functions are integrable</h3>
@@ -41,7 +77,29 @@ note_next_url: "/notes/real-analysis/riemann-stieltjes-integration/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\omega_f(x)\) be the oscillation of \(f\) at \(x\). The discontinuity set is \(\bigcup_{m\ge1}\{\omega_f\ge1/m\}\). Small Darboux gap implies each such set can be covered by intervals of arbitrarily small total length. Conversely, if discontinuities have measure zero, cover the bad set by short intervals and use uniform continuity on the remaining compact pieces to make the Darboux gap small.</p>
+        <p><span class="statement-title">Proof.</span> Define the oscillation
+\[
+\omega_f(x)=\inf_{r>0}\sup\{|f(s)-f(t)|:s,t\in[a,b]\cap B(x,r)\}.
+\]
+Then \(f\) is continuous at \(x\) exactly when \(\omega_f(x)=0\), and \(D_m=\{\omega_f\ge1/m\}\) is closed. Thus the discontinuity set is \(D=\bigcup_mD_m\).</p>
+        <p>Suppose \(f\) is integrable. Choose \(P\) with Darboux gap \(<\varepsilon/m\). Apart from finitely many partition endpoints, every point of \(D_m\) lies in a partition interval whose oscillation is at least \(1/m\). The total length of those intervals is at most
+\[
+m\sum_i(M_i-m_i)\Delta x_i<m(\varepsilon/m)=\varepsilon.
+\]
+Small neighborhoods of the finitely many endpoints add arbitrarily little length. Hence each \(D_m\), and therefore \(D\), is null.</p>
+        <p>Conversely, suppose \(D\) is null and \(|f|\le M\). For a prescribed \(\varepsilon\), choose \(m\) so that \((b-a)/m<\varepsilon/2\). Cover compact \(D_m\) by finitely many open intervals of total length \(<\varepsilon/(8M)\). On the compact complement, every point has a neighborhood on which the oscillation is \(<1/m\); a finite subcover gives a partition fine enough that intervals not meeting the exceptional cover have oscillation \(<1/m\). Exceptional intervals contribute at most \(2M\) times total length, while the others contribute at most \((b-a)/m\). The Darboux gap is \(<\varepsilon\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (Dirichlet and Thomae functions).</span> The indicator \(\mathbf1_{\mathbb Q}\) is discontinuous everywhere, hence not Riemann integrable. Thomae's function
+\[
+t(x)=
+\begin{cases}
+1/q,&x=p/q\text{ in lowest terms},\\
+0,&x\notin\mathbb Q,
+\end{cases}
+\]
+is continuous at every irrational and discontinuous at every rational. Its discontinuity set is countable, so it is Riemann integrable with integral \(0\).</p>
     </div>
 
     <h3>Algebra and order</h3>
@@ -61,5 +119,9 @@ note_next_url: "/notes/real-analysis/riemann-stieltjes-integration/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Riemann integrability gives upper and lower step functions converging in integral gap. These step functions are Lebesgue measurable and squeeze \(f\). Monotone and dominated convergence identify the common limit with the Lebesgue integral.</p>
+        <p><span class="statement-title">Proof.</span> By the Lebesgue criterion, \(f\) is continuous almost everywhere and therefore Lebesgue measurable; boundedness on a finite interval makes it integrable. For each partition choose lower and upper step functions \(\ell_P\le f\le u_P\) whose integrals are \(L(f,P)\) and \(U(f,P)\). Given \(\varepsilon>0\), choose \(P\) with \(\int(u_P-\ell_P)<\varepsilon\). Then
+\[
+L(f,P)\le\int_a^b f\,\mathrm{d}x\le U(f,P),
+\]
+and both endpoints can be made arbitrarily close to the Riemann integral. Hence the two integrals agree.</p>
     </div>

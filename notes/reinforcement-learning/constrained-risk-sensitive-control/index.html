@@ -1,0 +1,124 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "25. Constrained and risk-sensitive control"
+breadcrumb_child_label_fr: "25. Contrôle contraint et sensible au risque"
+breadcrumb_child_label_zh: "25. 约束与风险敏感控制"
+note_back_url: "/notes/reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
+note_next_url: "/notes/reinforcement-learning/average-reward-ergodic-control/"
+---
+
+<p>Expected return is only one preference over trajectories. Safety budgets,
+tail losses, robustness, and nonlinear utility produce distinct control
+problems. Their Bellman recursions remain valid only when the objective has an
+appropriate time-consistent state representation.</p>
+
+<h3>Constrained Markov decision processes</h3>
+
+<p>Let \(r\) be reward and \(c_j\) be costs. A discounted constrained problem is
+\[
+\max_\pi J_r(\pi)
+\quad\text{subject to}\quad
+J_{c_j}(\pi)\le b_j,\quad j=1,\ldots,m.
+\]
+In normalized occupancy variables this is the linear program
+\[
+\max_{d\in\mathcal D_\rho}
+\frac{\langle d,r\rangle}{1-\gamma}
+\quad\text{subject to}\quad
+\frac{\langle d,c_j\rangle}{1-\gamma}\le b_j.
+\]
+Randomized stationary policies may be necessary because an optimum can lie on
+a face between deterministic occupancy vertices.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Lagrangian duality).</span> In a finite
+discounted constrained MDP with a strictly feasible occupancy, strong duality
+holds:
+\[
+\max_{\pi:\,J_c(\pi)\le b}J_r(\pi)
+=\min_{\lambda\ge0}
+\max_\pi\{J_r(\pi)-\lambda^\top(J_c(\pi)-b)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The occupancy formulation is a
+finite-dimensional linear program. Slater feasibility prevents a duality gap.
+Introducing multipliers for cost constraints changes one-step reward to
+\(r_\lambda=r-\lambda^\top c\); maximization over feasible occupancies is the
+ordinary MDP for \(r_\lambda\). Linear-program duality yields the identity.</p>
+</div>
+
+<p>Primal--dual algorithms update a policy for \(r_\lambda\) and ascend in
+\(\lambda\) when costs exceed budgets. Finite-time safety is not guaranteed by
+asymptotic constraint satisfaction; safe exploration needs confidence sets,
+barrier policies, or robust invariant sets.</p>
+
+<h3>Entropic risk-sensitive control</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For cumulative cost \(C\)
+and risk parameter \(\eta\ne0\), the entropic risk is
+\[
+\rho_\eta(C)=\frac1\eta\log E e^{\eta C}.
+\]
+Positive \(\eta\) penalizes upper tails; as \(\eta\to0\),
+\[
+\rho_\eta(C)
+=EC+\frac{\eta}{2}\operatorname{Var}(C)+O(\eta^2)
+\]
+when exponential moments exist.</p>
+</div>
+
+<p>For finite-horizon additive costs, exponentiating the value produces a
+multiplicative Bellman recursion:
+\[
+Z_h(s)
+=\min_a
+E\left[
+\exp\{\eta c_h(s,a,S')\}Z_{h+1}(S')
+\mid s,a
+\right],
+\qquad
+V_h=\eta^{-1}\log Z_h.
+\]
+This criterion is dynamically consistent because conditional entropic risk
+composes recursively.</p>
+
+<h3>Conditional value at risk</h3>
+
+<p>For a loss \(L\) and \(0<\alpha<1\),
+\[
+\operatorname{CVaR}_\alpha(L)
+=\inf_{\tau\in\mathbb R}
+\left\{\tau+\frac1{1-\alpha}E(L-\tau)_+\right\}.
+\]
+The auxiliary threshold \(\tau\) turns tail risk into an expectation, but a
+static CVaR of total return is generally time inconsistent. Dynamic programming
+requires augmenting the state with a confidence or budget variable, or using a
+nested conditional risk measure.</p>
+
+<h3>Distributional robustness</h3>
+
+<p>If a transition law lies in an ambiguity set
+\(\mathcal U(s,a)\), robust control uses
+\[
+(T_{\mathrm{rob}}V)(s)
+=\max_a\left\{
+r(s,a)+\gamma
+\inf_{Q\in\mathcal U(s,a)}E_QV(S')
+\right\}.
+\]
+Rectangular ambiguity, where uncertainty factors independently across
+state-action pairs, yields a time-consistent Bellman equation and stationary
+robust policies. Coupled ambiguity sets can destroy this recursion because
+nature's choices across time are no longer separable.</p>
+
+<h3>Risk is not uncertainty</h3>
+
+<p>Risk-sensitive objectives alter preferences under a known law; robust
+control protects against model uncertainty; constrained control enforces
+expected budgets. Combining them is possible, but their guarantees answer
+different questions. A low-variance return does not certify safety, and a
+worst-case model need not represent a tail event under the nominal model.</p>

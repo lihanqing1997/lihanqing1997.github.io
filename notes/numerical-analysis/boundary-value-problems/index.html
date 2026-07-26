@@ -34,3 +34,72 @@ note_next_url: "/notes/numerical-analysis/finite-difference-methods-pdes/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A discretization can only be expected to converge to the correct object when the continuous boundary value problem is well posed. Boundary layers, nonunique solutions, and incompatible boundary data require special care.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Two-point boundary conditions</h3>
+
+<p>A second-order problem
+\[
+-y''+p(x)y'+q(x)y=f(x),\qquad
+y(a)=\alpha,\quad y(b)=\beta
+\]
+is not an initial-value problem: boundary data constrain both ends, and
+existence can fail at eigenvalues of the associated homogeneous operator.</p>
+
+<h3>Shooting</h3>
+
+<p>Introduce unknown initial slope \(s=y'(a)\), integrate the IVP, and solve
+\[
+\Phi(s)=y(b;s)-\beta=0.
+\]
+Newton shooting also integrates the sensitivity
+\[
+z'=\partial_yF(x,y)z,\qquad
+z(a)=\partial_s y(a;s),
+\]
+to obtain \(\Phi'(s)\). Shooting is effective for nonstiff, well-conditioned
+problems but unstable when growing modes make the endpoint map sensitive.</p>
+
+<h3>Finite differences</h3>
+
+<p>On a uniform grid,
+\[
+-y''(x_i)
+\approx-\frac{y_{i-1}-2y_i+y_{i+1}}{h^2}.
+\]
+For \(-y''+q(x)y=f\) with \(q\ge0\), the resulting tridiagonal matrix is
+symmetric positive definite.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(y\in C^4[a,b]\), the
+centered finite-difference solution satisfies
+\[
+\max_i|y(x_i)-y_i|
+\le Ch^2\|y^{(4)}\|_\infty
+\]
+for the coercive Dirichlet problem.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Taylor expansion gives local
+truncation error \(O(h^2)\). The discrete operator is an M-matrix and obeys a
+maximum-principle inverse bound independent of \(h\). Applying that stability
+bound to the error equation yields the result.</p>
+</div>
+
+<h3>Collocation</h3>
+
+<p>Choose a finite-dimensional trial \(y_h\) and enforce the differential
+equation at collocation points. Polynomial collocation at Gaussian or
+Lobatto nodes yields high-order implicit Runge--Kutta and spectral BVP methods.
+Convergence requires approximation quality plus stability of the collocation
+operator; dense polynomial bases should use barycentric or orthogonal
+representations.</p>
+
+<h3>Multiple shooting and continuation</h3>
+
+<p>Multiple shooting breaks a long interval into subintervals, introduces
+separate initial data, and enforces continuity as algebraic constraints. It
+reduces exponential sensitivity of single shooting. Parameter continuation
+solves a sequence of nearby BVPs and can follow nonlinear branches through
+folds using pseudo-arclength constraints.</p>

@@ -8,31 +8,148 @@ note_prev_url: "/notes/statistical-inference/likelihood-based-tests/"
 note_next_url: "/notes/statistical-inference/finite-sample-optimality/"
 ---
 
-<p>A confidence set is a random set designed to cover the true parameter with a specified long-run probability. It is a procedure, not a probability statement about a fixed realized parameter.</p>
+<p>A confidence set is a random subset of the parameter space whose sampling coverage is controlled before the data are observed. After observation, the set is fixed and the frequentist parameter is not random. Exact, asymptotic, pointwise, and uniform coverage are distinct claims and should be labeled accordingly.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A \(1-\alpha\) confidence set \(C_n(X)\subset\Theta\) satisfies
-        \[
-        \inf_{\theta\in\Theta}P_\theta\{\theta\in C_n(X)\}\ge1-\alpha.
-        \]
-        A pivot is a statistic \(R(X,\theta)\) whose distribution does not depend on \(\theta\).</p>
-    </div>
+<h3>Coverage and honesty</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Test inversion.</span> If \(\varphi_\theta\) is a level-\(\alpha\) test of \(H_0:\vartheta=\theta\) for every \(\theta\), then
-        \[
-        C_n(X)=\{\theta:\varphi_\theta(X)=0\}
-        \]
-        is a \(1-\alpha\) confidence set.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A confidence set \(C_n(X)\subseteq\Psi\) has finite-sample confidence level \(1-\alpha\) over \(\Theta_0\) if
+  \[
+  \inf_{\theta\in\Theta_0}
+  P_\theta\{\psi(\theta)\in C_n(X)\}\ge1-\alpha.
+  \]
+  It is pointwise asymptotically valid if, for every fixed \(\theta\),
+  \[
+  \liminf_{n\to\infty}
+  P_\theta\{\psi(\theta)\in C_n\}\ge1-\alpha,
+  \]
+  and uniformly asymptotically honest over \(\Theta_0\) if
+  \[
+  \liminf_{n\to\infty}\inf_{\theta\in\Theta_0}
+  P_\theta\{\psi(\theta)\in C_n\}\ge1-\alpha.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Under the true parameter \(\theta\), the event \(\theta\notin C_n(X)\) is exactly the event that the level-\(\alpha\) test of \(H_0:\vartheta=\theta\) rejects. Its probability is at most \(\alpha\). Therefore \(P_\theta\{\theta\in C_n(X)\}\ge1-\alpha\).</p>
-    </div>
+<p>Pointwise validity can conceal poor coverage along sequences \(\theta_n\) approaching a boundary, a singularity, or weak identification. Uniform honesty prevents this sequencewise failure but may force wider sets.</p>
 
-    <h3>Asymptotic pivots</h3>
-    <p>If \((T_n-\theta)/\widehat{\operatorname{se}}(T_n)\rightsquigarrow N(0,1)\), then
-    \[
-    T_n\pm z_{1-\alpha/2}\widehat{\operatorname{se}}(T_n)
-    \]
-    is an asymptotic confidence interval. Likelihood ratio regions use \(\{2(\ell_n(\hat\theta)-\ell_n(\theta))\le\chi^2_{r,1-\alpha}\}\), often with better invariance properties than Wald intervals.</p>
+<h3>Pivotal quantities</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A pivot \(R(X,\theta)\) has a distribution under \(P_\theta\) that is independent of \(\theta\). An asymptotic pivot has a parameter-free limiting distribution, with whatever pointwise or uniform mode is explicitly proved.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Pivot inversion.</span> If
+  \[
+  P_\theta\{a\le R(X,\theta)\le b\}=1-\alpha
+  \]
+  for every \(\theta\), then
+  \[
+  C(X)=\{\theta:a\le R(X,\theta)\le b\}
+  \]
+  has exact coverage \(1-\alpha\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For each true \(\theta\),
+  \[
+  \{\theta\in C(X)\}
+  =\{a\le R(X,\theta)\le b\}.
+  \]
+  Taking \(P_\theta\)-probabilities gives the asserted coverage.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (normal mean, known variance).</span> If \(X_i\sim N(\mu,\sigma^2)\), then
+  \[
+  Z=\frac{\sqrt n(\bar X-\mu)}{\sigma}\sim N(0,1).
+  \]
+  Inverting \(|Z|\le z_{1-\alpha/2}\) yields
+  \[
+  \bar X\pm z_{1-\alpha/2}\frac{\sigma}{\sqrt n}.
+  \]</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Student pivot).</span> If \(\sigma^2\) is unknown and
+  \[
+  S^2=\frac1{n-1}\sum_{i=1}^n(X_i-\bar X)^2,
+  \]
+  then
+  \[
+  \frac{\sqrt n(\bar X-\mu)}{S}\sim t_{n-1},
+  \]
+  because \(\sqrt n(\bar X-\mu)/\sigma\sim N(0,1)\), \((n-1)S^2/\sigma^2\sim\chi_{n-1}^2\), and the two variables are independent. The exact interval is
+  \[
+  \bar X\pm t_{n-1,1-\alpha/2}\frac{S}{\sqrt n}.
+  \]</p>
+</div>
+
+<h3>Inverting tests</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Test-confidence duality.</span> For every \(\psi_0\in\Psi\), let \(\phi_{\psi_0}\) be a level-\(\alpha\) test of
+  \[
+  H_0:\psi(\theta)=\psi_0.
+  \]
+  Then
+  \[
+  C(X)=\{\psi_0:\phi_{\psi_0}(X)=0\}
+  \]
+  is a \(1-\alpha\) confidence set. Conversely, any confidence set defines tests by \(\phi_{\psi_0}=1_{\{\psi_0\notin C(X)\}}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If the true target is \(\psi(\theta)\), then
+  \[
+  P_\theta\{\psi(\theta)\notin C(X)\}
+  =P_\theta\{\phi_{\psi(\theta)}=1\}\le\alpha.
+  \]
+  The converse follows by reading the same equivalence backward.</p>
+</div>
+
+<p>One-sided tests invert to one-sided bounds. Nested tests often yield intervals; nonnested rejection regions can invert to disconnected sets. The shape of a confidence set is therefore inherited from the test family, not guaranteed by the scalar nature of the parameter.</p>
+
+<h3>Wald, score, and likelihood-ratio regions</h3>
+
+<p>If
+\[
+\frac{\hat\psi-\psi}{\widehat{\operatorname{se}}(\hat\psi)}
+\rightsquigarrow N(0,1),
+\]
+the Wald interval is
+\[
+\hat\psi\pm z_{1-\alpha/2}
+\widehat{\operatorname{se}}(\hat\psi).
+\]
+For a \(q\)-dimensional target, a Wald ellipsoid uses
+\[
+n\{\hat\psi-\psi\}^\top\hat V^{-1}
+\{\hat\psi-\psi\}\le\chi^2_{q,1-\alpha}.
+\]</p>
+
+<p>A likelihood-ratio region is
+\[
+\left\{\psi:
+2\left[\ell_n(\hat\theta)
+-\sup_{\theta:\psi(\theta)=\psi}\ell_n(\theta)\right]
+\le\chi^2_{q,1-\alpha}
+\right\}.
+\]
+Unlike a Wald region, it is invariant to one-to-one reparametrization and naturally reflects asymmetric likelihood shape. A score region inverts null-fitted score tests and can avoid fitting the unrestricted model at every candidate value.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (positive parameter).</span> A Wald interval for \(\sigma^2\) can include negative values. Applying the delta method to \(\log\sigma^2\) and transforming back enforces positivity, but gives a different finite-sample interval. A likelihood-ratio interval is invariant between the \(\sigma^2\) and \(\log\sigma^2\) coordinates.</p>
+</div>
+
+<h3>Confidence distributions versus posterior probability</h3>
+
+<p>It is generally incorrect to interpret a realized \(95\%\) confidence interval as having conditional probability \(0.95\) of containing a fixed parameter. A Bayesian credible set makes a posterior-probability statement after specifying a prior; its frequentist coverage is a separate property. The two sets may agree asymptotically in regular models through Bernstein-von Mises theory, but they arise from different probability spaces.</p>
+
+<h3>Precision and expected size</h3>
+
+<p>Coverage alone does not rank procedures. For scalar intervals one may compare expected length
+\[
+\mathbb E_\theta\{\operatorname{length}(C_n)\},
+\]
+subject to the same coverage constraint. In several dimensions one may use volume, diameter, or a loss adapted to the target. Any such comparison must retain uniform coverage; a very short set obtained by undercoverage is not more efficient.</p>

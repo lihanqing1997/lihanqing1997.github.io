@@ -23,28 +23,45 @@ note_next_url: "/notes/real-analysis/modes-of-convergence/"
         <p><span class="statement-title">Remark.</span> When \(\mu\) is Lebesgue measure and \(\nu=f\mu\), this derivative is \(f(x)\) at Lebesgue points of \(f\).</p>
     </div>
 
-    <h3>Vitali covering lemma</h3>
-    <p>Covering lemmas make local estimates global.</p>
+    <h3>Vitali covering theorem</h3>
+    <p>A fine cover offers arbitrarily small balls at every point; disjoint selection turns its local information into an almost-everywhere statement.</p>
     <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> From a Vitali family of balls covering a set \(E\subset\mathbb R^d\), one can choose a disjoint countable subfamily whose union covers \(E\) up to a null set.</p>
+        <p><span class="statement-title">Theorem.</span> Let \(E\subset\mathbb R^d\) have finite outer measure, and let \(\mathcal V\) be a family of closed balls such that for every \(x\in E\) and every \(\varepsilon>0\), some \(B\in\mathcal V\) is centered at \(x\) and has radius below \(\varepsilon\). Then \(\mathcal V\) contains a countable pairwise disjoint subfamily \(\{B_i\}\) such that
+\[
+m\!\left(E\setminus\bigcup_iB_i\right)=0.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose balls greedily by scales: at each stage take a maximal disjoint subcollection among balls with radii in a dyadic range. Disjointness is built in, and any omitted ball intersects a selected ball of comparable or larger radius, so a fixed enlargement of selected balls covers the original family. Letting scales shrink gives coverage up to null sets.</p>
+        <p><span class="statement-title">Proof outline.</span> Restrict first to balls in a bounded neighborhood of \(E\). Choose greedily a disjoint sequence whose radii are within a fixed factor of the largest radius still available. Finite total volume forces the selected radii to tend to zero. If the uncovered remainder had positive outer measure, the fine-cover property would supply a disjoint ball from \(\mathcal V\) of a scale still represented in the greedy selection, contradicting maximality. Applying the argument successively to the uncovered remainder and summing a geometric loss gives a disjoint family covering \(E\) up to a null set. The stronger almost-everywhere coverage, unlike the \(5r\) lemma, uses both fineness and finite outer measure.</p>
     </div>
 
     <h3>Besicovitch differentiation for Radon measures</h3>
     <p>Radon-Nikodym derivatives can be recovered from ball ratios.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\nu\ll\mu\) are Radon measures on \(\mathbb R^d\) and \(f=\mathrm{d}\nu/\mathrm{d}\mu\), then
+        <p><span class="statement-title">Theorem (Besicovitch differentiation).</span> If \(\mu\) is a locally finite Borel measure on \(\mathbb R^d\) and \(f\in L^1_{\mathrm{loc}}(\mu)\), then
+\[
+\lim_{r\downarrow0}
+\frac{1}{\mu(B(x,r))}
+\int_{B(x,r)}f\,\mathrm{d}\mu=f(x)
+\]
+for \(\mu\)-almost every \(x\) for which the denominator is positive. Consequently, if \(\nu\ll\mu\) and \(f=\mathrm{d}\nu/\mathrm{d}\mu\), then
 \[
 \frac{\nu(B(x,r))}{\mu(B(x,r))}\to f(x)
 \]
-for \(\mu\)-almost every \(x\) with \(\mu(B(x,r))>0\).</p>
+for \(\mu\)-almost every \(x\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(\nu=f\mu\). The ratio is the \(\mu\)-average of \(f\) over the ball. The differentiation theorem for Radon measures, proved with the Vitali or Besicovitch covering theorem and maximal inequalities, says these averages converge to \(f\) at \(\mu\)-Lebesgue points.</p>
+        <p><span class="statement-title">Proof outline.</span> The Besicovitch covering theorem replaces the Lebesgue \(5r\) argument: from balls centered in a bounded set it selects at most \(N_d\) disjoint layers whose union covers the centers. This yields the weak estimate
+\[
+\mu\!\left(
+\sup_{r>0}\frac1{\mu(B(x,r))}
+\int_{B(x,r)}|g|\,\mathrm{d}\mu>\lambda
+\right)
+\le\frac{N_d}{\lambda}\|g\|_{L^1(\mu)}
+\]
+locally. Approximate \(f\) in \(L^1(\mu)\) by continuous compactly supported functions, whose local averages converge pointwise by continuity, and repeat the maximal-function argument from the Lebesgue differentiation theorem. For \(\nu=f\mu\), the mass ratio is exactly the \(\mu\)-average of \(f\).</p>
     </div>
 
     <h3>Density of measurable sets</h3>
@@ -57,12 +74,27 @@ for \(\mu\)-almost every \(x\) with \(\mu(B(x,r))>0\).</p>
         <p><span class="statement-title">Proof.</span> Apply the differentiation theorem to \(\mathbf 1_E\). The averages over balls are exactly the relative densities \(m(E\cap B(x,r))/m(B(x,r))\), and they converge almost everywhere to \(\mathbf 1_E(x)\).</p>
     </div>
 
-    <h3>Singular measures</h3>
-    <p>Singular measures have infinite or zero local ratios on the wrong reference scale.</p>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\nu\perp\mu\), then the absolutely continuous density of \(\nu\) with respect to \(\mu\) is zero \(\mu\)-almost everywhere, and local \(\nu/\mu\) ratios cannot represent a finite positive \(\mu\)-density.</p>
+    <h3>Local ratios of the singular part</h3>
+    <p>Differentiation recovers only the part visible to the reference measure.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(\nu=f\mu+\nu_s\) be the Lebesgue decomposition of locally finite Borel measures on \(\mathbb R^d\). Then
+\[
+\lim_{r\downarrow0}\frac{\nu(B(x,r))}{\mu(B(x,r))}=f(x)
+\quad\text{for }\mu\text{-almost every }x.
+\]
+In particular,
+\[
+\lim_{r\downarrow0}\frac{\nu_s(B(x,r))}{\mu(B(x,r))}=0
+\quad\text{for }\mu\text{-almost every }x.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Singularity gives a set \(N\) with \(\mu(N)=0\) and \(\nu(X\setminus N)=0\). The Radon-Nikodym derivative of the absolutely continuous part of \(\nu\) relative to \(\mu\) is therefore zero. Any finite positive density would define a nonzero absolutely continuous component, contradicting singularity.</p>
+        <p><span class="statement-title">Proof.</span> Apply differentiation of measures to \(\rho=\mu+\nu_s\). Write
+\[
+g=\frac{\mathrm{d}\mu}{\mathrm{d}\rho},
+\qquad
+h=\frac{\mathrm{d}\nu_s}{\mathrm{d}\rho}.
+\]
+Singularity gives disjoint supports on which respectively \(g=1,h=0\) and \(g=0,h=1\), \(\rho\)-almost everywhere. At \(\mu\)-almost every point, differentiation recovers \(g=1\) and \(h=0\) from ball averages, so the ratio of the two ball masses tends to \(0\). Adding the absolutely continuous part, whose ratio tends to \(f\), proves the first identity.</p>
     </div>

@@ -73,3 +73,151 @@ The log posterior is \(\ell_n(\beta)+\log\pi(\beta)\).</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The likelihood is bounded above by \(1\). Posterior propriety therefore follows if the prior is proper. The prior tail then determines whether posterior moments are finite.</p>
     </div>
+
+<h3>Gaussian linear model in matrix form</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+y\mid\beta,\sigma^2\sim N_n(X\beta,\sigma^2I_n),
+\qquad
+\beta\mid\sigma^2\sim
+N_p(b_0,\sigma^2V_0).
+\]
+Conditional on \(\sigma^2\),
+\[
+\beta\mid y,\sigma^2
+\sim N_p(b_n,\sigma^2V_n),
+\]
+where
+\[
+V_n=(X^\top X+V_0^{-1})^{-1},
+\qquad
+b_n=V_n(X^\top y+V_0^{-1}b_0).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The negative log posterior kernel is
+\[
+\frac1{2\sigma^2}
+\left[
+(y-X\beta)^\top(y-X\beta)
++(\beta-b_0)^\top V_0^{-1}(\beta-b_0)
+\right].
+\]
+Collecting quadratic and linear terms in \(\beta\) gives precision
+\(X^\top X+V_0^{-1}\) and mean satisfying the stated normal equations.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary (ridge posterior mean).</span> If
+\(b_0=0\) and \(V_0=\lambda^{-1}I_p\), then
+\[
+E(\beta\mid y,\sigma^2)
+=(X^\top X+\lambda I_p)^{-1}X^\top y,
+\]
+the ridge estimator. The Bayesian model additionally supplies a posterior covariance and predictive distribution; the equality of point estimates does not make cross-validated ridge and a fixed-prior Bayesian analysis identical.</p>
+</div>
+
+<h3>Posterior prediction in linear regression</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> With known \(\sigma^2\), for a future response at design vector \(x_\star\),
+\[
+y_\star\mid y
+\sim N\left(
+x_\star^\top b_n,\,
+\sigma^2\{1+x_\star^\top V_nx_\star\}
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on \(\beta\),
+\(y_\star=x_\star^\top\beta+\varepsilon_\star\), where
+\(\varepsilon_\star\sim N(0,\sigma^2)\) is independent of the posterior \(\beta\). Means add, and independent variances give
+\[
+\sigma^2x_\star^\top V_nx_\star+\sigma^2.
+\]</p>
+</div>
+
+<h3>Generalized linear model posterior</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a canonical exponential-family GLM,
+\[
+p(y_i\mid\eta_i,\phi)
+=\exp\left[
+\frac{y_i\eta_i-b(\eta_i)}{a(\phi)}
++c(y_i,\phi)
+\right],
+\qquad
+\eta_i=x_i^\top\beta.
+\]
+With prior density \(\pi(\beta)\), the log posterior is
+\[
+\log\pi(\beta\mid y)
+=\sum_i\frac{y_ix_i^\top\beta-b(x_i^\top\beta)}
+{a(\phi)}
++\log\pi(\beta)+C.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(b\) is convex and \(-\log\pi(\beta)\) is convex, then the negative log posterior is convex. If either likelihood curvature on the design span or prior curvature is strictly positive in every direction, the posterior mode is unique.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The likelihood Hessian is
+\[
+\frac1{a(\phi)}
+\sum_i b''(x_i^\top\beta)x_ix_i^\top
+\succeq0.
+\]
+Add the positive semidefinite Hessian of \(-\log\pi\). Strict positive definiteness gives strict convexity and uniqueness.</p>
+</div>
+
+<h3>Polya-Gamma augmentation for logistic regression</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (augmentation identity).</span> For
+\(\psi\in\mathbb R\), \(a\in\mathbb R\), and \(b>0\),
+\[
+\frac{e^{a\psi}}{(1+e^\psi)^b}
+=2^{-b}e^{(a-b/2)\psi}
+\int_0^\infty
+e^{-\omega\psi^2/2}
+p_{\mathrm{PG}}(\omega\mid b,0)
+\,\mathrm{d}\omega.
+\]
+Thus, after introducing
+\(\omega_i\mid\beta\sim\mathrm{PG}(1,x_i^\top\beta)\), a Gaussian prior yields a Gaussian full conditional for \(\beta\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Rewrite
+\[
+\frac{e^{a\psi}}{(1+e^\psi)^b}
+=2^{-b}e^{(a-b/2)\psi}
+\cosh^{-b}(\psi/2).
+\]
+The defining Laplace transform of a Polya-Gamma variable is
+\[
+E(e^{-\omega\psi^2/2})
+=\cosh^{-b}(\psi/2).
+\]
+Conditional on \(\omega_i\), the log likelihood is quadratic in each \(x_i^\top\beta\), giving normal conjugacy.</p>
+</div>
+
+<h3>Separation and tail behavior</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If logistic data are completely separated by a vector \(v\), then along \(\beta=cv\) the likelihood increases to a positive finite limit as \(c\to\infty\). Under a proper Gaussian prior the posterior is proper and has all moments; under a proper Cauchy prior it is proper, but some posterior means can fail to exist when a predictor is a solitary separator.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Separation makes every fitted probability approach its observed binary outcome, so the likelihood approaches its supremum without finite maximizer. Multiplication by any proper prior remains integrable because the likelihood is bounded. Gaussian tails make every polynomial moment integrable. Cauchy tails decay only quadratically, and in a separation direction the likelihood supplies no exponential tail decay, so first moments may diverge in configurations where that direction enters a coefficient without cancellation.</p>
+</div>
+
+<p>Prior scale should therefore be chosen after standardizing continuous predictors and considering plausible changes on the response scale. Posterior regularization is a modeling claim about effect sizes, not merely a numerical fix for optimization.</p>

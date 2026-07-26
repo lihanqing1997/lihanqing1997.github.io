@@ -8,25 +8,158 @@ note_prev_url: "/notes/statistical-decision-theory/local-asymptotic-minimax-theo
 note_next_url: "/notes/statistical-decision-theory/shrinkage-and-invariance/"
 ---
 
-<p>Convolution theorems say that a regular estimator cannot have an arbitrary limit distribution: it must contain the efficient Gaussian noise, possibly plus extra independent noise.</p>
+<p>The convolution theorem refines the local minimax bound. A regular estimator's limit cannot be narrower than the efficient Gaussian law: it must equal that law convolved with an independent residual distribution. The theorem is a structural statement about all local alternatives, not a variance calculation at one parameter.</p>
 
-    <h3>Regular estimator limit</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An estimator sequence is regular at \(\theta_0\) if the distributional limit of \(\sqrt n(T_n-\theta_0-h/\sqrt n)\) under \(P_{\theta_0+h/\sqrt n}\) exists and does not depend on \(h\) except through the natural centering.</p>
-    </div>
+<h3>Regular estimator sequences</h3>
 
-    <h3>Convolution form</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In a LAN model, any regular estimator has limit law of the form</p>
-        <p>\[
-N(0,I_{\theta_0}^{-1}) * M,
-\]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> In a LAN model with rate \(r_n\), an estimator \(T_n\) is regular at \(\theta_0\) if a probability law \(L\) exists such that, for every fixed \(h\),
+  \[
+  r_n\{T_n-(\theta_0+r_n^{-1}h)\}
+  \rightsquigarrow L
+  \]
+  under \(P_{n,\theta_0+r_n^{-1}h}\), and the limit does not depend on \(h\).</p>
+</div>
 
-    <h3>Translation equivariance in the limit</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Regularity makes the limiting rule equivariant in the Gaussian shift experiment. The structure of equivariant estimators in a Gaussian shift gives the efficient Gaussian component convolved with an independent residual law.</p>
-    </div>
+<p>Regularity says that local parameter shifts are correctly tracked by the estimator. Equivalently,
+\[
+r_n(T_n-\theta_0)
+\rightsquigarrow L(\cdot-h)
+\]
+under the local law indexed by \(h\).</p>
 
-    <h3>Admissibility pressure</h3>
-    <p>Extra convolution noise increases risk for convex losses. This is why asymptotically efficient estimators are natural candidates for asymptotic admissibility.</p>
+<h3>Hájek–Le Cam convolution theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose the model is LAN at \(\theta_0\) with nonsingular information \(I\), and \(T_n\) is regular with limit \(L\). Then a probability measure \(M\) exists such that
+  \[
+  L=N_p(0,I^{-1})*M.
+  \]
+  Equivalently, one may represent a variable with law \(L\) as
+  \[
+  I^{-1/2}Z+V,
+  \]
+  where \(Z\sim N_p(0,I_p)\) and \(V\sim M\) are independent.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Pass to the Gaussian shift limit experiment jointly with the estimator. Regularity implies that the limiting Markov rule \(\delta\) is translation equivariant:
+  \[
+  \mathcal L_h\{\delta(Y)-h\}=L
+  \quad\text{for every }h.
+  \]
+  Let \(Y=h+I^{-1/2}Z\). Equivariance implies that the conditional characteristic function of \(\delta(Y)-Y\), after averaging appropriately over translations, does not depend on \(h\). The joint characteristic function factors as
+  \[
+  \varphi_L(t)
+  =
+  e^{-\frac12t^\top I^{-1}t}\varphi_M(t)
+  \]
+  for a positive-definite function \(\varphi_M\). Bochner's theorem identifies \(\varphi_M\) as the characteristic function of a probability measure \(M\). Thus \(L\) is the stated convolution. \(\square\)</p>
+</div>
+
+<p>The deep step is positivity of the quotient characteristic function. It arises from the experiment structure and equivariance, not from formal division alone.</p>
+
+<h3>Covariance and convex-loss consequences</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(L\) has finite second moments, then
+  \[
+  \operatorname{Cov}(L)
+  =
+  I^{-1}+\operatorname{Cov}(M)
+  \succeq I^{-1}.
+  \]
+  Equality holds exactly when \(M\) is degenerate, up to a possible fixed asymptotic bias.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(L\) is centered and
+  \(\ell\) is convex, then
+  \[
+  E\ell(I^{-1/2}Z+V)
+  \geq E\ell(I^{-1/2}Z)
+  \]
+  whenever \(EV=0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional Jensen inequality gives
+  \[
+  E\{\ell(I^{-1/2}Z+V)\mid Z\}
+  \geq
+  \ell(I^{-1/2}Z+EV).
+  \]
+  If \(EV=0\), take expectations. \(\square\)</p>
+</div>
+
+<h3>Efficient asymptotic linear estimators</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \[
+  r_n(T_n-\theta_0)
+  =
+  I^{-1}\Delta_n+o_{P_{\theta_0}}(1),
+  \]
+  then under every fixed local alternative,
+  \[
+  r_n\{T_n-(\theta_0+r_n^{-1}h)\}
+  \rightsquigarrow N_p(0,I^{-1}).
+  \]
+  Hence the estimator is regular with no residual convolution noise.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the local alternative,
+  \(\Delta_n\rightsquigarrow N(Ih,I)\) by the third lemma, and contiguity transfers the \(o_p(1)\) remainder. Therefore
+  \[
+  I^{-1}\Delta_n-h
+  \rightsquigarrow N(0,I^{-1}).
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Superefficiency and failure of regularity</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Hodges estimator).</span> If
+  \(\hat\theta_n\) is efficient for a scalar parameter, define
+  \[
+  T_n=
+  \begin{cases}
+  0,&|\hat\theta_n|\leq n^{-1/4},\\
+  \hat\theta_n,&|\hat\theta_n|>n^{-1/4}.
+  \end{cases}
+  \]
+  At \(\theta_0=0\),
+  \[
+  \sqrt n\,T_n\to_p0,
+  \]
+  apparently beating the information bound. But under
+  \(\theta_n=h/\sqrt n\), the threshold \(n^{-1/4}\) is much wider than the local displacement, so
+  \[
+  \sqrt n(T_n-\theta_n)\to_p-h.
+  \]
+  The limit depends on \(h\); \(T_n\) is not regular. Its risk is poor on intermediate neighborhoods around zero.</p>
+</div>
+
+<p>The convolution theorem does not prohibit pointwise superefficiency. It says that improvement cannot persist with stable behavior across all contiguous local alternatives.</p>
+
+<h3>Asymptotic admissibility</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Informally, a sequence \(T_n\) is locally asymptotically admissible if no competing sequence has asymptotic local risk no larger at every \(h\) and strictly smaller at some \(h\), under the chosen mode of risk convergence.</p>
+</div>
+
+<p>No-residual-noise efficiency is necessary for optimality among regular estimators under many convex losses, but it is not sufficient for admissibility among all procedures. In dimension \(p\geq3\), the identity estimator in the Gaussian shift is minimax and has covariance \(I^{-1}\), yet James–Stein shrinkage dominates it under squared loss. Consequently, an efficient estimator sequence can fail an asymptotic admissibility criterion that transfers the full Gaussian-shift decision problem.</p>
+
+<h3>Three distinct optimality statements</h3>
+
+<p>The conclusions should be separated:</p>
+<ol>
+  <li><strong>Efficiency:</strong> the regular limit has no extra convolution factor.</li>
+  <li><strong>Local asymptotic minimaxity:</strong> risk attains the unrestricted Gaussian minimax value over expanding local sets.</li>
+  <li><strong>Asymptotic admissibility:</strong> no limiting Gaussian-shift rule dominates the induced rule.</li>
+</ol>
+
+<p>They coincide in some one-dimensional regular problems but diverge under shrinkage, constraints, nonconvex loss, or irregular procedures.</p>

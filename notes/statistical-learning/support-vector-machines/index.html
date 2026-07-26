@@ -89,3 +89,129 @@ Jensen's inequality and independence of the signs give
 \le \left(\sum_i\|x_i\|_2^2\right)^{1/2}\le R\sqrt n.
 \]</p>
     </div>
+
+<h3>Primal soft-margin formulation</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The constrained problem
+  \[
+  \min_{w,b,\xi\ge0}\frac12\|w\|_2^2+C\sum_{i=1}^n\xi_i
+  \quad\text{subject to}\quad
+  y_i(w^\top x_i+b)\ge1-\xi_i
+  \]
+  is equivalent to
+  \[
+  \min_{w,b}\frac12\|w\|_2^2+
+  C\sum_{i=1}^n(1-y_i(w^\top x_i+b))_+.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For fixed \(w,b\), feasibility requires
+  \(\xi_i\ge\max\{0,1-y_i(w^\top x_i+b)\}\). Since the objective increases in every \(\xi_i\), each slack is set to this smallest value.</p>
+</div>
+
+<h3>Soft-margin dual and KKT structure</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The soft-margin dual is
+  \[
+  \max_{\alpha\in\mathbb R^n}
+  \mathbf1^\top\alpha-\frac12\alpha^\top Q\alpha
+  \quad\text{subject to}\quad
+  0\le\alpha_i\le C,\quad y^\top\alpha=0,
+  \]
+  where \(Q_{ij}=y_iy_jx_i^\top x_j\). At any primal-dual optimum,
+  \[
+  w=\sum_i\alpha_iy_ix_i,
+  \]
+  and
+  \[
+  \begin{cases}
+  \alpha_i=0&\Rightarrow y_if(x_i)\ge1,\\
+  0<\alpha_i<C&\Rightarrow y_if(x_i)=1,\\
+  \alpha_i=C&\Rightarrow y_if(x_i)\le1.
+  \end{cases}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Introduce multipliers
+  \(\alpha_i\ge0\) for the margin constraints and \(\mu_i\ge0\) for
+  \(\xi_i\ge0\). Stationarity gives
+  \(w=\sum_i\alpha_iy_ix_i\), \(y^\top\alpha=0\), and
+  \(C-\alpha_i-\mu_i=0\), hence \(0\le\alpha_i\le C\).
+  Substitution yields the dual. Complementary slackness,
+  \(\alpha_i\{y_if(x_i)-1+\xi_i\}=0\) and \(\mu_i\xi_i=0\),
+  gives the three cases.</p>
+</div>
+
+<p>Only observations with \(\alpha_i>0\) enter the fitted normal vector; these are the support vectors. Points strictly beyond margin one have \(\alpha_i=0\) and can move slightly without changing the solution.</p>
+
+<h3>Kernelized SVM</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Replacing
+  \(x_i^\top x_j\) in the dual by any positive-definite kernel
+  \(K(x_i,x_j)\) produces the RKHS classifier
+  \[
+  f(x)=\sum_{i=1}^n\alpha_iy_iK(x_i,x)+b.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In the feature space
+  \(K(x,x')=\langle\Phi(x),\Phi(x')\rangle\), the preceding dual derivation is unchanged with \(x_i\) replaced by \(\Phi(x_i)\). The stationarity equation becomes
+  \(w=\sum_i\alpha_iy_i\Phi(x_i)\), and evaluation against \(\Phi(x)\) gives the formula.</p>
+</div>
+
+<h3>Hard-margin uniqueness</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If the hard-margin problem is feasible, its normal vector \(w\) is unique, although the intercept \(b\) need not be unique.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The feasible set in \((w,b)\) is convex and the objective is strictly convex in \(w\). If two optimal solutions had distinct \(w_1,w_2\), their midpoint would be feasible and would have strictly smaller squared norm, contradicting optimality. Strict convexity does not involve \(b\), so different intercepts can occur in degenerate configurations.</p>
+</div>
+
+<h3>Population consistency of hinge regularization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(K\) be universal on a compact
+  \(\mathcal X\), let \(\lambda_n\downarrow0\), and suppose
+  \(n\lambda_n\to\infty\). Under bounded-kernel and measurability conditions, an RKHS hinge-loss SVM is Bayes-risk consistent:
+  \[
+  R_{01}(\widehat f_n)-R_{01}^*\xrightarrow{P}0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Universality makes the infimum of population hinge risk over the RKHS approach the unrestricted hinge Bayes risk as the norm bound expands. The regularizer implies
+  \(\|\widehat f_n\|_{\mathcal H_K}=O_P(\lambda_n^{-1/2})\). Rademacher complexity of that ball is
+  \(O_P\{(n\lambda_n)^{-1/2}\}\), which tends to zero and controls estimation error. Vanishing \(\lambda_n\) removes regularization bias. Hinge calibration then converts surrogate-risk consistency to zero-one consistency.</p>
+</div>
+
+<h3>Leave-one-out support-vector bound</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In a separable hard-margin problem with a unique classifier and no degeneracies, a training point that is not a support vector cannot become a leave-one-out error when removed. Consequently, the leave-one-out error count is at most the number of support vectors.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Removing a non-support vector leaves all active constraints and the optimum unchanged, because its constraint is strict and its dual coefficient is zero. The unchanged classifier still labels that omitted point correctly. Therefore only support vectors can contribute leave-one-out errors.</p>
+</div>
+
+<h3>Multiclass extensions</h3>
+
+<p>One-versus-rest and one-versus-one schemes reduce multiclass learning to binary SVMs but can produce incompatible scores. A direct Crammer-Singer formulation solves
+\[
+\min_{w_1,\ldots,w_K}\frac\lambda2\sum_k\|w_k\|^2+
+\frac1n\sum_i
+\max_{k\ne y_i}\{1+w_k^\top x_i-w_{y_i}^\top x_i\}_+.
+\]
+Its loss is convex and upper-bounds multiclass zero-one error. Calibration, however, depends on the precise multiclass surrogate and cannot be inferred solely from convexity.</p>
+
+<h3>What the margin parameter controls</h3>
+
+<p>The SVM tuning constant simultaneously governs norm, empirical hinge error, and the set of support vectors. A very large \(C\) prioritizes fitting margin violations and can be unstable under label noise; a small \(C\) permits violations and shrinks the RKHS norm. Proper tuning balances approximation, estimation, and robustness rather than seeking the largest training margin in isolation.</p>

@@ -8,24 +8,127 @@ note_prev_url: "/notes/differential-equations/flows-and-phase-portraits/"
 note_next_url: "/notes/differential-equations/stability-of-equilibria/"
 ---
 
-<p>Linear systems with constant coefficients records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>The system
+\[
+\dot x=Ax+g(t),\qquad x(t_0)=x_0,
+\]
+is solved by the matrix exponential. Its spectrum and Jordan structure describe
+growth, oscillation, resonance, and stability.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A constant-coefficient linear system has the form \(\dot x=Ax\). Its solutions are given by the matrix exponential \(e^{tA}\).</p>
-    </div>
+<h3>The matrix exponential</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The matrix exponential satisfies \(\frac{\mathrm{d}}{\mathrm{d}t}e^{tA}=Ae^{tA}\), \(e^{0A}=I\), and gives the unique solution \(x(t)=e^{tA}x_0\).</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span>
+\[
+e^{tA}=\sum_{k=0}^{\infty}\frac{t^kA^k}{k!}.
+\]
+The series converges absolutely in every matrix norm, uniformly for \(t\) on
+compact intervals.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiate the uniformly convergent power series for \(e^{tA}\). Uniqueness follows from linear ODE theory or from applying the inverse exponential to a solution.</p>
-    </div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span>
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}e^{tA}
+=Ae^{tA}=e^{tA}A,\qquad
+e^{(t+s)A}=e^{tA}e^{sA},\qquad
+(e^{tA})^{-1}=e^{-tA}.
+\]</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Spectral information about \(A\) becomes time behavior of the system: decay, growth, oscillation, and resonance.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Uniform convergence permits
+termwise differentiation. The product law follows by multiplying absolutely
+convergent series and using the binomial theorem:
+\[
+\sum_{k+\ell=n}\frac{t^ks^\ell}{k!\ell!}
+=\frac{(t+s)^n}{n!}.
+\]
+The inverse identity is the product law at \(s=-t\).</p>
+</div>
+
+<h3>Variation of constants</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span>
+\[
+x(t)
+=e^{(t-t_0)A}x_0
++\int_{t_0}^te^{(t-s)A}g(s)\,\mathrm{d}s.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put
+\(y(t)=e^{-tA}x(t)\). Then
+\[
+\dot y(t)=e^{-tA}g(t).
+\]
+Integrate and multiply by \(e^{tA}\).</p>
+</div>
+
+<h3>Jordan blocks and polynomial factors</h3>
+
+<p>If \(A=SJS^{-1}\), then \(e^{tA}=Se^{tJ}S^{-1}\). For a Jordan block
+\(J_\lambda=\lambda I+N\), \(N^m=0\),
+\[
+e^{tJ_\lambda}
+=e^{\lambda t}
+\sum_{k=0}^{m-1}\frac{t^kN^k}{k!}.
+\]
+Thus eigenvalues determine exponential rates, while nontrivial Jordan blocks
+add polynomial growth. A purely imaginary eigenvalue with a Jordan block larger
+than one is unstable despite having zero real part.</p>
+
+<h3>Exponential stability</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The origin of
+\(\dot x=Ax\) is exponentially stable if and only if
+\[
+\max_{\lambda\in\sigma(A)}\operatorname{Re}\lambda<0.
+\]
+Equivalently, there exist \(M,\alpha>0\) such that
+\[
+\|e^{tA}\|\le Me^{-\alpha t},\qquad t\ge0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If all real parts are negative,
+the Jordan formula bounds each polynomial-exponential term by
+\(C e^{-\alpha t}\) for any \(\alpha\) below the spectral gap. Conversely,
+apply the exponential bound to a complex eigenvector:
+\(e^{tA}v=e^{\lambda t}v\), forcing
+\(\operatorname{Re}\lambda\le-\alpha\).</p>
+</div>
+
+<h3>Resonance</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For
+\[
+\dot z=i\omega z+e^{i\omega t},
+\]
+variation of constants gives
+\[
+z(t)=e^{i\omega t}\{z(0)+t\}.
+\]
+Forcing at a natural frequency creates linear growth. In a damped system with
+negative spectral real part, bounded periodic forcing yields a unique bounded
+periodic steady response.</p>
+</div>
+
+<h3>Nonnormal transient growth</h3>
+
+<p>Even when every eigenvalue is stable, \(\|e^{tA}\|\) can initially grow if
+\(A\) is nonnormal. The logarithmic norm
+\[
+\mu_2(A)=\lambda_{\max}\left(\frac{A+A^\top}{2}\right)
+\]
+gives
+\[
+\|e^{tA}\|_2\le e^{t\mu_2(A)}.
+\]
+Pseudospectra and resolvent norms describe transient sensitivity more reliably
+than eigenvalues alone.</p>

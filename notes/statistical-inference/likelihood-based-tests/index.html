@@ -8,32 +8,120 @@ note_prev_url: "/notes/statistical-inference/hypothesis-testing-foundations/"
 note_next_url: "/notes/statistical-inference/confidence-sets-pivots/"
 ---
 
-<p>Wald, score, and likelihood ratio tests are the three standard large-sample tests in regular parametric models. They use the same local quadratic approximation from different directions.</p>
+<p>Likelihood-ratio, Wald, and score tests are three coordinate descriptions of the same local quadratic experiment. Their first-order equivalence holds in regular interior models; their finite-sample behavior, invariance, and behavior at boundaries can differ sharply.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(H_0:g(\theta)=0\) with \(r\) restrictions, the likelihood ratio statistic is
-        \[
-        \Lambda_n=2\{\ell_n(\hat\theta)-\ell_n(\hat\theta_0)\},
-        \]
-        where \(\hat\theta\) is unrestricted and \(\hat\theta_0\) is constrained to \(H_0\).</p>
-    </div>
+<h3>A smooth composite null</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Wilks theorem.</span> Under regularity and under \(H_0\),
-        \[
-        \Lambda_n\rightsquigarrow \chi_r^2.
-        \]
-        The Wald and score statistics have the same first-order \(\chi_r^2\) null limit.</p>
-    </div>
+<p>Let \(\theta\in\Theta\subseteq\mathbb R^d\) and consider
+\[
+H_0:r(\theta)=0,\qquad r:\Theta\to\mathbb R^q,
+\]
+where \(R(\theta)=Dr(\theta)\) has row rank \(q\) at the true point \(\theta_0\). Let \(\hat\theta\) be the unrestricted MLE and \(\tilde\theta\) the constrained MLE.</p>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> LAN gives the local expansion
-        \[
-        \ell_n(\theta_0+h/\sqrt n)-\ell_n(\theta_0)
-        =h^\top\Delta_n-\frac12h^\top Ih+o_p(1).
-        \]
-        The unrestricted maximizer of the quadratic is \(I^{-1}\Delta_n\). The constrained maximizer is the projection of \(I^{-1}\Delta_n\) onto the null tangent space under the \(I\)-inner product. The likelihood ratio is the squared \(I\)-norm of the orthogonal residual. Under \(H_0\), this residual has \(r\) standard normal coordinates, so its squared norm is \(\chi_r^2\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> With \(I(\theta)\) denoting information per observation, define
+  \[
+  \begin{aligned}
+  LR_n&=2\{\ell_n(\hat\theta)-\ell_n(\tilde\theta)\},\\
+  W_n&=n\,r(\hat\theta)^\top
+  \{R(\hat\theta)I(\hat\theta)^{-1}R(\hat\theta)^\top\}^{-1}
+  r(\hat\theta),\\
+  LM_n&=\frac1nS_n(\tilde\theta)^\top
+  I(\tilde\theta)^{-1}S_n(\tilde\theta).
+  \end{aligned}
+  \]
+  The last expression is the score or Lagrange-multiplier statistic; because the constrained score lies in the normal space of the null, no additional projection is needed in this full-parameter form.</p>
+</div>
 
-    <h3>Local alternatives</h3>
-    <p>Under \(\theta_n=\theta_0+h/\sqrt n\), the limiting distribution is usually noncentral chi-square. This is the mathematical way to compare local power of tests.</p>
+<h3>Quadratic projection geometry</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Wilks, Wald, and score equivalence.</span> Suppose the model is regular and quadratic-mean differentiable, \(\theta_0\) is an interior null point, \(I_0=I(\theta_0)\) is positive definite, and the MLEs have their regular expansions. Then under \(P_{\theta_0}^{(n)}\),
+  \[
+  LR_n=W_n=LM_n+o_p(1)
+  \rightsquigarrow\chi_q^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put
+  \[
+  \Delta_n=n^{-1/2}S_n(\theta_0)\rightsquigarrow N(0,I_0).
+  \]
+  The local log-likelihood is
+  \[
+  Q_n(h)=h^\top\Delta_n-\frac12h^\top I_0h+o_p(1).
+  \]
+  The unrestricted maximizer is \(\hat h=I_0^{-1}\Delta_n\). The null tangent space is
+  \[
+  \mathcal T_0=\{h:R_0h=0\},\qquad R_0=R(\theta_0),
+  \]
+  and the constrained maximizer is the \(I_0\)-orthogonal projection of \(\hat h\) onto \(\mathcal T_0\). Its normal residual is
+  \[
+  \hat h-\tilde h
+  =I_0^{-1}R_0^\top
+  (R_0I_0^{-1}R_0^\top)^{-1}
+  R_0I_0^{-1}\Delta_n.
+  \]
+  Therefore twice the optimized quadratic difference is
+  \[
+  \Delta_n^\top I_0^{-1}R_0^\top
+  (R_0I_0^{-1}R_0^\top)^{-1}
+  R_0I_0^{-1}\Delta_n.
+  \]
+  This is the squared Euclidean norm of a \(q\)-dimensional standard Gaussian projection, hence \(\chi_q^2\). Taylor expansion of \(r(\hat\theta)\) gives the same quadratic form for \(W_n\); expansion of the constrained score gives it for \(LM_n\).</p>
+</div>
+
+<h3>What each statistic computes</h3>
+
+<p>The likelihood-ratio test fits both models and compares their optimized criteria. The Wald test fits only the unrestricted model and measures the estimated restriction from the null in an estimated covariance metric. The score test fits only the null model and asks whether the likelihood slope points strongly out of the null tangent space.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Reparametrization behavior.</span> The likelihood-ratio statistic is invariant under every one-to-one reparametrization. The score statistic is invariant under smooth one-to-one changes when its information metric is transformed correctly. A finite-sample Wald statistic generally depends on the chosen representation \(r(\theta)=0\), although equivalent representations agree to first order.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A one-to-one change of coordinates leaves the suprema defining \(LR_n\) unchanged. Score and information transform covariantly and contravariantly, so their quadratic pairing is preserved. For Wald, nonlinear transformations alter the finite displacement between \(\hat\theta\) and the null even when their tangent maps agree at \(\theta_0\); Taylor expansion shows that this difference is only higher order locally.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (normal mean with known variance).</span> If \(X_i\sim N(\mu,\sigma^2)\) and \(H_0:\mu=\mu_0\), then
+  \[
+  2\{\ell_n(\bar X)-\ell_n(\mu_0)\}
+  =\frac{n(\bar X-\mu_0)^2}{\sigma^2}.
+  \]
+  The Wald and score statistics are exactly the same quantity, not only asymptotically. Under \(H_0\) it has a \(\chi_1^2\) law.</p>
+</div>
+
+<h3>Local alternatives and noncentrality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Local power.</span> Under \(\theta_n=\theta_0+h/\sqrt n\),
+  \[
+  LR_n,\ W_n,\ LM_n
+  \rightsquigarrow\chi_q^2(\lambda),
+  \]
+  where
+  \[
+  \lambda
+  =(R_0h)^\top
+  (R_0I_0^{-1}R_0^\top)^{-1}
+  (R_0h).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Le Cam's third lemma shifts the central sequence from \(N(0,I_0)\) to \(N(I_0h,I_0)\). Substitution into the projection quadratic form from the preceding proof yields a squared \(q\)-variate normal with mean whose squared norm is \(\lambda\), which is the noncentral chi-square law.</p>
+</div>
+
+<h3>One-sided hypotheses and boundaries</h3>
+
+<p>For \(H_0:\theta\le0\) against \(\theta>0\), with true value at zero, the local alternative set is a half-line. Maximizing a Gaussian quadratic over that cone gives
+\[
+LR_n\rightsquigarrow\frac12\delta_0+\frac12\chi_1^2,
+\]
+not \(\chi_1^2\). More general inequality constraints produce chi-bar-square mixtures whose weights depend on the cone geometry. Singular information, unidentified nuisance parameters under the null, and parameters on support boundaries require separate analysis; ordinary Wilks calibration is then unjustified.</p>
+
+<h3>Robust versions under misspecification</h3>
+
+<p>For a misspecified likelihood, the score variance \(B\) and negative expected Hessian \(A\) differ. A naive likelihood-ratio statistic need not have a standard chi-square limit. Wald and score-type tests can be repaired using sandwich covariance, while generalized likelihood-ratio calibration may require eigenvalue corrections or resampling. The exact formulas are developed on the misspecification page.</p>

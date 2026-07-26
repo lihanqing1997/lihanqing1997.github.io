@@ -39,3 +39,147 @@ has minimax pointwise regret \(\log S_n\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> For regular \(d\)-dimensional parametric families, minimax redundancy often grows like \((d/2)\log n\) plus lower-order constants. The main lesson is not the constant but the statistical dimension penalty.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Universal codes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence of coding laws \(Q_n\) is universal for class \(\mathcal P\) if
+  \[
+  \frac1nD(P^n\|Q_n)\to0
+  \]
+  for every \(P\in\mathcal P\), or uniformly if the supremum over \(P\) tends to zero.</p>
+</div>
+
+<h3>Bayesian mixtures</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given prior \(\pi\) on \(\Theta\),
+  \[
+  Q_\pi(x^n)=\int P_\theta(x^n)\,\pi(\mathrm{d}\theta).
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For any measurable neighborhood \(B\subseteq\Theta\),
+  \[
+  -\log Q_\pi(x^n)
+  \le-\log\inf_{\theta\in B}P_\theta(x^n)
+  +\log\frac1{\pi(B)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \(Q_\pi(x^n)\ge\int_BP_\theta(x^n)\pi(\mathrm{d}\theta)
+  \ge\pi(B)\inf_{\theta\in B}P_\theta(x^n)\). Take negative logarithms.</p>
+</div>
+
+<h3>Krichevsky-Trofimov code</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For binary iid data with
+  \(k\) ones, use the Jeffreys mixture
+  \[
+  Q_{\mathrm{KT}}(x^n)=
+  \int_0^1p^k(1-p)^{n-k}
+  \frac{p^{-1/2}(1-p)^{-1/2}}{\pi}\,\mathrm{d}p.
+  \]
+  Sequentially,
+  \[
+  Q(X_{t+1}=1\mid X^t)=
+  \frac{k_t+1/2}{t+1}.
+  \]
+  Its worst-case regret is
+  \(\tfrac12\log n+O(1)\), matching the one-dimensional parametric order.</p>
+</div>
+
+<h3>Normalized maximum likelihood</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If the Shtarkov sum
+  \[
+  C_n=\sum_{x^n}\sup_{\theta}P_\theta(x^n)
+  \]
+  is finite, normalized maximum likelihood is
+  \[
+  Q_{\mathrm{NML}}(x^n)=
+  \frac{\sup_\theta P_\theta(x^n)}{C_n}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> NML uniquely minimizes worst-case pointwise regret, and
+  \[
+  \inf_Q\sup_{x^n}
+  \log\frac{\sup_\theta P_\theta(x^n)}{Q(x^n)}
+  =\log C_n.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> NML makes the regret constant
+  \(\log C_n\). For arbitrary \(Q\), if every regret were below \(\log C_n\), then
+  \(Q(x^n)>\sup_\theta P_\theta(x^n)/C_n\) for every sequence; summing would give \(\sum Q>1\), a contradiction.</p>
+</div>
+
+<h3>Minimax expected redundancy and channel capacity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under finite or compact regular conditions,
+  \[
+  \inf_Q\sup_{\theta}D(P_\theta^n\|Q)
+  =
+  \sup_{\pi}I_\pi(\Theta;X^n).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For any prior \(\pi\) and law \(Q\),
+  \[
+  \int D(P_\theta^n\|Q)\,\pi(\mathrm{d}\theta)
+  =I_\pi(\Theta;X^n)+D(P_\pi^n\|Q).
+  \]
+  Minimizing the average over \(Q\) chooses the mixture
+  \(P_\pi^n\) and leaves mutual information. A minimax theorem exchanges infimum and supremum.</p>
+</div>
+
+<h3>Regular parametric asymptotics</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a regular \(d\)-dimensional iid family on compact \(\Theta\),
+  \[
+  \log C_n=
+  \frac d2\log\frac{n}{2\pi}
+  +\log\int_\Theta\sqrt{\det I(\theta)}\,\mathrm{d}\theta
+  +o(1),
+  \]
+  under conditions making NML finite. Jeffreys mixture has the same leading minimax redundancy.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Group sequences by their MLE and apply a local quadratic likelihood expansion. Parameter cells of diameter \(n^{-1/2}\) contribute Fisher-volume element
+  \(\sqrt{\det I(\theta)}\,\mathrm{d}\theta\), while Gaussian integration contributes \((n/2\pi)^{d/2}\). Laplace approximation of Jeffreys mixture yields the same local normalization.</p>
+</div>
+
+<h3>Context-tree weighting</h3>
+
+<p>For finite-memory binary sources with unknown context tree, context-tree weighting recursively mixes the hypotheses that a node is a leaf or splits into children. It computes an exact Bayesian mixture over exponentially many trees in linear time and achieves redundancy near the best tree plus a model-complexity penalty.</p>
+
+<h3>Lempel-Ziv universality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every stationary ergodic finite-alphabet source, Lempel-Ziv code length satisfies
+  \[
+  \frac1nL_{\mathrm{LZ}}(X^n)\to\overline H(X)
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Parse the sequence into distinct phrases. Combinatorial bounds relate phrase count to code length, while recurrence properties of stationary ergodic processes control phrase lengths by entropy rate. Kraft's inequality supplies the converse lower limit; the parsing construction gives the upper limit.</p>
+</div>
+
+<h3>Minimum description length</h3>
+
+<p>MDL selects the model minimizing total description length. Refined MDL uses NML or luckiness-normalized variants rather than an arbitrary two-part parameter code. Its complexity penalty is determined by the model's distinguishable distributions, not simply raw parameter count; singular models require different asymptotics from regular \(d\log n/2\).</p>

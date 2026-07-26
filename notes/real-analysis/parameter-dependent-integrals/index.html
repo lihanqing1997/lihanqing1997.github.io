@@ -22,14 +22,33 @@ note_prev_url: "/notes/real-analysis/tightness-and-prokhorov-theorem/"
     <h3>Differentiation under the integral sign</h3>
     <p>A dominated derivative permits exchanging derivative and integral.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Suppose \(\partial_\theta f(\theta,x)\) exists near \(\theta_0\), \(f(\theta_0,\cdot)\in L^1\), and \(|\partial_\theta f(\theta,x)|\le g(x)\in L^1\). Then \(F(\theta)=\int f(\theta,x)\,\mathrm{d}\mu(x)\) is differentiable at \(\theta_0\) and
+        <p><span class="statement-title">Theorem.</span> Suppose \(\theta\mapsto f(\theta,x)\) is differentiable on a neighborhood of \(\theta_0\) for almost every \(x\), \(f(\theta_0,\cdot)\in L^1\), and
+\[
+|\partial_\theta f(\theta,x)|\le g(x)
+\]
+there for some \(g\in L^1\). Then \(F(\theta)=\int f(\theta,x)\,\mathrm{d}\mu(x)\) is differentiable at \(\theta_0\) and
 \[
 F'(\theta_0)=\int \partial_\theta f(\theta_0,x)\,\mathrm{d}\mu(x).
 \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The difference quotient equals \(\int_0^1\partial_\theta f(\theta_0+th,x)\,\mathrm{d}t\) for almost every \(x\). It converges pointwise to \(\partial_\theta f(\theta_0,x)\) as \(h\to0\) and is dominated by \(g(x)\). Dominated convergence applies.</p>
+        <p><span class="statement-title">Proof.</span> For \(h\ne0\), set
+\[
+q_h(x)=\frac{f(\theta_0+h,x)-f(\theta_0,x)}h.
+\]
+Pointwise differentiability gives \(q_h(x)\to\partial_\theta f(\theta_0,x)\). By the one-dimensional mean value theorem, for almost every \(x\),
+\[
+|q_h(x)|\le\sup_{\theta\text{ between }\theta_0\text{ and }\theta_0+h}
+|\partial_\theta f(\theta,x)|
+\le g(x).
+\]
+In particular, \(f(\theta_0+h,\cdot)\) is integrable, and dominated convergence gives
+\[
+\frac{F(\theta_0+h)-F(\theta_0)}h
+=\int q_h\,\mathrm{d}\mu
+\longrightarrow\int\partial_\theta f(\theta_0,x)\,\mathrm{d}\mu(x).
+\]</p>
     </div>
 
     <h3>Vector parameters</h3>
@@ -39,7 +58,36 @@ F'(\theta_0)=\int \partial_\theta f(\theta_0,x)\,\mathrm{d}\mu(x).
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply the one-dimensional differentiation theorem to each coordinate direction. The uniform \(L^1\) bound also gives the Frechet expansion by writing the increment as an integral of the gradient along the line segment from \(\theta_0\) to \(\theta_0+h\).</p>
+        <p><span class="statement-title">Proof.</span> For almost every \(x\), the fundamental theorem along the segment gives
+\[
+f(\theta_0+h,x)-f(\theta_0,x)
+=\int_0^1\nabla_\theta f(\theta_0+th,x)^\top h\,\mathrm{d}t.
+\]
+Subtract \(\nabla_\theta f(\theta_0,x)^\top h\), divide by \(\|h\|\), and bound the absolute value by
+\[
+\int_0^1\|\nabla_\theta f(\theta_0+th,x)-\nabla_\theta f(\theta_0,x)\|\,\mathrm{d}t
+\le2g(x).
+\]
+Pointwise continuity makes this tend to zero, and dominated convergence proves a Fréchet remainder \(o(\|h\|)\) after integration. The derivative is the stated integral vector.</p>
+    </div>
+
+    <h3>Second derivatives and Hessians</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> Let \(\Theta\subset\mathbb R^p\) be open. Suppose \(f(\cdot,x)\) is twice continuously differentiable almost everywhere and, on every compact \(K\subset\Theta\),
+\[
+\sup_{\theta\in K}\|\nabla_\theta^2f(\theta,x)\|
+\le g_K(x)
+\]
+for some \(g_K\in L^1\). If \(f(\theta_0,\cdot)\) and \(\nabla_\theta f(\theta_0,\cdot)\) are integrable at one point, then
+\[
+\nabla F(\theta)=\int\nabla_\theta f(\theta,x)\,\mathrm{d}\mu(x),
+\qquad
+\nabla^2F(\theta)=\int\nabla_\theta^2f(\theta,x)\,\mathrm{d}\mu(x).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On a compact line segment, the Hessian envelope and the mean value theorem dominate gradient increments by an integrable function. The vector-parameter theorem therefore differentiates \(F\) once. Applying the same theorem to each component of \(\nabla_\theta f\), now dominated through the Hessian envelope, gives the second identity and continuity of the integrated Hessian.</p>
     </div>
 
     <h3>Leibniz rule with moving endpoints</h3>
@@ -55,8 +103,16 @@ F'(\theta)=f(\theta,b(\theta))b'(\theta)-f(\theta,a(\theta))a'(\theta)+\int_{a(\
         <p><span class="statement-title">Proof.</span> Rewrite the integral over a fixed reference interval by an affine change of variables from \([0,1]\) to \([a(\theta),b(\theta)]\). Differentiate under the integral sign using the previous theorem and simplify the derivative of the transformed integrand.</p>
     </div>
 
-    <h3>Statistical objectives</h3>
-    <p>Differentiating expectations needs hypotheses, not just formal algebra.</p>
+    <h3>Scores and derivatives of expectations</h3>
+    <p>When the measure itself depends on the parameter, both the integrand and the density contribute.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Scores, Hessians, risk gradients, and estimating equations all involve parameter-dependent integrals. Dominating envelopes or uniform integrability assumptions are what make the formal interchange valid.</p>
+        <p><span class="statement-title">Remark.</span> If \(P_\theta\) has density \(p_\theta\) relative to \(\lambda\), and differentiation is justified, then
+\[
+\frac{\mathrm{d}}{\mathrm{d}\theta}\mathbb E_\theta[h_\theta(X)]
+=\mathbb E_\theta[\partial_\theta h_\theta(X)]
++\mathbb E_\theta[h_\theta(X)s_\theta(X)],
+\qquad
+s_\theta=\partial_\theta\log p_\theta.
+\]
+Taking \(h_\theta\equiv1\) gives \(\mathbb E_\theta s_\theta=0\). These identities require a common dominating measure and an integrable derivative envelope; they are not formal consequences of notation.</p>
     </div>

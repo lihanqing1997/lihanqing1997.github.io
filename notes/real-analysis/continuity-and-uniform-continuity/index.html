@@ -11,7 +11,7 @@ note_next_url: "/notes/real-analysis/semicontinuity-and-extreme-values/"
 <p>Continuity is local preservation of limits. Uniform continuity is a global version that makes one choice of scale work everywhere on the domain.</p>
 
     <h3>Pointwise continuity and sequences</h3>
-    <p>In metric spaces, continuity can be read from convergent sequences.</p>
+    <p>In metric spaces, continuity can be read from convergent sequences. This is the local form; the uniform form below controls pairs of points that may move through the domain.</p>
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> A map \(f:X\to Y\) between metric spaces is continuous at \(x\) if for every \(\varepsilon>0\) there is \(\delta>0\) such that \(d_X(x,z)\lt \delta\Rightarrow d_Y(f(x),f(z))\lt \varepsilon\).</p>
     </div>
@@ -38,6 +38,14 @@ note_next_url: "/notes/real-analysis/semicontinuity-and-extreme-values/"
         <p><span class="statement-title">Proof.</span> For each \(x\), choose \(r_x>0\) such that \(d(x,z)\lt 2r_x\Rightarrow d(f(x),f(z))\lt \varepsilon/2\). Finitely many balls \(B(x_i,r_{x_i})\) cover compact \(X\). Let \(\delta=\min_i r_{x_i}\). If \(d(y,z)\lt \delta\) and \(y\in B(x_i,r_{x_i})\), then both \(y\) and \(z\) lie within \(2r_{x_i}\) of \(x_i\), so \(d(f(y),f(z))\lt \varepsilon\).</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Uniformly continuous maps send Cauchy sequences to Cauchy sequences. An ordinary continuous map need not do so.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Given \(\varepsilon>0\), choose one \(\delta>0\) from uniform continuity. If \((x_n)\) is Cauchy, then \(d_X(x_m,x_n)<\delta\) for all sufficiently large \(m,n\), whence \(d_Y(f(x_m),f(x_n))<\varepsilon\). For failure under mere continuity, \(f(x)=1/x\) on \((0,1)\) is continuous, while the Cauchy sequence \(x_n=1/n\) has the non-Cauchy image \(n\).</p>
+    </div>
+
     <h3>Continuous extension from dense sets</h3>
     <p>Uniform continuity is exactly what allows extension from approximating domains.</p>
     <div class="math-statement theorem">
@@ -45,17 +53,37 @@ note_next_url: "/notes/real-analysis/semicontinuity-and-extreme-values/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(x\in X\), choose \(a_n\in A\) with \(a_n\to x\). Uniform continuity makes \(f(a_n)\) Cauchy in \(Y\), so define \(\overline f(x)=\lim f(a_n)\). The value is independent of the approximating sequence by applying uniform continuity to interlaced sequences. Density gives uniqueness, and the same epsilon-delta estimate gives continuity.</p>
+        <p><span class="statement-title">Proof.</span> For \(x\in X\), choose \(a_n\in A\) with \(a_n\to x\). The sequence \((a_n)\) is Cauchy, so uniform continuity makes \((f(a_n))\) Cauchy in complete \(Y\). Define \(\overline f(x)=\lim f(a_n)\). If \(b_n\to x\) as well, then \(d_X(a_n,b_n)\to0\), and uniform continuity gives \(d_Y(f(a_n),f(b_n))\to0\); the definition is independent of the approximation.</p>
+        <p>To preserve the same modulus, fix \(\varepsilon>0\) and choose \(\delta\) so that \(d_X(a,b)<\delta\) implies \(d_Y(f(a),f(b))<\varepsilon\). If \(d_X(x,y)<\delta/3\), choose \(a_n\to x\), \(b_n\to y\); eventually \(d_X(a_n,b_n)<\delta\), and passage to the limit gives \(d_Y(\overline f(x),\overline f(y))\le\varepsilon\). Thus \(\overline f\) is uniformly continuous. Any continuous extension agrees with \(f\) on dense \(A\), hence agrees with \(\overline f\) by taking limits.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (completion from rational data).</span> Every Lipschitz map \(f:\mathbb Q\to\mathbb R\) has a unique Lipschitz extension to \(\mathbb R\) with the same constant. In particular, defining a function first on rational approximations is legitimate only after an estimate independent of the chosen approximation has been proved.</p>
     </div>
 
     <h3>Moduli of continuity</h3>
     <p>Quantitative continuity is often more useful than qualitative continuity.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A modulus of continuity for \(f\) is a function \(\omega:[0,\infty)\to[0,\infty)\) with \(\omega(t)\downarrow0\) as \(t\downarrow0\) and \(d(f(x),f(y))\le\omega(d(x,y))\).</p>
+        <p><span class="statement-title">Definition.</span> A modulus of continuity for \(f\) is a nondecreasing function \(\omega:[0,\infty)\to[0,\infty]\) with \(\omega(t)\downarrow0\) as \(t\downarrow0\) and
+\[
+d_Y(f(x),f(y))\le\omega(d_X(x,y)).
+\]
+The least possible modulus is
+\[
+\omega_f(t)=\sup\{d_Y(f(x),f(y)):d_X(x,y)\le t\}.
+\]</p>
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> Lipschitz maps have \(\omega(t)=Lt\), and Hölder maps have \(\omega(t)=Ct^\alpha\). These estimates are central in approximation, empirical process bounds, and regularity theory.</p>
+        <p><span class="statement-title">Example (Lipschitz and Hölder scales).</span> Lipschitz maps satisfy \(\omega_f(t)\le Lt\), while \(\alpha\)-Hölder maps satisfy \(\omega_f(t)\le Ct^\alpha\), \(0<\alpha\le1\). On \([0,1]\), \(f(x)=x^\alpha\) is \(\alpha\)-Hölder because concavity gives \((x+h)^\alpha-x^\alpha\le h^\alpha\). For \(\alpha<1\), it is not Lipschitz near \(0\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> A map is uniformly continuous exactly when \(\omega_f(t)\to0\) as \(t\downarrow0\). If \(X\) is compact and \(f\) is continuous, then \(\omega_f(t)<\infty\) and this limit holds.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The first equivalence is just the quantifier definition written through the supremum. On compact \(X\), the function \((x,y)\mapsto d_Y(f(x),f(y))\) is continuous on compact \(X\times X\), hence bounded; Heine-Cantor gives the vanishing limit.</p>
     </div>
 
     <h3>Uniform limits</h3>

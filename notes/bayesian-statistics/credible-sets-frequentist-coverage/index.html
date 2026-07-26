@@ -56,3 +56,165 @@ P_{\theta_0}\{\theta_0\in C_n(X)\}\to1-\alpha.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Posterior contraction alone does not guarantee coverage. Bias, polished-tail conditions, self-similarity assumptions, or hierarchical adaptation can determine whether credible sets have honest frequentist coverage.</p>
     </div>
+
+<h3>Credible ellipsoids under BvM</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under the regular BvM theorem, let
+\[
+C_n
+=\left\{
+\theta:
+n(\theta-\widehat\theta_n)^\top
+I_{\widehat\theta_n}
+(\theta-\widehat\theta_n)
+\le\chi^2_{d,1-\alpha}
+\right\}.
+\]
+Then
+\[
+\Pi(C_n\mid X^{(n)})
+\xrightarrow{P_{\theta_0}}1-\alpha
+\]
+and
+\[
+P_{\theta_0}(\theta_0\in C_n)
+\to1-\alpha.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> BvM and continuity of information make the posterior quadratic form converge to \(\chi_d^2\), giving credibility. For coverage,
+\[
+\sqrt n(\widehat\theta_n-\theta_0)
+\Rightarrow N(0,I_{\theta_0}^{-1}),
+\]
+so
+\[
+n(\widehat\theta_n-\theta_0)^\top
+I_{\theta_0}
+(\widehat\theta_n-\theta_0)
+\Rightarrow\chi_d^2.
+\]
+Slutsky's theorem replaces \(I_{\theta_0}\) by \(I_{\widehat\theta_n}\).</p>
+</div>
+
+<h3>Equal-tail and highest-density intervals</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A scalar equal-tail interval is
+\[
+[q_{\alpha/2},q_{1-\alpha/2}],
+\]
+where \(q_u\) is a posterior quantile. A highest posterior density set is
+\[
+\{\theta:\pi(\theta\mid x)\ge c_\alpha\},
+\]
+with threshold chosen to contain probability \(1-\alpha\).</p>
+</div>
+
+<p>For a symmetric unimodal normal posterior they coincide. In a skewed or multimodal posterior, an HPD set can be asymmetric or disconnected, while an equal-tail interval is connected and transformation-equivariant under monotone maps. HPD sets are not generally invariant under reparameterization because density height changes by a Jacobian.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(\phi=g(\theta)\) is strictly increasing, the image of a \(\theta\)-equal-tail interval is the equal-tail interval for \(\phi\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Posterior quantiles transform as
+\[
+q_u^\phi=g(q_u^\theta)
+\]
+under a strictly increasing map.</p>
+</div>
+
+<h3>One-sided credible bounds</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If the posterior \(1-\alpha\) upper bound is
+\[
+U_n=\widehat\theta_n+
+\frac{z_{1-\alpha}\widehat\sigma}{\sqrt n}
++o_P(n^{-1/2})
+\]
+and
+\[
+\sqrt n(\widehat\theta_n-\theta_0)/\widehat\sigma
+\Rightarrow N(0,1),
+\]
+then
+\[
+P_{\theta_0}(\theta_0\le U_n)\to1-\alpha.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Rearranging the coverage event gives
+\[
+\frac{\sqrt n(\widehat\theta_n-\theta_0)}
+{\widehat\sigma}
+\ge-z_{1-\alpha}+o_P(1).
+\]
+The normal limit has probability \(1-\alpha\).</p>
+</div>
+
+<h3>Probability matching priors</h3>
+
+<p>In regular scalar models, certain priors improve frequentist coverage beyond first order:
+\[
+P_{\theta_0}\{\theta_0\le q_{1-\alpha}(X)\}
+=1-\alpha+O(n^{-1})
+\]
+for first-order matching, and sometimes \(O(n^{-3/2})\) error under stronger matching equations. Jeffreys prior is first-order probability matching for many scalar regular models. In multiparameter problems, matching depends on the functional and nuisance geometry; no universal prior matches every target.</p>
+
+<h3>Bias versus posterior radius</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose a scalar posterior is approximately
+\[
+N(\theta_0+b_n,r_n^2)
+\]
+in repeated samples, with a credible interval centered at its posterior mean and radius
+\(z_{1-\alpha/2}r_n\). If
+\[
+\frac{|b_n|}{r_n}\to\infty,
+\]
+then frequentist coverage tends to zero.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The interval contains \(\theta_0\) only if the stochastic centering error cancels a deterministic displacement much larger than its radius. Under tight normalized fluctuations, this probability vanishes.</p>
+</div>
+
+<p>This is the central nonparametric coverage problem: posterior spread can contract at the minimax stochastic rate while regularization bias is of the same or larger order.</p>
+
+<h3>Honesty and adaptation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A confidence set \(C_n\) is honest over a class \(\mathcal F\) if
+\[
+\liminf_n\inf_{f\in\mathcal F}
+P_f(f\in C_n)\ge1-\alpha.
+\]
+It is adaptive over subclasses \(\mathcal F_s\) if its diameter achieves the corresponding rate on each \(\mathcal F_s\).</p>
+</div>
+
+<p>Fully honest adaptive confidence balls are impossible over many nested smoothness scales without excluding difficult functions. Self-similarity or polished-tail conditions rule out signals whose energy hides at unresolved frequencies and can restore coverage for empirical or hierarchical Bayes sets after inflation.</p>
+
+<h3>Weak and multiscale topologies</h3>
+
+<p>A nonparametric BvM theorem may hold in a weak norm even when it fails in \(L^2\) or supremum norm. Credible sets built in that weak topology can have honest coverage but may be too large or difficult to interpret pointwise. Bands for \(f(t)\), balls for \(f\), and intervals for a smooth functional
+\(\int\varphi f\) are different inferential objects and require separate bias analyses.</p>
+
+<h3>Calibration workflow</h3>
+
+<p>For any reported credible set, identify:</p>
+<ol>
+<li>the parameter or functional and topology;</li>
+<li>the posterior center and radius;</li>
+<li>the contraction rate and regularization bias;</li>
+<li>whether a BvM or matching theorem applies;</li>
+<li>the parameter class over which coverage is claimed;</li>
+<li>whether inflation, undersmoothing, or bias correction is required.</li>
+</ol>
+
+<p>Simulation over representative fixed truths can reveal finite-sample undercoverage, but it cannot establish uniform honesty over an infinite class.</p>

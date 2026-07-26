@@ -31,7 +31,12 @@ note_next_url: "/notes/real-analysis/signed-measures-and-decompositions/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Define the premeasure on finite disjoint unions of rectangles. Sigma-finiteness ensures consistency and countable additivity on the generating algebra after decomposing into finite-measure pieces. Caratheodory extension gives existence, and uniqueness follows from the pi-lambda theorem on rectangles.</p>
+        <p><span class="statement-title">Proof.</span> First assume \(\mu(X),\nu(Y)<\infty\). On a rectangle set
+\[
+\rho_0(A\times B)=\mu(A)\nu(B),
+\]
+and extend to finite disjoint unions by summation. To see that the value is representation-independent, refine two rectangle representations by all intersections of their \(X\)- and \(Y\)-sides; finite additivity of \(\mu\) and \(\nu\) gives the same sum on the common grid. If a disjoint union of algebra sets remains in the algebra, countable additivity follows by taking vertical sections, applying countable additivity of \(\nu\), and then monotone convergence for \(\mu\). Thus \(\rho_0\) is a premeasure. Caratheodory's extension theorem produces \(\mu\otimes\nu\).</p>
+        <p>For sigma-finite measures, choose disjoint decompositions \(X=\bigsqcup_iX_i\), \(Y=\bigsqcup_jY_j\) with finite measures. Construct the finite product measure on each \(X_i\times Y_j\) and sum these mutually singular pieces. Rectangles have the required product mass by countable distributivity. Finally, rectangles form a \(\pi\)-system and the product is sigma-finite on the rectangles \(X_i\times Y_j\); the sigma-finite uniqueness theorem gives uniqueness on \(\mathcal A\otimes\mathcal B\).</p>
     </div>
 
     <h3>Tonelli theorem</h3>
@@ -45,7 +50,20 @@ with values in \([0,\infty]\), and similarly with the order reversed.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Prove first for indicators of measurable rectangles, then for indicators of product-measurable sets by a monotone class argument. Extend to nonnegative simple functions by linearity, and then to arbitrary nonnegative measurable functions by monotone convergence.</p>
+        <p><span class="statement-title">Proof.</span> For a rectangle \(E=A\times B\),
+\[
+\int_X\nu(E_x)\,\mathrm{d}\mu(x)
+=\int_X\mathbf1_A(x)\nu(B)\,\mathrm{d}\mu(x)
+=\mu(A)\nu(B)
+=(\mu\otimes\nu)(E).
+\]
+Let \(\mathcal C\) be the sets \(E\) for which \(x\mapsto\nu(E_x)\) is measurable and the displayed section formula holds. On finite-measure product pieces, \(\mathcal C\) is a Dynkin system: complements and disjoint unions follow from measure continuity and monotone convergence. It contains the rectangle \(\pi\)-system, hence all product-measurable sets. Sigma-finite exhaustion removes the finite-total-mass restriction.</p>
+        <p>The indicator formula extends by linearity to nonnegative simple functions. If \(s_n\uparrow f\), then \(s_n(x,\cdot)\uparrow f(x,\cdot)\); monotone convergence first in \(y\), then in \(x\), and also on the product gives
+\[
+\int f\,\mathrm{d}(\mu\otimes\nu)
+=\int_X\left(\int_Yf(x,y)\,\mathrm{d}\nu(y)\right)\mathrm{d}\mu(x).
+\]
+The reversed order is identical.</p>
     </div>
 
     <h3>Fubini theorem</h3>
@@ -58,8 +76,29 @@ with values in \([0,\infty]\), and similarly with the order reversed.</p>
         <p><span class="statement-title">Proof.</span> Apply Tonelli to \(|f|\) to see that the iterated integral of \(|f|\) is finite. Hence the sections are integrable almost everywhere. Apply Tonelli separately to \(f^+\) and \(f^-\), both having finite total integral, and subtract.</p>
     </div>
 
-    <h3>Changing order safely</h3>
-    <p>Absolute integrability is the safe hypothesis for exchanging integration order.</p>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Conditional integrability can make iterated integrals depend on the order. In applications, checking \(\int |f|\lt \infty\) is often the cleanest way to avoid ambiguity.</p>
+    <h3>Failure without absolute integrability</h3>
+    <p>Conditional cancellation can make the two iterated integrals disagree.</p>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> On \((0,1)^2\), set
+\[
+f(x,y)=\frac{x^2-y^2}{(x^2+y^2)^2}.
+\]
+Since
+\[
+f=-\frac{\partial}{\partial x}\frac{x}{x^2+y^2}
+=\frac{\partial}{\partial y}\frac{y}{x^2+y^2},
+\]
+direct calculation gives
+\[
+\int_0^1\!\left(\int_0^1f(x,y)\,\mathrm{d}x\right)\mathrm{d}y
+=-\int_0^1\frac{\mathrm{d}y}{1+y^2}
+=-\frac\pi4,
+\]
+whereas
+\[
+\int_0^1\!\left(\int_0^1f(x,y)\,\mathrm{d}y\right)\mathrm{d}x
+=\int_0^1\frac{\mathrm{d}x}{1+x^2}
+=\frac\pi4.
+\]
+The absolute integral diverges near \((0,0)\), so Fubini's hypothesis fails exactly where the order dependence enters.</p>
     </div>

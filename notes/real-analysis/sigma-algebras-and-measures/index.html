@@ -24,6 +24,18 @@ note_next_url: "/notes/real-analysis/outer-measures-and-lebesgue-measure/"
         <p><span class="statement-title">Proof.</span> Membership in an intersection means membership in every sigma-algebra in the family. The closure properties hold in each member, hence hold in the intersection. Taking the intersection of all sigma-algebras containing \(\mathcal C\) gives \(\sigma(\mathcal C)\).</p>
     </div>
 
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (generated information).</span> If \(T:X\to Y\) and \((Y,\mathcal B)\) is measurable, then
+\[
+\sigma(T)=\{T^{-1}(B):B\in\mathcal B\}
+\]
+is the smallest sigma-algebra on \(X\) making \(T\) measurable. For real \(T\),
+\[
+\sigma(T)=\sigma\bigl(\{T\le q\}:q\in\mathbb Q\bigr),
+\]
+because rational half-lines generate \(\mathcal B(\mathbb R)\).</p>
+    </div>
+
     <h3>Measures and continuity</h3>
     <p>Countable additivity is often used through monotone continuity.</p>
     <div class="math-statement definition">
@@ -38,14 +50,46 @@ note_next_url: "/notes/real-analysis/outer-measures-and-lebesgue-measure/"
         <p><span class="statement-title">Proof.</span> For increasing sets, decompose \(A\) into disjoint increments \(A_1\) and \(A_n\setminus A_{n-1}\). Countable additivity gives the limit. For decreasing sets, apply the increasing result to \(A_1\setminus A_n\uparrow A_1\setminus A\), using finiteness of \(\mu(A_1)\) to subtract.</p>
     </div>
 
-    <h3>Pi-lambda uniqueness</h3>
-    <p>Measures are often determined by their values on a smaller generating class.</p>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If two finite measures agree on a pi-system \(\mathcal P\), then they agree on \(\sigma(\mathcal P)\).</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (basic inequalities).</span> If \(A\subset B\), then \(\mu(A)\le\mu(B)\), and if \(\mu(A)<\infty\),
+\[
+\mu(B\setminus A)=\mu(B)-\mu(A).
+\]
+For arbitrary measurable \(A_n\),
+\[
+\mu\!\left(\bigcup_{n=1}^{\infty}A_n\right)\le\sum_{n=1}^{\infty}\mu(A_n).
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\mathcal D=\{A:\mu(A)=\nu(A)\}\). Finiteness makes \(\mathcal D\) a lambda-system: it contains \(X\), is closed under complements, and under disjoint countable unions. Since \(\mathcal P\subset\mathcal D\), Dynkin's pi-lambda theorem gives \(\sigma(\mathcal P)\subset\mathcal D\).</p>
+        <p><span class="statement-title">Proof.</span> The disjoint decomposition \(B=A\sqcup(B\setminus A)\) gives monotonicity and the difference formula. For subadditivity, disjointify by
+\[
+B_1=A_1,\qquad B_n=A_n\setminus\bigcup_{k<n}A_k.
+\]
+Then \(\bigcup_nB_n=\bigcup_nA_n\) and \(B_n\subset A_n\), so countable additivity and monotonicity give the result.</p>
+    </div>
+
+    <h3>Pi-lambda uniqueness</h3>
+    <p>Measures are often determined by their values on a smaller generating class.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (uniqueness on a generating \(\pi\)-system).</span> Let \(\mathcal P\) be a \(\pi\)-system containing \(X\). If two finite measures agree on \(\mathcal P\), then they agree on \(\sigma(\mathcal P)\). The same holds for sigma-finite measures if \(X\uparrow P_n\) for sets \(P_n\in\mathcal P\) on which both measures are finite.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> In the finite case let \(\mathcal D=\{A:\mu(A)=\nu(A)\}\). Equality on \(X\) and finiteness show that \(A\in\mathcal D\) implies \(X\setminus A\in\mathcal D\), while countable additivity gives closure under disjoint countable unions. Thus \(\mathcal D\) is a Dynkin system containing \(\mathcal P\). Dynkin's \(\pi\)-\(\lambda\) theorem yields \(\sigma(\mathcal P)\subset\mathcal D\).</p>
+        <p>In the sigma-finite case apply the finite argument to the restrictions \(A\mapsto\mu(A\cap P_n)\) and \(A\mapsto\nu(A\cap P_n)\). Agreement on \(\mathcal P\) follows because \(\mathcal P\) is closed under intersections. Then let \(n\to\infty\) and use continuity from below.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Dynkin's \(\pi\)-\(\lambda\) theorem).</span> If a Dynkin system \(\mathcal D\) contains a \(\pi\)-system \(\mathcal P\), then \(\sigma(\mathcal P)\subset\mathcal D\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(\lambda(\mathcal P)\) be the smallest Dynkin system containing \(\mathcal P\). For fixed \(A\in\mathcal P\), the class
+\[
+\mathcal D_A=\{B:A\cap B\in\lambda(\mathcal P)\}
+\]
+is a Dynkin system containing \(\mathcal P\), hence equals \(\lambda(\mathcal P)\). Repeating with fixed \(B\in\lambda(\mathcal P)\) shows that \(\lambda(\mathcal P)\) is closed under finite intersections. A Dynkin system closed under finite intersections is a sigma-algebra, so \(\lambda(\mathcal P)=\sigma(\mathcal P)\subset\mathcal D\).</p>
     </div>
 
     <h3>Completion</h3>
@@ -55,7 +99,12 @@ note_next_url: "/notes/real-analysis/outer-measures-and-lebesgue-measure/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\overline{\mathcal A}\) consist of sets \(A\cup N\), with \(A\in\mathcal A\) and \(N\subset Z\) for some \(Z\in\mathcal A\) with \(\mu(Z)=0\). Define \(\overline\mu(A\cup N)=\mu(A)\). Symmetric differences of two representations lie in null sets, so the value is well-defined, and countable additivity follows by comparison with measurable representatives.</p>
+        <p><span class="statement-title">Proof.</span> A convenient description is
+\[
+\overline{\mathcal A}
+=\{E\subset X:\text{there are }A,B\in\mathcal A,\ A\subset E\subset B,\ \mu(B\setminus A)=0\}.
+\]
+Equivalently, \(E\triangle A\) is contained in a measurable null set. This class is closed under complements and countable unions. Define \(\overline\mu(E)=\mu(A)\). If \(A'\) is another measurable representative, then \(A\triangle A'\) is null, so \(\mu(A)=\mu(A')\); the value is well-defined. Replacing disjoint completed sets by measurable representatives and discarding null overlaps proves countable additivity. Every subset of a completed null set again belongs to \(\overline{\mathcal A}\), so the extension is complete.</p>
     </div>
 
     <h3>Measurable maps</h3>
@@ -65,5 +114,9 @@ note_next_url: "/notes/real-analysis/outer-measures-and-lebesgue-measure/"
     </div>
 
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> To check measurability into a generated sigma-algebra, it suffices to check inverse images of a generating class closed enough to generate \(\mathcal B\).</p>
+        <p><span class="statement-title">Remark.</span> If \(\mathcal C\) generates \(\mathcal B\), it suffices to check \(f^{-1}(C)\in\mathcal A\) for \(C\in\mathcal C\), because
+\[
+\{B\subset Y:f^{-1}(B)\in\mathcal A\}
+\]
+is itself a sigma-algebra. Measurable maps are closed under composition since \((g\circ f)^{-1}(C)=f^{-1}(g^{-1}(C))\).</p>
     </div>

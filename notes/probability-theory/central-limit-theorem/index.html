@@ -8,50 +8,215 @@ note_prev_url: "/notes/probability-theory/triangular-arrays-truncation/"
 note_next_url: "/notes/probability-theory/berry-esseen-rates/"
 ---
 
-<p>Central limit theorems explain why Gaussian laws appear as universal fluctuation limits. The correct scale is \(\sqrt n\), and the mechanism is accumulation of many small independent effects.</p>
+<p>Central limit theorems describe the second-order behavior left after a law of large numbers removes deterministic drift. Finite variance selects the scale \(\sqrt n\); asymptotic negligibility makes the quadratic part of the characteristic exponent universal, and the resulting limit is Gaussian.</p>
 
-    <h3>Standard normalization</h3>
+<h3>Centering and fluctuation scale</h3>
 
-    <p>Centering removes deterministic drift; scaling reveals random fluctuations.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For i.i.d. variables with
+  \(\mathbb EX_1=\mu\) and
+  \(0<\operatorname{Var}(X_1)=\sigma^2<\infty\), define
+  \[
+  Z_n=\frac{S_n-n\mu}{\sigma\sqrt n}
+  =\frac{\sqrt n(\overline X_n-\mu)}{\sigma}.
+  \]
+  The law of large numbers says \(\overline X_n-\mu=o_P(1)\); a central limit theorem identifies the nondegenerate limit of the magnified error \(\sqrt n(\overline X_n-\mu)\).</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For i.i.d. \(X_i\) with mean \(\mu\) and variance \(0\lt\sigma^2\lt\infty\), define
-\[
-Z_n=\frac{\sum_{i=1}^nX_i-n\mu}{\sigma\sqrt n}.
-\]</p>
-    </div>
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (second-order characteristic expansion).</span> If \(\mathbb EX=0\) and \(\mathbb EX^2=\sigma^2<\infty\), then, as \(t\to0\),
+  \[
+  \varphi_X(t)=\mathbb Ee^{itX}
+  =1-\frac{\sigma^2t^2}{2}+o(t^2).
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write
+  \[
+  \frac{e^{itX}-1-itX}{t^2}
+  =X^2\,\frac{e^{iu}-1-iu}{u^2}\bigg|_{u=tX}.
+  \]
+  The scalar factor tends to \(-1/2\) as \(u\to0\) and is bounded in absolute value by a universal constant, since
+  \(|e^{iu}-1-iu|\le u^2/2\). Dominated convergence, with dominating variable \(X^2/2\), gives
+  \[
+  \frac{\varphi_X(t)-1-it\mathbb EX}{t^2}\to-\frac12\mathbb EX^2.
+  \]
+  Centering removes the linear term.</p>
+</div>
 
-    <h3>Lindeberg-Levy theorem</h3>
+<h3>The classical central limit theorem</h3>
 
-    <p>The classical central limit theorem is the i.i.d. finite-variance case.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Lindeberg-Levy).</span> If \(X_1,X_2,\ldots\) are i.i.d. with mean \(\mu\) and variance
+  \(0<\sigma^2<\infty\), then
+  \[
+  \frac{S_n-n\mu}{\sigma\sqrt n}\Rightarrow N(0,1).
+  \]</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under the assumptions above, \(Z_n\Rightarrow N(0,1)\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Standardize so that \(\mu=0\) and \(\sigma^2=1\), and let \(\varphi\) be the characteristic function of \(X_1\). The lemma gives
+  \[
+  \varphi(t/\sqrt n)
+  =1-\frac{t^2}{2n}+o(n^{-1}).
+  \]
+  Independence yields
+  \[
+  \mathbb E e^{itS_n/\sqrt n}
+  =\varphi(t/\sqrt n)^n.
+  \]
+  Since \(n\log(1+u_n)=nu_n+o(1)\) whenever
+  \(u_n=O(n^{-1})\),
+  \[
+  n\log\varphi(t/\sqrt n)\longrightarrow-\frac{t^2}{2}.
+  \]
+  Thus the characteristic functions converge pointwise to
+  \(e^{-t^2/2}\), which is continuous at zero and is the characteristic function of \(N(0,1)\). Levy's continuity theorem completes the proof.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> After standardizing, assume \(\mathbb E X_i=0\) and \(\mathbb E X_i^2=1\). The characteristic function satisfies \(\varphi(u)=1-u^2/2+o(u^2)\) at zero. Independence gives
-\[
-\mathbb E e^{itS_n/\sqrt n}=\varphi(t/\sqrt n)^n
-=\left(1-\frac{t^2}{2n}+o(n^{-1})\right)^n\to e^{-t^2/2}.
-\]
-The limit is the characteristic function of \(N(0,1)\), so Lévy's theorem gives weak convergence.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (de Moivre-Laplace).</span> If
+  \(B_n\sim\operatorname{Binomial}(n,p)\), then
+  \[
+  \frac{B_n-np}{\sqrt{np(1-p)}}\Rightarrow N(0,1).
+  \]
+  Consequently, for fixed \(a<b\),
+  \[
+  P\!\left(
+  a\le\frac{B_n-np}{\sqrt{np(1-p)}}\le b
+  \right)\to\Phi(b)-\Phi(a).
+  \]
+  A continuity correction improves finite-\(n\) approximation because the binomial law is supported on a lattice.</p>
+</div>
 
+<h3>Non-identical summands</h3>
 
-    <h3>Cramer-Wold and multivariate limits</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Lindeberg-Feller, normalized form).</span> Let \(X_{n,k}\) be centered and row-wise independent, with
+  \[
+  \sum_{k=1}^{k_n}\operatorname{Var}(X_{n,k})\to1.
+  \]
+  If, for every \(\varepsilon>0\),
+  \[
+  \sum_{k=1}^{k_n}
+  \mathbb E[X_{n,k}^2 1_{\{|X_{n,k}|>\varepsilon\}}]\to0,
+  \]
+  then \(\sum_kX_{n,k}\Rightarrow N(0,1)\).</p>
+</div>
 
-    <p>Multivariate Gaussian limits are checked through one-dimensional projections.</p>
+<p>The detailed characteristic-function proof and the converse under Feller's condition are given on the preceding <a href="{{ '/notes/probability-theory/triangular-arrays-truncation/' | relative_url }}">triangular-array page</a>. The condition says that asymptotically none of the total variance is carried by jumps visible at the scale of the whole sum.</p>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Random vectors \(Y_n\in\mathbb R^d\) satisfy \(Y_n\Rightarrow Y\) if and only if \(\langle t,Y_n\rangle\Rightarrow\langle t,Y\rangle\) for every \(t\in\mathbb R^d\).</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Lyapunov CLT).</span> Let \(X_1,X_2,\ldots\) be independent and centered, put
+  \(s_n^2=\sum_{i=1}^n\mathbb EX_i^2\), and assume \(s_n\to\infty\). If for some \(\delta>0\),
+  \[
+  \frac1{s_n^{2+\delta}}\sum_{i=1}^n
+  \mathbb E|X_i|^{2+\delta}\to0,
+  \]
+  then \(S_n/s_n\Rightarrow N(0,1)\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(Y_n\Rightarrow Y\), the continuous mapping theorem gives convergence of projections. Conversely, convergence of all projections gives pointwise convergence of characteristic functions \(\varphi_{Y_n}(t)\to\varphi_Y(t)\). Lévy's continuity theorem on \(\mathbb R^d\) gives \(Y_n\Rightarrow Y\).</p>
-    </div>
+<h3>Multivariate Gaussian limits</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The theorem says normalized sums are asymptotically normal; it does not say the original observations are normal.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Cramer-Wold device).</span> Random vectors \(Y_n,Y\in\mathbb R^d\) satisfy \(Y_n\Rightarrow Y\) if and only if
+  \[
+  t^\top Y_n\Rightarrow t^\top Y
+  \qquad\text{for every }t\in\mathbb R^d.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The forward implication follows from the continuous mapping theorem. Conversely,
+  \[
+  \varphi_{Y_n}(t)=\mathbb Ee^{it^\top Y_n}
+  \longrightarrow\mathbb Ee^{it^\top Y}
+  =\varphi_Y(t)
+  \]
+  for each \(t\). Multivariate Levy continuity gives \(Y_n\Rightarrow Y\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (multivariate i.i.d. CLT).</span> If \(X_i\in\mathbb R^d\) are i.i.d., \(\mathbb E\|X_1\|^2<\infty\),
+  \(\mathbb EX_1=\mu\), and
+  \(\operatorname{Cov}(X_1)=\Sigma\), then
+  \[
+  \sqrt n(\overline X_n-\mu)\Rightarrow N_d(0,\Sigma).
+  \]
+  The covariance matrix may be singular.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For each \(t\in\mathbb R^d\), the scalar variables
+  \(t^\top(X_i-\mu)\) are i.i.d., centered, and have variance
+  \(t^\top\Sigma t\). The scalar CLT gives
+  \[
+  t^\top\sqrt n(\overline X_n-\mu)
+  \Rightarrow N(0,t^\top\Sigma t).
+  \]
+  These are exactly the one-dimensional projections of
+  \(N_d(0,\Sigma)\); apply Cramer-Wold.</p>
+</div>
+
+<h3>Studentization and smooth transformations</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Studentized mean).</span> Under the scalar i.i.d. assumptions, let
+  \[
+  \widehat\sigma_n^2=\frac1n\sum_{i=1}^n(X_i-\overline X_n)^2.
+  \]
+  Then
+  \[
+  \frac{\sqrt n(\overline X_n-\mu)}{\widehat\sigma_n}
+  \Rightarrow N(0,1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The strong law applied to \(X_i\) and \(X_i^2\) gives
+  \[
+  \widehat\sigma_n^2
+  =\frac1n\sum_iX_i^2-\overline X_n^2\to
+  \mathbb EX_1^2-\mu^2=\sigma^2
+  \]
+  almost surely. Hence \(\sigma/\widehat\sigma_n\to1\) in probability, and Slutsky's theorem combines this with the CLT.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (delta method).</span> If
+  \(\sqrt n(T_n-\theta)\Rightarrow Z\) in \(\mathbb R^d\) and
+  \(g:\mathbb R^d\to\mathbb R^m\) is differentiable at \(\theta\), then
+  \[
+  \sqrt n\{g(T_n)-g(\theta)\}
+  \Rightarrow Dg(\theta)Z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiability gives
+  \[
+  g(\theta+h)-g(\theta)=Dg(\theta)h+r(h),
+  \qquad
+  \frac{\|r(h)\|}{\|h\|}\to0.
+  \]
+  Tightness of \(\sqrt n(T_n-\theta)\) implies \(T_n-\theta=O_P(n^{-1/2})\), so
+  \(\sqrt n\,r(T_n-\theta)=o_P(1)\). The conclusion follows from Slutsky's theorem.</p>
+</div>
+
+<p>The delta method is developed further in <a href="{{ '/notes/statistical-inference/asymptotic-tools/' | relative_url }}">the asymptotic tools for statistical inference</a>, including higher-order cases where \(Dg(\theta)=0\).</p>
+
+<h3>Boundaries of Gaussian approximation</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> A CLT is a statement about fixed, standardized distributional regions. It does not automatically approximate probabilities far into a moving tail, nor does it provide a convergence rate. Berry-Esseen bounds address rates under a third moment, while moderate- and large-deviation theory governs tail regions.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (infinite variance).</span> If \(X_i\) have regularly varying tails with index \(\alpha\in(0,2)\), the normalization \(\sqrt n\) is generally wrong. Under suitable balance conditions,
+  \[
+  \frac{S_n-b_n}{a_n}\Rightarrow Z_\alpha,
+  \qquad a_n\asymp n^{1/\alpha}L(n),
+  \]
+  where \(Z_\alpha\) is an \(\alpha\)-stable law. Gaussian universality is therefore a finite-variance phenomenon, not a universal law for every sum.</p>
+</div>

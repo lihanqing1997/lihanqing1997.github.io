@@ -35,3 +35,144 @@ The maximum exists for finite alphabets because the simplex is compact and \(I(P
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Write \(I(X;Y)=H(Y)-H(Y\mid X)\). As \(P_X\) varies, \(H(Y)\) is concave in \(P_X\), while \(H(Y\mid X)=\sum_xP_X(x)H(W(\cdot\mid x))\) is linear. This proves concavity.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Discrete memoryless channels</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A channel is a stochastic kernel
+  \(W(y\mid x)\) from input alphabet \(\mathcal X\) to output alphabet
+  \(\mathcal Y\). A discrete memoryless channel acts on blocks by
+  \[
+  W^n(y^n\mid x^n)=\prod_{i=1}^nW(y_i\mid x_i).
+  \]</p>
+</div>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Its capacity is
+  \[
+  C=\max_{P_X}I(X;Y),
+  \]
+  where \(P_{XY}=P_XW\).</p>
+</div>
+
+<h3>Concavity in the input law</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For fixed channel \(W\),
+  \(I(P_X,W)\) is concave in \(P_X\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  I(X;Y)=H(P_XW)-\sum_xP_X(x)H\{W(\cdot\mid x)\}.
+  \]
+  The first term is entropy of a linear image of \(P_X\), hence concave; the second is linear. On a finite simplex, continuity ensures a maximizer exists.</p>
+</div>
+
+<h3>Binary symmetric channel</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The binary symmetric channel
+  \(Y=X\oplus Z\), \(Z\sim\operatorname{Bernoulli}(\varepsilon)\), has capacity
+  \[
+  C=\log2-h_2(\varepsilon)
+  \]
+  nats per use, achieved by uniform input.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \(H(Y\mid X)=h_2(\varepsilon)\), independent of input. Thus
+  \[
+  I(X;Y)=H(Y)-h_2(\varepsilon)\le\log2-h_2(\varepsilon).
+  \]
+  Uniform \(X\) makes \(Y\) uniform and attains equality.</p>
+</div>
+
+<h3>Binary erasure channel</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> A binary erasure channel with erasure probability \(\delta\) has capacity
+  \[
+  C=(1-\delta)\log2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(E\) indicate erasure. Since \(E\) is independent of \(X\),
+  \[
+  I(X;Y,E)=I(X;E)+I(X;Y\mid E)
+  =(1-\delta)H(X).
+  \]
+  The erasure indicator is determined by \(Y\), so this equals \(I(X;Y)\). Maximize at uniform \(X\).</p>
+</div>
+
+<h3>Weakly symmetric channels</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If every row of the channel matrix is a permutation of every other row and all column sums agree, then uniform input achieves capacity
+  \[
+  C=\log|\mathcal Y|-H(W(\cdot\mid x)),
+  \]
+  where row entropy is independent of \(x\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional output entropy is the common row entropy for every input law. Uniform input and equal column sums make output uniform, maximizing \(H(Y)\). No other input can exceed \(\log|\mathcal Y|\).</p>
+</div>
+
+<h3>Information-radius characterization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span>
+  \[
+  C=\min_{Q_Y}\max_xD\{W(\cdot\mid x)\|Q_Y\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For every input \(P_X\) and output reference \(Q_Y\),
+  \[
+  \sum_xP_X(x)D(W_x\|Q_Y)
+  =I(X;Y)+D(P_Y\|Q_Y).
+  \]
+  Therefore \(I(X;Y)\le\max_xD(W_x\|Q_Y)\). Minimize in \(Q_Y\). Convex minimax gives equality; at a capacity-achieving input, the induced output is an information center.</p>
+</div>
+
+<h3>KKT conditions for capacity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> An input law \(P_X^*\) with induced output \(P_Y^*\) is capacity-achieving if and only if
+  \[
+  D(W_x\|P_Y^*)\le C
+  \quad\text{for every }x,
+  \]
+  with equality for every \(x\) in the support of \(P_X^*\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The directional derivative of
+  \(I(P_X,W)\) toward point mass at \(x\) is
+  \(D(W_x\|P_Y)-I(P_X,W)\). Concave maximization requires every feasible directional derivative to be nonpositive and complementary slackness gives equality on positive-mass inputs.</p>
+</div>
+
+<h3>Cost-constrained capacity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> With input cost \(c(x)\) and budget \(\Gamma\),
+  \[
+  C(\Gamma)=
+  \max_{P_X:\mathbb Ec(X)\le\Gamma}I(X;Y).
+  \]</p>
+</div>
+
+<p>\(C(\Gamma)\) is nondecreasing and concave in \(\Gamma\). A Lagrange multiplier prices cost, and active inputs satisfy a modified divergence equality
+\[
+D(W_x\|P_Y^*)-\lambda c(x)=\text{constant}.
+\]</p>
+
+<h3>Feedback and memorylessness</h3>
+
+<p>Perfect causal feedback does not increase capacity of a discrete memoryless channel, although it can improve reliability and simplify coding. For channels with memory, feedback capacity is expressed through directed information and can increase.</p>

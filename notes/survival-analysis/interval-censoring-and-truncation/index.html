@@ -1,0 +1,194 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "11. Interval censoring and truncation"
+breadcrumb_child_label_fr: "11. Censure par intervalle et troncature"
+breadcrumb_child_label_zh: "11. 区间删失与截断"
+note_back_url: "/notes/survival-analysis/"
+note_prev_url: "/notes/survival-analysis/accelerated-failure-time-transformation-models/"
+note_next_url: "/notes/survival-analysis/competing-risks-multistate-models/"
+---
+
+<p>Right censoring reveals that an event lies after one time. Interval censoring reveals only that it lies between two inspection times; truncation determines whether the subject is observed at all. These schemes lead to different likelihoods and, in current-status problems, different convergence rates.</p>
+
+<h3>Interval-censored likelihood</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> An interval-censored observation is
+\[
+O_i=(L_i,R_i],\qquad 0\le L_i<R_i\le\infty,
+\]
+known to contain \(T_i\). Exact observation has \(L_i=R_i=T_i\) in a density formulation; right censoring has \(R_i=\infty\); left censoring has \(L_i=0\).</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Under noninformative inspection,
+\[
+L(F)=\prod_{i=1}^n
+\{F(R_i)-F(L_i)\},
+\]
+with \(F(\infty)=1\). If exact observations have positive probability under a continuous model, their contributions are densities rather than zero-width interval probabilities.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on the inspection schedule,
+\[
+P(L_i<T_i\le R_i)
+=F(R_i)-F(L_i).
+\]
+Independence across subjects gives the product. Noninformative inspection allows the inspection-law factor to be omitted from the event-time likelihood.</p>
+</div>
+
+<h3>Turnbull nonparametric maximum likelihood estimator</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Form the maximal intersections
+\(I_1,\ldots,I_m\) of the observed intervals: disjoint intervals on which every observation indicator
+\(1\{I_j\subset(L_i,R_i]\}\) is constant. Put probability mass
+\[
+p_j=P(T\in I_j),\qquad p_j\ge0,\quad\sum_jp_j=1.
+\]
+Then
+\[
+\ell(p)=\sum_{i=1}^n
+\log\left(\sum_{j=1}^m a_{ij}p_j\right),
+\qquad
+a_{ij}=1\{I_j\subset(L_i,R_i]\}.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (finite-support reduction).</span> There exists a nonparametric maximum likelihood estimator supported on the maximal intersections. Hence the infinite-dimensional likelihood maximization reduces to concave maximization over the simplex \(\Delta_{m-1}\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For any distribution \(F\), only the probabilities
+\[
+P\{T\in(L_i,R_i]\}
+\]
+enter the likelihood. Moving all mass within a region on which the vector
+\((1\{t\in(L_i,R_i]\})_{i=1}^n\) is constant does not change any observation probability. Those equivalence regions are precisely the maximal intersections and irrelevant complementary regions. Mass outside every observed interval can be moved into an observationally equivalent boundary region when one exists, so a maximizer can be represented by masses \(p_j\). The log of affine functions is concave on the compact simplex, guaranteeing existence.</p>
+</div>
+
+<h3>Self-consistency and EM updates</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Given current masses \(p^{(r)}\), define
+\[
+w_{ij}^{(r)}
+=\frac{a_{ij}p_j^{(r)}}
+{\sum_k a_{ik}p_k^{(r)}}.
+\]
+The EM update is
+\[
+p_j^{(r+1)}
+=\frac1n\sum_{i=1}^n w_{ij}^{(r)}.
+\]
+Every update does not decrease the observed-data likelihood, and every interior fixed point satisfies the likelihood score equations.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Introduce latent \(J_i\), the maximal intersection containing \(T_i\). Conditional on the observed interval, its posterior probability is \(w_{ij}^{(r)}\). The expected complete-data log-likelihood is
+\[
+Q(p\mid p^{(r)})
+=\sum_{i,j}w_{ij}^{(r)}\log p_j.
+\]
+Maximizing over the simplex gives
+\(p_j=n^{-1}\sum_iw_{ij}^{(r)}\). Jensen's inequality yields the EM monotonicity property. At an interior fixed point, the Lagrange score for every \(p_j\) is equal.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Suppose observations are
+\((0,2],(1,3],(2,4]\). The maximal intersections are
+\((0,1],(1,2],(2,3],(3,4]\). The first observation permits the first two cells, the second permits the middle two, and the third permits the last two. The likelihood is
+\[
+(p_1+p_2)(p_2+p_3)(p_3+p_4).
+\]
+The data do not identify how mass is distributed inside each cell, only the cell masses.</p>
+</div>
+
+<h3>Current-status data and cube-root asymptotics</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> In current-status sampling, observe one inspection time \(C\) and
+\[
+\Delta=1\{T\le C\}.
+\]
+Conditional on \(C=c\),
+\[
+\Delta\sim\operatorname{Bernoulli}\{F(c)\}.
+\]
+The NPMLE is isotonic regression of \(\Delta_i\) on ordered inspection times.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (local limit, schematic).</span> If \(F_0\) and the inspection-time distribution have positive continuous densities \(f_0\) and \(g\) at an interior point \(t_0\), then
+\[
+n^{1/3}\{\widehat F(t_0)-F_0(t_0)\}
+\Rightarrow
+c(t_0)\,\mathbb Z,
+\]
+where \(\mathbb Z\) has the Chernoff distribution, the location of the minimum of two-sided Brownian motion plus a quadratic drift, and
+\[
+c(t_0)
+\]
+depends on \(F_0(t_0)\{1-F_0(t_0)\}\), \(f_0(t_0)\), and \(g(t_0)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The cumulative-sum diagram of ordered Bernoulli responses has stochastic fluctuations of order \(n^{-1/2}\) over a time window of width \(h\), while monotonicity creates deterministic curvature of order \(h^2\). Balancing the local noise \(n^{-1/2}h^{1/2}\) with \(h^2\) gives \(h\asymp n^{-1/3}\). After localization and rescaling, the greatest convex minorant converges to that of Brownian motion plus quadratic drift; its slope at zero has the Chernoff law.</p>
+</div>
+
+<p>This non-Gaussian limit explains why ordinary Wald intervals fail. Likelihood-ratio inversion, subsampling, or properly calibrated bootstrap methods are used instead; the naive \(n\)-out-of-\(n\) bootstrap can be inconsistent for cube-root estimators.</p>
+
+<h3>Left truncation and product-limit estimation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> With entry \(A_i\), event time \(T_i\), and right censoring \(C_i\), subject \(i\) is observed only if \(A_i\le T_i\). Set
+\[
+X_i=T_i\wedge C_i,\qquad
+Y_i(t)=1\{A_i\le t\le X_i\},
+\qquad
+N_i(t)=1\{X_i\le t,\Delta_i=1\}.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (delayed-entry product limit).</span> Under independent truncation and censoring in the relevant filtration,
+\[
+\widehat\Lambda(t)
+=\int_0^t\frac{\mathrm{d}N(u)}{Y(u)},
+\qquad
+\widehat S(t)
+=\prod_{u\le t}\left\{1-\frac{\mathrm{d}N(u)}{Y(u)}\right\},
+\]
+where \(Y(u)=\sum_i1\{A_i\le u\le X_i\}\). These are consistent on intervals with positive limiting risk.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on inclusion and the observed filtration, an entered subject contributes to the event intensity only while \(A_i\le t\le X_i\). Therefore
+\[
+M_i(t)=N_i(t)-\int_0^tY_i(u)\,\mathrm{d}\Lambda(u)
+\]
+is a martingale. Dividing the aggregate increment by the delayed-entry risk set gives the Nelson-Aalen representation, and the product integral gives survival. Consistency follows from the same bracket argument as under ordinary right censoring.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (prevalent cohort).</span> If disease onset precedes study recruitment, individuals with longer post-onset survival are more likely to be present at recruitment. Treating recruitment as time zero overrepresents long survivors. Using time since onset as the analysis scale and recruitment as delayed entry conditions risk sets on having survived to recruitment.</p>
+</div>
+
+<h3>Double truncation</h3>
+
+<p>Under double truncation, a subject is observed only when
+\[
+A_i\le T_i\le B_i.
+\]
+The conditional likelihood contribution is
+\[
+\frac{\mathrm{d}F(T_i)}
+{F(B_i)-F(A_i-)}.
+\]
+Unlike ordinary delayed entry, observation depends on both earlier and later survival, so a simple at-risk product limit is generally unavailable. NPMLEs solve coupled self-consistency equations for the event and truncation distributions. Identifiability requires overlap: the support graph linking event times through observable truncation windows must be connected; otherwise relative mass between disconnected support regions cannot be learned.</p>
+
+<h3>Inspection and truncation assumptions</h3>
+
+<p>Independent inspection or truncation is not empirically guaranteed. Scheduled visits may depend on symptoms, and recruitment may depend on prognosis. The correct assumption is conditional independence after measured history. If inspection is informative, a joint observation-process model or inverse-intensity weighting is needed. As always, positivity is essential: no method recovers event-time behavior in regions that the observation mechanism never reveals.</p>

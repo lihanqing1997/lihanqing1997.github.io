@@ -8,24 +8,108 @@ note_prev_url: "/notes/differential-geometry/submanifolds-and-immersions/"
 note_next_url: "/notes/differential-geometry/orientation-and-integration-on-manifolds/"
 ---
 
-<p>Differential forms records the objects, main results, proof mechanisms, and boundary cases needed for the differential geometry note.</p>
+<p>Differential forms are alternating covariant tensors designed for
+integration. Their wedge product and exterior derivative form a
+coordinate-free calculus that contains gradients, curls, divergences, and
+the integrands of Stokes' theorem.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A differential \(k\)-form is a smooth alternating covariant \(k\)-tensor field. Forms can be pulled back by smooth maps and wedged together.</p>
-    </div>
+<h3>The exterior algebra</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The exterior derivative \(\mathrm{d}\) maps \(k\)-forms to \((k+1)\)-forms, satisfies \(\mathrm{d}^2=0\), and obeys the graded Leibniz rule.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A differential
+\(k\)-form is a smooth section of \(\Lambda^kT^*M\). In coordinates,
+\[
+\omega=\sum_{i_1<\cdots<i_k}
+\omega_{i_1\cdots i_k}\,
+\mathrm{d}x^{i_1}\wedge\cdots\wedge\mathrm{d}x^{i_k}.
+\]
+The wedge product satisfies
+\[
+\alpha\wedge\beta=(-1)^{k\ell}\beta\wedge\alpha
+\]
+for \(\alpha\in\Omega^k\), \(\beta\in\Omega^\ell\).</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Define \(\mathrm{d}\) in coordinates by differentiating coefficients and wedging coordinate one-forms. Coordinate independence follows from the chain rule and alternating algebra.</p>
-    </div>
+<h3>Exterior differentiation</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Forms are the natural objects to integrate on oriented manifolds. The identity \(\mathrm{d}^2=0\) is the algebraic seed of de Rham cohomology.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> There is a unique family of
+linear maps \(\mathrm{d}:\Omega^k(M)\to\Omega^{k+1}(M)\) such that
+\[
+\mathrm{d}f
+\text{ is the ordinary differential},\qquad
+\mathrm{d}(\alpha\wedge\beta)
+=\mathrm{d}\alpha\wedge\beta+(-1)^k\alpha\wedge\mathrm{d}\beta,
+\qquad
+\mathrm{d}^2=0.
+\]
+In coordinates,
+\[
+\mathrm{d}\!\left(\sum_I\omega_I\,\mathrm{d}x^I\right)
+=\sum_I\sum_j\partial_j\omega_I\,
+\mathrm{d}x^j\wedge\mathrm{d}x^I.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof of \(\mathrm{d}^2=0\).</span> It
+suffices to calculate in coordinates:
+\[
+\mathrm{d}^2\omega
+=\sum_{I,j,k}\partial_k\partial_j\omega_I\,
+\mathrm{d}x^k\wedge\mathrm{d}x^j\wedge\mathrm{d}x^I=0.
+\]
+The coefficient is symmetric in \(j,k\), while the wedge factor is
+antisymmetric.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (naturality).</span> For every
+smooth \(F:M\to N\),
+\[
+\mathrm{d}(F^*\omega)=F^*(\mathrm{d}\omega).
+\]</p>
+</div>
+
+<p>This identity can be checked in coordinates and then is intrinsic. It is
+the mechanism by which changes of variables preserve differential relations.</p>
+
+<h3>Closed and exact forms</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A form is closed if
+\(\mathrm{d}\omega=0\), and exact if \(\omega=\mathrm{d}\eta\). Every exact
+form is closed, but the converse can fail globally.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Lemma (Poincare).</span> Every closed
+\(k\)-form, \(k\ge1\), on a star-shaped open set \(U\subset\mathbb R^n\) is
+exact.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(H_t(x)=tx\) and let
+\(R=\sum_ix^i\partial_i\) be the radial field. Define
+\[
+K\omega=\int_0^1t^{k-1}H_t^*(\iota_R\omega)\,\mathrm{d}t.
+\]
+Differentiating \(H_t^*\omega\) and using Cartan's formula gives the homotopy
+identity
+\[
+\mathrm{d}K+K\mathrm{d}=\operatorname{id}-H_0^*.
+\]
+For \(k\ge1\), \(H_0^*\omega=0\); if \(\mathrm{d}\omega=0\), then
+\(\omega=\mathrm{d}(K\omega)\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> On
+\(\mathbb R^2\setminus\{0\}\),
+\[
+\omega=\frac{-y\,\mathrm{d}x+x\,\mathrm{d}y}{x^2+y^2}
+\]
+is closed, but \(\int_{S^1}\omega=2\pi\). It cannot be exact because the
+integral of an exact form over a closed curve is zero. This local-global
+failure is measured by de Rham cohomology.</p>
+</div>

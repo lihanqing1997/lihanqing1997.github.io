@@ -7,31 +7,146 @@ note_back_url: "/notes/empirical-processes/"
 note_next_url: "/notes/empirical-processes/outer-probability-and-measurability/"
 ---
 
-<p>Empirical-process theory studies the uniform fluctuation of empirical averages over a class of functions. It is the language behind uniform laws, Donsker theorems, bootstrap consistency, and the stochastic part of modern nonparametric inference.</p>
+<p>Empirical-process theory replaces one test function in the law of large numbers or central limit theorem by an entire class. The resulting random function records all empirical averages simultaneously, making uniform consistency, confidence bands, goodness-of-fit statistics, bootstrap processes, and estimator remainders instances of one theory.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For i.i.d. observations \(X_1,\ldots,X_n\sim P\), set \(P_n=n^{-1}\sum_{i=1}^n\delta_{X_i}\). The empirical process indexed by \(\mathcal F\) is \(\mathbb G_n f=\sqrt n(P_n-P)f\), \(f\in\mathcal F\).</p>
-    </div>
+<h3>Empirical measures and indexed fluctuations</h3>
 
-    <h3>Empirical-process decomposition</h3>
-    <ul>
-        <li>Uniform LLNs study \(\|P_n-P\|_{\mathcal F}\); uniform CLTs study weak convergence of \(\mathbb G_n\).</li>
-        <li>Complexity enters through entropy, VC dimension, bracketing, chaining, and concentration.</li>
-        <li>The note follows a pedagogical path from empirical measures to statistical applications, while keeping probability-limit theory and inference-level conclusions in their own notes.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(X_1,\ldots,X_n\) be i.i.d. with law \(P\) on \((\mathcal X,\mathcal A)\). The empirical measure is
+  \[
+  P_n=\frac1n\sum_{i=1}^n\delta_{X_i},
+  \qquad
+  P_nf=\frac1n\sum_{i=1}^nf(X_i).
+  \]
+  For a class \(\mathcal F\) of measurable real functions, define
+  \[
+  \|Q\|_{\mathcal F}=\sup_{f\in\mathcal F}|Qf|,
+  \qquad
+  \mathbb G_nf=\sqrt n(P_n-P)f.
+  \]
+  The map \(f\mapsto\mathbb G_nf\) is the empirical process indexed by \(\mathcal F\).</p>
+</div>
 
-    <h3>Reading route</h3>
-    <p>Read the first two parts for the minimal toolkit, the complexity part for proving conditions, and the last two parts for bootstrap, goodness-of-fit, M-estimation, and semiparametric interfaces.</p>
+<p>For a fixed \(f\in L^2(P)\), \(\mathbb G_nf\) is governed by the ordinary central limit theorem. The difficulty is uniformity: an infinite class can contain a data-dependent function that follows random noise even though every fixed coordinate is well behaved.</p>
 
-    <!-- expanded-learning -->
-    <h3>Basic decomposition</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> A useful decomposition is
-\[
-P_nf-Pf=(P_n-P)(f-f_0)+(P_n-P)f_0+P(f-f_0),
-\]
-where \(f_0\) is a nearby reference function. The first term is controlled by equicontinuity, the second by an ordinary CLT, and the last by deterministic approximation.</p>
-    </div>
+<h3>Glivenko-Cantelli and Donsker classes</h3>
 
-    <h3>How to read later arguments</h3>
-    <p>When reading later pages, keep asking three questions: what is the index class \(\mathcal F\), what metric makes nearby functions statistically close, and what complexity bound makes the supremum small? Most applications are just this template with different answers.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A class \(\mathcal F\) is \(P\)-Glivenko-Cantelli if
+  \[
+  \|P_n-P\|_{\mathcal F}\to0
+  \]
+  in outer probability. It is \(P\)-Donsker if
+  \[
+  \mathbb G_n\rightsquigarrow\mathbb G_P
+  \quad\text{in }\ell^\infty(\mathcal F),
+  \]
+  where \(\mathbb G_P\) is a tight centered Gaussian process with covariance
+  \[
+  \operatorname{Cov}\{\mathbb G_Pf,\mathbb G_Pg\}
+  =P\{(f-Pf)(g-Pg)\}.
+  \]</p>
+</div>
+
+<p>Donsker implies coordinatewise finite variances and, because \(n^{-1/2}\|\mathbb G_n\|_{\mathcal F}\to_p0\), typically implies Glivenko-Cantelli under an integrable envelope. The converse is false: uniform convergence at law-of-large-numbers scale need not yield a tight root-\(n\) process.</p>
+
+<h3>The canonical semimetric</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The intrinsic semimetric of the \(P\)-Brownian bridge is
+  \[
+  \rho_P(f,g)
+  =\left[
+  P\{(f-g)-P(f-g)\}^2
+  \right]^{1/2}.
+  \]
+  The larger but convenient metric
+  \[
+  d_P(f,g)=\|f-g\|_{P,2}
+  \]
+  satisfies \(\rho_P(f,g)\le d_P(f,g)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the comparison.</span> Variance is bounded by second moment:
+  \[
+  \rho_P(f,g)^2
+  =P(f-g)^2-\{P(f-g)\}^2
+  \le P(f-g)^2=d_P(f,g)^2.
+  \]</p>
+</div>
+
+<p>Functions at zero \(\rho_P\)-distance define the same Gaussian coordinate. Tight Gaussian limits have sample paths that are uniformly continuous for a suitable totally bounded version of this semimetric. Entropy and chaining quantify how many distinguishable functions remain at each scale.</p>
+
+<h3>Five recurring proof problems</h3>
+
+<ol>
+  <li><strong>Measurability:</strong> the supremum over an uncountable class may not be measurable, which requires outer probability or a separability reduction.</li>
+  <li><strong>Finite-dimensional convergence:</strong> ordinary multivariate limit theorems identify candidate coordinate laws.</li>
+  <li><strong>Tightness and equicontinuity:</strong> these prevent oscillation between finitely many inspected coordinates.</li>
+  <li><strong>Complexity:</strong> covering, bracketing, VC dimension, symmetrization, and chaining turn class size into numerical bounds.</li>
+  <li><strong>Localization:</strong> statistical estimators need suprema over shrinking, often random, neighborhoods rather than a fixed global class.</li>
+</ol>
+
+<h3>Indicator, loss, and score classes</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (empirical distribution function).</span> For
+  \[
+  \mathcal F=\{1_{(-\infty,t]}:t\in\mathbb R\},
+  \]
+  \[
+  P_nf=F_n(t),\qquad
+  Pf=F(t),\qquad
+  \mathbb G_nf=\sqrt n\{F_n(t)-F(t)\}.
+  \]
+  Glivenko-Cantelli becomes uniform convergence of \(F_n\), and Donsker convergence becomes the Brownian-bridge limit.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (M-estimation).</span> If
+  \[
+  \hat\theta_n\in\arg\max_{\theta\in\Theta}P_nm_\theta,
+  \]
+  consistency follows from uniform control of
+  \[
+  \sup_{\theta\in\Theta}|(P_n-P)m_\theta|.
+  \]
+  Rates depend on the local oscillation
+  \[
+  \sup_{d(\theta,\theta_0)\le\delta}
+  |\mathbb G_n(m_\theta-m_{\theta_0})|
+  \]
+  balanced against curvature of \(P(m_\theta-m_{\theta_0})\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (estimated nuisance functions).</span> A semiparametric expansion contains
+  \[
+  \mathbb G_n(\phi_{\hat\eta}-\phi_{\eta_0}).
+  \]
+  If \(\hat\eta\) lies in a Donsker class and converges in \(L^2(P)\), asymptotic equicontinuity can make this term \(o_p(1)\). Cross-fitting provides another route by conditionally fixing \(\hat\eta\) on evaluation folds.</p>
+</div>
+
+<h3>A deterministic-stochastic decomposition</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Reference-function decomposition.</span> For any functions \(f,f_0\),
+  \[
+  P_nf-Pf_0
+  =(P_n-P)(f-f_0)
+  +(P_n-P)f_0
+  +P(f-f_0).
+  \]
+  Thus a data-dependent \(f\) is handled by a local empirical-process increment, one fixed-coordinate fluctuation, and deterministic approximation.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Add and subtract \(P_nf_0\) and \(Pf\), then group terms:
+  \[
+  P_n(f-f_0)+Pf-Pf_0
+  =(P_n-P)(f-f_0)+(P_n-P)f_0+P(f-f_0).
+  \]</p>
+</div>
+
+<p>The remainder of the note develops the conditions that control each term: weak convergence and measurability first, complexity and maximal inequalities next, refined bootstrap and sequential processes after that, and estimator applications last.</p>

@@ -34,3 +34,89 @@ note_next_url: "/notes/numerical-analysis/stability-and-stiffness/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Embedded Runge-Kutta pairs estimate local error by comparing two orders. Step-size adaptation is essential because trajectory difficulty is usually nonuniform in time.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>One-step methods and local truncation error</h3>
+
+<p>For \(y'=f(t,y)\), \(y(t_0)=y_0\), a one-step method is
+\[
+y_{n+1}=y_n+h\Phi(t_n,y_n,h).
+\]
+Its local truncation error inserts the exact solution:
+\[
+\tau_{n+1}
+=\frac{y(t_{n+1})-y(t_n)}h
+-\Phi(t_n,y(t_n),h).
+\]
+Order \(p\) means \(\tau_{n+1}=O(h^p)\), equivalently one-step defect
+\(O(h^{p+1})\).</p>
+
+<h3>Euler convergence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose \(f\) is Lipschitz in
+\(y\) with constant \(L\), and the exact solution has bounded second derivative.
+Explicit Euler,
+\[
+y_{n+1}=y_n+hf(t_n,y_n),
+\]
+satisfies on \(0\le t_n-t_0\le T\)
+\[
+\|y(t_n)-y_n\|
+\le
+\frac{Mh}{2L}(e^{L(t_n-t_0)}-1)
+\]
+when \(\|y''\|\le M\), with the \(L=0\) limit understood.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Taylor's theorem and subtraction
+give
+\[
+\|e_{n+1}\|
+\le(1+hL)\|e_n\|+\frac M2h^2.
+\]
+Iterating the recurrence and bounding
+\((1+hL)^n\le e^{Lnh}\) yields the result.</p>
+</div>
+
+<h3>Runge--Kutta order</h3>
+
+<p>An \(s\)-stage Runge--Kutta method has
+\[
+k_i=f\!\left(t_n+c_ih,
+y_n+h\sum_j a_{ij}k_j\right),
+\qquad
+y_{n+1}=y_n+h\sum_i b_ik_i.
+\]
+Explicit methods have \(a_{ij}=0\) for \(j\ge i\). Order conditions arise by
+matching Taylor expansions indexed by rooted trees. Up to order two,
+\[
+\sum_i b_i=1,\qquad \sum_i b_ic_i=\frac12.
+\]
+Classical RK4 satisfies all conditions through order four.</p>
+
+<h3>Embedded error estimation</h3>
+
+<p>Embedded pairs share stages but use weights \(b,\widehat b\) of different
+orders. Their difference estimates local error:
+\[
+e_{n+1}^{\mathrm est}
+=h\sum_i(b_i-\widehat b_i)k_i.
+\]
+A controller proposes
+\[
+h_{\mathrm new}
+=\text{safety}\cdot h
+\left(\frac{\text{tol}}{\|e^{\mathrm est}\|}\right)^{1/(p+1)}.
+\]
+Weighted component norms combine absolute and relative scales. Rejected steps
+must recompute stages at the smaller step.</p>
+
+<h3>Dense output and events</h3>
+
+<p>Interpolation using stage data provides \(y(t)\) between grid points and
+locates events \(g(t,y(t))=0\). Event time accuracy depends on both dense-output
+order and transversality
+\(\mathrm{d} g(t,y(t))/\mathrm{d}t\ne0\); grazing events are ill conditioned and
+can be missed without specialized detection.</p>

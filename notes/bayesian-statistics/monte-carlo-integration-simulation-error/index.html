@@ -76,3 +76,181 @@ equals \(N\) for equal weights and approaches \(1\) when one draw dominates.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The expression is the reciprocal of the squared \(\ell^2\)-norm of the normalized weight vector. It is maximized by the uniform vector and minimized by a point mass.</p>
     </div>
+
+<h3>Independent Monte Carlo error</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\(\theta_1,\ldots,\theta_N\stackrel{\mathrm{iid}}{\sim}\Pi(\cdot\mid x)\) and
+\[
+\mu=E\{g(\theta)\mid x\},\qquad
+\sigma_g^2=\operatorname{Var}\{g(\theta)\mid x\}<\infty.
+\]
+Then
+\[
+\widehat\mu_N=\frac1N\sum_{s=1}^Ng(\theta_s)
+\]
+is unbiased,
+\[
+\operatorname{Var}(\widehat\mu_N\mid x)
+=\frac{\sigma_g^2}{N},
+\]
+and
+\[
+\sqrt N(\widehat\mu_N-\mu)
+\Rightarrow N(0,\sigma_g^2).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Linearity gives unbiasedness. Independence eliminates cross-covariances, giving the variance. The iid central limit theorem gives the Gaussian limit.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> With sample variance
+\[
+s_g^2=\frac1{N-1}\sum_s\{g(\theta_s)-\widehat\mu_N\}^2,
+\]
+a Monte Carlo standard error is
+\[
+\operatorname{MCSE}(\widehat\mu_N)=s_g/\sqrt N.
+\]
+This measures numerical integration uncertainty conditional on the observed data; it is distinct from posterior standard deviation \(\sigma_g\).</p>
+</div>
+
+<h3>Estimating tail probabilities and quantiles</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For posterior event \(A\), the Monte Carlo estimator
+\[
+\widehat p_N=\frac1N\sum_s1\{\theta_s\in A\}
+\]
+has standard error approximately
+\[
+\sqrt{\frac{p(1-p)}{N}}.
+\]
+To estimate a small probability \(p\) with relative standard error at most \(r\), one needs approximately
+\[
+N\ge\frac{1-p}{pr^2}
+\]
+independent draws.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The indicators are Bernoulli\((p)\), so
+\(\operatorname{Var}(\widehat p_N)=p(1-p)/N\). Divide its standard deviation by \(p\) and solve the inequality.</p>
+</div>
+
+<p>Tail accuracy can therefore require far more draws than posterior means. A statement about a \(0.001\) posterior tail based on a few thousand draws is numerically fragile even if the chain otherwise appears stable.</p>
+
+<h3>Importance sampling identities</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let the posterior density be
+\[
+\pi(\theta\mid x)=\frac{\widetilde\pi(\theta)}{Z},
+\qquad
+Z=\int\widetilde\pi(\theta)\,\mathrm{d}\theta,
+\]
+and let proposal \(q\) dominate \(\widetilde\pi\). If
+\(\theta_s\stackrel{\mathrm{iid}}{\sim}q\) and
+\[
+w(\theta)=\frac{\widetilde\pi(\theta)}{q(\theta)},
+\]
+then the self-normalized estimator
+\[
+\widehat\mu_{\mathrm{SN}}
+=\frac{\sum_sw_sg(\theta_s)}{\sum_sw_s}
+\]
+converges almost surely to
+\(E_\pi g\), provided \(E_q|wg|<\infty\) and \(E_qw<\infty\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The strong law gives
+\[
+\frac1N\sum_sw_sg(\theta_s)
+\to E_q(wg)=Z E_\pi g,
+\]
+\[
+\frac1N\sum_sw_s\to E_qw=Z.
+\]
+Their ratio converges to \(E_\pi g\).</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (self-normalized IS CLT).</span> If
+\[
+E_q\left[
+w(\theta)^2\{g(\theta)-\mu\}^2
+\right]<\infty,
+\]
+then
+\[
+\sqrt N(\widehat\mu_{\mathrm{SN}}-\mu)
+\Rightarrow
+N\left(
+0,\
+\frac{
+E_q[w^2(g-\mu)^2]}
+{(E_qw)^2}
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply the bivariate CLT to sample means of \((wg,w)\), then the delta method to the ratio map \(a/b\). The gradient at
+\((ZE_\pi g,Z)\) is \((1/Z,-\mu/Z)\), producing the displayed variance.</p>
+</div>
+
+<h3>Weight-tail diagnostics</h3>
+
+<p>The heuristic
+\[
+N_{\mathrm{eff}}
+=\frac{(\sum_sw_s)^2}{\sum_sw_s^2}
+\]
+summarizes weight concentration but is not a universal variance formula. Two integrands can have very different errors under the same weights. More fundamentally, if
+\[
+E_qw^2=\infty,
+\]
+the ordinary importance-sampling CLT can fail. A proposal must have tails at least as heavy as the target in every important direction.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Target \(N(0,1)\) with proposal \(N(0,\sigma^2)\). The second weight moment is finite only when
+\[
+\sigma^2>\frac12.
+\]
+Indeed,
+\[
+E_qw^2
+\propto\int
+\exp\left\{-\theta^2+
+\frac{\theta^2}{2\sigma^2}\right\}
+\mathrm{d}\theta,
+\]
+which is integrable exactly when
+\(1-1/(2\sigma^2)>0\). An overly narrow proposal can therefore have infinite variance despite covering the target mode.</p>
+</div>
+
+<h3>Bridge sampling for normalizing constants</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (bridge identity).</span> Let
+\(\widetilde\pi_1,\widetilde\pi_0\) have normalizing constants \(Z_1,Z_0\), and let \(h>0\). Then
+\[
+\frac{Z_1}{Z_0}
+=\frac{
+E_{\pi_0}\{h(\theta)\widetilde\pi_1(\theta)\}
+}{
+E_{\pi_1}\{h(\theta)\widetilde\pi_0(\theta)\}
+}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Both numerator and denominator integrate the common quantity
+\(h(\theta)\widetilde\pi_0(\theta)\widetilde\pi_1(\theta)\); the first is divided by \(Z_0\) and the second by \(Z_1\). Taking their ratio gives \(Z_1/Z_0\).</p>
+</div>
+
+<p>Bridge sampling can estimate marginal likelihoods when posterior and reference samples overlap well. Harmonic-mean estimators correspond to a poor bridge and often have infinite variance; they should not be used merely because they require no additional simulation.</p>

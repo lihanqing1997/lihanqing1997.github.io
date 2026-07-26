@@ -69,3 +69,104 @@ under the convention \(H^2(p,q)=\frac12\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu\).
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> For \(n\) i.i.d. observations, Fisher information scales by \(n\), so local alternatives of size \(n^{-1/2}\) have finite statistical separation. This is why Fisher geometry appears throughout asymptotic statistics.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Second-order separation of nearby laws</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (local divergence expansion).</span>
+For a quadratic-mean differentiable model at \(\theta\),
+\[
+D_{\mathrm{KL}}(P_\theta\|P_{\theta+h})
+=\frac12h^\top I_\theta h+o(\|h\|^2),
+\]
+and, for squared Hellinger distance
+\(H^2(P,Q)=\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu\),
+\[
+H^2(P_\theta,P_{\theta+h})
+=\frac14h^\top I_\theta h+o(\|h\|^2).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The Hellinger statement is the
+squared norm in the defining quadratic-mean expansion.  Under the additional
+uniform-integrability conditions needed to expand the log likelihood,
+\[
+\log\frac{p_{\theta+h}}{p_\theta}
+=h^\top\dot\ell_\theta
+-\frac12h^\top I_\theta h+r_h,
+\qquad P_\theta|r_h|=o(\|h\|^2).
+\]
+Taking \(-P_\theta\) and using \(P_\theta\dot\ell_\theta=0\) gives the KL
+expansion.  Both therefore induce the same quadratic form up to normalization.</p>
+</div>
+
+<p>More generally, if an \(f\)-divergence is normalized by
+\(f(1)=f'(1)=0\) and \(f''(1)>0\), then
+\[
+D_f(P_{\theta+h},P_\theta)
+=\frac{f''(1)}2h^\top I_\theta h+o(\|h\|^2).
+\]
+Fisher information is consequently the universal local metric of a broad class
+of information losses, even though their global geometries differ.</p>
+
+<h3>Local asymptotic normality</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (LAN consequence).</span> For iid data
+from a regular model and fixed \(h\),
+\[
+\log\frac{\mathrm{d}P_{\theta+h/\sqrt n}^{\,n}}
+{\mathrm{d}P_\theta^{\,n}}
+=h^\top\Delta_{n,\theta}
+-\frac12h^\top I_\theta h+o_{P_\theta}(1),
+\qquad
+\Delta_{n,\theta}
+=\frac1{\sqrt n}\sum_{i=1}^n\dot\ell_\theta(X_i)
+\rightsquigarrow N(0,I_\theta).
+\]</p>
+</div>
+
+<p>The local experiment is therefore Gaussian shift:
+\(\Delta\sim N(I_\theta h,I_\theta)\).  In that limit,
+\(\|h\|_{I_\theta}=(h^\top I_\theta h)^{1/2}\) controls testing power,
+estimation precision, and contiguity.  This is the operational content of the
+Fisher line element.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (local testing power).</span> For a
+scalar regular model, the score test of \(H_0:\theta=\theta_0\) rejects when
+\(\Delta_n/\sqrt{I_{\theta_0}}>z_{1-\alpha}\).  Under
+\(\theta_n=\theta_0+h/\sqrt n\), Le Cam's third lemma gives limiting power
+\[
+1-\Phi\!\left(z_{1-\alpha}-h\sqrt{I_{\theta_0}}\right).
+\]
+Two directions having equal Fisher length have equal first-order
+distinguishability.</p>
+</div>
+
+<h3>Information bounds as metric duality</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Cramér--Rao).</span> If \(T\) is
+unbiased for a differentiable scalar functional \(\psi(\theta)\), then
+\[
+\operatorname{Var}_\theta(T)
+\ge \nabla\psi(\theta)^\top I_\theta^{-1}\nabla\psi(\theta).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiating
+\(E_\theta T=\psi(\theta)\) gives
+\(\operatorname{Cov}_\theta(T,\dot\ell_\theta)=\nabla\psi(\theta)\).
+For any \(a\),
+\[
+\{a^\top\nabla\psi\}^2
+\le \operatorname{Var}(T)\,a^\top I_\theta a.
+\]
+Choose \(a=I_\theta^{-1}\nabla\psi\).  Equivalently, the differential
+\(\mathrm{d}\psi\) is a cotangent vector and the right side is its squared norm
+under the inverse Fisher metric.</p>
+</div>

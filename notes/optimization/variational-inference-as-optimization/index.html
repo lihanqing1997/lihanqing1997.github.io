@@ -8,24 +8,123 @@ note_prev_url: "/notes/optimization/natural-gradient-information-geometric-optim
 note_next_url: "/notes/optimization/optimization-error-statistical-error/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Variational inference as optimization.</p>
+<p>Variational inference turns posterior approximation into optimization over
+probability measures. The objective, feasible family, and divergence jointly
+determine both computational tractability and the approximation's systematic
+error.</p>
 
-    <h3>Variational family</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Variational inference approximates a posterior \(\Pi(\cdot|X)\) by choosing \(q\in\mathcal Q\) that optimizes a divergence or lower bound over a tractable family \(\mathcal Q\).</p>
-    </div>
+<h3>Reverse KL and the evidence lower bound</h3>
 
-    <h3>ELBO</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Minimizing reverse KL \(D(q\|\Pi(\cdot|X))\) is equivalent to maximizing the evidence lower bound \(\mathbb E_q\log p(X,Z)-\mathbb E_q\log q(Z)\), up to the fixed log evidence.</p>
-    </div>
+<p>Let \(p(x,z)\) be a joint density and
+\(\pi(z\mid x)=p(x,z)/p(x)\) the posterior. For any density \(q\) absolutely
+continuous with respect to the posterior,
+\[
+\begin{aligned}
+\operatorname{KL}(q\|\pi(\cdot\mid x))
+&=\mathbb E_q\log\frac{q(Z)}{p(x,Z)}+\log p(x),\\
+\mathcal L(q)
+&=\mathbb E_q[\log p(x,Z)]-\mathbb E_q[\log q(Z)].
+\end{aligned}
+\]
+Therefore
+\[
+\log p(x)=\mathcal L(q)+
+\operatorname{KL}(q\|\pi(\cdot\mid x)).
+\]</p>
 
-    <h3>Coordinate ascent</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For mean-field families \(q(z)=\prod_jq_j(z_j)\), the coordinate optimum satisfies \(\log q_j(z_j)=\mathbb E_{-j}\log p(X,Z)+\text{constant}\), whenever the update is inside the family.</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Variational projection.</span> For a
+    family \(\mathcal Q\),
+    \[
+    \operatorname*{arg\,max}_{q\in\mathcal Q}\mathcal L(q)
+    =
+    \operatorname*{arg\,min}_{q\in\mathcal Q}
+    \operatorname{KL}(q\|\pi(\cdot\mid x)).
+    \]
+    The ELBO gap to \(\log p(x)\) is exactly the reverse-KL approximation
+    error.</p>
+</div>
 
-    <h3>Geometry of approximation</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Reverse KL often prefers concentrated approximations, while forward KL tends to cover posterior mass. The distinction is geometric and statistical, not only computational.</p>
-    </div>
+<p>The equality follows immediately from the decomposition because
+\(\log p(x)\) is fixed with respect to \(q\). It also shows that an increasing
+ELBO need not imply an accurate posterior unless the variational family can
+make the KL gap small.</p>
+
+<h3>Mean-field coordinate optimization</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Coordinate-ascent update.</span> Let
+    \(z=(z_1,\ldots,z_m)\) and
+    \(\mathcal Q=\{q:q(z)=\prod_{j=1}^mq_j(z_j)\}\). Holding all factors except
+    \(q_j\) fixed, the ELBO is maximized by
+    \[
+    q_j^\star(z_j)
+    =
+    \frac{\exp\{\mathbb E_{q_{-j}}\log p(x,z_j,Z_{-j})\}}
+      {\int\exp\{\mathbb E_{q_{-j}}\log p(x,u,Z_{-j})\}\,\mathrm{d}u},
+    \]
+    whenever the normalizing integral is finite.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Terms independent of
+    \(q_j\) may be discarded. The coordinate objective is
+    \[
+    \int q_j(z_j)h_j(z_j)\,\mathrm{d}z_j
+      -\int q_j(z_j)\log q_j(z_j)\,\mathrm{d}z_j,
+    \quad
+    h_j=\mathbb E_{q_{-j}}\log p(x,z).
+    \]
+    If \(\widetilde q_j\propto e^{h_j}\), this expression equals
+    \(\log\int e^{h_j}-\operatorname{KL}(q_j\|\widetilde q_j)\). It is uniquely
+    maximized at \(\widetilde q_j\).</p>
+</div>
+
+<p>Each exact coordinate update increases the ELBO, but the mean-field
+objective is generally nonconcave in all factors jointly. Coordinate ascent
+can therefore depend on initialization and converge to a local optimum.</p>
+
+<h3>Forward and reverse KL projections</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Separated modes.</span> Suppose
+    \(\pi=\frac12N(-a,1)+\frac12N(a,1)\) with large \(a\), while
+    \(\mathcal Q\) contains single Gaussian densities. Minimizing
+    \(\operatorname{KL}(q\|\pi)\) heavily penalizes placing \(q\)-mass between
+    the modes where \(\pi\) is tiny; a local optimum can concentrate on one
+    mode. Minimizing \(\operatorname{KL}(\pi\|q)\) instead penalizes failing to
+    cover either mode and favors a broad Gaussian centered near zero. This is
+    the mode-seeking versus mass-covering distinction.</p>
+</div>
+
+<p>Neither behavior is universally superior. Reverse KL is computationally
+convenient because expectations are under \(q\); forward KL often requires
+posterior expectations that are unavailable precisely because inference is
+difficult.</p>
+
+<h3>Stochastic gradients of variational objectives</h3>
+
+<p>For a differentiable reparametrization
+\(Z=T_\lambda(\varepsilon)\), \(\varepsilon\sim s\), the pathwise gradient is
+\[
+\nabla_\lambda\mathcal L(\lambda)
+=\mathbb E_{\varepsilon\sim s}
+\nabla_\lambda[
+  \log p(x,T_\lambda(\varepsilon))
+  -\log q_\lambda(T_\lambda(\varepsilon))].
+\]
+When reparametrization is unavailable, the score identity gives
+\[
+\nabla_\lambda\mathbb E_{q_\lambda}h_\lambda(Z)
+=\mathbb E_{q_\lambda}
+[\nabla_\lambda h_\lambda(Z)
+ +h_\lambda(Z)\nabla_\lambda\log q_\lambda(Z)].
+\]
+Both identities require domination conditions permitting differentiation
+under the integral. Control variates and Rao-Blackwellization reduce their
+Monte Carlo variance.</p>
+
+<p>The Bayesian consequences of the projection, including contraction and
+uncertainty, are developed in
+<a href="{{ '/notes/bayesian-statistics/variational-bayes-kl-projections/' | relative_url }}">variational Bayes and KL projections</a>.
+Here the emphasis is the optimization structure and its stationary equations.</p>

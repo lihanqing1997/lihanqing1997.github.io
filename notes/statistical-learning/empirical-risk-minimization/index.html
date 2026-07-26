@@ -93,3 +93,133 @@ Localized analyses bound the empirical process on \(\mathcal G(r)\) and solve a 
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Fast rates in least squares, classification with margin, and strongly convex regularized ERM all use this idea in different languages.</p>
     </div>
+
+<h3>Argmin consistency without global uniformity</h3>
+
+<p>Uniform convergence over the whole parameter space is sufficient but stronger than necessary. Classical \(M\)-estimation instead combines separation of the population minimizer with uniform convergence only on relevant compact sets.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \((\Theta,d)\) be a metric space, let \(M_n:\Theta\to\mathbb R\) be random, and let \(M:\Theta\to\mathbb R\) have a unique minimizer \(\theta_0\). Assume that for every \(\varepsilon>0\),
+  \[
+  \inf_{d(\theta,\theta_0)\ge\varepsilon}M(\theta)>M(\theta_0),
+  \qquad
+  \sup_{\theta\in\Theta}|M_n(\theta)-M(\theta)|\xrightarrow{P}0.
+  \]
+  If \(M_n(\widehat\theta_n)\le\inf_\theta M_n(\theta)+o_P(1)\), then
+  \(d(\widehat\theta_n,\theta_0)\xrightarrow{P}0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(\varepsilon>0\) and set
+  \[
+  \gamma_\varepsilon=
+  \inf_{d(\theta,\theta_0)\ge\varepsilon}\{M(\theta)-M(\theta_0)\}>0.
+  \]
+  On the event \(\sup_\theta|M_n-M|<\gamma_\varepsilon/3\) and with optimization error below \(\gamma_\varepsilon/3\), every \(\theta\) outside the \(\varepsilon\)-ball satisfies
+  \[
+  M_n(\theta)>M(\theta_0)+2\gamma_\varepsilon/3
+  >M_n(\theta_0)+\gamma_\varepsilon/3.
+  \]
+  Hence \(\widehat\theta_n\) must lie inside the ball. The event has probability tending to one.</p>
+</div>
+
+<h3>Penalized empirical risk</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A regularized ERM solves
+  \[
+  \widehat f_\lambda\in\operatorname*{argmin}_{f\in\mathcal F}
+  \{P_n\ell_f+\lambda\Omega(f)\},
+  \]
+  where \(\Omega\) encodes structure such as smoothness, sparsity, or small RKHS norm.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For every comparator \(f\in\mathcal F\),
+  \[
+  R(\widehat f_\lambda)-R(f)
+  \le (P-P_n)(\ell_{\widehat f_\lambda}-\ell_f)
+  +\lambda\{\Omega(f)-\Omega(\widehat f_\lambda)\}.
+  \]
+  This is the basic inequality for regularized ERM.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Empirical optimality gives
+  \(P_n\ell_{\widehat f_\lambda}+\lambda\Omega(\widehat f_\lambda)
+  \le P_n\ell_f+\lambda\Omega(f)\). Add
+  \((P-P_n)(\ell_{\widehat f_\lambda}-\ell_f)\) to both sides and rearrange.</p>
+</div>
+
+<p>Unlike the crude global ERM bound, the basic inequality retains the sign of the penalty and the increment \(\ell_{\widehat f_\lambda}-\ell_f\). Sparse and fast-rate proofs depend on this sharper form.</p>
+
+<h3>Curvature and stochastic gradients</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\Theta\subset\mathbb R^d\), suppose \(R\) is \(\mu\)-strongly convex with minimizer \(\theta^*\), and let \(\widehat\theta\) minimize a differentiable \(R_n\). If
+  \[
+  \sup_{\theta\in\Theta}\|\nabla R_n(\theta)-\nabla R(\theta)\|_2\le\varepsilon,
+  \]
+  then
+  \[
+  \|\widehat\theta-\theta^*\|_2\le\frac{\varepsilon}{\mu},
+  \qquad
+  R(\widehat\theta)-R(\theta^*)\le
+  \frac{L\varepsilon^2}{2\mu^2}
+  \]
+  whenever \(R\) is also \(L\)-smooth.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Strong monotonicity of \(\nabla R\) gives
+  \[
+  \mu\|\widehat\theta-\theta^*\|_2^2
+  \le\langle\nabla R(\widehat\theta)-\nabla R(\theta^*),
+  \widehat\theta-\theta^*\rangle.
+  \]
+  Since \(\nabla R_n(\widehat\theta)=0\) and \(\nabla R(\theta^*)=0\), Cauchy-Schwarz bounds the right side by
+  \(\varepsilon\|\widehat\theta-\theta^*\|_2\). Cancel the distance. Smoothness then yields
+  \(R(\widehat\theta)-R(\theta^*)\le(L/2)\|\widehat\theta-\theta^*\|_2^2\).</p>
+</div>
+
+<h3>A localized fixed-point theorem</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(g_f=\ell_f-\ell_{f^*}\) be an excess-loss class with \(Pg_f\ge0\). A Bernstein condition with exponent \(\beta\in[0,1]\) is
+  \[
+  Pg_f^2\le B(Pg_f)^\beta
+  \quad\text{for all }f\in\mathcal F.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose a nondecreasing function \(\psi\) satisfies
+  \[
+  \mathbb E\sup_{Pg_f\le r}|(P_n-P)g_f|\le\psi(r),
+  \]
+  and \(r\mapsto\psi(r)/\sqrt r\) is nonincreasing. If \(r_*\) solves
+  \(\psi(r_*)\le r_*/8\), then, under boundedness and the Bernstein condition, an ERM satisfies with high probability
+  \[
+  P g_{\widehat f}\lesssim r_*+\frac{\log(1/\delta)}{n}
+  \]
+  with constants depending on the envelope and \(B\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Partition the class into shells
+  \(2^jr_*<Pg_f\le2^{j+1}r_*\). Symmetrization and concentration control the empirical process on each shell by a fixed fraction of \(Pg_f\); the scaling property of \(\psi\) propagates the fixed-point inequality from \(r_*\) to every shell. A union bound then gives
+  \((P_n-P)g_f>-\tfrac12Pg_f\) for all \(f\) outside the innermost shell. Such an \(f\) cannot minimize empirical risk because \(P_ng_{f^*}=0\). Hence the ERM lies in the inner shell.</p>
+</div>
+
+<h3>When ERM is inconsistent</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> Let \(\mathcal X=[0,1]\), let \(Y=0\) surely, and let \(\mathcal F\) contain indicators of all finite subsets of \([0,1]\), together with the zero function. Under squared loss, for any sample \(X_1,\ldots,X_n\), the function
+  \[
+  f_n=\mathbf1_{\{X_1,\ldots,X_n\}}
+  \]
+  has empirical risk zero, but so does \(f\equiv0\). If a tie-breaking rule instead selects
+  \(1-f_n\), its empirical risk is still zero while its population risk is one because a finite set has Lebesgue measure zero. Thus pointwise laws of large numbers do not justify arbitrary ERM tie breaking; uniform control or structural selection is necessary.</p>
+</div>
+
+<p>Quantitative control of the deviations appearing above comes from <a href="{{ '/notes/statistical-learning/concentration-inequalities/' | relative_url }}">concentration inequalities</a>, while their dependence on the size of \(\mathcal F\) is measured by VC dimension, Rademacher complexity, and metric entropy.</p>

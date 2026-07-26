@@ -93,3 +93,148 @@ P_X(0<|\eta(X)-1/2|\le t)\le C t^\alpha,\qquad t>0.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The condition says there is little probability mass near the decision boundary. It is one source of fast rates because classification mistakes near the boundary are the only mistakes that can have small excess-risk cost.</p>
     </div>
+
+<h3>Conditional risk as a calibration device</h3>
+
+<p>Every loss determines both an optimal target and a geometry of regret. It is therefore incorrect to speak of “the” regression function without specifying the loss: squared, absolute, quantile, and logarithmic losses elicit different conditional functionals.</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A loss \(\ell(a,y)\) <em>elicits</em> a functional \(T\) if
+  \[
+  T(Q)=\operatorname*{argmin}_{a}\int\ell(a,y)\,Q(\mathrm{d}y)
+  \]
+  for every distribution \(Q\) in its domain. The conditional Bayes rule is then \(f^*(x)=T(P_{Y\mid X=x})\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For \(\tau\in(0,1)\), the pinball loss
+  \[
+  \rho_\tau(u)=u\{\tau-\mathbf 1(u<0)\}
+  \]
+  elicits a \(\tau\)-quantile. Indeed, at continuity points,
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}a}\mathbb E\rho_\tau(Y-a)
+  =F_Y(a)-\tau,
+  \]
+  so a minimum occurs where \(F_Y(a-)\le\tau\le F_Y(a)\). Thus conditional quantile regression is Bayes prediction under an asymmetric absolute loss.</p>
+</div>
+
+<h3>Bregman losses and conditional means</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If \(\phi\) is differentiable and strictly convex on a convex set, its Bregman divergence is
+  \[
+  D_\phi(y,a)=\phi(y)-\phi(a)-\langle\nabla\phi(a),y-a\rangle.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose the required expectations exist. Under loss \(D_\phi(Y,a)\), the conditional mean \(m(x)=\mathbb E(Y\mid X=x)\) is the unique Bayes action, and
+  \[
+  \mathbb E\{D_\phi(Y,a)\mid X=x\}
+  =
+  \mathbb E\{D_\phi(Y,m(x))\mid X=x\}+D_\phi(m(x),a).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand both divergences. The terms involving \(\phi(Y)\) cancel, and
+  \(\mathbb E(Y-m(x)\mid X=x)=0\). The remaining difference is exactly
+  \(\phi(m)-\phi(a)-\langle\nabla\phi(a),m-a\rangle=D_\phi(m,a)\), which is nonnegative and vanishes only at \(a=m\) under strict convexity.</p>
+</div>
+
+<h3>Binary classification with asymmetric costs</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose a false positive costs \(c_{10}>0\) and a false negative costs \(c_{01}>0\). The conditional risks of actions \(1\) and \(0\) are respectively
+  \[
+  c_{10}\{1-\eta(x)\},\qquad c_{01}\eta(x).
+  \]
+  Hence the Bayes classifier is
+  \[
+  g_c^*(x)=\mathbf 1\!\left\{\eta(x)\ge
+  \frac{c_{10}}{c_{01}+c_{10}}\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose action \(1\) precisely when
+  \(c_{10}(1-\eta)\le c_{01}\eta\), and rearrange. The usual threshold \(1/2\) is recovered only when the two error costs agree.</p>
+</div>
+
+<h3>Plug-in classifiers and regression error</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\widehat\eta:\mathcal X\to[0,1]\) and
+  \(\widehat g=\mathbf1\{\widehat\eta\ge1/2\}\). Then
+  \[
+  R(\widehat g)-R(g^*)
+  \le2\,\mathbb E|\widehat\eta(X)-\eta(X)|.
+  \]
+  More generally, if the margin condition with exponent \(\alpha\) holds, then for every \(q\in[1,\infty]\),
+  \[
+  R(\widehat g)-R(g^*)
+  \le C_{\alpha,q}\,
+  \|\widehat\eta-\eta\|_{L^q(P_X)}^{
+  \frac{q(1+\alpha)}{q+\alpha}}
+  \]
+  with the exponent interpreted as \(1+\alpha\) when \(q=\infty\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On the disagreement set
+  \(\{\widehat g\ne g^*\}\), the two numbers \(\widehat\eta(x)-1/2\) and
+  \(\eta(x)-1/2\) have opposite signs, so
+  \(|\eta(x)-1/2|\le|\widehat\eta(x)-\eta(x)|\). The excess-risk identity therefore gives
+  \[
+  R(\widehat g)-R(g^*)\le2\mathbb E|\widehat\eta-\eta|.
+  \]
+  For the refined bound, put \(e=|\widehat\eta-\eta|\) and split at \(t>0\):
+  \[
+  \mathbb E\!\left[|2\eta-1|\mathbf1\{\widehat g\ne g^*\}\right]
+  \le 2tP(0<|\eta-1/2|\le t)+2\mathbb E[e\mathbf1(e>t)].
+  \]
+  The first term is at most \(2Ct^{1+\alpha}\). Hölder and Markov bound the second by a constant times \(\|e\|_q^q t^{1-q}\). Balancing the two terms yields the displayed exponent.</p>
+</div>
+
+<h3>Multiclass Bayes decisions</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(Y\in\{1,\ldots,K\}\), let
+  \(\eta_k(x)=P(Y=k\mid X=x)\). Under zero-one loss,
+  \[
+  g^*(x)\in\operatorname*{argmax}_{1\le k\le K}\eta_k(x),
+  \qquad
+  R(g^*)=1-\mathbb E\max_k\eta_k(X).
+  \]
+  For a cost matrix \(C=(C_{ak})\), the Bayes action minimizes
+  \(\sum_k C_{ak}\eta_k(x)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The conditional zero-one risk of predicting \(a\) is \(1-\eta_a(x)\); minimizing it is equivalent to maximizing \(\eta_a(x)\). Replacing \(\mathbf1\{a\ne k\}\) by \(C_{ak}\) gives the second assertion.</p>
+</div>
+
+<h3>Strong convexity and quadratic regret</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose \(a\mapsto L(a,x)\) is \(\lambda\)-strongly convex for almost every \(x\), with minimizer \(f^*(x)\). Then
+  \[
+  R(f)-R(f^*)\ge\frac{\lambda}{2}
+  \|f-f^*\|_{L^2(P_X)}^2.
+  \]
+  If its gradient is also \(L\)-Lipschitz, the reverse upper bound
+  \(R(f)-R(f^*)\le(L/2)\|f-f^*\|_2^2\) holds.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Strong convexity gives
+  \[
+  L(a,x)\ge L(f^*(x),x)+
+  \langle\nabla L(f^*(x),x),a-f^*(x)\rangle+
+  \frac{\lambda}{2}|a-f^*(x)|^2.
+  \]
+  The gradient term vanishes at an interior minimizer. Integrating with \(a=f(x)\) proves the lower bound. The descent lemma gives the upper bound in the same way.</p>
+</div>
+
+<p>Thus an excess-risk rate is sometimes exactly a parameter-estimation rate, but not always. Classification has a nonsmooth decision boundary, and its conversion depends on the probability mass near that boundary. The later pages on <a href="{{ '/notes/statistical-learning/margins-in-classification/' | relative_url }}">classification margins</a> and <a href="{{ '/notes/statistical-learning/surrogate-losses-and-calibration/' | relative_url }}">surrogate calibration</a> make these conversions quantitative.</p>

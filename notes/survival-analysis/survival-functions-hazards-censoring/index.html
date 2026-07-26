@@ -7,43 +7,165 @@ note_back_url: "/notes/survival-analysis/"
 note_next_url: "/notes/survival-analysis/kaplan-meier-nelson-aalen/"
 ---
 
-<h3>Survival law</h3>
+<p>Survival analysis begins with an event time, but its distinctive mathematics comes from observing that time through censoring, truncation, and evolving risk sets. This page fixes the distributional and observational objects used throughout the note. Measure-theoretic probability and likelihood theory are developed in the notes on <a href="{{ '/notes/probability-theory/' | relative_url }}">probability theory</a> and <a href="{{ '/notes/statistical-inference/' | relative_url }}">statistical inference</a>.</p>
 
-    <p>Survival analysis studies a nonnegative event time \(T\), often observed incompletely. The mathematical object is not only the distribution of \(T\), but the way information is lost through censoring and delayed observation.</p>
+<h3>Event-time distributions</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(T\ge0\), the survival function, distribution function, density, hazard, and cumulative hazard are
+<p><span class="statement-title">Definition.</span> Let \(T:\Omega\to[0,\infty]\) be an event time. Its distribution and survival functions are
 \[
-S(t)=P(T>t),\quad F(t)=P(T\le t),\quad f(t)=F'(t),\quad
-\lambda(t)=\lim_{h\downarrow0}{P(t\le T<t+h\mid T\ge t)\over h},\quad
-\Lambda(t)=\int_0^t\lambda(u)\,\mathrm{d}u.
+F(t)=P(T\le t),\qquad S(t)=P(T>t)=1-F(t),\qquad t\ge0.
+\]
+The right endpoint of observable survival is \(\tau_T=\sup\{t:S(t)>0\}\). If \(F\) is absolutely continuous with density \(f\), its hazard rate is
+\[
+\lambda(t)=\lim_{h\downarrow0}
+\frac{P(t\le T<t+h\mid T\ge t)}{h}
+=\frac{f(t)}{S(t-)}
+\]
+whenever the limit exists. The cumulative hazard is the Lebesgue-Stieltjes integral
+\[
+\Lambda(t)=\int_{(0,t]}\frac{\mathrm{d}F(u)}{S(u-)}.
 \]</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(T\) has absolutely continuous law and \(S(t)>0\), then \(S(t)=\exp\{-\Lambda(t)\}\) and \(f(t)=\lambda(t)S(t)\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since \(S'(t)=-f(t)=-\lambda(t)S(t)\), we have \((\log S)'(t)=-\lambda(t)\). Integrating from \(0\) to \(t\), using \(S(0)=1\) for no atom at zero, gives \(S(t)=\exp\{-\Lambda(t)\}\). The identity for \(f\) follows from the definition of the hazard.</p>
-    </div>
-    <h3>Censoring</h3>
+</div>
 
-    <p>The basic observation is usually \(X=T\wedge C\) and \(\Delta=1\{T\le C\}\), where \(C\) is a censoring time. Without assumptions on \(C\), the distribution of \(T\) is not identifiable.</p>
+<p>The measure definition of \(\Lambda\) covers discrete and mixed event-time laws. The familiar integral of a hazard rate represents only its absolutely continuous part.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (product-integral representation).</span> For every \(t<\tau_T\),
+\[
+S(t)=\prod_{(0,t]}\{1-\mathrm{d}\Lambda(u)\}
+=\exp\{-\Lambda^c(t)\}\prod_{0<u\le t}\{1-\Delta\Lambda(u)\},
+\]
+where \(\Lambda^c\) is the continuous part and
+\(\Delta\Lambda(u)=P(T=u\mid T\ge u)\). In particular, if \(F\) is absolutely continuous,
+\[
+S(t)=e^{-\Lambda(t)},\qquad
+\Lambda(t)=\int_0^t\lambda(u)\,\mathrm{d}u,\qquad
+f(t)=\lambda(t)S(t).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> At a jump time \(u\),
+\[
+\frac{S(u)}{S(u-)}
+=1-\frac{F(u)-F(u-)}{S(u-)}
+=1-\Delta\Lambda(u).
+\]
+On an interval containing no jumps, \(\mathrm{d}F=-\mathrm{d}S\), hence
+\(\mathrm{d}\Lambda=-\mathrm{d}S/S\) and
+\(S(b)/S(a)=\exp\{-[\Lambda^c(b)-\Lambda^c(a)]\}\).
+Multiplying the continuous changes and all jump ratios gives the product integral. The absolutely continuous identities follow by differentiation.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (Weibull law).</span> If
+\[
+S(t)=\exp\{-(t/\eta)^\alpha\},\qquad \alpha,\eta>0,
+\]
+then \(\Lambda(t)=(t/\eta)^\alpha\) and
+\(\lambda(t)=\alpha t^{\alpha-1}/\eta^\alpha\). Thus \(\alpha<1\), \(\alpha=1\), and \(\alpha>1\) give decreasing, constant, and increasing hazards. A survival distribution can therefore be easier to interpret through its local hazard than through its density.</p>
+</div>
+
+<h3>Observation schemes</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Right censoring is independent if \(T\perp C\), or conditionally independent given covariates \(Z\), meaning \(T\perp C\mid Z\). In counting-process notation this is often stated as noninformative censoring: after conditioning on the observed history, the censoring mechanism does not change the event intensity.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Independent censoring is not a cosmetic assumption. It is the statement that the observed risk set at time \(t\) is a representative sample of subjects whose event times exceed \(t\), after conditioning on the covariates included in the model.</p>
-    </div>
-    <h3>Likelihood under independent right censoring</h3>
-    <p>The first useful calculation is the likelihood contribution of a censored observation. It explains why the pair \((X,\Delta)\), rather than \(X\) alone, is the statistical observation.</p>
+<p><span class="statement-title">Definition.</span> The principal incomplete-data schemes are:</p>
+<ul>
+<li><em>right censoring:</em> observe \(X=T\wedge C\) and \(\Delta=1\{T\le C\}\);</li>
+<li><em>left censoring:</em> observe whether \(T\le C\), possibly together with \(T\) when \(T>C\);</li>
+<li><em>interval censoring:</em> observe \(L<T\le R\), where \(R\) may equal \(+\infty\);</li>
+<li><em>left truncation:</em> include a subject only when \(T\ge A\), and then observe the subject from entry time \(A\);</li>
+<li><em>administrative censoring:</em> \(C\) is fixed by the study calendar rather than generated by the subject.</li>
+</ul>
+<p>Censoring makes an included observation incomplete. Truncation changes which units enter the sample.</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition (independent censoring).</span> With baseline covariates \(Z\), elementary conditional independent censoring is
+\[
+T\perp C\mid Z.
+\]
+In a filtration \((\mathcal F_t)\), the operational condition is that the event counting process has the same \(\mathcal F_t\)-intensity after the censoring history is included. This latter condition permits some censoring mechanisms that are not marginally independent of \(T\), provided all common predictors are observed.</p>
+</div>
+
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(X=T\wedge C\), \(\Delta=1\{T\le C\}\), and \(T\perp C\), then the part of the likelihood involving the law of \(T\) is
+<p><span class="statement-title">Proposition (nonidentifiability without a censoring condition).</span> The law of \((X,\Delta)\) does not in general identify the marginal law of \(T\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Suppose \(X\equiv1\) and \(\Delta\equiv0\). This observation law is compatible with every distribution supported on \((1,\infty)\): set \(C\equiv1\) and choose any such \(T\). Hence distinct event-time laws produce exactly the same observed data. More generally, dependence between \(T\) and \(C\) can alter the unobserved tail while preserving the subdistributions \(P(X\le t,\Delta=j)\).</p>
+</div>
+
+<h3>Likelihood under right censoring</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (factorization under conditional independence).</span> Suppose \(T\perp C\mid Z\), both conditional laws are absolutely continuous, and \(O=(X,\Delta,Z)\). Conditional on \(Z=z\),
 \[
-L_T=\prod_{i=1}^n f_T(x_i)^{\Delta_i}S_T(x_i)^{1-\Delta_i}
-=\prod_{i=1}^n \lambda_T(x_i)^{\Delta_i}\exp\{-\Lambda_T(x_i)\}.
+p_O(x,\delta\mid z)
+=\{f_T(x\mid z)S_C(x\mid z)\}^{\delta}
+ \{f_C(x\mid z)S_T(x\mid z)\}^{1-\delta}.
+\]
+Consequently, if the event and censoring laws have variation-independent parameters, the event-time likelihood is
+\[
+L_T
+=\prod_{i=1}^n
+ f_T(x_i\mid z_i)^{\delta_i}S_T(x_i\mid z_i)^{1-\delta_i}
+=\prod_{i=1}^n
+ \lambda_T(x_i\mid z_i)^{\delta_i}
+ e^{-\Lambda_T(x_i\mid z_i)}
+\]
+in the absolutely continuous case.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> On \(\{\Delta=1\}\), an event occurs at \(x\) while censoring exceeds \(x\), giving \(f_T(x\mid z)S_C(x\mid z)\). On \(\{\Delta=0\}\), censoring occurs at \(x\) while the event exceeds \(x\), giving \(f_C(x\mid z)S_T(x\mid z)\). Multiplication over subjects separates the factors involving the event law from those involving the censoring law. Finally \(f_T=\lambda_TS_T\) and \(S_T=e^{-\Lambda_T}\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (exponential likelihood).</span> If \(T_i\sim\operatorname{Exp}(\lambda)\), the event-time log-likelihood is
+\[
+\ell(\lambda)=D\log\lambda-\lambda\sum_{i=1}^nX_i,
+\qquad D=\sum_{i=1}^n\Delta_i.
+\]
+When \(D>0\), \(\widehat\lambda=D/\sum_iX_i\): the numerator is the number of events and the denominator is total exposure time. This event-over-exposure form reappears in multiplicative intensity models.</p>
+</div>
+
+<h3>Delayed entry and conditional sampling</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose a subject enters at \(A\) and is sampled only if \(T\ge A\). Conditional on \(A=a\) and inclusion, the event-time density is
+\[
+t\longmapsto \frac{f_T(t)}{S_T(a)}1\{t\ge a\}.
+\]
+With right censoring at \(C\), the event-law contribution is therefore
+\[
+\frac{f_T(x)^\Delta S_T(x)^{1-\Delta}}{S_T(a)},
+\qquad x\ge a.
 \]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The joint density of \((X,\Delta)\) factors as \(f_T(x)S_C(x)\) when \(\Delta=1\), and \(S_T(x)f_C(x)\) when \(\Delta=0\). The censoring factors contain no parameter of the \(T\)-law. Finally use \(f=\lambda S\) and \(S=\exp(-\Lambda)\).</p>
-    </div>
-    <h3>Left truncation and delayed entry</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> With delayed entry \(A\), subject \(i\) is observed only if \(T_i\ge A_i\). The risk indicator becomes \(Y_i(t)=1\{A_i\le t\le X_i\}\), so likelihood and martingale formulas condition on survival to the entry time.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Censoring removes the right tail after observation has begun; truncation changes which subjects enter the sample. They are different missingness mechanisms and cannot be interchanged.</p>
-    </div>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> This is ordinary conditional probability:
+\[
+P(T\in\mathrm{d}t\mid T\ge a)
+=\frac{1\{t\ge a\}P(T\in\mathrm{d}t)}{S_T(a)}.
+\]
+The censored contribution follows by applying the right-censoring factorization to this conditional law.</p>
+</div>
+
+<p>In process notation the observable risk indicator is
+\[
+Y_i(t)=1\{A_i\le t\le X_i\}.
+\]
+Every later risk-set estimator remains valid with this \(Y_i\), provided entry is conditionally independent in the corresponding filtration. Ignoring \(A_i\) creates length-biased risk sets: individuals who fail before entry could never have appeared.</p>
+
+<h3>Support and estimability</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Even under independent censoring, \(S_T(t)\) is nonparametrically estimable only where subjects can remain uncensored and at risk. A convenient endpoint is
+\[
+\tau=\sup\{t:P(X\ge t)>0\}.
+\]
+Statements of consistency and Gaussian limits below are therefore made on \([0,\tau_0]\) with \(\tau_0<\tau\), or under an explicit positive-risk condition. Extrapolating beyond the last informative risk set is a model assumption, not a consequence of censoring theory.</p>
+</div>

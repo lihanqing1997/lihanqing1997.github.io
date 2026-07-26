@@ -8,24 +8,157 @@ note_prev_url: "/notes/causal-inference/front-door-adjustment/"
 note_next_url: "/notes/causal-inference/outcome-regression-and-g-formula/"
 ---
 
-<p>Inverse probability weighting records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Inverse-probability weighting reconstructs a target population in which treatment is independent of measured baseline covariates. Its identification is elementary; its practical quality depends on overlap, propensity estimation, normalization, and the treatment of extreme weights.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Inverse probability weighting estimates causal means by reweighting observed outcomes by the inverse probability of receiving the observed treatment.</p>
-    </div>
+<h3>Horvitz-Thompson representation</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under exchangeability and positivity, \(E[A Y/e(X)]=E[Y(1)]\) and \(E[(1-A)Y/(1-e(X))]=E[Y(0)]\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under consistency, conditional exchangeability given \(X\), and positivity,
+  \[
+  \tau=
+  \mathbb E\left[
+  \frac{AY}{e(X)}-
+  \frac{(1-A)Y}{1-e(X)}
+  \right].
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on \(X\). Since \(E[A\mid X]=e(X)\), the weight cancels treatment assignment probability, and consistency replaces observed outcomes with potential outcomes.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(X\),
+  \[
+  \mathbb E\left(\frac{AY}{e(X)}\middle|X\right)
+  =\mathbb E(Y\mid A=1,X)=m_1(X),
+  \]
+  and similarly the control term has conditional mean \(m_0(X)\). Exchangeability and consistency identify
+  \(\mathbb E\{m_1(X)-m_0(X)\}\) with the ATE.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> IPW creates a pseudo-population with balanced covariates, but small propensities can cause large variance and instability.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The empirical Horvitz-Thompson estimator is
+  \[
+  \widehat\tau_{\mathrm{HT}}
+  =\frac1n\sum_{i=1}^n
+  \left\{\frac{A_iY_i}{\widehat e(X_i)}
+  -\frac{(1-A_i)Y_i}{1-\widehat e(X_i)}\right\}.
+  \]</p>
+</div>
+
+<h3>Hájek normalization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The normalized estimator is
+  \[
+  \widehat\tau_{\mathrm H}
+  =
+  \frac{\sum_iA_iY_i/\widehat e_i}{\sum_iA_i/\widehat e_i}
+  -
+  \frac{\sum_i(1-A_i)Y_i/(1-\widehat e_i)}
+  {\sum_i(1-A_i)/(1-\widehat e_i)}.
+  \]</p>
+</div>
+
+<p>With known probabilities, Horvitz-Thompson is exactly unbiased while Hájek is a ratio estimator with small bias. Hájek normalization often has lower variance and is invariant to multiplicative weight errors within an arm. The distinction should be stated rather than hidden under the generic label IPW.</p>
+
+<h3>The influence function with known propensity</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(e(X)\) is known, the influence function of the IPW functional is
+  \[
+  \phi_{\mathrm{IPW}}(O)=
+  \frac{AY}{e(X)}-\frac{(1-A)Y}{1-e(X)}-\tau.
+  \]
+  Therefore
+  \[
+  \sqrt n(\widehat\tau_{\mathrm{HT}}-\tau)
+  \rightsquigarrow N\{0,\mathbb E\phi_{\mathrm{IPW}}^2\}
+  \]
+  when the second moment is finite.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The estimator is the sample mean of an iid variable whose expectation is \(\tau\). The ordinary central limit theorem applies.</p>
+</div>
+
+<h3>Variance inflation from weak overlap</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(\sigma_a^2(x)=\operatorname{Var}(Y\mid A=a,X=x)\). Conditional variance of the weighted outcome contrast contains
+  \[
+  \frac{\sigma_1^2(X)}{e(X)}
+  +\frac{\sigma_0^2(X)}{1-e(X)}
+  +\text{between-covariate terms}.
+  \]
+  Thus variance diverges when outcomes remain noisy where propensity approaches zero or one.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(X\), only one arm contributes. For the treated term,
+  \[
+  \mathbb E\left[
+  \left\{\frac{A(Y-m_1)}{e}\right\}^2\middle|X\right]
+  =\frac{\sigma_1^2(X)}{e(X)}.
+  \]
+  The control calculation gives the second term. Applying total variance adds variation of conditional means.</p>
+</div>
+
+<h3>Stabilized weights</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Stabilized ATE weights are
+  \[
+  W_{\mathrm{stab}}=
+  \frac{AP(A=1)}{e(X)}
+  +\frac{(1-A)P(A=0)}{1-e(X)}.
+  \]
+  In longitudinal settings, numerator probabilities condition on a restricted treatment history while denominators condition on the full measured history.</p>
+</div>
+
+<p>Stabilization preserves the target after appropriate normalization and can reduce weight dispersion. It cannot repair genuine nonpositivity.</p>
+
+<h3>Weight truncation and its bias</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If treated weights are clipped at
+  \(c\), the bias in the treated potential-outcome mean is
+  \[
+  \mathbb E\left[
+  \{1-c e(X)\}_+m_1(X)
+  \right]
+  \]
+  up to sign and any subsequent normalization convention.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(X\),
+  \[
+  \mathbb E[A\min\{1/e(X),c\}Y\mid X]
+  =e(X)\min\{1/e(X),c\}m_1(X)
+  =\min\{1,ce(X)\}m_1(X).
+  \]
+  Subtract \(m_1(X)\) and integrate.</p>
+</div>
+
+<h3>Estimated propensities can improve efficiency</h3>
+
+<p>Even in a randomized experiment with known treatment probability, estimating a correctly specified propensity model containing prognostically useful covariates can reduce asymptotic variance by projecting the naive influence function onto the propensity-score tangent space. This is not because the estimated assignment probability is more truthful; it is a calibration effect. In finite samples, misspecification and extreme fitted scores can reverse the gain.</p>
+
+<h3>Moment balance</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If weights solve
+  \[
+  \sum_i\frac{A_i}{\widehat e_i}g(X_i)
+  =
+  \sum_i\frac{1-A_i}{1-\widehat e_i}g(X_i)
+  \]
+  for a vector of balance functions \(g\), then weighted treated and control empirical means of every linear combination of \(g\) agree.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Multiply the vector equality by an arbitrary coefficient vector. This motivates covariate-balancing propensity scores and entropy balancing, which target balance equations directly.</p>
+</div>
+
+<h3>Uncertainty with fitted nuisance functions</h3>
+
+<p>A standard error that treats \(\widehat e\) as fixed can be conservative or anticonservative depending on the estimator and model. Parametric M-estimation uses the joint sandwich matrix for outcome and propensity equations. Flexible learning is better handled by orthogonal estimators and cross-fitting; plain IPW is not Neyman-orthogonal and generally requires the propensity estimator to converge faster than is available in unrestricted high dimensions.</p>

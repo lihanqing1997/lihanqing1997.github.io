@@ -68,3 +68,166 @@ P(R\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}},\psi)=P(R\mid Y_{\mathrm{obs}},\psi).
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> This is the same factorization logic as missing-data ignorability: once the design likelihood involves no unknown parameter shared with the response model, it contributes only a multiplicative factor independent of the target parameter.</p>
     </div>
+
+<h3>Student models as scale mixtures</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+Y\mid\mu,\sigma^2,\lambda
+\sim N(\mu,\sigma^2/\lambda),
+\qquad
+\lambda\sim\operatorname{Gamma}(\nu/2,\nu/2),
+\]
+then
+\[
+\frac{Y-\mu}{\sigma}\sim t_\nu.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrating \(\lambda\) gives a density proportional to
+\[
+\int_0^\infty
+\lambda^{1/2}
+e^{-\lambda(y-\mu)^2/(2\sigma^2)}
+\lambda^{\nu/2-1}e^{-\nu\lambda/2}
+\,\mathrm{d}\lambda.
+\]
+The gamma integral equals a constant times
+\[
+\left\{1+\frac{(y-\mu)^2}{\nu\sigma^2}\right\}^{-(\nu+1)/2},
+\]
+the Student density.</p>
+</div>
+
+<p>The latent precision \(\lambda_i\) becomes small for an outlying residual, reducing that observation's conditional influence. Robustness is achieved by modeling heavy tails, not by declaring inconvenient observations irrelevant.</p>
+
+<h3>Contamination mixtures</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A two-component contamination model is
+\[
+Y_i\mid z_i,\theta
+\sim(1-\epsilon)p_\theta(y_i)
++\epsilon q_\psi(y_i),
+\qquad
+z_i\sim\operatorname{Bernoulli}(\epsilon),
+\]
+where \(z_i=1\) marks the broad contamination component.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Conditional on parameters,
+\[
+P(z_i=1\mid y_i)
+=\frac{\epsilon q_\psi(y_i)}
+{(1-\epsilon)p_\theta(y_i)+\epsilon q_\psi(y_i)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply Bayes' formula to the two mixture components.</p>
+</div>
+
+<p>Posterior outlier probabilities depend on the specified alternative \(q_\psi\), the contamination rate prior, and separation between components. They are model-based classifications, not objective labels.</p>
+
+<h3>Observed-data factorization</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Write complete data as
+\(Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})\) and missingness pattern \(R\). A selection model factors
+\[
+p(Y,R\mid\theta,\psi)
+=p(Y\mid\theta)p(R\mid Y,\psi).
+\]
+Missingness is:</p>
+<ul>
+<li>MCAR if \(p(R\mid Y,\psi)=p(R\mid\psi)\);</li>
+<li>MAR if \(p(R\mid Y,\psi)=p(R\mid Y_{\mathrm{obs}},\psi)\);</li>
+<li>MNAR when dependence on \(Y_{\mathrm{mis}}\) remains.</li>
+</ul>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Bayesian ignorability).</span> Suppose missingness is MAR, the parameters \(\theta\) and \(\psi\) are distinct, and the prior factors as
+\(\pi(\theta,\psi)=\pi(\theta)\pi(\psi)\). Then
+\[
+\pi(\theta\mid Y_{\mathrm{obs}},R)
+\propto
+\pi(\theta)
+\int p(Y_{\mathrm{obs}},Y_{\mathrm{mis}}\mid\theta)
+\,\mathrm{d}Y_{\mathrm{mis}},
+\]
+so the missingness model is ignorable for posterior inference on \(\theta\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The observed likelihood is
+\[
+\int
+p(Y\mid\theta)
+p(R\mid Y_{\mathrm{obs}},\psi)
+\pi(\theta)\pi(\psi)
+\,\mathrm{d}Y_{\mathrm{mis}}\,\mathrm{d}\psi.
+\]
+The missingness factor does not depend on \(Y_{\mathrm{mis}}\) or \(\theta\), so the integral factors into a \(\theta\)-free term times the displayed observed-data likelihood.</p>
+</div>
+
+<h3>Data augmentation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Alternating draws
+\[
+Y_{\mathrm{mis}}^{(s+1)}
+\sim p(Y_{\mathrm{mis}}\mid
+Y_{\mathrm{obs}},R,\theta^{(s)}),
+\]
+\[
+\theta^{(s+1)}
+\sim p(\theta\mid
+Y_{\mathrm{obs}},Y_{\mathrm{mis}}^{(s+1)})
+\]
+define a Gibbs chain with invariant distribution
+\[
+p(\theta,Y_{\mathrm{mis}}
+\mid Y_{\mathrm{obs}},R).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The two updates are the full conditionals of the augmented posterior. Invariance follows from the Gibbs-kernel argument.</p>
+</div>
+
+<h3>Nonidentifiability under MNAR</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Without restrictions, the observed law of \((Y_{\mathrm{obs}},R)\) does not identify both the full-data distribution and an MNAR selection mechanism.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> In the simplest binary case, observed data identify
+\[
+P(R=1,Y=1),\quad P(R=1,Y=0),\quad P(R=0).
+\]
+They do not identify the split
+\[
+P(R=0,Y=1)+P(R=0,Y=0)=P(R=0).
+\]
+Any split can be paired with a corresponding outcome distribution and response mechanism to produce the same observed law.</p>
+</div>
+
+<p>MNAR analysis therefore requires sensitivity parameters, exclusion restrictions, validation data, or a scientifically justified joint model. Posterior concentration around one extrapolation does not create identification.</p>
+
+<h3>Bayesian design and stopping</h3>
+
+<p>A full Bayesian design averages utilities over the prior predictive:
+\[
+U(d)
+=E_{Y\sim m_d}
+\left[
+\max_a E\{u(\theta,a,d)\mid Y,d\}
+\right]
+-c(d).
+\]
+Adaptive designs update after interim data and choose the next design action. If the stopping rule depends only on observed data and has no parameter-dependent factor beyond the likelihood, posterior inference conditional on the realized data obeys the likelihood principle. Operating characteristics such as type-I error, power, and sample-size distribution still depend on the stopping rule and remain essential for regulatory or repeated-use evaluation.</p>

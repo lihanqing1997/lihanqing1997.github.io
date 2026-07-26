@@ -38,3 +38,117 @@ Combining this with Fano's inequality gives \(\log M_n\le nC+o(n)\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Most impossibility proofs in information theory have this shape: reduce success to a lower bound on information, upper-bound that information by data processing and single-letter inequalities, and compare the two bounds.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Fano weak converse</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For any \((n,M)\) code on a DMC with average error \(P_e\),
+  \[
+  (1-P_e)\log M
+  \le I(M;Y^n)+\log2
+  \le nC+\log2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fano gives
+  \(H(M\mid Y^n)\le\log2+P_e\log M\). Since \(H(M)=\log M\),
+  \[
+  (1-P_e)\log M-\log2\le I(M;Y^n).
+  \]
+  Data processing gives
+  \(I(M;Y^n)\le I(X^n;Y^n)\). For a memoryless channel,
+  \[
+  I(X^n;Y^n)
+  \le\sum_{i=1}^nI(X_i;Y_i)\le nC,
+  \]
+  where the first inequality follows from the entropy chain rule and memorylessness.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(P_e^{(n)}\to0\), then
+  \[
+  \limsup\frac1n\log M_n\le C.
+  \]</p>
+</div>
+
+<h3>Why this is only a weak converse</h3>
+
+<p>If rate \(R>C\), the Fano bound gives only
+\[
+\liminf P_e\ge1-C/R,
+\]
+not \(P_e\to1\). A strong converse needs a sharper argument controlling the entire information-density distribution rather than only its mean.</p>
+
+<h3>Hypothesis-testing meta-converse</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Meta-converse.</span> For any output reference law \(Q_{Y^n}\), every \((n,M,\epsilon)\) code satisfies
+  \[
+  M\le
+  \frac1{
+  \beta_{1-\epsilon}
+  (P_{X^nY^n},P_{X^n}Q_{Y^n})},
+  \]
+  where \(\beta_{1-\epsilon}(P,Q)\) is the minimum type-II error among tests with type-I acceptance probability at least \(1-\epsilon\), and \(P_{X^n}\) is the uniform distribution over codewords.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Use the decoder to test whether
+  \((X^n,Y^n)\) came from the true channel joint law or from independent codeword and reference output. Under the true joint law, correct decoding has probability at least \(1-\epsilon\). Under independence, for each output the decoder selects at most one of \(M\) equiprobable codewords, so test acceptance probability is at most \(1/M\). Neyman-Pearson optimality implies
+  \(\beta_{1-\epsilon}\le1/M\).</p>
+</div>
+
+<h3>Verdú-Han information-spectrum converse</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every \((n,M,\epsilon)\) code satisfies, for every \(\gamma>0\),
+  \[
+  \epsilon\ge
+  P\{\imath_{X^n;Y^n}\le\log M-\gamma\}
+  -e^{-\gamma}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Split correct-decoding probability according to whether information density exceeds the threshold. On the low-density region, change measure from the true joint law to the product law; the likelihood ratio is at most
+  \(Me^{-\gamma}\), while under product law decoder success is \(1/M\). Rearrangement gives the bound.</p>
+</div>
+
+<h3>Sphere-packing intuition</h3>
+
+<p>Each codeword induces a cloud of likely outputs. Reliable decoding requires these clouds to be nearly disjoint inside output space. Capacity compares the exponential output volume with the conditional noise volume:
+\[
+e^{nH(Y)}/e^{nH(Y\mid X)}=e^{nI(X;Y)}.
+\]
+The converse formalizes that no decoder can pack more reliable clouds than output space permits.</p>
+
+<h3>Cost constraints</h3>
+
+<p>With per-codeword cost constraint
+\(n^{-1}\sum_ic(x_i)\le\Gamma\), the converse single-letterizes to
+\(nC(\Gamma)\) using concavity of cost-constrained capacity and the average of coordinate costs. An average-over-messages cost constraint can permit rare expensive codewords and requires matching conventions in the theorem.</p>
+
+<h3>Feedback converse</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Causal noiseless feedback does not increase DMC capacity.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Even when \(X_i\) depends on
+  \(M,Y^{i-1}\),
+  \[
+  I(M;Y^n)
+  =\sum_iI(M;Y_i\mid Y^{i-1})
+  \le\sum_iI(X_i;Y_i\mid Y^{i-1})
+  \le\sum_iI(X_i;Y_i)\le nC.
+  \]
+  The first inequality uses the Markov relation
+  \(M,Y^{i-1}\to X_i\to Y_i\); conditioning and channel memorylessness yield the second. Apply Fano.</p>
+</div>
+
+<h3>Converse as a model audit</h3>
+
+<p>A converse is only as relevant as its code and channel definitions. Average versus maximal error, deterministic versus stochastic encoders, feedback, shared randomness, input costs, and channel uncertainty can change the operational limit. These are theorem coordinates, not implementation details.</p>

@@ -21,7 +21,34 @@ note_next_url: "/notes/real-analysis/weak-convergence-of-measures/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The bound is immediate from \(|e^{-ix\cdot\xi}|=1\). For continuity, \(\widehat f(\xi+h)-\widehat f(\xi)=\int e^{-ix\cdot\xi}(e^{-ix\cdot h}-1)f(x)\,\mathrm{d}x\), and dominated convergence applies.</p>
+        <p><span class="statement-title">Proof.</span> The bound is immediate from \(|e^{-ix\cdot\xi}|=1\). Moreover,
+\[
+\sup_{\xi\in\mathbb R^d}|\widehat f(\xi+h)-\widehat f(\xi)|
+\le\int|e^{-ix\cdot h}-1|\,|f(x)|\,\mathrm{d}x.
+\]
+The integrand tends pointwise to zero and is bounded by \(2|f|\). Dominated convergence therefore proves uniform continuity, not merely pointwise continuity.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Riemann-Lebesgue).</span> If \(f\in L^1(\mathbb R^d)\), then
+\[
+\widehat f(\xi)\longrightarrow0
+\qquad(\|\xi\|\to\infty).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(g\in C_c^1\), integration by parts in a coordinate \(j\) for which \(|\xi_j|\ge\|\xi\|/\sqrt d\) gives
+\[
+|\widehat g(\xi)|
+\le\frac{\|\partial_jg\|_1}{|\xi_j|}
+\le\frac{\sqrt d\,\max_k\|\partial_kg\|_1}{\|\xi\|}\longrightarrow0.
+\]
+Since \(C_c^1\) is dense in \(L^1\) and
+\[
+\|\widehat f-\widehat g\|_\infty\le\|f-g\|_1,
+\]
+the result extends to every \(f\in L^1\).</p>
     </div>
 
     <h3>Convolution theorem</h3>
@@ -48,7 +75,21 @@ f(x)=(2\pi)^{-d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,\mathrm{d}\xi.
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Insert a Gaussian cutoff \(e^{-\varepsilon|\xi|^2}\), whose inverse transform is an approximate identity. The regularized inverse equals convolution of \(f\) with a Gaussian kernel. As \(\varepsilon\downarrow0\), the approximate identity converges to \(f\) uniformly for Schwartz \(f\).</p>
+        <p><span class="statement-title">Proof.</span> Let
+\[
+G_\varepsilon(x)=(4\pi\varepsilon)^{-d/2}e^{-|x|^2/(4\varepsilon)},
+\qquad
+\widehat G_\varepsilon(\xi)=e^{-\varepsilon|\xi|^2}.
+\]
+Fubini, justified by rapid decay, gives
+\[
+\begin{aligned}
+(f*G_\varepsilon)(x)
+&=(2\pi)^{-d}\int e^{ix\cdot\xi}
+e^{-\varepsilon|\xi|^2}\widehat f(\xi)\,\mathrm{d}\xi.
+\end{aligned}
+\]
+The Gaussian kernels form an approximate identity, so the left side converges uniformly to \(f(x)\). On the right, \(\widehat f\) is Schwartz and hence integrable; dominated convergence removes the Gaussian factor and gives the inversion formula.</p>
     </div>
 
     <h3>Plancherel theorem</h3>
@@ -58,7 +99,17 @@ f(x)=(2\pi)^{-d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,\mathrm{d}\xi.
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Prove the identity first for Schwartz functions using inversion and Fubini. Since Schwartz functions are dense in \(L^2\), the transform extends uniquely by continuity to all \(L^2\). The norm identity passes to the limit.</p>
+        <p><span class="statement-title">Proof.</span> For Schwartz \(f,g\), inversion and Fubini give
+\[
+\int_{\mathbb R^d}f(x)\overline{g(x)}\,\mathrm{d}x
+=(2\pi)^{-d}\int_{\mathbb R^d}
+\widehat f(\xi)\overline{\widehat g(\xi)}\,\mathrm{d}\xi.
+\]
+Taking \(g=f\) proves
+\[
+\|\widehat f\|_2=(2\pi)^{d/2}\|f\|_2.
+\]
+Schwartz functions are dense in \(L^2\), so this scaled isometry extends uniquely to all of \(L^2\). Applying the same construction to the inverse transform shows that the extension is onto and hence unitary after normalization.</p>
     </div>
 
     <h3>Differentiation and decay</h3>
@@ -69,4 +120,24 @@ f(x)=(2\pi)^{-d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,\mathrm{d}\xi.
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The derivative identity follows by integration by parts, with boundary terms vanishing because \(f\) is rapidly decreasing. The multiplication identity follows by differentiating under the integral sign with respect to \(\xi\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (Sobolev energy in frequency).</span> For a Schwartz function,
+\[
+\|\partial^\alpha f\|_2^2
+=(2\pi)^{-d}\int_{\mathbb R^d}
+|\xi^\alpha|^2|\widehat f(\xi)|^2\,\mathrm{d}\xi.
+\]
+Thus square-integrable derivatives are equivalent to polynomially weighted Fourier energy.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (Gaussian self-similarity).</span> With the present convention,
+\[
+f(x)=e^{-|x|^2/2}
+\quad\Longrightarrow\quad
+\widehat f(\xi)=(2\pi)^{d/2}e^{-|\xi|^2/2}.
+\]
+The Gaussian is the basic shape preserved by Fourier transform; scaling in space produces reciprocal scaling in frequency.</p>
     </div>

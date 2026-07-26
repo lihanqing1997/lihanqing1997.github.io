@@ -1,0 +1,122 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "24. Offline reinforcement learning"
+breadcrumb_child_label_fr: "24. Apprentissage par renforcement hors ligne"
+breadcrumb_child_label_zh: "24. 离线强化学习"
+note_back_url: "/notes/reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/model-based-reinforcement-learning/"
+note_next_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control/"
+---
+
+<p>Offline reinforcement learning chooses a new policy from a fixed dataset,
+without further interaction. The statistical obstacle is distribution shift:
+the learned policy changes which state-action pairs matter, while Bellman
+targets can assign high values precisely where the dataset gives little
+information.</p>
+
+<h3>Data-generating regimes</h3>
+
+<p>Offline data may consist of iid transitions from a distribution \(\nu\),
+independent episodes from behavior policies, or one dependent trajectory. These
+regimes support different concentration tools. In each case, a target policy
+\(\pi\) induces a discounted occupancy \(d^\pi\), and a basic coverage measure
+is
+\[
+C(\pi;\nu)
+=\left\|\frac{\mathrm{d} d^\pi}{\mathrm{d}\nu}\right\|_\infty.
+\]
+Uniform guarantees over a class \(\Pi\) require
+\(\sup_{\pi\in\Pi}C(\pi;\nu)<\infty\) or a weaker function-class analogue.</p>
+
+<h3>An impossibility without coverage</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If the dataset law assigns
+zero probability to a state-action pair that a candidate policy can reach with
+positive probability, no offline algorithm can uniformly identify that
+policy's value over unrestricted bounded-reward MDPs.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Construct two MDPs identical on
+the support of the data and different only in the reward or transition at the
+unobserved pair. Their offline-data distributions are exactly equal, so every
+algorithm has the same output law under both. Choose the unseen outcome so the
+candidate policy is optimal in one MDP and poor in the other. No estimator or
+policy selector can be uniformly correct in both experiments.</p>
+</div>
+
+<h3>Pessimistic value selection</h3>
+
+<p>Let \(\widehat Q^\pi\) estimate \(Q^\pi\) with a policy-dependent confidence
+radius \(b^\pi(s,a)\). A lower confidence value is
+\[
+\underline J(\pi)
+=\widehat J(\pi)-\operatorname{pen}(\pi),
+\]
+where the penalty grows with uncertainty under \(d^\pi\). Selecting
+\(\widehat\pi=\arg\max_{\pi\in\Pi}\underline J(\pi)\) follows the principle
+“optimize only what the data can certify.”</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (generic pessimism oracle
+inequality).</span> Suppose simultaneously for every \(\pi\in\Pi\),
+\[
+|\,\widehat J(\pi)-J(\pi)\,|\le\operatorname{pen}(\pi).
+\]
+Then
+\[
+J(\pi^*)-J(\widehat\pi)
+\le2\operatorname{pen}(\pi^*)
+\]
+for every comparator \(\pi^*\in\Pi\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The confidence event gives
+\[
+J(\widehat\pi)\ge
+\widehat J(\widehat\pi)-\operatorname{pen}(\widehat\pi)
+\ge\widehat J(\pi^*)-\operatorname{pen}(\pi^*)
+\ge J(\pi^*)-2\operatorname{pen}(\pi^*).
+\]</p>
+</div>
+
+<p>The bound depends on uncertainty of the comparator, not the entire policy
+class. A strong policy is learnable if its own occupancy is covered, even when
+unsupported policies are heavily penalized.</p>
+
+<h3>Conservative value learning</h3>
+
+<p>Methods such as conservative Q-learning add a term that lowers values of
+actions favored by the current model but rare in data, schematically
+\[
+\alpha\left[
+E_{S\sim\nu_S}\log\sum_a e^{Q(S,a)}
+-E_{(S,A)\sim\nu}Q(S,A)
+\right].
+\]
+The log-sum-exp searches for high unseen actions; the data term anchors
+observed actions. This is a surrogate for pessimism, not an automatic
+confidence bound. Its strength must be related to model class, sampling error,
+and coverage.</p>
+
+<h3>Behavior regularization and support constraints</h3>
+
+<p>An alternative restricts the learned policy through
+\[
+E_{S\sim\nu_S}
+D_{\mathrm{KL}}\{\pi(\cdot\mid S)\|\widehat\mu(\cdot\mid S)\}
+\le\varepsilon.
+\]
+This controls action-level shift but not necessarily state-distribution shift:
+small local deviations can compound over a long horizon. Occupancy-ratio or
+concentrability analysis remains necessary.</p>
+
+<h3>Statistical inference after policy selection</h3>
+
+<p>Evaluating the same policy chosen to maximize noisy estimated value incurs
+selection bias. Sample splitting, cross-fitting, uniform confidence bands, or
+online validation can restore valid inference. Doubly robust scores reduce
+nuisance sensitivity, but their overlap conditions do not disappear in the
+offline setting.</p>

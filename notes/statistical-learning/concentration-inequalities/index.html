@@ -88,3 +88,157 @@ P\left(\sup_{g\in\mathcal G}|P_ng-Pg|>t\right)\le |\mathcal G|a(t).
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The event that the supremum exceeds \(t\) is contained in the union of the events \(\{|P_ng-Pg|>t\}\) over \(g\in\mathcal G\). Apply the union bound.</p>
     </div>
+
+<h3>Sub-Gaussian and sub-exponential variables</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A centered random variable \(X\) is sub-Gaussian with variance proxy \(\sigma^2\) if
+  \[
+  \mathbb E e^{\lambda X}\le e^{\sigma^2\lambda^2/2}
+  \quad\text{for every }\lambda\in\mathbb R.
+  \]
+  It is sub-exponential with parameters \((\nu^2,b)\) if the same inequality holds for \(|\lambda|<1/b\), with \(\sigma^2\) replaced by \(\nu^2\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If independent centered \(X_i\) are sub-Gaussian with proxies \(\sigma_i^2\), then
+  \[
+  P\!\left(\left|\sum_{i=1}^nX_i\right|\ge t\right)
+  \le2\exp\!\left(-\frac{t^2}{2\sum_i\sigma_i^2}\right).
+  \]
+  If they are sub-exponential with common scale bound \(b\) and total variance proxy \(\nu^2=\sum_i\nu_i^2\), then
+  \[
+  P\!\left(\left|\sum_iX_i\right|\ge t\right)
+  \le2\exp\!\left[-\frac12\min\!\left\{\frac{t^2}{\nu^2},\frac{t}{b}\right\}\right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independence multiplies moment generating functions. Chernoff's inequality then gives
+  \(\exp(-\lambda t+\lambda^2\sum_i\sigma_i^2/2)\); optimizing over unrestricted \(\lambda\) proves the sub-Gaussian claim. In the sub-exponential case the unconstrained optimum is valid only when \(t/\nu^2<1/b\). Otherwise take \(\lambda\) of order \(1/b\), producing the linear tail regime.</p>
+</div>
+
+<h3>Orlicz norms and moment growth</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(\alpha\ge1\), define
+  \[
+  \|X\|_{\psi_\alpha}
+  =\inf\{c>0:\mathbb E\exp(|X|^\alpha/c^\alpha)\le2\}.
+  \]
+  Finite \(\psi_2\)-norm is equivalent, up to universal constants, to sub-Gaussian tails; finite \(\psi_1\)-norm is equivalent to sub-exponential tails.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The following are equivalent up to universal constants:
+  \[
+  P(|X|>t)\le2e^{-t^2/K^2},\qquad
+  (\mathbb E|X|^p)^{1/p}\le CK\sqrt p,\qquad
+  \|X\|_{\psi_2}\le C'K.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Tail integration,
+  \(\mathbb E|X|^p=p\int_0^\infty t^{p-1}P(|X|>t)\,\mathrm{d}t\),
+  turns the Gaussian tail into a Gamma integral of order \(K^p p^{p/2}\). Moment growth implies exponential integrability by expanding
+  \(\mathbb E\exp(X^2/c^2)\) into a power series. Markov's inequality applied to the exponential moment recovers the tail bound.</p>
+</div>
+
+<h3>Variance-adaptive empirical means</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(0\le X_i\le1\), \(\mu=\mathbb EX_i\), and
+  \(\widehat\mu=n^{-1}\sum_iX_i\), then with probability at least \(1-\delta\),
+  \[
+  |\widehat\mu-\mu|
+  \le \sqrt{\frac{2\operatorname{Var}(X_1)\log(2/\delta)}{n}}
+  +\frac{2\log(2/\delta)}{3n}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply Bernstein's inequality to
+  \(X_i-\mu\) in both directions, set the exponent equal to
+  \(\log(2/\delta)\), and use the elementary implication
+  \(t^2/\{2(v+t/3)\}\ge u\) whenever
+  \(t\ge\sqrt{2vu}+2u/3\).</p>
+</div>
+
+<h3>Efron-Stein variance control</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(Z_1',\ldots,Z_n'\) be an independent copy of \(Z_1,\ldots,Z_n\), and let
+  \(F_i'=F(Z_1,\ldots,Z_{i-1},Z_i',Z_{i+1},\ldots,Z_n)\). Then
+  \[
+  \operatorname{Var}(F)\le\frac12\sum_{i=1}^n
+  \mathbb E(F-F_i')^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(M_i=\mathbb E(F\mid Z_1,\ldots,Z_i)\). Orthogonality of martingale differences gives
+  \(\operatorname{Var}(F)=\sum_i\mathbb E(M_i-M_{i-1})^2\).
+  Conditional Jensen's inequality bounds the \(i\)th term by
+  \(\tfrac12\mathbb E(F-F_i')^2\). Summation completes the proof.</p>
+</div>
+
+<h3>Self-normalized concentration</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \((X_t,\mathcal F_t)\) be a martingale-difference sequence that is conditionally \(R\)-sub-Gaussian, and let \(v_t\in\mathbb R^d\) be \(\mathcal F_{t-1}\)-measurable. Put
+  \[
+  S_t=\sum_{s=1}^t v_sX_s,\qquad
+  V_t=\lambda I+\sum_{s=1}^t v_sv_s^\top.
+  \]
+  Then, with probability at least \(1-\delta\), simultaneously for all \(t\),
+  \[
+  \|S_t\|_{V_t^{-1}}^2
+  \le 2R^2\log\!\left(
+  \frac{\det(V_t)^{1/2}}{\det(\lambda I)^{1/2}\delta}
+  \right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For fixed \(\theta\), conditional sub-Gaussianity makes
+  \[
+  \exp\!\left\{\theta^\top S_t-\frac{R^2}{2}
+  \theta^\top(V_t-\lambda I)\theta\right\}
+  \]
+  a nonnegative supermartingale. Mix this process over a centered Gaussian distribution for \(\theta\), evaluate the Gaussian integral by completing the square, and apply Ville's inequality. The determinant is the normalization constant of the mixed Gaussian process.</p>
+</div>
+
+<p>This self-normalized form is the basic confidence-ellipsoid tool for linear bandits and adaptive least squares. Ordinary iid concentration is insufficient there because the design vectors depend on past observations.</p>
+
+<h3>Matrix Bernstein inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(X_1,\ldots,X_n\) be independent, centered, self-adjoint \(d\times d\) random matrices with
+  \(\|X_i\|_{\mathrm{op}}\le L\) almost surely. Set
+  \(v=\|\sum_i\mathbb EX_i^2\|_{\mathrm{op}}\). Then
+  \[
+  P\!\left(\left\|\sum_iX_i\right\|_{\mathrm{op}}\ge t\right)
+  \le2d\exp\!\left\{-\frac{t^2}{2(v+Lt/3)}\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The scalar exponential-moment argument is replaced by the trace Laplace transform:
+  \(P(\lambda_{\max}(S)\ge t)\le e^{-\theta t}\mathbb E\operatorname{tr}e^{\theta S}\).
+  Lieb's concavity theorem and the matrix mgf bound control this trace by
+  \(d\exp\{v\theta^2/[2(1-L\theta/3)]\}\). Optimization gives the upper-tail bound; apply the same argument to \(-S\) for the lower tail.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For isotropic sub-Gaussian vectors \(X_i\in\mathbb R^d\), matrix concentration applied to
+  \(X_iX_i^\top-I\), after truncation or a sub-exponential refinement, yields
+  \[
+  \left\|\frac1n\sum_{i=1}^nX_iX_i^\top-I\right\|_{\mathrm{op}}
+  =O_P\!\left(\sqrt{\frac dn}+\frac dn\right).
+  \]
+  This controls empirical curvature in linear regression and generalized linear models.</p>
+</div>
+
+<p>Concentration controls fluctuations for a fixed object or a finite net. The pages on <a href="{{ '/notes/statistical-learning/rademacher-complexity/' | relative_url }}">Rademacher complexity</a> and <a href="{{ '/notes/statistical-learning/covering-numbers-and-entropy/' | relative_url }}">metric entropy</a> explain how to pass from such nets to infinite function classes.</p>

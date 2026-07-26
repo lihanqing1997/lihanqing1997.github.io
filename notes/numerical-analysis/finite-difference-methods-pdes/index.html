@@ -34,3 +34,87 @@ note_next_url: "/notes/numerical-analysis/finite-element-methods/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> For conservation laws, the discretization should respect flux balance and entropy conditions. Smooth Taylor analysis alone does not capture shocks or weak solutions.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Elliptic finite differences</h3>
+
+<p>For \(-\Delta u=f\) on a rectangular grid, the five-point stencil is
+\[
+-\Delta_hu_{ij}
+=\frac{4u_{ij}-u_{i+1,j}-u_{i-1,j}-u_{i,j+1}-u_{i,j-1}}{h^2}.
+\]
+Taylor expansion gives second-order consistency for \(u\in C^4\). The matrix is
+symmetric positive definite under Dirichlet conditions and an M-matrix, giving
+a discrete maximum principle.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> On a rectangle with smooth
+solution and Dirichlet data,
+\[
+\|u_h-R_hu\|_\infty\le Ch^2\|u\|_{C^4}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The error solves
+\(-\Delta_he=\tau_h\), with \(\|\tau_h\|_\infty=O(h^2)\). A discrete barrier
+such as \(x(L-x)+y(H-y)\) and the maximum principle bounds
+\(\|(-\Delta_h)^{-1}\|_{\infty\to\infty}\) independently of \(h\). Apply it to
+the error equation.</p>
+</div>
+
+<h3>Heat equation and the CFL condition</h3>
+
+<p>Forward Euler with centered space differences gives
+\[
+u_j^{n+1}
+=u_j^n+\mu(u_{j-1}^n-2u_j^n+u_{j+1}^n),
+\qquad \mu=\frac{\Delta t}{h^2}.
+\]
+Fourier mode \(e^{ij\xi}\) has amplification
+\[
+G(\xi)=1-4\mu\sin^2(\xi/2).
+\]
+Stability requires \(|G(\xi)|\le1\) for all \(\xi\), hence
+\[
+0\le\mu\le\frac12.
+\]
+This parabolic CFL restriction makes explicit time steps scale like \(h^2\).
+Backward Euler is unconditionally stable; Crank--Nicolson is A-stable but can
+retain oscillatory stiff modes.</p>
+
+<h3>Advection and numerical diffusion</h3>
+
+<p>For \(u_t+au_x=0\), \(a>0\), upwind discretization is
+\[
+u_j^{n+1}=u_j^n-\nu(u_j^n-u_{j-1}^n),
+\qquad \nu=a\Delta t/h.
+\]
+It is stable and monotone for \(0\le\nu\le1\). Its modified equation is
+\[
+u_t+au_x
+=\frac{ah}{2}(1-\nu)u_{xx}+O(h^2),
+\]
+revealing artificial diffusion. Centered explicit Euler has no damping and is
+unstable for pure advection.</p>
+
+<h3>Von Neumann analysis and its limits</h3>
+
+<p>Fourier analysis exactly diagnoses constant-coefficient periodic linear
+schemes in \(L_2\). Variable coefficients, boundaries, nonlinearities, and
+nonnormal matrices require energy estimates, matrix stability, or monotonicity.
+A favorable amplification factor on the infinite grid is not by itself a
+boundary-stability theorem.</p>
+
+<h3>Conservation laws</h3>
+
+<p>A conservative update has
+\[
+u_j^{n+1}
+=u_j^n-\frac{\Delta t}{h}
+\{\widehat f_{j+1/2}-\widehat f_{j-1/2}\}.
+\]
+Fluxes cancel when summed, preserving total mass up to boundary terms.
+Godunov's theorem says a linear monotone scheme cannot exceed first order.
+High-resolution methods use nonlinear limiters to obtain higher accuracy away
+from shocks while preserving entropy-compatible nonoscillatory behavior.</p>

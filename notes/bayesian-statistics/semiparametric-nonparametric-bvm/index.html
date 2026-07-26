@@ -62,3 +62,191 @@ converges to \(N(0,P_0\tilde\psi^2)\).</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The posterior quantiles converge to Gaussian quantiles with variance \(P_0\tilde\psi^2/n\), and the efficient estimator has the same asymptotic sampling law.</p>
     </div>
+
+<h3>Pathwise differentiable functionals</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\(\psi(P)\in\mathbb R\). It is pathwise differentiable at \(P_0\) relative to tangent space \(\mathcal T\subset L_0^2(P_0)\) if there exists
+\(\widetilde\psi\in\overline{\mathcal T}\) such that for every regular path
+\[
+\frac{\mathrm{d}P_t}{\mathrm{d}P_0}
+=1+tg+o(t)
+\quad(g\in\mathcal T),
+\]
+\[
+\left.
+\frac{\mathrm{d}}{\mathrm{d}t}
+\psi(P_t)
+\right|_{t=0}
+=P_0(\widetilde\psi g).
+\]
+The minimum-norm representer \(\widetilde\psi\) is the efficient influence function.</p>
+</div>
+
+<h3>Least-favorable local perturbation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (semiparametric BvM template).</span> Suppose a posterior concentrates around nuisance parameter \(\eta_0\), and the likelihood admits a uniform expansion along a least-favorable path:
+\[
+\ell_n(\eta_{t/\sqrt n})
+-\ell_n(\eta)
+=t\Delta_{n,\psi}
+-\frac12t^2V_\psi
++o_{P_0}(1),
+\]
+where
+\[
+\Delta_{n,\psi}
+=\frac1{\sqrt n}\sum_{i=1}^n
+\widetilde\psi(X_i)
+\Rightarrow N(0,V_\psi),
+\qquad
+V_\psi=P_0\widetilde\psi^2.
+\]
+If the prior is stable under this local change of variables and nuisance bias is \(o(n^{-1/2})\), then
+\[
+\Pi\left(
+\sqrt n\{\psi(\eta)-\widehat\psi_n\}
+\in\cdot\mid X^{(n)}
+\right)
+\rightsquigarrow N(0,V_\psi),
+\]
+where
+\[
+\widehat\psi_n
+=\psi(\eta_0)+
+\frac1n\sum_i\widetilde\psi(X_i)
++o_P(n^{-1/2}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Evaluate the posterior Laplace transform of the centered functional. Shift the integration variable along the least-favorable path by \(t/\sqrt n\). The likelihood ratio contributes
+\[
+t\Delta_{n,\psi}+\frac12t^2V_\psi
+\]
+after centering, while prior stability makes the transformed prior ratio tend to one. Uniform remainder and posterior localization permit integration. Convergence of Laplace transforms identifies the Gaussian posterior limit.</p>
+</div>
+
+<h3>No-bias condition</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose a plug-in functional has expansion
+\[
+\psi(\eta)-\psi(\eta_0)
+=P_0\{\widetilde\psi_\eta(\eta-\eta_0)\}
++R(\eta,\eta_0),
+\]
+with
+\[
+|R(\eta,\eta_0)|
+\lesssim d(\eta,\eta_0)^2.
+\]
+If the nuisance posterior contracts at rate \(\varepsilon_n\), then a sufficient remainder condition for root-\(n\) BvM is
+\[
+\sqrt n\,\varepsilon_n^2\to0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> On the contraction set,
+\[
+\sqrt n|R(\eta,\eta_0)|
+\lesssim\sqrt n\,\varepsilon_n^2=o(1).
+\]
+The first-order term is handled by the least-favorable score projection.</p>
+</div>
+
+<p>This sufficient condition is not always necessary; exact conjugacy, orthogonality, or sharper remainder structure can weaken it. But it explains why nuisance estimation at slower than \(n^{-1/4}\) often obstructs root-\(n\) functional inference.</p>
+
+<h3>Linear functionals in white noise</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> In
+\[
+Y_j=\theta_j+n^{-1/2}\varepsilon_j,
+\]
+consider
+\[
+\psi(\theta)=\sum_{j\ge1}a_j\theta_j,
+\qquad (a_j)\in\ell^2.
+\]
+The efficient estimator is
+\[
+\widehat\psi=\sum_ja_jY_j,
+\]
+with variance
+\[
+\frac1n\sum_ja_j^2.
+\]
+Under independent Gaussian prior
+\(\theta_j\sim N(0,\tau_j^2)\), the posterior mean is
+\[
+\sum_ja_j
+\frac{n\tau_j^2}{1+n\tau_j^2}Y_j.
+\]
+Its bias at truth is
+\[
+-\sum_ja_j
+\frac{1}{1+n\tau_j^2}\theta_{0j}.
+\]
+A BvM theorem requires this bias to be
+\(o(n^{-1/2})\) and posterior variance to approach
+\(n^{-1}\sum_ja_j^2\).</p>
+</div>
+
+<h3>Regular and irregular functionals</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> In white noise, a linear functional with coefficients
+\((a_j)\notin\ell^2\) has no finite-variance influence function in the observation tangent space and is not root-\(n\) regular.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> A candidate influence function corresponds to coefficient sequence \(a\), whose variance is
+\(\sum_ja_j^2\). If this diverges, the derivative is not a bounded linear functional on the \(L^2\) tangent space, so the Riesz representer does not exist there.</p>
+</div>
+
+<p>Point evaluation of an unrestricted nonparametric function is a standard irregular functional. Its posterior limit depends on smoothing and has a slower rate; imposing a Gaussian BvM statement at root-\(n\) scale is incorrect.</p>
+
+<h3>Prior invariance under local shifts</h3>
+
+<p>For a product prior on coefficients, a least-favorable shift changes many coordinates. Prior stability requires the log prior ratio
+\[
+\log\frac{\pi(\theta-t a/\sqrt n)}
+{\pi(\theta)}
+\]
+to be \(o_P(1)\) uniformly on posterior-relevant sets after the appropriate nuisance correction. Thin tails, hard truncation, or highly informative shrinkage can violate this even when posterior contraction is optimal.</p>
+
+<h3>Weak nonparametric BvM</h3>
+
+<p>A whole-posterior BvM may hold in a negative Sobolev space
+\[
+H^{-s}
+\]
+where white noise is tight, even though it fails in \(L^2\). The limiting Gaussian is then an infinite-dimensional Gaussian measure in the weak topology. Credible balls in that topology can have coverage, but mapping them to pointwise bands or \(L^2\) balls is not valid without additional arguments.</p>
+
+<h3>Bias correction and one-step posteriors</h3>
+
+<p>When the raw plug-in posterior is biased for \(\psi\), one may center draws or posterior summaries using an estimated influence-function correction:
+\[
+\widehat\psi_{\mathrm{1step}}
+=\psi(\widehat\eta)
++\mathbb P_n\widetilde\psi_{\widehat\eta}.
+\]
+Cross-fitting can make flexible nuisance estimation compatible with asymptotic linearity. Such a corrected distribution is a calibrated inferential construction; it need not be the pushforward of the original exact posterior.</p>
+
+<h3>Checklist for a functional BvM claim</h3>
+
+<ol>
+<li>Is the functional pathwise differentiable?</li>
+<li>What is its efficient influence function and variance?</li>
+<li>In which metric does the nuisance posterior contract?</li>
+<li>Is the second-order remainder \(o(n^{-1/2})\)?</li>
+<li>Is the prior stable under the least-favorable shift?</li>
+<li>Is the centering estimator efficient?</li>
+<li>Is convergence pointwise in \(P_0\) or uniform over a class?</li>
+</ol>
+
+<p>Only after these questions are answered do posterior quantiles inherit frequentist validity.</p>

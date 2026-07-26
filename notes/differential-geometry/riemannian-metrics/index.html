@@ -8,24 +8,122 @@ note_prev_url: "/notes/differential-geometry/lie-derivative-and-cartan-formula/"
 note_next_url: "/notes/differential-geometry/levi-civita-connection/"
 ---
 
-<p>Riemannian metrics records the objects, main results, proof mechanisms, and boundary cases needed for the differential geometry note.</p>
+<p>A Riemannian metric equips each tangent space with an inner product that
+varies smoothly. It converts topology into quantitative geometry: lengths,
+angles, volumes, gradients, and distances all arise from this single tensor.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Riemannian metric assigns an inner product \(g_p\) to each tangent space smoothly. It defines lengths, angles, gradients, volume, and distance.</p>
-    </div>
+<h3>Metrics and their existence</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Every smooth manifold admits a Riemannian metric, using local Euclidean metrics glued by a partition of unity.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A Riemannian metric on
+\(M\) is a smooth symmetric \((0,2)\)-tensor \(g\) such that
+\(g_p(v,v)>0\) for every \(v\ne0\). In coordinates,
+\[
+g=g_{ij}\,\mathrm{d}x^i\otimes\mathrm{d}x^j,
+\]
+where \((g_{ij})\) is positive definite.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose a locally finite atlas and a subordinate partition of unity. Pull local Euclidean inner products to the manifold and sum them with nonnegative partition weights.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Every smooth manifold admits
+a Riemannian metric.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A Riemannian metric is extra structure, not part of the definition of a smooth manifold. It turns differential topology into geometry.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Choose a locally finite atlas
+\((U_\alpha,x_\alpha)\) and a subordinate partition of unity
+\((\rho_\alpha)\). Pull the Euclidean metric back to each \(U_\alpha\) and set
+\[
+g=\sum_\alpha\rho_\alpha\,x_\alpha^*g_{\mathrm{Euc}}.
+\]
+The sum is locally finite and smooth. At each point at least one
+\(\rho_\alpha\) is positive, so \(g(v,v)>0\) for every nonzero \(v\).</p>
+</div>
+
+<h3>Length, energy, and distance</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a piecewise smooth
+curve \(\gamma:[a,b]\to M\),
+\[
+L(\gamma)=\int_a^b|\dot\gamma(t)|_g\,\mathrm{d}t,\qquad
+E(\gamma)=\frac12\int_a^b|\dot\gamma(t)|_g^2\,\mathrm{d}t.
+\]
+The Riemannian distance is
+\[
+d_g(p,q)=\inf_{\gamma(a)=p,\gamma(b)=q}L(\gamma).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> On a connected
+Riemannian manifold, \(d_g\) is a metric and induces the original manifold
+topology.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Symmetry and the
+triangle inequality follow by reversing and concatenating curves. In a
+relatively compact coordinate ball, eigenvalue bounds
+\[
+c|v|^2\le g_x(v,v)\le C|v|^2
+\]
+compare Riemannian and Euclidean lengths. This proves both positivity of
+\(d_g(p,q)\) for \(p\ne q\) and local equivalence of their topologies.</p>
+</div>
+
+<p>Cauchy-Schwarz gives
+\[
+L(\gamma)^2\le2(b-a)E(\gamma),
+\]
+with equality exactly for constant-speed parametrizations. Thus fixed-endpoint
+energy minimizers have constant speed and minimize length.</p>
+
+<h3>Musical isomorphisms and gradient</h3>
+
+<p>The metric defines
+\[
+\flat:T_pM\to T_p^*M,\quad v^\flat=g(v,\cdot),
+\qquad
+\sharp=(\flat)^{-1}.
+\]
+The gradient of \(f\) is
+\[
+\operatorname{grad}f=(\mathrm{d}f)^\sharp,\qquad
+g(\operatorname{grad}f,X)=Xf.
+\]
+In coordinates, \((\operatorname{grad}f)^i=g^{ij}\partial_jf\).</p>
+
+<h3>Volume and Laplacian</h3>
+
+<p>On an oriented manifold,
+\[
+\operatorname{vol}_g=\sqrt{\det(g_{ij})}\,
+\mathrm{d}x^1\wedge\cdots\wedge\mathrm{d}x^n.
+\]
+The divergence and Laplace-Beltrami operator are
+\[
+\operatorname{div}X
+=\frac1{\sqrt{|g|}}\partial_i(\sqrt{|g|}X^i),\qquad
+\Delta_gf
+=\frac1{\sqrt{|g|}}\partial_i
+\left(\sqrt{|g|}g^{ij}\partial_jf\right).
+\]
+They satisfy Green's identity
+\[
+\int_M h\Delta_gf\,\mathrm{d}V_g
+=-\int_Mg(\nabla h,\nabla f)\,\mathrm{d}V_g
++\int_{\partial M}h\,\partial_\nu f\,\mathrm{d}A_g.
+\]</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (conformal change).</span> If
+\(\widetilde g=e^{2u}g\) on an \(n\)-manifold, then
+\[
+\mathrm{d}V_{\widetilde g}=e^{nu}\mathrm{d}V_g,\qquad
+\Delta_{\widetilde g}f
+=e^{-2u}\bigl(\Delta_gf+(n-2)g(\nabla u,\nabla f)\bigr).
+\]
+In dimension two the gradient correction disappears, reflecting conformal
+invariance of harmonicity.</p>
+</div>

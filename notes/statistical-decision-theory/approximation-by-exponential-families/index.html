@@ -8,26 +8,116 @@ note_prev_url: "/notes/statistical-decision-theory/sequential-experiments/"
 note_next_url: "/notes/statistical-decision-theory/independent-nonidentically-distributed-observations/"
 ---
 
-<p>Gaussian approximation is a special case of exponential-family approximation. Le Cam's broader program asks when an experiment behaves like a finite-rank exponential family.</p>
+<p>A Gaussian shift is an exponential experiment with a quadratic cumulant, but finite-rank exponential approximation is broader. It seeks a low-dimensional statistic whose likelihood coordinates reproduce the original experiment, exactly or with controlled deficiency.</p>
 
-    <h3>Finite-rank exponential experiment</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An exponential experiment has likelihoods of the form</p>
-        <p>\[
-\log\frac{\mathrm{d}P_\theta}{\mathrm{d}P_0}
-=\eta(\theta)^\top T-c(\theta).
-\]</p>
-    </div>
+<h3>Exact exponential experiments</h3>
 
-    <h3>Approximate linearity of log likelihoods</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> An experiment is approximable by a finite-rank exponential family when its log likelihood ratios are uniformly close to a finite-dimensional linear span plus normalizing constants.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An exponential experiment dominated by \(P_0\) has likelihood ratios
+  \[
+  \frac{\mathrm{d}P_\theta}{\mathrm{d}P_0}(x)
+  =
+  \exp\{\eta(\theta)^\top T(x)-A(\theta)\},
+  \]
+  where \(T:\mathcal X\to\mathbb R^k\) and
+  \[
+  A(\theta)
+  =
+  \log E_0e^{\eta(\theta)^\top T}.
+  \]</p>
+</div>
 
-    <h3>Sufficient statistic construction</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The coordinates spanning the likelihood ratios become approximate sufficient statistics. Once the residual likelihood is uniformly small, the induced finite-rank experiment has small deficiency.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The statistic \(T\) is sufficient, and the experiment is Blackwell equivalent to the family of distributions of \(T\).</p>
+</div>
 
-    <h3>Beyond Gaussian limits</h3>
-    <p>LAMN, Poisson, and other non-Gaussian local limits can often be understood as exponential-family approximations with random or nonquadratic cumulants.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The likelihood factorizes into a function of \(T(x)\) times the base density. Apply the factorization theorem and the kernel characterization of sufficiency. \(\square\)</p>
+</div>
+
+<h3>Approximate likelihood factorization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose an experiment
+  \(\mathcal E=\{P_\theta\}\) and a statistic \(T\) admit approximating laws
+  \(\widetilde P_\theta\) such that:</p>
+  <ol>
+    <li>\(\mathrm{d}\widetilde P_\theta/\mathrm{d}P_0\) is measurable with respect to \(T\);</li>
+    <li>
+    \[
+    \sup_{\theta\in\Theta}
+    \|P_\theta-\widetilde P_\theta\|_{\mathrm{TV}}
+    \leq\varepsilon.
+    \]</li>
+  </ol>
+  <p>Then the deficiency from the reduced statistic experiment to the original experiment is at most \(\varepsilon\), and
+  \[
+  \Delta(\mathcal E,T\mathcal E)\leq\varepsilon.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \(\widetilde P_\theta\) has a \(T\)-measurable likelihood ratio, \(T\) is sufficient for the approximating experiment \(\widetilde{\mathcal E}\). Thus
+  \(\Delta(\widetilde{\mathcal E},T\widetilde{\mathcal E})=0\). The identity kernel gives
+  \(\Delta(\mathcal E,\widetilde{\mathcal E})\leq\varepsilon\), and data processing gives the same bound between their statistic experiments. Apply the triangle inequality. \(\square\)</p>
+</div>
+
+<p>One can replace total-variation control by Hellinger or KL bounds and then convert metrics. Uniform control of a log-likelihood residual is useful only if it holds on a high-probability set and controls normalization; a pointwise \(o_p(1)\) remainder need not imply small deficiency.</p>
+
+<h3>Finite-rank likelihood approximation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A rank-\(k\) approximation has
+  \[
+  \log\frac{\mathrm{d}P_\theta}{\mathrm{d}P_0}
+  =
+  \eta(\theta)^\top T_k-A_k(\theta)+R_{\theta,k},
+  \]
+  where \(R_{\theta,k}\) is uniformly negligible in a metric strong enough to compare the induced probability measures.</p>
+</div>
+
+<p>The coordinates of \(T_k\) span the informative part of the likelihood-ratio family. If \(k=k_n\) grows, the approximation bias decreases while the complexity of the reduced experiment increases.</p>
+
+<h3>Square-root density projection</h3>
+
+<p>Because Hellinger distance is an \(L_2\)-distance between square-root densities, one may approximate
+\[
+\sqrt{p_\theta/p_0}-1
+\]
+in a finite-dimensional subspace of \(L_2(P_0)\). If the approximation error is uniformly \(\varepsilon\), the corresponding Hellinger error is \(\varepsilon\). This is often more stable than directly approximating unbounded log likelihoods.</p>
+
+<h3>Gaussian shifts as exponential families</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In the Gaussian shift with canonical observation
+  \(\Delta\sim N(Ih,I)\),
+  \[
+  \log\frac{\mathrm{d}P_h}{\mathrm{d}P_0}
+  =
+  h^\top\Delta-\frac12h^\top Ih.
+  \]
+  Thus \(T=\Delta\), natural parameter \(\eta(h)=h\), and cumulant
+  \(A(h)=\frac12h^\top Ih\). LAN says that a regular local experiment is asymptotically this exponential family.</p>
+</div>
+
+<h3>Curved exponential families</h3>
+
+<p>If \(\eta(\theta)\) lies on a lower-dimensional smooth manifold in
+\(\mathbb R^k\), the model is a curved exponential family. The tangent space of the curve determines first-order information, while its curvature affects higher-order likelihood and risk approximations.</p>
+
+<h3>Random and nonquadratic cumulants</h3>
+
+<p>In LAMN experiments the conditional cumulant is
+\[
+A_J(h)=\frac12h^\top Jh
+\]
+with random \(J\) revealed as ancillary information. In Poisson experiments,
+\[
+A(\eta)=\int(e^\eta-1)\,\mathrm{d}\mu_0,
+\]
+which is nonquadratic. Both fit the exponential-likelihood form, but only the first is conditionally Gaussian.</p>
+
+<h3>Approximation and decision transfer</h3>
+
+<p>A successful finite-rank approximation must end with a decision statement: bounded-loss risks in the original and reduced experiments differ by at most the established deficiency. Merely observing that a likelihood “looks exponential” does not prove that procedures can be transferred uniformly over parameters.</p>

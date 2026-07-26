@@ -17,7 +17,11 @@ note_next_url: "/notes/real-analysis/egorov-lusin-and-approximation-theorems/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Linearity is immediate. Holder gives \(|T_g(f)|\le\|f\|_p\|g\|_q\), so \(T_g\) is bounded with the stated norm estimate.</p>
+        <p><span class="statement-title">Proof.</span> Linearity is immediate. Holder gives \(|T_g(f)|\le\|f\|_p\|g\|_q\), so \(\|T_g\|\le\|g\|_q\). For \(1<p<\infty\), truncate
+\[
+f=\operatorname{sgn}(\overline g)|g|^{q-1}
+\]
+to finite-measure, bounded level sets and normalize it in \(L^p\); the resulting pairings increase to \(\|g\|_q\). For \(p=1,q=\infty\), test on sets where \(|g|>\|g\|_\infty-\varepsilon\), with the phase chosen to align \(fg\). Thus \(\|T_g\|=\|g\|_q\).</p>
     </div>
 
     <h3>Duality for \(1\lt p\lt \infty\)</h3>
@@ -27,7 +31,34 @@ note_next_url: "/notes/real-analysis/egorov-lusin-and-approximation-theorems/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Given a bounded linear functional \(T\), define a signed measure \(\nu(A)=T(\mathbf 1_A)\) first on finite-measure sets and extend by sigma-finiteness. Boundedness gives \(\nu\ll\mu\), so \(\nu=g\mu\) by Radon-Nikodym. Testing \(T\) on simple functions gives \(T(f)=\int fg\). A standard extremal choice \(f=\operatorname{sgn}(g)|g|^{q-1}\) on finite pieces gives \(\|T\|=\|g\|_q\).</p>
+        <p><span class="statement-title">Proof.</span> First suppose \(\mu(X)<\infty\). Define \(\nu(A)=T(\mathbf1_A)\). If \(A_n\downarrow\varnothing\), then
+\[
+\|\mathbf1_{A_n}\|_p=\mu(A_n)^{1/p}\longrightarrow0,
+\]
+so \(\nu(A_n)\to0\); finite additivity and this continuity prove that \(\nu\) is a finite signed measure. It is absolutely continuous with respect to \(\mu\), hence \(\nu=g\mu\) by Radon-Nikodym. For simple \(s\),
+\[
+T(s)=\int sg\,\mathrm{d}\mu,
+\]
+and density of simple functions extends the identity to all \(L^p\).</p>
+        <p>It remains to prove \(g\in L^q\). On \(E_n=\{|g|\le n\}\), take
+\[
+f_n=\operatorname{sgn}(\overline g)|g|^{q-1}\mathbf1_{E_n}.
+\]
+Then
+\[
+\int_{E_n}|g|^q
+=T(f_n)
+\le\|T\|\left(\int_{E_n}|g|^q\right)^{1/p}.
+\]
+Therefore \((\int_{E_n}|g|^q)^{1/q}\le\|T\|\), and monotone convergence gives \(\|g\|_q\le\|T\|\). The reverse inequality was proved above. For sigma-finite \(X\), apply the finite argument on an increasing exhaustion and use uniqueness to paste the local densities.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (endpoint \(p=1\)).</span> On a sigma-finite measure space,
+\[
+(L^1)^*=L^\infty
+\]
+isometrically. In contrast, the dual of \(L^\infty\) is generally strictly larger than \(L^1\); finitely additive functionals appear.</p>
     </div>
 
     <h3>Weak convergence in \(L^p\)</h3>
@@ -42,6 +73,25 @@ note_next_url: "/notes/real-analysis/egorov-lusin-and-approximation-theorems/"
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> If \(\|f_n-f\|_p\to0\), then for each \(g\in L^q\), Holder gives \(|\int(f_n-f)g|\le\|f_n-f\|_p\|g\|_q\to0\).</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> Every weakly convergent sequence is norm bounded.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For each \(g\in L^q\), the scalar sequence \(\int f_ng\) converges and is therefore bounded. Regard \(f_n\) as bounded linear functionals on \(L^q\). The uniform boundedness principle yields
+\[
+\sup_n\|f_n\|_p<\infty.
+\]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (weak without strong convergence).</span> In \(L^2(0,2\pi)\), the orthonormal sequence
+\[
+e_n(x)=(2\pi)^{-1/2}e^{inx}
+\]
+converges weakly to \(0\), because the Fourier coefficients \(\langle g,e_n\rangle\) of every \(g\in L^2\) tend to zero. Yet \(\|e_n\|_2=1\), so there is no strong convergence.</p>
     </div>
 
     <h3>Reflexivity</h3>
@@ -62,4 +112,16 @@ note_next_url: "/notes/real-analysis/egorov-lusin-and-approximation-theorems/"
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> For \(f\ne0\), choose \(g\in L^q\) with \(\|g\|_q=1\) and \(\int fg\) arbitrarily close to \(\|f\|_p\). Weak convergence gives \(\int f_ng\to\int fg\), while Holder gives \(|\int f_ng|\le\|f_n\|_p\). Take the liminf and then optimize over \(g\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (Radon-Riesz property).</span> For \(1<p<\infty\), if \(f_n\rightharpoonup f\) in \(L^p\) and \(\|f_n\|_p\to\|f\|_p\), then \(f_n\to f\) strongly in \(L^p\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof outline.</span> The spaces \(L^p\), \(1<p<\infty\), are uniformly convex. If \(\|f_n-f\|_p\) stayed above \(\varepsilon\), uniform convexity would force the midpoint norms
+\[
+\left\|\frac{f_n+f}{2}\right\|_p
+\]
+to stay strictly below the common limiting norm. But the midpoints converge weakly to \(f\), and weak lower semicontinuity gives the opposite inequality. Hence the norm difference must vanish.</p>
     </div>

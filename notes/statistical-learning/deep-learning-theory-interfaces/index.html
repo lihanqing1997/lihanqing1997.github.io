@@ -60,3 +60,154 @@ f(x)=W_L\sigma(W_{L-1}\sigma(\cdots\sigma(W_1x+b_1)\cdots)+b_{L-1})+b_L.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The theoretical issue is to identify the implicit bias of the algorithm among interpolating solutions. Minimum-norm interpolation, margin maximization, and stability of gradient flow are three common mathematical descriptions.</p>
     </div>
+
+<h3>ReLU networks represent piecewise-linear splines</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Every continuous piecewise-linear function \(f:\mathbb R\to\mathbb R\) with knots
+  \(t_1<\cdots<t_m\) can be represented exactly as
+  \[
+  f(x)=a+bx+\sum_{j=1}^mc_j(x-t_j)_+.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(b\) be the slope to the left of the first knot, and let \(c_j\) be the jump in slope at \(t_j\). The derivative of the right side is \(b+\sum_{t_j<x}c_j\), which matches the slope of \(f\) on every interval. Choose \(a\) to match one function value; equality then follows everywhere by continuity.</p>
+</div>
+
+<p>This formula is a one-hidden-layer ReLU network. Approximation theorems in higher dimensions generalize the same idea, but the rates depend strongly on whether smoothness is isotropic, compositional, sparse, or concentrated near a low-dimensional manifold.</p>
+
+<h3>Positive homogeneity and rescaling symmetry</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Because
+  \(\sigma(cu)=c\sigma(u)\) for ReLU and \(c\ge0\), the transformation
+  \[
+  (W_\ell,W_{\ell+1})
+  \longmapsto(cW_\ell,c^{-1}W_{\ell+1})
+  \]
+  leaves the represented function unchanged. Consequently, a bound depending on one layer norm alone is not representation invariant, whereas the product
+  \(\prod_{\ell=1}^L\|W_\ell\|_{\mathrm{op}}\) is.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Multiplying the preactivation at layer \(\ell\) by \(c\) multiplies its ReLU output by \(c\); the inverse scaling in the next linear map cancels it. In the norm product the factors \(c\) and \(c^{-1}\) cancel as well.</p>
+</div>
+
+<h3>A spectral-complexity bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For depth-\(L\) ReLU networks on
+  \(\|x\|_2\le R\), a representative margin bound has complexity
+  \[
+  \frac{R}{\gamma\sqrt n}
+  \left(\prod_{\ell=1}^L\|W_\ell\|_{\mathrm{op}}\right)
+  \left\{\sum_{\ell=1}^L
+  \frac{\|W_\ell\|_F^{2/3}}
+  {\|W_\ell\|_{\mathrm{op}}^{2/3}}\right\}^{3/2},
+  \]
+  up to logarithmic factors and architectural constants.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Cover each normalized layer in spectral/Frobenius geometry, propagate perturbations through the network using ReLU's Lipschitz property, and optimize how the total covering accuracy is allocated across layers. Dudley chaining converts the resulting entropy to Rademacher complexity. Finally apply the ramp-loss margin bound. The product of spectral norms controls Lipschitz amplification, while the normalized Frobenius terms measure effective layer ranks.</p>
+</div>
+
+<h3>Gradient flow in homogeneous linear classification</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For linearly separable data, gradient flow on logistic or exponential loss in an ordinary linear model satisfies
+  \[
+  \|\beta(t)\|_2\to\infty,\qquad
+  \frac{\beta(t)}{\|\beta(t)\|_2}\longrightarrow
+  \frac{\widehat\beta_{\mathrm{mm}}}
+  {\|\widehat\beta_{\mathrm{mm}}\|_2},
+  \]
+  where
+  \[
+  \widehat\beta_{\mathrm{mm}}
+  =\arg\min_\beta\|\beta\|_2
+  \quad\text{subject to }y_i x_i^\top\beta\ge1.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Vanishing empirical loss forces every margin to diverge, so no finite minimizer exists. The gradient is a positive combination of vectors \(y_ix_i\), with weights exponentially concentrated on the smallest-margin observations. KKT analysis shows that any limiting normalized direction must satisfy the hard-margin support-vector equations. Strict convexity of the norm makes that direction unique.</p>
+</div>
+
+<p>This theorem is exact for linear predictors. In multilayer homogeneous networks, the implicit norm is architecture-dependent and the parameter-space max-margin problem need not be convex.</p>
+
+<h3>Neural tangent linearization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For network
+  \(f_\theta\), its empirical neural tangent kernel at initialization
+  \(\theta_0\) is
+  \[
+  K_0(x,x')=
+  \left\langle\nabla_\theta f_{\theta_0}(x),
+  \nabla_\theta f_{\theta_0}(x')\right\rangle.
+  \]
+  The first-order model is
+  \[
+  f_\theta(x)\approx f_{\theta_0}(x)+
+  \nabla_\theta f_{\theta_0}(x)^\top(\theta-\theta_0).
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under squared loss, if the Jacobian remains fixed during gradient flow, the vector of training predictions \(f_t\) obeys
+  \[
+  \frac{\mathrm{d} f_t}{\mathrm{d}t}
+  =-K_0(f_t-y),
+  \qquad
+  f_t-y=e^{-K_0t}(f_0-y).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Parameter gradient flow is
+  \(\dot\theta=-J_0^\top(f-y)\). Multiplying by \(J_0\) gives
+  \(\dot f=-J_0J_0^\top(f-y)=-K_0(f-y)\). Solve the constant-coefficient linear differential equation by matrix exponentiation.</p>
+</div>
+
+<p>Infinite-width NTK theorems justify that the kernel changes little under a particular width and initialization scaling. This is a controlled “lazy training” regime, not a universal description of feature learning at finite width.</p>
+
+<h3>Mean-field feature learning</h3>
+
+<p>For a two-layer network written as
+\[
+f_\rho(x)=\int a\,\sigma(w^\top x)\,\rho(\mathrm{d}a,\mathrm{d}w),
+\]
+the infinite-width limit can instead be formulated as gradient flow of a probability measure \(\rho_t\) in Wasserstein space. Unlike the NTK limit, the feature distribution \(w\) moves macroscopically. These limits answer different scaling questions; one should not treat them as competing universal approximations.</p>
+
+<h3>Double descent in isotropic linear regression</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In an isotropic Gaussian linear model with aspect ratio \(p/n\to\gamma\), the noise contribution to minimum-norm least-squares test risk has a singularity near \(\gamma=1\):
+  \[
+  \text{variance}\asymp
+  \begin{cases}
+  \sigma^2\gamma/(1-\gamma),&\gamma<1,\\
+  \sigma^2/(\gamma-1),&\gamma>1,
+  \end{cases}
+  \]
+  under the standard normalization. Signal bias appears for \(\gamma>1\) because the row space misses a fraction of the target.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Below interpolation, conditional variance is proportional to
+  \(\operatorname{tr}(X^\top X)^{-1}\). Above interpolation, the minimum-norm estimator uses \(X^\top(XX^\top)^{-1}\), so variance involves
+  \(\operatorname{tr}(XX^\top)^{-1}\). Marchenko-Pastur limits evaluate the normalized inverse traces and diverge at unit aspect ratio. Rotational symmetry gives the missing-row-space signal bias.</p>
+</div>
+
+<h3>Four errors that must remain separate</h3>
+
+<p>A theorem about a neural predictor should identify:
+\[
+\underbrace{\inf_{f\in\mathcal F}R(f)-R^*}_{\text{approximation}}
++\underbrace{R(\widehat f)-\inf_{f\in\mathcal F}R(f)}_{\text{estimation}}
++\underbrace{R_n(f_{\mathrm{alg}})-\inf_{\theta}R_n(f_\theta)}_{\text{optimization}}
++\underbrace{\text{shift or robustness error}}_{\text{deployment}}.
+\]
+Width can reduce approximation error while increasing a classwise complexity bound; optimization may select a low-complexity interpolator within that large class; distribution shift can invalidate an otherwise correct iid bound. Deep-learning theory is coherent only when the object and regime of each claim are explicit.</p>

@@ -8,27 +8,137 @@ note_prev_url: "/notes/empirical-processes/symmetrization-and-rademacher-process
 note_next_url: "/notes/empirical-processes/entropy-of-smooth-classes/"
 ---
 
-<p>VC theory gives robust entropy bounds for combinatorial classes of sets and subgraphs. It is the quickest route from structure to empirical-process control.</p>
+<p>Vapnik–Chervonenkis theory turns a combinatorial restriction on possible labelings into a distribution-free entropy bound. It is especially powerful because it is invariant under the unknown sampling law and survives many Boolean and monotone operations.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A class of sets \(\mathcal C\) shatters \(\{x_1,\ldots,x_m\}\) if every subset is realized as \(\{x_i:x_i\in C\}\) for some \(C\in\mathcal C\). The VC dimension is the largest shattered \(m\).</p>
-    </div>
+<h3>Traces and shattering</h3>
 
-    <h3>Shattering and entropy</h3>
-    <ul>
-        <li>Finite VC dimension implies polynomial growth of the number of labelings on finite samples.</li>
-        <li>VC-subgraph classes extend the idea from sets to real-valued functions.</li>
-        <li>Permanence rules cover finite unions, intersections, monotone transformations, and many parametric threshold classes.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\mathcal C\) be a class of subsets of \(\mathcal X\). Its trace on \(S=\{x_1,\ldots,x_n\}\) is
+  \[
+  \mathcal C|_S=\{C\cap S:C\in\mathcal C\}.
+  \]
+  The growth function is
+  \[
+  \Pi_{\mathcal C}(n)
+  =\sup_{|S|=n}|\mathcal C|_S|.
+  \]
+  The class shatters \(S\) if \(\mathcal C|_S=2^S\). Its VC dimension \(V(\mathcal C)\) is the largest cardinality of a shattered finite set, with value \(\infty\) if no finite bound exists.</p>
+</div>
 
-    <h3>Halfspaces, intervals, and subgraphs</h3>
-    <p>When a class is defined by inequalities, thresholds, rectangles, halfspaces, or finite-dimensional parameters, check VC structure before estimating entropy from scratch.</p>
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> The lower half-lines \((-\infty,t]\) shatter one point but cannot shatter two ordered points, so their VC dimension is \(1\). All intervals \([a,b]\) shatter any two points but not three: the labeling that keeps the two outer points and excludes the middle one is impossible. Thus their VC dimension is \(2\).</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Sauer-Shelah growth bound</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Sauer-Shelah gives polynomial growth: if \(\mathcal C\) has VC dimension \(V\), the number of distinct traces on \(n\) points is at most of order \(n^V\). This polynomial growth becomes logarithmic entropy.</p>
-    </div>
+<h3>The Sauer–Shelah lemma</h3>
 
-    <h3>Boolean operations and monotone transforms</h3>
-    <p>Half-lines, rectangles in fixed dimension, halfspaces, balls, and many finite-dimensional threshold families are VC. After proving a few permanence rules, one can certify many examples without computing covering numbers directly.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Sauer–Shelah).</span> If \(V(\mathcal C)=V<\infty\), then for every \(n\),
+  \[
+  \Pi_{\mathcal C}(n)
+  \leq \sum_{j=0}^{V}\binom nj.
+  \]
+  In particular, for \(n\geq V\),
+  \[
+  \Pi_{\mathcal C}(n)\leq \left(\frac{en}{V}\right)^V.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write \(m(n,V)\) for the largest trace cardinality among classes of VC dimension at most \(V\). Fix a point \(x_n\). Separate traces on \(n\) points according to their restrictions on the first \(n-1\) points. Restrictions that occur with both choices for membership of \(x_n\) form a class of VC dimension at most \(V-1\); otherwise that class together with \(x_n\) would shatter \(V+1\) points. All restrictions form a class of dimension at most \(V\). Hence
+  \[
+  m(n,V)\leq m(n-1,V)+m(n-1,V-1).
+  \]
+  With \(m(n,0)=1\) and \(m(0,V)=1\), Pascal's identity and induction give
+  \(m(n,V)\leq\sum_{j=0}^V\binom nj\). Finally,
+  \[
+  \sum_{j=0}^V\binom nj
+  \leq \inf_{t>0}t^{-V}(1+t)^n
+  \leq(en/V)^V
+  \]
+  by choosing \(t=V/(n-V)\), with the endpoint cases handled directly. \(\square\)</p>
+</div>
+
+<p>The change from \(2^n\) to \(n^V\) is decisive. After taking a logarithm, the apparent exponential size of a set class becomes only \(V\log n\).</p>
+
+<h3>From growth to metric entropy</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (VC entropy bound).</span> If \(\mathcal C\) has VC dimension \(V<\infty\), then universal constants \(A,c>0\) exist such that, for every probability measure \(Q\) and \(0<\varepsilon<1\),
+  \[
+  N\!\left(\varepsilon,\{1_C:C\in\mathcal C\},L_2(Q)\right)
+  \leq A\left(\frac{A}{\varepsilon}\right)^{cV}.
+  \]
+  Equivalently,
+  \[
+  \sup_Q\log N(\varepsilon,\mathcal C,L_2(Q))
+  \lesssim V\log(A/\varepsilon).
+  \]</p>
+</div>
+
+<p>The proof samples a finite approximation from \(Q\), uses the Sauer–Shelah bound on its possible traces, and shows that sets separated in \(L_1(Q)\) remain distinguishable on that sample. The resulting polynomial exponent can be sharpened, but its precise universal constant is rarely important in empirical-process applications.</p>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> A measurable VC class of sets is \(P\)-Glivenko–Cantelli and \(P\)-Donsker for every \(P\). Indeed,
+  \[
+  \int_0^1\sqrt{V\log(A/\varepsilon)}\,\mathrm{d}\varepsilon<\infty.
+  \]</p>
+</div>
+
+<h3>VC-subgraph classes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The subgraph of a real-valued function \(f\) is
+  \[
+  \operatorname{subgraph}(f)
+  =\{(x,t)\in\mathcal X\times\mathbb R:t<f(x)\}.
+  \]
+  A function class \(\mathcal F\) is VC-subgraph if
+  \(\{\operatorname{subgraph}(f):f\in\mathcal F\}\) is a VC class of sets.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal F\) be VC-subgraph with dimension \(V\) and envelope \(F\). For every probability measure \(Q\) with \(\|F\|_{Q,2}>0\),
+  \[
+  N\!\left(
+    \varepsilon\|F\|_{Q,2},
+    \mathcal F,L_2(Q)
+  \right)
+  \leq A\left(\frac{A}{\varepsilon}\right)^{cV},
+  \qquad 0<\varepsilon<1,
+  \]
+  for universal constants \(A,c\). If \(PF^2<\infty\) and measurability is controlled, \(\mathcal F\) is \(P\)-Donsker.</p>
+</div>
+
+<h3>Geometric examples</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The following dimensions are exact:</p>
+  <ol>
+    <li>affine halfspaces in \(\mathbb R^d\): \(d+1\);</li>
+    <li>Euclidean balls in \(\mathbb R^d\): \(d+1\);</li>
+    <li>axis-parallel rectangles in \(\mathbb R^d\): \(2d\);</li>
+    <li>linear threshold functions \(1\{w^\top x>0\}\) on \(\mathbb R^d\): \(d\).</li>
+  </ol>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (finite-dimensional linear spaces).</span> If \(g_1,\ldots,g_d\) are fixed functions, then
+  \[
+  \mathcal F=\left\{\sum_{j=1}^d\theta_jg_j:\theta\in\mathbb R^d\right\}
+  \]
+  is VC-subgraph with dimension at most \(d+2\). Indeed, deciding whether \(t<f_\theta(x)\) is a linear threshold decision in the vector \((g_1(x),\ldots,g_d(x),t)\). Generalized linear models with a monotone link inherit the same finite-dimensional combinatorial structure.</p>
+</div>
+
+<h3>Permanence under operations</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Finite VC dimension is preserved under complements, inverse images, finite unions and intersections, and monotone transformations. More precisely, if \(\mathcal C_1,\ldots,\mathcal C_k\) have finite VC dimensions, then
+  \[
+  \left\{\bigcup_{j=1}^k C_j:C_j\in\mathcal C_j\right\},
+  \qquad
+  \left\{\bigcap_{j=1}^k C_j:C_j\in\mathcal C_j\right\}
+  \]
+  have finite VC dimension, with bounds depending only on \(k\) and the original dimensions.</p>
+</div>
+
+<p>VC theory should be checked whenever a class is generated by finitely many inequalities, thresholds, order restrictions, or Boolean operations. It often supplies both the uniform law and the central limit theorem without any distribution-specific calculation.</p>

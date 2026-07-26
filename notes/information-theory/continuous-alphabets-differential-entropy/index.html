@@ -36,3 +36,153 @@ Thus differential entropy depends on the coordinate scale.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Under a smooth bijection, densities acquire reciprocal Jacobian factors. In ratios such as \(f/g\), or \(f_{XY}/(f_Xf_Y)\), these factors cancel. Differential entropy alone has no ratio and keeps the Jacobian term.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Differential entropy</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If \(X\) has density \(f\) on
+  \(\mathbb R^d\) and \(f\log f\) is integrable,
+  \[
+  h(X)=-\int_{\mathbb R^d}f(x)\log f(x)\,\mathrm{d}x.
+  \]</p>
+</div>
+
+<p>Unlike discrete entropy, differential entropy can be negative and depends on coordinates. Relative entropy and mutual information retain invariant operational meaning.</p>
+
+<h3>Change of variables</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(Y=g(X)\) for a differentiable bijection with nonsingular Jacobian, then
+  \[
+  h(Y)=h(X)+
+  \mathbb E\log|\det J_g(X)|.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The transformed density is
+  \(f_Y(g(x))=f_X(x)/|\det J_g(x)|\). Substitute into
+  \(-\mathbb E\log f_Y(Y)\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> For invertible matrix \(A\) and vector \(b\),
+  \[
+  h(AX+b)=h(X)+\log|\det A|.
+  \]
+  In one dimension, \(h(aX+b)=h(X)+\log|a|\).</p>
+</div>
+
+<h3>Negative entropy</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If
+  \(X\sim\operatorname{Unif}[0,a]\), then
+  \[
+  h(X)=\log a.
+  \]
+  This is negative when \(a<1\), showing why differential entropy is not an absolute count of possibilities.</p>
+</div>
+
+<h3>Quantization limit</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(X_\Delta\) be uniform scalar quantization of a sufficiently regular density with bin width \(\Delta\). Then
+  \[
+  H(X_\Delta)+\log\Delta\to h(X)
+  \quad\text{as }\Delta\downarrow0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Bin probabilities satisfy
+  \(p_k\approx f(x_k)\Delta\). Therefore
+  \[
+  -\sum_kp_k\log p_k
+  \approx-\sum_kf(x_k)\Delta\log f(x_k)-\log\Delta,
+  \]
+  and the first sum converges to the entropy integral.</p>
+</div>
+
+<h3>Relative entropy is coordinate invariant</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For a measurable bijection \(g\),
+  \[
+  D(P_X\|Q_X)=D(P_{g(X)}\|Q_{g(X)}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Both transformed densities acquire the same inverse-Jacobian factor, which cancels in their likelihood ratio. Integrate after change of variables.</p>
+</div>
+
+<h3>Mutual information for continuous variables</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span>
+  \[
+  I(X;Y)=D(P_{XY}\|P_XP_Y)
+  =h(X)+h(Y)-h(X,Y)
+  \]
+  when all displayed differential entropies exist without indeterminate
+  \(\infty-\infty\). The KL definition remains valid more generally.</p>
+</div>
+
+<p>If \(Y=X\) for a non-atomic continuous variable, then
+\(I(X;Y)=+\infty\): the joint law lies on the diagonal and is singular relative to \(P_XP_Y\). Yet \(h(X)\) may be finite. This is another reason to define information through KL first.</p>
+
+<h3>Conditional differential entropy</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  \[
+  h(X\mid Y)=
+  -\int p(x,y)\log p(x\mid y)\,
+  \mathrm{d}x\,\mathrm{d}y,
+  \]
+  when integrable. Unlike the discrete case, \(h(X\mid Y)\) can be negative, but
+  \[
+  I(X;Y)=h(X)-h(X\mid Y)\ge0.
+  \]</p>
+</div>
+
+<h3>Gaussian entropy</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(X\sim N_d(\mu,\Sigma)\) with \(\Sigma\) positive definite,
+  \[
+  h(X)=\frac12\log\{(2\pi e)^d\det\Sigma\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  -\mathbb E\log f(X)
+  =\frac d2\log(2\pi)+\frac12\log\det\Sigma+
+  \frac12\mathbb E[(X-\mu)^\top\Sigma^{-1}(X-\mu)].
+  \]
+  The quadratic expectation is \(d\).</p>
+</div>
+
+<h3>Entropy under support constraints</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Among densities supported on a measurable set \(A\) of finite volume, the uniform density maximizes differential entropy, with maximum \(\log\operatorname{vol}(A)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(U_A\) be uniform on \(A\). Then
+  \[
+  D(P\|U_A)=\log\operatorname{vol}(A)-h(P)\ge0.
+  \]</p>
+</div>
+
+<h3>Measure-theoretic caution</h3>
+
+<p>Densities depend on a reference measure. The invariant object is relative entropy
+\(\int\log(\mathrm{d}P/\mathrm{d}Q)\,\mathrm{d}P\). Differential entropy is the negative KL integrand relative to Lebesgue measure without a normalizable Lebesgue probability, so it inherits coordinate dependence.</p>

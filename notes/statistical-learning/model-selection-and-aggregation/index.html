@@ -81,3 +81,140 @@ Concentration or exp-concavity transfers this empirical variational inequality t
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> AIC estimates predictive risk and tends to favor models with good out-of-sample prediction. BIC approximates marginal likelihood under fixed-dimensional parametric assumptions and is oriented toward model identification when the true model is among the candidates.</p>
     </div>
+
+<h3>A finite-family penalized oracle inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\widehat f_m\) be fixed conditional on a training sample, and evaluate the
+  candidates on an independent sample of size \(n\) under losses in \([0,1]\).
+  Given prior weights \(\pi_m>0\), \(\sum_m\pi_m=1\), define
+  \[
+  \widehat m\in\arg\min_m
+  \left\{P_n\ell_{\widehat f_m}
+  \sqrt{\frac{\log(2/\pi_m\delta)}{2n}}\right\}.
+  \]
+  Then with probability at least \(1-\delta\),
+  \[
+  R(\widehat f_{\widehat m})
+  \le\inf_m\left\{
+  R(\widehat f_m)+
+  2\sqrt{\frac{\log(2/\pi_m\delta)}{2n}}\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Hoeffding's inequality gives
+  \[
+  |P_n\ell_{\widehat f_m}-P\ell_{\widehat f_m}|
+  \le\sqrt{\frac{\log(2/\pi_m\delta)}{2n}}
+  \]
+  except on an event of probability \(\pi_m\delta\). A weighted union bound makes all inequalities simultaneous. Apply the selected-model optimality inequality and use the deviation bound once for \(\widehat m\) and once for an arbitrary comparator \(m\).</p>
+</div>
+
+<h3>Mallows optimism and AIC</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In fixed-design Gaussian linear regression with known \(\sigma^2\), let \(\widehat\mu=HY\) for a deterministic linear smoother \(H\). Then
+  \[
+  \mathbb E\frac1n\|\widehat\mu-Y^{\mathrm{new}}\|_2^2
+  =
+  \mathbb E\frac1n\|\widehat\mu-Y\|_2^2+
+  \frac{2\sigma^2}{n}\operatorname{tr}(H),
+  \]
+  where \(Y^{\mathrm{new}}=\mu+\varepsilon^{\mathrm{new}}\) has fresh noise.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand both expectations with
+  \(Y=\mu+\varepsilon\). Their bias and \(\mathbb E\|H\varepsilon\|^2\) terms agree. The training residual includes the covariance term
+  \(-2\mathbb E\langle H\varepsilon,\varepsilon\rangle=-2\sigma^2\operatorname{tr}(H)\), while the fresh-noise cross term is zero. Rearrangement gives the formula.</p>
+</div>
+
+<p>For least squares on a \(d\)-dimensional model, \(H\) is a rank-\(d\) projector, producing the \(2\sigma^2d/n\) optimism correction underlying Mallows \(C_p\) and, after likelihood rescaling, AIC.</p>
+
+<h3>BIC as a Laplace penalty</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For a regular
+  \(d_m\)-dimensional parametric model with prior density positive near its MLE,
+  Laplace approximation gives
+  \[
+  -2\log p(Y\mid m)
+  =
+  -2\ell_n(\widehat\theta_m)+d_m\log n+O_P(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand
+  \(\ell_n(\theta)\) quadratically around \(\widehat\theta_m\). The Hessian is of order \(n\), so integrating the local Gaussian contributes
+  \(n^{-d_m/2}\) to marginal likelihood. Taking \(-2\log\) produces
+  \(d_m\log n\); prior and information-determinant terms are \(O_P(1)\).</p>
+</div>
+
+<h3>Exponential aggregation by online potentials</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose losses lie in \([0,1]\).
+  Exponential weights updated by
+  \(w_{t,j}\propto\pi_j\exp\{-\eta\sum_{s<t}\ell_{s,j}\}\)
+  satisfy, for every expert \(j\),
+  \[
+  \sum_{t=1}^T\sum_kw_{t,k}\ell_{t,k}
+  -\sum_{t=1}^T\ell_{t,j}
+  \le\frac{\log(1/\pi_j)}{\eta}+\frac{\eta T}{8}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(W_t=\sum_j\pi_j\exp\{-\eta\sum_{s<t}\ell_{s,j}\}\).
+  Hoeffding's lemma gives
+  \[
+  \log(W_{t+1}/W_t)
+  =\log\sum_jw_{t,j}e^{-\eta\ell_{t,j}}
+  \le-\eta\sum_jw_{t,j}\ell_{t,j}+\eta^2/8.
+  \]
+  Sum over \(t\). The lower bound
+  \(W_{T+1}\ge\pi_j e^{-\eta\sum_t\ell_{t,j}}\)
+  yields the claim after rearrangement.</p>
+</div>
+
+<h3>Convex, linear, and model-selection aggregation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given
+  \(f_1,\ldots,f_M\):
+  <ul>
+    <li>model-selection aggregation competes with \(\min_jR(f_j)\);</li>
+    <li>convex aggregation competes with
+    \(\inf_{w\in\Delta_M}R(\sum_jw_jf_j)\);</li>
+    <li>linear aggregation competes with
+    \(\inf_{w\in\mathbb R^M}R(\sum_jw_jf_j)\).</li>
+  </ul></p>
+</div>
+
+<p>The oracle classes differ, so their optimal remainder rates differ. Under squared loss, model-selection aggregation typically pays \((\log M)/n\), whereas unrestricted linear aggregation can pay \(M/n\). Convex aggregation has an intermediate regime depending on \(M\) relative to \(\sqrt n\).</p>
+
+<h3>Stacking and out-of-fold prediction</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> In \(K\)-fold stacking, let
+  \(\widehat f_j^{(-k)}\) be candidate \(j\) fitted without fold \(k\). Choose
+  \[
+  \widehat w\in\arg\min_{w\in\Delta_M}
+  \sum_{k=1}^K\sum_{i\in I_k}
+  \ell\!\left(\sum_jw_j\widehat f_j^{(-k)}(X_i),Y_i\right),
+  \]
+  and refit each base learner on the full sample before combining with
+  \(\widehat w\).</p>
+</div>
+
+<p>Out-of-fold predictions prevent a highly adaptive base learner from being rewarded merely for in-sample fit. Stacking targets predictive convex aggregation; unlike Bayesian model averaging, its weights need not approximate posterior model probabilities.</p>
+
+<h3>Selection consistency and predictive optimality diverge</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> If the true finite-dimensional model is among regular candidates, BIC can select it consistently because its \(\log n\) penalty dominates spurious likelihood gains. AIC intentionally does not have that property: its constant-per-parameter penalty estimates predictive optimism and can retain extra variables. Neither criterion is universally superior; they answer different decision problems.</p>
+</div>

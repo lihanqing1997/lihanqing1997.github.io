@@ -8,27 +8,151 @@ note_prev_url: "/notes/empirical-processes/multiplier-empirical-processes/"
 note_next_url: "/notes/empirical-processes/sequential-empirical-processes/"
 ---
 
-<p>Bootstrap empirical processes replace \(P\) by \(P_n\) and ask whether the resampled fluctuation conditionally reproduces the original fluctuation.</p>
+<p>The nonparametric bootstrap treats the empirical law \(P_n\) as a surrogate population. Process-level bootstrap consistency asks whether sampling from \(P_n\) reproduces, conditionally on the data, the same uniform fluctuation that sampling from \(P\) produces.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> If \(P_n^*\) is the empirical measure of a bootstrap sample from \(P_n\), then \(\mathbb G_n^*=\sqrt n(P_n^*-P_n)\). Bootstrap consistency means \(\mathbb G_n^*\) converges conditionally to the same limit as \(\mathbb G_n\).</p>
-    </div>
+<h3>Multinomial representation</h3>
 
-    <h3>Conditional empirical-process convergence</h3>
-    <ul>
-        <li>Donsker classes are the natural setting for nonparametric bootstrap empirical-process consistency.</li>
-        <li>Exchangeable bootstrap weights generalize multinomial resampling.</li>
-        <li>Functional delta methods transfer bootstrap process convergence to bootstrap distributional consistency.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given \(X_1,\ldots,X_n\), draw
+  \(X_1^*,\ldots,X_n^*\) independently from \(P_n\), and write
+  \[
+  P_n^*=\frac1n\sum_{j=1}^n\delta_{X_j^*},
+  \qquad
+  \mathbb G_n^*=\sqrt n(P_n^*-P_n).
+  \]
+  Equivalently, if \((W_{n1},\ldots,W_{nn})\sim
+  \operatorname{Multinomial}(n;1/n,\ldots,1/n)\), then
+  \[
+  \mathbb G_n^*f
+  =\frac1{\sqrt n}\sum_{i=1}^n(W_{ni}-1)f(X_i).
+  \]</p>
+</div>
 
-    <h3>Delta method after bootstrap</h3>
-    <p>This page connects the empirical-process note to the inference-level bootstrap page: here the object is process convergence; there the object is confidence and testing.</p>
+<p>Conditional centering is exact because \(E_*(W_{ni}-1)=0\). The multinomial weights are exchangeable and dependent, with
+\[
+\operatorname{Var}_*(W_{ni})=1-\frac1n,
+\qquad
+\operatorname{Cov}_*(W_{ni},W_{nj})=-\frac1n
+\quad(i\ne j).
+\]</p>
 
-    <!-- expanded-learning -->
-    <h3>Bootstrap process criterion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Bootstrap consistency for a statistic \(T_n=\phi(P_n)\) often follows in two steps: first show \(\sqrt n(P_n^*-P_n)\) conditionally mimics \(\sqrt n(P_n-P)\); then apply a conditional functional delta method to \(\phi\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Conditional on the data,
+  \[
+  E_*(\mathbb G_n^*f\,\mathbb G_n^*g)
+  =
+  P_n\{(f-P_nf)(g-P_ng)\}.
+  \]</p>
+</div>
 
-    <h3>Hadamard differentiable and nonregular functionals</h3>
-    <p>If a statistic is a non-smooth functional of the empirical process, the ordinary bootstrap can fail even when the empirical process itself is well behaved. Always check the continuity or differentiability of the final map.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since a bootstrap draw \(X^*\) has law \(P_n\), the conditional covariance of
+  \(n^{-1/2}\sum_{j=1}^n\{f(X_j^*)-P_nf\}\) is the covariance of one draw:
+  \[
+  P_n(fg)-P_nf\,P_ng.
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>The bootstrap Donsker theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal F\) be a suitably measurable \(P\)-Donsker class. Then, conditionally on the observations,
+  \[
+  \mathbb G_n^*\rightsquigarrow\mathbb G_P
+  \qquad\text{in }\ell^\infty(\mathcal F)
+  \]
+  in \(P\)-probability. Equivalently,
+  \[
+  \sup_{h\in BL_1}
+  \left|
+  E_*h(\mathbb G_n^*)-Eh(\mathbb G_P)
+  \right|\xrightarrow{p}0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Conditional finite-dimensional convergence follows from the multinomial central limit theorem and the empirical covariance convergence. For tightness, Poissonization or exchangeable-weight inequalities compare the bootstrap process with a multiplier process. The Donsker entropy or asymptotic-equicontinuity bounds remain valid after replacing \(P\) by \(P_n\), while multinomial weight tails satisfy the required moment conditions. Conditional asymptotic equicontinuity and the finite-dimensional limit yield the result. \(\square\)</p>
+</div>
+
+<p>The theorem is process-valued: one resample simultaneously approximates the joint law of every coordinate in \(\mathcal F\). This is what makes it suitable for suprema, bands, and other non-scalar functionals.</p>
+
+<h3>Exchangeably weighted bootstraps</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An exchangeably weighted bootstrap has
+  \[
+  \mathbb G_n^Wf
+  =
+  \frac1{\sqrt n}\sum_{i=1}^n(W_{ni}-\bar W_n)f(X_i),
+  \qquad
+  \bar W_n=n^{-1}\sum_iW_{ni},
+  \]
+  where the weight vector is exchangeable and independent of the sample.</p>
+</div>
+
+<p>Multinomial, Bayesian-bootstrap exponential, and several subsampling schemes fit this representation after normalization. First-order validity requires an asymptotic weight variance of one, negligible maximal weight at \(\sqrt n\) scale, and an appropriate uniform tail integral.</p>
+
+<h3>The bootstrap functional delta method</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\phi:\mathbb D_\phi\subset\mathbb D\to\mathbb E\) be Hadamard differentiable at \(P\), tangentially to a set \(\mathbb D_0\), with continuous linear derivative \(\phi'_P\). If
+  \[
+  \sqrt n(P_n-P)\rightsquigarrow G\in\mathbb D_0
+  \]
+  and, conditionally,
+  \[
+  \sqrt n(P_n^*-P_n)\rightsquigarrow G,
+  \]
+  then
+  \[
+  \sqrt n\{\phi(P_n^*)-\phi(P_n)\}
+  \rightsquigarrow \phi'_P(G)
+  \]
+  conditionally in probability, the same limit as
+  \(\sqrt n\{\phi(P_n)-\phi(P)\}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Hadamard differentiability gives, uniformly along convergent tangent sequences,
+  \[
+  \frac{\phi(P+t_nh_n)-\phi(P)}{t_n}
+  \to\phi'_P(h).
+  \]
+  Apply this expansion jointly to \(P_n-P\) and
+  \(P_n^*-P=(P_n-P)+(P_n^*-P_n)\). Subtract the expansion for \(\phi(P_n)-\phi(P)\). The conditional continuous-mapping theorem and linearity of \(\phi'_P\) leave
+  \(\phi'_P\{\sqrt n(P_n^*-P_n)\}+o_{P^*}(1)\). \(\square\)</p>
+</div>
+
+<p>This two-step architecture is the process foundation of the bootstrap methods in <a href="{{ '/notes/statistical-inference/bootstrap-jackknife/' | relative_url }}">Statistical inference, §20</a>.</p>
+
+<h3>Failure for nonregular functionals</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (sample maximum).</span> Let \(X_i\sim U[0,1]\), \(M_n=\max_iX_i\). Then
+  \[
+  n(1-M_n)\rightsquigarrow\operatorname{Exp}(1).
+  \]
+  In a bootstrap sample, the original maximum \(M_n\) is omitted with conditional probability
+  \[
+  (1-1/n)^n\to e^{-1},
+  \]
+  but whenever it is selected, \(M_n^*=M_n\). Hence the conditional law of
+  \(n(M_n-M_n^*)\) has an asymptotic atom at zero, unlike the continuous target law. The ordinary \(n\)-out-of-\(n\) bootstrap is inconsistent.</p>
+</div>
+
+<p>The empirical process itself may bootstrap correctly while the final functional does not. Maxima, boundary parameters, cube-root estimators, and merely directionally differentiable maps require separate analysis. Remedies include \(m\)-out-of-\(n\) bootstrap with \(m/n\to0\), subsampling, smoothing, or a bootstrap tailored to the directional derivative.</p>
+
+<h3>From conditional laws to confidence sets</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If a real statistic \(T_n\rightsquigarrow T\) and its bootstrap version satisfies
+  \[
+  \sup_x\left|P_*(T_n^*\leq x)-P(T\leq x)\right|\to_p0,
+  \]
+  with continuous strictly increasing limit distribution at its \((1-\alpha)\)-quantile \(c_{1-\alpha}\), then the conditional bootstrap quantile
+  \(c_{n,1-\alpha}^*\to_pc_{1-\alpha}\). Consequently,
+  \(P(T_n\leq c_{n,1-\alpha}^*)\to1-\alpha\).</p>
+</div>
+
+<p>For process statistics such as \(\|\mathbb G_n\|_{\mathcal F}\), continuity of the supremum map is automatic in the supremum norm, but continuity of the limit distribution at the selected quantile must still be checked.</p>

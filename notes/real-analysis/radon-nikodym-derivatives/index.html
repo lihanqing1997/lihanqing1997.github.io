@@ -31,7 +31,48 @@ note_next_url: "/notes/real-analysis/lebesgue-decomposition-and-singularity/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> In the finite case, first prove the result for a bounded positive functional \(T(g)=\int g\,\mathrm{d}\nu\) on \(L^2(\mu+\nu)\). Riesz representation gives a function \(h\), and algebraic manipulation yields a density \(f=h/(1-h)\) on the nontrivial part. Sigma-finite measures are handled by applying the finite result on countable finite-measure pieces and pasting the densities.</p>
+        <p><span class="statement-title">Proof.</span> First suppose \(\mu,\nu\) are finite and put \(\rho=\mu+\nu\). On the Hilbert space \(L^2(\rho)\), define
+\[
+Tg=\int g\,\mathrm{d}\nu.
+\]
+By Cauchy-Schwarz,
+\[
+|Tg|
+\le \nu(X)^{1/2}\left(\int|g|^2\,\mathrm{d}\nu\right)^{1/2}
+\le\nu(X)^{1/2}\|g\|_{L^2(\rho)}.
+\]
+Riesz representation gives \(h\in L^2(\rho)\) such that \(Tg=\int gh\,\mathrm{d}\rho\). Taking \(g=\mathbf1_A\) shows
+\[
+\nu(A)=\int_Ah\,\mathrm{d}\rho.
+\]
+Because \(0\le\nu\le\rho\), testing sets where \(h<0\) or \(h>1\) gives \(0\le h\le1\) almost everywhere. Also
+\[
+\mu(A)=\rho(A)-\nu(A)=\int_A(1-h)\,\mathrm{d}\rho.
+\]
+On \(H=\{h=1\}\), \(\mu(H)=0\), hence \(\nu(H)=0\) by \(\nu\ll\mu\), and therefore \(\rho(H)=0\). Thus
+\[
+f=\frac{h}{1-h}
+\]
+is finite \(\rho\)-almost everywhere and
+\[
+\int_Af\,\mathrm{d}\mu
+=\int_A\frac{h}{1-h}(1-h)\,\mathrm{d}\rho
+=\int_Ah\,\mathrm{d}\rho
+=\nu(A).
+\]</p>
+        <p>For sigma-finite \(\mu,\nu\), choose a disjoint measurable partition \(X=\bigsqcup_nE_n\) with \(\mu(E_n),\nu(E_n)<\infty\). Apply the finite result to the restrictions on each \(E_n\), obtaining \(f_n\). Then \(f=\sum_n f_n\mathbf1_{E_n}\) is measurable and gives the required density on every measurable set by countable additivity.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (signed version).</span> If a sigma-finite signed measure \(\lambda\) satisfies \(\lambda\ll\mu\), then there is an integrable real \(f\) such that
+\[
+\lambda(A)=\int_Af\,\mathrm{d}\mu.
+\]
+For finite \(\lambda\), \(\int|f|\,\mathrm{d}\mu=|\lambda|(X)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The Jordan parts \(\lambda^+,\lambda^-\) are both absolutely continuous with respect to \(\mu\). Apply the positive theorem to get densities \(f^+,f^-\) and set \(f=f^+-f^-\). Mutual singularity of the Jordan parts gives \(|f|=f^++f^-\) almost everywhere, yielding the variation identity.</p>
     </div>
 
     <h3>Chain rule and change of measure</h3>
@@ -54,6 +95,25 @@ note_next_url: "/notes/real-analysis/lebesgue-decomposition-and-singularity/"
 Uniqueness of Radon-Nikodym derivatives gives the identity.</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (reciprocal derivative).</span> If \(\nu\ll\mu\) and \(\mu\ll\nu\), then
+\[
+\frac{\mathrm{d}\mu}{\mathrm{d}\nu}
+=\left(\frac{\mathrm{d}\nu}{\mathrm{d}\mu}\right)^{-1}
+\quad \nu\text{-almost everywhere},
+\]
+and \(\mathrm{d}\nu/\mathrm{d}\mu>0\) \(\mu\)-almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply the chain rule to \(\mu\ll\nu\ll\mu\):
+\[
+1=\frac{\mathrm{d}\mu}{\mathrm{d}\mu}
+=\frac{\mathrm{d}\mu}{\mathrm{d}\nu}\frac{\mathrm{d}\nu}{\mathrm{d}\mu}.
+\]
+The product identity also rules out a zero density on a set of positive \(\mu\)-measure.</p>
+    </div>
+
     <h3>Lebesgue differentiation viewpoint</h3>
     <p>Densities are local ratios of masses in Euclidean spaces.</p>
     <div class="math-statement theorem">
@@ -67,8 +127,20 @@ f(x)=\lim_{r\downarrow0}\frac{\nu(B(x,r))}{m(B(x,r))}.
         <p><span class="statement-title">Proof.</span> Since \(\nu(B(x,r))=\int_{B(x,r)}f\,\mathrm{d}m\), the ratio is the average of \(f\) over the ball. The Lebesgue differentiation theorem says these averages converge to \(f(x)\) almost everywhere.</p>
     </div>
 
-    <h3>Statistical densities</h3>
-    <p>Likelihood ratios are Radon-Nikodym derivatives.</p>
+    <h3>Likelihood ratios as measure derivatives</h3>
+    <p>A statistical density need not be a density with respect to Lebesgue measure; it is always relative to a dominating measure.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> If \(P_\theta\ll P_{\theta_0}\), the likelihood ratio is \(\mathrm{d}P_\theta/\mathrm{d}P_{\theta_0}\). This measure-theoretic notation is what keeps dominated and nondominated statistical models conceptually clean.</p>
+        <p><span class="statement-title">Remark.</span> If \(P_\theta\ll P_{\theta_0}\), the likelihood ratio is
+\[
+L_{\theta,\theta_0}
+=\frac{\mathrm{d}P_\theta}{\mathrm{d}P_{\theta_0}},
+\qquad
+\mathbb E_{\theta_0}[L_{\theta,\theta_0}]=1.
+\]
+For any integrable statistic \(T\),
+\[
+\mathbb E_\theta[T]
+=\mathbb E_{\theta_0}[T L_{\theta,\theta_0}].
+\]
+This identity is the rigorous change-of-measure formula behind likelihood theory, importance sampling, and contiguity.</p>
     </div>

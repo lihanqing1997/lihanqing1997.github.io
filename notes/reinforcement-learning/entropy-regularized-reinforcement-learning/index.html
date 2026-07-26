@@ -71,3 +71,102 @@ is
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Replacing entropy by \(-\operatorname{KL}(\pi(\cdot\mid s)\|\rho(\cdot\mid s))\) gives soft policies tilted from the reference \(\rho\). This is the form used in trust-region and mirror-descent views of policy optimization.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Convex duality behind the soft maximum</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Gibbs variational formula).</span>
+For a finite action set, reference distribution \(\mu(\cdot\mid s)>0\), and
+\(\tau>0\),
+\[
+\tau\log\sum_a\mu(a\mid s)e^{q(a)/\tau}
+=\max_{\pi(\cdot\mid s)}
+\left\{\sum_a\pi(a\mid s)q(a)
+-\tau D_{\mathrm{KL}}(\pi\|\mu)\right\}.
+\]
+The unique maximizer is
+\[
+\pi_q(a\mid s)
+=\frac{\mu(a\mid s)e^{q(a)/\tau}}
+{\sum_b\mu(b\mid s)e^{q(b)/\tau}}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(Z=\sum_a\mu_ae^{q_a/\tau}\)
+and \(\pi_q=\mu e^{q/\tau}/Z\). Direct rearrangement gives
+\[
+\sum_a\pi_aq_a-\tau D(\pi\|\mu)
+=\tau\log Z-\tau D(\pi\|\pi_q).
+\]
+Nonnegativity of KL proves both claims.</p>
+</div>
+
+<h3>Soft Bellman equations</h3>
+
+<p>The KL-regularized optimality operator is
+\[
+(T_\tau V)(s)
+=\tau\log\int
+\exp\!\left\{\frac{r(s,a)+\gamma P_aV(s)}{\tau}\right\}
+\mu(\mathrm{d}a\mid s).
+\]</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> \(T_\tau\) is monotone,
+translation equivariant,
+\[
+T_\tau(V+c)=T_\tau V+\gamma c,
+\]
+and a \(\gamma\)-contraction in sup norm. It therefore has a unique soft value
+\(V_\tau^*\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If
+\(\|V-W\|_\infty\le c\), every action score differs by at most \(\gamma c\).
+Monotonicity and translation equivariance of log-sum-exp place
+\(T_\tau V-T_\tau W\) between \(-\gamma c\) and \(\gamma c\).</p>
+</div>
+
+<h3>Approximation to ordinary control</h3>
+
+<p>For uniform \(\mu\) on \(m\) actions,
+\[
+\max_aq_a-\tau\log m
+\le\tau\log\left(\frac1m\sum_ae^{q_a/\tau}\right)
+\le\max_aq_a.
+\]
+Consequently,
+\[
+\|V^*-V_\tau^*\|_\infty
+\le\frac{\tau\log m}{1-\gamma}.
+\]
+As \(\tau\downarrow0\), the soft policy concentrates on greedy actions; as
+\(\tau\) grows, it remains close to the reference policy.</p>
+
+<h3>Maximum entropy and KL control</h3>
+
+<p>With a uniform reference, subtracting
+\(\tau D(\pi\|\mu)\) is equivalent up to a constant to adding policy entropy.
+A nonuniform \(\mu\) encodes a prior controller, producing relative-entropy
+control. State-dependent temperatures and constraints lead to convex dual
+multipliers rather than an arbitrary exploration bonus.</p>
+
+<h3>Soft actor--critic objective</h3>
+
+<p>Soft actor--critic uses a critic for
+\[
+Q^\pi_\tau(s,a)
+=r(s,a)+\gamma E[V^\pi_\tau(S')\mid s,a],
+\]
+\[
+V^\pi_\tau(s)
+=E_{A\sim\pi}\{Q^\pi_\tau(s,A)
+-\tau\log[\pi(A\mid s)/\mu(A\mid s)]\}.
+\]
+Policy improvement minimizes KL to the Gibbs law induced by \(Q\). Function
+approximation and replay make practical SAC approximate; the exact tabular
+monotonicity theorem requires accurate evaluation and unrestricted policy
+updates.</p>

@@ -17,27 +17,92 @@ note_next_url: "/notes/real-analysis/tightness-and-prokhorov-theorem/"
     </div>
 
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Bounded continuous functions are insensitive to small topological perturbations but still rich enough to determine probability measures on metric spaces.</p>
+        <p><span class="statement-title">Remark.</span> Bounded continuous functions determine probability measures on metric spaces. Indeed, regularity approximates closed-set indicators from above by
+\[
+f_k(x)=\max\{1-kd(x,F),0\},
+\]
+so equality of all bounded-continuous integrals forces equality on closed sets and hence on the Borel sigma-algebra.</p>
     </div>
 
     <h3>Portmanteau theorem</h3>
     <p>Weak convergence has many equivalent formulations.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For probability measures on a metric space, \(\mu_n\Rightarrow\mu\) if and only if \(\limsup_n\mu_n(F)\le\mu(F)\) for every closed \(F\), equivalently \(\liminf_n\mu_n(G)\ge\mu(G)\) for every open \(G\), equivalently \(\mu_n(A)\to\mu(A)\) for every \(\mu\)-continuity set \(A\).</p>
+        <p><span class="statement-title">Theorem (portmanteau).</span> For probability measures on a metric space, the following are equivalent:
+\[
+\begin{array}{ll}
+\text{(i)}&\mu_n\Rightarrow\mu;\\
+\text{(ii)}&\limsup_n\mu_n(F)\le\mu(F)\quad\text{for every closed }F;\\
+\text{(iii)}&\liminf_n\mu_n(G)\ge\mu(G)\quad\text{for every open }G;\\
+\text{(iv)}&\mu_n(A)\to\mu(A)\quad\text{whenever }\mu(\partial A)=0;\\
+\text{(v)}&\liminf_n\int f\,\mathrm{d}\mu_n\ge\int f\,\mathrm{d}\mu
+\quad\text{for every bounded lower-semicontinuous }f.
+\end{array}
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Approximate indicators of closed sets from above by bounded continuous functions such as \(x\mapsto(1-d(x,F)/\varepsilon)^+\), then let \(\varepsilon\downarrow0\). Open-set inequalities follow by complements. Continuity sets are squeezed between their interiors and closures. Conversely, bounded continuous functions are approximated by layer-cake integrals of continuity sets.</p>
+        <p><span class="statement-title">Proof.</span> Assume (i). For closed \(F\), the continuous functions
+\[
+f_k(x)=\max\{1-kd(x,F),0\}
+\]
+decrease to \(\mathbf1_F\). Hence
+\[
+\limsup_n\mu_n(F)
+\le\lim_n\int f_k\,\mathrm{d}\mu_n
+=\int f_k\,\mathrm{d}\mu,
+\]
+and \(k\to\infty\) gives (ii). Complements make (ii) and (iii) equivalent. If \(\mu(\partial A)=0\), then
+\[
+\mu(A^\circ)\le\liminf_n\mu_n(A)
+\le\limsup_n\mu_n(A)\le\mu(\overline A),
+\]
+and both endpoint measures equal \(\mu(A)\), proving (iv).</p>
+        <p>To derive (v) from (iii), first take \(0\le f\le M\) lower semicontinuous. Its superlevel sets \(\{f>t\}\) are open, so the layer-cake formula and Fatou give
+\[
+\liminf_n\int f\,\mathrm{d}\mu_n
+=\liminf_n\int_0^M\mu_n(f>t)\,\mathrm{d}t
+\ge\int_0^M\mu(f>t)\,\mathrm{d}t.
+\]
+Shift a bounded \(f\) by a constant. Finally, (v) applied to both \(f\) and \(-f\) for bounded continuous \(f\) gives (i).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (bounded-Lipschitz determination).</span> On a separable metric space,
+\[
+\mu_n\Rightarrow\mu
+\quad\Longleftrightarrow\quad
+\int f\,\mathrm{d}\mu_n\to\int f\,\mathrm{d}\mu
+\]
+for every \(f\) satisfying \(\|f\|_\infty\le1\) and \(\operatorname{Lip}(f)\le1\). The supremum of these integral differences defines the bounded-Lipschitz metric, which metrizes weak convergence.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof outline.</span> One direction is immediate because bounded Lipschitz functions are bounded continuous. Conversely, approximate a bounded continuous function uniformly on a large compact set by Lipschitz infimal and supremal convolutions. Tightness of the single limit measure, together with the portmanteau inequalities, controls the complement. Separability supplies a countable determining subclass and turns the supremum into a metric.</p>
     </div>
 
     <h3>Continuous mapping theorem</h3>
     <p>Weak convergence is preserved by continuous transformations.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\mu_n\Rightarrow\mu\) on \(S\) and \(T:S\to E\) is continuous, then \(\mu_n\circ T^{-1}\Rightarrow\mu\circ T^{-1}\).</p>
+        <p><span class="statement-title">Theorem (continuous mapping).</span> If \(\mu_n\Rightarrow\mu\) on \(S\) and \(T:S\to E\) is measurable with discontinuity set \(D_T\) satisfying \(\mu(D_T)=0\), then
+\[
+\mu_n\circ T^{-1}\Rightarrow\mu\circ T^{-1}.
+\]
+In particular, global continuity of \(T\) is sufficient.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For every bounded continuous \(g:E\to\mathbb R\), \(g\circ T\) is bounded and continuous on \(S\). Hence \(\int g\,\mathrm{d}(\mu_n\circ T^{-1})=\int g\circ T\,\mathrm{d}\mu_n\to\int g\circ T\,\mathrm{d}\mu=\int g\,\mathrm{d}(\mu\circ T^{-1})\).</p>
+        <p><span class="statement-title">Proof.</span> For a closed \(F\subset E\), the set \(T^{-1}(F)\) need not be closed, but
+\[
+\overline{T^{-1}(F)}
+\subset T^{-1}(F)\cup D_T.
+\]
+Portmanteau therefore gives
+\[
+\limsup_n(\mu_n\circ T^{-1})(F)
+\le\mu(\overline{T^{-1}(F)})
+\le\mu(T^{-1}(F)),
+\]
+because \(\mu(D_T)=0\). Another application of portmanteau proves weak convergence of the pushforwards.</p>
     </div>
 
     <h3>Convergence on the real line</h3>
@@ -50,8 +115,24 @@ note_next_url: "/notes/real-analysis/tightness-and-prokhorov-theorem/"
         <p><span class="statement-title">Proof.</span> The forward direction follows from portmanteau applied to \((-\infty,x]\) and \((-\infty,x)\). For the reverse direction, approximate bounded continuous functions by step functions whose discontinuity points are continuity points of \(F\), controlling the tails by choosing large compact intervals.</p>
     </div>
 
-    <h3>Statistical reading</h3>
-    <p>Weak convergence is convergence of laws, not necessarily convergence of realized values.</p>
+    <h3>Weak convergence does not control unbounded moments</h3>
+    <div class="math-statement example">
+        <p><span class="statement-title">Example.</span> Let
+\[
+\mu_n=\left(1-\frac1n\right)\delta_0+\frac1n\delta_n.
+\]
+For every bounded continuous \(f\),
+\[
+\int f\,\mathrm{d}\mu_n
+=\left(1-\frac1n\right)f(0)+\frac1nf(n)\longrightarrow f(0),
+\]
+so \(\mu_n\Rightarrow\delta_0\). Nevertheless,
+\[
+\int x\,\mathrm{d}\mu_n(x)=1
+\]
+for every \(n\), while the limiting mean is \(0\); second moments even diverge. Convergence of moments requires uniform integrability of the corresponding powers.</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Central limit theorems, bootstrap consistency, empirical process convergence, and posterior weak convergence are all statements in this topology or its function-space analogues.</p>
+        <p><span class="statement-title">Remark.</span> Central limit theorems, bootstrap consistency, empirical-process convergence, and posterior weak convergence all use this topology or its function-space analogues. The recurring proof pattern is tightness plus identification of every subsequential limit.</p>
     </div>

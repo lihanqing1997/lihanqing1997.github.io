@@ -8,21 +8,39 @@ note_prev_url: "/notes/statistical-decision-theory/global-asymptotic-normality/"
 note_next_url: "/notes/statistical-decision-theory/tests-and-confidence-sets-gaussian/"
 ---
 
-<p>Quadratic likelihood approximation is the computational face of LAN. It explains one-step estimators, Wald statistics, score tests, and likelihood-ratio tests.</p>
+<p>Quadratic likelihood approximation is the operational form of LAN. Completing the square produces a local Gaussian center, one Newton step, likelihood-ratio statistics, and information-metric projections under constraints.</p>
 
-    <h3>Local quadratic form</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Around a center \(\tilde\theta_n\), write \(u=r_n(\theta-\tilde\theta_n)\). A quadratic likelihood approximation has form</p>
-        <p>\[
-\ell_n(\tilde\theta_n+u/r_n)-\ell_n(\tilde\theta_n)
-\approx u^\top S_n-\frac12u^\top J_nu.
-\]</p>
-    </div>
+<h3>Local asymptotic quadraticity</h3>
 
-    <h3>Argmax of the quadratic likelihood</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(J_n\) is nonsingular, the maximizer of the quadratic approximation is \(u_n^\star=J_n^{-1}S_n\). This gives the one-step update \(\tilde\theta_n+J_n^{-1}S_n/r_n\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Around a center
+  \(\tilde\theta_n\), with local coordinate
+  \(u=r_n(\theta-\tilde\theta_n)\), a local asymptotic quadratic expansion is
+  \[
+  \ell_n(\tilde\theta_n+r_n^{-1}u)-\ell_n(\tilde\theta_n)
+  =
+  u^\top S_n-\frac12u^\top J_nu+r_n(u),
+  \]
+  where \(J_n\) is positive definite and
+  \[
+  \sup_{\|u\|\leq C}|r_n(u)|\to_p0
+  \]
+  for every fixed \(C\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The quadratic part satisfies
+  \[
+  u^\top S_n-\frac12u^\top J_nu
+  =
+  -\frac12(u-\hat u_n)^\top J_n(u-\hat u_n)
+  +\frac12S_n^\top J_n^{-1}S_n,
+  \]
+  where
+  \[
+  \hat u_n=J_n^{-1}S_n.
+  \]</p>
+</div>
     <figure class="research-figure">
         <svg viewBox="0 0 520 220" role="img" aria-label="Local likelihoods are replaced by a quadratic surface near the random center.">
             <line x1="65" y1="170" x2="455" y2="170" stroke="#333" stroke-width="1.5"/>
@@ -35,10 +53,103 @@ note_next_url: "/notes/statistical-decision-theory/tests-and-confidence-sets-gau
         <figcaption>Local likelihoods are replaced by a quadratic surface near the random center.</figcaption>
     </figure>
 
-    <h3>Completing the square</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The quadratic equals \(-\frac12(u-J_n^{-1}S_n)^\top J_n(u-J_n^{-1}S_n)+\frac12S_n^\top J_n^{-1}S_n\). The maximum is therefore at \(J_n^{-1}S_n\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand the right side:
+  \[
+  -\frac12u^\top J_nu
+  +u^\top J_n\hat u_n
+  -\frac12\hat u_n^\top J_n\hat u_n
+  +\frac12S_n^\top J_n^{-1}S_n.
+  \]
+  Since \(J_n\hat u_n=S_n\), the final two terms cancel and the expression reduces to the left side. \(\square\)</p>
+</div>
 
-    <h3>Observed information</h3>
-    <p>When \(J_n\) is the observed information, the approximation adapts to local curvature. In regular models \(J_n\) converges to Fisher information.</p>
+<h3>One-step estimation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose the LAQ remainder is uniform on bounded sets, \(J_n\to_pJ\succ0\), and the exact local maximizer is tight. Then
+  \[
+  r_n(\hat\theta_n-\tilde\theta_n)
+  =
+  J_n^{-1}S_n+o_p(1).
+  \]
+  The one-step estimator
+  \[
+  \theta_n^{(1)}
+  =
+  \tilde\theta_n+r_n^{-1}J_n^{-1}S_n
+  \]
+  is asymptotically equivalent to the local maximum-likelihood estimator.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The quadratic criterion has a unique maximizer \(\hat u_n=J_n^{-1}S_n\). Uniform \(o_p(1)\) perturbation on every bounded set and tightness of both maximizers imply, by the argmax theorem,
+  \[
+  r_n(\hat\theta_n-\tilde\theta_n)-\hat u_n=o_p(1).
+  \]
+  The one-step estimator uses exactly \(\hat u_n\). \(\square\)</p>
+</div>
+
+<h3>Newton and Fisher scoring forms</h3>
+
+<p>For a twice differentiable log likelihood,
+\[
+S_n=r_n^{-1}\dot\ell_n(\tilde\theta_n),
+\qquad
+J_n=r_n^{-1}
+\{-\ddot\ell_n(\tilde\theta_n)\}
+r_n^{-1}.
+\]
+With \(r_n=\sqrt n I_p\), the update becomes
+\[
+\theta_n^{(1)}
+=\tilde\theta_n+
+\{-\ddot\ell_n(\tilde\theta_n)\}^{-1}
+\dot\ell_n(\tilde\theta_n),
+\]
+the Newton step. Replacing observed information by expected Fisher information gives Fisher scoring.</p>
+
+<h3>Likelihood-ratio gain</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> The increase from the local center to the unconstrained quadratic maximum is
+  \[
+  2\{\ell_n(\hat\theta_n)-\ell_n(\tilde\theta_n)\}
+  =
+  S_n^\top J_n^{-1}S_n+o_p(1).
+  \]</p>
+</div>
+
+<p>If \(S_n\rightsquigarrow N(0,J)\), this quadratic form converges to
+\(\chi_p^2\).</p>
+
+<h3>Constrained quadratic maximization</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let the local null tangent space be a linear subspace \(T\subset\mathbb R^p\). The constrained maximizer is the \(J_n\)-orthogonal projection of
+  \(\hat u_n=J_n^{-1}S_n\) onto \(T\):
+  \[
+  \hat u_{0,n}=\Pi_T^{J_n}\hat u_n.
+  \]
+  The likelihood-ratio statistic is
+  \[
+  \|\hat u_n-\Pi_T^{J_n}\hat u_n\|_{J_n}^2+o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Completing the square shows that maximizing the quadratic over \(T\) is equivalent to minimizing
+  \(\|u-\hat u_n\|_{J_n}^2\) over \(u\in T\). The difference between unrestricted and constrained maxima is one half the squared distance; multiplying by two gives the statistic. \(\square\)</p>
+</div>
+
+<h3>Observed and expected information</h3>
+
+<p>Observed information adapts to the realized curvature and is natural for Newton optimization. Expected information defines the deterministic LAN geometry. Under regularity,
+\[
+-n^{-1}\ddot\ell_n(\theta_0)\to_p I(\theta_0),
+\]
+so the two are first-order equivalent. In small samples, near boundaries, or weakly identified models, their difference can be substantial and the quadratic approximation may be unreliable.</p>
+
+<h3>Remainder requirements</h3>
+
+<p>A Taylor formula alone is not an asymptotic theorem. One must show the third-order or stochastic remainder is uniform over the local region containing the maximizer. If dimension grows with \(n\), the norm of \(u\) and operator fluctuations of \(J_n\) can make a fixed-dimensional \(o_p(1)\) argument fail.</p>

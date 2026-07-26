@@ -8,24 +8,92 @@ note_prev_url: "/notes/differential-equations/linear-systems-with-constant-coeff
 note_next_url: "/notes/differential-equations/lyapunov-functions/"
 ---
 
-<p>Stability of equilibria records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>Let \(x^*\) be an equilibrium of the autonomous system
+\(\dot x=f(x)\). Stability concerns all nearby trajectories; attraction concerns
+their long-time limits. These are logically distinct.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An equilibrium \(x^\star\) satisfies \(f(x^\star)=0\). It is stable if nearby initial data stay nearby, and asymptotically stable if they also converge to it.</p>
-    </div>
+<h3>Lyapunov, asymptotic, and exponential stability</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(\dot x=Ax\), the origin is asymptotically stable exactly when every eigenvalue of \(A\) has negative real part.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> \(x^*\) is Lyapunov stable
+if for every \(\varepsilon>0\) there is \(\delta>0\) such that
+\[
+\|x_0-x^*\|<\delta
+\Longrightarrow
+\|\phi_t(x_0)-x^*\|<\varepsilon
+\quad(t\ge0).
+\]
+It is asymptotically stable if it is stable and nearby trajectories converge to
+\(x^*\). It is exponentially stable if
+\[
+\|\phi_t(x_0)-x^*\|
+\le M e^{-\alpha t}\|x_0-x^*\|
+\]
+locally.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Put \(A\) into Jordan form or use norm estimates for the semigroup \(e^{tA}\). Polynomial factors from Jordan blocks are dominated exactly when exponential real parts are negative.</p>
-    </div>
+<h3>Linearization principle</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Linear stability is local information for nonlinear systems after linearization, but nonlinear terms can matter in nonhyperbolic cases.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose \(f\in C^1\),
+\(f(x^*)=0\), and \(A=Df(x^*)\).</p>
+<ol>
+<li>If every eigenvalue of \(A\) has negative real part, \(x^*\) is locally
+exponentially stable.</li>
+<li>If \(A\) has an eigenvalue with positive real part, \(x^*\) is unstable.</li>
+</ol>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof of the stable case.</span> Translate
+\(x^*=0\) and write
+\[
+f(x)=Ax+r(x),\qquad \|r(x)\|=o(\|x\|).
+\]
+Choose a positive definite \(P\) solving
+\[
+A^\top P+PA=-I.
+\]
+For \(V(x)=x^\top Px\),
+\[
+\dot V=-\|x\|^2+2x^\top Pr(x).
+\]
+Near zero, the remainder is at most \(\tfrac12\|x\|^2\), so
+\(\dot V\le-cV\). Integration gives exponential decay. For an unstable
+eigenvalue, an invariant-cone or unstable-manifold argument produces
+arbitrarily small initial points that leave a fixed neighborhood.</p>
+</div>
+
+<h3>The inconclusive center case</h3>
+
+<p>If all eigenvalues have nonpositive real parts and some have zero real part,
+linearization alone is inconclusive. The scalar systems
+\[
+\dot x=-x^3,\qquad
+\dot x=x^3
+\]
+both have zero derivative at the origin; the first is asymptotically stable and
+the second unstable. Nonlinear terms on the center manifold decide.</p>
+
+<h3>Orbital stability</h3>
+
+<p>A periodic orbit cannot be asymptotically stable as an individual phase
+point because time translation gives a neutral tangent direction. Orbital
+stability measures distance to the whole orbit. Floquet multipliers of the
+Poincaré map determine transverse stability; one trivial multiplier equals one
+for the flow direction.</p>
+
+<h3>Input-to-state stability</h3>
+
+<p>For a forced system
+\[
+\dot x=f(x,u),
+\]
+input-to-state stability asks for
+\[
+\|x(t)\|
+\le\beta(\|x_0\|,t)+\gamma(\|u\|_\infty),
+\]
+with \(\beta\) decaying in time. This separates decay of initial conditions
+from persistent forcing and is the nonlinear analogue of stable
+variation-of-constants bounds.</p>

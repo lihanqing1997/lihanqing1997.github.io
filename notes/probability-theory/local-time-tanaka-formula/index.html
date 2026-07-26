@@ -8,52 +8,149 @@ note_prev_url: "/notes/probability-theory/stochastic-differential-equations/"
 note_next_url: "/notes/probability-theory/white-noise-stochastic-heat-equation/"
 ---
 
-<p>Local time measures how long a semimartingale spends at a spatial level. Tanaka's formula is Itô's formula for the nonsmooth convex function \(x\mapsto |x-a|\).</p>
+<p>Local time resolves an apparent paradox: Brownian motion spends zero Lebesgue time at any single level, yet its repeated visits have a nontrivial density in space. Tanaka's formula is Ito's formula for a convex function with a kink; the missing second derivative is a point mass, and its integral is local time.</p>
 
-    <h3>Occupation density</h3>
+<h3>Occupation measures</h3>
 
-    <p>Local time is density of occupation measure with respect to space.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The occupation measure of Brownian motion up to time \(t\) is
+  \[
+  \mu_t(A)=\int_0^t1_{\{B_s\in A\}}\,\mathrm{d} s.
+  \]
+  A local time is a density \(a\mapsto L_t^a\) satisfying
+  \[
+  \mu_t(A)=\int_AL_t^a\,\mathrm{d} a,
+  \]
+  or equivalently
+  \[
+  \int_0^tf(B_s)\,\mathrm{d} s
+  =
+  \int_{\mathbb R}f(a)L_t^a\,\mathrm{d} a
+  \]
+  for every nonnegative measurable \(f\).</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For Brownian motion, local time \(L_t^a\) is the jointly measurable process satisfying
-\[
-\int_0^t f(B_s)\,\mathrm{d}s=\int_{\mathbb R}f(a)L_t^a\,\mathrm{d}a
-\]
-for nonnegative measurable \(f\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Brownian motion has a version of local time jointly continuous in
+  \((t,a)\). For every \(a\),
+  \[
+  L_t^a
+  =
+  \lim_{\varepsilon\downarrow0}
+  \frac1{2\varepsilon}
+  \int_0^t1_{\{|B_s-a|<\varepsilon\}}\,\mathrm{d} s
+  \]
+  in \(L^2\), and along suitable subsequences almost surely.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Define the approximate densities in the display. Their first and second moments can be written using the Brownian transition density and the joint density of \((B_r,B_s)\). Heat-kernel estimates make them Cauchy in \(L^2\) as
+  \(\varepsilon\downarrow0\). Moment estimates for increments in both \(t\) and \(a\), followed by Kolmogorov-Chentsov, produce a jointly continuous version. Fubini and approximation of indicators establish the occupation-density identity.</p>
+</div>
 
-    <h3>Tanaka formula</h3>
+<h3>Occupation density for semimartingales</h3>
 
-    <p>The kink of the absolute value creates local time.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(X\) is a continuous semimartingale, there is local time \(L_t^a(X)\) such that
+  \[
+  \int_0^tf(X_s)\,\mathrm{d}[X]_s
+  =
+  \int_{\mathbb R}f(a)L_t^a(X)\,\mathrm{d} a.
+  \]
+  Brownian motion is the special case \([B]_s=s\).</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For Brownian motion,
-\[
-|B_t-a|=|B_0-a|+\int_0^t\operatorname{sgn}(B_s-a)\,\mathrm{d}B_s+L_t^a.
-\]</p>
-    </div>
+<p>Local time is therefore density with respect to the clock that measures martingale roughness, not necessarily ordinary elapsed time.</p>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Approximate \(x\mapsto |x-a|\) by smooth convex functions \(f_\varepsilon\). Itô's formula gives a martingale term plus \(\frac12\int_0^t f_\varepsilon''(B_s-a)\,\mathrm{d}s\). As \(\varepsilon\downarrow0\), \(f_\varepsilon'\to\operatorname{sgn}\) and \(f_\varepsilon''\) approximates twice the Dirac mass at \(a\). The limiting second-order term is \(L_t^a\).</p>
-    </div>
+<h3>Tanaka's formula</h3>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Tanaka).</span> For a continuous semimartingale \(X\), with
+  \(\operatorname{sgn}(0)=0\),
+  \[
+  |X_t-a|
+  =
+  |X_0-a|
+  +\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s
+  +L_t^a(X).
+  \]
+  Equivalently,
+  \[
+  (X_t-a)^+
+  =
+  (X_0-a)^+
+  +\int_0^t1_{\{X_s>a\}}\,\mathrm{d}X_s
+  +\frac12L_t^a(X).
+  \]</p>
+</div>
 
-    <h3>Semimartingale version</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose smooth convex
+  \(f_\varepsilon\to|\cdot-a|\) with
+  \(f_\varepsilon'\to\operatorname{sgn}(\cdot-a)\) and
+  \(f_\varepsilon''(x)\,\mathrm{d} x\Rightarrow2\delta_a\). Ito's formula gives
+  \[
+  f_\varepsilon(X_t)
+  =
+  f_\varepsilon(X_0)
+  +\int_0^tf_\varepsilon'(X_s)\,\mathrm{d}X_s
+  +\frac12\int_0^tf_\varepsilon''(X_s)\,\mathrm{d}[X]_s.
+  \]
+  Bounded convergence after localization handles the stochastic integral. The occupation-density formula rewrites the last term as
+  \[
+  \frac12\int_{\mathbb R}
+  f_\varepsilon''(y)L_t^y(X)\,\mathrm{d} y
+  \to L_t^a(X)
+  \]
+  by continuity in \(y\). This proves the absolute-value formula; use
+  \(x^+=(|x|+x)/2\) for the second.</p>
+</div>
 
-    <p>Local time extends to continuous semimartingales with quadratic variation replacing time.</p>
+<h3>Support and increase of local time</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(X\) is a continuous semimartingale, then
-\[
-|X_t-a|=|X_0-a|+\int_0^t\operatorname{sgn}(X_s-a)\,\mathrm{d}X_s+L_t^a(X).
-\]</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For fixed \(a\),
+  \(t\mapsto L_t^a(X)\) is continuous and increasing, and
+  \[
+  \int_0^t1_{\{X_s\ne a\}}\,\mathrm{d}L_s^a(X)=0.
+  \]
+  Thus local time increases only while the process is at level \(a\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The same smoothing proof applies, but the second-order term is \(\frac12\int f_\varepsilon''(X_s-a)\,\mathrm{d}[X]_s\). Its limit defines local time relative to the quadratic variation measure.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The approximation by
+  \((2\varepsilon)^{-1}1_{\{|X_s-a|<\varepsilon\}}\mathrm{d}[X]_s\) makes monotonicity in \(t\) clear. If \(|X_s-a|\ge\delta\) on a compact time set, the approximating integrands vanish there for
+  \(\varepsilon<\delta\); pass to the limit and then cover
+  \(\{X_s\ne a\}\) by the sets \(\{|X_s-a|\ge1/n\}\).</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Local time is central in reflected diffusions, one-dimensional SDEs with nonsmooth coefficients, and fine Brownian path analysis.</p>
-    </div>
+<h3>Reflection and Levy's identity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Levy identity).</span> For standard Brownian motion and
+  \(S_t=\sup_{s\le t}B_s\),
+  \[
+  (S_t-B_t,S_t)_{t\ge0}
+  \stackrel d=
+  (|B_t|,L_t^0)_{t\ge0}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Tanaka writes
+  \[
+  |B_t|
+  =
+  \int_0^t\operatorname{sgn}(B_s)\,\mathrm{d}B_s+L_t^0.
+  \]
+  The stochastic integral has bracket \(t\), hence is Brownian by Levy's characterization. The pair solves the Skorokhod reflection problem: add the minimal increasing process, supported where the reflected path is zero, to keep a Brownian path nonnegative. The unique solution is
+  \(S_t-B_t\) with regulator \(S_t\), giving equality in law.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \[
+  L_t^0\stackrel d=S_t\stackrel d=|B_t|.
+  \]
+  Local time at zero therefore has the half-normal distribution at each fixed time, although it is defined through infinitely many microscopic visits.</p>
+</div>

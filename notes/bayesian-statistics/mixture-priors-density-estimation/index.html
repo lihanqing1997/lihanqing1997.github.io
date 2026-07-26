@@ -60,3 +60,142 @@ p_G(x)=\int k(x\mid z)\,G(\mathrm{d}z).
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Location-scale normal mixtures can adapt to smooth densities, but the rate calculation must control tails, bandwidth, entropy of mixture classes, and prior mass near approximating mixtures.</p>
     </div>
+
+<h3>Kernel-mixture map</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a kernel density
+\(K_\sigma(x-\mu)\) and mixing measure \(G\),
+\[
+f_{G,\sigma}(x)
+=\int K_\sigma(x-\mu)\,G(\mathrm{d}\mu).
+\]
+A location-scale mixture additionally integrates over \(\sigma\):
+\[
+f_G(x)
+=\int K_\sigma(x-\mu)\,
+G(\mathrm{d}\mu,\mathrm{d}\sigma).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(K_\sigma\) is bounded and continuous, then weak convergence \(G_n\Rightarrow G\) implies pointwise convergence
+\[
+f_{G_n,\sigma}(x)\to f_{G,\sigma}(x)
+\]
+for every \(x\). Under a common integrable envelope, convergence also holds in \(L^1\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For fixed \(x\), the map
+\(\mu\mapsto K_\sigma(x-\mu)\) is bounded and continuous, so weak convergence gives the integral limit. An integrable envelope and pointwise convergence permit dominated convergence in \(x\).</p>
+</div>
+
+<h3>Approximation by Gaussian convolutions</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(f_0\in L^1(\mathbb R)\) is a density and
+\(\varphi_\sigma\) is a centered Gaussian density of variance \(\sigma^2\), then
+\[
+\|f_0*\varphi_\sigma-f_0\|_1\to0
+\quad\text{as }\sigma\downarrow0.
+\]
+If \(f_0\) has \(\beta\)-order smoothness in an appropriate Hölder or Sobolev class and a bias-corrected approximation is used when necessary, the error is typically
+\[
+\|f_0*\varphi_\sigma-f_0\|
+\lesssim\sigma^\beta.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Gaussian kernels form an approximate identity. Write
+\[
+f_0*\varphi_\sigma-f_0
+=\int\{f_0(\cdot-u)-f_0(\cdot)\}
+\varphi_\sigma(u)\,\mathrm{d}u.
+\]
+Translation continuity in \(L^1\), concentration of
+\(\varphi_\sigma\) near zero, and dominated convergence prove the first claim. Taylor or Fourier bounds give the smoothness rate.</p>
+</div>
+
+<h3>Finite mixture approximation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> On a compact mixing region, a continuous Gaussian convolution can be approximated uniformly by a finite mixture with
+\[
+N\asymp\sigma^{-1}
+\]
+regularly spaced support points in one dimension, up to logarithmic refinement for tail and KL control.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Partition the mixing region into cells of diameter \(O(\sigma)\) and replace mixing mass in each cell by an atom at a representative point. Lipschitz control of the Gaussian kernel in its location parameter bounds the integrated discretization error. Truncate mixing tails separately.</p>
+</div>
+
+<h3>Kullback-Leibler support of mixture priors</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (support template).</span> Suppose:</p>
+<ol>
+<li>\(f_0\) can be approximated in KL divergence by some finite kernel mixture \(f_{G^\star,\sigma^\star}\);</li>
+<li>the prior on \(G\) assigns positive weak mass near \(G^\star\);</li>
+<li>the scale prior assigns positive mass near \(\sigma^\star\);</li>
+<li>kernel and tail conditions make the mixture map KL-continuous locally.</li>
+</ol>
+<p>Then
+\[
+\Pi\{K(f_0,f_{G,\sigma})<\varepsilon\}>0
+\]
+for every \(\varepsilon>0\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Choose an approximating finite mixture within \(\varepsilon/2\). Local weak and scale neighborhoods have positive prior probability. Continuity makes every mixture in a sufficiently small product neighborhood lie within the remaining KL budget. The product prior gives positive mass to that neighborhood.</p>
+</div>
+
+<h3>Rate balance for smooth densities</h3>
+
+<p>For a \(\beta\)-smooth one-dimensional density, bandwidth \(\sigma\) gives squared approximation error roughly
+\[
+\sigma^{2\beta}.
+\]
+The effective number of mixture components is roughly \(\sigma^{-1}\), so stochastic complexity is of order
+\[
+\frac{\sigma^{-1}\log n}{n}.
+\]
+Balancing yields
+\[
+\sigma_n\asymp
+(n/\log n)^{-1/(2\beta+1)},
+\qquad
+\varepsilon_n\asymp
+(n/\log n)^{-\beta/(2\beta+1)},
+\]
+up to model-specific logarithms. Adaptive scale priors must put enough mass near \(\sigma_n\) while penalizing scales that make sieve entropy too large.</p>
+
+<h3>Density and mixing-distribution metrics</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Small Hellinger distance between
+\(f_G\) and \(f_{G_0}\) need not imply fast Wasserstein recovery of \(G\). Deconvolution through a smooth kernel is ill-posed, and finite-mixture singularities make component parameters converge at nonstandard rates when components merge. Every contraction theorem must name whether it concerns the density, mixing measure, number of components, or predictive distribution.</p>
+</div>
+
+<h3>Label symmetry</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> In a finite \(K\)-component mixture with exchangeable component priors, the posterior is invariant under all \(K!\) label permutations.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Both likelihood
+\[
+\prod_i\sum_{k=1}^Kw_kK(y_i\mid\theta_k)
+\]
+and prior are unchanged by simultaneously permuting weights and component parameters. Bayes' formula preserves the symmetry.</p>
+</div>
+
+<p>Label switching is therefore not an MCMC defect. Component-specific summaries require an identification convention or permutation-invariant functionals. Density and predictive summaries are naturally invariant.</p>
+
+<h3>Posterior computation</h3>
+
+<p>Blocked stick-breaking truncation, slice sampling, marginal Chinese-restaurant samplers, split-merge moves, and sequential Monte Carlo expose different aspects of mixture geometry. A large occupied-cluster autocorrelation can coexist with stable density estimates, while apparently stable component labels can conceal mode trapping. Diagnostics should target the invariant quantity used in inference.</p>

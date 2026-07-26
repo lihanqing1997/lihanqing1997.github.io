@@ -8,17 +8,47 @@ note_prev_url: "/notes/statistical-decision-theory/tests-decision-functions-dual
 note_next_url: "/notes/statistical-decision-theory/risk-bayes-and-minimax/"
 ---
 
-<p>Randomization turns decision theory into convex geometry. Supporting hyperplanes become priors, boundary points become Bayes risks, and domination becomes movement inside the positive cone.</p>
+<p>For finitely many parameter values, every procedure becomes a point in Euclidean risk space. Randomization convexifies the attainable set, the positive orthant encodes domination, and priors are normals of supporting hyperplanes. This finite geometry is the clearest model for the functional-analytic complete-class theory used on general parameter spaces.</p>
 
-    <h3>Risk set</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a finite parameter set \(\Theta=\{\theta_1,\ldots,\theta_m\}\), the risk set is \(\mathcal R=\{(R(\theta_1,\delta),\ldots,R(\theta_m,\delta)):\delta\in\mathcal D\}\subset\mathbb R^m\). Randomization makes \(\mathcal R\) convex.</p>
-    </div>
+<h3>The attainable and upper risk sets</h3>
 
-    <h3>Supporting priors</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A prior \(\Pi=(\pi_1,\ldots,\pi_m)\) defines the linear functional \(r_\Pi(R)=\sum_j\pi_jR(\theta_j)\). A Bayes rule is a point of \(\mathcal R\) minimizing this supporting functional.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For
+  \(\Theta=\{\theta_1,\ldots,\theta_m\}\), the risk vector of \(\delta\) is
+  \[
+  r(\delta)
+  =
+  (R(\theta_1,\delta),\ldots,R(\theta_m,\delta))^\top.
+  \]
+  The attainable risk set and its upper closure are
+  \[
+  \mathcal R=\{r(\delta):\delta\in\mathcal D\},
+  \qquad
+  \mathcal S=\mathcal R+\mathbb R_+^m.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If randomized rules are allowed, \(\mathcal R\) and \(\mathcal S\) are convex. A rule is admissible exactly when its risk vector is a minimal element of \(\mathcal S\) under coordinatewise order.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Mixtures of rules produce convex combinations of risk vectors. Adding the convex cone \(\mathbb R_+^m\) preserves convexity. A vector \(r\in\mathcal R\) is dominated exactly when another \(s\in\mathcal R\) satisfies \(s\leq r\) coordinatewise with \(s\ne r\), equivalently when \(r\) is not minimal in \(\mathcal S\). \(\square\)</p>
+</div>
+
+<h3>Priors as supporting normals</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> A prior
+  \(\pi=(\pi_1,\ldots,\pi_m)^\top\in\Delta_{m-1}\) defines the Bayes risk
+  \[
+  r(\pi,\delta)=\pi^\top r(\delta).
+  \]
+  A rule is Bayes for \(\pi\) if and only if its risk vector lies in the exposed face
+  \[
+  \arg\min_{r\in\mathcal R}\pi^\top r.
+  \]</p>
+</div>
     <figure class="research-figure">
         <svg viewBox="0 0 520 260" role="img" aria-label="Risk vectors form a convex set; admissible procedures lie on the lower boundary.">
             <line x1="55" y1="220" x2="470" y2="220" stroke="#333" stroke-width="1.5"/>
@@ -33,10 +63,71 @@ note_next_url: "/notes/statistical-decision-theory/risk-bayes-and-minimax/"
         <figcaption>Risk vectors form a convex set; admissible procedures lie on the lower boundary.</figcaption>
     </figure>
 
-    <h3>Separation proof of Bayes optimality</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If a risk vector is optimal for a prior, the hyperplane orthogonal to \(\Pi\) supports the risk set at that vector. Conversely, exposed boundary points are Bayes risk vectors for some prior.</p>
-    </div>
+<p>Every prior has nonnegative coordinates because increasing any risk cannot improve a Bayes criterion. A prior with zero mass on some parameter may expose a vertical or horizontal face and need not protect admissibility at the ignored coordinates.</p>
 
-    <h3>Admissible boundary</h3>
-    <p>A risk vector is inadmissible when another vector lies below it in every coordinate and strictly below in one. Thus admissible rules live on the lower boundary of the convex risk set.</p>
+<h3>Supporting admissible points</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (finite complete-class geometry).</span> Assume the upper risk set \(\mathcal S\subset\mathbb R^m\) is closed and convex. If \(r_0\in\mathcal R\) is admissible, then there exists a nonzero vector
+  \(\pi\in\mathbb R_+^m\) such that
+  \[
+  \pi^\top r_0=\inf_{r\in\mathcal S}\pi^\top r.
+  \]
+  After normalization, \(\pi\) is a prior and any rule with risk \(r_0\) is Bayes for \(\pi\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Admissibility implies
+  \[
+  \mathcal S\cap
+  \{r:r_j<r_{0j}\text{ for every }j\}
+  =\varnothing.
+  \]
+  The second set is open and convex. The separating-hyperplane theorem gives a nonzero \(\pi\) and \(c\) such that
+  \[
+  \pi^\top r\geq c\geq\pi^\top s
+  \]
+  for \(r\in\mathcal S\) and all \(s<r_0\). Letting \(s\uparrow r_0\) gives
+  \(c=\pi^\top r_0\). Because \(\mathcal S\) is closed upward, any negative coordinate of \(\pi\) would make
+  \(\inf_{r\in\mathcal S}\pi^\top r=-\infty\); hence \(\pi\geq0\). Normalize its coordinates to sum to one. \(\square\)</p>
+</div>
+
+<p>The theorem may produce zero prior weights. Additional conditions, such as strict admissibility or continuity arguments, are needed to obtain a full-support prior. Conversely, every unique Bayes rule for a full-support prior is admissible.</p>
+
+<h3>The minimax diagonal</h3>
+
+<p>Let \(\mathbf1=(1,\ldots,1)^\top\). The minimax value is the smallest \(c\) such that the cube
+\[
+(-\infty,c]^m
+\]
+intersects \(\mathcal R\), or equivalently the first point at which the diagonal \(c\mathbf1\) enters the upper risk set. A constant-risk rule lies directly on this diagonal. If a supporting prior touches \(\mathcal S\) at the same point, it supplies the matching Bayes lower bound.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (equalizer certificate).</span> Suppose \(\delta^*\) is Bayes for a prior \(\pi^*\) and
+  \[
+  R(\theta_j,\delta^*)=c
+  \quad\text{for every }j\text{ with }\pi_j^*>0,
+  \qquad
+  R(\theta_j,\delta^*)\leq c
+  \quad\text{otherwise}.
+  \]
+  Then \(\delta^*\) is minimax, \(\pi^*\) is least favorable, and both values equal \(c\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(\delta^*\) is Bayes,
+  \[
+  \inf_\delta\pi^{*\top}r(\delta)
+  =\pi^{*\top}r(\delta^*)=c.
+  \]
+  For every rule \(\delta\),
+  \[
+  \sup_jR(\theta_j,\delta)
+  \geq\pi^{*\top}r(\delta)\geq c.
+  \]
+  On the other hand \(\sup_jR(\theta_j,\delta^*)\leq c\). The lower and upper bounds coincide. \(\square\)</p>
+</div>
+
+<h3>Closure and limits of procedures</h3>
+
+<p>The closedness assumption is not automatic on infinite observation or action spaces. A sequence of rules can have convergent risk vectors without a rule realizing the limit. One therefore works with the closure of the risk set, compactifies the action space, or uses randomized limits. This technical point is exactly why complete-class theorems require topological hypotheses and why Le Cam formulates many results through finite decision problems and closures of attainable risks.</p>

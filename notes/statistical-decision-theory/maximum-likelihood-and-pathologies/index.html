@@ -8,25 +8,148 @@ note_prev_url: "/notes/statistical-decision-theory/consistent-and-root-n-estimat
 note_next_url: "/notes/statistical-decision-theory/random-sample-sizes-and-stopping-rules/"
 ---
 
-<p>Maximum likelihood is powerful in regular experiments, but Le Cam's perspective warns that likelihood maximization alone does not guarantee good decision behavior.</p>
+<p>Maximum likelihood is efficient when consistency, local quadratic curvature, and identifiability all hold. Maximization itself supplies none of these properties. Support changes, unbounded likelihoods, boundaries, mixtures, incidental parameters, and misspecification each break a different step of the regular proof.</p>
 
-    <h3>Likelihood maximizer</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An MLE is any measurable \(\hat\theta_n\) satisfying \(\ell_n(\hat\theta_n)\ge \sup_\theta\ell_n(\theta)-o_p(1)\). Approximate maximizers are enough for first-order asymptotics.</p>
-    </div>
+<h3>Approximate maximizers</h3>
 
-    <h3>Regular MLE limit</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In regular LAN models with suitable consistency and curvature,</p>
-        <p>\[
-\sqrt n(\hat\theta_n-\theta_0)\Rightarrow N(0,I_{\theta_0}^{-1}).
-\]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An approximate MLE satisfies
+  \[
+  \ell_n(\hat\theta_n)
+  \geq\sup_{\theta\in\Theta}\ell_n(\theta)-o_p(1).
+  \]
+  For root-\(n\) asymptotics, an \(o_p(1)\) log-likelihood error is enough because local log-likelihood differences are order one.</p>
+</div>
 
-    <h3>Argmax of the quadratic approximation</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Consistency puts the MLE in a LAN neighborhood. The log likelihood is then approximated by a concave quadratic whose argmax is \(I_{\theta_0}^{-1}\Delta_n\).</p>
-    </div>
+<h3>The regular MLE theorem</h3>
 
-    <h3>Incidental parameters and nonregularity</h3>
-    <p>Neyman-Scott type problems show that maximizing likelihood with growing nuisance dimension can be inconsistent. The experiment, not the slogan “MLE,” determines the asymptotics.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose:</p>
+  <ol>
+    <li>\(\hat\theta_n\to_p\theta_0\);</li>
+    <li>the model is uniformly LAN in a neighborhood of \(\theta_0\) with nonsingular \(I_{\theta_0}\);</li>
+    <li>the local maximizer is tight and the likelihood outside root-\(n\) neighborhoods is uniformly lower;</li>
+    <li>the approximate maximization error is \(o_p(1)\).</li>
+  </ol>
+  <p>Then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =
+  I_{\theta_0}^{-1}\Delta_n+o_p(1)
+  \rightsquigarrow N_p(0,I_{\theta_0}^{-1}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Consistency localizes the estimator. The separation condition strengthens localization to root-\(n\) tightness. On bounded local sets, uniform LAN makes the likelihood an \(o_p(1)\) perturbation of
+  \[
+  h\mapsto h^\top\Delta_n-\tfrac12h^\top I_{\theta_0}h,
+  \]
+  whose unique maximizer is \(I_{\theta_0}^{-1}\Delta_n\). The argmax theorem gives the expansion, and the central-sequence CLT gives the limit. \(\square\)</p>
+</div>
+
+<h3>Neyman–Scott incidental parameters</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Observe, for
+  \(i=1,\ldots,n\),
+  \[
+  X_{i1},X_{i2}\overset{\mathrm{ind}}{\sim}
+  N(\mu_i,\sigma^2),
+  \]
+  with common \(\sigma^2\) and one nuisance mean \(\mu_i\) per pair. The MLEs are
+  \[
+  \hat\mu_i=\frac{X_{i1}+X_{i2}}2,
+  \qquad
+  \hat\sigma_{\mathrm{MLE}}^2
+  =
+  \frac1{2n}\sum_{i=1}^n
+  \sum_{j=1}^2(X_{ij}-\hat\mu_i)^2.
+  \]
+  Since
+  \[
+  \sum_{j=1}^2(X_{ij}-\hat\mu_i)^2
+  =\frac12(X_{i1}-X_{i2})^2,
+  \]
+  and \(E(X_{i1}-X_{i2})^2=2\sigma^2\),
+  \[
+  \hat\sigma_{\mathrm{MLE}}^2\to_p\frac{\sigma^2}{2}.
+  \]
+  The MLE is inconsistent because nuisance dimension grows with sample size.</p>
+</div>
+
+<p>The unbiased within-pair estimator divides the residual sum by \(n\), not \(2n\). Profiling out an increasing number of nuisance parameters consumed a nonvanishing fraction of the information.</p>
+
+<h3>Unbounded mixture likelihoods</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Gaussian mixture).</span> In a finite Gaussian mixture with unknown component variances, place one component mean at an observed point and let its variance tend to zero. Its density at that point diverges like \(\sigma^{-1}\), while the remaining component fits the other observations. The likelihood is unbounded and an ordinary MLE does not exist.</p>
+</div>
+
+<p>Constraints, penalties, or priors preventing variance collapse are structural modifications of the decision problem, not mere numerical fixes.</p>
+
+<h3>Separation in logistic regression</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If a vector \(b\) satisfies
+  \[
+  x_i^\top b>0\quad\text{for all }Y_i=1,
+  \qquad
+  x_i^\top b<0\quad\text{for all }Y_i=0,
+  \]
+  then along \(\beta=tb\), \(t\to\infty\), every fitted probability tends to the observed label and the logistic likelihood increases toward its supremum. No finite MLE exists. Firth correction or a proper prior restores finite estimates by altering the criterion.</p>
+</div>
+
+<h3>Boundary parameters</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Suppose an unconstrained estimator satisfies
+  \[
+  \sqrt n(\tilde\theta_n-\theta_0)\rightsquigarrow N(0,\sigma^2),
+  \]
+  but the parameter space is \([0,\infty)\) and \(\theta_0=0\). The constrained MLE is approximately
+  \[
+  \hat\theta_n=\max(0,\tilde\theta_n),
+  \]
+  so
+  \[
+  \sqrt n\,\hat\theta_n
+  \rightsquigarrow\max(0,\sigma Z),
+  \]
+  with an atom of mass \(1/2\) at zero. Likelihood-ratio statistics have chi-bar-square rather than ordinary chi-square limits.</p>
+</div>
+
+<h3>Support-dependent models</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (uniform endpoint).</span> For
+  \(X_i\sim U[0,\theta]\), the MLE is \(X_{(n)}\). It converges at rate \(n\):
+  \[
+  n\left(1-\frac{X_{(n)}}{\theta}\right)
+  \rightsquigarrow\operatorname{Exp}(1).
+  \]
+  The model is not DQM because the support changes with \(\theta\), so root-\(n\) LAN theory does not apply.</p>
+</div>
+
+<h3>Misspecified likelihood</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under regular misspecification, the MLE converges to the KL projection \(\theta^\dagger\) and
+  \[
+  \sqrt n(\hat\theta_n-\theta^\dagger)
+  \rightsquigarrow
+  N(0,A^{-1}BA^{-\top}),
+  \]
+  where
+  \[
+  A=-P\ddot\ell_{\theta^\dagger},
+  \qquad
+  B=P(\dot\ell_{\theta^\dagger}\dot\ell_{\theta^\dagger}^\top).
+  \]</p>
+</div>
+
+<p>Under correct specification \(A=B=I\); under misspecification they differ. The inverse observed Hessian alone estimates \(A^{-1}\), not the sandwich covariance.</p>
+
+<h3>Decision-theoretic diagnosis</h3>
+
+<p>Before invoking “MLE efficiency,” verify existence, identification, consistency, the correct local rate, likelihood-ratio convergence, nuisance dimension, and the loss under which optimality is claimed. The experiment determines the asymptotics; maximization is only a construction within it.</p>

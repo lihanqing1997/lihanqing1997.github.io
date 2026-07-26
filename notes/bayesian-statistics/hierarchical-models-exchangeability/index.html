@@ -68,3 +68,144 @@ The posterior mean shrinks \(Y_i\) toward the population mean \(\mu\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Weak data information about variance components can make posterior behavior sensitive to hyperprior tails near zero or infinity. In hierarchical models, prior predictive checking is especially important because hyperparameters control the scale of entire groups.</p>
     </div>
+
+<h3>Normal-normal partial pooling</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose
+\[
+Y_j\mid\theta_j\sim N(\theta_j,\sigma_j^2),
+\qquad
+\theta_j\mid\mu,\tau^2\sim N(\mu,\tau^2),
+\]
+with \(\mu,\tau\) fixed. Then
+\[
+\theta_j\mid Y_j,\mu,\tau
+\sim N(m_j,v_j),
+\]
+where
+\[
+v_j=\left(\frac1{\sigma_j^2}+\frac1{\tau^2}\right)^{-1},
+\qquad
+m_j=B_j\mu+(1-B_j)Y_j,
+\qquad
+B_j=\frac{\sigma_j^2}{\sigma_j^2+\tau^2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Completing the square in
+\[
+\frac{(Y_j-\theta_j)^2}{\sigma_j^2}
++\frac{(\theta_j-\mu)^2}{\tau^2}
+\]
+gives posterior precision
+\(\sigma_j^{-2}+\tau^{-2}\) and precision-weighted mean. Algebra converts that mean into the displayed convex combination.</p>
+</div>
+
+<p>Groups with noisy observations have larger \(B_j\) and shrink more toward \(\mu\). When \(\tau\to0\), complete pooling results; when \(\tau\to\infty\), the estimates approach no pooling.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> If \(\sigma_j=4\), \(\tau=2\), \(\mu=10\), and \(Y_j=20\), then
+\[
+B_j=\frac{16}{20}=0.8,\qquad
+m_j=0.8(10)+0.2(20)=12.
+\]
+The extreme observation is heavily shrunk because its sampling variance is four times the between-group variance.</p>
+</div>
+
+<h3>Exchangeability and de Finetti mixtures</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (de Finetti for Bernoulli sequences).</span> An infinite Bernoulli sequence \((X_i)\) is exchangeable if and only if there is a probability measure \(\Pi\) on \([0,1]\) such that
+\[
+P(X_1=x_1,\ldots,X_n=x_n)
+=\int_0^1
+\prod_{i=1}^n
+p^{x_i}(1-p)^{1-x_i}\,\Pi(\mathrm{d}p)
+\]
+for every \(n\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The reverse direction follows because a mixture of iid laws is invariant under permutations. For the forward direction, exchangeability makes the empirical proportions \(S_n/n\) a reverse-martingale sequence relative to the tail of symmetric \(\sigma\)-fields, so they converge almost surely to a random \(P\). Conditional mixed moments of \(P\) reproduce all finite exchangeable probabilities, yielding conditional iid Bernoulli sampling given \(P\).</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Finite exchangeability.</span> A finitely exchangeable vector need not extend to an infinite exchangeable sequence and need not be an exact iid mixture. The hierarchical representation is therefore a substantive extendibility assumption, not merely a synonym for permutation symmetry in one finite dataset.</p>
+</div>
+
+<h3>Learning the population distribution</h3>
+
+<p>With unknown \((\mu,\tau)\), each group informs both its own \(\theta_j\) and the population distribution. The marginal model
+\[
+Y_j\mid\mu,\tau
+\sim N(\mu,\sigma_j^2+\tau^2)
+\]
+shows that \(\tau\) is learned from between-group dispersion after removing sampling variance. With very few groups, this separation is weak and the prior on \(\tau\) materially affects shrinkage.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If all \(\sigma_j=\sigma\) and \(\mu\) is known, the marginal log-likelihood for \(v=\tau^2\) is
+\[
+\ell(v)
+=-\frac J2\log(\sigma^2+v)
+-\frac{\sum_j(Y_j-\mu)^2}{2(\sigma^2+v)}
++C.
+\]
+Its unconstrained maximizer satisfies
+\[
+\sigma^2+\widehat v
+=\frac1J\sum_j(Y_j-\mu)^2,
+\]
+with \(\widehat v\) truncated at zero.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate:
+\[
+\ell'(v)
+=-\frac{J}{2(\sigma^2+v)}
++\frac{\sum_j(Y_j-\mu)^2}{2(\sigma^2+v)^2}.
+\]
+Set this to zero and enforce \(v\ge0\).</p>
+</div>
+
+<h3>Centered and noncentered parameterizations</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The centered form samples
+\[
+\theta_j\sim N(\mu,\tau^2).
+\]
+The noncentered form introduces
+\[
+\eta_j\sim N(0,1),\qquad
+\theta_j=\mu+\tau\eta_j.
+\]</p>
+</div>
+
+<p>They define the same probability law but different posterior geometry. When group data are weak, centered \(\theta_j\) and small \(\tau\) create a narrow funnel, whereas \(\eta_j\) remains order one; noncentering often improves Hamiltonian sampling. With highly informative group data, centering can be more efficient. Partial noncentering interpolates between the two.</p>
+
+<h3>Posterior prediction for a new group</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> A new latent effect has posterior predictive law
+\[
+p(\theta_{\mathrm{new}}\mid y)
+=\int
+N(\theta_{\mathrm{new}}\mid\mu,\tau^2)
+\Pi(\mathrm{d}\mu,\mathrm{d}\tau\mid y).
+\]
+Its variance decomposes as
+\[
+\operatorname{Var}(\theta_{\mathrm{new}}\mid y)
+=E(\tau^2\mid y)
++\operatorname{Var}(\mu\mid y).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply total variance conditional on \((\mu,\tau)\). Conditional mean is \(\mu\), and conditional variance is \(\tau^2\).</p>
+</div>
+
+<p>Prediction for a new group is generally more uncertain than estimation of the population mean. Confusing these targets is a common source of intervals that are much too narrow.</p>

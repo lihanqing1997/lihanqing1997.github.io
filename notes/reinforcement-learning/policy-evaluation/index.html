@@ -77,3 +77,96 @@ v_\pi=\sum_{t=0}^\infty\gamma^tP_\pi^tr_\pi.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A small value-function error does not always imply a small control error unless action gaps or approximate-greedy conditions are also controlled.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Model-based evaluation</h3>
+
+<p>For a finite MDP and fixed policy,
+\[
+V^\pi=(I-\gamma P_\pi)^{-1}r_\pi.
+\]
+Direct solution costs \(O(|\mathsf S|^3)\) in dense arithmetic, while iterative
+evaluation
+\[
+V_{k+1}=r_\pi+\gamma P_\pi V_k
+\]
+has
+\[
+\|V_k-V^\pi\|_\infty
+\le\gamma^k\|V_0-V^\pi\|_\infty.
+\]
+Sparse linear solvers, Krylov methods, and multigrid ideas can exploit transition
+structure when the model is known.</p>
+
+<h3>Monte Carlo evaluation</h3>
+
+<p>From independent episodes starting at \(s\), the return
+\(G_i=\sum_{t\ge0}\gamma^tR_{i,t}\) is unbiased:
+\(E(G_i\mid S_{i,0}=s)=V^\pi(s)\). If \(|R_t|\le R_{\max}\), then
+\(|G_i|\le R_{\max}/(1-\gamma)\), and Hoeffding's inequality gives
+\[
+\mathbb P\!\left(
+\left|\frac1n\sum_{i=1}^nG_i-V^\pi(s)\right|>\varepsilon
+\right)
+\le2\exp\!\left\{
+-\frac{n\varepsilon^2(1-\gamma)^2}{2R_{\max}^2}
+\right\}.
+\]
+Monte Carlo requires completed returns but avoids bootstrapping bias.</p>
+
+<h3>Linear value approximation and LSTD</h3>
+
+<p>Let \(V_w=\Phi w\), with feature row \(\phi(s)^\top\), and let
+\(D=\operatorname{diag}(d_\pi)\) for a stationary state distribution. The
+projected Bellman equation
+\[
+\Phi w=\Pi_D(r_\pi+\gamma P_\pi\Phi w)
+\]
+has normal equations
+\[
+Aw=b,\qquad
+A=\Phi^\top D(I-\gamma P_\pi)\Phi,\quad
+b=\Phi^\top Dr_\pi.
+\]
+Least-squares TD estimates these moments from transitions:
+\[
+\widehat A_n=\frac1n\sum_t
+\phi_t(\phi_t-\gamma\phi_{t+1})^\top,\qquad
+\widehat b_n=\frac1n\sum_t\phi_tR_t.
+\]</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (on-policy uniqueness).</span> If
+\(d_\pi\) is stationary with positive mass on represented states and \(\Phi\)
+has full column rank, then \(A\) is positive definite in quadratic form:
+\[
+w^\top Aw\ge(1-\gamma)\|\Phi w\|_D^2.
+\]
+Hence the projected Bellman equation has a unique solution.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put \(v=\Phi w\). Stationarity
+and Jensen imply
+\[
+\|P_\pi v\|_D^2
+=E\{E(v(S_{t+1})\mid S_t)^2\}
+\le E v(S_{t+1})^2=\|v\|_D^2.
+\]
+Thus
+\[
+w^\top Aw
+=\langle v,v-\gamma P_\pi v\rangle_D
+\ge\|v\|_D^2-\gamma\|v\|_D\|P_\pi v\|_D
+\ge(1-\gamma)\|v\|_D^2.
+\]</p>
+</div>
+
+<h3>Dependence and uncertainty</h3>
+
+<p>A single trajectory is not iid. Consistency and confidence intervals require
+ergodicity or mixing, and asymptotic variance includes temporal
+autocovariances. Regenerative simulation, batch means, martingale bounds, or
+Markov-chain central limit theorems supply valid uncertainty. Reporting only
+the regression residual variance treats dependent targets as independent and
+is generally wrong.</p>

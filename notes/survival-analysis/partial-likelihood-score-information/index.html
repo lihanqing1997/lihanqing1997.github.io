@@ -8,47 +8,221 @@ note_prev_url: "/notes/survival-analysis/cox-proportional-hazards-model/"
 note_next_url: "/notes/survival-analysis/large-sample-theory-cox/"
 ---
 
-<h3>Partial likelihood</h3>
+<p>Partial likelihood isolates the relative-risk parameter by conditioning on which member of a risk set fails. The baseline hazard cancels because every individual in that instantaneous comparison shares the same unknown multiplier.</p>
 
-    <p>At an event time, the Cox model gives the conditional probability that the observed failing subject is the one that fails among all subjects in the risk set. Multiplying these conditional probabilities gives the partial likelihood.</p>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For distinct event times and no ties, the Cox partial likelihood is
+<h3>Risk-set conditioning</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Cox partial likelihood).</span> Suppose event times are continuous, so ties occur with probability zero. Conditional on one event at time \(t\) and on the risk set
+\(\mathcal R(t)=\{j:Y_j(t)=1\}\), the probability that subject \(i\in\mathcal R(t)\) fails is
 \[
-L_p(\beta)=\prod_{i:\Delta_i=1}{\exp(Z_i^\top\beta)\over \sum_{j:X_j\ge X_i}\exp(Z_j^\top\beta)}.
+P\{i\text{ fails at }t\mid\mathcal R(t),\text{ one failure}\}
+=\frac{e^{\beta^\top Z_i(t)}}
+{\sum_{j\in\mathcal R(t)}e^{\beta^\top Z_j(t)}}.
 \]
-The log partial likelihood is \(\ell_p(\beta)=\log L_p(\beta)\).</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Let
+Hence, if \(i_k\) fails at \(t_k\), the partial likelihood is
 \[
-S^{(k)}(t,\beta)=\sum_{j=1}^nY_j(t)Z_j^{\otimes k}\exp(Z_j^\top\beta),\quad k=0,1,2,
-\]
-and \(\bar Z(t,\beta)=S^{(1)}(t,\beta)/S^{(0)}(t,\beta)\). Then the score is
-\[
-U(\beta)=\sum_{i=1}^n\int_0^\tau\{Z_i-\bar Z(t,\beta)\}\,\mathrm{d}N_i(t).
+L_p(\beta)
+=\prod_{k=1}^{D}
+\frac{e^{\beta^\top Z_{i_k}(t_k)}}
+{\sum_jY_j(t_k)e^{\beta^\top Z_j(t_k)}}.
 \]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiate \(\ell_p(\beta)=\sum_i\int Z_i^\top\beta\,\mathrm{d}N_i(t)-\int\log S^{(0)}(t,\beta)\,\mathrm{d}N_\cdot(t)\), where \(N_\cdot=\sum_iN_i\). The derivative of the first term is \(Z_i\); the derivative of \(\log S^{(0)}\) is \(S^{(1)}/S^{(0)}\).</p>
-    </div>
-    <h3>Observed information</h3>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Over \([t,t+\mathrm{d}t)\), subject \(i\)'s event probability is
+\(Y_i(t)\lambda_0(t)e^{\beta^\top Z_i(t)}\mathrm{d}t+o(\mathrm{d}t)\). Conditional on exactly one event among those at risk, divide this probability by the sum over the risk set. The common factors \(\lambda_0(t)\mathrm{d}t\) cancel. Multiplying the successive conditional probabilities yields \(L_p\).</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Conditioning statement.</span> This argument conditions locally on the event occurrence and the predictable risk set. It does not condition globally on all event times in arbitrary censoring models. The rigorous justification is either a profile-likelihood calculation for baseline-hazard jumps or the multiplicative-intensity likelihood.</p>
+</div>
+
+<h3>Profile likelihood derivation</h3>
+
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The negative Hessian is
+<p><span class="statement-title">Proposition.</span> Treat \(\Lambda_0\) as a step function with jump \(\alpha_k\) at each distinct event time \(t_k\). If there is one failure at each \(t_k\), maximizing the full likelihood over \(\alpha_k\) gives
 \[
-I_n(\beta)=\sum_i\int_0^\tau V(t,\beta)\,\mathrm{d}N_i(t),\quad
-V(t,\beta)={S^{(2)}\over S^{(0)}}(t,\beta)-\bar Z(t,\beta)^{\otimes2}.
+\widehat\alpha_k(\beta)
+=\frac{1}{S_n^{(0)}(\beta,t_k)},\qquad
+S_n^{(0)}(\beta,t)=\sum_{j=1}^nY_j(t)e^{\beta^\top Z_j(t)}.
 \]
-Thus \(V(t,\beta)\) is the weighted risk-set covariance of \(Z\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiate \(\bar Z=S^{(1)}/S^{(0)}\). The quotient rule gives \(S^{(2)}/S^{(0)}-(S^{(1)}/S^{(0)})^{\otimes2}\), which is precisely the covariance matrix under weights proportional to \(Y_j(t)\exp(Z_j^\top\beta)\).</p>
-    </div>
-    <h3>Concavity and uniqueness</h3>
-<div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The negative Cox partial log likelihood is convex in \(\beta\). It is strictly convex on directions that have nonzero weighted risk-set variance at event times.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The Hessian of \(-\ell_p(\beta)\) is the sum over event times of weighted covariance matrices \(V(t,\beta)\). Covariance matrices are positive semidefinite; strict positivity holds exactly on directions whose risk-set values are not almost surely constant.</p>
-    </div>
-    <h3>Ties</h3>
+Substitution into the full likelihood yields \(L_p(\beta)\) up to a parameter-free factor.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The part involving \(\alpha_k\) is
+\[
+\log\alpha_k
+-\alpha_kS_n^{(0)}(\beta,t_k).
+\]
+Its strictly concave maximizer is \(1/S_n^{(0)}(\beta,t_k)\). The remaining \(\beta\)-dependent factor at \(t_k\) is
+\[
+\frac{e^{\beta^\top Z_{i_k}(t_k)}}{S_n^{(0)}(\beta,t_k)}.
+\]
+Multiplication over \(k\) gives partial likelihood.</p>
+</div>
+
+<h3>Risk-set moments, score, and information</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> When several events occur at the same recorded time, the Breslow approximation treats the risk-set denominator as unchanged across the tied failures, while the Efron approximation partially removes the tied failures across the tied substeps.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The exact partial likelihood for ties is combinatorial. Breslow is simple, Efron is usually more accurate for moderate tie frequency, and both coincide asymptotically when ties are artifacts of time discretization that vanish with finer measurement.</p>
-    </div>
+<p><span class="statement-title">Definition.</span> For \(k=0,1,2\), let
+\[
+S_n^{(k)}(\beta,t)
+=\sum_{i=1}^nY_i(t)e^{\beta^\top Z_i(t)}
+Z_i(t)^{\otimes k},
+\]
+where \(z^{\otimes0}=1\), \(z^{\otimes1}=z\), and
+\(z^{\otimes2}=zz^\top\). Define
+\[
+\bar Z_n(\beta,t)=\frac{S_n^{(1)}(\beta,t)}{S_n^{(0)}(\beta,t)}
+\]
+and
+\[
+V_n(\beta,t)
+=\frac{S_n^{(2)}(\beta,t)}{S_n^{(0)}(\beta,t)}
+-\bar Z_n(\beta,t)\bar Z_n(\beta,t)^\top.
+\]
+These are the exponentially weighted mean and covariance of the current risk set.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The partial log-likelihood, score, and observed information are
+\[
+\ell_p(\beta)
+=\sum_i\int_0^\tau
+\left[\beta^\top Z_i(t)-\log S_n^{(0)}(\beta,t)\right]
+\mathrm{d}N_i(t),
+\]
+\[
+U_n(\beta)
+=\frac{\partial\ell_p(\beta)}{\partial\beta}
+=\sum_i\int_0^\tau
+\{Z_i(t)-\bar Z_n(\beta,t)\}\,\mathrm{d}N_i(t),
+\]
+\[
+I_n(\beta)
+=-\frac{\partial^2\ell_p(\beta)}
+{\partial\beta\partial\beta^\top}
+=\int_0^\tau V_n(\beta,t)\,\mathrm{d}N(t).
+\]
+Thus \(\ell_p\) is concave.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate
+\(\log S_n^{(0)}\):
+\[
+\nabla\log S_n^{(0)}=\frac{S_n^{(1)}}{S_n^{(0)}}=\bar Z_n,
+\qquad
+\nabla^2\log S_n^{(0)}=V_n.
+\]
+The matrix \(V_n\) is a weighted covariance and is positive semidefinite. Differentiating under the finite sums and event integrals gives the formulas and makes the Hessian \(-I_n\) negative semidefinite.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> At the true parameter \(\beta_0\),
+\[
+U_n(\beta_0)
+=\sum_i\int_0^\tau
+\{Z_i(t)-\bar Z_n(\beta_0,t)\}\,\mathrm{d}M_i(t),
+\]
+where
+\[
+M_i(t)=N_i(t)-\int_0^t
+Y_i(u)e^{\beta_0^\top Z_i(u)}\,\mathrm{d}\Lambda_0(u).
+\]
+Hence the Cox score is a martingale integral with conditional mean zero.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Replace \(\mathrm{d}N_i\) by
+\(\mathrm{d}M_i+Y_i e^{\beta_0^\top Z_i}\mathrm{d}\Lambda_0\). The compensator term is
+\[
+\left[
+S_n^{(1)}(\beta_0,t)
+-\bar Z_n(\beta_0,t)S_n^{(0)}(\beta_0,t)
+\right]\mathrm{d}\Lambda_0(t)=0.
+\]</p>
+</div>
+
+<h3>Concavity, uniqueness, and separation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If, for every nonzero \(a\in\mathbb R^p\), there is an event time at which the risk-set values \(a^\top Z_j(t)\) are not all equal, then \(I_n(\beta)\) is positive definite and \(\ell_p\) is strictly concave. Any finite solution of \(U_n(\beta)=0\) is therefore the unique maximizer.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For nonzero \(a\),
+\[
+a^\top I_n(\beta)a
+=\int\operatorname{Var}_{w_{\beta,t}}\{a^\top Z(t)\}\,\mathrm{d}N(t),
+\]
+where \(w_{\beta,t}\) are positive risk-set weights. The assumed risk-set variation makes at least one integrand strictly positive. Hence the quadratic form is positive, so the Hessian is negative definite.</p>
+</div>
+
+<p>A finite maximizer can still fail to exist. If a direction \(a\) ranks every observed failure above every comparable nonfailure in its risk set, then \(\ell_p(\beta+ca)\) increases toward a finite supremum as \(c\to\infty\). This is the survival analogue of complete separation in logistic regression. Penalization or a carefully specified prior regularizes the problem but changes the estimand.</p>
+
+<h3>A two-risk-set calculation</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Three subjects have scalar covariates
+\(Z=(0,1,2)\). Subject \(3\) fails first; subject \(1\) fails second after subject \(3\) has left. Then
+\[
+L_p(\beta)
+=\frac{e^{2\beta}}{1+e^\beta+e^{2\beta}}
+\frac{1}{1+e^\beta}.
+\]
+The score is
+\[
+U(\beta)
+=2-\frac{e^\beta+2e^{2\beta}}{1+e^\beta+e^{2\beta}}
+-\frac{e^\beta}{1+e^\beta}.
+\]
+Each event compares its failing subject only with those still at risk. A subject's contribution can therefore change across event times even when its covariate is fixed.</p>
+</div>
+
+<h3>Tied event times</h3>
+
+<p>If \(d\) subjects fail at the same recorded time \(t\), the continuous-time no-ties likelihood no longer specifies their latent ordering. Three common treatments are:</p>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let \(D(t)\) be the tied failure set and \(R(t)\) the risk set.</p>
+<ul>
+<li>The <em>exact discrete partial likelihood</em> uses
+\[
+\frac{\exp\{\beta^\top\sum_{i\in D(t)}Z_i\}}
+{\sum_{A\subset R(t),\,|A|=d}
+\exp\{\beta^\top\sum_{j\in A}Z_j\}}.
+\]</li>
+<li>The <em>Breslow approximation</em> uses
+\[
+\frac{\exp\{\beta^\top\sum_{i\in D(t)}Z_i\}}
+{\{S_n^{(0)}(\beta,t)\}^{d}}.
+\]</li>
+<li>The <em>Efron approximation</em> successively removes fractions of the tied failure weight:
+\[
+\frac{\exp\{\beta^\top\sum_{i\in D(t)}Z_i\}}
+{\prod_{\ell=0}^{d-1}
+\left[S_n^{(0)}(\beta,t)
+-\frac{\ell}{d}\sum_{i\in D(t)}e^{\beta^\top Z_i}\right]}.
+\]</li>
+</ul>
+</div>
+
+<p>Breslow is adequate when ties are sparse; Efron better approximates unknown orderings when ties are moderate; exact discrete likelihood is principled for genuinely discrete event times but can be computationally expensive. The choice is part of the statistical model and should be reported.</p>
+
+<h3>Score, Wald, and likelihood-ratio inference</h3>
+
+<p>For testing \(H_0:R\beta=r\), the three regular statistics are
+\[
+\begin{aligned}
+W&=(R\widehat\beta-r)^\top
+\{R I_n(\widehat\beta)^{-1}R^\top\}^{-1}
+(R\widehat\beta-r),\\
+S&=U_R(\widetilde\beta)^\top
+I_R(\widetilde\beta)^{-1}U_R(\widetilde\beta),\\
+LR&=2\{\ell_p(\widehat\beta)-\ell_p(\widetilde\beta)\},
+\end{aligned}
+\]
+where \(\widetilde\beta\) maximizes under \(H_0\). Under regularity and a fixed-dimensional null of codimension \(q\), all converge to \(\chi_q^2\). Their equivalence follows from the same local quadratic expansion used on the next page.</p>

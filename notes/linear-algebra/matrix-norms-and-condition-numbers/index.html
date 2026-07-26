@@ -76,3 +76,60 @@ note_next_url: "/notes/linear-algebra/dual-spaces-and-adjoints/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A large condition number means the matrix is close to singular relative to its scale. In the spectral norm, the distance from \(A\) to the set of singular matrices is \(\sigma_{\min}(A)\). Thus ill conditioning is not an algorithmic defect; it is geometric instability in the problem itself.</p>
     </div>
+
+<!-- quality-consolidation -->
+<h3>Forward error, backward error, and conditioning</h3>
+
+<p>For \(Ax=b\) with \(A\) invertible, perturb
+\((A+\Delta A)(x+\Delta x)=b+\Delta b\). If
+\(\|A^{-1}\Delta A\|<1\), then
+\[
+\frac{\|\Delta x\|}{\|x\|}
+\le
+\frac{\kappa(A)}
+{1-\kappa(A)\|\Delta A\|/\|A\|}
+\left(
+\frac{\|\Delta A\|}{\|A\|}
++\frac{\|\Delta b\|}{\|b\|}
+\right),
+\]
+where \(\kappa(A)=\|A\|\|A^{-1}\|\).</p>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Rearrangement gives
+\[
+(I+A^{-1}\Delta A)\Delta x
+=A^{-1}(\Delta b-\Delta A\,x).
+\]
+The Neumann-series estimate
+\[
+\|(I+E)^{-1}\|\le(1-\|E\|)^{-1}
+\]
+and \(\|b\|\le\|A\|\|x\|\) yield the bound.</p>
+</div>
+
+<p>Conditioning belongs to the mathematical problem; backward stability
+belongs to the algorithm. A backward-stable solver returns the exact solution
+to nearby data. Its forward error is small only when the underlying problem
+is also well conditioned.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> In the spectral norm,
+\[
+\kappa_2(A)=\frac{\sigma_{\max}(A)}{\sigma_{\min}(A)}
+\]
+and
+\[
+\operatorname{dist}_2(A,\{\text{singular matrices}\})
+=\sigma_{\min}(A).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The SVD gives
+\(\|A\|_2=\sigma_{\max}\) and
+\(\|A^{-1}\|_2=\sigma_{\min}^{-1}\). Subtracting
+\(\sigma_{\min}u_nv_n^*\) makes \(A\) singular. Conversely, if
+\(A+E\) is singular, choose unit \(x\) with \((A+E)x=0\); then
+\(\|E\|_2\ge\|Ax\|\ge\sigma_{\min}\).</p>
+</div>

@@ -8,24 +8,125 @@ note_prev_url: "/notes/causal-inference/potential-outcomes/"
 note_next_url: "/notes/causal-inference/average-treatment-effects/"
 ---
 
-<p>Consistency, exchangeability, and positivity records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Identification of causal effects from observational data rests on three logically distinct conditions: observed outcomes correspond to the specified intervention, treatment groups are exchangeable after adjustment, and every relevant covariate stratum contains the treatment alternatives being compared.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The standard identification triad consists of consistency, exchangeability, and positivity. Together they connect observed conditional means to potential-outcome means.</p>
-    </div>
+<h3>Conditional exchangeability</h3>
 
-    <h3>Adjustment formula</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \((Y(1),Y(0))\perp A\mid X\), consistency holds, and \(0<P(A=1\mid X)<1\), then \(E[Y(a)]=E[E[Y\mid A=a,X]]\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Conditional exchangeability for binary treatment is
+  \[
+  \{Y(0),Y(1)\}\perp\!\!\!\perp A\mid X.
+  \]
+  Mean exchangeability, sufficient for the ATE mean, is the weaker condition
+  \[
+  \mathbb E\{Y(a)\mid A,X\}=
+  \mathbb E\{Y(a)\mid X\},\qquad a=0,1.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use exchangeability to replace \(Y(a)\) by its conditional distribution among units with \(A=a\), then use consistency to replace \(Y(a)\) by observed \(Y\) in that group and average over \(X\).</p>
-    </div>
+<p>Exchangeability is not a testable independence in the observed law because one potential outcome is missing for every unit. Subject-matter knowledge, design, negative controls, and sensitivity analysis are needed to defend or probe it.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Positivity is not technical decoration: without overlap, some counterfactual means require extrapolation rather than identification.</p>
-    </div>
+<h3>Positivity and overlap</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Positivity requires
+  \[
+  0<e(X)<1\quad\text{almost surely on the target population},
+  \qquad e(x)=P(A=1\mid X=x).
+  \]
+  Strong overlap assumes \(\varepsilon\le e(X)\le1-\varepsilon\) for some
+  \(\varepsilon>0\).</p>
+</div>
+
+<p>Structural nonpositivity occurs when treatment is impossible in part of the target population. Practical nonpositivity occurs when estimated probabilities are extremely close to zero or one in finite samples. The former changes what is identifiable; the latter creates large variance and extrapolation.</p>
+
+<h3>The adjustment formula</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under consistency, conditional mean exchangeability, and positivity,
+  \[
+  \mathbb EY(a)=
+  \mathbb E\{\mathbb E(Y\mid A=a,X)\}.
+  \]
+  Consequently,
+  \[
+  \operatorname{ATE}
+  =\mathbb E\{m_1(X)-m_0(X)\},
+  \qquad
+  m_a(x)=\mathbb E(Y\mid A=a,X=x).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By iterated expectation,
+  \[
+  \mathbb EY(a)=\mathbb E[\mathbb E\{Y(a)\mid X\}].
+  \]
+  Mean exchangeability replaces the inner mean by
+  \(\mathbb E\{Y(a)\mid A=a,X\}\). Positivity makes this observed conditional mean well defined on the target support, and consistency replaces \(Y(a)\) with \(Y\).</p>
+</div>
+
+<h3>Inverse-probability representation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under the same assumptions,
+  \[
+  \mathbb EY(1)=\mathbb E\left\{\frac{AY}{e(X)}\right\},
+  \qquad
+  \mathbb EY(0)=\mathbb E\left\{\frac{(1-A)Y}{1-e(X)}\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Condition on \(X\):
+  \[
+  \mathbb E\left(\frac{AY}{e(X)}\middle|X\right)
+  =\frac{P(A=1\mid X)}{e(X)}
+  \mathbb E(Y\mid A=1,X)=m_1(X).
+  \]
+  Integrate and use the adjustment theorem. The control identity is identical.</p>
+</div>
+
+<h3>Why positivity is an identification condition</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> Suppose
+  \(A=X\) with \(X\in\{0,1\}\). Then no controls are observed at \(X=1\) and no treated units at \(X=0\). The observed law identifies
+  \(m_1(1)\) and \(m_0(0)\), but not \(m_0(1)\) or \(m_1(0)\). Even if conditional exchangeability is asserted, the ATE over both covariate strata remains unidentified without extrapolation restrictions.</p>
+</div>
+
+<h3>Minimal sufficient adjustment sets</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(\{Y(0),Y(1)\}\perp\!\!\!\perp A\mid X\) and a statistic \(b(X)\) satisfies
+  \(A\perp\!\!\!\perp X\mid b(X)\), then
+  \[
+  \{Y(0),Y(1)\}\perp\!\!\!\perp A\mid b(X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For any potential-outcome event \(B\),
+  \[
+  P\{Y(a)\in B\mid A,b(X)\}
+  =\int P\{Y(a)\in B\mid A,X\}\,
+  P(\mathrm{d}X\mid A,b(X)).
+  \]
+  Exchangeability removes \(A\) from the first factor; the balancing property removes it from the second. The resulting integral depends only on \(b(X)\).</p>
+</div>
+
+<h3>Conditioning on the wrong variables</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Collider bias.</span> Let
+  \(A\) and \(Y\) be independent causes of \(C\). Marginally \(A\perp Y\), but conditioning on \(C\) generally associates them. Thus “adjust for every observed variable” is not a valid strategy. Variables affected by treatment can also block part of the causal effect or induce selection bias.</p>
+</div>
+
+<h3>Consistency as intervention semantics</h3>
+
+<p>When treatment has multiple versions, write \(Y(a,v)\). The coarse statement \(Y=Y(a)\) when \(A=a\) assumes either that versions have identical effects or that their distribution is part of the intervention definition. Similarly, measurement error in \(A\) can break consistency even when treatment assignment itself is unconfounded.</p>
+
+<h3>Diagnostics do not verify exchangeability</h3>
+
+<p>Overlap plots and covariate balance diagnose the observed treatment mechanism. They can reveal practical positivity failure or failure of a weighting procedure to balance measured covariates. They cannot establish balance of unmeasured confounders. A defensible analysis states the measured adjustment set, the causal rationale for it, the target population on which positivity is plausible, and a sensitivity analysis for residual confounding.</p>

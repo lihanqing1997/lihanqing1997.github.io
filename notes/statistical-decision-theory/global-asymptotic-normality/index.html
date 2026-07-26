@@ -8,22 +8,137 @@ note_prev_url: "/notes/statistical-decision-theory/poisson-and-infinitely-divisi
 note_next_url: "/notes/statistical-decision-theory/quadratic-likelihood-approximation/"
 ---
 
-<p>Local Gaussian approximations are not enough for estimation over a whole parameter space. Global theory combines preliminary localization with local quadratic approximation.</p>
+<p>LAN is centered at one fixed parameter. A procedure intended to work over a whole parameter space must first discover the relevant local chart and then apply the local Gaussian rule there. Global asymptotic normality is obtained by localization, uniform local approximation, and patching.</p>
 
-    <h3>Preliminary localization</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A preliminary estimator \(\tilde\theta_n\) localizes the parameter if \(d(\tilde\theta_n,\theta)=O_{P_\theta}(r_n^{-1})\) uniformly on relevant sets. It lets the procedure choose the right local chart.</p>
-    </div>
+<h3>Uniform local asymptotic normality</h3>
 
-    <h3>Global-to-local reduction</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If preliminary estimators localize uniformly and local LAN approximations hold in neighborhoods of \(\tilde\theta_n\), then global estimation can be reduced to local Gaussian decision problems.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(K\subset\Theta^\circ\) be compact. A model is uniformly LAN on \(K\) if, uniformly for
+  \(\theta\in K\) and \(h\) in compact sets,
+  \[
+  \log\frac{\mathrm{d}P_{\theta+h/\sqrt n}^{\,n}}
+                {\mathrm{d}P_\theta^{\,n}}
+  =
+  h^\top\Delta_{n,\theta}
+  -\frac12h^\top I(\theta)h
+  +o_{P_\theta}(1),
+  \]
+  and
+  \[
+  \Delta_{n,\theta}\rightsquigarrow N(0,I(\theta))
+  \]
+  uniformly in an appropriate bounded-Lipschitz sense.</p>
+</div>
 
-    <h3>Random centering argument</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on the preliminary estimator falling in a small neighborhood. On that event the likelihood is approximated by a quadratic form around the random center; the complement has probability tending to zero.</p>
-    </div>
+<p>Pointwise LAN at every \(\theta\) does not imply uniform LAN. Uniform control of score moments, information continuity, and likelihood remainders is needed to use a random center.</p>
 
-    <h3>Random information</h3>
-    <p>Le Cam's global theory allows observed or random information matrices. This is essential for mixed normal limits and heteroscedastic local approximations.</p>
+<h3>Preliminary localization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A preliminary estimator
+  \(\tilde\theta_n\) localizes uniformly on \(K\) at rate \(a_n^{-1}\) if
+  \[
+  \lim_{M\to\infty}\limsup_n
+  \sup_{\theta\in K}
+  P_\theta\{a_n\|\tilde\theta_n-\theta\|>M\}=0.
+  \]</p>
+</div>
+
+<p>For a one-step efficient correction, the preliminary rate need only satisfy
+\[
+\|\tilde\theta_n-\theta\|=o_p(n^{-1/4})
+\]
+under a smooth score expansion; it need not already be root-\(n\) efficient.</p>
+
+<h3>Sample splitting and random centers</h3>
+
+<p>A clean construction uses a small first subsample to obtain
+\(\tilde\theta_n\) and the remaining observations for the local update. Conditional on the first subsample, the center is fixed relative to the second, so uniform LAN can be applied without a same-sample random-index problem. If the first subsample size tends to infinity but is \(o(n)\), it can localize consistently while sacrificing asymptotically negligible information.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (one-step globalization).</span> Let
+  \(\tilde\theta_n\) satisfy
+  \(\|\tilde\theta_n-\theta\|=o_{P_\theta}(n^{-1/4})\) uniformly on compact \(K\). Suppose the score \(S_n(\theta)\) and observed information \(J_n(\theta)\) satisfy uniformly near \(K\),
+  \[
+  n^{-1}J_n(\theta)\to_p I(\theta),
+  \]
+  \[
+  n^{-1/2}\{S_n(\tilde\theta_n)-S_n(\theta)\}
+  =
+  -I(\theta)\sqrt n(\tilde\theta_n-\theta)
+  +o_p(1).
+  \]
+  Then
+  \[
+  \hat\theta_n
+  =
+  \tilde\theta_n+
+  J_n(\tilde\theta_n)^{-1}S_n(\tilde\theta_n)
+  \]
+  satisfies
+  \[
+  \sqrt n(\hat\theta_n-\theta)
+  =
+  I(\theta)^{-1}\frac{S_n(\theta)}{\sqrt n}
+  +o_{P_\theta}(1)
+  \]
+  uniformly on \(K\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write
+  \(J_n(\tilde\theta_n)^{-1}=n^{-1}I(\theta)^{-1}+o_p(n^{-1})\) uniformly. The score expansion gives
+  \[
+  S_n(\tilde\theta_n)
+  =
+  S_n(\theta)-nI(\theta)(\tilde\theta_n-\theta)+o_p(\sqrt n).
+  \]
+  Substitution into the update cancels the preliminary error:
+  \[
+  \hat\theta_n-\theta
+  =
+  \tilde\theta_n-\theta
+  \frac1nI(\theta)^{-1}S_n(\theta)
+  -(\tilde\theta_n-\theta)
+  +o_p(n^{-1/2}).
+  \]
+  Multiply by \(\sqrt n\). \(\square\)</p>
+</div>
+
+<h3>Patching local procedures</h3>
+
+<p>More abstractly, cover a compact parameter set by neighborhoods
+\(U_{n,j}\) on which local experiments are close to Gaussian shifts. A preliminary statistic selects an index \(j\), and a local Markov kernel or local decision rule is applied. If the selection is correct with high probability and approximation errors are uniform, the patched global procedure inherits the local risks.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If local simulation kernels have errors at most \(\varepsilon_n\) uniformly on each selected chart and chart-selection failure has probability at most \(\eta_n\), then every bounded-loss risk transferred through the patched kernel differs by at most
+  \[
+  \varepsilon_n+\eta_n.
+  \]</p>
+</div>
+
+<p>The bound follows by splitting according to correct localization and applying total-variation risk transfer on that event.</p>
+
+<h3>Locally asymptotically mixed normal experiments</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A model is LAMN if
+  \[
+  \log\frac{\mathrm{d}P_{n,h}}{\mathrm{d}P_{n,0}}
+  =
+  h^\top\Delta_n-\frac12h^\top J_nh+o_p(1),
+  \]
+  where
+  \[
+  (\Delta_n,J_n)\rightsquigarrow(J^{1/2}Z,J),
+  \qquad
+  Z\sim N(0,I_p),\quad Z\perp J,
+  \]
+  and \(J\) is random positive definite.</p>
+</div>
+
+<p>The limit experiment first reveals random information \(J\), then observes a Gaussian shift with conditional information \(J\). Stable convergence, rather than ordinary weak convergence, records the joint relation with ancillary randomness. Mixed normal limits arise in diffusion models, stochastic volatility, and heteroskedastic experiments.</p>
+
+<h3>Global limitations</h3>
+
+<p>Boundary points may have different rates or non-Gaussian limits; information may degenerate; parameter spaces may require incompatible charts; and preliminary estimators may not localize uniformly. Global claims must therefore state the compact sets or strata on which uniform approximation holds. A collection of pointwise normal limits is not itself a global asymptotic experiment.</p>

@@ -8,27 +8,203 @@ note_prev_url: "/notes/empirical-processes/concentration-inequalities/"
 note_next_url: "/notes/empirical-processes/multiplier-empirical-processes/"
 ---
 
-<p>Many applications use function classes \(\mathcal F_n\) that change with \(n\): shrinking neighborhoods, sieve spaces, local alternatives, or estimated nuisance classes.</p>
+<p>A fixed Donsker class is sufficient for many asymptotic arguments, but modern estimators naturally generate classes \(\mathcal F_n\) that shrink, grow, or depend on a drifting law. The complexity, envelope, and variance must then be tracked as sequences rather than hidden inside an \(O(1)\) statement.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A changing class result controls \(\sup_{f\in\mathcal F_n}|(P_n-P)f|\) or \(\sup_{f\in\mathcal F_n}|\mathbb G_nf|\) with entropy and envelope bounds that may depend on \(n\).</p>
-    </div>
+<h3>Triangular empirical processes</h3>
 
-    <h3>Triangular-array complexity</h3>
-    <ul>
-        <li>Shrinking classes often make stochastic terms smaller than the global bound.</li>
-        <li>Growing sieve dimensions trade approximation bias against stochastic complexity.</li>
-        <li>Triangular-array empirical processes require checking both entropy and Lindeberg-type envelope conditions.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> In row \(n\), let
+  \(X_{n1},\ldots,X_{nn}\) be independent with common law \(P_n\), and let \(\mathcal F_n\) be a class of measurable functions. The row empirical process is
+  \[
+  \mathbb G_{n,P_n}f
+  =
+  \frac1{\sqrt n}\sum_{i=1}^n\{f(X_{ni})-P_nf\},
+  \qquad f\in\mathcal F_n.
+  \]</p>
+</div>
 
-    <h3>Local neighborhoods</h3>
-    <p>Changing classes are the local language behind rates, nonstandard limits, sieve estimators, and bootstrap processes under drifting models.</p>
+<p>There are three distinct sources of change:</p>
+\[
+\begin{array}{c|c}
+\text{source}&\text{typical example}\\ \hline
+\mathcal F_n\downarrow&\text{local neighborhoods around a target},\\
+\mathcal F_n\uparrow&\text{sieves, dictionaries, or growing model dimension},\\
+P_n\to P&\text{local alternatives or drifting data-generating laws}.
+\end{array}
+\]
 
-    <!-- expanded-learning -->
-    <h3>Changing-class maximal bound</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> For \(\mathcal F_n\), entropy, envelope, and variance bounds may all depend on \(n\). A useful check is whether the maximal inequality still gives \(E^*\|\mathbb G_n\|_{\mathcal F_n}=o(r_n)\) or \(O(r_n)\) at the scale required by the application.</p>
-    </div>
+<h3>A finite-dimensional triangular-array limit</h3>
 
-    <h3>Shrinking neighborhoods</h3>
-    <p>Local asymptotic arguments often use \(\mathcal F_n=\{f_\theta-f_{\theta_0}:d(\theta,\theta_0)\le Rr_n^{-1}\}\). The shrinking radius reduces stochastic variation and reveals the correct rate or limiting process.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(f_{n1},\ldots,f_{nk}\in L_2(P_n)\). Suppose
+  \[
+  P_n\{(f_{nj}-P_nf_{nj})(f_{n\ell}-P_nf_{n\ell})\}
+  \longrightarrow\Sigma_{j\ell}
+  \]
+  and, for every \(\eta>0\),
+  \[
+  P_n\!\left[
+    \|Y_n\|_2^2
+    1\{\|Y_n\|_2>\eta\sqrt n\}
+  \right]\longrightarrow0,
+  \]
+  where
+  \(Y_n=(f_{n1}-P_nf_{n1},\ldots,f_{nk}-P_nf_{nk})^\top\).
+  Then
+  \[
+  (\mathbb G_{n,P_n}f_{n1},\ldots,\mathbb G_{n,P_n}f_{nk})
+  \rightsquigarrow N_k(0,\Sigma).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(a\in\mathbb R^k\), the scalar triangular array
+  \(n^{-1/2}a^\top Y_n(X_{ni})\) has total variance tending to
+  \(a^\top\Sigma a\). Its Lindeberg condition follows from
+  \(|a^\top Y_n|\leq\|a\|_2\|Y_n\|_2\). The Lindeberg–Feller theorem and Cramér–Wold device give the result. \(\square\)</p>
+</div>
+
+<p>Uniform convergence needs, in addition, a common index space or an embedding that lets one compare coordinates across rows. For scalar goals such as \(\|\mathbb G_{n,P_n}\|_{\mathcal F_n}\), a changing-class maximal inequality is often enough.</p>
+
+<h3>Shrinking classes inside a Donsker class</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal F\) be \(P\)-Donsker and let
+  \(\mathcal F_n\subset\mathcal F\). If
+  \[
+  \sup_{f,g\in\mathcal F_n}\rho_P(f,g)\longrightarrow0,
+  \]
+  then
+  \[
+  \sup_{f,g\in\mathcal F_n}
+  |\mathbb G_nf-\mathbb G_ng|
+  \xrightarrow{p}0.
+  \]
+  If, in addition, some \(f_n\in\mathcal F_n\) satisfies
+  \(\rho_P(f_n,0)\to0\) and \(P f_n=0\), then
+  \[
+  \|\mathbb G_n\|_{\mathcal F_n}=o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Donsker convergence implies asymptotic \(\rho_P\)-equicontinuity. The first display follows by evaluating its modulus at the diameter of \(\mathcal F_n\). For the second,
+  \[
+  \sup_{f\in\mathcal F_n}|\mathbb G_nf|
+  \leq|\mathbb G_nf_n|
+  +\sup_{f\in\mathcal F_n}|\mathbb G_n(f-f_n)|.
+  \]
+  The second term is \(o_p(1)\); the first has variance \(\rho_P(f_n,0)^2\to0\), hence tends to zero by Chebyshev's inequality. \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (local parametric increments).</span> Suppose
+  \[
+  |f_\theta-f_{\theta_0}|
+  \leq L\|\theta-\theta_0\|,
+  \qquad PL^2<\infty,
+  \]
+  and the local parametric class is Donsker. For any \(r_n\downarrow0\),
+  \[
+  \sup_{\|\theta-\theta_0\|\leq r_n}
+  |\mathbb G_n(f_\theta-f_{\theta_0})|
+  =o_p(1).
+  \]
+  If differentiability is stronger, one can rescale the class by \(r_n^{-1}\) and obtain a nondegenerate linear Gaussian limit instead of a vanishing one.</p>
+</div>
+
+<h3>Growing classes and sieve dimension</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose \(\mathcal F_n\) has envelope \(F_n\), \(P F_n^2<\infty\), and
+  \[
+  \sup_QN\!\left(
+    \varepsilon\|F_n\|_{Q,2},
+    \mathcal F_n,L_2(Q)
+  \right)
+  \leq(A_n/\varepsilon)^{v_n}.
+  \]
+  Then
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F_n}
+  \lesssim
+  \|F_n\|_{P,2}
+  \sqrt{v_n\log(A_n+1)}.
+  \]
+  In particular,
+  \[
+  \|P_n-P\|_{\mathcal F_n}
+  =
+  O_p\!\left(
+    \|F_n\|_{P,2}
+    \sqrt{\frac{v_n\log(A_n+1)}{n}}
+  \right).
+  \]</p>
+</div>
+
+<p>For a bounded \(k_n\)-dimensional linear sieve, \(v_n\asymp k_n\). Uniform consistency therefore requires roughly
+\(k_n/n\to0\), with logarithmic corrections depending on the parameter geometry. Asymptotic linearity usually requires a stronger condition because products of estimation errors and empirical fluctuations must also vanish.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (series regression).</span> Let
+  \(f_\theta(x)=\theta^\top b_{k_n}(x)\), \(\|\theta\|_2\leq B\), and
+  \(\sup_x\|b_{k_n}(x)\|_2\leq\zeta_{k_n}\). Then
+  \[
+  \log N(\varepsilon B\zeta_{k_n},\mathcal F_n,L_2(Q))
+  \lesssim k_n\log(1/\varepsilon).
+  \]
+  The stochastic term grows like
+  \(\zeta_{k_n}\sqrt{k_n/n}\); the approximation bias decreases with \(k_n\). Choosing \(k_n\) is therefore a bias–complexity balance.</p>
+</div>
+
+<h3>Lindeberg control for changing envelopes</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma.</span> Let \(F_n\) envelope \(\mathcal F_n\). A necessary safeguard for Gaussian scaling is
+  \[
+  P_nF_n^2\,1\{F_n>\eta\sqrt n\}\longrightarrow0
+  \qquad\text{for every }\eta>0.
+  \]
+  It holds, for example, if \(\sup_nP_nF_n^{2+\delta}<\infty\) for some \(\delta>0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the sufficient condition.</span> On
+  \(\{F_n>\eta\sqrt n\}\),
+  \[
+  F_n^2\leq
+  \frac{F_n^{2+\delta}}{(\eta\sqrt n)^\delta}.
+  \]
+  Taking \(P_n\)-expectations gives an \(O(n^{-\delta/2})\) bound. \(\square\)</p>
+</div>
+
+<h3>Drifting laws and local alternatives</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose \(P_n\) is contiguous to \(P\) and admits the local expansion
+  \[
+  \frac{\mathrm{d}P_n}{\mathrm{d}P}
+  =1+n^{-1/2}h+r_n,
+  \qquad
+  \sqrt n\,\|r_n\|_{L_1(P)}\to0,
+  \qquad Ph=0.
+  \]
+  For each \(f\in L_2(P)\),
+  \[
+  \sqrt n(P_nf-Pf)\longrightarrow P(fh).
+  \]
+  Hence, if the empirical process has the same tight Gaussian fluctuation under \(P_n\),
+  \[
+  \sqrt n(P_n^{\mathrm{emp}}-P)f
+  =
+  \mathbb G_{n,P_n}f+\sqrt n(P_n-P)f
+  \rightsquigarrow
+  \mathbb G_Pf+P(fh).
+  \]</p>
+</div>
+
+<p>Local alternatives add a deterministic drift to the null Gaussian process. This is the process-level origin of nontrivial local asymptotic power. The entropy controls must remain uniform over the drifting laws; pointwise Donsker results at \(P\) alone do not automatically provide that uniformity.</p>
+
+<h3>A changing-class checklist</h3>
+
+<p>Every triangular argument should identify, explicitly, the sequence of canonical variances, the entropy bound and its dependence on \(n\), the envelope tail condition, and the scale required by the final remainder. A statement such as “\(\mathcal F_n\) is Donsker” is generally meaningless unless the common state space and limiting covariance have been specified.</p>

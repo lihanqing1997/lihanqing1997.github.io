@@ -34,3 +34,76 @@ note_next_url: "/notes/numerical-analysis/numerical-differentiation/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Piecewise approximation handles functions with local features much better than global polynomial approximation. This is one reason splines sit naturally between interpolation, finite elements, and nonparametric smoothing.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Spline spaces and local support</h3>
+
+<p>Given knots \(a=t_0<\cdots<t_m=b\), a spline of degree \(p\) with simple
+interior knots is piecewise polynomial of degree at most \(p\) and belongs to
+\(C^{p-1}[a,b]\). B-splines \(B_{i,p}\) form a nonnegative partition-of-unity
+basis with compact support over \(p+2\) consecutive knots. Local support makes
+evaluation, assembly, and knot insertion sparse.</p>
+
+<h3>Cubic interpolation and variational characterization</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (natural cubic spline).</span> Given
+data \(y_i\) at knots \(t_i\), there is a unique \(C^2\) piecewise cubic
+interpolant \(s\) satisfying
+\[
+s(t_i)=y_i,\qquad s''(a)=s''(b)=0.
+\]
+Among all \(f\in H^2(a,b)\) interpolating the data, it minimizes
+\[
+\int_a^b|f''(x)|^2\,\mathrm{d}x.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Existence and uniqueness reduce
+to a strictly diagonally dominant tridiagonal system for the knot second
+derivatives. For the variational statement, write \(f=s+g\) with
+\(g(t_i)=0\). On each interval, \(s^{(4)}=0\). Twice integrating by parts and
+using continuity of \(s''\), interpolation zeros of \(g\), and natural boundary
+conditions gives
+\[
+\int s''g''=0.
+\]
+Therefore
+\[
+\int|f''|^2=\int|s''|^2+\int|g''|^2.
+\]</p>
+</div>
+
+<h3>Error of cubic spline interpolation</h3>
+
+<p>For a quasi-uniform mesh of maximum width \(h\) and
+\(f\in C^4[a,b]\), the cubic spline interpolant satisfies
+\[
+\|f-s\|_\infty\le Ch^4\|f^{(4)}\|_\infty,
+\]
+with derivative errors of order \(h^{4-k}\), \(k=1,2\), under compatible
+boundary conditions. Unlike high-degree global polynomial interpolation,
+refining the mesh preserves locality and avoids a rapidly growing Lebesgue
+constant.</p>
+
+<h3>Smoothing splines</h3>
+
+<p>For noisy observations \((x_i,y_i)\), the smoothing spline solves
+\[
+\min_{f\in H^2}
+\sum_{i=1}^n\{y_i-f(x_i)\}^2
++\lambda\int|f''(x)|^2\,\mathrm{d}x.
+\]
+The representer theorem makes the minimizer a natural cubic spline with knots
+at distinct data locations. As \(\lambda\downarrow0\) it approaches
+interpolation; as \(\lambda\uparrow\infty\) it approaches a least-squares
+line. The effective degrees of freedom are
+\(\operatorname{tr}S_\lambda\) for the linear smoother matrix.</p>
+
+<h3>Adaptive piecewise approximation</h3>
+
+<p>Knots should concentrate where derivatives are large or regularity is low.
+Hierarchical B-splines and wavelets provide multiresolution refinement.
+Approximation order alone does not choose a mesh; a posteriori indicators or
+penalized model selection determine where extra degrees of freedom are useful.</p>

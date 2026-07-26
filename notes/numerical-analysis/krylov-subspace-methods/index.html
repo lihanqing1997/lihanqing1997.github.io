@@ -34,3 +34,92 @@ note_next_url: "/notes/numerical-analysis/preconditioning/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Krylov methods are mathematically projection methods, but their actual behavior depends on loss of orthogonality, restart choices, and preconditioning. These are part of the numerical method, not implementation afterthoughts.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Krylov spaces and polynomial approximation</h3>
+
+<p>Starting from residual \(r_0=b-Ax_0\), the \(k\)th Krylov space is
+\[
+\mathcal K_k(A,r_0)
+=\operatorname{span}\{r_0,Ar_0,\ldots,A^{k-1}r_0\}.
+\]
+Any iterate \(x_k\in x_0+\mathcal K_k\) has error
+\[
+e_k=p_k(A)e_0
+\]
+for a polynomial \(p_k\) of degree at most \(k\) with \(p_k(0)=1\).
+Convergence is therefore a polynomial approximation problem on the spectrum or
+field of values.</p>
+
+<h3>Conjugate gradients</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For symmetric positive definite
+\(A\), conjugate gradients produces
+\[
+x_k=\arg\min_{x\in x_0+\mathcal K_k(A,r_0)}
+\|x-x^*\|_A,
+\qquad
+\|v\|_A^2=v^\top Av.
+\]
+Moreover,
+\[
+\frac{\|e_k\|_A}{\|e_0\|_A}
+\le2\left(
+\frac{\sqrt\kappa-1}{\sqrt\kappa+1}
+\right)^k,
+\quad
+\kappa=\kappa_2(A).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> CG residual orthogonality and
+conjugate search directions give the energy minimization property. Hence
+\[
+\|e_k\|_A
+\le\min_{\substack{p\in\mathcal P_k\\p(0)=1}}
+\max_{\lambda\in[\lambda_{\min},\lambda_{\max}]}
+|p(\lambda)|\,\|e_0\|_A.
+\]
+Scale the interval to \([-1,1]\) and choose the normalized Chebyshev polynomial.
+Its extremal bound gives the displayed rate.</p>
+</div>
+
+<h3>Arnoldi, Lanczos, and GMRES</h3>
+
+<p>Arnoldi orthogonalization builds
+\[
+AQ_k=Q_{k+1}\bar H_k,
+\]
+where \(\bar H_k\) is upper Hessenberg. GMRES chooses \(x_k\) to minimize the
+Euclidean residual over \(x_0+\mathcal K_k\), reducing the problem to a small
+least-squares solve. For symmetric \(A\), Arnoldi becomes the three-term Lanczos
+recurrence; MINRES handles symmetric indefinite systems.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> GMRES satisfies
+\[
+\frac{\|r_k\|_2}{\|r_0\|_2}
+\le
+\min_{\substack{p\in\mathcal P_k\\p(0)=1}}
+\|p(A)\|_2.
+\]
+If \(A=V\Lambda V^{-1}\), this is at most
+\[
+\kappa_2(V)
+\min_p\max_{\lambda\in\sigma(A)}|p(\lambda)|.
+\]</p>
+</div>
+
+<p>For nonnormal matrices the eigenvalue-only bound can be poor because
+\(\kappa(V)\) is large. Field-of-values or pseudospectral bounds better capture
+transient behavior.</p>
+
+<h3>Finite precision and restarting</h3>
+
+<p>Loss of orthogonality creates ghost Ritz values in Lanczos and can delay
+GMRES. Reorthogonalization controls this at extra cost. Restarted GMRES limits
+storage but discards polynomial information and can stagnate. Flexible Krylov
+methods allow iteration-dependent preconditioners while modifying the
+recurrence to remain mathematically valid.</p>

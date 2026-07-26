@@ -8,54 +8,192 @@ note_prev_url: "/notes/probability-theory/strong-law-of-large-numbers/"
 note_next_url: "/notes/probability-theory/central-limit-theorem/"
 ---
 
-<p>Triangular arrays allow the summands to change with \(n\). They are the natural language for infinitesimal approximations, rare events, and non-identically distributed central limit theorems.</p>
+<p>A triangular array lets the number and distribution of summands vary with the asymptotic index. This is the correct language for non-identically distributed central limit theorems, rare-event limits, local alternatives, bootstrap weights, and asymptotically negligible remainders. Truncation supplies a common proof architecture: isolate large jumps, center the small part, and identify the limiting characteristic exponent.</p>
 
-    <h3>Triangular arrays</h3>
+<h3>Rows, infinitesimality, and normalization</h3>
 
-    <p>Each row is a different probabilistic experiment.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A triangular array is a collection
+  \[
+  \{X_{n,k}:1\le k\le k_n,\ n\ge1\}.
+  \]
+  It is <em>row-wise independent</em> if \(X_{n,1},\ldots,X_{n,k_n}\) are independent for each fixed \(n\). It is <em>uniformly asymptotically negligible</em>, or infinitesimal, if for every \(\varepsilon>0\),
+  \[
+  \max_{1\le k\le k_n}P(|X_{n,k}|>\varepsilon)\longrightarrow0.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A triangular array is a family \(\{X_{n,k}:1\le k\le k_n,\ n\ge1\}\). It is row-wise independent if \(X_{n,1},\dots,X_{n,k_n}\) are independent for each fixed \(n\). It is infinitesimal if for every \(\varepsilon\gt0\),
-\[
-\max_{k\le k_n}P(|X_{n,k}|\gt\varepsilon)\to0.
-\]</p>
-    </div>
+<p>Infinitesimality says that no individual summand remains visible at the scale of the row sum. It does not determine the limit: aggregated small Gaussian fluctuations, rare jumps, or both may survive.</p>
 
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (Feller condition implies infinitesimality).</span> Suppose \(X_{n,k}\) are centered and square-integrable, and
+  \[
+  \max_{k\le k_n}\operatorname{Var}(X_{n,k})\longrightarrow0.
+  \]
+  Then the array is infinitesimal.</p>
+</div>
 
-    <h3>Lindeberg condition</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Chebyshev's inequality gives
+  \[
+  \max_{k\le k_n}P(|X_{n,k}|>\varepsilon)
+  \le\varepsilon^{-2}\max_{k\le k_n}\operatorname{Var}(X_{n,k})\to0.
+  \]</p>
+</div>
 
-    <p>The Lindeberg condition rules out a single large summand dominating a row.</p>
+<h3>Lindeberg-Feller convergence</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For centered row-wise independent variables with row variance \(s_n^2=\sum_k\operatorname{Var}(X_{n,k})\), the Lindeberg condition is
-\[
-\frac1{s_n^2}\sum_k\mathbb E[X_{n,k}^2 1_{\{|X_{n,k}|\gt\varepsilon s_n\}}]\to0
-\]
-for every \(\varepsilon\gt0\). Under this condition and \(s_n^2\to1\), \(\sum_kX_{n,k}\Rightarrow N(0,1)\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a centered, row-wise independent array, put
+  \[
+  s_n^2=\sum_{k=1}^{k_n}\mathbb EX_{n,k}^2.
+  \]
+  The Lindeberg condition at the row scale \(s_n\) is
+  \[
+  L_n(\varepsilon)
+  :=\frac1{s_n^2}\sum_{k=1}^{k_n}
+  \mathbb E\!\left[X_{n,k}^2
+  1_{\{|X_{n,k}|>\varepsilon s_n\}}\right]\longrightarrow0
+  \]
+  for every \(\varepsilon>0\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use characteristic functions. Taylor expand \(e^{itx}\) up to second order on \(|x|\le\varepsilon\), and control the remainder by Lindeberg's condition on large terms. Row independence turns characteristic functions into products, and the log product converges to \(-t^2/2\). Lévy's continuity theorem gives the normal limit.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Lindeberg-Feller).</span> Let \(X_{n,k}\) be centered and row-wise independent. If \(s_n^2\to\sigma^2\in(0,\infty)\) and the Lindeberg condition holds, then
+  \[
+  \sum_{k=1}^{k_n}X_{n,k}\Rightarrow N(0,\sigma^2).
+  \]
+  Conversely, if the row sums converge to \(N(0,\sigma^2)\) and the Feller condition
+  \[
+  \max_{k\le k_n}\frac{\operatorname{Var}(X_{n,k})}{s_n^2}\to0
+  \]
+  holds, then the Lindeberg condition holds.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of sufficiency.</span> Rescale to \(s_n^2\to1\). Let
+  \(\varphi_{n,k}(t)=\mathbb Ee^{itX_{n,k}}\). Centering gives
+  \[
+  \varphi_{n,k}(t)
+  =1-\frac{t^2}{2}\mathbb EX_{n,k}^2+r_{n,k}(t).
+  \]
+  For every \(\delta>0\), Taylor's formula and
+  \(|e^{ix}-1-ix+x^2/2|\le \min\{C|x|^2,\,|x|^3/6\}\) imply
+  \[
+  \sum_k|r_{n,k}(t)|
+  \le C t^2\sum_k\mathbb E[X_{n,k}^2
+  1_{\{|X_{n,k}|>\delta\}}]
+  +C|t|^3\delta\sum_k\mathbb EX_{n,k}^2.
+  \]
+  The first term tends to zero by Lindeberg; after taking \(n\to\infty\), the second can be made arbitrarily small by \(\delta\downarrow0\). Thus
+  \[
+  \sum_k r_{n,k}(t)\to0. \tag{1}
+  \]
+  Lindeberg also implies the Feller condition because
+  \[
+  \mathbb EX_{n,k}^2
+  \le \delta^2+
+  \mathbb E[X_{n,k}^2 1_{\{|X_{n,k}|>\delta\}}],
+  \]
+  uniformly in \(k\). Hence
+  \(\max_k|\varphi_{n,k}(t)-1|\to0\). Using
+  \(\log(1+z)=z+O(|z|^2)\), (1), and
+  \(\sum_k\mathbb EX_{n,k}^2\to1\),
+  \[
+  \log\prod_k\varphi_{n,k}(t)
+  =-\frac{t^2}{2}\sum_k\mathbb EX_{n,k}^2+o(1)
+  \longrightarrow-\frac{t^2}{2}.
+  \]
+  Row-wise independence makes the product the characteristic function of the row sum. Levy's continuity theorem proves convergence to \(N(0,1)\).</p>
+</div>
 
-    <h3>Truncation method</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline of necessity under Feller's condition.</span> Compare the row sum with a Gaussian row \(Z_{n,k}\sim N(0,\operatorname{Var}(X_{n,k}))\), independent across \(k\). A one-at-a-time replacement in the characteristic function shows that normal convergence of the total sum, together with \(\max_k\operatorname{Var}(X_{n,k})\to0\), forces the aggregate second moment carried by \(|X_{n,k}|>\varepsilon\) to vanish. Equivalently, the Levy measures of the infinitesimal array have no mass away from zero. This is precisely \(L_n(\varepsilon)\to0\). The full replacement estimate is the converse part of the Lindeberg theorem; it uses the same second-order Taylor remainder as the sufficiency proof, now read in reverse.</p>
+</div>
 
-    <p>Truncation separates small regular fluctuations from rare large values.</p>
+<h3>Lyapunov's moment condition</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(X_{n,k}\) are replaced by \(X_{n,k}1_{\{|X_{n,k}|\le a_n\}}\), then proving that the sum of discarded terms is negligible in probability allows one to transfer limit theorems from the truncated array to the original array.</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Lyapunov).</span> If, for some \(\delta>0\),
+  \[
+  \frac1{s_n^{2+\delta}}\sum_{k=1}^{k_n}
+  \mathbb E|X_{n,k}|^{2+\delta}\longrightarrow0,
+  \]
+  then the Lindeberg condition holds and the normalized row sums converge to \(N(0,1)\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> By Markov's inequality,
-\[
-P\left(\sum_k|X_{n,k}|1_{\{|X_{n,k}|\gt a_n\}}\gt\varepsilon\right)
-\le \varepsilon^{-1}\sum_k\mathbb E[|X_{n,k}|1_{\{|X_{n,k}|\gt a_n\}}].
-\]
-If the right side tends to zero, the discarded tail is negligible. The truncated variables then have bounded moments suitable for variance or characteristic-function estimates.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On
+  \(\{|X_{n,k}|>\varepsilon s_n\}\),
+  \[
+  X_{n,k}^2\le
+  \frac{|X_{n,k}|^{2+\delta}}{(\varepsilon s_n)^\delta}.
+  \]
+  Summing and dividing by \(s_n^2\) gives
+  \[
+  L_n(\varepsilon)
+  \le\varepsilon^{-\delta}s_n^{-(2+\delta)}
+  \sum_k\mathbb E|X_{n,k}|^{2+\delta}\to0.
+  \]</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Many proofs in probability are just carefully optimized truncation arguments with the cutoff chosen at the scale of the desired limit.</p>
-    </div>
+<h3>Truncation and transfer of limits</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (converging together).</span> If \(T_n-U_n\to0\) in probability and \(U_n\Rightarrow U\), then \(T_n\Rightarrow U\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The pair
+  \((U_n,T_n-U_n)\Rightarrow(U,0)\) by Slutsky's theorem, and addition is continuous.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (tail deletion).</span> Let
+  \[
+  Y_{n,k}=X_{n,k}1_{\{|X_{n,k}|\le a_n\}}.
+  \]
+  Either of the conditions
+  \[
+  \sum_{k=1}^{k_n}P(|X_{n,k}|>a_n)\to0
+  \]
+  or
+  \[
+  \sum_{k=1}^{k_n}
+  \mathbb E[|X_{n,k}|1_{\{|X_{n,k}|>a_n\}}]\to0
+  \]
+  implies
+  \(\sum_k(X_{n,k}-Y_{n,k})\to0\) in probability.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the first condition,
+  \[
+  P\!\left(\exists k:X_{n,k}\ne Y_{n,k}\right)
+  \le\sum_kP(|X_{n,k}|>a_n)\to0.
+  \]
+  Under the second, Markov's inequality gives, for every \(\varepsilon>0\),
+  \[
+  P\!\left(\sum_k|X_{n,k}-Y_{n,k}|>\varepsilon\right)
+  \le\varepsilon^{-1}\sum_k
+  \mathbb E[|X_{n,k}|1_{\{|X_{n,k}|>a_n\}}]\to0.
+  \]
+  The converging-together lemma then transfers any weak limit proved for the truncated sum.</p>
+</div>
+
+<h3>Infinitesimal arrays need not be Gaussian</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (rare jumps).</span> Let
+  \(X_{n,1},\ldots,X_{n,n}\) be independent Bernoulli\((\lambda/n)\). The array is infinitesimal because
+  \[
+  \max_{k\le n}P(|X_{n,k}|>\tfrac12)=\frac{\lambda}{n}\to0,
+  \]
+  but
+  \[
+  \sum_{k=1}^nX_{n,k}\Rightarrow\operatorname{Poisson}(\lambda),
+  \]
+  not a Gaussian law. Here the Lindeberg condition fails at the unscaled jump size \(1\): rare jumps retain a nonvanishing aggregate intensity.</p>
+</div>
+
+<p>The general limits of infinitesimal row sums are exactly the infinitely divisible laws. The Gaussian theorem corresponds to the case in which all limiting jump mass disappears; <a href="{{ '/notes/probability-theory/stable-infinitely-divisible-laws/' | relative_url }}">Levy-Khintchine theory</a> records what remains when it does not.</p>

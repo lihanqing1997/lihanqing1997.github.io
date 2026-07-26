@@ -8,24 +8,128 @@ note_prev_url: "/notes/differential-equations/maximum-principles/"
 note_next_url: "/notes/differential-equations/wave-equation/"
 ---
 
-<p>Heat equation records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>The heat equation is the model parabolic equation. Its defining features
+are instantaneous smoothing, dissipation of spatial oscillation, positivity,
+and irreversibility. These properties appear simultaneously in its Gaussian,
+Fourier, energy, and semigroup representations.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The heat equation \(\partial_tu-\Delta u=0\) models diffusion and smooths initial data over positive time.</p>
-    </div>
+<h3>The heat kernel on Euclidean space</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The heat kernel on \(\mathbb R^d\) gives \(u(t,x)=(4\pi t)^{-d/2}\int e^{-|x-y|^2/(4t)}u_0(y)\,\mathrm{d}y\), solving the equation for suitable initial data.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For \(t>0\), the heat
+kernel on \(\mathbb R^n\) is
+\[
+\Gamma_t(x)=\frac{1}{(4\pi t)^{n/2}}
+ \exp\!\left(-\frac{|x|^2}{4t}\right).
+\]
+It satisfies \(\Gamma_t\ge0\), \(\int_{\mathbb R^n}\Gamma_t\,\mathrm{d}x=1\),
+and \(\Gamma_t*\Gamma_s=\Gamma_{t+s}\).</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiate the Gaussian kernel to verify the PDE and use approximate identity properties as \(t\downarrow0\) to recover the initial condition.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Cauchy problem).</span> If
+\(u_0\in L^p(\mathbb R^n)\), \(1\le p\le\infty\), then
+\[
+u(x,t)=(\Gamma_t*u_0)(x)
+\]
+solves \(u_t-\Delta u=0\) for \(t>0\), and
+\(u(\cdot,t)\to u_0\) in \(L^p\) as \(t\downarrow0\) when \(p<\infty\).
+For every multi-index \(\alpha\),
+\[
+\|\partial^\alpha u(\cdot,t)\|_p
+\le C_{\alpha,n}t^{-|\alpha|/2}\|u_0\|_p .
+\]</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Parabolic equations combine time evolution with elliptic smoothing. They are irreversible in a way wave equations are not.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Direct differentiation gives
+\(\partial_t\Gamma_t=\Delta\Gamma_t\); differentiation under the convolution
+therefore proves the equation. The family \((\Gamma_t)\) is an approximate
+identity, which gives convergence to \(u_0\). Finally,
+\[
+\partial^\alpha u=(\partial^\alpha\Gamma_t)*u_0,
+\qquad
+\|\partial^\alpha\Gamma_t\|_1
+=t^{-|\alpha|/2}\|\partial^\alpha\Gamma_1\|_1,
+\]
+and Young's convolution inequality yields the estimate.</p>
+</div>
+
+<p>The estimate says more than existence: every positive time turns rough
+\(L^p\) data into a smooth function. The cost \(t^{-|\alpha|/2}\) records the
+parabolic scaling \(x\sim t^{1/2}\).</p>
+
+<h3>Fourier representation and dissipation</h3>
+
+<p>With \(\widehat u(\xi,t)=\int e^{-ix\cdot\xi}u(x,t)\,\mathrm{d}x\), the
+equation becomes
+\[
+\partial_t\widehat u(\xi,t)+|\xi|^2\widehat u(\xi,t)=0,
+\qquad
+\widehat u(\xi,t)=e^{-t|\xi|^2}\widehat u_0(\xi).
+\]
+High frequencies are suppressed faster than low frequencies. This is the
+spectral origin of smoothing and the reason the backward heat equation is
+unstable.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (energy identity).</span> A
+sufficiently regular solution of \(u_t-\Delta u=0\) on a bounded domain
+\(\Omega\), with \(u=0\) on \(\partial\Omega\), satisfies
+\[
+\frac12\frac{\mathrm{d}}{\mathrm{d}t}\|u(t)\|_{L^2(\Omega)}^2
++\|\nabla u(t)\|_{L^2(\Omega)}^2=0.
+\]
+Consequently the solution with prescribed initial data is unique.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Multiply the equation by \(u\),
+integrate, and use the boundary condition:
+\[
+\int_\Omega uu_t\,\mathrm{d}x
+-\int_\Omega u\Delta u\,\mathrm{d}x
+=\frac12\frac{\mathrm{d}}{\mathrm{d}t}\|u\|_2^2+\|\nabla u\|_2^2=0.
+\]
+Apply this identity to the difference of two solutions. Zero initial
+energy forces the difference to vanish.</p>
+</div>
+
+<h3>Positivity, mass, and comparison</h3>
+
+<p>On \(\mathbb R^n\), positivity of \(\Gamma_t\) gives
+\[
+u_0\ge0\Longrightarrow u(\cdot,t)\ge0,\qquad
+\int u(x,t)\,\mathrm{d}x=\int u_0(x)\,\mathrm{d}x.
+\]
+The parabolic maximum principle gives the corresponding comparison statement
+on domains: if \(u_0\le v_0\) and the lateral boundary data are ordered, then
+\(u\le v\). Thus heat flow is order preserving as well as \(L^2\)-dissipative.</p>
+
+<h3>Bounded domains and forcing</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (spectral solution).</span> Let
+\((\lambda_k,\phi_k)\) be the Dirichlet eigenpairs of \(-\Delta\) on a smooth
+bounded domain, orthonormal in \(L^2(\Omega)\). For
+\(u_0=\sum_k u_k\phi_k\),
+\[
+u(t)=\sum_{k=1}^{\infty}e^{-\lambda_k t}u_k\phi_k
+\]
+is the unique \(L^2\)-solution. For
+\(u_t-\Delta u=f\), the variation-of-constants formula is
+\[
+u(t)=e^{t\Delta}u_0+\int_0^t e^{(t-s)\Delta}f(s)\,\mathrm{d}s.
+\]</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (loss of information backward in
+time).</span> On \((0,\pi)\), initial data
+\(u_0^{(k)}(x)=k^{-1}\sin(kx)\) tend to zero in \(L^2\), while at a fixed
+terminal time \(T\), recovering them from
+\(u^{(k)}(T)=k^{-1}e^{-k^2T}\sin(kx)\) requires multiplication by
+\(e^{k^2T}\). Arbitrarily small high-frequency observation errors are
+therefore amplified without bound. The forward problem is well posed; the
+backward problem is not.</p>
+</div>

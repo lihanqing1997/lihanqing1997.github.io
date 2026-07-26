@@ -18,6 +18,47 @@ note_next_url: "/notes/probability-theory/moments-kurtosis-tail-behavior/"
         <p><span class="statement-title">Definition.</span> For \(X\ge0\), \(\mathbb E X=\int_\Omega X\,\mathrm{d}P\), possibly infinite. For general \(X\), the expectation exists if \(\mathbb E X^+\) and \(\mathbb E X^-\) are not both infinite; \(X\in L^1\) if \(\mathbb E|X|\lt\infty\).</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> On \(L^1\), expectation is linear and monotone, and
+\[
+|\mathbb EX|\le\mathbb E|X|.
+\]
+If \(X\ge0\) and \(\mathbb EX=0\), then \(X=0\) almost surely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The corresponding facts hold for the Lebesgue integral. For the last claim, Markov's inequality gives
+\[
+P(X>1/n)\le n\mathbb EX=0
+\]
+for every \(n\); the event \(\{X>0\}\) is their countable union.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Tonelli for random series).</span> If \(X_n\ge0\), then
+\[
+\mathbb E\sum_{n=1}^{\infty}X_n
+=\sum_{n=1}^{\infty}\mathbb EX_n,
+\]
+with \(+\infty\) allowed. If \(\sum_n\mathbb E|X_n|<\infty\), then \(\sum_nX_n\) converges absolutely almost surely and in \(L^1\), and
+\[
+\mathbb E\sum_nX_n=\sum_n\mathbb EX_n.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Monotone convergence applied to partial sums proves the nonnegative identity. If \(\sum_n\mathbb E|X_n|<\infty\), then
+\[
+\mathbb E\sum_n|X_n|<\infty,
+\]
+so \(\sum_n|X_n|<\infty\) almost surely. The tails satisfy
+\[
+\mathbb E\left|\sum_{n>N}X_n\right|
+\le\sum_{n>N}\mathbb E|X_n|\longrightarrow0,
+\]
+giving \(L^1\) convergence and permitting expectation to pass to the limit.</p>
+    </div>
+
 
     <h3>Monotone and dominated convergence</h3>
 
@@ -28,7 +69,17 @@ note_next_url: "/notes/probability-theory/moments-kurtosis-tail-behavior/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The first statement is the monotone convergence theorem for Lebesgue integrals, proved by approximating \(X\) from below by simple functions and using countable additivity. For dominated convergence, apply Fatou's lemma to \(Y+X_n\) and \(Y-X_n\); the resulting upper and lower bounds force convergence of expectations.</p>
+        <p><span class="statement-title">Proof.</span> The first statement is monotone convergence. Under domination, \(|X|\le Y\) almost surely, so \(X\in L^1\). Fatou applied to \(Y+X_n\ge0\) gives
+\[
+\mathbb EY+\mathbb EX
+\le\mathbb EY+\liminf_n\mathbb EX_n.
+\]
+Applied to \(Y-X_n\ge0\), it gives
+\[
+\mathbb EY-\mathbb EX
+\le\mathbb EY-\limsup_n\mathbb EX_n.
+\]
+Hence \(\limsup\mathbb EX_n\le\mathbb EX\le\liminf\mathbb EX_n\), proving convergence. Applying the same argument to \(|X_n-X|\le2Y\) yields \(L^1\) convergence.</p>
     </div>
 
 
@@ -48,6 +99,38 @@ note_next_url: "/notes/probability-theory/moments-kurtosis-tail-behavior/"
 \(\mathbb E X=\int_0^\infty \mathbb E1_{\{X\gt t\}}\,\mathrm{d}t=\int_0^\infty P(X\gt t)\,\mathrm{d}t\).</p>
     </div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Tail integration is often the quickest route to moment bounds, especially for maxima and stopping times.</p>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (moments from tails).</span> For \(p>0\),
+\[
+\mathbb E|X|^p
+=p\int_0^\infty t^{p-1}P(|X|>t)\,\mathrm{d}t.
+\]
+More generally, for absolutely continuous increasing \(\phi\) with \(\phi(0)=0\),
+\[
+\mathbb E\phi(X)
+=\int_0^\infty\phi'(t)P(X>t)\,\mathrm{d}t
+\]
+for nonnegative \(X\), whenever either side is defined.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Pointwise,
+\[
+\phi(X)=\int_0^X\phi'(t)\,\mathrm{d}t
+=\int_0^\infty\phi'(t)\mathbf1_{\{X>t\}}\,\mathrm{d}t.
+\]
+Tonelli proves the general formula. Taking \(\phi(t)=t^p\) and replacing \(X\) by \(|X|\) gives the moment identity.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (tail order determines moment thresholds).</span> If
+\[
+P(|X|>t)\asymp t^{-\alpha}
+\qquad(t\to\infty),
+\]
+then the tail formula shows
+\[
+\mathbb E|X|^p<\infty\quad\Longleftrightarrow\quad p<\alpha,
+\]
+up to behavior near zero. The borderline \(p=\alpha\) diverges logarithmically when the two-sided comparison holds.</p>
     </div>

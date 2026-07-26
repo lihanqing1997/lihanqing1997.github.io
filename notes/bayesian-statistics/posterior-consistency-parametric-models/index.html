@@ -62,3 +62,148 @@ almost surely under \(P_{\theta_0}\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Bayesian consistency is a statement about the sampling distributions supported by the prior. If the map \(\theta\mapsto P_\theta\) is not injective, the posterior may concentrate on the set of observationally equivalent parameters rather than on a single point.</p>
     </div>
+
+<h3>Kullback-Leibler neighborhoods</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For iid data from \(P_{\theta_0}\), a Kullback-Leibler neighborhood is
+\[
+B_{\mathrm{KL}}(\theta_0,\varepsilon)
+=\left\{
+\theta:
+K(P_{\theta_0},P_\theta)<\varepsilon,\quad
+V(P_{\theta_0},P_\theta)<\varepsilon
+\right\},
+\]
+where
+\[
+K(P_0,P)=E_0\log\frac{p_0}{p},
+\qquad
+V(P_0,P)=E_0\left(
+\log\frac{p_0}{p}-K(P_0,P)
+\right)^2.
+\]</p>
+</div>
+
+<p>The KL condition keeps the likelihood from being exponentially too small near truth; the variance condition controls fluctuations of its log.</p>
+
+<h3>A compact-parametric consistency theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(\Theta\) be compact, let
+\(\theta\mapsto p_\theta(x)\) be suitably continuous, and suppose:</p>
+<ol>
+<li>\(P_{\theta_0}\) is identifiable;</li>
+<li>the prior assigns positive mass to every neighborhood of \(\theta_0\);</li>
+<li>for every neighborhood \(U\) of \(\theta_0\), there exist tests \(\phi_n\) such that
+\[
+P_{\theta_0}^{n}\phi_n\to0,
+\qquad
+\sup_{\theta\in U^c}P_\theta^n(1-\phi_n)
+\le e^{-c_Un}.
+\]</li>
+</ol>
+<p>Then
+\[
+\Pi(U^c\mid X_{1:n})\xrightarrow{P_{\theta_0}}0
+\]
+for every neighborhood \(U\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write the posterior numerator outside \(U\) as
+\[
+N_n=\int_{U^c}
+\prod_{i=1}^n\frac{p_\theta(X_i)}{p_{\theta_0}(X_i)}
+\Pi(\mathrm{d}\theta).
+\]
+Multiplying by \(1-\phi_n\) and taking \(P_{\theta_0}\)-expectation, Fubini and change of measure give
+\[
+E_{\theta_0}\{(1-\phi_n)N_n\}
+=\int_{U^c}P_\theta^n(1-\phi_n)\Pi(\mathrm{d}\theta)
+\le e^{-c_Un}.
+\]
+The test contribution \(\phi_n\) vanishes under truth. A positive-prior KL neighborhood gives, with high probability, a denominator lower bound \(e^{-o(n)}\). Therefore the posterior ratio outside \(U\) vanishes.</p>
+</div>
+
+<h3>Tests from likelihood separation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> In a dominated finite-dimensional model with compact \(\Theta\), if Hellinger distance satisfies
+\[
+\inf_{\theta\in U^c}
+h(P_{\theta_0},P_\theta)>0,
+\]
+then exponentially consistent tests of \(\theta_0\) against \(U^c\) exist.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> For one fixed alternative, Neyman-Pearson tests have total error bounded by a power of the Hellinger affinity
+\[
+\rho(P_{\theta_0},P_\theta)^n
+=\{1-h^2(P_{\theta_0},P_\theta)\}^n.
+\]
+Continuity and compactness cover \(U^c\) by finitely many Hellinger balls whose centers remain separated from truth. The maximum of the finitely many tests retains exponential error bounds.</p>
+</div>
+
+<h3>Bernoulli consistency directly</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+X_i\sim\operatorname{Bernoulli}(p_0),
+\qquad p\sim\operatorname{Beta}(a,b),
+\quad a,b>0.
+\]
+Then
+\[
+p\mid X_{1:n}
+\sim\operatorname{Beta}(a+S_n,b+n-S_n).
+\]
+Its mean converges almost surely to \(p_0\), because
+\[
+\frac{a+S_n}{a+b+n}\to p_0,
+\]
+and its variance is \(O(n^{-1})\). Chebyshev's inequality therefore gives
+\[
+\Pi(|p-p_0|>\varepsilon\mid X_{1:n})
+\to0
+\quad\text{almost surely}.
+\]</p>
+</div>
+
+<h3>Consistency of distributions versus parameters</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If the model is nonidentifiable, define
+\[
+[\theta_0]=\{\theta:P_\theta=P_{\theta_0}\}.
+\]
+No posterior based only on observations can consistently distinguish points within \([\theta_0]\), but it may consistently concentrate on every open set containing \([\theta_0]\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Likelihoods are identical throughout the equivalence class, so posterior density ratios within it equal prior density ratios. Tests can separate the equivalence class from distributions at positive statistical distance, but no test has power exceeding size between identical laws.</p>
+</div>
+
+<h3>Doob and model-wide consistency</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Doob's theorem gives posterior consistency for \(\Pi\)-almost every parameter under broad identifiability assumptions. Its exceptional set can contain scientifically important fixed truths and depends on the prior. A frequentist consistency theorem instead fixes every \(\theta_0\) in a specified class and verifies prior mass plus testing conditions there. The two statements should not be conflated.</p>
+</div>
+
+<h3>Prior support failure</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If an open neighborhood \(U\) of \(\theta_0\) has prior probability zero, then
+\[
+\Pi(U\mid X_{1:n})=0
+\]
+for every sample and every \(n\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The posterior is absolutely continuous with respect to the prior whenever it is defined. Prior-null sets remain posterior-null.</p>
+</div>
+
+<p>Data reweight prior support; they do not create support that the model excluded. In misspecified models, consistency is instead toward a Kullback-Leibler minimizing set, treated on page 20.</p>

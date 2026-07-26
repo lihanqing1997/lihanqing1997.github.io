@@ -65,3 +65,160 @@ where \(V(P_0,P)=P_0[\log(p_0/p)-K(P_0,P)]^2\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Hellinger distance is natural for density testing; \(L^2\) is natural in Gaussian white noise; weaker metrics may yield faster rates but less inferential content.</p>
     </div>
+
+<h3>Covering and packing numbers</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The covering number
+\[
+N(\varepsilon,\mathcal F,d)
+\]
+is the smallest number of \(d\)-balls of radius \(\varepsilon\) covering \(\mathcal F\). The packing number
+\[
+D(\varepsilon,\mathcal F,d)
+\]
+is the largest cardinality of an \(\varepsilon\)-separated subset. They satisfy
+\[
+D(2\varepsilon,\mathcal F,d)
+\le N(\varepsilon,\mathcal F,d)
+\le D(\varepsilon,\mathcal F,d).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Any \(\varepsilon\)-cover can contain at most one point of a \(2\varepsilon\)-packing in each ball, giving the first inequality. A maximal \(\varepsilon\)-packing is an \(\varepsilon\)-cover, because any uncovered point could be added, giving the second.</p>
+</div>
+
+<h3>Uniform tests from entropy</h3>
+
+<div class="math-statement lemma">
+<p><span class="statement-title">Lemma.</span> Suppose for each fixed \(P_1\) with
+\(d(P_1,P_0)\ge\varepsilon\), there is a test whose two errors are at most
+\(e^{-cn\varepsilon^2}\) uniformly over a ball
+\(B(P_1,\varepsilon/2)\). If
+\[
+\log N(\varepsilon/2,\mathcal P,d)
+\le Cn\varepsilon^2
+\]
+with \(C<c\), then there is one test of \(P_0\) against
+\[
+\{P\in\mathcal P:d(P,P_0)\ge\varepsilon\}
+\]
+whose errors are exponentially small.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Cover the alternative by \(N\) local balls and let \(\phi\) be the maximum of their tests. Under \(P_0\), a union bound gives error at most
+\[
+Ne^{-cn\varepsilon^2}
+\le e^{-(c-C)n\varepsilon^2}.
+\]
+Every alternative belongs to one ball, so its type-II error is bounded by that local test's error.</p>
+</div>
+
+<h3>General posterior contraction theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(X^{(n)}\sim P_0^{(n)}\), and let \(d_n\) be a testing metric. Suppose
+\(\varepsilon_n\downarrow0\) and
+\(n\varepsilon_n^2\to\infty\). Assume there are sieves \(\mathcal P_n\) and constants \(C_1,C_2,C_3>0\) such that:</p>
+<ol>
+<li><em>local prior mass:</em>
+\[
+\Pi\{K(P_0,P)\le\varepsilon_n^2,\
+V(P_0,P)\le\varepsilon_n^2\}
+\ge e^{-C_1n\varepsilon_n^2};
+\]</li>
+<li><em>sieve entropy:</em>
+\[
+\log N(\varepsilon_n,\mathcal P_n,d_n)
+\le C_2n\varepsilon_n^2;
+\]</li>
+<li><em>prior tail:</em>
+\[
+\Pi(\mathcal P_n^c)
+\le e^{-(C_1+C_3)n\varepsilon_n^2},
+\]
+with \(C_3\) large relative to the testing constant.</li>
+</ol>
+<p>Then for sufficiently large \(M\),
+\[
+\Pi\{P:d_n(P,P_0)>M\varepsilon_n
+\mid X^{(n)}\}
+\xrightarrow{P_0}0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Partition the sieve alternative into shells
+\[
+\mathcal S_j
+=\{P:jM\varepsilon_n<d_n(P,P_0)
+\le(j+1)M\varepsilon_n\}.
+\]
+Entropy and local testing produce tests \(\phi_{n,j}\) with errors bounded by
+\[
+\exp\{-c j^2M^2n\varepsilon_n^2+C_2(j+1)^2n\varepsilon_n^2\}.
+\]
+Choose \(M\) so the exponent is negative uniformly. The KL mass condition gives a denominator lower bound of order
+\(e^{-(C_1+o(1))n\varepsilon_n^2}\). After multiplying posterior numerators by \(1-\phi_{n,j}\), change of measure bounds their expectations by the type-II errors. Sum the geometric shell series. The prior-tail condition handles \(\mathcal P_n^c\), and the aggregate type-I error vanishes.</p>
+</div>
+
+<h3>Non-iid and experiment-specific forms</h3>
+
+<p>For independent nonidentically distributed data, replace KL divergence by
+\[
+K_n(P_0,P)
+=\frac1n\sum_{i=1}^n
+E_{0i}\log\frac{p_{0i}}{p_i},
+\]
+and use product-experiment tests. In Gaussian white noise, the likelihood metric is \(L^2\); in regression with random design, it is typically prediction norm
+\[
+\|f-f_0\|_{L^2(P_X)};
+\]
+in inverse problems, it is often the norm after the forward operator. Contraction in the parameter norm then requires an inverse-modulus argument.</p>
+
+<h3>Prior-dependent and target rates</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (two-rate version).</span> Suppose KL prior mass is available at rate \(\bar\varepsilon_n\), while sieve entropy is controlled at rate \(\varepsilon_n\), with
+\[
+\varepsilon_n\ge\bar\varepsilon_n,\qquad
+n\bar\varepsilon_n^2\to\infty.
+\]
+Then posterior contraction occurs at \(\varepsilon_n\), provided the prior tail is smaller than the denominator scale
+\(e^{-Cn\bar\varepsilon_n^2}\).</p>
+</div>
+
+<p>This separates approximation/prior concentration from global complexity. The slower of the two controls the final rate.</p>
+
+<h3>Metric strengthening by interpolation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose posterior mass lies in a Hölder ball
+\(\|f\|_{C^\beta}\le R_n\), and contraction holds in \(L^2\) at rate
+\(\varepsilon_n\). An interpolation inequality of the form
+\[
+\|f-f_0\|_\infty
+\lesssim
+\|f-f_0\|_{L^2}^{2\beta/(2\beta+1)}
+\|f-f_0\|_{C^\beta}^{1/(2\beta+1)}
+\]
+implies supremum contraction at rate
+\[
+\varepsilon_n^{2\beta/(2\beta+1)}
+R_n^{1/(2\beta+1)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply the interpolation inequality on the high-posterior-probability sieve and substitute the two bounds. The posterior probability of leaving the sieve or the \(L^2\) ball vanishes.</p>
+</div>
+
+<h3>Why entropy cannot be omitted</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Large local prior mass alone can coexist with enormous mass spread over exponentially many alternatives. Tests must defeat the whole alternative, and entropy quantifies how many local tests are needed. Conversely, a tiny model with excellent entropy can contract slowly if the prior puts exponentially little mass near truth. Rate proofs need both local concentration and global complexity.</p>
+</div>
+
+<p>The covering, testing, and empirical-process machinery behind these bounds is developed in <a href="{{ '/notes/empirical-processes/' | relative_url }}">empirical processes</a> and <a href="{{ '/notes/statistical-decision-theory/lower-bounds/' | relative_url }}">statistical decision theory</a>.</p>

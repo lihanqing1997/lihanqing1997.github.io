@@ -68,3 +68,157 @@ At \(t=0\), \(C_\eta'(0)=(2\eta-1)\phi'(0)\). If \(\eta>1/2\), then \(C_\eta'(0)
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The logistic surrogate estimates conditional probabilities naturally through log-odds, while hinge loss focuses on the decision boundary and margin.</p>
     </div>
+
+<h3>Conditional Bayes risks of standard surrogates</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For
+  \(C_\eta(t)=\eta\phi(t)+(1-\eta)\phi(-t)\):
+  \[
+  \begin{array}{c|c|c}
+  \phi(u)&t_\eta^*&C_\eta^*\\ \hline
+  \log(1+e^{-u})&
+  \log\{\eta/(1-\eta)\}&
+  -\eta\log\eta-(1-\eta)\log(1-\eta)\\
+  e^{-u}&
+  \frac12\log\{\eta/(1-\eta)\}&
+  2\sqrt{\eta(1-\eta)}\\
+  (1-u)_+&
+  \operatorname{sign}(2\eta-1)&
+  2\min(\eta,1-\eta).
+  \end{array}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiate the smooth conditional risks and solve the first-order equations. For hinge loss, examine the three linear regions \(t\le-1\), \(-1\le t\le1\), and \(t\ge1\); the minimum occurs at \(1\) when \(\eta>1/2\), at \(-1\) when \(\eta<1/2\), and throughout \([-1,1]\) at equality.</p>
+</div>
+
+<h3>Proper scoring rules and probability estimation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A binary loss
+  \(L(q,y)\), \(q\in[0,1]\), is proper if
+  \[
+  \eta L(q,1)+(1-\eta)L(q,0)
+  \]
+  is minimized at \(q=\eta\), and strictly proper if this minimizer is unique.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every differentiable strictly proper binary loss has conditional regret equal to a Bregman divergence:
+  \[
+  C_\eta(q)-C_\eta(\eta)=D_{-H}(\eta,q),
+  \]
+  where \(H(\eta)=\inf_qC_\eta(q)\) is the concave Bayes risk.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Properness implies that the tangent line to the concave function \(H\) at \(q\) encodes the two losses:
+  \(L(q,1)=H(q)+(1-q)H'(q)\) and
+  \(L(q,0)=H(q)-qH'(q)\).
+  Substitution gives
+  \[
+  C_\eta(q)-H(\eta)
+  =H(q)+H'(q)(\eta-q)-H(\eta)
+  =D_{-H}(\eta,q).
+  \]
+  Strict concavity of \(H\) makes the divergence positive away from \(q=\eta\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Log loss has
+  \[
+  C_\eta(q)-C_\eta(\eta)
+  =\operatorname{KL}\{\operatorname{Bern}(\eta)\|
+  \operatorname{Bern}(q)\}.
+  \]
+  Pinsker's inequality then yields
+  \[
+  2(\eta-q)^2\le C_\eta(q)-C_\eta(\eta).
+  \]
+  Integrating gives \(2\|\widehat\eta-\eta\|_{L^2(P_X)}^2\) as a lower bound for logistic probability regret.</p>
+</div>
+
+<h3>An explicit logistic regret transfer</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(q_f(x)=\{1+e^{-f(x)}\}^{-1}\), and classify by
+  \(g_f=\mathbf1\{f\ge0\}\). Then
+  \[
+  R_{01}(g_f)-R_{01}^*
+  \le\sqrt{2\{R_{\log}(f)-R_{\log}^*\}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The plug-in bound gives
+  \(R_{01}(g_f)-R_{01}^*\le2\mathbb E|q_f-\eta|\).
+  Cauchy-Schwarz and the pointwise Pinsker bound give
+  \[
+  2\mathbb E|q_f-\eta|
+  \le2\{\mathbb E(q_f-\eta)^2\}^{1/2}
+  \le\sqrt{2\{R_{\log}(f)-R_{\log}^*\}}.
+  \]</p>
+</div>
+
+<h3>Hinge regret equals classification regret</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For every score \(f\),
+  \[
+  R_{01}(g_f)-R_{01}^*
+  \le R_{\mathrm{hinge}}(f)-R_{\mathrm{hinge}}^*.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(\eta\). If \(f\) has the wrong sign, its conditional hinge risk is minimized under that sign at \(t=0\), where it equals \(1\). The unrestricted conditional optimum is
+  \(2\min(\eta,1-\eta)=1-|2\eta-1|\). Thus wrong-sign hinge regret is at least \(|2\eta-1|\), exactly the conditional zero-one regret. Correct-sign points contribute nonnegative hinge regret and zero classification regret. Integrate.</p>
+</div>
+
+<h3>Composite losses and links</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A proper composite loss writes
+  \[
+  \ell(y,t)=L\{y,\psi^{-1}(t)\},
+  \]
+  where \(L\) is proper and \(\psi:(0,1)\to\mathbb R\) is an invertible link. Logistic loss uses the logit link; squared probability loss uses the identity link.</p>
+</div>
+
+<p>The link changes optimization geometry but not the probability functional elicited by the underlying proper loss. A badly conditioned link can make gradients vanish or explode near the boundary even though statistical calibration remains valid.</p>
+
+<h3>Multiclass calibration</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For
+  \(Y\in\{1,\ldots,K\}\), softmax cross-entropy
+  \[
+  \ell(s,y)=-s_y+\log\sum_{k=1}^Ke^{s_k}
+  \]
+  has conditional minimizers satisfying
+  \[
+  \frac{e^{s_k}}{\sum_je^{s_j}}=\eta_k.
+  \]
+  Therefore \(\operatorname*{argmax}_ks_k\) is a Bayes classifier.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The conditional risk is
+  \(-\sum_k\eta_ks_k+\log\sum_ke^{s_k}\). Its gradient is
+  \(-\eta+\operatorname{softmax}(s)\), so any stationary point has the displayed probabilities. The Hessian is the covariance matrix of a categorical distribution, hence positive semidefinite; translation \(s\mapsto s+c\mathbf1\) is the only nonidentifiability.</p>
+</div>
+
+<h3>A calibrated loss can still generalize poorly</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Calibration is a population statement: it says that vanishing surrogate regret forces vanishing task regret. It does not guarantee that empirical surrogate risk can be estimated uniformly over a rich class, nor that an optimizer finds a near-global minimum. A complete argument needs three pieces:
+  \[
+  \text{optimization error}
+  +\text{surrogate estimation error}
+  +\text{calibration transfer}.
+  \]
+  Confusing these levels is a common source of unjustified claims.</p>
+</div>

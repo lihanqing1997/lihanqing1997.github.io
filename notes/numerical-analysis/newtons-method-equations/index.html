@@ -34,3 +34,91 @@ note_next_url: "/notes/numerical-analysis/secant-quasi-newton-methods/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Optimization Newton applies the same linearization idea to \(F=\nabla f\). Numerical analysis emphasizes residuals, Jacobian solves, conditioning, and globalization for equations, while optimization adds objective decrease and second-order optimality.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Newton's iteration and quadratic convergence</h3>
+
+<p>For \(F:\mathbb R^n\to\mathbb R^n\), Newton's method solves
+\[
+F'(x_k)s_k=-F(x_k),\qquad x_{k+1}=x_k+s_k.
+\]</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (local quadratic convergence).</span>
+Suppose \(F\in C^2\) near a root \(x^*\), \(F(x^*)=0\), and
+\(F'(x^*)\) is invertible. Then for \(x_0\) sufficiently close,
+\[
+\|x_{k+1}-x^*\|
+\le C\|x_k-x^*\|^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(e_k=x_k-x^*\). Taylor's
+formula gives
+\[
+F(x_k)=F'(x_k)e_k+R_k,\qquad
+\|R_k\|\le L\|e_k\|^2/2
+\]
+when \(F'\) is Lipschitz. Hence
+\[
+e_{k+1}
+=e_k-F'(x_k)^{-1}F(x_k)
+=-F'(x_k)^{-1}R_k.
+\]
+Continuity of inversion bounds \(\|F'(x_k)^{-1}\|\) near \(x^*\), proving the
+claim.</p>
+</div>
+
+<h3>Multiple roots</h3>
+
+<p>For a scalar root of multiplicity \(m\),
+\[
+f(x)=(x-x^*)^mg(x),\qquad g(x^*)\ne0,
+\]
+ordinary Newton converges only linearly with factor \((m-1)/m\). If \(m\) is
+known, the modified step
+\[
+x_{k+1}=x_k-m\frac{f(x_k)}{f'(x_k)}
+\]
+restores quadratic convergence.</p>
+
+<h3>Newton--Kantorovich certification</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (schematic).</span> Suppose
+\(\|F'(x_0)^{-1}F(x_0)\|\le\beta\),
+\[
+\|F'(x_0)^{-1}(F'(x)-F'(y))\|\le L\|x-y\|,
+\]
+and \(h=\beta L\le1/2\) on a suitable ball. Then Newton iterates are well
+defined, remain in an explicit ball around \(x_0\), and converge to a unique
+root there.</p>
+</div>
+
+<p>The scalar majorant equation behind the proof bounds step lengths and
+invertibility through a Neumann series. This theorem converts local smoothness
+and a residual into a computable convergence region.</p>
+
+<h3>Globalization</h3>
+
+<p>Far from a root, a full Newton step can increase the residual or enter a
+region with singular Jacobian. Line search chooses \(\alpha_k\in(0,1]\) so
+\[
+\|F(x_k+\alpha_ks_k)\|^2
+\]
+decreases sufficiently. Trust-region methods minimize a local linear or
+quadratic model subject to \(\|s\|\le\Delta_k\), adapting \(\Delta_k\) by
+agreement between predicted and actual decrease.</p>
+
+<h3>Inexact Newton methods</h3>
+
+<p>Large systems solve the Newton equation only approximately:
+\[
+\|F'(x_k)s_k+F(x_k)\|
+\le\eta_k\|F(x_k)\|.
+\]
+Uniform \(\eta_k<1\) gives local linear convergence; \(\eta_k\to0\) gives
+superlinear convergence, and \(\eta_k=O(\|F(x_k)\|)\) preserves quadratic
+convergence. Krylov tolerances should therefore tighten as the nonlinear
+iterate approaches the root.</p>

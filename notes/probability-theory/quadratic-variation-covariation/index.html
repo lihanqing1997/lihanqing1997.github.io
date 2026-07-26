@@ -8,49 +8,167 @@ note_prev_url: "/notes/probability-theory/continuous-time-martingales-local-mart
 note_next_url: "/notes/probability-theory/semimartingales/"
 ---
 
-<p>Quadratic variation measures accumulated squared increments. It is the pathwise trace left by martingale roughness and is the source of Itô correction terms.</p>
+<p>Quadratic variation is the second-order path statistic that survives when partition mesh vanishes. Continuous finite-variation motion contributes none; continuous local-martingale noise contributes all of it; jumps contribute their squared sizes. Covariation records common rough motion and drives the product and chain rules.</p>
 
-    <h3>Quadratic variation</h3>
+<h3>Partition limits</h3>
 
-    <p>Finite variation paths have zero quadratic variation; Brownian paths do not.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a partition
+  \(\pi=\{0=t_0<\cdots<t_m=t\}\), put
+  \[
+  Q_\pi(X)_t=\sum_{i=0}^{m-1}
+  (X_{t_{i+1}}-X_{t_i})^2.
+  \]
+  A cadlag process has quadratic variation \([X]\) if, along every deterministic partition sequence with mesh tending to zero,
+  \(Q_\pi(X)\to[X]\) uniformly on compact time intervals in probability.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a process \(X\), quadratic variation along partitions \(\pi_n\) is the limit, when it exists,
-\[
-[X]_t=\lim_{|\pi_n|\to0}\sum_{t_i\le t}(X_{t_{i+1}}-X_{t_i})^2.
-\]</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (finite variation).</span> If \(A\) is continuous and has finite variation on compact intervals, then
+  \[
+  [A]_t=0.
+  \]
+  If \(A\) is cadlag of finite variation, then
+  \[
+  [A]_t=\sum_{0<s\le t}(\Delta A_s)^2.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For continuous \(A\),
+  \[
+  \sum_i(\Delta A_i)^2
+  \le
+  \max_i|\Delta A_i|
+  \sum_i|\Delta A_i|.
+  \]
+  Uniform continuity makes the maximum tend to zero, while the second factor is bounded by total variation. For cadlag \(A\), isolate the finitely many jumps larger than \(\varepsilon\); the continuous and small-jump remainder is controlled by the same inequality. Let \(\varepsilon\downarrow0\).</p>
+</div>
 
-    <h3>Brownian quadratic variation</h3>
+<h3>Brownian and local-martingale variation</h3>
 
-    <p>Brownian motion accumulates quadratic variation at deterministic rate.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For Brownian motion,
+  \[
+  [B]_t=t.
+  \]
+  More generally, every continuous local martingale \(M\) has a unique continuous increasing adapted process \([M]\), starting at zero, such that
+  \[
+  M_t^2-[M]_t
+  \]
+  is a local martingale.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For Brownian motion, \([B]_t=t\) in probability, and almost surely along suitable refining deterministic partitions.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For Brownian motion and a deterministic partition,
+  \[
+  \mathbb EQ_\pi(B)_t=t,\qquad
+  \operatorname{Var}(Q_\pi(B)_t)
+  =2\sum_i(t_{i+1}-t_i)^2
+  \le2t|\pi|\to0.
+  \]
+  Thus \(Q_\pi(B)_t\to t\) in \(L^2\), and a maximal argument gives ucp convergence as a process.
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For a partition of \([0,t]\), independence gives expectation of the sum of squared increments equal to \(t\). The variance is \(2\sum_i(\Delta t_i)^2\), which tends to zero as the mesh tends to zero. Hence the sums converge to \(t\) in \(L^2\) and in probability. Almost-sure convergence follows along dyadic partitions by summability of variances plus Borel-Cantelli.</p>
-    </div>
+  For a continuous local martingale, first stop so it is square integrable. Apply the discrete Doob decomposition to squared increments on refining partitions; the increasing compensators converge in probability, and the martingale parts converge by \(L^2\) estimates. Localization patches the limits. Uniqueness follows because a continuous finite-variation local martingale must be constant.</p>
+</div>
 
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a locally square-integrable martingale \(M\), its predictable bracket
+  \(\langle M\rangle\) is the unique predictable increasing process such that
+  \[
+  M^2-\langle M\rangle
+  \]
+  is a local martingale. For continuous local martingales, \([M]\) is continuous and adapted, hence predictable, so
+  \[
+  [M]=\langle M\rangle.
+  \]
+  With jumps, optional quadratic variation and predictable bracket generally differ.</p>
+</div>
 
-    <h3>Covariation and polarization</h3>
+<h3>Semimartingale quadratic variation</h3>
 
-    <p>Cross-variation is obtained by polarizing quadratic variation.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(X=X_0+M+A\) is a continuous semimartingale, with \(M\) a continuous local martingale and \(A\) continuous finite variation, then
+  \[
+  [X]=[M],\qquad [X,A]=0.
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For semimartingales \(X,Y\),
-\[
-[X,Y]_t=\frac14([X+Y]_t-[X-Y]_t).
-\]
-For independent Brownian coordinates \(B^i,B^j\), \([B^i,B^j]_t=0\) when \(i\ne j\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expanding partition sums gives
+  \[
+  Q_\pi(X)=Q_\pi(M)+2\sum_i\Delta M_i\Delta A_i+Q_\pi(A).
+  \]
+  The last term tends to zero. Cauchy-Schwarz gives
+  \[
+  \left|\sum_i\Delta M_i\Delta A_i\right|
+  \le Q_\pi(M)^{1/2}Q_\pi(A)^{1/2}\to0
+  \]
+  in probability because \(Q_\pi(M)\) is tight and
+  \(Q_\pi(A)\to0\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The identity follows algebraically from \((\Delta X+\Delta Y)^2-(\Delta X-\Delta Y)^2=4\Delta X\Delta Y\), then passing to limits over partitions. Independent Brownian coordinates have products of increments with mean zero and variances summing to zero along fine partitions.</p>
-    </div>
+<h3>Covariation and polarization</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The Itô rule \(\mathrm{d}B_t\,\mathrm{d}B_t=\mathrm{d}t\) is shorthand for this quadratic variation statement.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For semimartingales \(X,Y\),
+  \[
+  [X,Y]_t
+  =
+  \frac14\{[X+Y]_t-[X-Y]_t\}.
+  \]
+  Equivalently,
+  \[
+  [X,Y]_t
+  =\operatorname*{ucp-lim}_{|\pi|\to0}
+  \sum_i\Delta X_i\Delta Y_i.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Covariation is symmetric and bilinear, and
+  \[
+  \Delta[X,Y]_t=\Delta X_t\Delta Y_t.
+  \]
+  For independent Brownian coordinates,
+  \[
+  [B^i,B^j]_t=\delta_{ij}t.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Polarization and elementary algebra give bilinearity. A single jump contributes the product of the two jump sizes. For independent Brownian coordinates, cross-increment sums have mean zero and variance
+  \[
+  \sum_i(\Delta t_i)^2\to0,
+  \]
+  while the diagonal case is Brownian quadratic variation.</p>
+</div>
+
+<h3>Integration by parts</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (product formula).</span> For cadlag semimartingales,
+  \[
+  X_tY_t
+  =
+  X_0Y_0
+  +\int_0^tX_{s-}\,\mathrm{d}Y_s
+  +\int_0^tY_{s-}\,\mathrm{d}X_s
+  +[X,Y]_t.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On each partition interval,
+  \[
+  \Delta(XY)=X_{\mathrm{left}}\Delta Y
+  +Y_{\mathrm{left}}\Delta X+\Delta X\Delta Y.
+  \]
+  Sum the exact identity. The first two sums converge to the stochastic integrals and the last to covariation.</p>
+</div>
+
+<p>The mnemonic
+\(\mathrm{d}B_t\,\mathrm{d}B_t=\mathrm{d}t\),
+\(\mathrm{d}t\,\mathrm{d}B_t=0\), and
+\((\mathrm{d}t)^2=0\) is shorthand for these partition limits, not an algebra of ordinary infinitesimals.</p>

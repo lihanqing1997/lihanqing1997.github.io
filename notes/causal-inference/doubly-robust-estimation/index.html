@@ -8,24 +8,162 @@ note_prev_url: "/notes/causal-inference/outcome-regression-and-g-formula/"
 note_next_url: "/notes/causal-inference/efficient-influence-functions/"
 ---
 
-<p>Doubly robust estimation records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Doubly robust estimators combine outcome regression and propensity weighting so that consistency survives misspecification of either nuisance model. Their deeper value is Neyman orthogonality: nuisance errors enter the target estimate primarily through a product.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A doubly robust score combines outcome regression and propensity weighting so that the estimand remains correctly centered if either nuisance component is correct.</p>
-    </div>
+<h3>The augmented inverse-probability estimator</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The augmented inverse probability score for \(E[Y(1)]\), \(m_1(X)+A(Y-m_1(X))/e(X)\), has expectation \(E[Y(1)]\) if either \(m_1\) or \(e\) is correctly specified.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \(m_a(x)=\mathbb E(Y\mid A=a,X=x)\) and
+  \(e(x)=P(A=1\mid X=x)\). Define
+  \[
+  \psi(O;\eta)=
+  m_1(X)-m_0(X)
+  +\frac{A\{Y-m_1(X)\}}{e(X)}
+  -\frac{(1-A)\{Y-m_0(X)\}}{1-e(X)},
+  \]
+  where \(\eta=(m_0,m_1,e)\). The AIPW estimator is
+  \[
+  \widehat\tau=P_n\psi(O;\widehat\eta).
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on \(X\). If the outcome regression is correct, the residual term has mean zero. If the propensity is correct, the weighted residual restores the true conditional mean.</p>
-    </div>
+<h3>Double robustness</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Double robustness is an estimating-equation property, not protection against violations of causal identification assumptions.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\bar m_a,\bar e\) be probability limits of nuisance estimators, bounded away from positivity boundaries. Under causal identification,
+  \[
+  P\psi(O;\bar m,\bar e)=\tau
+  \]
+  if either \(\bar m_a=m_a\) for both arms or \(\bar e=e\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Condition on \(X\). The treated residual term has mean
+  \[
+  \frac{e(X)}{\bar e(X)}
+  \{m_1(X)-\bar m_1(X)\},
+  \]
+  and the control residual term has mean
+  \[
+  -\frac{1-e(X)}{1-\bar e(X)}
+  \{m_0(X)-\bar m_0(X)\}.
+  \]
+  Adding \(\bar m_1-\bar m_0\) equals \(m_1-m_0\) if
+  \(\bar m=m\), because both residual means vanish, or if \(\bar e=e\), because each regression error is exactly corrected. Integrate.</p>
+</div>
+
+<h3>Exact remainder identity</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For generic nuisances
+  \(\bar\eta\),
+  \[
+  P\psi(O;\bar\eta)-\tau
+  =
+  \mathbb E\left[
+  \frac{\bar e-e}{\bar e}
+  (\bar m_1-m_1)
+  +
+  \frac{\bar e-e}{1-\bar e}
+  (\bar m_0-m_0)
+  \right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Use the conditional expectation calculation from the preceding proof and collect coefficients of each outcome-regression error. No asymptotic approximation is involved.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under strong overlap,
+  \[
+  |P\psi(\bar\eta)-\tau|
+  \lesssim
+  \|\bar e-e\|_{P,2}
+  \{\|\bar m_1-m_1\|_{P,2}+
+  \|\bar m_0-m_0\|_{P,2}\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Bound inverse propensity factors by overlap constants and apply Cauchy-Schwarz to each product.</p>
+</div>
+
+<h3>Neyman orthogonality</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A score
+  \(\psi(O;\tau,\eta)\) is Neyman-orthogonal at \((\tau_0,\eta_0)\) if the pathwise derivative
+  \[
+  \left.\frac{\mathrm{d}}{\mathrm{d}t}
+  P\psi(O;\tau_0,\eta_0+t h)\right|_{t=0}=0
+  \]
+  for every admissible nuisance direction \(h\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The AIPW score is
+  Neyman-orthogonal.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The exact bias identity is a product of propensity and outcome-regression errors. Along a path
+  \(\eta_t=\eta_0+t h\), it is \(O(t^2)\), so its derivative at zero vanishes.</p>
+</div>
+
+<h3>Cross-fitting</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Partition observations into folds
+  \(I_1,\ldots,I_K\). Fit nuisances \(\widehat\eta^{(-k)}\) without fold \(k\), and set
+  \[
+  \widehat\tau_{\mathrm{CF}}
+  =\frac1n\sum_{k=1}^K\sum_{i\in I_k}
+  \psi(O_i;\widehat\eta^{(-k)}).
+  \]</p>
+</div>
+
+<p>Conditional on training folds, evaluation observations are independent of their nuisance fits. This avoids Donsker restrictions on highly adaptive learners and lets empirical-process terms be controlled by conditional variance.</p>
+
+<h3>Asymptotic linearity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose overlap holds,
+  nuisances are \(L^2(P)\)-consistent, their product error is
+  \(o_P(n^{-1/2})\), and moment conditions hold. Then
+  \[
+  \sqrt n(\widehat\tau_{\mathrm{CF}}-\tau)
+  =
+  \frac1{\sqrt n}\sum_{i=1}^n\phi_{\mathrm{eff}}(O_i)+o_P(1)
+  \rightsquigarrow N(0,V_{\mathrm{eff}}),
+  \]
+  where
+  \[
+  \phi_{\mathrm{eff}}(O)=\psi(O;\eta_0)-\tau.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Add and subtract
+  \(P_n\psi(\eta_0)\). The population nuisance bias is the second-order product remainder. Cross-fitting and conditional variance make
+  \((P_n-P)\{\psi(\widehat\eta)-\psi(\eta_0)\}=o_P(n^{-1/2})\) under \(L^2\)-consistency. The remaining term is the iid average of the efficient influence function, so the central limit theorem applies.</p>
+</div>
+
+<h3>Rate combinations</h3>
+
+<p>The sufficient product condition allows asymmetric nuisance rates. If the propensity is parametric at \(n^{-1/2}\), the outcome regression needs only consistency. If both nuisances converge at \(o_P(n^{-1/4})\), their product is \(o_P(n^{-1/2})\). Exact rates depend on norms, overlap, and whether one nuisance is known.</p>
+
+<h3>Targeted minimum-loss estimation</h3>
+
+<p>TMLE begins with initial nuisance estimates and updates the outcome regression along a least-favorable fluctuation with clever covariate
+\[
+H(A,X)=\frac{A}{\widehat e(X)}-
+\frac{1-A}{1-\widehat e(X)}.
+\]
+The update solves the empirical efficient-score equation, after which the target is evaluated as a substitution estimator. TMLE and one-step AIPW have the same first-order influence function but differ in finite-sample substitution and range properties.</p>
+
+<h3>What double robustness does not mean</h3>
+
+<p>It does not mean the estimator is reliable when both models are badly wrong, immune to weak overlap, or free from regularity conditions. Near positivity boundaries, small nuisance errors are amplified. Finite-sample bias can be severe even when one nuisance is asymptotically correct. Diagnostics and sensitivity remain necessary.</p>

@@ -20,6 +20,26 @@ note_next_url: "/notes/real-analysis/lebesgue-integral/"
         <p><span class="statement-title">Proof.</span> The inverse images of intervals \((a,\infty)\) generate the Borel sigma-algebra on \(\mathbb R\), so measurability implies the condition. Conversely, if inverse images of these generators are measurable, the class of Borel sets with measurable inverse image is a sigma-algebra containing the generators.</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (measurable calculus).</span> If \(f,g:X\to\overline{\mathbb R}\) are measurable, then \(f+g\), \(fg\), \(\max(f,g)\), and \(\min(f,g)\) are measurable wherever the extended-real operations are defined. If \(f_n\) are measurable, then
+\[
+\sup_nf_n,\quad\inf_nf_n,\quad\limsup_nf_n,\quad\liminf_nf_n
+\]
+are measurable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The map \(x\mapsto(f(x),g(x))\) into \(\mathbb R^2\) is measurable because inverse images of measurable rectangles are intersections of measurable sets. Composition with a continuous arithmetic map is measurable. For suprema,
+\[
+\left\{\sup_nf_n>a\right\}=\bigcup_n\{f_n>a\},
+\]
+and infima follow by negation. Finally,
+\[
+\limsup_nf_n=\inf_N\sup_{n\ge N}f_n,\qquad
+\liminf_nf_n=\sup_N\inf_{n\ge N}f_n.
+\]</p>
+    </div>
+
     <h3>Simple approximation</h3>
     <p>Nonnegative measurable functions are monotone limits of simple functions.</p>
     <div class="math-statement theorem">
@@ -28,6 +48,14 @@ note_next_url: "/notes/real-analysis/lebesgue-integral/"
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Define \(s_n(x)=2^{-n}\lfloor 2^n\min(f(x),n)\rfloor\). Each \(s_n\) takes finitely many values and is measurable because its level sets are described by inverse images of intervals under \(f\). The construction increases to \(f\) pointwise.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> Every real measurable function is a pointwise limit of finite-valued measurable functions. If it is bounded, the approximation can be uniform.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Apply the nonnegative construction to \(f^+\) and \(f^-\), then subtract. If \(|f|\le M\), dyadic rounding without truncation gives simple \(s_n\) with \(|s_n-f|\le2^{-n}\) everywhere.</p>
     </div>
 
     <h3>Almost-everywhere equality</h3>
@@ -58,6 +86,29 @@ note_next_url: "/notes/real-analysis/lebesgue-integral/"
         <p><span class="statement-title">Proof.</span> For fixed \(\varepsilon>0\), the sets \(A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}\) decrease to a null set by almost-everywhere convergence. Since \(\mu(X)\lt \infty\), continuity from above gives \(\mu(A_n)\to0\). Then \(\mu(|f_n-f|>\varepsilon)\le\mu(A_n)\).</p>
     </div>
 
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (finite measure is necessary).</span> On \((\mathbb R,m)\), let \(f_n=\mathbf1_{[n,n+1]}\). Then \(f_n(x)\to0\) for every \(x\), but
+\[
+m(|f_n|>1/2)=1
+\]
+for every \(n\), so convergence in measure fails.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (uniqueness).</span> If \(f_n\to f\) in measure and \(f_n\to g\) in measure, then \(f=g\) almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(\varepsilon>0\),
+\[
+\{|f-g|>\varepsilon\}
+\subset
+\{|f-f_n|>\varepsilon/2\}\cup
+\{|f_n-g|>\varepsilon/2\}.
+\]
+The measure of the right side tends to zero, so \(\mu(|f-g|>\varepsilon)=0\). Taking the union over positive rational \(\varepsilon\) gives \(f=g\) almost everywhere.</p>
+    </div>
+
     <h3>Subsequence principle</h3>
     <p>Convergence in measure contains almost-everywhere convergence along subsequences.</p>
     <div class="math-statement theorem">
@@ -65,5 +116,15 @@ note_next_url: "/notes/real-analysis/lebesgue-integral/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose \(n_k\) so that \(\mu(|f_{n_k}-f|>2^{-k})\lt 2^{-k}\). The sum of these measures is finite, so Borel-Cantelli for measures implies that almost every \(x\) belongs to only finitely many exceptional sets. Hence \(|f_{n_k}(x)-f(x)|\le2^{-k}\) eventually for almost every \(x\).</p>
+        <p><span class="statement-title">Proof.</span> Choose \(n_k\) so that
+\[
+\mu(|f_{n_k}-f|>2^{-k})<2^{-k}.
+\]
+Let \(E_k\) denote this exceptional set. Since \(\sum_k\mu(E_k)<\infty\),
+\[
+\mu\!\left(\limsup_kE_k\right)
+=\mu\!\left(\bigcap_m\bigcup_{k\ge m}E_k\right)
+\le\lim_{m\to\infty}\sum_{k\ge m}\mu(E_k)=0.
+\]
+Outside this null set, \(|f_{n_k}(x)-f(x)|\le2^{-k}\) eventually, proving almost-everywhere convergence. This is the first Borel-Cantelli argument, derived directly from subadditivity.</p>
     </div>

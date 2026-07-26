@@ -8,24 +8,97 @@ note_prev_url: "/notes/number-theory/mobius-inversion/"
 note_next_url: "/notes/number-theory/dirichlet-series-and-euler-products/"
 ---
 
-<p>Euler phi function and primitive roots records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>The unit group \((\mathbb Z/n\mathbb Z)^\times\) controls invertible
+residues. Euler's function gives its order; primitive roots ask when this
+finite abelian group is cyclic.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Euler's function \(\varphi(n)\) counts units modulo \(n\). A primitive root modulo \(n\) is a generator of \((\mathbb Z/n\mathbb Z)^\times\).</p>
-    </div>
+<h3>Euler's function</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Euler theorem says \(a^{\varphi(n)}\equiv1\pmod n\) for \(\gcd(a,n)=1\). Primitive roots exist for prime powers of odd primes, but not for all moduli.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span>
+\[
+\varphi(n)=n\prod_{p\mid n}\left(1-\frac1p\right).
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Euler theorem is Lagrange theorem applied to the finite unit group. Primitive-root classification uses cyclicity of finite subgroups of fields and CRT decomposition.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For \(n=p^\alpha\), exactly
+\(p^{\alpha-1}\) residue classes are divisible by \(p\), so
+\(\varphi(p^\alpha)=p^\alpha-p^{\alpha-1}\). The Chinese remainder theorem
+shows that \(\varphi\) is multiplicative. Multiply the prime-power formulas.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The structure of the unit group controls exponentiation, residues, and many cryptographic constructions.</p>
-    </div>
+<p>The order \(\operatorname{ord}_n(a)\) of a unit \(a\) is the least
+positive \(k\) with \(a^k\equiv1\pmod n\). Lagrange's theorem gives
+\[
+\operatorname{ord}_n(a)\mid\varphi(n).
+\]</p>
+
+<h3>Cyclic groups modulo primes</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The multiplicative group
+\(\mathbb F_p^\times\) is cyclic of order \(p-1\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(m\) be the exponent of
+the finite abelian group \(G=\mathbb F_p^\times\). Every element is a root of
+\(x^m-1\), so \(|G|\le m\); Lagrange gives \(m\le|G|\), hence
+\(m=|G|\). In a finite abelian group the exponent is attained by an element:
+combine elements whose orders contain the maximal prime-power factors.
+Therefore some element has order \(p-1\).</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A primitive root modulo
+\(n\) is a unit of order \(\varphi(n)\), equivalently a generator of
+\((\mathbb Z/n\mathbb Z)^\times\).</p>
+</div>
+
+<h3>Testing primitive roots</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\(p-1=\prod_iq_i^{\alpha_i}\), then \(g\) is a primitive root modulo \(p\)
+if and only if
+\[
+g^{(p-1)/q_i}\not\equiv1\pmod p
+\]
+for every distinct prime \(q_i\mid p-1\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The order of \(g\) divides
+\(p-1\). It is a proper divisor exactly when it divides
+\((p-1)/q_i\) for at least one prime divisor \(q_i\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For \(p=17\),
+\(p-1=16\). Since
+\[
+3^8\equiv-1\pmod{17},
+\]
+\(3\) has order \(16\) and is a primitive root. Its powers list every nonzero
+residue exactly once.</p>
+</div>
+
+<h3>Which moduli have primitive roots?</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Primitive roots exist
+exactly for
+\[
+n=1,\ 2,\ 4,\ p^k,\ 2p^k,
+\]
+where \(p\) is an odd prime.</p>
+</div>
+
+<p>For other moduli, the Chinese remainder decomposition produces too many
+independent cyclic factors. The Carmichael function
+\[
+\lambda(n)=\exp\bigl((\mathbb Z/n\mathbb Z)^\times\bigr)
+\]
+gives the maximal possible order of a unit even when no primitive root
+exists; always \(a^{\lambda(n)}\equiv1\pmod n\) for every unit \(a\).</p>

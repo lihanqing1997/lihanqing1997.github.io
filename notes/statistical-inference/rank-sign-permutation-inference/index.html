@@ -8,11 +8,156 @@ note_prev_url: "/notes/statistical-inference/robust-inference/"
 note_next_url: "/notes/statistical-inference/u-statistics-v-statistics/"
 ---
 
-<p>Rank, sign, and permutation methods use symmetry or exchangeability rather than a fully specified parametric distribution. They are often exact under the null and robust to monotone transformations.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> A permutation test uses a group \(G\) of transformations that leaves the null distribution invariant. Given statistic \(T\), the permutation p-value is
-    \[
-    p(x)=\frac{1}{|G|}\sum_{g\in G}1_{\{T(gx)\ge T(x)\}}.
-    \]</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">Exactness.</span> If the null distribution is invariant under \(G\), and ties are handled by randomization or a conservative rule, then the permutation p-value is valid: \(P_0\{p(X)\le\alpha\}\le\alpha\).</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Under the null, \(X\) and \(gX\) have the same distribution for every \(g\). Conditional on the orbit \(\{gX:g\in G\}\), the observed point is uniformly distributed over the orbit when there are no stabilizer complications. Hence the rank of \(T(X)\) among the permutation values is uniform, giving exact tail probability. Conservative handling of ties can only increase the p-value.</p></div>
-    <h3>Rank statistics</h3><p>Rank tests replace observations by their ranks. Under continuous null distributions, ranks are distribution-free. Wilcoxon and signed-rank tests are classical examples; Pitman efficiency compares their local power against parametric tests.</p>
+<p>Permutation tests obtain exactness from group invariance, sign tests from symmetry of labels or median restrictions, and rank tests from the distribution-free ordering of continuous samples. These are precise structural assumptions; “nonparametric” does not mean assumption-free.</p>
+
+<h3>Group invariance</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let a finite group \(G\) act measurably on \(\mathcal X\). The null family is \(G\)-invariant if
+  \[
+  P(gX\in A)=P(X\in A)
+  \qquad
+  \text{for every }g\in G,\ A\in\mathcal A,\ P\in\mathcal P_0.
+  \]
+  For a statistic \(T\) whose large values are extreme, define
+  \[
+  p_G(x)=\frac1{|G|}
+  \sum_{g\in G}1_{\{T(gx)\ge T(x)\}}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Exact permutation validity.</span> Under \(G\)-invariance,
+  \[
+  \sup_{P\in\mathcal P_0}
+  P\{p_G(X)\le\alpha\}\le\alpha.
+  \]
+  Randomized tie-breaking gives exact equality at attainable levels.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\mathcal O_x=\{gx:g\in G\}\) be the orbit. For any bounded \(f\),
+  \[
+  \mathbb Ef(X)
+  =\mathbb E\left\{\frac1{|G|}
+  \sum_{g\in G}f(gX)\right\}
+  \]
+  by invariance. Apply this with \(f(x)=1_{\{p_G(x)\le\alpha\}}\). Within any orbit, at most an \(\alpha\) fraction of group elements can have an upper-tail rank no larger than \(\alpha|G|\); repeated orbit points caused by stabilizers occur with equal multiplicity and do not alter the bound. Averaging over \(X\) proves validity. Uniform randomization among tied ranks yields exact uniform ranks.</p>
+</div>
+
+<h3>Two-sample randomization</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Under the sharp null that all \(N=n+m\) responses are exchangeable with respect to \(n\) treatment labels, \(G\) consists of the \(\binom Nn\) label assignments. For
+  \[
+  T=\bar Y_{\mathrm{tr}}-\bar Y_{\mathrm{co}},
+  \]
+  the permutation distribution is the exact conditional null law given the pooled responses.</p>
+</div>
+
+<p>Equality of means alone does not imply exchangeability. Under unequal variances, raw-label permutation can fail to be exact even when the means coincide. Studentized permutation statistics can be asymptotically valid under weaker conditions, but that is an asymptotic theorem rather than finite-sample randomization exactness.</p>
+
+<h3>Monte Carlo permutation p-values</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Valid sampled-permutation p-value.</span> Draw \(B\) transformations \(g_1,\ldots,g_B\) uniformly and independently from \(G\), independently of the data, and include the observed arrangement as index \(0\). Then
+  \[
+  \hat p=\frac{1+\sum_{b=1}^B
+  1_{\{T(g_bX)\ge T(X)\}}}{B+1}
+  \]
+  is valid under the invariant null.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the null, after an independent uniform random transformation of the entire collection, the \(B+1\) statistics are exchangeable. The rank of the distinguished observed statistic among them is therefore discrete uniform when ties are randomized and conservative otherwise. The added one is essential: using only the simulated exceedance proportion can report zero and is not an exact p-value.</p>
+</div>
+
+<h3>The sign test</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Exact median test.</span> Let \(X_1,\ldots,X_n\) be independent from a continuous distribution with median \(\theta_0\), so
+  \[
+  P(X_i>\theta_0)=P(X_i\lt\theta_0)=\frac12.
+  \]
+  Then
+  \[
+  S=\sum_{i=1}^n1_{\{X_i>\theta_0\}}
+  \sim\operatorname{Binomial}(n,1/2).
+  \]
+  Binomial tails therefore give exact one- or two-sided tests and, by inversion, exact confidence intervals based on order statistics.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Continuity eliminates ties. Each sign indicator is Bernoulli\((1/2)\), and independence of the observations gives independence of the indicators.</p>
+</div>
+
+<p>The sign test needs only a median restriction, not symmetry. Its price is that it discards magnitudes.</p>
+
+<h3>Signed-rank inference</h3>
+
+<p>For paired differences \(D_i\), let \(R_i\) be the rank of \(|D_i|\). The Wilcoxon signed-rank statistic is
+\[
+W^+=\sum_{i=1}^nR_i1_{\{D_i>0\}}.
+\]
+Under a continuous distribution symmetric about zero, signs are independent fair coins conditional on the absolute values. Hence the conditional null distribution of \(W^+\) is the distribution of a weighted sum of independent Bernoulli\((1/2)\) variables.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Null moments.</span> With no ties,
+  \[
+  \mathbb E_0W^+=\frac{n(n+1)}4,\qquad
+  \operatorname{Var}_0(W^+)
+  =\frac{n(n+1)(2n+1)}{24}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on the ranks,
+  \[
+  W^+=\sum_{r=1}^nrB_r,\qquad
+  B_r\stackrel{\mathrm{ind}}{\sim}\operatorname{Bernoulli}(1/2).
+  \]
+  Thus the mean is \(\frac12\sum_rr=n(n+1)/4\), and the variance is \(\frac14\sum_rr^2=n(n+1)(2n+1)/24\).</p>
+</div>
+
+<p>Unlike the sign test, signed-rank exactness requires symmetry. It tests a symmetric location model, not merely that the median is zero.</p>
+
+<h3>Wilcoxon rank-sum statistic</h3>
+
+<p>For independent samples \(X_1,\ldots,X_m\sim F\) and \(Y_1,\ldots,Y_n\sim G\), define
+\[
+U=\sum_{i=1}^m\sum_{j=1}^n1_{\{X_i<Y_j\}}.
+\]
+Then
+\[
+\mathbb EU=mn\,P(X<Y).
+\]
+Under continuous \(F=G\), \(P(X<Y)=1/2\), and the pooled ranks are uniformly distributed over all label allocations. This gives the exact rank-sum test.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Null variance.</span> Under continuous \(F=G\),
+  \[
+  \operatorname{Var}(U)=\frac{mn(m+n+1)}{12}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The sum of ranks assigned to the \(Y\)-sample is a simple random sample without replacement of \(n\) numbers from \(1,\ldots,m+n\). Its variance is
+  \[
+  n\frac{m}{m+n-1}
+  \frac{(m+n)^2-1}{12}
+  =\frac{mn(m+n+1)}{12}.
+  \]
+  Subtracting the deterministic \(n(n+1)/2\) that converts the rank sum to \(U\) leaves the same variance.</p>
+</div>
+
+<h3>Local efficiency</h3>
+
+<p>Under smooth location alternatives, rank statistics have asymptotically linear projections and Gaussian limits. At a normal model, the Wilcoxon rank-sum test has Pitman asymptotic relative efficiency
+\[
+\frac3\pi\approx0.955
+\]
+relative to the two-sample \(t\)-test, while under heavier tails it can be more efficient. Such comparisons are local to a model and alternative direction; distribution-free null calibration does not make power distribution-free.</p>
+
+<h3>Ties and restricted randomization</h3>
+
+<p>Ties alter rank variances and must be handled through midranks, exact enumeration, or explicit randomization. In blocked, paired, clustered, or covariate-adaptive experiments, transformations must respect the assignment mechanism: permuting across blocks destroys the null symmetry. The valid group is determined by the design, not selected after seeing which permutation distribution is favorable.</p>

@@ -60,3 +60,143 @@ H(q,p)=U(q)+\frac12p^\top M^{-1}p.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Large effective sample size for some scalar summaries does not guarantee that all posterior geometry has been explored. HMC should be checked on the quantities that matter for the inferential question.</p>
     </div>
+
+<h3>Hamiltonian flow</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Write the target as
+\[
+\pi(q)\propto e^{-U(q)}
+\]
+and introduce momentum
+\[
+p\sim N(0,M).
+\]
+The Hamiltonian is
+\[
+H(q,p)=U(q)+K(p),
+\qquad
+K(p)=\frac12p^\top M^{-1}p.
+\]
+Hamilton's equations are
+\[
+\frac{\mathrm{d}q}{\mathrm{d}t}=M^{-1}p,
+\qquad
+\frac{\mathrm{d}p}{\mathrm{d}t}=-\nabla U(q).
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Exact Hamiltonian flow preserves \(H\), phase-space volume, and the joint density
+\[
+\widetilde\pi(q,p)\propto e^{-H(q,p)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Along a trajectory,
+\[
+\frac{\mathrm{d}H}{\mathrm{d}t}
+=\nabla U(q)^\top M^{-1}p
++(M^{-1}p)^\top\{-\nabla U(q)\}=0.
+\]
+The vector field
+\((M^{-1}p,-\nabla U(q))\) has divergence zero, so Liouville's theorem gives volume preservation. Constant \(H\) and preserved volume imply invariance of \(e^{-H}\).</p>
+</div>
+
+<h3>Leapfrog integrator</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> One leapfrog step of size \(\epsilon\) is
+\[
+p_{1/2}=p_0-\frac{\epsilon}{2}\nabla U(q_0),
+\]
+\[
+q_1=q_0+\epsilon M^{-1}p_{1/2},
+\]
+\[
+p_1=p_{1/2}-\frac{\epsilon}{2}\nabla U(q_1).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Leapfrog is volume-preserving and reversible under momentum negation. Its global energy error over a fixed integration time is \(O(\epsilon^2)\) under smoothness.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Each momentum shear and position shear has Jacobian determinant one, so their composition preserves volume. Applying the same three updates with step \(-\epsilon\) reverses the map; equivalently, negate momentum before and after a forward step. Leapfrog is the symmetric Strang splitting of kinetic and potential flows, so local truncation error is \(O(\epsilon^3)\) and fixed-time global error is \(O(\epsilon^2)\).</p>
+</div>
+
+<h3>Metropolis correction</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(\Phi\) be an \(L\)-step leapfrog proposal followed by momentum negation. Accept
+\((q',p')=\Phi(q,p)\) with probability
+\[
+\alpha=1\wedge
+\exp\{-H(q',p')+H(q,p)\}.
+\]
+The resulting kernel is reversible with respect to \(\widetilde\pi\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The deterministic proposal is an involution after momentum negation and has unit Jacobian. The Metropolis ratio is therefore simply the target-density ratio
+\(e^{-H(q',p')}/e^{-H(q,p)}\). The standard Metropolis detailed-balance calculation applies.</p>
+</div>
+
+<h3>Gaussian geometry and mass matrices</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For
+\[
+q\sim N(0,\Sigma),
+\qquad U(q)=\frac12q^\top\Sigma^{-1}q,
+\]
+Hamilton's equation implies
+\[
+\frac{\mathrm{d}^2q}{\mathrm{d}t^2}
+=-M^{-1}\Sigma^{-1}q.
+\]
+If \(M=\Sigma^{-1}\), every transformed direction has unit frequency. If \(M=I\), frequencies vary with posterior scales, and the step size must resolve the narrowest direction. Adapting a dense mass matrix approximately whitens global covariance, though it cannot remove nonlinear curvature.</p>
+</div>
+
+<h3>No-U-turn trajectory selection</h3>
+
+<p>Long trajectories eventually retrace their path and waste computation. The no-U-turn criterion stops trajectory doubling when, schematically,
+\[
+(q^+-q^-)^\top M^{-1}p^-<0
+\quad\text{or}\quad
+(q^+-q^-)^\top M^{-1}p^+<0.
+\]
+Modern NUTS constructions sample from the built trajectory with a rule preserving detailed balance. The criterion is geometric, not a convergence diagnostic; poor geometry can still make every available trajectory inadequate.</p>
+
+<h3>Divergences and posterior funnels</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (Neal funnel).</span> Let
+\[
+v\sim N(0,3^2),\qquad
+x_j\mid v\sim N(0,e^v).
+\]
+For negative \(v\), the \(x_j\)-coordinates lie in an extremely narrow neck; for positive \(v\), they are broad. The Hessian scale changes exponentially with \(v\), so a step size stable in the neck is inefficient in the body, while a larger step diverges in the neck. The noncentered form
+\[
+x_j=e^{v/2}z_j,\qquad z_j\sim N(0,1),
+\]
+removes much of this coupling.</p>
+</div>
+
+<p>A divergence is a large numerical energy error, often indicating that leapfrog cannot resolve local curvature. Increasing target acceptance reduces step size and may help, but reparameterization is usually the substantive remedy. Discarding divergent draws biases the approximation.</p>
+
+<h3>Energy mixing</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> One empirical form of the Bayesian fraction of missing information is
+\[
+\operatorname{E\text{-}BFMI}
+=\frac{\sum_{s=2}^N(E_s-E_{s-1})^2}
+{\sum_{s=1}^N(E_s-\bar E)^2},
+\]
+up to conventional normalization, where \(E_s=H(q_s,p_s)\). Small values indicate that momentum refreshment changes energy by much less than the target's marginal energy range.</p>
+</div>
+
+<p>Energy histograms, divergences, tree depth, acceptance, rank-normalized \(\widehat R\), and function-specific ESS diagnose different failures. None validates the statistical model; simulation-based calibration and posterior predictive checks address separate questions.</p>

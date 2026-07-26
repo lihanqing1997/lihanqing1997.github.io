@@ -8,25 +8,155 @@ note_prev_url: "/notes/statistical-decision-theory/weak-convergence-of-experimen
 note_next_url: "/notes/statistical-decision-theory/gaussian-shift-experiments/"
 ---
 
-<p>Le Cam's lemmas organize changes of measure in local asymptotics. They tell how likelihood-ratio limits transform distributions under nearby alternatives.</p>
+<p>Le Cam's lemmas are change-of-measure theorems for triangular arrays. The first lemma recognizes contiguity from a likelihood-ratio limit. The third lemma tilts a joint null limit to obtain the law under contiguous alternatives. A Gaussian specialization turns exponential tilting into a mean shift.</p>
 
-    <h3>First lemma and contiguity</h3>
-    <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> If \(L_n=\mathrm{d}Q_n/\mathrm{d}P_n\) converges in distribution under \(P_n\) to \(L\) with \(E L=1\), then \(Q_n\triangleleft P_n\). If also \(L>0\) almost surely in the right sense, mutual contiguity follows.</p>
-    </div>
+<h3>Le Cam's first lemma</h3>
 
-    <h3>Third lemma</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \((T_n,L_n)\Rightarrow (T,L)\) under \(P_n\), then under \(Q_n\) the limit law of \(T_n\) is tilted by \(L\):</p>
-        <p>\[
-E_Q\varphi(T)=E_P\{L\varphi(T)\}.
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(Q_n\ll P_n\) and
+  \(L_n=\mathrm{d}Q_n/\mathrm{d}P_n\). Suppose
+  \[
+  L_n\rightsquigarrow L
+  \quad\text{under }P_n.
+  \]
+  Then:</p>
+  <ol>
+    <li>\(Q_n\triangleleft P_n\) if and only if \(EL=1\);</li>
+    <li>if \(EL=1\) and \(P(L>0)=1\), then \(P_n\) and \(Q_n\) are mutually contiguous.</li>
+  </ol>
+</div>
 
-    <h3>Proof by bounded test functions</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For bounded \(\varphi\), \(E_{Q_n}\varphi(T_n)=E_{P_n}L_n\varphi(T_n)\). Joint convergence and uniform integrability of the likelihood-ratio coordinate pass this identity to the limit.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(E_{P_n}L_n=1\), weak convergence and nonnegativity give \(EL\leq1\). If \(EL=1\), convergence in distribution plus convergence of first moments implies uniform integrability of \(L_n\), hence \(Q_n\triangleleft P_n\) by the preceding chapter. Conversely, contiguity is equivalent to uniform integrability, and uniform integrability plus weak convergence gives \(EL=\lim E_{P_n}L_n=1\).</p>
+  <p>For the second assertion, the law of \(L\) under the limiting \(Q\)-measure is tilted by \(L\). If \(L>0\) almost surely, the reciprocal \(1/L\) is finite under that tilted law and has mean one:
+  \[
+  E_Q(1/L)=E_P\{L(1/L)\}=1.
+  \]
+  Applying the first assertion in the reverse direction yields
+  \(P_n\triangleleft Q_n\). \(\square\)</p>
+</div>
 
-    <h3>Local power calculations</h3>
-    <p>In LAN, the third lemma shifts the normal limit of a statistic under \(P_{\theta_0}\) to its limit under \(P_{\theta_0+h/\sqrt n}\).</p>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (lost mass).</span> Let
+  \(P_n(A_n)=1/n\) and set \(L_n=n1_{A_n}\). Then \(E_{P_n}L_n=1\), but
+  \(L_n\to0\) in \(P_n\)-probability, so \(EL=0\). The measure \(Q_n\) puts all mass on \(A_n\), and is not contiguous with respect to \(P_n\). This is exactly probability mass escaping through rare, enormous likelihood ratios.</p>
+</div>
+
+<h3>Le Cam's third lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(Q_n\ll P_n\) and, under \(P_n\),
+  \[
+  (T_n,L_n)\rightsquigarrow(T,L),
+  \qquad
+  L_n=\frac{\mathrm{d}Q_n}{\mathrm{d}P_n},
+  \qquad
+  EL=1.
+  \]
+  Then under \(Q_n\),
+  \[
+  T_n\rightsquigarrow T^{(Q)},
+  \]
+  where the limiting law is defined by
+  \[
+  E f(T^{(Q)})=E\{Lf(T)\}
+  \]
+  for every bounded continuous \(f\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For bounded continuous \(f\),
+  \[
+  E_{Q_n}f(T_n)=E_{P_n}\{L_nf(T_n)\}.
+  \]
+  The product map is unbounded in \(L_n\), so joint weak convergence alone is insufficient. The condition \(EL=1\) and the first lemma imply uniform integrability of \(L_n\). Truncate \(L_n\) at \(M\), use bounded continuous approximation and joint convergence, then let \(M\to\infty\) uniformly. This gives
+  \[
+  E_{Q_n}f(T_n)\to E\{Lf(T)\}.
+  \]
+  The right side is a probability expectation because \(L\geq0\) and \(EL=1\). \(\square\)</p>
+</div>
+
+<h3>Gaussian exponential tilting</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Gaussian form of the third lemma).</span> Suppose under \(P_n\),
+  \[
+  \begin{pmatrix}T_n\\ \log L_n\end{pmatrix}
+  \rightsquigarrow
+  N\!\left[
+  \begin{pmatrix}\mu\\-\frac12\tau^2\end{pmatrix},
+  \begin{pmatrix}
+  \Sigma&c\\
+  c^\top&\tau^2
+  \end{pmatrix}
+  \right].
+  \]
+  Then under \(Q_n\),
+  \[
+  T_n\rightsquigarrow N(\mu+c,\Sigma).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The limiting likelihood ratio is
+  \(L=e^V\), where \(V\sim N(-\tau^2/2,\tau^2)\), so \(EL=1\). For \(u\in\mathbb R^d\),
+  \[
+  E\{e^Ve^{iu^\top T}\}
+  =
+  \exp\left\{
+  iu^\top(\mu+c)-\frac12u^\top\Sigma u
+  \right\}.
+  \]
+  This follows from the joint Gaussian moment-generating function evaluated at \((iu,1)\). The expression is the characteristic function of \(N(\mu+c,\Sigma)\); apply the third lemma. \(\square\)</p>
+</div>
+
+<h3>LAN alternatives</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Suppose a model is LAN:
+  \[
+  \log\frac{\mathrm{d}P_{n,h}}{\mathrm{d}P_{n,0}}
+  =
+  h^\top\Delta_n-\frac12h^\top Ih+o_{P_{n,0}}(1),
+  \qquad
+  \Delta_n\rightsquigarrow N(0,I).
+  \]
+  Then \(P_{n,h}\triangleleft\triangleright P_{n,0}\), and under \(P_{n,h}\),
+  \[
+  \Delta_n\rightsquigarrow N(Ih,I).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the null, the likelihood ratio converges to
+  \[
+  L_h=\exp\{h^\top Z-\tfrac12h^\top Ih\},
+  \qquad Z\sim N(0,I).
+  \]
+  It is positive and has mean one, so the first lemma gives mutual contiguity. The covariance between \(Z\) and \(h^\top Z\) is \(Ih\); the Gaussian third lemma shifts the mean accordingly. \(\square\)</p>
+</div>
+
+<h3>Local power</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If a scalar statistic satisfies jointly
+  \[
+  (T_n,\Delta_n)\rightsquig N\!\left(
+  0,
+  \begin{pmatrix}\sigma^2&c^\top\\c&I\end{pmatrix}
+  \right)
+  \]
+  under \(P_{n,0}\), then under \(P_{n,h}\),
+  \[
+  T_n\rightsquig N(c^\top h,\sigma^2).
+  \]
+  A level-\(\alpha\) test rejecting for
+  \(T_n>\sigma z_{1-\alpha}\) has local limiting power
+  \[
+  1-\Phi\!\left(
+  z_{1-\alpha}-\frac{c^\top h}{\sigma}
+  \right).
+  \]</p>
+</div>
+
+<p>The covariance \(c\) measures how strongly the statistic aligns with the score direction. Efficient tests maximize this alignment subject to their null variance.</p>

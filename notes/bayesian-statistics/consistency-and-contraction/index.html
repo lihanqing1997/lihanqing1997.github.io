@@ -64,3 +64,153 @@ in \(P_0\)-probability.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The usual inequality \(n\varepsilon_n^2\) appears because testing errors for Hellinger-separated distributions are exponentially small in \(n d^2\), while entropy and prior-mass terms must fit under that exponential budget.</p>
     </div>
+
+<h3>Contraction as a random probability statement</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A posterior contracts around \(P_0\) at rate
+\(\varepsilon_n\) in metric \(d\) if, for sufficiently large \(M\),
+\[
+\Pi\{P:d(P,P_0)>M\varepsilon_n\mid X^{(n)}\}
+\xrightarrow{P_0}0.
+\]
+A stronger mean statement is
+\[
+E_0\Pi\{d(P,P_0)>M\varepsilon_n\mid X^{(n)}\}
+\to0.
+\]</p>
+</div>
+
+<p>The constant \(M\) distinguishes a rate statement from exact asymptotic shape. Contraction says posterior mass enters a ball of the right order; it does not say the rescaled posterior is Gaussian, centered without bias, or yields calibrated credible sets.</p>
+
+<h3>From contraction to posterior risk</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose \(d(P,P_0)\le D\) and contraction holds at rate \(\varepsilon_n\). Then
+\[
+E^\Pi\{d(P,P_0)\mid X^{(n)}\}
+=O_{P_0}(\varepsilon_n)
+\]
+if posterior tails satisfy a geometric shell bound
+\[
+\Pi\{d(P,P_0)>jM\varepsilon_n\mid X^{(n)}\}
+\le Ce^{-cj^2n\varepsilon_n^2}
+\]
+with high \(P_0\)-probability.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Use the tail integral identity
+\[
+E^\Pi d=\int_0^D\Pi(d>t\mid X)\,\mathrm{d}t.
+\]
+The interval up to \(M\varepsilon_n\) contributes at most that amount. Divide the remainder into shells of width \(M\varepsilon_n\) and sum their exponentially decaying posterior probabilities.</p>
+</div>
+
+<h3>Kullback-Leibler prior mass</h3>
+
+<div class="math-statement lemma">
+<p><span class="statement-title">Lemma (denominator lower bound).</span> If
+\[
+\Pi\{P:K(P_0,P)\le\varepsilon_n^2,\
+V(P_0,P)\le\varepsilon_n^2\}
+\ge e^{-Cn\varepsilon_n^2},
+\]
+then for every \(c>C+1\), the posterior denominator
+\[
+D_n=\int
+\prod_{i=1}^n\frac{p(X_i)}{p_0(X_i)}
+\Pi(\mathrm{d}P)
+\]
+satisfies
+\[
+P_0\{D_n<e^{-cn\varepsilon_n^2}\}\to0
+\]
+when \(n\varepsilon_n^2\to\infty\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Restrict the integral to the KL neighborhood and normalize the prior there. Jensen's inequality lower-bounds its log by the prior average log likelihood ratio. Its \(P_0\)-mean is at least \(-n\varepsilon_n^2\), and the variance condition controls deviations at scale \(n\varepsilon_n^2\). Multiply by the neighborhood's prior mass.</p>
+</div>
+
+<h3>Testing separated alternatives</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Hellinger testing).</span> For any two densities \(p,q\), there is a test \(\phi_n\) such that
+\[
+P^n\phi_n+Q^n(1-\phi_n)
+\le
+\left(\int\sqrt{pq}\,\mathrm{d}\mu\right)^n
+=\{1-h^2(P,Q)\}^n
+\le e^{-nh^2(P,Q)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The Neyman-Pearson test has total error
+\[
+\int\min(p^{(n)},q^{(n)})\,\mathrm{d}\mu^n.
+\]
+Since \(\min(a,b)\le\sqrt{ab}\), this is bounded by the product Hellinger affinity
+\[
+\left(\int\sqrt{pq}\,\mathrm{d}\mu\right)^n.
+\]
+Use \(1-x\le e^{-x}\).</p>
+</div>
+
+<h3>Metric conversion</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For probability densities,
+\[
+h^2(P,Q)
+\le\|P-Q\|_{\mathrm{TV}}
+\le\sqrt2\,h(P,Q),
+\]
+under the convention
+\[
+h^2(P,Q)=\frac12\int(\sqrt p-\sqrt q)^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Since
+\[
+|p-q|
+=|\sqrt p-\sqrt q|(\sqrt p+\sqrt q),
+\]
+Cauchy-Schwarz gives the upper TV bound. For the lower bound, pointwise
+\[
+(\sqrt p-\sqrt q)^2
+\le|p-q|,
+\]
+and integrate with the normalization factors.</p>
+</div>
+
+<p>Hellinger contraction therefore implies total-variation contraction at the same order up to constants only in the upper direction shown; stronger norms such as supremum distance require additional regularity and interpolation.</p>
+
+<h3>Rate lower bounds and prior mismatch</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> A posterior cannot contract uniformly faster than the minimax estimation rate over a parameter class without paying elsewhere, because a posterior point summary would then produce a faster estimator. It can also contract slower than minimax when its prior regularity mismatches truth, its local small-ball probability is too small, or its hyperprior undersupplies the oracle scale.</p>
+</div>
+
+<h3>Contraction does not imply a center</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> A posterior could place half its mass at
+\(f_0+\varepsilon_nv\) and half at
+\(f_0-\varepsilon_nv\). It contracts at rate \(\varepsilon_n\), but its rescaled shape is bimodal. Alternatively, it could concentrate near
+\(f_0+b_n\) with \(\|b_n\|\asymp\varepsilon_n\), yielding a biased center. Contraction alone distinguishes neither case.</p>
+</div>
+
+<h3>Three ingredients to check</h3>
+
+<p>For a concrete prior and experiment, a rate proof should identify:</p>
+<ol>
+<li><em>approximation and prior concentration:</em> enough mass near a model approximation to \(P_0\);</li>
+<li><em>complexity control:</em> a sieve with entropy within the testing budget and exponentially small prior complement;</li>
+<li><em>testing:</em> exponentially consistent tests in the metric of interest or a metric that controls it.</li>
+</ol>
+
+<p>The next page states the general theorem assembling these ingredients.</p>

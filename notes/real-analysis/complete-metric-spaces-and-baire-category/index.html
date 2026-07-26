@@ -17,7 +17,22 @@ note_next_url: "/notes/real-analysis/connectedness-and-components/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\widehat X\) be equivalence classes of Cauchy sequences in \(X\), identifying two sequences when their mutual distance tends to zero. Define the distance by \(\widehat d([(x_n)],[(y_n)])=\lim_n d(x_n,y_n)\), which exists because the real sequence is Cauchy. Constant sequences embed \(X\). Completeness follows by a diagonal choice of representatives for Cauchy sequences of classes; uniqueness follows by extending the identity from the dense copy of \(X\).</p>
+        <p><span class="statement-title">Proof.</span> Let \(\mathcal C\) be the Cauchy sequences in \(X\), and declare \((x_n)\sim(y_n)\) when \(d(x_n,y_n)\to0\). The triangle inequality proves transitivity. For two classes define
+\[
+\widehat d([(x_n)],[(y_n)])=\lim_{n\to\infty}d(x_n,y_n).
+\]
+The limit exists because
+\[
+|d(x_n,y_n)-d(x_m,y_m)|
+\le d(x_n,x_m)+d(y_n,y_m),
+\]
+and changing representatives does not change it. The metric axioms follow from those of \(d\).</p>
+        <p>The map \(i(x)=[(x,x,\ldots)]\) is isometric. Its image is dense because \([(x_n)]\) is approximated by \(i(x_N)\): for large \(N\),
+\[
+\widehat d(i(x_N),[(x_n)])=\lim_{n\to\infty}d(x_N,x_n)
+\]
+is arbitrarily small. To prove completeness, let \(\xi_k\) be Cauchy in \(\widehat X\). Pass to a subsequence, still denoted \(\xi_k\), with \(\widehat d(\xi_{k+1},\xi_k)<2^{-k}\). By density choose \(z_k\in X\) such that \(\widehat d(i(z_k),\xi_k)<2^{-k}\). Then \((z_k)\) is Cauchy, so it defines \(\xi=[(z_k)]\), and the same estimates show \(\xi_k\to\xi\). The original Cauchy sequence has the same limit.</p>
+        <p>If \(j:X\to Y\) is another dense isometric embedding into a complete space, define \(U([(x_n)])=\lim j(x_n)\). This is well-defined, isometric, surjective by density, and satisfies \(U\circ i=j\). Density also makes such an isometry unique.</p>
     </div>
 
     <h3>Contraction principle</h3>
@@ -27,7 +42,33 @@ note_next_url: "/notes/real-analysis/connectedness-and-components/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The iterates satisfy \(d(x_{n+1},x_n)\le c^n d(x_1,x_0)\), so the tail distance is bounded by a geometric series and is Cauchy. Let \(x_n\to x\). Continuity of \(T\) gives \(Tx=\lim Tx_n=\lim x_{n+1}=x\). If \(x,y\) are fixed, \(d(x,y)=d(Tx,Ty)\le c d(x,y)\), so \(x=y\).</p>
+        <p><span class="statement-title">Proof.</span> Put \(x_{n+1}=Tx_n\). Iteration gives
+\[
+d(x_{n+1},x_n)\le c^n d(x_1,x_0),
+\]
+and therefore, for \(m>n\),
+\[
+d(x_m,x_n)
+\le\sum_{k=n}^{m-1}d(x_{k+1},x_k)
+\le\frac{c^n}{1-c}d(x_1,x_0).
+\]
+Thus \((x_n)\) is Cauchy and has a limit \(x^\ast\). A contraction is Lipschitz, hence continuous, so \(Tx^\ast=\lim Tx_n=\lim x_{n+1}=x^\ast\). If \(x^\ast,y^\ast\) are fixed, \(d(x^\ast,y^\ast)\le c\,d(x^\ast,y^\ast)\), forcing equality to zero. Letting \(m\to\infty\) in the tail estimate also gives the a priori bound
+\[
+d(x_n,x^\ast)\le\frac{c^n}{1-c}d(x_1,x_0),
+\]
+while \(d(x_n,x^\ast)\le c^n d(x_0,x^\ast)\) is the corresponding a posteriori geometric rate.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (Picard iteration for an integral equation).</span> On \(C([0,T])\) with the sup norm, let
+\[
+(Tu)(t)=u_0+\int_0^t F(s,u(s))\,\mathrm{d}s,
+\]
+where \(|F(t,x)-F(t,y)|\le L|x-y|\). Then
+\[
+\|Tu-Tv\|_\infty\le LT\|u-v\|_\infty.
+\]
+For \(LT<1\), the contraction theorem gives a unique solution of \(u=Tu\), and the successive approximations \(u_{n+1}=Tu_n\) converge geometrically. Longer time intervals are handled by iteration over short subintervals.</p>
     </div>
 
     <h3>Nowhere dense and meagre sets</h3>
@@ -47,11 +88,42 @@ note_next_url: "/notes/real-analysis/connectedness-and-components/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(G_n\) be dense open sets and let \(U\) be a nonempty open set. Choose a closed ball \(\overline B_1\subset U\cap G_1\) of radius at most \(1\). Inductively choose \(\overline B_{n+1}\subset B_n\cap G_{n+1}\) with radius at most \(2^{-n}\). The centers form a Cauchy sequence, hence converge to some \(x\). The nested closed balls force \(x\in U\cap\bigcap_nG_n\).</p>
+        <p><span class="statement-title">Proof.</span> Let \(G_n\) be dense open sets and let \(U\) be nonempty and open. Since \(U\cap G_1\) is nonempty and open, choose a closed ball \(\overline B(x_1,r_1)\subset U\cap G_1\) with \(r_1<1\). Inductively, the open set \(B(x_n,r_n)\cap G_{n+1}\) is nonempty, so choose
+\[
+\overline B(x_{n+1},r_{n+1})
+\subset B(x_n,r_n)\cap G_{n+1},
+\qquad r_{n+1}<2^{-n}.
+\]
+The closed balls are nested. If \(m>n\), then \(x_m\in B(x_n,r_n)\), so \(d(x_m,x_n)<r_n\to0\); hence \((x_n)\) is Cauchy and converges to some \(x\). For each fixed \(n\), all \(x_m\) with \(m\ge n\) belong to \(\overline B(x_n,r_n)\), and this ball is closed, so \(x\in\overline B(x_n,r_n)\subset G_n\). The first ball also lies in \(U\). Thus \(x\in U\cap\bigcap_nG_n\), proving density.</p>
     </div>
 
-    <h3>Functional-analytic consequences</h3>
-    <p>Many theorems in functional analysis are category arguments in disguise.</p>
-    <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> The uniform boundedness principle, open mapping theorem, and closed graph theorem all rely on Baire category. Completeness is therefore not a technical hypothesis; it is the engine that turns pointwise information into uniform information.</p>
+    <h3>From pointwise boundedness to a uniform bound</h3>
+    <p>The basic category mechanism already contains the core of the uniform boundedness principle.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (uniform boundedness principle).</span> Let \(X\) be a Banach space, \(Y\) a normed space, and \(\mathcal T\subset\mathcal L(X,Y)\). If
+\[
+\sup_{T\in\mathcal T}\|Tx\|<\infty
+\qquad\text{for every }x\in X,
+\]
+then \(\sup_{T\in\mathcal T}\|T\|<\infty\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Define
+\[
+E_m=\left\{x\in X:\sup_{T\in\mathcal T}\|Tx\|\le m\right\}.
+\]
+Each \(E_m\) is closed, and pointwise boundedness says \(X=\bigcup_{m\ge1}E_m\). By Baire, some \(E_m\) contains a ball \(B(x_0,r)\). If \(\|h\|<r\), then both \(x_0\) and \(x_0+h\) lie in the corresponding closed ball after decreasing \(r\) if necessary, and
+\[
+\|Th\|\le\|T(x_0+h)\|+\|Tx_0\|\le2m
+\]
+for every \(T\in\mathcal T\). By homogeneity, for \(x\ne0\), apply this to \(h=(r/2)x/\|x\|\) to obtain
+\[
+\|Tx\|\le\frac{4m}{r}\|x\|.
+\]
+The bound is independent of \(T\), as required.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark (category and measure do not dominate one another).</span> The rationals are dense and meagre in \(\mathbb R\), while a fat Cantor set can be nowhere dense and have positive Lebesgue measure. Conversely, a dense \(G_\delta\) set can have measure zero. “Typical” in the Baire sense and “almost every” in the measure sense answer different questions.</p>
     </div>

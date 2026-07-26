@@ -34,3 +34,88 @@ note_next_url: "/notes/numerical-analysis/iterative-methods-linear-systems/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> For non-normal matrices, eigenvalues can be much more sensitive than the norm of the perturbation suggests. Pseudospectra visualize where eigenvalues of nearby matrices may lie and are often more informative than the spectrum alone.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Power and inverse iteration</h3>
+
+<p>If \(A\) is diagonalizable with
+\(|\lambda_1|>|\lambda_2|\ge\cdots\) and the starting vector has a nonzero
+component in \(v_1\), normalized power iteration converges in direction at rate
+\[
+O\!\left(\left|\frac{\lambda_2}{\lambda_1}\right|^k\right).
+\]
+Inverse iteration on \(A-\mu I\) targets the eigenvalue nearest the shift
+\(\mu\). Factoring once and solving repeatedly is more stable than explicitly
+forming the inverse.</p>
+
+<h3>Rayleigh quotients</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For symmetric \(A\), the
+Rayleigh quotient
+\[
+\rho(x)=\frac{x^\top Ax}{x^\top x}
+\]
+satisfies
+\[
+\lambda_{\min}\le\rho(x)\le\lambda_{\max},
+\]
+and its stationary points on the unit sphere are eigenvectors.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Expand
+\(x=\sum_ic_iv_i\) in an orthonormal eigenbasis:
+\[
+\rho(x)=\frac{\sum_i\lambda_i|c_i|^2}{\sum_i|c_i|^2},
+\]
+a convex combination of eigenvalues. Lagrange stationarity of
+\(x^\top Ax\) under \(x^\top x=1\) gives \(Ax=\lambda x\).</p>
+</div>
+
+<h3>QR iteration</h3>
+
+<p>Unshifted QR factors
+\[
+A_k=Q_kR_k,\qquad A_{k+1}=R_kQ_k=Q_k^\top A_kQ_k.
+\]
+Thus every iterate is orthogonally similar to \(A\). For symmetric matrices,
+preliminary Householder reduction to tridiagonal form costs \(O(n^3)\), while
+each implicit shifted QR step costs \(O(n)\). Wilkinson shifts accelerate
+deflation and usually give cubic convergence near a simple eigenvalue.</p>
+
+<h3>Symmetric perturbation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Weyl).</span> For symmetric
+\(A,E\), ordered eigenvalues satisfy
+\[
+|\lambda_i(A+E)-\lambda_i(A)|\le\|E\|_2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The Courant--Fischer min--max
+formula and
+\(|x^\top Ex|\le\|E\|_2\|x\|^2\) give upper and lower inequalities for each
+ordered eigenvalue.</p>
+</div>
+
+<h3>Invariant subspaces</h3>
+
+<p>Individual eigenvectors are unstable when eigenvalues are clustered, but
+the invariant subspace for an isolated cluster can be stable. Davis--Kahan
+gives, schematically,
+\[
+\|\sin\Theta(\widehat U,U)\|_2
+\le\frac{\|E\|_2}{\operatorname{gap}},
+\]
+where the denominator separates the target cluster from the rest of the
+spectrum. Statistical PCA error bounds are instances of this theorem.</p>
+
+<h3>Nonnormal matrices</h3>
+
+<p>Schur factorization \(A=QTQ^*\) is always available and stable, whereas an
+eigenvector matrix may be ill conditioned. For nonnormal problems, pseudospectra
+and Schur vectors are often more meaningful than raw eigenvectors. A small
+backward error in \(A\) can still produce a large eigenvalue forward error.</p>

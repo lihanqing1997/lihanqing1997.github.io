@@ -8,49 +8,150 @@ note_prev_url: "/notes/probability-theory/path-spaces-finite-dimensional-distrib
 note_next_url: "/notes/probability-theory/markov-processes-semigroups/"
 ---
 
-<p>Markov chains are processes whose future depends on the past only through the present. Transition kernels encode this dependence in a measurable way.</p>
+<p>A Markov chain retains the present state as a sufficient summary of its past for prediction of the future. A transition kernel expresses that statement without assuming a countable state space or a transition density. Kernel composition, path-law construction, strong stopping-time restart, and harmonic functions are the basic structural tools.</p>
 
-    <h3>Transition kernels</h3>
+<h3>Probability kernels and their actions</h3>
 
-    <p>A kernel is a probability measure depending measurably on the current state.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A transition kernel \(K\) on
+  \((S,\mathcal S)\) satisfies:
+  <ol>
+    <li>\(A\mapsto K(x,A)\) is a probability measure for every \(x\in S\);</li>
+    <li>\(x\mapsto K(x,A)\) is measurable for every \(A\in\mathcal S\).</li>
+  </ol>
+  It acts on bounded measurable functions and probability measures by
+  \[
+  Kf(x)=\int_Sf(y)K(x,\mathrm{d} y),
+  \qquad
+  \mu K(A)=\int_SK(x,A)\mu(\mathrm{d} x).
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A transition kernel \(K\) from \(S\) to \(S\) assigns to each \(x\in S\) a probability measure \(K(x,\cdot)\), and \(x\mapsto K(x,A)\) is measurable for each measurable \(A\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(f\) is bounded measurable, then \(Kf\) is bounded measurable and
+  \(\|Kf\|_\infty\le\|f\|_\infty\). Moreover, \(K1=1\) and \(f\ge0\) implies \(Kf\ge0\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Measurability holds first for indicators by the kernel definition, then for simple functions, nonnegative functions by monotone convergence, and bounded signed functions by decomposition. The remaining claims follow from integration against a probability measure.</p>
+</div>
 
-    <h3>Markov property</h3>
+<h3>The Markov property</h3>
 
-    <p>The Markov property is a conditional distribution identity.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An adapted process
+  \(X_n\) is a time-homogeneous Markov chain with kernel \(K\) if
+  \[
+  P(X_{n+1}\in A\mid\mathcal F_n)=K(X_n,A)
+  \]
+  almost surely for every \(A\in\mathcal S\). Equivalently, for every bounded measurable \(f\),
+  \[
+  \mathbb E[f(X_{n+1})\mid\mathcal F_n]=Kf(X_n).
+  \]</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A process \(X_n\) is a time-homogeneous Markov chain with kernel \(K\) if
-\[
-P(X_{n+1}\in A\mid\mathcal F_n)=K(X_n,A)
-\]
-for every measurable \(A\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of equivalence.</span> Indicators give the set form. Linearity gives simple functions, bounded monotone approximation gives nonnegative measurable functions, and positive-negative decomposition gives bounded measurable \(f\). The converse takes \(f=1_A\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> It is enough to check the identity against bounded measurable test functions. For indicators it is the stated property; simple functions follow by linearity and bounded measurable functions by monotone-class arguments. Iterating the one-step identity gives conditional laws of the future depending only on \(X_n\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (path-law construction).</span> Given an initial law \(\mu\) and a transition kernel \(K\) on a standard Borel space, there is a unique law on \(S^{\mathbb N_0}\) such that
+  \[
+  P(X_0\in\mathrm{d} x_0,\ldots,X_n\in\mathrm{d} x_n)
+  =
+  \mu(\mathrm{d} x_0)
+  K(x_0,\mathrm{d} x_1)\cdots K(x_{n-1},\mathrm{d} x_n).
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Iterated kernel integration defines a probability measure on each finite product. Integrating out the last coordinate uses \(K(x,S)=1\) and gives the preceding marginal, so the family is consistent. Kolmogorov extension constructs the path law; cylinder uniqueness makes it unique. Conditioning the displayed factorization verifies the Markov property.</p>
+</div>
 
-    <h3>Chapman-Kolmogorov equations</h3>
+<h3>Chapman-Kolmogorov equations</h3>
 
-    <p>Multi-step transitions are powers of the kernel.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Define
+  \(K^0(x,\cdot)=\delta_x\) and recursively
+  \[
+  K^{n+1}(x,A)=\int_SK^n(y,A)K(x,\mathrm{d} y).
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Define \(K^{m+n}(x,A)=\int K^m(y,A)K^n(x,\mathrm{d}y)\). Then
-\[
-P(X_{m+n}\in A\mid X_0=x)=K^{m+n}(x,A).
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For all \(m,n\ge0\),
+  \[
+  K^{m+n}=K^mK^n,
+  \qquad
+  P(X_{m+n}\in A\mid\mathcal F_m)=K^n(X_m,A).
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on \(X_n\). The Markov property gives the future transition \(K^m(X_n,A)\), and integrating over the law \(K^n(x,\mathrm{d}y)\) gives the kernel convolution formula.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Induct on \(n\). The one-step case is the Markov property. If the conditional identity holds for \(n\), then the tower property gives
+  \[
+  \begin{aligned}
+  P(X_{m+n+1}\in A\mid\mathcal F_m)
+  &=
+  \mathbb E[K(X_{m+n},A)\mid\mathcal F_m]\\
+  &=K^n(K1_A)(X_m)=K^{n+1}(X_m,A).
+  \end{aligned}
+  \]
+  Evaluating from \(X_0=x\) yields the kernel composition identity.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> For countable state spaces, kernels are transition matrices and the formula becomes ordinary matrix multiplication.</p>
-    </div>
+<h3>The strong Markov property</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\tau\) be a stopping time for the natural filtration of a Markov chain. On \(\{\tau<\infty\}\), for every bounded measurable \(f\) and \(n\ge0\),
+  \[
+  \mathbb E[f(X_{\tau+n})\mid\mathcal F_\tau]
+  =K^nf(X_\tau).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For
+  \(A\in\mathcal F_\tau\),
+  \[
+  \mathbb E[1_A1_{\{\tau<\infty\}}f(X_{\tau+n})]
+  =
+  \sum_{m=0}^\infty
+  \mathbb E[1_{A\cap\{\tau=m\}}f(X_{m+n})].
+  \]
+  Since \(A\cap\{\tau=m\}\in\mathcal F_m\), the deterministic-time Markov property turns the \(m\)th summand into
+  \[
+  \mathbb E[1_{A\cap\{\tau=m\}}K^nf(X_m)].
+  \]
+  Summing identifies the conditional expectation as
+  \(K^nf(X_\tau)\).</p>
+</div>
+
+<h3>Harmonic functions and martingales</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(h\) is bounded and \(Kh=h\), then
+  \(h(X_n)\) is a martingale. If \(Kh\ge h\), it is a submartingale.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  \mathbb E[h(X_{n+1})\mid\mathcal F_n]
+  =Kh(X_n).
+  \]
+  Insert the harmonic or subharmonic relation.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (random walk).</span> If
+  \(X_{n+1}=X_n+\xi_{n+1}\) with i.i.d. increments of law \(\nu\), then
+  \[
+  K(x,A)=\nu(A-x),\qquad
+  Kf(x)=\int f(x+z)\nu(\mathrm{d} z).
+  \]
+  When \(\mathbb E\xi_1=0\), the function \(h(x)=x\) is harmonic whenever integrable, so \(X_n\) is a martingale. For a simple symmetric walk,
+  \(h(x)=x^2\) satisfies \(Kh(x)=h(x)+1\), yielding the martingale \(X_n^2-n\).</p>
+</div>
+
+<p>On a countable state space, \(K\) is a stochastic matrix and \(K^n\) is its matrix power. The kernel formulation is the same theory without coordinates and is needed for general-state-space Monte Carlo and diffusion sampling.</p>

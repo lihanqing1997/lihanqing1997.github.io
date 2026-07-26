@@ -69,3 +69,122 @@ for \(n\ge d\).</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Any \(p+1\) affinely independent points can be shattered by separating selected vertices of a simplex from the remaining vertices. Conversely, Radon's theorem says any \(p+2\) points can be partitioned into two subsets with intersecting convex hulls, so no hyperplane can separate those two labels. Hence the VC dimension is \(p+1\).</p>
     </div>
+
+<h3>The combinatorial dimension of common classes</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The following VC dimensions hold:
+  \[
+  \begin{array}{c|c}
+  \text{class}&\text{VC dimension}\\ \hline
+  \{(-\infty,t]:t\in\mathbb R\}&1\\
+  \{[a,b]:a\le b\}&2\\
+  \text{axis-aligned rectangles in }\mathbb R^p&2p\\
+  \text{Euclidean balls in }\mathbb R^p&p+1.
+  \end{array}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Thresholds can realize both labels on one point but cannot realize \(1,0\) on two ordered points. Intervals shatter two points but not the alternating labeling on three. For rectangles, take two extreme points on each coordinate axis for the lower bound; every rectangle is determined by \(2p\) coordinate thresholds, and an extremal-coordinate argument gives the upper bound. Balls lift to halfspaces through
+  \(\|x-c\|^2\le r^2\iff \|x\|^2-2c^\top x+\|c\|^2-r^2\le0\); affine independence gives the matching lower bound.</p>
+</div>
+
+<h3>A complete Sauer-Shelah induction</h3>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the Sauer-Shelah lemma.</span> Let
+  \(m(n,d)\) be the largest number of traces on an \(n\)-point set among classes of VC dimension at most \(d\). Fix the last point \(x_n\). Let \(\mathcal A\) be the traces on the first \(n-1\) points that occur with at least one label at \(x_n\), and let \(\mathcal B\subset\mathcal A\) be those occurring with both labels. Then the total number of traces is
+  \[
+  |\mathcal A|+|\mathcal B|.
+  \]
+  The class \(\mathcal A\) has VC dimension at most \(d\). The class \(\mathcal B\) has VC dimension at most \(d-1\): if it shattered \(d\) points, adjoining \(x_n\) would produce a shattered set of size \(d+1\). Therefore
+  \[
+  m(n,d)\le m(n-1,d)+m(n-1,d-1).
+  \]
+  With boundary values \(m(n,0)=1\) and \(m(n,d)=2^n\) for \(d\ge n\), induction and Pascal's identity yield
+  \(m(n,d)\le\sum_{j=0}^d{n\choose j}\).</p>
+</div>
+
+<h3>Symmetrized VC deviation bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every class \(\mathcal C\) and \(\varepsilon>0\) with \(n\varepsilon^2\ge2\),
+  \[
+  P\!\left(\sup_{C\in\mathcal C}|P_nC-PC|>\varepsilon\right)
+  \le 8\,\Pi_{\mathcal C}(2n)\exp\!\left(-\frac{n\varepsilon^2}{32}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Introduce an independent ghost sample \(P_n'\). A binomial concentration argument shows that if
+  \(|P_nC-PC|>\varepsilon\), then with conditional probability at least \(1/2\),
+  \(|P_nC-P_n'C|>\varepsilon/2\). Thus the target probability is at most twice the symmetrized probability. Conditional on the pooled \(2n\) observations, \(\mathcal C\) induces at most \(\Pi_{\mathcal C}(2n)\) binary vectors. Randomly swapping each observation pair converts the difference into a Rademacher sum. Hoeffding's inequality and a union bound over the induced vectors produce the display.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(\operatorname{VC}(\mathcal C)=d<\infty\), then
+  \[
+  \sup_{C\in\mathcal C}|P_nC-PC|\longrightarrow0
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Sauer-Shelah makes the preceding tail bound at a fixed \(\varepsilon\) at most a polynomial in \(n\) times \(e^{-cn}\), which is summable. Borel-Cantelli gives eventual control for each rational \(\varepsilon>0\), hence convergence to zero.</p>
+</div>
+
+<h3>Fundamental theorem for binary classification</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a binary concept class \(\mathcal C\), the following are equivalent:
+  <ol>
+    <li>\(\mathcal C\) is PAC learnable in the realizable setting;</li>
+    <li>ERM over \(\mathcal C\) is a PAC learner;</li>
+    <li>\(\operatorname{VC}(\mathcal C)<\infty\).</li>
+  </ol>
+  If the VC dimension is \(d\), a sufficient realizable sample size is
+  \[
+  n\gtrsim\frac{d\log(1/\varepsilon)+\log(1/\delta)}{\varepsilon},
+  \]
+  while the agnostic rate is of order
+  \[
+  n\gtrsim\frac{d+\log(1/\delta)}{\varepsilon^2}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Finite VC dimension and the growth bound give uniform convergence, which implies agnostic ERM learning; in the realizable case a one-sided argument controls the probability that a zero-training-error classifier has true error above \(\varepsilon\), improving the dependence on \(\varepsilon\). Conversely, if \(\mathcal C\) shatters arbitrarily large finite sets, place a distribution on a shattered set and reveal only part of its random labeling in the sample. Labels of unseen points remain independent fair bits, forcing every learner to incur nonvanishing error with positive probability.</p>
+</div>
+
+<h3>Pseudo-dimension and real-valued classes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A real-valued class \(\mathcal F\) pseudo-shatters \(x_1,\ldots,x_d\) if there are thresholds \(r_1,\ldots,r_d\) such that every binary vector \(b\in\{0,1\}^d\) is realized as
+  \[
+  \mathbf1\{f(x_i)>r_i\}=b_i,\qquad i=1,\ldots,d,
+  \]
+  for some \(f\in\mathcal F\). The largest such \(d\) is the pseudo-dimension.</p>
+</div>
+
+<p>Pseudo-dimension controls bounded regression losses in much the same way that VC dimension controls classification. Fat-shattering dimension refines it by requiring a positive margin around each threshold and is therefore scale-sensitive.</p>
+
+<h3>Closure operations</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If classes
+  \(\mathcal C_1,\ldots,\mathcal C_k\) have VC dimensions at most \(d\), then the class of intersections
+  \[
+  \mathcal C_\cap=\{C_1\cap\cdots\cap C_k:C_j\in\mathcal C_j\}
+  \]
+  has growth function
+  \(\Pi_{\mathcal C_\cap}(n)\le\prod_{j=1}^k\Pi_{\mathcal C_j}(n)\).
+  Consequently its VC dimension is \(O(kd\log k)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On a fixed sample, an intersection labeling is determined by one labeling from each constituent class, so the number of possible intersections is no larger than the product. If \(n\) points were shattered, then
+  \(2^n\le(en/d)^{kd}\); solving this inequality gives \(n=O(kd\log k)\).</p>
+</div>
+
+<p>VC dimension is distribution-free and combinatorial. It can be pessimistic when the realized design or norm geometry is favorable; <a href="{{ '/notes/statistical-learning/rademacher-complexity/' | relative_url }}">Rademacher complexity</a> provides that finer sample-dependent scale.</p>

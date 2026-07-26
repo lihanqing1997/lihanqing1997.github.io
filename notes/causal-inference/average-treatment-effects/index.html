@@ -8,24 +8,175 @@ note_prev_url: "/notes/causal-inference/consistency-exchangeability-and-positivi
 note_next_url: "/notes/causal-inference/propensity-scores/"
 ---
 
-<p>Average treatment effects records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>The average treatment effect is a population functional, but its meaning changes with the target population, treatment versions, and effect scale. This page derives its principal representations and distinguishes it from nearby causal contrasts.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The average treatment effect is \(\operatorname{ATE}=E[Y(1)-Y(0)]\). Conditional and subgroup effects condition this contrast on covariates or populations.</p>
-    </div>
+<h3>Population and subgroup effects</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under identification assumptions, ATE can be written as an outcome-regression functional, an inverse-propensity functional, or a doubly robust functional.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a target distribution of \(X\),
+  \[
+  \tau_{\mathrm{ATE}}=\mathbb E\{Y(1)-Y(0)\},
+  \quad
+  \tau_{\mathrm{ATT}}=\mathbb E\{Y(1)-Y(0)\mid A=1\},
+  \]
+  and
+  \[
+  \tau(x)=\mathbb E\{Y(1)-Y(0)\mid X=x\}.
+  \]
+  More generally, a weighted average treatment effect is
+  \[
+  \tau_h=
+  \frac{\mathbb E[h(X)\{Y(1)-Y(0)\}]}
+  {\mathbb Eh(X)}
+  \]
+  for a nonnegative target weight \(h\).</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Start from the adjustment formula, then use iterated expectation. For the weighting form, divide observed outcomes by treatment probabilities and condition on covariates.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  \tau_{\mathrm{ATE}}=\mathbb E\{\tau(X)\}.
+  \]</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Different formulas identify the same estimand but lead to estimators with different robustness and efficiency properties.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply iterated expectation to
+  \(Y(1)-Y(0)\) conditional on \(X\).</p>
+</div>
+
+<h3>Observed-data identifying functionals</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under consistency, conditional exchangeability given \(X\), and positivity, the following are equal:
+  \[
+  \begin{aligned}
+  \tau_{\mathrm{ATE}}
+  &=\mathbb E\{m_1(X)-m_0(X)\}\\
+  &=\mathbb E\left[
+  \frac{AY}{e(X)}-\frac{(1-A)Y}{1-e(X)}
+  \right]\\
+  &=\mathbb E\left[
+  m_1(X)-m_0(X)+
+  \frac{A\{Y-m_1(X)\}}{e(X)}
+  -\frac{(1-A)\{Y-m_0(X)\}}{1-e(X)}
+  \right].
+  \end{aligned}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The first equality is standardization. The inverse-weighted equality follows by conditioning each weighted outcome on \(X\). In the third line, each residual term has conditional expectation zero when its corresponding outcome regression is correct, so its expectation equals the first line.</p>
+</div>
+
+<h3>The ATT weighting identity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under mean exchangeability for \(Y(0)\) and positivity,
+  \[
+  \tau_{\mathrm{ATT}}
+  =
+  \mathbb E(Y\mid A=1)
+  -\frac{1}{P(A=1)}
+  \mathbb E\left[
+  \frac{(1-A)e(X)}{1-e(X)}Y
+  \right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Consistency identifies
+  \(\mathbb EY(1)\mid A=1\) as \(\mathbb E(Y\mid A=1)\). For the missing treated-group control mean,
+  \[
+  \mathbb E\left[
+  \frac{(1-A)e(X)}{1-e(X)}Y\right]
+  =\mathbb E[e(X)m_0(X)]
+  =P(A=1)\mathbb E\{m_0(X)\mid A=1\}.
+  \]
+  Exchangeability identifies the final conditional mean with
+  \(\mathbb E\{Y(0)\mid A=1\}\).</p>
+</div>
+
+<h3>Risk ratios and odds ratios</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For binary outcomes,
+  \[
+  \operatorname{RD}=\mu_1-\mu_0,\qquad
+  \operatorname{RR}=\frac{\mu_1}{\mu_0},\qquad
+  \operatorname{OR}=
+  \frac{\mu_1/(1-\mu_1)}{\mu_0/(1-\mu_0)},
+  \]
+  where \(\mu_a=\mathbb EY(a)\).</p>
+</div>
+
+<p>These are marginal causal effects. A conditional logistic-regression coefficient is generally not the marginal causal log-odds ratio, even without confounding, because odds ratios are noncollapsible.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Suppose treatment has no effect and
+  \(P(Y=1\mid A,X)=\operatorname{expit}(\alpha+\gamma X)\), with
+  \(A\perp X\). The conditional treatment odds ratio is one, and so is the marginal one. If a nonzero constant conditional log-odds effect is introduced, averaging over heterogeneous baseline risks generally yields a marginal odds ratio different from the conditional coefficient, despite randomization.</p>
+</div>
+
+<h3>Treatment-effect heterogeneity</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For any partition
+  \(G\in\{1,\ldots,K\}\),
+  \[
+  \tau_{\mathrm{ATE}}=\sum_{g=1}^K
+  P(G=g)\tau_g,
+  \qquad
+  \tau_g=\mathbb E\{Y(1)-Y(0)\mid G=g\}.
+  \]</p>
+</div>
+
+<p>A zero ATE can conceal large effects of opposite signs. Subgroup discovery, however, is a model-selection problem: estimating many \(\tau_g\) on the same data without honest splitting creates adaptive bias. Causal forests and meta-learners require complexity control and overlap within subgroups.</p>
+
+<h3>Policy value is not the ATE</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A deterministic treatment rule
+  \(d:\mathcal X\to\{0,1\}\) has value
+  \[
+  V(d)=\mathbb E\{Y(d(X))\}
+  =\mathbb E[m_{d(X)}(X)]
+  \]
+  under identification. Relative to treating nobody,
+  \[
+  V(d)-V(0)=\mathbb E[d(X)\tau(X)].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Pointwise,
+  \(Y(d(X))=d(X)Y(1)+\{1-d(X)\}Y(0)\). Take conditional expectations given \(X\), then subtract \(\mathbb Em_0(X)\).</p>
+</div>
+
+<p>The unconstrained optimal rule treats when \(\tau(X)>0\). Resource constraints, treatment costs, and risk aversion change the decision criterion. Estimating the ATE alone is insufficient for individualized policy learning.</p>
+
+<h3>Finite-sample estimators under randomization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under Bernoulli randomization with known probability \(p\), the Horvitz-Thompson estimator
+  \[
+  \widehat\tau_{\mathrm{HT}}=
+  \frac1n\sum_{i=1}^n
+  \left\{\frac{A_iY_i}{p}-
+  \frac{(1-A_i)Y_i}{1-p}\right\}
+  \]
+  is unbiased for the finite-sample average effect conditional on all potential outcomes.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on potential outcomes,
+  \[
+  \mathbb E_A\left(\frac{A_iY_i}{p}\right)=Y_i(1),
+  \qquad
+  \mathbb E_A\left(\frac{(1-A_i)Y_i}{1-p}\right)=Y_i(0).
+  \]
+  Average over units.</p>
+</div>
+
+<h3>Estimand discipline</h3>
+
+<p>A reported effect should state the target population, treatment intervention, comparison intervention, outcome horizon, summary scale, and handling of competing events. Changing any of these changes the estimand before it changes the estimator.</p>

@@ -39,3 +39,126 @@ Equality is attained by Gaussian \(X\sim N(0,P)\), independent of \(Z\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The theorem is not saying Gaussian noise is easiest; it says that once the noise is Gaussian and the input power is fixed, Gaussian input maximizes output entropy and therefore mutual information.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Gaussian maximum-entropy theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Among all distributions on
+  \(\mathbb R^d\) with mean \(\mu\) and covariance \(\Sigma\succ0\),
+  \[
+  h(X)\le\frac12\log\{(2\pi e)^d\det\Sigma\},
+  \]
+  with equality exactly for \(N_d(\mu,\Sigma)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(G\) have the matching Gaussian law. Nonnegativity of KL gives
+  \[
+  0\le D(P_X\|P_G)
+  =-h(X)-\mathbb E\log g(X).
+  \]
+  The Gaussian log density is a constant plus a quadratic form, whose expectation depends only on the common mean and covariance. Hence
+  \(-\mathbb E\log g(X)=h(G)\). Equality in KL forces \(X\sim G\).</p>
+</div>
+
+<h3>Scalar AWGN capacity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For
+  \[
+  Y=X+Z,\qquad Z\sim N(0,N),
+  \]
+  independent of \(X\), under power constraint
+  \(\mathbb EX^2\le P\),
+  \[
+  C=\frac12\log\left(1+\frac PN\right)
+  \]
+  nats per channel use, achieved by \(X\sim N(0,P)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  I(X;Y)=h(Y)-h(Z).
+  \]
+  Since \(\operatorname{Var}(Y)\le P+N\), Gaussian extremality gives
+  \(h(Y)\le\tfrac12\log\{2\pi e(P+N)\}\). Subtract
+  \(h(Z)=\tfrac12\log(2\pi eN)\). Gaussian \(X\) makes \(Y\) Gaussian with variance \(P+N\), attaining equality.</p>
+</div>
+
+<h3>Parallel Gaussian channels and water filling</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For independent subchannels
+  \(Y_i=X_i+Z_i\), \(Z_i\sim N(0,N_i)\), with
+  \(\sum_iP_i\le P\), capacity is
+  \[
+  C=\max_{P_i\ge0,\sum P_i\le P}
+  \frac12\sum_i\log\left(1+\frac{P_i}{N_i}\right),
+  \]
+  and the optimizer is
+  \[
+  P_i=(\nu-N_i)_+
+  \]
+  for a water level \(\nu\) satisfying the power constraint.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independent Gaussian inputs are optimal by vector Gaussian extremality and diagonal noise covariance. KKT stationarity for active coordinates gives
+  \[
+  \frac1{2(N_i+P_i)}=\lambda,
+  \]
+  so \(P_i=\nu-N_i\) with \(\nu=1/(2\lambda)\). Complementary slackness sets negative values to zero.</p>
+</div>
+
+<h3>Vector Gaussian channel</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For
+  \(Y=HX+Z\), \(Z\sim N(0,\Sigma_Z)\), and covariance constraint
+  \(\operatorname{tr}\Sigma_X\le P\),
+  \[
+  C=
+  \max_{\Sigma_X\succeq0,\operatorname{tr}\Sigma_X\le P}
+  \frac12\log\det\left(
+  I+\Sigma_Z^{-1/2}H\Sigma_XH^\top
+  \Sigma_Z^{-1/2}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Gaussian maximum entropy makes a Gaussian input optimal for every covariance. Whiten noise and diagonalize
+  \(H^\top\Sigma_Z^{-1}H\); the determinant becomes a product of scalar subchannel factors. Water fill over its eigenmodes.</p>
+</div>
+
+<h3>Gaussian rate-distortion preview</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For
+  \(X\sim N(0,\sigma^2)\) and squared-error distortion,
+  \[
+  R(D)=
+  \frac12\log\frac{\sigma^2}{D},
+  \quad0<D<\sigma^2,
+  \]
+  and \(R(D)=0\) for \(D\ge\sigma^2\).</p>
+</div>
+
+<p>The optimal test channel is Gaussian and can be represented backward as
+\(X=\widehat X+Z_D\), with \(Z_D\sim N(0,D)\) independent of
+\(\widehat X\sim N(0,\sigma^2-D)\).</p>
+
+<h3>Worst additive noise lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under covariance constraints, Gaussian noise minimizes mutual information \(I(X;X+Z)\) for Gaussian \(X\) among independent noises with the same covariance.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Compare the target noise with a Gaussian through relative entropy and use data processing under convolution with \(X\). The difference in divergences rearranges to the difference of mutual informations; Gaussian matching of second moments controls the cross-entropy terms.</p>
+</div>
+
+<h3>Gaussian extremality has hypotheses</h3>
+
+<p>Gaussian laws maximize entropy under covariance, not under every constraint. Peak-amplitude constraints, discreteness, sparsity, or nonlinear channel laws can produce non-Gaussian capacity-achieving inputs. In an amplitude-constrained Gaussian channel, the optimal input is discrete with finitely many mass points.</p>

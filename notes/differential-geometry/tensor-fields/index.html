@@ -8,24 +8,101 @@ note_prev_url: "/notes/differential-geometry/vector-fields-and-flows/"
 note_next_url: "/notes/differential-geometry/submanifolds-and-immersions/"
 ---
 
-<p>Tensor fields records the objects, main results, proof mechanisms, and boundary cases needed for the differential geometry note.</p>
+<p>Tensors are multilinear geometric quantities with a prescribed coordinate
+transformation law. They include metrics, differential forms, curvature, and
+the linear operators used throughout geometry and physics.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A tensor field is a smooth section of a tensor bundle built from tangent and cotangent bundles. It assigns multilinear data to each point smoothly.</p>
-    </div>
+<h3>Tensor spaces</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Tensorial constructions are coordinate invariant: if a multilinear formula is defined intrinsically on tangent and cotangent vectors, its coordinate components transform by the tensor transformation law.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A tensor of type
+\((r,s)\) at \(p\) is an element
+\[
+T\in (T_pM)^{\otimes r}\otimes(T_p^*M)^{\otimes s},
+\]
+equivalently a multilinear map with \(r\) covector and \(s\) vector inputs.
+A smooth tensor field is a smooth section of the corresponding tensor bundle.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Change bases in each tangent and cotangent slot and use multilinearity. The transformation rule follows from how vectors and covectors change coordinates.</p>
-    </div>
+<p>In coordinates,
+\[
+T=T^{i_1\cdots i_r}_{j_1\cdots j_s}
+\partial_{i_1}\otimes\cdots\otimes\partial_{i_r}
+\otimes\mathrm{d}x^{j_1}\otimes\cdots\otimes\mathrm{d}x^{j_s}.
+\]
+Under \(y=y(x)\), each upper index acquires a factor
+\(\partial y/\partial x\) and each lower index a factor
+\(\partial x/\partial y\). The transformation law follows from changing the
+vector and covector bases, not from an extra definition imposed on the
+components.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Metrics, differential forms, curvature, and stress-energy objects are tensor fields. Tensor language prevents coordinate artifacts from being mistaken for geometry.</p>
-    </div>
+<h3>Tensor operations</h3>
+
+<p>Tensor products add types:
+\((r,s)\otimes(r',s')=(r+r',s+s')\). Contraction pairs one upper with one
+lower index and lowers both counts by one. For a \((1,1)\)-tensor \(A\),
+contraction is the coordinate-independent trace
+\(\operatorname{tr}A=A^i_i\).</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Contraction is
+well-defined independently of a basis.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For a decomposable tensor
+\(v\otimes\alpha\), contraction is \(\alpha(v)\), an invariant pairing.
+Extend linearly and tensor with the remaining factors. Equivalently, in a
+coordinate transformation the paired Jacobian matrices cancel by the chain
+rule.</p>
+</div>
+
+<h3>Pullback and pushforward</h3>
+
+<p>If \(F:M\to N\), covariant tensors pull back:
+\[
+(F^*T)_p(v_1,\ldots,v_s)
+=T_{F(p)}(\mathrm{d}F_pv_1,\ldots,\mathrm{d}F_pv_s).
+\]
+Contravariant tensors generally cannot be pushed forward unless \(F\) is a
+diffeomorphism or additional compatibility is available. This asymmetry
+explains why differential forms behave especially well under arbitrary
+smooth maps.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Pullback is functorial:
+\[
+(G\circ F)^*=F^*\circ G^*,\qquad \operatorname{id}^*=\operatorname{id}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Insert
+\(\mathrm{d}(G\circ F)=\mathrm{d}G\circ\mathrm{d}F\) into each argument of
+the covariant tensor.</p>
+</div>
+
+<h3>Symmetry and alternating tensors</h3>
+
+<p>A covariant \(k\)-tensor is symmetric if permutations leave it unchanged,
+and alternating if they multiply it by the sign. Symmetrization and
+alternation are projections:
+\[
+\operatorname{Sym}T=\frac1{k!}\sum_{\sigma\in S_k}\sigma T,\qquad
+\operatorname{Alt}T=\frac1{k!}\sum_{\sigma\in S_k}
+\operatorname{sgn}(\sigma)\sigma T.
+\]
+Riemannian metrics are positive-definite symmetric \(2\)-tensors.
+Differential \(k\)-forms are alternating covariant \(k\)-tensors.</p>
+
+<h3>Why ordinary derivatives of components are not tensors</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> If
+\(X=X^i\partial_i\), then under a coordinate change the derivatives
+\(\partial_jX^i\) acquire second derivatives of the transition map. They do
+not transform tensorially. A connection adds correction coefficients so that
+\(\nabla_jX^i=\partial_jX^i+\Gamma^i_{jk}X^k\) does transform as a
+\((1,1)\)-tensor. Geometry therefore distinguishes intrinsic tensors from
+coordinate arrays that only resemble them.</p>
+</div>

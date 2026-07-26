@@ -13,7 +13,16 @@ note_next_url: "/notes/real-analysis/inequalities-in-lp-spaces/"
     <h3>Norms and equivalence classes</h3>
     <p>Functions equal almost everywhere represent the same \(L^p\) element.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(1\le p\lt \infty\), \(L^p(\mu)\) consists of measurable functions modulo almost-everywhere equality with \(\|f\|_p=(\int |f|^p\,\mathrm{d}\mu)^{1/p}\lt \infty\). \(L^\infty\) uses the essential supremum norm.</p>
+        <p><span class="statement-title">Definition.</span> For \(1\le p<\infty\), \(L^p(\mu)\) consists of measurable functions modulo almost-everywhere equality with
+\[
+\|f\|_p=\left(\int|f|^p\,\mathrm{d}\mu\right)^{1/p}<\infty.
+\]
+For \(p=\infty\),
+\[
+\|f\|_\infty
+=\operatorname*{ess\,sup}|f|
+=\inf\{M\ge0:|f|\le M\text{ a.e.}\}.
+\]</p>
     </div>
 
     <div class="math-statement proposition">
@@ -51,11 +60,56 @@ note_next_url: "/notes/real-analysis/inequalities-in-lp-spaces/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(p\lt \infty\), take a Cauchy sequence and choose a subsequence \(f_{n_k}\) with \(\|f_{n_{k+1}}-f_{n_k}\|_p\le2^{-k}\). The series of increments is summable in \(L^p\), and by monotone convergence its pointwise absolute sum is finite almost everywhere. Thus the subsequence converges almost everywhere to some \(f\), and Fatou gives \(f\in L^p\). The Cauchy property then upgrades subsequential convergence to full norm convergence. The \(p=\infty\) case follows from uniform essential bounds outside a null set.</p>
+        <p><span class="statement-title">Proof.</span> Let \((f_n)\) be Cauchy and first take \(p<\infty\). Select \(n_k\) so that
+\[
+\|f_{n_{k+1}}-f_{n_k}\|_p\le2^{-k}.
+\]
+Put \(g_k=|f_{n_{k+1}}-f_{n_k}|\) and \(G_N=\sum_{k=1}^Ng_k\). Minkowski gives
+\[
+\|G_N\|_p\le\sum_{k=1}^N2^{-k}\le1.
+\]
+By monotone convergence,
+\[
+\int\left(\sum_{k=1}^{\infty}g_k\right)^p\,\mathrm{d}\mu
+=\lim_N\|G_N\|_p^p\le1.
+\]
+Thus \(\sum_kg_k<\infty\) almost everywhere, so \(f_{n_k}\) converges pointwise a.e. to some \(f\). For fixed \(k\), Fatou gives
+\[
+\|f_{n_k}-f\|_p
+\le\liminf_{\ell\to\infty}\|f_{n_k}-f_{n_\ell}\|_p,
+\]
+which tends to zero as \(k\to\infty\). Since the original sequence is Cauchy, it converges to the same \(f\) in norm.</p>
+        <p>For \(p=\infty\), choose a subsequence with successive essential-sup differences at most \(2^{-k}\). Outside the union of the corresponding null exceptional sets, the series of pointwise differences converges uniformly. Its limit is essentially bounded, the subsequence converges in essential sup, and Cauchy convergence again restores the full sequence.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (comparison on finite measure spaces).</span> If \(\mu(X)<\infty\) and \(1\le p<q\le\infty\), then
+\[
+L^q(\mu)\subset L^p(\mu),
+\qquad
+\|f\|_p\le\mu(X)^{1/p-1/q}\|f\|_q.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For finite \(q\), apply Holder to \(|f|^p\cdot1\) with exponents \(q/p\) and \(q/(q-p)\):
+\[
+\int|f|^p
+\le\left(\int|f|^q\right)^{p/q}
+\mu(X)^{1-p/q}.
+\]
+Take \(p\)-th roots. The \(q=\infty\) case follows from \(|f|^p\le\|f\|_\infty^p\) almost everywhere.</p>
     </div>
 
     <h3>Hilbert structure of \(L^2\)</h3>
     <p>\(L^2\) is special because its norm comes from an inner product.</p>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> In \(L^2\), \(\langle f,g\rangle=\int f\overline g\,\mathrm{d}\mu\). Orthogonal projection, conditional expectation, Fourier series, and least-squares estimation all use this Hilbert-space structure.</p>
+        <p><span class="statement-title">Example.</span> In \(L^2\),
+\[
+\langle f,g\rangle=\int f\overline g\,\mathrm{d}\mu,
+\qquad
+\|f+g\|_2^2+\|f-g\|_2^2
+=2\|f\|_2^2+2\|g\|_2^2.
+\]
+The parallelogram identity is what distinguishes Hilbert geometry from general \(L^p\) geometry. Orthogonal projection, conditional expectation, Fourier series, and least-squares estimation all exploit it.</p>
     </div>

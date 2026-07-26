@@ -8,24 +8,133 @@ note_prev_url: "/notes/optimization/mirror-descent-bregman-geometry/"
 note_next_url: "/notes/optimization/quasi-newton-secant-methods/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Newton's method.</p>
+<p>Newton's method solves the first-order equation
+\(\nabla f(x)=0\) by linearizing the gradient. Equivalently, it exactly
+minimizes the quadratic Taylor model. Near a nondegenerate solution this
+removes the leading linear error and leaves a quadratic remainder.</p>
 
-    <h3>Newton step</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For twice differentiable \(f\), Newton's method solves the local quadratic model and updates \(x_{k+1}=x_k-[\nabla^2f(x_k)]^{-1}\nabla f(x_k)\), when the Hessian is invertible.</p>
-    </div>
+<h3>The local quadratic model</h3>
 
-    <h3>Quadratic convergence</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(x^\star\) satisfies \(\nabla f(x^\star)=0\), \(\nabla^2f(x^\star)\) is nonsingular, and the Hessian is locally Lipschitz, then Newton iterates started sufficiently close to \(x^\star\) converge quadratically.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> At \(x\), let
+    \(g=\nabla f(x)\) and \(H=\nabla^2f(x)\). The quadratic model is
+    \[
+    m_x(p)=f(x)+g^\top p+\frac12p^\top Hp.
+    \]
+    If \(H\) is nonsingular, the Newton direction solves
+    \(Hp_N=-g\), and the full Newton update is \(x^+=x+p_N\).</p>
+</div>
 
-    <h3>Affine invariance</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The exact Newton direction is invariant under nonsingular affine reparametrizations. This is why Newton steps adapt to local curvature, unlike ordinary Euclidean gradient steps.</p>
-    </div>
+<p>If \(H\succ0\), \(p_N\) uniquely minimizes the model and
+\(g^\top p_N=-g^\top H^{-1}g<0\). If \(H\) is indefinite, the stationary point
+of the model may be a saddle and need not be a descent direction.</p>
 
-    <h3>Globalization</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Far from the optimum, the pure Newton step can be unstable or increase the objective. Line search, trust regions, and damping turn the local method into a global algorithm.</p>
-    </div>
+<h3>The quadratic error equation</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Local quadratic convergence.</span> Let
+    \(f\in C^2\) near \(x^\star\), with
+    \(\nabla f(x^\star)=0\). Suppose
+    \(H_\star=\nabla^2f(x^\star)\) is invertible and the Hessian is locally
+    \(M\)-Lipschitz. Then there is a neighborhood of \(x^\star\) in which the
+    Newton update is well-defined and
+    \[
+    \|x_{k+1}-x^\star\|
+    \le C\|x_k-x^\star\|^2.
+    \]
+    Hence every sufficiently close initial point converges quadratically.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Write
+    \(e=x-x^\star\) and \(H(x)=\nabla^2f(x)\). The fundamental theorem of
+    calculus gives
+    \[
+    \nabla f(x)
+    =\int_0^1H(x^\star+te)e\,\mathrm{d}t.
+    \]
+    Therefore
+    \[
+    e^+
+    =e-H(x)^{-1}\nabla f(x)
+    =H(x)^{-1}\int_0^1
+      [H(x)-H(x^\star+te)]e\,\mathrm{d}t.
+    \]
+    Continuity and invertibility of \(H_\star\) give
+    \(\|H(x)^{-1}\|\le K\) near \(x^\star\). Hessian Lipschitzness then yields
+    \[
+    \|e^+\|
+    \le KM\int_0^1(1-t)\,\mathrm{d}t\,\|e\|^2
+    =\frac{KM}{2}\|e\|^2.
+    \]
+    Shrink the neighborhood so that the update remains inside it; induction
+    proves convergence and the quadratic bound.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Quadratic objectives terminate in one
+    step.</span> For
+    \(f(x)=\frac12x^\top Qx-b^\top x\), \(Q\) nonsingular,
+    \[
+    x^+=x-Q^{-1}(Qx-b)=Q^{-1}b=x^\star.
+    \]
+    Newton is exact because the Taylor model is the objective itself.</p>
+</div>
+
+<h3>Affine invariance</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Affine covariance of the step.</span> Let
+    \(x=Az+b\) with \(A\) invertible and
+    \(\widetilde f(z)=f(Az+b)\). If \(p_z\) is the Newton direction for
+    \(\widetilde f\), then \(Ap_z\) is the Newton direction for \(f\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The chain rule gives
+    \[
+    \nabla\widetilde f(z)=A^\top\nabla f(x),\qquad
+    \nabla^2\widetilde f(z)=A^\top\nabla^2f(x)A.
+    \]
+    Thus
+    \[
+    p_z=-(A^\top HA)^{-1}A^\top g
+       =-A^{-1}H^{-1}g,
+    \]
+    and multiplying by \(A\) gives \(Ap_z=-H^{-1}g=p_x\).</p>
+</div>
+
+<p>Gradient descent lacks this property because its identity metric does not
+transform with the coordinates. Newton's Hessian supplies the transforming
+metric automatically.</p>
+
+<h3>Newton decrement and local accuracy</h3>
+
+<p>When \(H(x)\succ0\), define the Newton decrement
+\[
+\lambda(x)^2=\nabla f(x)^\top H(x)^{-1}\nabla f(x)
+=-\,\nabla f(x)^\top p_N.
+\]
+It measures the predicted model decrease:
+\(m_x(0)-m_x(p_N)=\lambda(x)^2/2\). For self-concordant convex functions,
+\(\lambda(x)\) also controls the true objective gap and determines when full
+Newton steps are safe.</p>
+
+<h3>Why globalization is necessary</h3>
+
+<div class="math-statement counterexample">
+    <p><span class="statement-title">Counterexample.</span> For
+    \(f(x)=x^4/4-x^2/2\), the Newton update is
+    \[
+    x^+=x-\frac{x^3-x}{3x^2-1}.
+    \]
+    Near \(x=\pm1/\sqrt3\), the denominator is almost zero and the full step
+    can be arbitrarily large. At points where the Hessian is negative, the
+    Newton direction can increase \(f\). Local quadratic convergence says
+    nothing about such starting points.</p>
+</div>
+
+<p>Backtracking line search dampens the direction until sufficient descent is
+observed. Trust-region methods minimize the quadratic model only inside a
+region where it is believed. Modified Newton methods also regularize or
+factorize the Hessian to enforce a descent direction.</p>

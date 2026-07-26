@@ -60,3 +60,79 @@ in episodic or continuing forms adapted to the model. For bandits, \(\operatorna
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Optimism and posterior sampling extend to MDPs by adding uncertainty bonuses or sampling plausible models. The difficulty is that actions affect both immediate reward and future information through the transition kernel.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Regret in episodic MDPs</h3>
+
+<p>For episodes \(k=1,\ldots,K\) of horizon \(H\), initial states \(s_1^k\),
+and policies \(\pi_k\), regret is
+\[
+\operatorname{Regret}(K)
+=\sum_{k=1}^K
+\{V_1^*(s_1^k)-V_1^{\pi_k}(s_1^k)\}.
+\]
+It compares learning online with a policy that knew the MDP. This differs from
+sample complexity of identifying an \(\varepsilon\)-optimal policy after a
+separate exploration phase.</p>
+
+<h3>Optimism and Bellman bonuses</h3>
+
+<p>Suppose empirical estimates \(\widehat r_k,\widehat P_k\) are based on
+\(N_k(s,a)\) visits. An optimistic recursion has the form
+\[
+\widehat Q_{k,h}(s,a)
+=\min\left\{H-h+1,\,
+\widehat r_k(s,a)+
+\widehat P_k\widehat V_{k,h+1}(s,a)
++b_{k,h}(s,a)\right\},
+\]
+\[
+\widehat V_{k,h}(s)=\max_a\widehat Q_{k,h}(s,a).
+\]
+The bonus upper-bounds reward and transition estimation error uniformly.
+Backward induction then proves \(\widehat V_{k,h}\ge V_h^*\) on the confidence
+event.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (regret decomposition).</span> On
+an optimism event, the regret of the greedy optimistic policy is bounded by
+\[
+\sum_{k,h} b_{k,h}(S_h^k,A_h^k)
++\sum_{k,h}M_{k,h},
+\]
+where \(M_{k,h}\) is a martingale-difference transition fluctuation.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Compare optimistic and true
+Bellman recursions along the realized policy. At each step, add and subtract the
+true conditional expectation. The predictable discrepancy is controlled by
+the bonus; the empirical next-state deviation is a martingale difference.
+Telescope the value differences over the horizon and episodes.</p>
+</div>
+
+<p>With Hoeffding-style bonuses of order
+\(\sqrt{H^2\log(1/\delta)/N_k(s,a)}\), the counting identity
+\[
+\sum_{j=1}^{n}\frac1{\sqrt j}\le2\sqrt n
+\]
+and Cauchy--Schwarz produce sublinear regret. Bernstein bonuses exploit
+conditional variance and can achieve the sharp finite-MDP scale
+\(\widetilde O(\sqrt{H^2SAK})\) under standard formulations.</p>
+
+<h3>Why undirected exploration can fail</h3>
+
+<p>Random action noise does not target epistemic uncertainty and can take
+exponential time to reach a rewarding state in a long chain. Optimism,
+posterior sampling, count bonuses, and information-gain objectives propagate
+uncertainty through the transition graph. Efficient exploration is therefore
+a planning problem, not merely a local action-randomization rule.</p>
+
+<h3>Lower-bound mechanism</h3>
+
+<p>Regret lower bounds embed many nearly indistinguishable bandit problems into
+states or stages. A change-of-measure argument shows that identifying which
+transition or reward is better requires a number of visits inverse to the
+squared gap. Balancing information acquisition against loss yields
+\(\Omega(\sqrt{H^2SAK})\)-type minimax scales, with exact powers of \(H\)
+depending on the model and regret convention.</p>

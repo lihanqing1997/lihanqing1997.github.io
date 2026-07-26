@@ -8,15 +8,189 @@ note_prev_url: "/notes/statistical-inference/u-statistics-v-statistics/"
 note_next_url: "/notes/statistical-inference/goodness-of-fit-chi-square/"
 ---
 
-<p>Quantiles are nonlinear distributional features. Their asymptotics show why nonsmooth functionals can still have normal limits after the right linearization.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> For \(0\lt p\lt 1\), a \(p\)-quantile is \(\xi_p=F^{-1}(p)=\inf\{x:F(x)\ge p\}\). The sample quantile is \(\hat\xi_p=F_n^{-1}(p)\).</p></div>
-    <div class="math-statement theorem"><p><span class="statement-title">Quantile CLT.</span> If \(F\) has density \(f\) continuous and positive at \(\xi_p\), then
-    \[
-    \sqrt n(\hat\xi_p-\xi_p)\rightsquigarrow N\left(0,\frac{p(1-p)}{f(\xi_p)^2}\right).
-    \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The defining inequality \(F_n(\hat\xi_p)\approx p\) and Taylor expansion \(F(\hat\xi_p)-F(\xi_p)\approx f(\xi_p)(\hat\xi_p-\xi_p)\) give the Bahadur form
-    \[
-    \hat\xi_p-\xi_p=\frac{p-F_n(\xi_p)}{f(\xi_p)}+o_p(n^{-1/2}).
-    \]
-    Since \(nF_n(\xi_p)\) is binomial with success probability \(p\), the CLT gives \(\sqrt n\{F_n(\xi_p)-p\}\rightsquigarrow N(0,p(1-p))\).</p></div>
-    <h3>Order statistics</h3><p>The \(k\)-th order statistic \(X_{k:n}\) estimates \(F^{-1}(k/n)\). Extremes require separate normalization and belong near extreme-value theory rather than ordinary central quantile inference.</p>
+<p>Order statistics provide exact finite-sample distribution theory, while quantiles are nonlinear functionals whose first-order behavior is governed by the density at the target probability. Central quantiles have root-\(n\) Gaussian limits; extreme order statistics live on a different scale.</p>
+
+<h3>Quantile conventions</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a distribution function \(F\) and \(p\in(0,1)\), the left-continuous generalized inverse is
+  \[
+  q_p=F^{-1}(p)=\inf\{x:F(x)\ge p\}.
+  \]
+  It satisfies
+  \[
+  F(q_p)\ge p,\qquad F(q_p-)\le p.
+  \]
+  The empirical quantile is \(\hat q_p=F_n^{-1}(p)\).</p>
+</div>
+
+<p>If \(F\) is strictly increasing and continuous at \(q_p\), then \(F(q_p)=p\) and the quantile is unique. At an atom or a flat portion, inverse conventions matter and regular root-\(n\) theory can fail.</p>
+
+<h3>Exact law of an order statistic</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Distribution of \(X_{k:n}\).</span> Let \(X_1,\ldots,X_n\) be i.i.d. with continuous distribution function \(F\), and let
+  \[
+  X_{1:n}\le\cdots\le X_{n:n}.
+  \]
+  Then
+  \[
+  P(X_{k:n}\le x)
+  =\sum_{j=k}^n\binom njF(x)^j\{1-F(x)\}^{n-j},
+  \]
+  and
+  \[
+  F(X_{k:n})\sim\operatorname{Beta}(k,n+1-k).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The event \(X_{k:n}\le x\) occurs exactly when at least \(k\) observations do not exceed \(x\). Their count is \(\operatorname{Binomial}\{n,F(x)\}\), giving the first formula. By the probability integral transform, \(U_i=F(X_i)\) are i.i.d. uniform. Therefore \(F(X_{k:n})=U_{k:n}\), whose density is
+  \[
+  \frac{n!}{(k-1)!(n-k)!}
+  u^{k-1}(1-u)^{n-k},
+  \]
+  the beta density.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (density).</span> If \(F\) has density \(f\), then
+  \[
+  f_{k:n}(x)
+  =\frac{n!}{(k-1)!(n-k)!}
+  F(x)^{k-1}\{1-F(x)\}^{n-k}f(x).
+  \]</p>
+</div>
+
+<h3>Joint law and spacings</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Joint density of two order statistics.</span> For \(i\lt j\) and \(x\lt y\),
+  \[
+  \begin{aligned}
+  f_{i,j:n}(x,y)
+  &=
+  \frac{n!}{(i-1)!(j-i-1)!(n-j)!}\\
+  &\quad{}\times
+  F(x)^{i-1}
+  \{F(y)-F(x)\}^{j-i-1}
+  \{1-F(y)\}^{n-j}
+  f(x)f(y).
+  \end{aligned}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose which \(i-1\) observations fall below \(x\), which \(j-i-1\) fall between \(x\) and \(y\), and which \(n-j\) exceed \(y\); place one observation in each infinitesimal interval \(\mathrm{d}x,\mathrm{d}y\). Multiplying multinomial probabilities and dividing by \(\mathrm{d}x\,\mathrm{d}y\) gives the density.</p>
+</div>
+
+<p>For uniform observations, the \(n+1\) spacings
+\[
+U_{1:n},\ U_{2:n}-U_{1:n},\ldots,
+U_{n:n}-U_{n-1:n},\ 1-U_{n:n}
+\]
+have a \(\operatorname{Dirichlet}(1,\ldots,1)\) law. Equivalently, they are normalized independent exponential variables. This representation is useful for simultaneous quantile bands and extreme spacings.</p>
+
+<h3>Consistency of sample quantiles</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Quantile consistency.</span> If \(q_p\) is the unique \(p\)-quantile and \(F\) is strictly below \(p\) to its left and strictly above \(p\) to its right, then
+  \[
+  \hat q_p\to q_p\quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(\varepsilon>0\),
+  \[
+  F(q_p-\varepsilon)\lt p
+  \lt F(q_p+\varepsilon).
+  \]
+  The Glivenko-Cantelli theorem gives uniform almost-sure convergence \(F_n\to F\). Eventually,
+  \[
+  F_n(q_p-\varepsilon)\lt p
+  \lt F_n(q_p+\varepsilon),
+  \]
+  which forces \(q_p-\varepsilon\lt\hat q_p\le q_p+\varepsilon\).</p>
+</div>
+
+<h3>Bahadur representation and quantile CLT</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Bahadur representation.</span> Suppose \(F\) is differentiable near \(q_p\), \(f\) is continuous there, and \(f(q_p)>0\). Then
+  \[
+  \hat q_p-q_p
+  =\frac{p-F_n(q_p)}{f(q_p)}
+  +o_p(n^{-1/2}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> First, binomial tail bounds at \(q_p\pm M/\sqrt n\) show \(\hat q_p-q_p=O_p(n^{-1/2})\). On that shrinking neighborhood,
+  \[
+  F(\hat q_p)-F(q_p)
+  =f(q_p)(\hat q_p-q_p)+o_p(n^{-1/2}).
+  \]
+  Stochastic equicontinuity of the empirical process over intervals of length \(O_p(n^{-1/2})\) gives
+  \[
+  (F_n-F)(\hat q_p)-(F_n-F)(q_p)=o_p(n^{-1/2}).
+  \]
+  Since \(F_n(\hat q_p)=p+O(n^{-1})\) under the generalized-inverse convention, rearrangement yields the representation.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Quantile central limit theorem.</span> Under the same assumptions,
+  \[
+  \sqrt n(\hat q_p-q_p)
+  \rightsquigarrow
+  N\!\left(0,\frac{p(1-p)}{f(q_p)^2}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The variable \(nF_n(q_p)\) is \(\operatorname{Binomial}(n,p)\), so
+  \[
+  \sqrt n\{F_n(q_p)-p\}
+  \rightsquigarrow N\{0,p(1-p)\}.
+  \]
+  Substitute into the Bahadur representation and apply Slutsky.</p>
+</div>
+
+<h3>Joint quantile limits</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Joint quantile central limit theorem.</span> For \(0\lt p_1\lt\cdots\lt p_k\lt1\), assume \(f(q_{p_j})>0\) and continuity at each quantile. Then
+  \[
+  \sqrt n\bigl(\hat q_{p_j}-q_{p_j}\bigr)_{j=1}^k
+  \rightsquigarrow N(0,\Sigma),
+  \]
+  where
+  \[
+  \Sigma_{ij}
+  =\frac{\min(p_i,p_j)-p_ip_j}
+  {f(q_{p_i})f(q_{p_j})}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the Bahadur representation componentwise. The indicator vector
+  \[
+  \bigl(1_{\{X\le q_{p_j}\}}-p_j\bigr)_{j=1}^k
+  \]
+  has covariance \(\min(p_i,p_j)-p_ip_j\). The multivariate central limit theorem and the diagonal scaling by \(1/f(q_{p_j})\) give the result.</p>
+</div>
+
+<h3>Exact distribution-free confidence intervals</h3>
+
+<p>Because
+\[
+P\{X_{r:n}\le q_p\le X_{s:n}\}
+=P\{r\le N_p\le s-1\},
+\qquad
+N_p\sim\operatorname{Binomial}(n,p),
+\]
+indices \(r,s\) can be chosen from binomial tails to obtain an exact confidence interval for \(q_p\), with no density estimate. Exact equality may require randomization; otherwise coverage is conservative.</p>
+
+<h3>Central, intermediate, and extreme order statistics</h3>
+
+<p>If \(k_n/n\to p\in(0,1)\), \(X_{k_n:n}\) is a central order statistic and has the root-\(n\) quantile limit above. If \(k_n\to\infty\) but \(k_n/n\to0\), it is intermediate and estimates a moving tail quantile. If \(k\) stays fixed, \(X_{n-k+1:n}\) is extreme; its normalization depends on the tail domain of attraction and is generally not root-\(n\) Gaussian. Treating an extreme quantile as an ordinary central quantile is therefore a change of asymptotic regime, not a harmless extrapolation.</p>

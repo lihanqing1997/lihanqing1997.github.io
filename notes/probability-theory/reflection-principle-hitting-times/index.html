@@ -8,53 +8,192 @@ note_prev_url: "/notes/probability-theory/brownian-path-properties/"
 note_next_url: "/notes/probability-theory/brownian-strong-markov-property/"
 ---
 
-<p>The reflection principle is a symmetry argument for Brownian paths. It converts maximum and hitting-time questions into one-dimensional Gaussian probabilities.</p>
+<p>Reflection at the first crossing of a level is a measure-preserving transformation of Brownian paths. It converts a pathwise maximum into an endpoint event, producing exact laws for maxima, first-passage times, and barrier exits.</p>
 
-    <h3>First hitting times</h3>
+<h3>First passage and running maximum</h3>
 
-    <p>Brownian hitting times are stopping times for the natural filtration.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(a\in\mathbb R\), define
+  \[
+  T_a=\inf\{t\ge0:B_t=a\},
+  \qquad
+  M_t=\sup_{0\le s\le t}B_s.
+  \]
+  Continuity and adaptedness make \(T_a\) a stopping time, and for
+  \(a>0\),
+  \[
+  \{T_a\le t\}=\{M_t\ge a\}.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(a\in\mathbb R\), define \(T_a=\inf\{t\ge0:B_t=a\}\). For continuous adapted Brownian motion, \(T_a\) is a stopping time.</p>
-    </div>
+<h3>The reflection principle</h3>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(a>0\). For every Borel set \(A\subset(-\infty,a]\),
+  \[
+  P(T_a\le t,\ B_t\in A)
+  =
+  P(B_t\in2a-A),
+  \]
+  where \(2a-A=\{2a-x:x\in A\}\). In particular, for \(b\le a\),
+  \[
+  P(M_t\ge a,\ B_t\le b)=P(B_t\ge2a-b).
+  \]</p>
+</div>
 
-    <h3>Reflection principle</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On \(\{T_a\le t\}\), define
+  \[
+  \widetilde B_s=
+  \begin{cases}
+  B_s,&s\le T_a,\\
+  2a-B_s,&s>T_a.
+  \end{cases}
+  \]
+  By the strong Markov property at \(T_a\), the post-\(T_a\) process
+  \(B_{T_a+u}-a\) is fresh Brownian motion independent of
+  \(\mathcal F_{T_a}\). Its negative has the same law by symmetry, so the reflection map preserves Wiener measure on
+  \(\{T_a\le t\}\). It is an involution. Moreover,
+  \(B_t\in A\) is transformed into
+  \(\widetilde B_t=2a-B_t\in2a-A\). Since any path ending above \(a\) has crossed \(a\), the reflected endpoint event needs no additional crossing condition.</p>
+</div>
 
-    <p>Paths crossing a level can be reflected after first hitting it.</p>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (maximum law).</span> For
+  \(a>0\),
+  \[
+  P(M_t\ge a)=2P(B_t\ge a)
+  =2\left\{1-\Phi\!\left(\frac a{\sqrt t}\right)\right\}.
+  \]
+  Hence
+  \[
+  M_t\stackrel d=|B_t|.
+  \]</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For \(a\gt0\) and \(t\gt0\),
-\[
-P\left(\sup_{0\le s\le t}B_s\ge a,\ B_t\le b\right)=P(B_t\ge 2a-b)
-\]
-for \(b\le a\). Consequently \(P(\sup_{s\le t}B_s\ge a)=2P(B_t\ge a)\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Decompose
+  \[
+  P(M_t\ge a)
+  =P(B_t\ge a)+P(M_t\ge a,B_t<a).
+  \]
+  Reflection maps the second event to \(\{B_t>a\}\), up to the null endpoint event \(B_t=a\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> On the event \(T_a\le t\), reflect the path after \(T_a\): \(\widetilde B_s=B_s\) for \(s\le T_a\) and \(\widetilde B_s=2a-B_s\) for \(s>T_a\). The strong Markov property and symmetry of Brownian increments imply the reflected path has the same Wiener measure. The endpoint condition \(B_t\le b\) becomes \(\widetilde B_t\ge2a-b\), giving the identity.</p>
-    </div>
+<h3>Joint law of endpoint and maximum</h3>
 
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For \(x<m\),
+  \[
+  P(M_t<m,\ B_t\in\mathrm{d} x)
+  =
+  \{p_t(x)-p_t(2m-x)\}\,\mathrm{d} x,
+  \]
+  where \(p_t(x)=(2\pi t)^{-1/2}e^{-x^2/(2t)}\). Thus
+  \[
+  P(M_t\in\mathrm{d} m,\ B_t\in\mathrm{d} x)
+  =
+  \frac{2(2m-x)}{t}p_t(2m-x)
+  1_{\{m>0,x<m\}}\,\mathrm{d} m\,\mathrm{d} x.
+  \]</p>
+</div>
 
-    <h3>Hitting-time distribution</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Reflection gives
+  \[
+  P(M_t\ge m,B_t\in\mathrm{d} x)
+  =p_t(2m-x)\,\mathrm{d} x,\qquad x<m.
+  \]
+  Subtract from the unconditional endpoint density to obtain the first formula. Differentiate it with respect to \(m\), using
+  \(p_t'(y)=-(y/t)p_t(y)\), to obtain the joint density.</p>
+</div>
 
-    <p>The first passage density follows by differentiating the reflection formula.</p>
+<h3>First-passage distribution</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(a\gt0\),
-\[
-P(T_a\le t)=2P(B_t\ge a)
-\]
-and \(T_a\) has density
-\[
-f_{T_a}(t)=\frac{a}{\sqrt{2\pi t^3}}e^{-a^2/(2t)},\qquad t\gt0.
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For \(a>0\),
+  \[
+  P(T_a\le t)
+  =2\left\{1-\Phi\!\left(\frac a{\sqrt t}\right)\right\},
+  \]
+  and \(T_a\) has density
+  \[
+  f_{T_a}(t)
+  =
+  \frac{a}{\sqrt{2\pi t^3}}
+  \exp\!\left(-\frac{a^2}{2t}\right),
+  \qquad t>0.
+  \]
+  Its Laplace transform is
+  \[
+  \mathbb Ee^{-\lambda T_a}
+  =e^{-a\sqrt{2\lambda}},
+  \qquad\lambda\ge0.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The distribution identity is the maximum formula. Since \(B_t\sim N(0,t)\), \(P(T_a\le t)=2(1-\Phi(a/\sqrt t))\). Differentiate with respect to \(t\), using \(\phi'(x)=-x\phi(x)\) through the chain rule, to get the density.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The distribution function is the maximum formula. Differentiating
+  \(2\{1-\Phi(a/\sqrt t)\}\) gives the density.
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The same principle also gives the joint law of \((B_t,\sup_{s\le t}B_s)\).</p>
-    </div>
+  For the Laplace transform, use the exponential martingale
+  \[
+  Z_t=\exp\{\theta B_t-\tfrac12\theta^2t\}.
+  \]
+  Optional stopping at \(T_a\wedge n\), followed by localization and dominated convergence for \(\theta>0\), gives
+  \[
+  1=\mathbb EZ_{T_a}
+  =e^{\theta a}\mathbb Ee^{-\theta^2T_a/2}.
+  \]
+  Put \(\lambda=\theta^2/2\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \(P(T_a<\infty)=1\), but
+  \(\mathbb ET_a=\infty\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Letting \(t\to\infty\) in the distribution function gives one. Gaussian asymptotics give
+  \[
+  P(T_a>t)
+  =2\Phi(a/\sqrt t)-1
+  \sim a\sqrt{\frac2{\pi t}}.
+  \]
+  Therefore
+  \(\mathbb ET_a=\int_0^\infty P(T_a>t)\,\mathrm{d} t=\infty\).</p>
+</div>
+
+<h3>Exit from an interval</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(a,b>0\) and
+  \[
+  \tau=\inf\{t\ge0:B_t\notin(-b,a)\}.
+  \]
+  Then
+  \[
+  P(B_\tau=a)=\frac b{a+b},
+  \qquad
+  P(B_\tau=-b)=\frac a{a+b},
+  \qquad
+  \mathbb E\tau=ab.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Continuity gives
+  \(B_\tau\in\{-b,a\}\). The stopped martingale
+  \(B_{t\wedge\tau}\) is bounded, so optional stopping gives
+  \[
+  0=\mathbb EB_\tau
+  =aP(B_\tau=a)-bP(B_\tau=-b),
+  \]
+  which, together with total probability one, yields the exit probabilities. Apply optional stopping to
+  \(B_t^2-t\):
+  \[
+  \mathbb E\tau=\mathbb EB_\tau^2
+  =a^2\frac b{a+b}+b^2\frac a{a+b}=ab.
+  \]</p>
+</div>

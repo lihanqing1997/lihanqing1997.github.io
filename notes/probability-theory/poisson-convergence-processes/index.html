@@ -8,46 +8,218 @@ note_prev_url: "/notes/probability-theory/berry-esseen-rates/"
 note_next_url: "/notes/probability-theory/stable-infinitely-divisible-laws/"
 ---
 
-<p>Poisson limits describe rare events. The same principle constructs Poisson processes, where counts on disjoint sets are independent and proportional to intensity.</p>
+<p>Poisson laws are the universal limits of many independent rare events. Passing from a count to a random measure preserves where those events occur and leads to Poisson processes, point processes, thinning, superposition, and compensated jump martingales.</p>
 
-    <h3>Rare-event convergence</h3>
+<h3>The Poisson law</h3>
 
-    <p>Many small Bernoulli risks with small total mass produce a Poisson law.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A random variable \(N\) has the Poisson law with parameter \(\lambda\ge0\) if
+  \[
+  P(N=k)=e^{-\lambda}\frac{\lambda^k}{k!},
+  \qquad k=0,1,2,\ldots.
+  \]
+  Its probability generating function, characteristic function, mean, and variance are
+  \[
+  \mathbb Ez^N=e^{\lambda(z-1)},\qquad
+  \mathbb Ee^{itN}=e^{\lambda(e^{it}-1)},\qquad
+  \mathbb EN=\operatorname{Var}(N)=\lambda.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Poisson random variable with parameter \(\lambda\ge0\) satisfies \(P(N=k)=e^{-\lambda}\lambda^k/k!\). A sequence of Bernoulli sums is in the law of small numbers when individual success probabilities vanish but their sum tends to \(\lambda\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (additivity).</span> If
+  \(N_1\sim\operatorname{Poisson}(\lambda_1)\) and
+  \(N_2\sim\operatorname{Poisson}(\lambda_2)\) are independent, then
+  \(N_1+N_2\sim\operatorname{Poisson}(\lambda_1+\lambda_2)\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Multiply their generating functions:
+  \[
+  \mathbb Ez^{N_1+N_2}
+  =e^{\lambda_1(z-1)}e^{\lambda_2(z-1)}
+  =e^{(\lambda_1+\lambda_2)(z-1)}.
+  \]</p>
+</div>
 
-    <h3>Law of small numbers</h3>
+<h3>The law of small numbers</h3>
 
-    <p>The Poisson distribution is the limit of rare independent successes.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Poisson convergence).</span> Let
+  \(X_{n,k}\) be row-wise independent Bernoulli variables with
+  \(P(X_{n,k}=1)=p_{n,k}\). If
+  \[
+  \max_{k\le k_n}p_{n,k}\to0,
+  \qquad
+  \sum_{k=1}^{k_n}p_{n,k}\to\lambda,
+  \]
+  then
+  \[
+  \sum_{k=1}^{k_n}X_{n,k}
+  \Rightarrow\operatorname{Poisson}(\lambda).
+  \]</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X_{n,k}\) are independent Bernoulli variables with \(p_{n,k}=P(X_{n,k}=1)\), \(\max_kp_{n,k}\to0\), and \(\sum_kp_{n,k}\to\lambda\), then \(\sum_kX_{n,k}\Rightarrow \operatorname{Poisson}(\lambda)\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(z\in[0,1]\),
+  \[
+  \mathbb Ez^{\sum_kX_{n,k}}
+  =\prod_k\{1+p_{n,k}(z-1)\}.
+  \]
+  Since
+  \[
+  \sum_kp_{n,k}^2
+  \le\left(\max_kp_{n,k}\right)\sum_kp_{n,k}\to0,
+  \]
+  the expansion \(\log(1+u)=u+O(u^2)\), uniformly for the relevant \(u\), gives
+  \[
+  \log\mathbb Ez^{\sum_kX_{n,k}}
+  =(z-1)\sum_kp_{n,k}+o(1)
+  \to\lambda(z-1).
+  \]
+  The generating functions converge to that of
+  \(\operatorname{Poisson}(\lambda)\), which determines the law on
+  \(\mathbb N_0\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The generating function is
-\[
-\mathbb E z^{\sum_kX_{n,k}}=\prod_k(1+p_{n,k}(z-1)).
-\]
-Taking logs gives \(\sum_kp_{n,k}(z-1)+o(1)\) because \(\sum_kp_{n,k}^2\le(\max_kp_{n,k})\sum_kp_{n,k}\to0\). Hence the generating functions converge to \(\exp(\lambda(z-1))\), the Poisson generating function.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Le Cam inequality).</span> If
+  \(W=\sum_{k=1}^nX_k\) is a sum of independent
+  Bernoulli\((p_k)\) variables and
+  \(Z\sim\operatorname{Poisson}(\lambda)\), \(\lambda=\sum_kp_k\), then
+  \[
+  d_{\mathrm{TV}}(\mathcal L(W),\mathcal L(Z))
+  \le 2\sum_{k=1}^np_k^2.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Couple each Bernoulli
+  \(X_k\) to an independent Poisson variable
+  \(Z_k\sim\operatorname{Poisson}(p_k)\). Direct comparison of their masses gives a coupling with
+  \(P(X_k\ne Z_k)\le 2p_k^2\). Under the product coupling,
+  \(Z=\sum_kZ_k\sim\operatorname{Poisson}(\sum_kp_k)\), and
+  \[
+  d_{\mathrm{TV}}(\mathcal L(W),\mathcal L(Z))
+  \le P(W\ne Z)
+  \le\sum_kP(X_k\ne Z_k)
+  \le2\sum_kp_k^2.
+  \]</p>
+</div>
 
-    <h3>Poisson processes</h3>
+<h3>Poisson processes and waiting times</h3>
 
-    <p>A Poisson process is a random counting measure with independent increments.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A homogeneous Poisson process with rate \(\lambda>0\) is a right-continuous counting process
+  \((N_t)_{t\ge0}\) such that \(N_0=0\), its increments over disjoint intervals are independent, and
+  \[
+  N_t-N_s\sim\operatorname{Poisson}(\lambda(t-s)),
+  \qquad0\le s<t.
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A Poisson process of rate \(\lambda\) is a counting process \(N_t\) with \(N_0=0\), independent increments, and \(N_t-N_s\sim\operatorname{Poisson}(\lambda(t-s))\) for \(s\le t\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (arrival-time construction).</span> Let
+  \(E_1,E_2,\ldots\) be i.i.d. exponential\((\lambda)\), put
+  \(T_n=\sum_{k=1}^nE_k\), and define
+  \[
+  N_t=\max\{n:T_n\le t\}.
+  \]
+  Then \(N\) is a Poisson process of rate \(\lambda\). Conversely, the interarrival times of a Poisson process are i.i.d. exponential\((\lambda)\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The finite-dimensional distributions are determined by independent Poisson increments on disjoint intervals. Consistency under merging adjacent intervals follows from additivity of independent Poisson variables. Kolmogorov extension gives a process; standard construction by exponential waiting times gives a càdlàg counting version.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(T_n\) has the gamma density
+  \[
+  f_{T_n}(u)=\frac{\lambda^nu^{n-1}e^{-\lambda u}}{(n-1)!},
+  \quad u>0,
+  \]
+  integration over \(T_n\le t<T_{n+1}\) gives
+  \[
+  P(N_t=n)=e^{-\lambda t}\frac{(\lambda t)^n}{n!}.
+  \]
+  The memoryless property of the exponential law says that, conditional on the history through time \(s\), the residual waiting time to the next arrival is again exponential and independent of that history. Repeating this argument gives independent stationary increments. Conversely,
+  \[
+  P(T_1>t)=P(N_t=0)=e^{-\lambda t},
+  \]
+  and the independent-increment property restarts the process after each arrival, producing independent exponential gaps.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Poisson random measures generalize this from time intervals to arbitrary measurable spaces with an intensity measure.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (compensation).</span> For a rate-\(\lambda\) Poisson process with natural filtration,
+  \[
+  M_t=N_t-\lambda t
+  \]
+  is a square-integrable martingale, and
+  \(\mathbb E(M_t-M_s)^2=\lambda(t-s)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independent increments give
+  \[
+  \mathbb E[N_t-N_s\mid\mathcal F_s]=\lambda(t-s),
+  \]
+  hence \(\mathbb E[M_t\mid\mathcal F_s]=M_s\). The variance identity follows from
+  \(\operatorname{Var}(N_t-N_s)=\lambda(t-s)\).</p>
+</div>
+
+<h3>Poisson random measures</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \((E,\mathcal E)\) carry a sigma-finite measure \(\nu\). A Poisson random measure \(N\) with intensity \(\nu\) is an integer-valued random measure such that:
+  \[
+  N(A)\sim\operatorname{Poisson}(\nu(A))
+  \quad\text{when }\nu(A)<\infty,
+  \]
+  and \(N(A_1),\ldots,N(A_m)\) are independent for pairwise disjoint
+  \(A_1,\ldots,A_m\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Laplace functional).</span> For every measurable \(f:E\to[0,\infty)\),
+  \[
+  \mathbb E\exp\!\left\{-\int_E f(x)N(\mathrm{d} x)\right\}
+  =
+  \exp\!\left\{-\int_E(1-e^{-f(x)})\nu(\mathrm{d} x)\right\}.
+  \]
+  This identity determines the law of \(N\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> First take
+  \(f=\sum_{j=1}^ma_j1_{A_j}\) on disjoint sets of finite intensity. Independence and the Poisson generating function give
+  \[
+  \prod_{j=1}^m
+  \mathbb Ee^{-a_jN(A_j)}
+  =
+  \prod_{j=1}^m
+  \exp\{\nu(A_j)(e^{-a_j}-1)\},
+  \]
+  which is the displayed formula. Approximate a general nonnegative \(f\) increasingly by simple functions and use monotone convergence on both sides.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (thinning and superposition).</span> Independently retain each point of a Poisson random measure of intensity \(\nu\) with location-dependent probability \(q(x)\). The retained and deleted processes are independent Poisson random measures with intensities \(q\nu\) and \((1-q)\nu\). The sum of independent Poisson random measures with intensities \(\nu_1,\nu_2\) is Poisson with intensity \(\nu_1+\nu_2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(N(A)=m\), independent marking splits the count binomially. Evaluating the joint generating function of retained and deleted counts yields the product of Poisson generating functions. Apply this on disjoint simple-function cells and then use the Laplace-functional characterization. Superposition follows by multiplying the two Laplace functionals.</p>
+</div>
+
+<h3>Rare exceedances as a point process</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(X_1,X_2,\ldots\) be i.i.d. and choose levels \(u_n\) such that
+  \(nP(X_1>u_n)\to\tau\). Then
+  \[
+  \sum_{i=1}^n1_{\{X_i>u_n\}}
+  \Rightarrow\operatorname{Poisson}(\tau),
+  \]
+  and therefore
+  \[
+  P\!\left(\max_{1\le i\le n}X_i\le u_n\right)
+  =P(\text{no exceedance})\longrightarrow e^{-\tau}.
+  \]
+  Recording rescaled exceedance locations as
+  \(\sum_i1_{\{X_i>u_n\}}\delta_{i/n}\) retains more information and leads to Poisson point-process limits in extreme-value theory.</p>
+</div>

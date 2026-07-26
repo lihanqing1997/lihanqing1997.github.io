@@ -4,6 +4,7 @@ breadcrumb_child_label_en: "34. Sparse priors and shrinkage"
 breadcrumb_child_label_fr: "34. A priori parcimonieux et retrait"
 breadcrumb_child_label_zh: "34. 稀疏先验与收缩"
 note_back_url: "/notes/bayesian-statistics/"
+note_prev_url: "/notes/bayesian-statistics/sparse-structured-variational-bayesian-procedures/"
 note_next_url: "/notes/bayesian-statistics/sparse-bvm-high-dimensional-posterior-normality/"
 ---
 
@@ -35,3 +36,191 @@ The induced support is \(S_\gamma=\{j:\gamma_j=1\}\).</p>
     </div><div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> If an active coefficient is below the local uncertainty scale, the likelihood cannot reliably distinguish it from zero. Conversely, once likelihood separation exceeds the prior penalty for adding the variable, posterior odds favor the true support over supports missing that coordinate.</p>
     </div>
+
+<h3>Spike-and-slab prior</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A model-selection prior is
+\[
+s\sim\pi_p,\qquad
+S\mid s\sim\operatorname{Unif}\{A\subset[p]:|A|=s\},
+\]
+\[
+\beta_S\sim g_S,\qquad
+\beta_{S^c}=0.
+\]
+A complexity prior often satisfies
+\[
+\pi_p(s)\asymp
+\exp\{-a s\log(bp/s)\}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For a fixed support \(S\) of size \(s\),
+\[
+-\log\Pi(S)
+=-\log\pi_p(s)+\log\binom ps
+\asymp s\log(p/s)
+\]
+under a compatible complexity prior.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional uniformity gives
+\(\Pi(S)=\pi_p(s)/\binom ps\). Stirling bounds
+\[
+s\log(p/s)\le\log\binom ps
+\le s\log(ep/s).
+\]</p>
+</div>
+
+<h3>Normal means posterior odds</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Observe
+\[
+Y_j\mid\beta_j\sim N(\beta_j,\sigma^2),
+\]
+with prior
+\[
+\beta_j\sim(1-w)\delta_0+wN(0,\tau^2).
+\]
+The posterior inclusion odds are
+\[
+\frac{P(z_j=1\mid Y_j)}
+{P(z_j=0\mid Y_j)}
+=\frac{w}{1-w}
+\sqrt{\frac{\sigma^2}{\sigma^2+\tau^2}}
+\exp\left[
+\frac{\tau^2Y_j^2}
+{2\sigma^2(\sigma^2+\tau^2)}
+\right].
+\]
+Conditional on inclusion,
+\[
+\beta_j\mid Y_j,z_j=1
+\sim N\left(
+\frac{\tau^2}{\sigma^2+\tau^2}Y_j,\,
+\frac{\sigma^2\tau^2}{\sigma^2+\tau^2}
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Under the spike,
+\(Y_j\sim N(0,\sigma^2)\); under the slab,
+\(Y_j\sim N(0,\sigma^2+\tau^2)\). Their density ratio times prior odds gives inclusion odds. Gaussian conjugacy gives the conditional slab posterior.</p>
+</div>
+
+<h3>Global-local shrinkage</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A global-local prior has
+\[
+\beta_j\mid\lambda_j,\tau
+\sim N(0,\tau^2\lambda_j^2),
+\qquad
+\lambda_j\sim\pi_{\mathrm{loc}},
+\qquad
+\tau\sim\pi_{\mathrm{glob}}.
+\]
+For the horseshoe,
+\[
+\lambda_j,\tau\sim C^+(0,1).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (shrinkage coefficient).</span> In unit-variance normal means, conditional on \((\lambda_j,\tau)\),
+\[
+E(\beta_j\mid Y_j,\lambda_j,\tau)
+=(1-\kappa_j)Y_j,
+\qquad
+\kappa_j=\frac1{1+\tau^2\lambda_j^2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Gaussian posterior precision is
+\[
+1+\frac1{\tau^2\lambda_j^2}.
+\]
+The posterior mean coefficient multiplying \(Y_j\) is
+\[
+\frac{\tau^2\lambda_j^2}
+{1+\tau^2\lambda_j^2}=1-\kappa_j.
+\]</p>
+</div>
+
+<p>The global scale \(\tau\) pushes most \(\kappa_j\) toward one, while heavy-tailed local scales allow signals to have \(\kappa_j\) near zero. Continuous shrinkage never sets a coefficient exactly to zero; support summaries require an explicit threshold or decision loss.</p>
+
+<h3>Horseshoe singularity and tails</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> After integrating a half-Cauchy local scale, the horseshoe marginal density has an infinite spike at zero and Cauchy-like polynomial tails. Consequently it strongly shrinks noise while exerting bounded relative shrinkage on very large signals.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The marginal density is a normal scale mixture
+\[
+p(\beta\mid\tau)
+=\int_0^\infty
+\varphi(\beta;0,\tau^2\lambda^2)
+\frac{2}{\pi(1+\lambda^2)}
+\,\mathrm{d}\lambda.
+\]
+Near \(\beta=0\), contributions from small scales produce logarithmic divergence. For large \(|\beta|\), large \(\lambda\) dominates and the half-Cauchy mixing tail yields polynomial decay. Exact constants depend on parameterization.</p>
+</div>
+
+<h3>Posterior contraction in sparse normal means</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (rate template).</span> If
+\(\beta_0\) has at most \(s_0\) nonzero coordinates and a spike-and-slab or suitably scaled global-local prior assigns enough mass near sparse vectors while controlling effective model size, then
+\[
+\Pi\left(
+\|\beta-\beta_0\|_2
+>M\sqrt{s_0\log(p/s_0)}
+\mid Y
+\right)\to0
+\]
+in a unit-noise normal-means experiment. With regression noise scale \(n^{-1/2}\), divide the rate by \(\sqrt n\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Sparse testing separates Euclidean shells at exponential rate in squared distance. A complexity prior pays order
+\(s_0\log(p/s_0)\) to locate the support, and the slab supplies local mass around active coefficients. Sieve model-counting entropy has the same order. The contraction theorem gives the rate.</p>
+</div>
+
+<h3>Beta-min and uncertainty near zero</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Uniform exact support recovery is impossible if nonzero signals may satisfy
+\[
+|\beta_{0j}|=o\left(
+\sqrt{\frac{\log p}{n}}
+\right)
+\]
+in an orthogonal regression with \(p\) candidate coordinates.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Locating one active coordinate among \(p\) alternatives requires distinguishing \(p\) normal laws. Their pairwise KL divergences are order
+\(n\beta^2\). If this is \(o(\log p)\), Fano's inequality bounds the probability of correct support identification away from one.</p>
+</div>
+
+<p>This is not a failure of a particular prior. It is an information limit. A posterior that reports near-certain exact inclusion below this scale is overconfident or using strong structural information beyond generic sparsity.</p>
+
+<h3>Structured shrinkage</h3>
+
+<p>Group, fused, tree, matrix, and low-rank priors replace coordinate count by the complexity of a structured class. Examples include:</p>
+<ul>
+<li>group spike-and-slab for all-or-none factors;</li>
+<li>horseshoe differences for piecewise-constant signals;</li>
+<li>matrix-normal shrinkage for coefficient arrays;</li>
+<li>factorized singular-value priors for low rank;</li>
+<li>heredity priors requiring interactions to include main effects.</li>
+</ul>
+
+<p>The contraction rate combines parameter count within the chosen structure and logarithmic cost of locating that structure. A prior should penalize the actual combinatorial model class, not reuse an independent-coordinate penalty blindly.</p>

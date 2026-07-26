@@ -4,33 +4,137 @@ breadcrumb_child_label_en: "31. Entropic VI and mirror descent"
 breadcrumb_child_label_fr: "31. VI entropique et descente miroir"
 breadcrumb_child_label_zh: "31. 熵正则 VI 与镜像下降"
 note_back_url: "/notes/optimization/"
+note_prev_url: "/notes/optimization/optimization-error-statistical-error/"
 ---
 
-<h3>Entropy as a mirror map</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> On the probability simplex, the negative entropy \(\psi(q)=\sum_iq_i\log q_i\) generates the KL Bregman divergence
-\[
-D_\psi(q,r)=\sum_iq_i\log(q_i/r_i).
-\]</p>
-    </div><div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Mirror descent with negative entropy gives the exponentiated-gradient update
-\[
-q_i^{+}\propto q_i\exp\{-\eta g_i\}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The mirror step minimizes \(\langle g,q\rangle+\eta^{-1}D_\psi(q,q^{old})\) over the simplex. The Lagrange equation is \(g_i+\eta^{-1}(\log q_i-\log q_i^{old}+1)+\lambda=0\), which yields the displayed proportionality after normalization.</p>
-    </div>
-    <h3>VI interpretation</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Coordinate-ascent VI, natural-gradient VI, and entropic regularization all use KL geometry. The difference is which object is optimized: a factor, a parameterized distribution, or a regularized transport of mass.</p>
-    </div>
-    <h3>Bregman proximal form</h3>
+<p>Entropy supplies a mirror geometry directly on probability measures. In
+finite dimensions it produces exponentiated gradients; in variational
+inference it produces Gibbs tilts and KL-proximal updates of densities.</p>
+
+<h3>The Gibbs variational principle</h3>
+
 <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Mirror descent with mirror map \(\psi\) solves
+    <p><span class="statement-title">Log-partition duality.</span> Let \(\mu\)
+    be a probability measure and let \(h\) satisfy
+    \(0<\int e^h\,\mathrm{d}\mu<\infty\). Then
+    \[
+    \log\int e^h\,\mathrm{d}\mu
+    =
+    \sup_{q\ll\mu}
+    \left\{\int h\,\mathrm{d}q-\operatorname{KL}(q\|\mu)\right\}.
+    \]
+    The unique maximizing probability measure has density
+    \[
+    \frac{\mathrm{d}q^\star}{\mathrm{d}\mu}
+    =\frac{e^h}{\int e^h\,\mathrm{d}\mu}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Define \(q^\star\) by the
+    displayed density. For any \(q\ll\mu\),
+    \[
+    \operatorname{KL}(q\|q^\star)
+    =\operatorname{KL}(q\|\mu)-\int h\,\mathrm{d}q
+      +\log\int e^h\,\mathrm{d}\mu.
+    \]
+    Rearrangement and nonnegativity of KL prove the upper bound. Equality holds
+    precisely when \(q=q^\star\).</p>
+</div>
+
+<p>This identity is simultaneously the conjugacy of negative entropy, the
+normalization of an exponential family, and the exact coordinate update in
+mean-field variational inference.</p>
+
+<h3>A KL-proximal step over densities</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Functional mirror update.</span> Let
+    \(q_k\) be a probability density and let \(g\) be an integrable functional
+    gradient. The solution of
+    \[
+    q_{k+1}
+    =\operatorname*{arg\,min}_{q}
+    \left\{
+      \eta\int g\,q\,\mathrm{d}\mu
+      +\operatorname{KL}(q\|q_k)
+    \right\}
+    \]
+    over probability densities is
+    \[
+    q_{k+1}(z)
+    =\frac{q_k(z)e^{-\eta g(z)}}
+      {\int q_k(u)e^{-\eta g(u)}\,\mathrm{d}\mu(u)}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Apply the Gibbs variational
+    principle with base measure \(q_k\,\mathrm{d}\mu\) and
+    \(h=-\eta g\), or differentiate the Lagrangian including the normalization
+    constraint. In either case,
+    \(\log(q_{k+1}/q_k)=-\eta g-\text{constant}\), and normalization determines
+    the constant.</p>
+</div>
+
+<p>In the finite simplex this becomes
 \[
-x^{+}=\arg\min_x\{\eta\langle g,x\rangle+D_\psi(x,x^{old})\}.
+q_{k+1,i}
+=\frac{q_{k,i}e^{-\eta g_i}}
+  {\sum_jq_{k,j}e^{-\eta g_j}}.
 \]
-When \(\psi\) is negative entropy on the simplex, this is exponentiated gradient.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The first-order condition is \(\nabla\psi(x^+)=\nabla\psi(x^{old})-\eta g\) plus the simplex normalization multiplier. For negative entropy, \(\nabla\psi(x)=1+\log x\), so the update is multiplicative followed by normalization.</p>
-    </div>
+The update cannot create mass outside the support of \(q_k\); support choice is
+therefore part of the algorithmic model.</p>
+
+<h3>Coordinate variational inference as exact KL projection</h3>
+
+<p>For a mean-field density \(q(z)=q_j(z_j)q_{-j}(z_{-j})\), maximizing the
+ELBO over \(q_j\) gives
+\[
+q_j^+(z_j)
+\propto
+\exp\{\mathbb E_{q_{-j}}\log p(x,z_j,Z_{-j})\}.
+\]
+This is a Gibbs update with a reference measure on the \(j\)-th factor. It is
+also an exact Bregman projection in KL geometry, rather than a small
+first-order step. Natural-gradient VI instead restricts \(q\) to a smooth
+parametric family and uses the Fisher metric on its parameters.</p>
+
+<h3>Entropic regularization and zero-temperature limits</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Soft minimum.</span> For real numbers
+    \(a_1,\ldots,a_m\) and \(\tau>0\),
+    \[
+    -\tau\log\sum_{i=1}^me^{-a_i/\tau}
+    \le\min_i a_i
+    \le-\tau\log\sum_{i=1}^me^{-a_i/\tau}
+      +\tau\log m.
+    \]
+    The entropy-regularized minimizer on the simplex is
+    \(q_i^\star\propto e^{-a_i/\tau}\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> If \(a_\star=\min_i a_i\),
+    then
+    \[
+    e^{-a_\star/\tau}
+    \le\sum_i e^{-a_i/\tau}
+    \le m e^{-a_\star/\tau}.
+    \]
+    Take \(-\tau\log\) and reverse the inequalities appropriately. The Gibbs
+    variational principle gives the optimizer.</p>
+</div>
+
+<p>As \(\tau\downarrow0\), Gibbs mass concentrates on minimizers and the
+regularized value approaches the hard minimum. The bias is controlled by
+\(\tau\log m\), while positive temperature improves smoothness and numerical
+stability.</p>
+
+<p>These same identities recur in
+<a href="{{ '/notes/bayesian-statistics/entropic-variational-inference/' | relative_url }}">entropic variational inference</a>,
+<a href="{{ '/notes/optimal-transport/entropic-regularization/' | relative_url }}">entropic optimal transport</a>,
+and
+<a href="{{ '/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/' | relative_url }}">entropy-regularized reinforcement learning</a>.
+The objects differ, but the KL-proximal geometry is the same.</p>

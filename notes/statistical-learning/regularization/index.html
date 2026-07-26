@@ -71,3 +71,153 @@ contradicting penalized optimality.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Gradient descent, early stopping, minimum-norm interpolation, and boosting can all select low-complexity predictors from a large class. The statistical question is then to identify the complexity measure actually controlled by the algorithm.</p>
     </div>
+
+<h3>Lagrange multipliers and the regularization path</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(L\) and \(J\) be proper closed convex functions on a finite-dimensional space. Suppose the constrained problem
+  \[
+  \min_f L(f)\quad\text{subject to }J(f)\le t
+  \]
+  has a solution \(f_t\) and satisfies Slater's condition. Then there exists
+  \(\lambda\ge0\) such that \(f_t\) minimizes \(L(f)+\lambda J(f)\).
+  Conversely, every penalized minimizer solves the constrained problem with
+  \(t=J(f_\lambda)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Slater's condition gives strong Lagrange duality and a multiplier \(\lambda\ge0\) satisfying the KKT conditions
+  \[
+  0\in\partial L(f_t)+\lambda\partial J(f_t),\qquad
+  \lambda\{J(f_t)-t\}=0.
+  \]
+  The first condition is necessary and sufficient for \(f_t\) to minimize
+  \(L+\lambda J\). The converse was proved above directly from penalized optimality.</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> The correspondence between \(t\) and \(\lambda\) need not be one-to-one. Flat portions, nonunique minimizers, and inactive constraints can map many tuning values to the same solution.</p>
+</div>
+
+<h3>Proximal geometry</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a proper closed convex
+  \(J\), the proximal operator is
+  \[
+  \operatorname{prox}_{\tau J}(v)
+  =\operatorname*{argmin}_u\left\{
+  \frac12\|u-v\|_2^2+\tau J(u)\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For \(J(u)=\|u\|_1\),
+  \[
+  \{\operatorname{prox}_{\tau\|\cdot\|_1}(v)\}_j
+  =\operatorname{sign}(v_j)(|v_j|-\tau)_+.
+  \]
+  For \(J(u)=\tfrac12\|u\|_2^2\),
+  \(\operatorname{prox}_{\tau J}(v)=v/(1+\tau)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The \(\ell^1\) objective separates by coordinate. Its optimality condition is
+  \(0\in u_j-v_j+\tau\partial|u_j|\), whose three cases give soft thresholding. The quadratic case has first-order equation
+  \((1+\tau)u-v=0\).</p>
+</div>
+
+<p>These formulas reveal two distinct regularization geometries: ridge continuously shrinks every coordinate, whereas the \(\ell^1\) proximal map creates exact zeros by a nonsmooth threshold.</p>
+
+<h3>Ridge as spectral filtering</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For least squares with
+  \(X=U\operatorname{diag}(s_j)V^\top\),
+  \[
+  X\widehat\beta_\lambda
+  =U\operatorname{diag}\!\left(\frac{s_j^2}{s_j^2+n\lambda}\right)U^\top Y.
+  \]
+  The effective degrees of freedom are
+  \[
+  \operatorname{df}(\lambda)
+  =\operatorname{tr}\{X(X^\top X+n\lambda I)^{-1}X^\top\}
+  =\sum_j\frac{s_j^2}{s_j^2+n\lambda}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Substitute the singular-value decomposition into the ridge estimator and multiply by \(X\). The trace of the resulting linear smoother is the sum of its eigenvalues.</p>
+</div>
+
+<h3>Strongly convex regularized ERM is uniformly stable</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \[
+  F_S(w)=\frac1n\sum_{i=1}^n\ell(w,z_i)+\frac\lambda2\|w\|_2^2,
+  \]
+  where every \(\ell(\cdot,z)\) is convex and \(L\)-Lipschitz. If
+  \(w_S=\arg\min F_S\), then for samples \(S,S^{(i)}\) differing in one observation,
+  \[
+  \|w_S-w_{S^{(i)}}\|_2\le\frac{2L}{\lambda n},
+  \qquad
+  \sup_z|\ell(w_S,z)-\ell(w_{S^{(i)}},z)|
+  \le\frac{2L^2}{\lambda n}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Strong convexity and minimality give
+  \[
+  F_S(w_{S^{(i)}})-F_S(w_S)\ge\frac\lambda2\|\Delta\|^2,\qquad
+  F_{S^{(i)}}(w_S)-F_{S^{(i)}}(w_{S^{(i)}})\ge\frac\lambda2\|\Delta\|^2.
+  \]
+  Add them. All shared losses cancel; the two differing losses are bounded by
+  \(2L\|\Delta\|/n\). Thus
+  \(\lambda\|\Delta\|^2\le2L\|\Delta\|/n\), proving the first inequality. Apply Lipschitzness once more for the second.</p>
+</div>
+
+<h3>Early stopping in linear inverse problems</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Gradient descent on
+  \(\tfrac1{2n}\|Y-X\beta\|_2^2\), initialized at zero with step size
+  \(0<\eta<2n/\|X\|_{\mathrm{op}}^2\), has singular-coordinate filter
+  \[
+  v_j^\top\beta_t
+  =
+  \frac{1-(1-\eta s_j^2/n)^t}{s_j}\,u_j^\top Y.
+  \]
+  Early iterations fit large singular directions first and suppress small singular directions.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The recursion
+  \(\beta_{t+1}=(I-\eta X^\top X/n)\beta_t+\eta X^\top Y/n\)
+  decouples in the \(V\)-basis. Summing the resulting geometric series yields the displayed filter.</p>
+</div>
+
+<p>Ridge uses filter \(s_j/(s_j^2+n\lambda)\); early stopping uses
+\(\{1-(1-\eta s_j^2/n)^t\}/s_j\). They are not identical, but both damp directions that are poorly identified by the design.</p>
+
+<h3>Parameter choice and honest validation</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(\Lambda\) be a finite set of tuning parameters and suppose
+  \(0\le\ell\le1\). Fit \(\widehat f_\lambda\) on a training sample, independently evaluate all candidates on a validation sample of size \(m\), and select
+  \(\widehat\lambda\) by validation ERM. Then with probability at least
+  \(1-\delta\),
+  \[
+  R(\widehat f_{\widehat\lambda})
+  \le\min_{\lambda\in\Lambda}R(\widehat f_\lambda)
+  2\sqrt{\frac{\log(2|\Lambda|/\delta)}{2m}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on the training sample, the candidate functions are fixed. Hoeffding's inequality and a union bound control every validation-risk deviation. The basic finite-class ERM inequality then proves the result.</p>
+</div>
+
+<p>The independence clause is substantive: adapting the candidate grid after inspecting validation outcomes incurs an additional selection cost. Nested cross-validation separates performance assessment from tuning when the same finite dataset must serve both purposes.</p>

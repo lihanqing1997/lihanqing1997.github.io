@@ -7,24 +7,154 @@ note_back_url: "/notes/causal-inference/"
 note_next_url: "/notes/causal-inference/consistency-exchangeability-and-positivity/"
 ---
 
-<p>Potential outcomes records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Causal inference begins by defining outcomes under interventions before asking whether they can be learned from observed data. Potential outcomes separate the scientific contrast, the assumptions that identify it, and the statistical procedure used to estimate it.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Potential outcomes \(Y(1)\) and \(Y(0)\) represent the outcomes that would be observed under treatment and control. Only one potential outcome is observed for each unit.</p>
-    </div>
+<h3>Units, treatments, and counterfactual outcomes</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Causal effects are contrasts of potential outcomes, such as \(E[Y(1)-Y(0)]\). The fundamental missing-data problem is that \(Y(1)\) and \(Y(0)\) are never jointly observed on the same unit.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a binary treatment
+  \(A\in\{0,1\}\), the potential outcome \(Y(a)\) is the outcome that would be observed for the same unit under intervention \(A=a\). The individual treatment effect is
+  \[
+  \tau=Y(1)-Y(0).
+  \]
+  The observed data for one unit are \(O=(X,A,Y)\), where \(X\) is measured before treatment.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The observed outcome satisfies consistency \(Y=AY(1)+(1-A)Y(0)\). Identification therefore requires assumptions connecting unobserved potential outcomes to observed data.</p>
-    </div>
+<p>Potential outcomes are random variables on a superpopulation probability space. In a finite-population analysis, the \(Y_i(a)\) may instead be treated as fixed attributes of the sampled units and randomness comes solely from treatment assignment.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Potential outcomes make causal questions precise before modeling. They separate the estimand from the estimator.</p>
-    </div>
+<h3>Consistency and the observation equation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Consistency asserts
+  \[
+  A=a\quad\Longrightarrow\quad Y=Y(a).
+  \]
+  For binary treatment this is equivalent to
+  \[
+  Y=AY(1)+(1-A)Y(0).
+  \]</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Consistency contains two substantive requirements: the intervention \(a\) must be sufficiently well defined, and one unit's treatment must not alter another unit's outcome. The latter is often separated as the no-interference part of SUTVA. Versions, spillovers, and network effects require potential outcomes indexed by a richer exposure vector.</p>
+</div>
+
+<h3>Causal estimands</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Important contrasts include
+  \[
+  \begin{aligned}
+  \operatorname{ATE}&=\mathbb E\{Y(1)-Y(0)\},\\
+  \operatorname{ATT}&=\mathbb E\{Y(1)-Y(0)\mid A=1\},\\
+  \operatorname{CATE}(x)&=\mathbb E\{Y(1)-Y(0)\mid X=x\},\\
+  \operatorname{QTE}_\tau&=
+  F_{Y(1)}^{-1}(\tau)-F_{Y(0)}^{-1}(\tau).
+  \end{aligned}
+  \]
+  The probability of benefit is
+  \(P\{Y(1)>Y(0)\}\), a functional of the joint law of the two potential outcomes.</p>
+</div>
+
+<p>The marginal laws of \(Y(1)\) and \(Y(0)\) identify the ATE and marginal quantile effect. They do not identify the distribution of the individual effect, because that depends on the unobserved coupling between \(Y(1)\) and \(Y(0)\).</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Knowing both marginal distributions
+  \(F_1,F_0\) does not generally identify
+  \(P\{Y(1)>Y(0)\}\) or
+  \(\operatorname{Var}\{Y(1)-Y(0)\}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let both marginals be
+  \(\operatorname{Bernoulli}(1/2)\). Under the comonotone coupling
+  \(Y(1)=Y(0)\), the probability of benefit and effect variance are zero. Under the countermonotone coupling \(Y(1)=1-Y(0)\), the probability of benefit is \(1/2\) and the effect variance is one. The observed marginals agree in the two constructions.</p>
+</div>
+
+<h3>The fundamental missing-data structure</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Consistency alone does not identify
+  \(\mathbb EY(1)\) from the observed law of \((A,Y)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The observed law identifies
+  \(Y(1)\mid A=1\), but never observes \(Y(1)\mid A=0\). One may alter the latter distribution while leaving
+  \(Y=AY(1)+(1-A)Y(0)\) unchanged. For example, keep all observed treated outcomes fixed and assign arbitrary counterfactual treated outcomes to controls. These completions induce the same observed law but different \(\math EY(1)\).</p>
+</div>
+
+<h3>Randomization identifies marginal means</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(A\perp\!\!\!\perp\{Y(0),Y(1)\}\), consistency holds, and
+  \(0<P(A=1)<1\), then
+  \[
+  \mathbb EY(a)=\mathbb E(Y\mid A=a),\qquad a=0,1,
+  \]
+  and therefore
+  \[
+  \operatorname{ATE}=
+  \mathbb E(Y\mid A=1)-\mathbb E(Y\mid A=0).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independence gives
+  \(\mathbb EY(a)=\mathbb E\{Y(a)\mid A=a\}\). Consistency replaces
+  \(Y(a)\) by \(Y\) on the event \(A=a\). Subtract the two identified means.</p>
+</div>
+
+<h3>Finite-population randomization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For \(N\) fixed units, assign exactly
+  \(n_1\) to treatment uniformly among all such assignments and let
+  \(n_0=N-n_1\). The difference in sample means
+  \[
+  \widehat\tau=\overline Y_1^{\mathrm{obs}}-
+  \overline Y_0^{\mathrm{obs}}
+  \]
+  is unbiased for
+  \(\tau_N=N^{-1}\sum_i\{Y_i(1)-Y_i(0)\}\), with variance
+  \[
+  \operatorname{Var}(\widehat\tau)
+  =\frac{S_1^2}{n_1}+\frac{S_0^2}{n_0}
+  -\frac{S_\tau^2}{N},
+  \]
+  where \(S_a^2\) and \(S_\tau^2\) are finite-population variances.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Each unit has treatment probability
+  \(n_1/N\), so linearity gives unbiasedness of each arm mean. The covariance structure of sampling without replacement gives
+  \(\operatorname{Var}(\overline Y_a)=
+  (1/n_a-1/N)S_a^2\). Expanding the covariance between the two arm means and using
+  \(S_\tau^2=S_1^2+S_0^2-2S_{10}\) yields the formula.</p>
+</div>
+
+<p>The unobservable \(S_\tau^2\) prevents exact variance estimation without assumptions on effect heterogeneity. Dropping its nonnegative term gives the conservative Neyman variance estimator.</p>
+
+<h3>Multiple treatments and dose-response curves</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For treatment
+  \(A\in\mathcal A\), define the dose-response function
+  \[
+  \mu(a)=\mathbb EY(a).
+  \]
+  For continuous \(A\), point interventions can be statistically delicate because \(P(A=a)=0\); identification uses conditional densities and positivity in neighborhoods, while stable estimands may average \(\mu(a)\) over a stochastic intervention.</p>
+</div>
+
+<h3>Interference and exposure mappings</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> With \(N\) interacting units, the unrestricted outcome is \(Y_i(\mathbf a)\), indexed by the full assignment vector. An exposure mapping \(g_i(\mathbf a)\) posits
+  \[
+  Y_i(\mathbf a)=Y_i\{a_i,g_i(\mathbf a)\}.
+  \]
+  Direct and spillover effects compare potential outcomes while changing different components of this exposure.</p>
+</div>
+
+<p>This is not a minor notation change: ordinary consistency and propensity-score arguments fail if one suppresses interference that is present. The estimand must be indexed by the intervention actually contemplated.</p>

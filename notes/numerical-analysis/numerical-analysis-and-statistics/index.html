@@ -33,3 +33,111 @@ note_prev_url: "/notes/numerical-analysis/inverse-problems-regularization/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Optimization asks how to minimize or maximize an objective. Numerical analysis asks whether the finite computation accurately represents the mathematical problem. In statistical work the two meet, but they answer different questions.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Numerically stable likelihood calculations</h3>
+
+<p>Products of small densities underflow; use log likelihoods. For
+\(a_i\in\mathbb R\),
+\[
+\log\sum_i e^{a_i}
+=m+\log\sum_i e^{a_i-m},
+\qquad m=\max_i a_i.
+\]
+The shifted exponents lie in \((0,1]\), preventing overflow. Related functions
+\(\log(1+x)\) and \(e^x-1\) should use <code>log1p</code> and
+<code>expm1</code> near zero to avoid cancellation.</p>
+
+<h3>Covariance and positive semidefiniteness</h3>
+
+<p>The one-pass identity
+\[
+\sum x_i^2-n\bar x^2
+\]
+can catastrophically cancel. Welford's recurrence updates
+\[
+\delta_n=x_n-\bar x_{n-1},\qquad
+\bar x_n=\bar x_{n-1}+\delta_n/n,
+\]
+\[
+M_{2,n}=M_{2,n-1}
++\delta_n(x_n-\bar x_n).
+\]
+It is stable and supports parallel pairwise combination. For covariance
+matrices, square-root factorizations preserve positive semidefiniteness better
+than subtractive formulas.</p>
+
+<h3>Optimization error versus statistical error</h3>
+
+<p>If an estimator minimizes empirical criterion \(L_n\) but an algorithm
+returns \(\widetilde\theta\) with
+\[
+L_n(\widetilde\theta)-\inf_\theta L_n(\theta)\le\varepsilon_{\mathrm opt},
+\]
+strong convexity \(m\) gives
+\[
+\|\widetilde\theta-\widehat\theta\|
+\le\sqrt{2\varepsilon_{\mathrm opt}/m}.
+\]
+To preserve a root-\(n\) statistical limit, it often suffices that this
+parameter error be \(o_p(n^{-1/2})\), or that the score residual be
+\(o_p(n^{-1/2})\) under Hessian stability. Solving far beyond statistical
+precision wastes computation.</p>
+
+<h3>Linear algebra in regression</h3>
+
+<p>Normal equations square the condition number of a design matrix. QR gives
+stable ordinary least squares; SVD exposes weakly identified directions;
+pivoted QR diagnoses rank; iterative solvers need preconditioning. Standard
+errors inherit numerical error through inverses or factor solves, so a
+coefficient estimate without a stable covariance computation can still be
+misleading.</p>
+
+<h3>Monte Carlo error and pseudorandomness</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For iid samples and
+\(E f(X)^2<\infty\),
+\[
+\widehat I_N=\frac1N\sum_{i=1}^Nf(X_i)
+\]
+has
+\[
+E(\widehat I_N-I)^2=\frac{\operatorname{Var}(f(X))}{N}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Unbiasedness is linearity of
+expectation; independence makes variances add:
+\[
+\operatorname{Var}(\widehat I_N)
+=N^{-2}N\operatorname{Var}(f(X)).
+\]</p>
+</div>
+
+<p>Markov chain Monte Carlo replaces variance by long-run variance and effective
+sample size. Quasi-Monte Carlo can approach \(N^{-1}\) error for smooth,
+low-effective-dimensional integrands. Rounding error is usually smaller than
+sampling error but can matter in enormous reductions or rare-event weights.</p>
+
+<h3>Randomized numerical linear algebra</h3>
+
+<p>Leverage-score sampling and random projections approximate regression,
+low-rank structure, and matrix products. A subspace embedding \(S\) satisfies
+\[
+(1-\varepsilon)\|Ax\|^2
+\le\|SAx\|^2
+\le(1+\varepsilon)\|Ax\|^2
+\]
+for every \(x\). Solving the sketched least-squares problem then gives a
+controlled residual approximation. Probability of numerical success and
+floating-point stability are separate layers and both require analysis.</p>
+
+<h3>Reproducibility</h3>
+
+<p>Random seeds do not ensure bitwise reproducibility when parallel reductions,
+hardware kernels, or nondeterministic scheduling change operation order.
+Scientific reproducibility should record data, software, tolerances, stopping
+rules, precision, and diagnostics; numerical uncertainty should be compared
+with sampling and model uncertainty rather than silently ignored.</p>

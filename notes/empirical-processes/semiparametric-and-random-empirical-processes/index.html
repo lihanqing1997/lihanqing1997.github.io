@@ -7,31 +7,201 @@ note_back_url: "/notes/empirical-processes/"
 note_prev_url: "/notes/empirical-processes/sieve-and-penalized-estimators/"
 ---
 
-<p>Semiparametric problems often index the empirical process by functions depending on estimated nuisance parameters. The class itself becomes random.</p>
+<p>Semiparametric estimators combine a low-dimensional target with one or more infinite-dimensional nuisance functions. Plugging estimated nuisances into a score creates a random empirical-process index. Classical Donsker arguments control that index on the same sample; sample splitting converts it into a conditionally fixed function. Orthogonality controls the separate population bias.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A random empirical-process term has the form \(\mathbb G_n\{f_{\hat\eta}-f_{\eta_0}\}\). It is negligible if the random functions are close enough and the process is equicontinuous over the relevant local class.</p>
-    </div>
+<h3>An asymptotically linear target</h3>
 
-    <h3>Random-index negligibility</h3>
-    <ul>
-        <li>Classical proofs use Donsker conditions and stochastic equicontinuity for the nuisance-indexed class.</li>
-        <li>Orthogonality can reduce sensitivity to nuisance estimation error.</li>
-        <li>Modern sample-splitting arguments change the empirical-process requirements but keep the same decomposition logic.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator of a scalar functional \(\theta(P)\) is asymptotically linear with influence function \(\varphi_P\in L_2^0(P)\) if
+  \[
+  \hat\theta-\theta(P)
+  =
+  P_n\varphi_P+o_p(n^{-1/2}),
+  \qquad
+  P\varphi_P=0.
+  \]
+  Then
+  \[
+  \sqrt n\{\hat\theta-\theta(P)\}
+  \rightsquigarrow N(0,P\varphi_P^2).
+  \]</p>
+</div>
 
-    <h3>Orthogonal decompositions</h3>
-    <p>This final page keeps the note connected to efficiency theory, targeted learning, double robustness, and other semiparametric interfaces without duplicating those specialized notes.</p>
-
-    <!-- expanded-learning -->
-    <h3>Nuisance empirical-process condition</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Lemma.</span> A classical negligibility condition is
+<p>In practice \(\varphi_P=\varphi(\cdot;\eta_0)\) depends on nuisance functions \(\eta_0\), and the estimator uses \(\hat\eta\). The fundamental decomposition is
 \[
-\mathbb G_n(f_{\hat\eta}-f_{\eta_0})=o_p(1).
+\begin{aligned}
+(P_n-P)\varphi_{\hat\eta}+P\varphi_{\hat\eta}
+&=(P_n-P)\varphi_{\eta_0}\\
+&\quad +(P_n-P)(\varphi_{\hat\eta}-\varphi_{\eta_0})
++P(\varphi_{\hat\eta}-\varphi_{\eta_0}).
+\end{aligned}
 \]
-It follows from Donsker-type equicontinuity if \(d(f_{\hat\eta},f_{\eta_0})\to0\) in probability. Modern orthogonal methods sometimes replace Donsker assumptions with sample splitting.</p>
-    </div>
+The first term produces the limit. The second is a random-index empirical process. The third is plug-in bias.</p>
 
-    <h3>Orthogonal expansion</h3>
-    <p>The decomposition to remember is: plug in the nuisance, expand around the truth, use orthogonality to kill first-order nuisance bias, and use empirical-process control for the remaining stochastic term.</p>
+<h3>The same-sample Donsker route</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose, with probability tending to one,
+  \(\varphi_{\hat\eta}\in\mathcal F\), where \(\mathcal F\) is \(P\)-Donsker, and
+  \[
+  \|\varphi_{\hat\eta}-\varphi_{\eta_0}\|_{P,2}\to_p0.
+  \]
+  Then
+  \[
+  \mathbb G_n(\varphi_{\hat\eta}-\varphi_{\eta_0})
+  =o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A Donsker process is asymptotically equicontinuous in its canonical semimetric, which is bounded by \(L_2(P)\)-distance. Apply the random-index lemma to
+  \(\varphi_{\hat\eta}\) and \(\varphi_{\eta_0}\). \(\square\)</p>
+</div>
+
+<p>The fixed-class condition is substantive. A flexible learner can have excellent \(L_2\)-risk while ranging over a class too large to be Donsker. The data-interpolation counterexample on page 9 shows that same-sample \(L_2\)-consistency by itself is insufficient.</p>
+
+<h3>Neyman orthogonality</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \[
+  \Psi(\theta,\eta)=P\psi(W;\theta,\eta),
+  \qquad
+  \Psi(\theta_0,\eta_0)=0.
+  \]
+  The score is Neyman orthogonal at \((\theta_0,\eta_0)\) if, for every admissible nuisance direction \(h\),
+  \[
+  \partial_\eta\Psi(\theta_0,\eta_0)[h]
+  =
+  \left.\frac{\mathrm{d}}{\mathrm{d}t}
+  \Psi(\theta_0,\eta_0+th)\right|_{t=0}
+  =0.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(\Psi\) is twice differentiable in \(\eta\), orthogonality and a bounded second derivative imply
+  \[
+  |\Psi(\theta_0,\hat\eta)-\Psi(\theta_0,\eta_0)|
+  \lesssim\|\hat\eta-\eta_0\|^2.
+  \]
+  With several nuisance components, the remainder is often a product of their errors rather than the square of one norm.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taylor's formula along the segment
+  \(\eta_t=\eta_0+t(\hat\eta-\eta_0)\) gives
+  \[
+  \Psi(\theta_0,\hat\eta)-\Psi(\theta_0,\eta_0)
+  =
+  \partial_\eta\Psi(\theta_0,\eta_0)[\hat\eta-\eta_0]
+  +\int_0^1(1-t)
+  \partial_{\eta\eta}^2\Psi(\theta_0,\eta_t)
+  [\hat\eta-\eta_0]^{\otimes2}\,\mathrm{d}t.
+  \]
+  The first term vanishes by orthogonality; boundedness of the bilinear second derivative controls the integral. \(\square\)</p>
+</div>
+
+<p>Orthogonality controls the population term \(P(\varphi_{\hat\eta}-\varphi_{\eta_0})\). It does not, by itself, control the empirical-process term. These are logically different remainders.</p>
+
+<h3>Cross-fitting</h3>
+
+<p>Partition the observations into folds \(I_1,\ldots,I_K\). For fold \(k\), estimate \(\hat\eta_{-k}\) using observations outside \(I_k\), then evaluate the score on \(I_k\). Conditional on the training data, \(\varphi_{\hat\eta_{-k}}\) is fixed relative to the held-out observations.</p>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (cross-fitted empirical remainder).</span> Let \(I\) be a validation sample of size \(m\), independent of a training estimate \(\hat\eta\). If
+  \[
+  \|\varphi_{\hat\eta}-\varphi_{\eta_0}\|_{P,2}=o_p(1),
+  \]
+  then
+  \[
+  \frac1{\sqrt m}\sum_{i\in I}
+  \left[
+    \{\varphi_{\hat\eta}-\varphi_{\eta_0}\}(W_i)
+    -P(\varphi_{\hat\eta}-\varphi_{\eta_0})
+  \right]
+  =o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on the training sample, the summands are i.i.d. and centered. Their conditional variance is at most
+  \[
+  P(\varphi_{\hat\eta}-\varphi_{\eta_0})^2=o_p(1).
+  \]
+  Conditional Chebyshev inequality proves convergence to zero; integrating over the training data gives the unconditional conclusion. \(\square\)</p>
+</div>
+
+<p>Cross-fitting replaces a global Donsker requirement by independence plus \(L_2\)-consistency. It does not eliminate moment conditions, the orthogonal bias remainder, or the need for fold sizes proportional to \(n\).</p>
+
+<h3>A doubly robust example</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (average treatment effect).</span> Observe \(W=(Y,A,X)\), \(A\in\{0,1\}\). Let
+  \[
+  \mu_a(x)=E(Y\mid A=a,X=x),
+  \qquad
+  e(x)=P(A=1\mid X=x),
+  \]
+  and
+  \[
+  \theta_0=P\{\mu_1(X)-\mu_0(X)\}.
+  \]
+  An influence function is
+  \[
+  \begin{aligned}
+  \varphi(W;\eta,\theta)
+  ={}&\mu_1(X)-\mu_0(X)-\theta\\
+  &+\frac{A}{e(X)}\{Y-\mu_1(X)\}
+  -\frac{1-A}{1-e(X)}\{Y-\mu_0(X)\}.
+  \end{aligned}
+  \]
+  Under positivity, direct calculation gives a population remainder bounded by
+  \[
+  |P\varphi(W;\hat\eta,\theta_0)|
+  \lesssim
+  \|\hat e-e\|_{P,2}
+  \left(
+    \|\hat\mu_1-\mu_1\|_{P,2}
+    +\|\hat\mu_0-\mu_0\|_{P,2}
+  \right).
+  \]</p>
+</div>
+
+<p>Thus root-\(n\) inference is possible if the product of propensity and outcome-regression errors is \(o_p(n^{-1/2})\). Both nuisances may converge more slowly than \(n^{-1/2}\); rates near \(n^{-1/4}\) each are sufficient. If either nuisance is consistently estimated while the other is correctly specified in a suitable sense, the population moment can still be unbiased, which is the source of double robustness.</p>
+
+<h3>A general orthogonal-score theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\hat\theta\) solve a cross-fitted empirical equation based on
+  \(\psi(W;\theta,\hat\eta)\). Suppose:</p>
+  <ol>
+    <li>\(\hat\theta\to_p\theta_0\);</li>
+    <li>\(A=\partial_\theta P\psi(W;\theta_0,\eta_0)\) is nonsingular;</li>
+    <li>\(P\|\psi(W;\theta_0,\eta_0)\|^2<\infty\);</li>
+    <li>the cross-fitted \(L_2\) difference of scores is \(o_p(1)\);</li>
+    <li>
+    \[
+    \sqrt n\,
+    P\{\psi(W;\theta_0,\hat\eta)-\psi(W;\theta_0,\eta_0)\}
+    =o_p(1);
+    \]</li>
+    <li>the estimating-equation and \(\theta\)-linearization remainders are \(o_p(n^{-1/2})\).</li>
+  </ol>
+  <p>Then
+  \[
+  \sqrt n(\hat\theta-\theta_0)
+  =
+  -A^{-1}\mathbb G_n\psi(W;\theta_0,\eta_0)+o_p(1),
+  \]
+  and its covariance is
+  \[
+  A^{-1}P(\psi_0\psi_0^\top)A^{-\top}.
+  \]</p>
+</div>
+
+<p>The theorem separates four jobs that should never be compressed into the phrase “by orthogonality”: identify the score derivative in \(\theta\), control nuisance bias, control the random empirical index, and verify the central limit theorem for the true score.</p>
+
+<h3>Efficiency and the larger theory</h3>
+
+<p>When \(\psi_0\) is the efficient influence function, its variance is the semiparametric efficiency bound. Tangent spaces, projections, pathwise differentiability, and convolution lower bounds are developed in <a href="{{ '/notes/statistical-inference/semiparametric-inference-interface/' | relative_url }}">Statistical inference, §27</a> and the corresponding chapters of <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">Statistical decision theory</a>. The empirical-process contribution is now explicit: it is the uniform or cross-fitted control that turns an influence-function identity into a valid sample expansion.</p>

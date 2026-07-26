@@ -66,3 +66,173 @@ The frequentist covariance of the maximum likelihood estimator is \(J^{-1}VJ^{-1
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Bayesian coherence and frequentist calibration are different targets. A sandwich-adjusted posterior is no longer the exact posterior but can be useful as a calibrated uncertainty approximation.</p>
     </div>
+
+<h3>Kullback-Leibler projection</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> If the true density \(p_0\) need not belong to
+\(\{p_\theta:\theta\in\Theta\}\), a pseudo-true parameter is
+\[
+\theta^\star
+\in\arg\min_{\theta\in\Theta}
+K(p_0,p_\theta)
+=\arg\max_{\theta\in\Theta}
+P_0\log p_\theta.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(\theta^\star\) is an interior differentiability point, then
+\[
+P_0\dot\ell_{\theta^\star}=0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate the population objective
+\(P_0\log p_\theta\) at its interior maximizer, interchanging derivative and expectation under the regularity assumption.</p>
+</div>
+
+<h3>Two information matrices</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> At \(\theta^\star\), define
+\[
+I=-P_0\ddot\ell_{\theta^\star},
+\qquad
+J=P_0\dot\ell_{\theta^\star}
+\dot\ell_{\theta^\star}^\top.
+\]
+Under correct specification, the information identity gives \(I=J\). Under misspecification, they generally differ.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (M-estimator sandwich limit).</span> If
+\(\widehat\theta\) maximizes empirical log likelihood and standard M-estimation conditions hold, then
+\[
+\sqrt n(\widehat\theta-\theta^\star)
+\Rightarrow
+N(0,I^{-1}JI^{-\top}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Taylor-expand the empirical score:
+\[
+0=\mathbb P_n\dot\ell_{\widehat\theta}
+=\mathbb P_n\dot\ell_{\theta^\star}
++\mathbb P_n\ddot\ell_{\widetilde\theta}
+(\widehat\theta-\theta^\star).
+\]
+The Hessian converges to \(-I\), while the CLT gives
+\[
+\sqrt n\mathbb P_n\dot\ell_{\theta^\star}
+\Rightarrow N(0,J).
+\]
+Solve and apply Slutsky's theorem.</p>
+</div>
+
+<h3>Misspecified local asymptotic normality</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (misspecified BvM).</span> Under posterior concentration at \(\theta^\star\), local quadratic likelihood expansion, and a prior positive and continuous at \(\theta^\star\),
+\[
+\Pi\left(
+\sqrt n(\theta-\widehat\theta)
+\in\cdot\mid X^{(n)}
+\right)
+\approx N(0,I^{-1})
+\]
+in total variation. The exact posterior covariance is therefore
+\(I^{-1}/n\), while repeated-sampling variation of its center is
+\(I^{-1}JI^{-\top}/n\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The empirical log likelihood around
+\(\theta^\star+h/\sqrt n\) expands as
+\[
+h^\top\Delta_n-\frac12h^\top Ih+o_P(1),
+\qquad
+\Delta_n=n^{-1/2}\sum_i\dot\ell_{\theta^\star}(X_i)
+\Rightarrow N(0,J).
+\]
+Conditional on the data, completing the square gives covariance \(I^{-1}\) and random center \(I^{-1}\Delta_n\). Localization and prior continuity complete the same normalization argument as regular BvM.</p>
+</div>
+
+<h3>Coverage mismatch</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> A nominal posterior ellipsoid based on \(I^{-1}\) generally lacks nominal frequentist coverage for \(\theta^\star\) unless \(I=J\) or the target direction happens to satisfy the corresponding covariance equality.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Posterior quantiles use the quadratic form induced by \(I\), whereas
+\(\sqrt n(\widehat\theta-\theta^\star)\) has sandwich covariance. The resulting quadratic form is not \(\chi_d^2\) unless the covariance matches \(I^{-1}\).</p>
+</div>
+
+<h3>Open-faced sandwich transformation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Suppose posterior draws have local covariance \(I^{-1}/n\). Let \(C\) satisfy
+\[
+C I^{-1}C^\top
+=I^{-1}JI^{-\top}.
+\]
+Transform centered draws by
+\[
+\theta^{(s)}_{\mathrm{adj}}
+=\widehat\theta
++C\{\theta^{(s)}-\widehat\theta\}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The adjusted draws have asymptotic covariance
+\[
+\frac1nI^{-1}JI^{-\top}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Covariance transforms by
+\[
+C(I^{-1}/n)C^\top.
+\]
+Use the defining equation for \(C\).</p>
+</div>
+
+<p>One possible matrix choice uses symmetric square roots:
+\[
+C=(I^{-1}JI^{-\top})^{1/2}
+(I^{-1})^{-1/2}.
+\]
+The adjustment targets frequentist covariance around the pseudo-true parameter; it is not an exact posterior under the original model and need not repair biased prediction.</p>
+
+<h3>Generalized Bayes and learning rates</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A tempered or generalized posterior is
+\[
+\Pi_\eta(\mathrm{d}\theta\mid X^{(n)})
+\propto
+\exp\{-\eta n\mathbb P_n\ell_\theta\}
+\Pi(\mathrm{d}\theta),
+\qquad \eta>0.
+\]
+Changing \(\eta\) rescales local posterior covariance but does not generally reproduce a full sandwich matrix when \(d>1\).</p>
+</div>
+
+<p>A scalar temperature can calibrate one average direction or predictive criterion, while matrix-valued misspecification requires more structure. Robust likelihoods, explicit discrepancy models, nonparametric model expansion, and targeted estimating-equation posteriors address different failure modes. The inferential target should be named before choosing a correction.</p>
+
+<h3>Misspecified prediction</h3>
+
+<p>The pseudo-true parameter minimizes expected log loss within the model, so
+\[
+p_{\theta^\star}
+\]
+is the best model member under KL divergence. Posterior predictive uncertainty around it shrinks with \(n\), but it does not include structural discrepancy
+\[
+p_0-p_{\theta^\star}.
+\]
+Posterior predictive checks and out-of-sample scoring remain necessary even when misspecified BvM holds perfectly.</p>

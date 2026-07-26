@@ -8,24 +8,127 @@ note_prev_url: "/notes/causal-inference/difference-in-differences/"
 note_next_url: "/notes/causal-inference/longitudinal-treatment-regimes/"
 ---
 
-<p>Regression discontinuity designs records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Regression discontinuity identifies a local causal effect when treatment assignment changes discontinuously at a known threshold of a continuously distributed running variable. Identification comes from continuity of potential-outcome regressions at the cutoff, while estimation is a boundary nonparametric-regression problem.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Regression discontinuity uses a treatment rule that changes discontinuously at a threshold of a running variable. Units just above and below the cutoff are compared.</p>
-    </div>
+<h3>Sharp regression discontinuity</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If potential outcome regressions are continuous at the cutoff, the jump in observed conditional mean identifies the causal effect at the cutoff.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let running variable \(R\) have cutoff \(c\), with treatment
+  \[
+  A=\mathbf1(R\ge c).
+  \]
+  The sharp RD estimand is
+  \[
+  \tau_{\mathrm{RD}}=
+  \mathbb E\{Y(1)-Y(0)\mid R=c\}.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Take one-sided limits of \(E[Y\mid R=r]\) as \(r\) approaches the cutoff. Consistency and continuity replace these limits by potential-outcome limits.</p>
-    </div>
+<h3>Continuity identification</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Regression discontinuity is local by nature. Bandwidth choices define the bias-variance and locality tradeoff.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \[
+  \mu_a(r)=\mathbb E\{Y(a)\mid R=r\}
+  \]
+  is continuous at \(c\) for \(a=0,1\), and consistency holds, then
+  \[
+  \tau_{\mathrm{RD}}
+  =
+  \lim_{r\downarrow c}\mathbb E(Y\mid R=r)
+  -
+  \lim_{r\uparrow c}\mathbb E(Y\mid R=r).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Above the cutoff,
+  \(Y=Y(1)\), so the right limit equals
+  \(\lim_{r\downarrow c}\mu_1(r)=\mu_1(c)\).
+  Below the cutoff, the left limit equals \(\mu_0(c)\). Subtract.</p>
+</div>
+
+<p>The continuity assumption permits all smooth relationships between \(R\) and potential outcomes. It excludes another cause of \(Y\) that jumps at exactly the same threshold.</p>
+
+<h3>Fuzzy regression discontinuity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose treatment probability, rather than treatment itself, jumps at \(c\). Under continuity of potential outcomes and potential treatment decisions, exclusion, and monotonicity, the local complier effect is
+  \[
+  \tau_{\mathrm{FRD}}=
+  \frac{
+  \lim_{r\downarrow c}\mathbb E(Y\mid R=r)-
+  \lim_{r\uparrow c}\mathbb E(Y\mid R=r)}
+  {
+  \lim_{r\downarrow c}\mathbb E(A\mid R=r)-
+  \lim_{r\uparrow c}\mathbb E(A\mid R=r)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Treat threshold eligibility
+  \(Z=\mathbf1(R\ge c)\) as a local instrument. Continuity replaces exact randomization by equality of limiting potential-outcome distributions at the cutoff. The reduced-form outcome jump equals the first-stage treatment jump times the local average effect among units whose treatment responds to eligibility. Divide as in the Wald theorem.</p>
+</div>
+
+<h3>Local polynomial estimation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> On each side of \(c\), local linear regression solves
+  \[
+  \min_{\alpha_\pm,\beta_\pm}
+  \sum_{i:R_i\gtrless c}
+  K\left(\frac{R_i-c}{h}\right)
+  \{Y_i-\alpha_\pm-\beta_\pm(R_i-c)\}^2.
+  \]
+  The RD estimate is \(\widehat\alpha_+-\widehat\alpha_-\).</p>
+</div>
+
+<p>Local linear fitting is preferred to high-order global polynomials because it targets the boundary limit, adapts to local curvature, and avoids unstable oscillations far from the cutoff.</p>
+
+<h3>Bias and variance orders</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> With twice differentiable conditional means, positive density at \(c\), and local linear fitting,
+  \[
+  \operatorname{Bias}(\widehat\tau)=O(h^2),
+  \qquad
+  \operatorname{Var}(\widehat\tau)=O((nh)^{-1}).
+  \]
+  Mean-squared-error balancing gives \(h\asymp n^{-1/5}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> A Taylor expansion shows local linear regression removes constant and first-order terms, leaving second-derivative bias of order \(h^2\). Roughly \(nh\) observations fall in a bandwidth-\(h\) neighborhood, giving variance order \(1/(nh)\). Balance \(h^4\) against \(1/(nh)\).</p>
+</div>
+
+<h3>Robust bias-corrected inference</h3>
+
+<p>At an MSE-optimal bandwidth, \(h^2\) bias is of the same order as standard error, so a naive centered Wald interval undercover. Robust bias correction estimates the leading curvature bias using a higher-order fit and enlarges the variance to account for this correction.</p>
+
+<h3>Manipulation of the running variable</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> If units can precisely manipulate \(R\) around \(c\), populations just below and above may not be comparable. A density discontinuity test can detect some sorting, but continuity of density is neither necessary nor sufficient for all identifying assumptions. Institutional knowledge and predetermined-covariate continuity remain essential.</p>
+</div>
+
+<h3>Placebo and falsification analyses</h3>
+
+<ul>
+  <li>Check predetermined covariates for discontinuities at \(c\).</li>
+  <li>Estimate effects at placebo cutoffs where treatment does not change.</li>
+  <li>Examine sensitivity to bandwidth and polynomial order.</li>
+  <li>Plot binned means for communication but fit the estimator to raw data.</li>
+  <li>Report the treatment first-stage jump in fuzzy designs.</li>
+</ul>
+
+<h3>Discrete running variables</h3>
+
+<p>When \(R\) has few support points, continuity limits are not empirically approached arbitrarily closely. Identification then relies on functional-form restrictions, local randomization over a chosen window, or partial identification. Conventional continuous-RD standard errors can be misleading.</p>
+
+<h3>Local randomization interpretation</h3>
+
+<p>An alternative framework assumes that within a prespecified narrow window around \(c\), assignment is as-if randomized. It supports randomization inference but targets the window population and requires a defensible window-selection procedure. It is conceptually distinct from continuity-based local-polynomial identification.</p>
+
+<h3>External validity</h3>
+
+<p>RD identifies an effect at the cutoff for compliers or threshold units. Extrapolating away from \(c\) requires assumptions about treatment-effect heterogeneity. A precise local effect can still be scientifically valuable, but it should not be relabeled as a population ATE.</p>

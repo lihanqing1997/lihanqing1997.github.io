@@ -8,24 +8,106 @@ note_prev_url: "/notes/differential-equations/stability-of-equilibria/"
 note_next_url: "/notes/differential-equations/invariant-manifolds/"
 ---
 
-<p>Lyapunov functions records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>A Lyapunov function proves stability without solving the differential
+equation. It is an energy-like scalar whose derivative along trajectories has
+a controlled sign.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Lyapunov function is a scalar function that decreases along trajectories, certifying stability without solving the equation explicitly.</p>
-    </div>
+<h3>Direct stability theorem</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(V\) is positive definite near an equilibrium and \(\dot V=\nabla V\cdot f\le0\), then the equilibrium is stable. If \(\dot V<0\) away from the equilibrium, one obtains asymptotic stability under suitable compactness conditions.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Lyapunov).</span> Let \(x^*=0\), and
+suppose \(V\in C^1\) near zero satisfies
+\[
+V(0)=0,\qquad V(x)>0\ (x\ne0),\qquad
+\dot V(x)=\nabla V(x)^\top f(x)\le0.
+\]
+Then zero is stable. If \(\dot V(x)<0\) for \(x\ne0\), zero is asymptotically
+stable.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Sublevel sets of \(V\) trap trajectories. Strict decrease prevents trajectories from remaining away from the equilibrium indefinitely.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Given a small sphere of radius
+\(\varepsilon\), compactness makes
+\[
+m_\varepsilon=\min_{\|x\|=\varepsilon}V(x)>0.
+\]
+Choose \(\delta\) so \(V(x_0)<m_\varepsilon\) for \(\|x_0\|<\delta\). Since
+\(V\) is nonincreasing, the trajectory cannot cross the sphere, proving
+stability. If \(\dot V<0\), a precompact trajectory has omega-limit set on
+which \(V\) is constant; strict negativity forces that set to be \(\{0\}\),
+giving convergence.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Lyapunov methods replace explicit solutions by energy estimates, paralleling PDE energy methods.</p>
-    </div>
+<h3>Exponential estimates</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If locally
+\[
+c_1\|x\|^2\le V(x)\le c_2\|x\|^2,
+\qquad
+\dot V(x)\le-c_3\|x\|^2,
+\]
+then
+\[
+\|x(t)\|
+\le\sqrt{\frac{c_2}{c_1}}
+e^{-c_3t/(2c_2)}\|x_0\|.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\(\dot V\le-(c_3/c_2)V\), so
+\(V(t)\le e^{-c_3t/c_2}V(0)\). Apply the quadratic bounds and take square
+roots.</p>
+</div>
+
+<h3>LaSalle invariance principle</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (LaSalle).</span> Let \(K\) be compact
+and positively invariant, and let \(\dot V\le0\) on \(K\). Every trajectory in
+\(K\) approaches the largest invariant subset of
+\[
+E=\{x\in K:\dot V(x)=0\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> \(V(\phi_t(x))\) is
+nonincreasing and bounded below, hence converges. On the omega-limit set it must
+be constant by invariance and continuity, so \(\dot V=0\) there. The omega-limit
+set is invariant and lies in \(E\), proving approach to its largest invariant
+subset.</p>
+</div>
+
+<h3>Quadratic functions for linear systems</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> A matrix \(A\) is Hurwitz if
+and only if for every \(Q\succ0\) there is a unique \(P\succ0\) satisfying
+\[
+A^\top P+PA=-Q.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(A\) is Hurwitz, define
+\[
+P=\int_0^\infty e^{tA^\top}Qe^{tA}\,\mathrm{d}t.
+\]
+The integral converges, is positive definite, and differentiation under the
+integral gives the equation. Uniqueness follows by integrating the homogeneous
+identity. Conversely, \(V=x^\top Px\) has
+\(\dot V=-x^\top Qx<0\), giving exponential stability and hence Hurwitz
+spectrum.</p>
+</div>
+
+<h3>Constructing Lyapunov functions</h3>
+
+<p>Mechanical energy, entropy, relative entropy, and distance to an invariant
+set are common candidates. Sum-of-squares programming searches polynomial
+certificates but supplies sufficient, not necessary, conditions at fixed
+degree. Converse Lyapunov theorems show asymptotic stability implies existence
+of a Lyapunov function under regularity, though it may not have a simple closed
+form.</p>

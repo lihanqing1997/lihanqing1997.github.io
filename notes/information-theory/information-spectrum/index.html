@@ -36,3 +36,132 @@ The spectral sup version reverses the inequality. Similar definitions apply to e
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> In the iid case the normalized information density is an empirical average of integrable random variables. The law of large numbers collapses the spectrum to a point. For general non-iid sequences, the spectrum records the possible limiting range instead of forcing a single expectation.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Normalized information density</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For arbitrary source laws
+  \(P_{X^n}\), define
+  \[
+  \imath_{X^n}(X^n)=-\log P_{X^n}(X^n).
+  \]
+  The spectral sup- and inf-entropy rates are
+  \[
+  \overline H(\mathbf X)=
+  p\text{-}\limsup_{n\to\infty}
+  \frac1n\imath_{X^n}(X^n),
+  \qquad
+  \underline H(\mathbf X)=
+  p\text{-}\liminf_{n\to\infty}
+  \frac1n\imath_{X^n}(X^n).
+  \]</p>
+</div>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For random variables \(Z_n\),
+  \[
+  p\text{-}\limsup Z_n=
+  \inf\{\alpha:P(Z_n>\alpha)\to0\},
+  \]
+  and
+  \[
+  p\text{-}\liminf Z_n=
+  \sup\{\alpha:P(Z_n<\alpha)\to0\}.
+  \]</p>
+</div>
+
+<p>For iid or stationary ergodic sources, the two rates coincide with Shannon entropy rate. Their separation measures failure of information stability.</p>
+
+<h3>General fixed-length source coding</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For an arbitrary source sequence
+  \(\mathbf X=\{X^n\}\), the smallest asymptotically achievable fixed-length coding rate with vanishing error is
+  \[
+  R^*=\overline H(\mathbf X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For achievability, at rate
+  \(R>\overline H\), encode the set
+  \[
+  A_n=\{x^n:P_{X^n}(x^n)\ge e^{-nR}\}.
+  \]
+  It has at most \(e^{nR}\) elements and probability tending to one.
+  For the converse, any codebook \(C_n\) of size \(e^{nR}\) satisfies, for \(\gamma>0\),
+  \[
+  P(X^n\in C_n)
+  \le P\{\imath_{X^n}(X^n)\le n(R+\gamma)\}
+  +e^{-n\gamma},
+  \]
+  because strings outside the low-information set each have probability below \(e^{-n(R+\gamma)}\). If \(R<\overline H\), success cannot tend to one.</p>
+</div>
+
+<h3>Spectral mutual-information rates</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For input-output pairs,
+  \[
+  \imath_{X^n;Y^n}=
+  \log\frac{\mathrm{d}P_{Y^n\mid X^n}}
+  {\mathrm{d}P_{Y^n}}(Y^n\mid X^n),
+  \]
+  and
+  \[
+  \underline I(\mathbf X;\mathbf Y)=
+  p\text{-}\liminf\frac1n\imath_{X^n;Y^n}.
+  \]</p>
+</div>
+
+<h3>Verdú-Han channel formula</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a general channel sequence
+  \(W^n\), capacity under vanishing average error is
+  \[
+  C=\sup_{\mathbf X}\underline I(\mathbf X;\mathbf Y),
+  \]
+  where the supremum ranges over input-process sequences satisfying any imposed constraints.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Random coding with threshold decoding succeeds when code rate lies below the probabilistic lower limit of normalized information density. Conversely, every code induces a uniform message and channel input; a meta-converse bounds success probability by the lower tail of information density plus an exponentially small slack. Optimizing over input sequences yields the formula.</p>
+</div>
+
+<h3>A nonergodic mixture source</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> First draw
+  \(J\in\{1,2\}\), then generate the entire sequence iid from \(P_J\). Conditional AEP gives
+  \[
+  -\frac1n\log P(X^n)\to H(P_J)
+  \]
+  in probability within each component. If \(H(P_1)<H(P_2)\), then
+  \[
+  \underline H=H(P_1),\qquad
+  \overline H=H(P_2).
+  \]
+  No single typical-set exponent carries nearly all probability for both components.</p>
+</div>
+
+<h3>Second-order information spectrum</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> At first-order rate \(R\), second-order analysis studies quantiles of
+  \[
+  \frac{\imath_{X^n}(X^n)-nR}{\sqrt n}
+  \quad\text{or}\quad
+  \frac{\imath_{X^n;Y^n}-nR}{\sqrt n}.
+  \]
+  For iid models these often converge normally, producing dispersion terms; information-spectrum definitions remain valid when no central limit theorem holds.</p>
+</div>
+
+<h3>Smooth entropies</h3>
+
+<p>One-shot source coding is governed by quantiles rather than expectations. Smooth max-entropy measures the logarithmic size of a high-probability set after discarding error mass; hypothesis-testing entropy and smooth min-entropy govern related compression, randomness extraction, and cryptographic tasks. Their iid limits recover Shannon quantities through the asymptotic equipartition property.</p>
+
+<h3>Why expectation can be insufficient</h3>
+
+<p>Mutual information \(n^{-1}I(X^n;Y^n)\) is an average of information density. A small-probability region with enormous density can inflate the mean without supporting reliable communication for most messages. Operational coding theorems for arbitrary sources and channels therefore use probabilistic liminf and limsup rather than expected information alone.</p>

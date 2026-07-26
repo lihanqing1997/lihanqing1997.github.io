@@ -8,24 +8,125 @@ note_prev_url: "/notes/optimization/proximal-gradient-methods/"
 note_next_url: "/notes/optimization/sparse-optimization-coordinate-proximal-methods/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Splitting methods and ADMM.</p>
+<p>Splitting introduces auxiliary variables so that incompatible structures
+become separate subproblems. ADMM combines augmented-Lagrangian stabilization
+with alternating minimization and a dual update.</p>
 
-    <h3>Splitting principle</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Splitting methods rewrite one hard problem as coupled simpler subproblems, often by introducing variables so that smooth, nonsmooth, and constraint parts are handled separately.</p>
-    </div>
+<h3>The augmented Lagrangian</h3>
 
-    <h3>ADMM iteration</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(\min f(x)+g(z)\) subject to \(Ax+Bz=c\), ADMM alternates minimization of the augmented Lagrangian in \(x\) and \(z\), followed by a dual ascent step.</p>
-    </div>
+<p>Consider the convex problem
+\[
+\min_{x,z}\ f(x)+g(z)
+\quad\text{subject to}\quad Ax+Bz=c.
+\]
+For penalty \(\rho>0\), the augmented Lagrangian is
+\[
+\mathcal L_\rho(x,z,y)
+=f(x)+g(z)+y^\top(Ax+Bz-c)
+ +\frac\rho2\|Ax+Bz-c\|^2.
+\]
+The quadratic term changes the algorithm but not the feasible primal
+solutions or KKT equations.</p>
 
-    <h3>Convergence theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For closed proper convex \(f,g\) and a saddle point, standard ADMM converges in objective and feasibility residuals under mild rank and solvability conditions.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> With scaled dual
+    variable \(u=y/\rho\), ADMM performs
+    \[
+    \begin{aligned}
+    x^{k+1}&\in\operatorname*{arg\,min}_x
+      \left\{f(x)+\frac\rho2
+      \|Ax+Bz^k-c+u^k\|^2\right\},\\
+    z^{k+1}&\in\operatorname*{arg\,min}_z
+      \left\{g(z)+\frac\rho2
+      \|Ax^{k+1}+Bz-c+u^k\|^2\right\},\\
+    u^{k+1}&=u^k+Ax^{k+1}+Bz^{k+1}-c.
+    \end{aligned}
+    \]</p>
+</div>
 
-    <h3>Why it is useful</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> ADMM is valuable when different pieces of the objective have cheap proximal maps or live on different machines, variables, or model components.</p>
-    </div>
+<p>The primal residual
+\(r^{k+1}=Ax^{k+1}+Bz^{k+1}-c\) measures infeasibility. The dual residual
+\(s^{k+1}=\rho A^\top B(z^{k+1}-z^k)\) measures change in the stationarity
+condition induced by the second block.</p>
+
+<h3>KKT residuals from the subproblems</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Approximate stationarity.</span> Let
+    \(y^{k+1}=\rho u^{k+1}\). The ADMM optimality equations imply
+    \[
+    \begin{aligned}
+    0&\in\partial g(z^{k+1})+B^\top y^{k+1},\\
+    0&\in\partial f(x^{k+1})+A^\top y^{k+1}+s^{k+1}.
+    \end{aligned}
+    \]
+    Hence \(r^{k+1}\to0\) and \(s^{k+1}\to0\) imply the KKT equations
+    asymptotically.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The \(z\)-subproblem
+    condition is
+    \[
+    0\in\partial g(z^{k+1})
+      +\rho B^\top(Ax^{k+1}+Bz^{k+1}-c+u^k).
+    \]
+    Since \(u^{k+1}=u^k+r^{k+1}\), this is the first inclusion. The
+    \(x\)-condition uses \(z^k\); add and subtract \(Bz^{k+1}\), then use the
+    dual update to obtain the second inclusion and the stated \(s^{k+1}\).</p>
+</div>
+
+<h3>Convex convergence</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">ADMM convergence.</span> Suppose \(f\)
+    and \(g\) are proper, closed, and convex; each ADMM subproblem has a
+    solution; and the unaugmented Lagrangian has a saddle point
+    \((x^\star,z^\star,y^\star)\). Then
+    \[
+    r^k\to0,\qquad s^k\to0,\qquad
+    f(x^k)+g(z^k)\to f(x^\star)+g(z^\star).
+    \]
+    The dual sequence converges to a dual solution. Under standard rank or
+    strong-convexity conditions, the primal variables also converge.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Monotonicity of
+    \(\partial f\) and \(\partial g\), applied to the subproblem optimality
+    equations and the KKT equations at the saddle point, yields the Lyapunov
+    inequality
+    \[
+    \rho\|B(z^{k+1}-z^\star)\|^2
+      +\rho^{-1}\|y^{k+1}-y^\star\|^2
+    \le
+    \rho\|B(z^k-z^\star)\|^2
+      +\rho^{-1}\|y^k-y^\star\|^2
+      -\rho\|r^{k+1}\|^2
+      -\rho\|B(z^{k+1}-z^k)\|^2.
+    \]
+    Summation proves square summability of primal and dual residuals and hence
+    their convergence to zero. Weak duality bounds the objective error above
+    and below by terms involving \(r^k\) and \(y^k\), proving value
+    convergence. Cluster points satisfy KKT; additional identifiability
+    conditions make the primal limit unique.</p>
+</div>
+
+<h3>Consensus splitting</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> To minimize
+    \(\sum_{j=1}^Mf_j(x)+g(x)\), introduce local copies \(x_j\) and a consensus
+    variable \(z\), with \(x_j=z\). The \(x_j\)-updates are independent:
+    \[
+    x_j^{k+1}
+    =\operatorname{prox}_{f_j/\rho}(z^k-u_j^k).
+    \]
+    The \(z\)-update combines the local proposals through the proximal map of
+    \(g\), followed by dual consensus updates. This is useful when data,
+    likelihood terms, or model components are distributed.</p>
+</div>
+
+<p>The penalty \(\rho\) changes numerical conditioning but not the target.
+Residual balancing adapts \(\rho\) when primal feasibility and dual
+stationarity progress at very different rates.</p>

@@ -36,3 +36,131 @@ It is the most likely empirical law among those satisfying the constraint.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Conditioned on the rare event \(\widehat P_n\in\Gamma\), empirical laws concentrate near the information projection when it is unique. This is the finite-alphabet form of maximum entropy under constraints.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Sanov's theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(X_i\) be iid with law \(P\) on a finite alphabet and let \(\widehat P_n\) be the empirical law. For a set \(\Gamma\) of probability measures,
+  \[
+  -\inf_{Q\in\Gamma^\circ}D(Q\|P)
+  \le\liminf_{n\to\infty}\frac1n
+  \log P(\widehat P_n\in\Gamma)
+  \]
+  \[
+  \le\limsup_{n\to\infty}\frac1n
+  \log P(\widehat P_n\in\Gamma)
+  \le-\inf_{Q\in\overline\Gamma}D(Q\|P).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For the upper bound, sum
+  \(P^n(T_Q)\le e^{-nD(Q\|P)}\) over polynomially many types in
+  \(\overline\Gamma\). For the lower bound, choose
+  \(Q\in\Gamma^\circ\) with divergence close to the infimum and approximate \(Q\) by \(n\)-types \(Q_n\in\Gamma^\circ\). The lower type bound gives
+  \[
+  P(\widehat P_n=Q_n)\ge
+  (n+1)^{-m}e^{-nD(Q_n\|P)}.
+  \]
+  Continuity of KL on the relevant support completes the limit.</p>
+</div>
+
+<h3>Cramér's theorem by contraction</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> For a real function \(f\) on the alphabet,
+  \[
+  P\left(\frac1n\sum_if(X_i)\in B\right)
+  \]
+  has rate
+  \[
+  I(z)=\inf_{Q:Qf=z}D(Q\|P).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The sample mean is the continuous map
+  \(Q\mapsto Qf\) applied to the empirical measure. Apply the contraction principle to Sanov's large-deviation principle.</p>
+</div>
+
+<h3>Information projection</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The information projection of \(P\) onto a set \(\mathcal C\) is
+  \[
+  Q^*\in\arg\min_{Q\in\mathcal C}D(Q\|P).
+  \]</p>
+</div>
+
+<p>Conditioned on the rare event \(\widehat P_n\in\mathcal C\), empirical distributions concentrate near \(Q^*\) when the minimizer is unique. This is the Gibbs conditioning principle: the least unlikely way to satisfy a constraint dominates.</p>
+
+<h3>Exponential-family form under moment constraints</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Minimize \(D(Q\|P)\) subject to
+  \(Qf_j=c_j\), \(j=1,\ldots,k\), and \(Q1=1\). At an interior optimum,
+  \[
+  Q_\lambda(x)=
+  P(x)\exp\left\{
+  \sum_{j=1}^k\lambda_jf_j(x)-A(\lambda)\right\},
+  \]
+  where \(A(\lambda)\) normalizes the mass and \(\lambda\) is chosen to satisfy the constraints.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Form the Lagrangian
+  \[
+  \sum_xq(x)\log\frac{q(x)}{p(x)}
+  -\sum_j\lambda_j\left\{\sum_xq(x)f_j(x)-c_j\right\}
+  -\nu\left\{\sum_xq(x)-1\right\}.
+  \]
+  Stationarity in \(q(x)\) gives
+  \(\log\{q(x)/p(x)\}+1-\sum_j\lambda_jf_j(x)-\nu=0\). Exponentiate and normalize.</p>
+</div>
+
+<h3>Pythagorean inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(\mathcal C\) is convex and
+  \(Q^*\) is the I-projection of \(P\) onto \(\mathcal C\), then for every
+  \(Q\in\mathcal C\),
+  \[
+  D(Q\|P)\ge D(Q\|Q^*)+D(Q^*\|P).
+  \]
+  Equality holds for affine constraint sets under regularity.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Consider
+  \(Q_t=(1-t)Q^*+tQ\). Optimality makes the right derivative of
+  \(D(Q_t\|P)\) at zero nonnegative. Computing the derivative yields
+  \[
+  \sum_x\{Q(x)-Q^*(x)\}
+  \log\frac{Q^*(x)}{P(x)}\ge0.
+  \]
+  Expand
+  \(D(Q\|P)-D(Q\|Q^*)-D(Q^*\|P)\); it equals this inner product.</p>
+</div>
+
+<h3>Maximum entropy as reverse projection</h3>
+
+<p>On a finite alphabet with uniform \(U\),
+\[
+D(Q\|U)=\log|\mathcal X|-H(Q).
+\]
+Thus maximizing entropy under constraints is equivalent to projecting the uniform law in KL. With a nonuniform reference \(P\), relative-entropy projection is the corresponding minimum-discrimination update.</p>
+
+<h3>Rare-event conditional law</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose \(\mathcal C\) has unique I-projection \(Q^*\). For fixed \(k\), conditioned on
+  \(\widehat P_n\in\mathcal C\),
+  \[
+  (X_1,\ldots,X_k)\Rightarrow(Q^*)^{\otimes k}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Sanov makes empirical measures outside any neighborhood of \(Q^*\) exponentially less likely than the constraint event. Conditional on an empirical type close to \(Q^*\), sampling finitely many coordinates without replacement converges to iid sampling from that type. Combine concentration of the type with this finite-coordinate approximation.</p>
+</div>

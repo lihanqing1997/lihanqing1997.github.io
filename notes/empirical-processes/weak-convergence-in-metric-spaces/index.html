@@ -8,27 +8,147 @@ note_prev_url: "/notes/empirical-processes/outer-probability-and-measurability/"
 note_next_url: "/notes/empirical-processes/bounded-function-spaces/"
 ---
 
-<p>Empirical processes live as random elements of function spaces. The needed convergence is weak convergence in metric spaces, not just finite-dimensional convergence.</p>
+<p>Finite-dimensional distributions specify what a process does at finitely many indices. Weak convergence in a function space additionally controls all unobserved indices through tightness. This distinction is what separates an ordinary vector central limit theorem from a Donsker theorem.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Random elements \(X_n\) converge weakly to \(X\), written \(X_n\rightsquigarrow X\), if \(E^*h(X_n)\to Eh(X)\) for every bounded continuous \(h\) on the state space.</p>
-    </div>
+<h3>Weak convergence with outer expectations</h3>
 
-    <h3>Finite-dimensional laws and tightness</h3>
-    <ul>
-        <li>Finite-dimensional convergence identifies candidate limits; tightness prevents uncontrolled oscillation.</li>
-        <li>The continuous mapping theorem carries weak convergence through continuous functionals such as suprema, integrals, and argmax maps when the map is continuous at the limit.</li>
-        <li>In empirical-process applications, the metric often comes from \(L_2(P)\), but the sample paths are viewed in \(\ell^\infty(\mathcal F)\).</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(Z_n\) be arbitrary maps into a metric space \((S,d)\), and let \(Z\) be a Borel measurable, tight random element of \(S\). We write
+  \[
+  Z_n\rightsquigarrow Z
+  \]
+  if
+  \[
+  \mathbb E^\star h(Z_n)\to\mathbb Eh(Z)
+  \]
+  for every bounded continuous \(h:S\to\mathbb R\). When every \(Z_n\) is Borel measurable, this is ordinary weak convergence of laws.</p>
+</div>
 
-    <h3>Continuous mapping</h3>
-    <p>This page supplies the convergence language used later for Donsker classes, bootstrap empirical processes, and functional delta methods.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Portmanteau inequalities.</span> If \(Z_n\rightsquigarrow Z\), then for every closed \(F\subseteq S\) and open \(G\subseteq S\),
+  \[
+  \limsup_nP^\star(Z_n\in F)\le P(Z\in F),
+  \]
+  \[
+  \liminf_nP_\star(Z_n\in G)\ge P(Z\in G).
+  \]
+  Consequently, for every Borel set \(A\) with \(P(Z\in\partial A)=0\),
+  \[
+  P^\star(Z_n\in A)\to P(Z\in A)
+  \]
+  when asymptotic measurability removes the inner-outer gap.</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Tightness criterion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> For processes in \(\ell^\infty(T)\), a standard route is finite-dimensional convergence plus asymptotic tightness. In practice, tightness is often proved through asymptotic equicontinuity under a semimetric \(d\) whose completion is totally bounded.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a closed set \(F\), define
+  \[
+  h_\varepsilon(x)
+  =\left(1-\frac{d(x,F)}{\varepsilon}\right)_+.
+  \]
+  Then \(1_F\le h_\varepsilon\le1_{\{d(x,F)\le\varepsilon\}}\), and \(h_\varepsilon\) is bounded continuous. Therefore
+  \[
+  \limsup_nP^\star(Z_n\in F)
+  \le\mathbb Eh_\varepsilon(Z).
+  \]
+  Let \(\varepsilon\downarrow0\) and use dominated convergence. Apply the closed-set result to \(G^c\) for the open-set inequality. A continuity set is squeezed between its interior and closure.</p>
+</div>
 
-    <h3>Supremum functionals</h3>
-    <p>For example, if \(\mathbb G_n\rightsquigarrow\mathbb G\) in \(\ell^\infty(\mathcal F)\), then \(\sup_{f\in\mathcal F}|\mathbb G_nf|\rightsquigarrow\sup_{f\in\mathcal F}|\mathbb Gf|\) whenever the supremum map is continuous at the limiting sample path. This is how empirical-process limits become test-statistic limits.</p>
+<h3>Tightness and asymptotic tightness</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A Borel random element \(Z\) is tight if, for every \(\varepsilon>0\), there is compact \(K\subseteq S\) with
+  \[
+  P(Z\in K)\ge1-\varepsilon.
+  \]
+  A sequence \(Z_n\) is asymptotically tight if, for every \(\varepsilon>0\), there is compact \(K\) such that every \(\delta>0\) satisfies
+  \[
+  \liminf_nP_\star(Z_n\in K^\delta)\ge1-\varepsilon,
+  \]
+  where \(K^\delta=\{x:d(x,K)<\delta\}\).</p>
+</div>
+
+<p>The enlargement \(K^\delta\) accommodates nonmeasurability and spaces in which exact compact containment is inconvenient. In separable metric spaces with measurable \(Z_n\), it reduces to the usual uniform-tightness criterion.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Prokhorov theorem.</span> On a complete separable metric space, a family of probability measures is relatively compact for weak convergence if and only if it is tight.</p>
+</div>
+
+<p>This theorem supplies subsequential limits. Identifying all subsequential limits through finite-dimensional distributions or a convergence-determining class then proves full weak convergence.</p>
+
+<h3>Finite-dimensional convergence</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Processes \(Z_n=\{Z_n(t):t\in T\}\) converge in finite-dimensional distributions to \(Z\) if, for every \(t_1,\ldots,t_k\in T\),
+  \[
+  (Z_n(t_1),\ldots,Z_n(t_k))
+  \rightsquigarrow
+  (Z(t_1),\ldots,Z(t_k)).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Finite-dimensional convergence plus tightness.</span> Suppose \(Z_n\) are asymptotically tight in a function space \(S\), and every subsequential weak limit is determined uniquely by its finite-dimensional distributions. If the finite-dimensional distributions converge to those of a tight \(Z\in S\), then
+  \[
+  Z_n\rightsquigarrow Z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Every subsequence has a further weakly convergent subsequence by asymptotic tightness and Prokhorov-type compactness. Coordinate evaluation is continuous at the relevant paths or can be handled by the finite-dimensional assumption, so the subsequential limit has the prescribed finite-dimensional distributions. Uniqueness makes its law equal to that of \(Z\). Since every subsequence has a further subsequence with the same limit, the original sequence converges.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (finite-dimensional convergence is insufficient).</span> On \(C[0,1]\), let
+  \[
+  Z_n(t)=\max\{1-n|t-U_n|,0\},
+  \]
+  where \(U_n\sim U[0,1]\). For every fixed finite set of times, \(Z_n(t_j)\to_p0\), because a spike of width \(2/n\) misses them with high probability. Yet
+  \[
+  \|Z_n\|_\infty=1
+  \]
+  always, so \(Z_n\) cannot converge to zero in \(C[0,1]\). The missing ingredient is tight control of oscillations.</p>
+</div>
+
+<h3>Continuous mapping</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Extended continuous-mapping theorem.</span> Suppose \(Z_n\rightsquigarrow Z\), maps \(g_n:S\to T\) and \(g:S\to T\) satisfy
+  \[
+  x_n\to x,\ x\in S_0
+  \quad\Longrightarrow\quad
+  g_n(x_n)\to g(x),
+  \]
+  and \(P(Z\in S_0)=1\). Then
+  \[
+  g_n(Z_n)\rightsquigarrow g(Z),
+  \]
+  subject to asymptotic measurability.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Tightness restricts \(Z_n\) to compact neighborhoods with arbitrarily high probability. On convergent sequences whose limits lie in \(S_0\), the assumed sequential continuity gives uniform approximation over these compact sets by contradiction. Composition with bounded continuous test functions and the weak convergence of \(Z_n\) then yields the result.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Supremum functional.</span> On \(\ell^\infty(T)\),
+  \[
+  \left|\sup_t|z(t)|-\sup_t|w(t)|\right|
+  \le\|z-w\|_T.
+  \]
+  Hence if \(Z_n\rightsquigarrow Z\) in \(\ell^\infty(T)\), then
+  \[
+  \|Z_n\|_T\rightsquigarrow\|Z\|_T.
+  \]</p>
+</div>
+
+<h3>Asymptotic equicontinuity criterion</h3>
+
+<p>For processes in \(\ell^\infty(T)\), tightness is commonly established by finding a semimetric \(\rho\) such that \((T,\rho)\) is totally bounded and
+\[
+\lim_{\delta\downarrow0}\limsup_{n\to\infty}
+P^\star\left\{
+\sup_{\rho(s,t)<\delta}
+|Z_n(s)-Z_n(t)|>\varepsilon
+\right\}=0
+\]
+for every \(\varepsilon>0\). Finite-dimensional convergence then specifies the values on a finite \(\delta\)-net, while equicontinuity controls all points between the net points.</p>

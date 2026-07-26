@@ -8,25 +8,148 @@ note_prev_url: "/notes/statistical-decision-theory/quadratic-likelihood-approxim
 note_next_url: "/notes/statistical-decision-theory/posterior-distributions-and-bayes-procedures/"
 ---
 
-<p>Once a local experiment is Gaussian, the standard tests have a common geometric origin: ellipsoids and projections in information geometry.</p>
+<p>In a Gaussian shift, tests and confidence sets are projections and ellipsoids in the information metric. The Wald, score, and likelihood-ratio constructions are three coordinate descriptions of the same local normal component.</p>
 
-    <h3>Wald ellipsoid</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> If \(\hat\theta_n\) is efficient and \(I_{\theta_0}\) is nonsingular, a local confidence ellipsoid is</p>
-        <p>\[
-n(\hat\theta_n-\theta)^\top I_{\theta}(\hat\theta_n-\theta)\le \chi^2_{p,1-\alpha}.
+<h3>Smooth null hypotheses</h3>
+
+<p>Let \(\theta\in\mathbb R^p\) and consider
+\[
+H_0:g(\theta)=0,
+\]
+where \(g:\mathbb R^p\to\mathbb R^q\) has derivative
+\[
+G=\dot g_{\theta_0}
+\]
+of full row rank \(q\). The local null tangent space is
+\[
+T_0=\{h:Gh=0\}.
+\]
+Its information-orthogonal complement contains the \(q\) directions tested by the hypothesis.</p>
+
+<h3>The Wald statistic</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  \rightsquigarrow N_p(0,I^{-1}),
+  \]
+  the Wald statistic is
+  \[
+  W_n
+  =
+  n\,g(\hat\theta_n)^\top
+  \{G I^{-1}G^\top\}^{-1}
+  g(\hat\theta_n),
+  \]
+  with consistent plug-in estimates used in practice.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under \(H_0\),
+  \[
+  W_n\rightsquigarrow\chi_q^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The delta method gives
+  \[
+  \sqrt n\,g(\hat\theta_n)
+  =
+  G\sqrt n(\hat\theta_n-\theta_0)+o_p(1)
+  \rightsquigarrow
+  N_q(0,GI^{-1}G^\top).
+  \]
+  Standardizing this Gaussian vector and taking its squared norm yields
+  \(\chi_q^2\). \(\square\)</p>
+</div>
+
+<h3>Score and likelihood-ratio statistics</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\hat\theta_{0,n}\) be the constrained MLE. Under uniform LAQ and regularity,
+  \[
+  LR_n
+  =
+  2\{\ell_n(\hat\theta_n)-\ell_n(\hat\theta_{0,n})\},
+  \]
+  the efficient score statistic \(S_n\), and the Wald statistic satisfy
+  \[
+  LR_n=S_n+o_p(1)=W_n+o_p(1)
+  \rightsquigarrow\chi_q^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In local coordinates the unconstrained quadratic maximizer is
+  \(\hat h=I^{-1}\Delta\), and the null maximizer is its \(I\)-orthogonal projection onto \(T_0\). The likelihood-ratio statistic is the squared information distance of \(\hat h\) from \(T_0\). The efficient score removes the score component tangent to \(T_0\) and takes the same squared norm. The Wald statistic measures the corresponding normal displacement through \(G\). These are algebraically identical quadratic forms in the Gaussian central sequence, up to estimated-information and likelihood remainders. \(\square\)</p>
+</div>
+
+<h3>Local alternatives and noncentrality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under
+  \[
+  \theta_n=\theta_0+h/\sqrt n,
+  \]
+  the three statistics converge to
+  \[
+  \chi_q^2(\lambda),
+  \qquad
+  \lambda
+  =
+  (Gh)^\top
+  (GI^{-1}G^\top)^{-1}
+  Gh.
+  \]</p>
+</div>
+
+<p>The noncentrality is the squared information distance of the local alternative from the null tangent space. A level-\(\alpha\) test has limiting power
+\[
+P\{\chi_q^2(\lambda)>\chi_{q,1-\alpha}^2\}.
 \]</p>
-    </div>
 
-    <h3>Wald, score, and likelihood-ratio equivalence</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In regular LAN models, Wald, score, and likelihood-ratio statistics have the same \(\chi^2_p\) null limit for fixed-dimensional smooth hypotheses.</p>
-    </div>
+<h3>Confidence ellipsoids</h3>
 
-    <h3>Quadratic likelihood proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> All three statistics reduce to the same quadratic form in the efficient central sequence, up to \(o_p(1)\), after projecting onto the tangent space of the null hypothesis.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An asymptotic
+  \(1-\alpha\) confidence ellipsoid is
+  \[
+  C_n
+  =
+  \left\{
+  \theta:
+  n(\hat\theta_n-\theta)^\top
+  \hat I_n(\hat\theta_n-\theta)
+  \leq\chi_{p,1-\alpha}^2
+  \right\}.
+  \]</p>
+</div>
 
-    <h3>Local power envelopes</h3>
-    <p>Under local alternatives, the \(\chi^2\) limit becomes noncentral. This gives the Gaussian benchmark for asymptotic power.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If the asymptotic normality and information consistency hold uniformly on compact parameter sets, then
+  \[
+  \inf_{\theta\in K}P_\theta(\theta\in C_n)\to1-\alpha.
+  \]</p>
+</div>
+
+<p>Pointwise normality gives only pointwise coverage. Uniform coverage requires uniform control of the estimator approximation and information estimate.</p>
+
+<h3>Test–confidence duality</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(\varphi_{\theta,n}\) be a level-\(\alpha\) test of the point null \(H_0:\theta=\theta_0\). Then
+  \[
+  C_n(X)=\{\theta:\varphi_{\theta,n}(X)=0\}
+  \]
+  is a \(1-\alpha\) confidence set. Conversely, every confidence set defines tests by rejection when \(\theta\notin C_n\).</p>
+</div>
+
+<h3>One-sided constraints</h3>
+
+<p>If the null lies on a boundary or is defined by inequalities, the local parameter set is a cone rather than a linear subspace. Projection of a Gaussian vector onto a cone yields a chi-bar-square distribution, a mixture of chi-square laws with different degrees of freedom. Wilks' ordinary \(\chi_q^2\) conclusion therefore fails at boundaries.</p>
+
+<h3>Weak identification and growing dimension</h3>
+
+<p>Wald, score, and likelihood-ratio equivalence assumes nonsingular information and fixed dimension. Near-singular information, nuisance parameters unidentified under the null, or \(p=p_n\to\infty\) can produce different limits. The Gaussian experiment must be reidentified at the correct scale before using standard ellipsoids.</p>

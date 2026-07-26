@@ -8,27 +8,178 @@ note_prev_url: "/notes/empirical-processes/stochastic-equicontinuity-and-applica
 note_next_url: "/notes/empirical-processes/symmetrization-and-rademacher-processes/"
 ---
 
-<p>Entropy measures how many simple representatives are needed to approximate a function class. It is the basic quantitative notion of size.</p>
+<p>A function class is infinite, but an empirical process can only resolve it to finite accuracy. Covering and bracketing numbers count the representatives needed at each resolution. Their logarithms are called entropies because they measure the information required to encode an index up to a prescribed statistical error.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(N(\varepsilon,\mathcal F,L_2(Q))\) is the smallest number of \(L_2(Q)\)-balls of radius \(\varepsilon\) covering \(\mathcal F\). \(N_{[]}(\varepsilon,\mathcal F,L_2(P))\) counts brackets \([\ell,u]\) with \(\|u-\ell\|_{P,2}<\varepsilon\).</p>
-    </div>
+<h3>Coverings, packings, and total boundedness</h3>
 
-    <h3>Entropy notions</h3>
-    <ul>
-        <li>Covering numbers approximate functions by centers; bracketing approximates them from above and below.</li>
-        <li>Uniform entropy takes a supremum over finitely discrete probability measures \(Q\).</li>
-        <li>Finite entropy at every scale supports GC results; integrable square-root entropy supports Donsker results.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \((T,d)\) be a semimetric space.</p>
+  <ol>
+    <li>An \(\varepsilon\)-net is a finite set \(T_\varepsilon\subset T\) such that every \(t\in T\) satisfies \(d(t,T_\varepsilon)\leq\varepsilon\).</li>
+    <li>The covering number \(N(\varepsilon,T,d)\) is the least cardinality of an \(\varepsilon\)-net.</li>
+    <li>An \(\varepsilon\)-packing is a set whose distinct points are more than \(\varepsilon\) apart. The packing number \(M(\varepsilon,T,d)\) is its largest possible cardinality.</li>
+    <li>The metric entropy is \(H(\varepsilon,T,d)=\log N(\varepsilon,T,d)\).</li>
+  </ol>
+</div>
 
-    <h3>Brackets and probability width</h3>
-    <p>Most empirical-process proofs reduce to bounding one of these entropy functions at the right scale.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For every \(\varepsilon>0\),
+  \[
+  M(2\varepsilon,T,d)\leq N(\varepsilon,T,d)\leq M(\varepsilon,T,d).
+  \]
+  Consequently, \(T\) is totally bounded if and only if \(N(\varepsilon,T,d)<\infty\) for every \(\varepsilon>0\).</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Covering versus bracketing</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Definition.</span> Covering and bracketing are related but not identical. Brackets are stronger because they order functions pointwise; hence bracketing entropy often gives easier measurability and LLN arguments, while covering entropy is more flexible for symmetrized processes.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> An \(\varepsilon\)-ball contains at most one point of a \(2\varepsilon\)-packing, proving the first inequality. For the second, take a maximal \(\varepsilon\)-packing. If some \(t\in T\) were farther than \(\varepsilon\) from every packing point, adjoining \(t\) would produce a larger packing. Hence a maximal packing is an \(\varepsilon\)-net. \(\square\)</p>
+</div>
 
-    <h3>Bracket interpretation</h3>
-    <p>A bracket \([\ell,u]\) represents all \(f\) satisfying \(\ell\le f\le u\). Its statistical width is measured by \(\|u-\ell\|_{P,2}\), not by pointwise width. Thus a bracket may be wide on a very small-probability set and still be useful.</p>
+<p>For function classes the semimetric is usually \(\|f-g\|_{Q,r}\), where \(Q\) may be the population law, the empirical measure, or an arbitrary finitely supported probability measure. Entropy is therefore not intrinsic to a set of formulas alone; it depends on which regions of the sample space the metric regards as important.</p>
+
+<h3>Brackets</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For measurable functions \(l\leq u\), the bracket
+  \[
+  [l,u]=\{f:l(x)\leq f(x)\leq u(x)\text{ for every }x\}
+  \]
+  has \(L_r(P)\)-width \(\|u-l\|_{P,r}\). The bracketing number
+  \(N_{[]}(\varepsilon,\mathcal F,L_r(P))\) is the least number of brackets of width at most \(\varepsilon\) whose union contains \(\mathcal F\).</p>
+</div>
+
+<p>A bracket may be pointwise wide on a rare set and still be narrow in \(L_r(P)\). This is precisely why bracketing is adapted to probability: approximation error is charged according to how often it is observed.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If every covering bracket contains an element of \(\mathcal F\), then
+  \[
+  N(\varepsilon,\mathcal F,L_r(P))
+  \leq N_{[]}(\varepsilon,\mathcal F,L_r(P)).
+  \]
+  There is no converse bound without additional structure.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Select \(f_j\in\mathcal F\cap[l_j,u_j]\) from every nonempty bracket. If \(f\in[l_j,u_j]\), then pointwise
+  \[
+  |f-f_j|\leq u_j-l_j,
+  \]
+  so \(\|f-f_j\|_{P,r}\leq\varepsilon\). Thus the selected functions form an \(\varepsilon\)-net. A metric ball imposes no pointwise order, so it need not fit into any comparably narrow bracket. \(\square\)</p>
+</div>
+
+<h3>Uniform entropy</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If \(F\) is an envelope of \(\mathcal F\), the normalized uniform entropy is
+  \[
+  H_U(\varepsilon,\mathcal F,F)
+  =
+  \sup_Q
+  \log N\!\left(
+    \varepsilon\|F\|_{Q,2},
+    \mathcal F,L_2(Q)
+  \right),
+  \]
+  where \(Q\) ranges over finitely supported probability measures with \(\|F\|_{Q,2}>0\).</p>
+</div>
+
+<p>The supremum over \(Q\) is what makes the bound usable after conditioning on \(X_1,\ldots,X_n\): one may set \(Q=P_n\). Distribution-specific bracketing can be sharper, whereas uniform covering is particularly natural for symmetrization and VC classes.</p>
+
+<h3>Entropy calculus</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma.</span> Let \(d\) be induced by a norm.</p>
+  <ol>
+    <li>If \(\mathcal F\subset\mathcal G\), then \(N(\varepsilon,\mathcal F,d)\leq N(\varepsilon,\mathcal G,d)\).</li>
+    <li>For \(\mathcal F+\mathcal G=\{f+g\}\),
+    \[
+    N(\varepsilon+\delta,\mathcal F+\mathcal G,d)
+    \leq N(\varepsilon,\mathcal F,d)N(\delta,\mathcal G,d).
+    \]</li>
+    <li>If \(\Phi\) is \(L\)-Lipschitz, then
+    \[
+    N(L\varepsilon,\Phi(\mathcal F),d)
+    \leq N(\varepsilon,\mathcal F,d).
+    \]</li>
+    <li>If \(|f|,|g|\leq B\), then
+    \[
+    N(2B\varepsilon,\mathcal F\mathcal G,L_2(Q))
+    \leq N(\varepsilon,\mathcal F,L_2(Q))
+       N(\varepsilon,\mathcal G,L_2(Q)).
+    \]</li>
+  </ol>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The first assertion is immediate. For sums, add a center from an \(\varepsilon\)-net of \(\mathcal F\) to a center from a \(\delta\)-net of \(\mathcal G\), then use the triangle inequality. The Lipschitz assertion follows from \(d(\Phi f,\Phi g)\leq Ld(f,g)\). Finally,
+  \[
+  |fg-f'g'|\leq |g||f-f'|+|f'||g-g'|
+  \leq B|f-f'|+B|g-g'|,
+  \]
+  and the triangle inequality proves the product bound. \(\square\)</p>
+</div>
+
+<h3>Euclidean and ordered examples</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Euclidean ball).</span> Volume comparison gives, for the radius-\(R\) ball \(B_2^d(R)\),
+  \[
+  \left(\frac{R}{\varepsilon}\right)^d
+  \lesssim N(\varepsilon,B_2^d(R),\|\cdot\|_2)
+  \leq \left(1+\frac{2R}{\varepsilon}\right)^d.
+  \]
+  Hence its entropy is of order \(d\log(R/\varepsilon)\), not \(\varepsilon^{-d}\). A compact \(d\)-parameter Lipschitz model inherits this logarithmic entropy.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the upper bound.</span> Take a maximal \(\varepsilon\)-packing \(x_1,\ldots,x_M\). The disjoint balls \(B(x_j,\varepsilon/2)\) lie inside \(B(0,R+\varepsilon/2)\). Comparing volumes,
+  \[
+  M(\varepsilon/2)^d\leq (R+\varepsilon/2)^d.
+  \]
+  Thus \(M\leq(1+2R/\varepsilon)^d\), and maximality makes the packing an \(\varepsilon\)-net. \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (half-line indicators).</span> Let
+  \(\mathcal F=\{1_{(-\infty,t]}:t\in\mathbb R\}\). Choose quantiles
+  \(-\infty=t_0\leq t_1\leq\cdots\leq t_m=\infty\) so that
+  \(P(t_{j-1},t_j]\leq\varepsilon^2\), with \(m\leq\lceil\varepsilon^{-2}\rceil\).
+  For \(t\in[t_{j-1},t_j]\),
+  \[
+  1_{(-\infty,t_{j-1}]}\leq1_{(-\infty,t]}\leq1_{(-\infty,t_j]},
+  \]
+  and the bracket has \(L_2(P)\)-width at most \(\varepsilon\). Therefore
+  \[
+  N_{[]}(\varepsilon,\mathcal F,L_2(P))
+  \leq \lceil\varepsilon^{-2}\rceil.
+  \]
+  Its square-root log entropy is integrable at zero, which is the analytic core of the classical Donsker theorem.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (bounded monotone functions).</span> Let \(\mathcal M\) be the nondecreasing functions \([0,1]\to[0,1]\). For every probability law \(P\),
+  \[
+  \log N_{[]}(\varepsilon,\mathcal M,L_2(P))
+  \lesssim \varepsilon^{-1}.
+  \]
+  The entropy is infinite-dimensional but its square-root integral is finite because
+  \(\int_0^1\varepsilon^{-1/2}\,\mathrm{d}\varepsilon<\infty\). Thus bounded monotonicity alone can produce a Donsker class.</p>
+</div>
+
+<h3>Which entropy condition is needed?</h3>
+
+<p>The level of convergence determines how entropy is used:</p>
+\[
+\begin{array}{c|c}
+\text{objective} & \text{typical complexity requirement}\\ \hline
+\text{finite approximation / total boundedness}
+&N(\varepsilon)<\infty\text{ for every }\varepsilon>0,\\[2mm]
+\text{uniform law of large numbers}
+&\text{finite bracketing at every fixed scale},\\[2mm]
+\text{uniform central limit theorem}
+&\displaystyle\int_0^1\sqrt{\log N(\varepsilon)}\,\mathrm{d}\varepsilon<\infty,\\[3mm]
+\text{estimator rates}
+&\text{a localized entropy integral at the unknown rate.}
+\end{array}
+\]
+
+<p>These are sufficient templates, not equivalences. The geometry of a class may permit sharper arguments than a global entropy integral, and a poor choice of metric can conceal useful structure.</p>

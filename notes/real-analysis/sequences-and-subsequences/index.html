@@ -24,6 +24,41 @@ note_next_url: "/notes/real-analysis/series-and-absolute-convergence/"
         <p><span class="statement-title">Proof.</span> If \(x_n\to x\) and \(x_n\to y\), then \(|x-y|\le |x-x_n|+|x_n-y|\), and the right side can be made arbitrarily small, so \(x=y\). Boundedness follows by bounding the tail in a unit neighborhood of the limit and taking the maximum of finitely many initial absolute values.</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (algebra and order of limits).</span> If \(x_n\to x\), \(y_n\to y\), and \(c\in\mathbb R\), then
+\[
+x_n+y_n\to x+y,\qquad cx_n\to cx,\qquad x_ny_n\to xy.
+\]
+If \(y\ne0\), then \(x_n/y_n\to x/y\). Moreover, if \(x_n\le y_n\) eventually, then \(x\le y\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The first two assertions follow directly from the triangle inequality. Since a convergent sequence is bounded, say \(|x_n|\le M\),
+\[
+|x_ny_n-xy|\le |x_n|\,|y_n-y|+|y|\,|x_n-x|
+\le M|y_n-y|+|y|\,|x_n-x|\longrightarrow0.
+\]
+When \(y\ne0\), eventually \(|y_n|\ge |y|/2\), and hence
+\[
+\left|\frac1{y_n}-\frac1y\right|
+=\frac{|y_n-y|}{|y_ny|}
+\le \frac{2}{|y|^2}|y_n-y|\longrightarrow0.
+\]
+The quotient rule now follows from the product rule. Finally, if \(x>y\), choose \(\varepsilon=(x-y)/3\). Eventually \(x_n>x-\varepsilon>y+\varepsilon>y_n\), contradicting the eventual inequality.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (monotone convergence).</span> An increasing real sequence converges if and only if it is bounded above; in that case
+\[
+\lim_{n\to\infty}x_n=\sup_{n\ge1}x_n.
+\]
+The analogous statement holds for decreasing sequences and infima.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> A convergent sequence is bounded. Conversely, let \(x_n\) be increasing and bounded above, and put \(s=\sup_nx_n\). For every \(\varepsilon>0\), \(s-\varepsilon\) is not an upper bound, so \(x_N>s-\varepsilon\) for some \(N\). Monotonicity gives \(s-\varepsilon<x_N\le x_n\le s\) whenever \(n\ge N\), proving \(x_n\to s\).</p>
+    </div>
+
     <h3>Subsequences and cluster points</h3>
     <p>Subsequences reveal the possible limiting behaviors hidden inside a sequence.</p>
     <div class="math-statement definition">
@@ -42,6 +77,20 @@ note_next_url: "/notes/real-analysis/series-and-absolute-convergence/"
     <p>Limsup and liminf record the eventual upper and lower envelopes.</p>
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> For a real sequence, \(\limsup x_n=\inf_N\sup_{n\ge N}x_n\) and \(\liminf x_n=\sup_N\inf_{n\ge N}x_n\), with extended real values allowed.</p>
+    </div>
+
+    <p>Writing \(s_N=\sup_{n\ge N}x_n\) and \(i_N=\inf_{n\ge N}x_n\) makes the construction transparent: \(s_N\) decreases and \(i_N\) increases. Thus their limits exist in the extended line and equal the displayed infimum and supremum.</p>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (subsequential characterization).</span> If \((x_n)\) is bounded, then \(\limsup x_n\) is its largest subsequential limit and \(\liminf x_n\) is its smallest subsequential limit. In particular, both are attained as limits of subsequences.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Let \(s=\lim s_N\), where \(s_N=\sup_{n\ge N}x_n\). For each \(k\), choose \(N_k\) so large that \(s_{N_k}<s+1/k\), and then choose \(n_k\ge\max\{N_k,n_{k-1}+1\}\) such that \(x_{n_k}>s_{N_k}-1/k\). Because \(s\le s_{N_k}\),
+\[
+s-\frac1k<x_{n_k}<s+\frac1k,
+\]
+so \(x_{n_k}\to s\). If \(x_{m_k}\to\ell\), then for every fixed \(N\), eventually \(m_k\ge N\), hence \(x_{m_k}\le s_N\). Passing to the limit gives \(\ell\le s_N\), and then \(\ell\le s\). The liminf statement follows by applying this argument to \(-x_n\).</p>
     </div>
 
     <div class="math-statement proposition">
@@ -65,9 +114,34 @@ note_next_url: "/notes/real-analysis/series-and-absolute-convergence/"
     <h3>Asymptotic notation</h3>
     <p>Asymptotic notation packages comparison estimates without naming constants at every line.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Write \(a_n=O(b_n)\) if \(|a_n|\le C|b_n|\) eventually for some \(C\lt \infty\), and \(a_n=o(b_n)\) if \(a_n/b_n\to0\) along indices where \(b_n\ne0\).</p>
+        <p><span class="statement-title">Definition.</span> For an eventually nonzero comparison sequence \(b_n\), write
+\[
+\begin{aligned}
+a_n&=O(b_n) &&\Longleftrightarrow && |a_n|\le C|b_n|\ \text{eventually for some }C<\infty,\\
+a_n&=o(b_n) &&\Longleftrightarrow && a_n/b_n\to0,\\
+a_n&\asymp b_n &&\Longleftrightarrow && 0<c\le |a_n/b_n|\le C<\infty\ \text{eventually},\\
+a_n&\sim b_n &&\Longleftrightarrow && a_n/b_n\to1.
+\end{aligned}
+\]</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (calculus of orders).</span> If \(a_n=O(b_n)\) and \(c_n=O(d_n)\), then \(a_nc_n=O(b_nd_n)\) and \(a_n+c_n=O(|b_n|+|d_n|)\). If \(a_n=o(b_n)\) and \(c_n=O(d_n)\), then \(a_nc_n=o(b_nd_n)\). Also, \(a_n\sim b_n\) implies \(a_n=b_n+o(b_n)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Each assertion follows after dividing by the proposed comparison scale. For example,
+\[
+\frac{|a_nc_n|}{|b_nd_n|}
+=\frac{|a_n|}{|b_n|}\frac{|c_n|}{|d_n|},
+\]
+which is bounded in the \(O\)-\(O\) case and converges to zero in the \(o\)-\(O\) case.</p>
     </div>
 
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In proofs, \(O(\cdot)\) gives boundedness after scaling, while \(o(\cdot)\) gives a vanishing error term. Keeping the quantifiers visible prevents mistakes in estimates with parameters.</p>
+        <p><span class="statement-title">Remark (uniformity in a parameter).</span> A statement such as \(r_n(\theta)=O(a_n)\) is ambiguous until the dependence of the constant is specified. Uniformly for \(\theta\in\Theta\) means
+\[
+\sup_{\theta\in\Theta}\frac{|r_n(\theta)|}{|a_n|}\le C
+\]
+eventually with one constant \(C\). This distinction is essential when an asymptotic expansion is optimized over, integrated over, or evaluated at a random parameter.</p>
     </div>

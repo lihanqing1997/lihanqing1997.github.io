@@ -39,3 +39,196 @@ note_next_url: "/notes/bayesian-statistics/entropic-variational-inference/"
 \]
 Under boundary conditions, \(E_\pi\mathcal A_\pi\phi=0\).</p>
     </div>
+
+<h3>Importance-weighted evidence bounds</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For
+\(z_{1:K}\stackrel{\mathrm{iid}}{\sim}q_\phi(z\mid x)\), define
+\[
+w_k=\frac{p(x,z_k)}{q_\phi(z_k\mid x)}
+\]
+and
+\[
+\mathcal L_K(\phi)
+=E\log\left(\frac1K\sum_{k=1}^Kw_k\right).
+\]
+Then
+\[
+\mathcal L_1\le\mathcal L_K\le\log p(x),
+\]
+and the sequence is nondecreasing in \(K\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Jensen gives
+\[
+\mathcal L_K
+\le\log E\left(\frac1K\sum_kw_k\right)
+=\log p(x).
+\]
+For monotonicity, draw \(K+1\) weights and remove one uniformly at random. Conditional on all weights, the average of the resulting \(K\)-sample means equals the \((K+1)\)-sample mean. Concavity of log implies the log of the latter is at least the average log of the former. Take expectations.</p>
+</div>
+
+<h3>Normalized-weight degeneracy</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Normalized importance weights are
+\[
+\widetilde w_k
+=\frac{w_k}{\sum_{\ell=1}^Kw_\ell},
+\]
+with conditional effective sample size
+\[
+\operatorname{ESS}
+=\frac1{\sum_k\widetilde w_k^2}.
+\]</p>
+</div>
+
+<p>As latent dimension grows, variance of log weights often grows, causing one \(\widetilde w_k\) to dominate unless \(K\) grows rapidly. The bound becomes tighter in principle while gradient signal for inference-network parameters can deteriorate. Doubly reparameterized gradients and wake-sleep variants target this signal-to-noise problem but do not remove proposal mismatch.</p>
+
+<h3>Stein identity by integration by parts</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(\pi\) be a continuously differentiable density on \(\mathbb R^d\), and let
+\(\phi:\mathbb R^d\to\mathbb R^d\) satisfy
+\[
+\pi(z)\phi(z)\to0
+\]
+at the boundary sufficiently fast. Then
+\[
+E_\pi\left[
+\nabla\log\pi(Z)^\top\phi(Z)
++\nabla\cdot\phi(Z)
+\right]=0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\[
+\pi\nabla\log\pi^\top\phi
++\pi\nabla\cdot\phi
+=\nabla\cdot(\pi\phi).
+\]
+Integrate over \(\mathbb R^d\). The divergence theorem and boundary condition make the boundary flux zero.</p>
+</div>
+
+<h3>Derivative of KL under transport</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+T_\epsilon(z)=z+\epsilon\phi(z),
+\qquad
+Q_\epsilon=T_{\epsilon\#}Q.
+\]
+Under smoothness and integrability,
+\[
+\left.
+\frac{\mathrm{d}}{\mathrm{d}\epsilon}
+\operatorname{KL}(Q_\epsilon\|\Pi)
+\right|_{\epsilon=0}
+=-E_Q\{\mathcal A_\pi\phi(Z)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Change of variables gives
+\[
+\log q_\epsilon(T_\epsilon z)
+=\log q(z)-\log\det(I+\epsilon\nabla\phi(z)).
+\]
+Differentiate at zero:
+\[
+\frac{\mathrm{d}}{\mathrm{d}\epsilon}
+\log q_\epsilon(T_\epsilon z)
+=-\nabla\cdot\phi(z).
+\]
+The target term differentiates to
+\(-\nabla\log\pi(z)^\top\phi(z)\). Taking \(Q\)-expectation gives the formula.</p>
+</div>
+
+<h3>Optimal RKHS transport direction</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (SVGD direction).</span> Let \(\mathcal H^d\) be a vector-valued RKHS with scalar kernel \(k\). Among
+\(\|\phi\|_{\mathcal H^d}\le1\), the direction maximizing
+\[
+E_Q\{\mathcal A_\pi\phi(Z)\}
+\]
+is proportional to
+\[
+\phi^\star(\cdot)
+=E_{Z\sim Q}
+\left[
+k(Z,\cdot)\nabla\log\pi(Z)
++\nabla_Zk(Z,\cdot)
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Use the reproducing identities
+\[
+\phi(Z)=\langle\phi,k(Z,\cdot)\rangle_{\mathcal H^d},
+\]
+\[
+\nabla\cdot\phi(Z)
+=\langle\phi,\nabla_Zk(Z,\cdot)\rangle_{\mathcal H^d}.
+\]
+Thus the Stein expectation is the RKHS inner product
+\(\langle\phi,\phi^\star\rangle\). Cauchy-Schwarz makes the normalized representer optimal.</p>
+</div>
+
+<p>The first term attracts particles toward high target density; the kernel-gradient term repels nearby particles and preserves diversity. Bandwidth controls the balance: too small yields nearly independent local moves, while too large can make interactions nearly identical.</p>
+
+<h3>Kernel Stein discrepancy</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The kernel Stein discrepancy is
+\[
+\operatorname{KSD}(Q,\Pi)
+=\sup_{\|\phi\|_{\mathcal H^d}\le1}
+E_Q\mathcal A_\pi\phi
+=\|\phi^\star\|_{\mathcal H^d}.
+\]
+It has V-statistic form
+\[
+\operatorname{KSD}^2
+=E_{Z,Z'\sim Q}k_\pi(Z,Z'),
+\]
+where \(k_\pi\) applies Stein operators to both kernel arguments.</p>
+</div>
+
+<p>KSD requires the target score but not its normalizing constant. For suitable kernels and target tails, KSD convergence implies weak convergence; for other kernels, particles can escape to infinity while discrepancy tends to zero. The kernel-target conditions are part of the theorem.</p>
+
+<h3>Normalizing flows</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (change of variables).</span> If
+\[
+Z=T_\phi(\varepsilon)
+\]
+for a differentiable bijection \(T_\phi\) and base density \(r\), then
+\[
+q_\phi(z)
+=r\{T_\phi^{-1}(z)\}
+\left|
+\det\nabla T_\phi^{-1}(z)
+\right|,
+\]
+or along a composition \(T_L\circ\cdots\circ T_1\),
+\[
+\log q_L(z_L)
+=\log r(z_0)
+-\sum_{\ell=1}^L
+\log|\det\nabla T_\ell(z_{\ell-1})|.
+\]</p>
+</div>
+
+<p>Flows trade tractable Jacobians for representational flexibility. They can represent dependence and skewness but still struggle with disconnected modes unless architecture or base distribution supports them. Expressivity, gradient stability, and Jacobian cost must be evaluated together.</p>
+
+<h3>Particle and flow diagnostics</h3>
+
+<p>Useful checks include normalized-weight ESS, held-out log score, KSD under multiple kernels, particle diversity, mode occupancy, reverse importance estimates, and comparison with short exact chains on reduced problems. A visually dispersed particle cloud can still have incorrect weights, while a low ELBO gap estimate can miss an omitted mode.</p>

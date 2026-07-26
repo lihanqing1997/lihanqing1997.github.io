@@ -79,3 +79,174 @@ almost surely.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Multiple chains, rank plots, effective sample size, and autocorrelation estimates all try to detect whether the simulated averages are reliable approximations to posterior integrals.</p>
     </div>
+
+<h3>Detailed balance and invariance</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A Markov kernel \(K\) is reversible with respect to \(\pi\) if
+\[
+\pi(\mathrm{d}x)K(x,\mathrm{d}y)
+=\pi(\mathrm{d}y)K(y,\mathrm{d}x)
+\]
+as measures on the product space.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Detailed balance implies invariance:
+\[
+\int\pi(\mathrm{d}x)K(x,A)=\pi(A).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrate the detailed-balance identity over
+\(x\in\mathsf X\) and \(y\in A\):
+\[
+\int_{\mathsf X}\pi(\mathrm{d}x)K(x,A)
+=\int_A\pi(\mathrm{d}y)K(y,\mathsf X)
+=\pi(A).
+\]</p>
+</div>
+
+<h3>Metropolis-Hastings kernel</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(q(y\mid x)\) be a proposal and define
+\[
+\alpha(x,y)
+=1\wedge
+\frac{\pi(y)q(x\mid y)}
+{\pi(x)q(y\mid x)}.
+\]
+The transition that proposes \(Y\sim q(\cdot\mid x)\), accepts with probability \(\alpha(x,Y)\), and otherwise remains at \(x\), is reversible with respect to \(\pi\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For \(x\ne y\), the accepted transition flow is
+\[
+\pi(x)q(y\mid x)\alpha(x,y)
+=\min\{\pi(x)q(y\mid x),
+\pi(y)q(x\mid y)\},
+\]
+which is symmetric in \(x,y\). The rejection mass lies on the diagonal and is automatically symmetric. Hence detailed balance holds.</p>
+</div>
+
+<h3>Ergodicity and laws of large numbers</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Harris ergodic theorem).</span> If a Markov chain is positive Harris recurrent and aperiodic with invariant probability \(\pi\), then for every
+\(g\in L^1(\pi)\),
+\[
+\frac1N\sum_{s=1}^Ng(\Theta_s)
+\longrightarrow\int g\,\mathrm{d}\pi
+\quad\text{almost surely}
+\]
+from every initial state outside a \(\pi\)-null exceptional set.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Regeneration theory splits a positive Harris chain into iid tours between returns to a small set. The renewal-reward theorem gives the ratio of accumulated rewards to accumulated tour lengths as \(\pi g\). Aperiodicity removes cyclic subsequences, and truncation extends the result from bounded to integrable \(g\).</p>
+</div>
+
+<p>Invariance alone is insufficient: a kernel that never moves preserves every distribution. Irreducibility, recurrence, and adequate mixing are the properties that turn invariance into useful integration.</p>
+
+<h3>Markov-chain central limit theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under geometric ergodicity and a suitable moment condition,
+\[
+\sqrt N(\bar g_N-\pi g)
+\Rightarrow N(0,\sigma_{\mathrm{MCMC}}^2),
+\]
+where
+\[
+\sigma_{\mathrm{MCMC}}^2
+=\gamma_0+2\sum_{k=1}^\infty\gamma_k,
+\qquad
+\gamma_k=\operatorname{Cov}_\pi\{g(\Theta_0),g(\Theta_k)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Solve the Poisson equation
+\[
+h-Kh=g-\pi g.
+\]
+Then the partial sum decomposes into a martingale
+\[
+\sum_{s=1}^N
+\{h(\Theta_s)-Kh(\Theta_{s-1})\}
+\]
+plus telescoping boundary terms. Geometric ergodicity controls the solution and makes the boundary negligible. The martingale CLT gives the limit, and expanding its variance yields the autocovariance sum.</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The integrated autocorrelation time and effective sample size are
+\[
+\tau_g
+=1+2\sum_{k\ge1}\rho_k,
+\qquad
+N_{\mathrm{eff},g}=\frac{N}{\tau_g},
+\]
+where \(\rho_k=\gamma_k/\gamma_0\). They depend on \(g\): one chain has no single effective sample size for every posterior feature.</p>
+</div>
+
+<h3>Batch-means variance estimation</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Divide \(N=ab\) draws into \(a\) consecutive batches of length \(b\), with batch means
+\(\bar g_j\). Under a Markov-chain CLT and standard growth conditions
+\(a,b\to\infty\),
+\[
+\widehat\sigma_{\mathrm{BM}}^2
+=\frac{b}{a-1}
+\sum_{j=1}^a(\bar g_j-\bar g_N)^2
+\xrightarrow{P}\sigma_{\mathrm{MCMC}}^2.
+\]</p>
+</div>
+
+<p>The Monte Carlo standard error is
+\(\widehat\sigma_{\mathrm{BM}}/\sqrt N\). Reporting posterior standard deviation without MCSE says nothing about numerical precision.</p>
+
+<h3>Gibbs sampling and blocking</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (correlated Gaussian target).</span> Let
+\[
+(\theta_1,\theta_2)\sim
+N\left(0,
+\begin{bmatrix}1&\rho\\\rho&1\end{bmatrix}
+\right).
+\]
+The Gibbs conditionals are
+\[
+\theta_1\mid\theta_2\sim
+N(\rho\theta_2,1-\rho^2),
+\qquad
+\theta_2\mid\theta_1\sim
+N(\rho\theta_1,1-\rho^2).
+\]
+One full sweep induces an autoregressive coefficient \(\rho^2\) for either coordinate, so mixing becomes arbitrarily slow as \(|\rho|\to1\). Drawing both coordinates jointly would be independent across iterations.</p>
+</div>
+
+<h3>Rank-normalized split \(\widehat R\)</h3>
+
+<p>With multiple chains, split each chain in half, rank-normalize pooled draws, and compare between- and within-chain variances:
+\[
+\widehat R
+=\sqrt{\frac{\widehat V}{W}}.
+\]
+Values appreciably above one indicate that chains have not mixed to a common distribution. Rank normalization makes the statistic more stable for heavy-tailed targets; folded ranks help detect scale disagreement. A value near one is necessary but not sufficient: all chains can be trapped in the same region.</p>
+
+<h3>Failure modes that diagnostics must target</h3>
+
+<ul>
+<li>multimodality and mode isolation;</li>
+<li>funnels and strong posterior curvature;</li>
+<li>heavy tails with slow return;</li>
+<li>discrete bottlenecks and label switching;</li>
+<li>poor parameterization or proposal scale;</li>
+<li>high autocorrelation in the actual decision functional.</li>
+</ul>
+
+<p>Convergence cannot be certified from finite output alone. Reliable practice combines multiple dispersed initializations, geometry-aware algorithms, function-specific ESS and MCSE, rank plots, and problem-specific invariants or simulated-data calibration.</p>

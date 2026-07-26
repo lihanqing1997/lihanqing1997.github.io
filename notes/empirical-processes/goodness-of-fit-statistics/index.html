@@ -8,27 +8,192 @@ note_prev_url: "/notes/empirical-processes/two-sample-and-permutation-processes/
 note_next_url: "/notes/empirical-processes/functional-delta-method/"
 ---
 
-<p>Goodness-of-fit statistics are functionals of empirical processes. Their limits follow by applying continuous mapping ideas to Brownian bridges or more general Gaussian limits.</p>
+<p>Goodness-of-fit statistics measure a distance between an empirical law and a null model. Their null distributions are not separate miracles: they are continuous or quadratic functionals of the empirical distribution process. The process viewpoint also shows exactly why estimating null parameters changes the reference law.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Classical examples are \(D_n=\sup_t|F_n(t)-F_0(t)|\) and \(W_n^2=n\int\{F_n(t)-F_0(t)\}^2\,\mathrm{d}F_0(t)\).</p>
-    </div>
+<h3>A fully specified continuous null</h3>
 
-    <h3>EDF functionals</h3>
-    <ul>
-        <li>Kolmogorov-Smirnov uses a supremum norm; Cramér-von Mises uses an integrated squared norm.</li>
-        <li>Estimated parameters change the limiting bridge by projection or correction terms.</li>
-        <li>Data-dependent partitions in chi-square tests are another empirical-process application.</li>
-    </ul>
+<p>Let \(H_0:F=F_0\), where \(F_0\) is continuous. The probability integral transform reduces the empirical process to
+\[
+\sqrt n\{F_n(F_0^{-1}(u))-u\}\rightsquigarrow B(u),
+\qquad0\leq u\leq1,
+\]
+where \(B\) is a standard Brownian bridge.</p>
 
-    <h3>Composite null corrections</h3>
-    <p>This page keeps the process-level mechanics; inference-level test definitions and reporting live in the statistical-inference note.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The classical EDF statistics are
+  \[
+  D_n=\sqrt n\sup_x|F_n(x)-F_0(x)|,
+  \]
+  \[
+  W_n^2=n\int\{F_n(x)-F_0(x)\}^2\,\mathrm{d}F_0(x),
+  \]
+  and
+  \[
+  A_n^2=n\int
+  \frac{\{F_n(x)-F_0(x)\}^2}
+       {F_0(x)\{1-F_0(x)\}}
+  \,\mathrm{d}F_0(x).
+  \]</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Kolmogorov-Smirnov limit</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Corollary.</span> When the null distribution is fully specified and continuous, \(D_n\) converges to \(\sup_{0\le u\le1}|B(u)|\). If parameters are estimated, the limiting process is no longer the plain Brownian bridge; it is corrected by the score or projection induced by estimation.</p>
-    </div>
+<p>Kolmogorov–Smirnov uses the uniform metric. Cramér–von Mises uses unweighted \(L_2(F_0)\). Anderson–Darling magnifies tail discrepancies through the singular weight \(\{u(1-u)\}^{-1}\), so its convergence requires a weighted topology rather than the ordinary supremum-norm continuous-mapping theorem alone.</p>
 
-    <h3>Simple versus fitted nulls</h3>
-    <p>This is why tables for simple and composite goodness-of-fit tests differ. The empirical process sees whether \(F_0\) was fixed before looking at the data or fitted from the same data.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under a fully specified continuous null,
+  \[
+  D_n\rightsquigarrow\sup_{0\leq u\leq1}|B(u)|,
+  \qquad
+  W_n^2\rightsquigarrow\int_0^1B(u)^2\,\mathrm{d}u.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The maps
+  \[
+  z\mapsto\|z\|_\infty,
+  \qquad
+  z\mapsto\int_0^1z(u)^2\,\mathrm{d}u
+  \]
+  are continuous on \(C[0,1]\) under the supremum norm. Apply the continuous-mapping theorem to the uniform empirical-process limit. \(\square\)</p>
+</div>
+
+<h3>The two classical limit laws</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (Kolmogorov distribution).</span> For \(x>0\),
+  \[
+  P\left\{\sup_{0\leq u\leq1}|B(u)|\leq x\right\}
+  =
+  1-2\sum_{k=1}^\infty(-1)^{k-1}e^{-2k^2x^2}.
+  \]</p>
+</div>
+
+<p>The reflection principle applied repeatedly between the two barriers \(\pm x\) gives this alternating image sum. It is distribution-free because the continuous \(F_0\) disappears under the probability integral transform.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (Cramér–von Mises expansion).</span> If \(Z_1,Z_2,\ldots\) are independent \(N(0,1)\), then
+  \[
+  \int_0^1B(u)^2\,\mathrm{d}u
+  \overset d=
+  \sum_{k=1}^\infty\frac{Z_k^2}{\pi^2k^2}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Brownian-bridge covariance operator on \(L_2[0,1]\) has kernel
+  \(K(s,t)=s\wedge t-st\). Its eigenfunctions and eigenvalues are
+  \[
+  e_k(t)=\sqrt2\sin(\pi kt),
+  \qquad
+  \lambda_k=(\pi^2k^2)^{-1}.
+  \]
+  The Karhunen–Loève expansion is
+  \(B=\sum_k\sqrt{\lambda_k}Z_ke_k\) in \(L_2\). Parseval's identity gives the result. \(\square\)</p>
+</div>
+
+<h3>Composite parametric nulls</h3>
+
+<p>Now let \(H_0:F=F_\theta\) for some \(\theta\in\Theta\subset\mathbb R^p\), and estimate \(\theta\) from the same sample. Suppose
+\[
+\sqrt n(\hat\theta-\theta_0)
+=\mathbb G_n\psi_{\theta_0}+o_p(1)
+\]
+and \(F_\theta(x)\) is differentiable with derivative
+\(\dot F_{\theta_0}(x)\in\mathbb R^p\).</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (fitted empirical process).</span> Uniformly in \(x\),
+  \[
+  \sqrt n\{F_n(x)-F_{\hat\theta}(x)\}
+  =
+  \mathbb G_n
+  \left[
+    1_{(-\infty,x]}
+    -\dot F_{\theta_0}(x)^\top\psi_{\theta_0}
+  \right]
+  +o_p(1).
+  \]
+  Hence the limit is a centered Gaussian process with covariance obtained from the corrected functions inside the brackets.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Add and subtract \(F_{\theta_0}\):
+  \[
+  \sqrt n(F_n-F_{\hat\theta})
+  =\mathbb G_n1_{(-\infty,x]}
+  -\sqrt n(F_{\hat\theta}-F_{\theta_0}).
+  \]
+  Uniform differentiability gives
+  \[
+  \sqrt n\{F_{\hat\theta}(x)-F_{\theta_0}(x)\}
+  =
+  \dot F_{\theta_0}(x)^\top
+  \sqrt n(\hat\theta-\theta_0)+o_p(1).
+  \]
+  Insert the asymptotic linear representation and combine the two empirical-process terms. \(\square\)</p>
+</div>
+
+<p>For an efficient maximum-likelihood estimator,
+\[
+\psi_{\theta_0}=I_{\theta_0}^{-1}\dot\ell_{\theta_0}.
+\]
+The correction subtracts the component of the raw bridge explained by movement along the fitted parametric model. Geometrically, it is a projection away from the score tangent space. The null law is therefore model dependent and is not the Kolmogorov distribution.</p>
+
+<h3>Parametric bootstrap calibration</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under regularity and consistent estimation, the following parametric bootstrap reproduces the fitted-process limit:</p>
+  <ol>
+    <li>draw \(X_1^*,\ldots,X_n^*\) from \(F_{\hat\theta}\);</li>
+    <li>re-estimate \(\hat\theta^*\) in the bootstrap sample;</li>
+    <li>compute the statistic from \(F_n^*-F_{\hat\theta^*}\).</li>
+  </ol>
+</div>
+
+<p>Re-estimation is essential. Comparing \(F_n^*\) only with the fixed \(F_{\hat\theta}\) would simulate an unprojected bridge and therefore calibrate the wrong null law.</p>
+
+<h3>Pearson chi-square as a finite empirical process</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(A_1,\ldots,A_k\) partition the sample space, with
+  \(p_j=P_0(A_j)>0\). Under \(P=P_0\),
+  \[
+  X_n^2
+  =
+  n\sum_{j=1}^k\frac{\{P_n(A_j)-p_j\}^2}{p_j}
+  \rightsquigarrow\chi_{k-1}^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The multinomial central limit theorem gives
+  \[
+  \sqrt n(P_n(A_1)-p_1,\ldots,P_n(A_k)-p_k)^\top
+  \rightsquigarrow N_k(0,\operatorname{diag}(p)-pp^\top).
+  \]
+  After standardizing by \(\operatorname{diag}(p)^{-1/2}\), the covariance is the orthogonal projection onto the \((k-1)\)-dimensional complement of \((\sqrt{p_1},\ldots,\sqrt{p_k})^\top\). The squared Euclidean norm of the projected standard normal is \(\chi_{k-1}^2\). \(\square\)</p>
+</div>
+
+<p>Estimating \(r\) regular parameters typically removes \(r\) further tangent directions and changes the degrees of freedom to \(k-1-r\).</p>
+
+<h3>Local alternatives</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If a sequence of alternatives satisfies
+  \[
+  \sqrt n\{F_n^{(0)}(x)-F_0(x)\}\to\Delta(x)
+  \]
+  uniformly and the centered empirical fluctuation still converges to the null bridge, then
+  \[
+  \sqrt n\{\widehat F_n-F_0\}\rightsquigarrow B\circ F_0+\Delta.
+  \]
+  Consequently,
+  \[
+  D_n\rightsquigarrow\|B\circ F_0+\Delta\|_\infty,
+  \qquad
+  W_n^2\rightsquigarrow
+  \int(B\circ F_0+\Delta)^2\,\mathrm{d}F_0.
+  \]</p>
+</div>
+
+<p>The deterministic drift determines local power. Supremum tests respond to the largest standardized discrepancy, integrated-square tests aggregate diffuse departures, and Anderson–Darling gives greater leverage to tail drift. The choice of functional should therefore reflect the alternatives one wants the test to detect, not only the availability of a tabulated null law.</p>

@@ -8,24 +8,112 @@ note_prev_url: "/notes/optimization/kkt-conditions/"
 note_next_url: "/notes/optimization/saddle-points-minimax-formulations/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Normal cones and projected optimality.</p>
+<p>At a boundary point, the negative gradient need not vanish; it can be
+balanced by a normal force from the feasible set. Normal cones express this
+balance without selecting a particular inequality representation of the set.</p>
 
-    <h3>Normal cone</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a convex set \(C\), the normal cone at \(x\in C\) is \(N_C(x)=\{v:\langle v,y-x\rangle\le0\text{ for all }y\in C\}\).</p>
-    </div>
+<h3>Normals as polars of feasible motion</h3>
 
-    <h3>Projected optimality condition</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A point \(x^\star\in C\) minimizes differentiable convex \(f\) over \(C\) if and only if \(0\in\nabla f(x^\star)+N_C(x^\star)\). Equivalently, \(x^\star=P_C(x^\star-\eta\nabla f(x^\star))\) for any \(\eta>0\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> For a nonempty closed
+    convex set \(C\subset\mathbb R^d\) and \(x\in C\), the normal cone is
+    \[
+    N_C(x)=
+    \{v:\langle v,y-x\rangle\le0\text{ for every }y\in C\}.
+    \]
+    Set \(N_C(x)=\varnothing\) when \(x\notin C\).</p>
+</div>
 
-    <h3>Indicator functions</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The normal cone is the subdifferential of the indicator function \(\iota_C\). Thus constrained optimization is unconstrained nonsmooth optimization of \(f+\iota_C\).</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Normal-tangent polarity.</span> For
+    \(x\in C\),
+    \[
+    N_C(x)=T_C(x)^\circ
+    :=\{v:\langle v,w\rangle\le0\ \forall w\in T_C(x)\}.
+    \]
+    Moreover \(N_C(x)=\partial\iota_C(x)\).</p>
+</div>
 
-    <h3>Algorithmic meaning</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Projected gradient methods alternate a gradient move with projection. The fixed-point equation is exactly the normal-cone optimality condition.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> If \(v\in N_C(x)\), then
+    \(\langle v,t(y-x)\rangle\le0\) for every \(t\ge0,y\in C\); continuity
+    extends the inequality to the closure \(T_C(x)\). Conversely,
+    \(y-x\in T_C(x)\) for every \(y\in C\), so membership in the polar implies
+    the defining normal inequality. Finally,
+    \(v\in\partial\iota_C(x)\) exactly when
+    \(\iota_C(y)\ge\iota_C(x)+\langle v,y-x\rangle\) for all \(y\); only
+    \(y\in C\) imposes a nontrivial condition, and that condition is normality.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Half-spaces and orthants.</span> For
+    \(C=\{x:a^\top x\le b\}\),
+    \[
+    N_C(x)=
+    \begin{cases}
+    \{0\},&a^\top x<b,\\
+    \{\lambda a:\lambda\ge0\},&a^\top x=b.
+    \end{cases}
+    \]
+    For \(C=\mathbb R_+^d\), a vector \(v\in N_C(x)\) satisfies
+    \(v_i=0\) when \(x_i>0\) and \(v_i\le0\) when \(x_i=0\). These componentwise
+    relations are complementary slackness in geometric form.</p>
+</div>
+
+<h3>Constrained Fermat rule</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Variational inequality.</span> Let \(C\)
+    be nonempty, closed, and convex, and let \(f\) be differentiable and convex.
+    For \(x^\star\in C\), the following are equivalent:</p>
+    <p>
+    \[
+    \begin{aligned}
+    &(i)\quad x^\star\in\operatorname*{arg\,min}_{x\in C}f(x),\\
+    &(ii)\quad \langle\nabla f(x^\star),x-x^\star\rangle\ge0
+       \quad(x\in C),\\
+    &(iii)\quad 0\in\nabla f(x^\star)+N_C(x^\star).
+    \end{aligned}
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> If \(x^\star\) minimizes,
+    apply the one-dimensional necessary condition to
+    \(t\mapsto f(x^\star+t(x-x^\star))\) at \(t=0\), proving (ii). Convexity
+    gives
+    \[
+    f(x)\ge f(x^\star)+
+    \langle\nabla f(x^\star),x-x^\star\rangle,
+    \]
+    so (ii) implies global optimality. Finally, (ii) says precisely that
+    \(-\nabla f(x^\star)\in N_C(x^\star)\).</p>
+</div>
+
+<h3>Projection as a fixed-point equation</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Projected optimality.</span> Under the
+    preceding assumptions, \(x^\star\) is optimal if and only if, for one
+    equivalently every \(\eta>0\),
+    \[
+    x^\star=P_C\!\left(x^\star-\eta\nabla f(x^\star)\right).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The projection
+    characterization says \(p=P_Cz\) exactly when
+    \(\langle z-p,x-p\rangle\le0\) for all \(x\in C\). Substitute
+    \(p=x^\star\) and
+    \(z=x^\star-\eta\nabla f(x^\star)\), then divide by
+    \(-\eta<0\). The resulting inequality is the variational inequality above.</p>
+</div>
+
+<p>This equivalence explains projected gradient descent:
+\[
+x_{k+1}=P_C(x_k-\eta_k\nabla f(x_k)).
+\]
+The algorithm seeks a fixed point of the exact optimality map. Projection is
+not an after-the-fact correction; it is the resolvent
+\((I+N_C)^{-1}\) of the normal-cone operator.</p>

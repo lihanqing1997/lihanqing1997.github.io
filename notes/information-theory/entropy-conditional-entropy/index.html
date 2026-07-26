@@ -36,3 +36,146 @@ Moreover \(0\le H(X\mid Y)\le H(X)\), and equality on the right holds exactly wh
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Entropy should be read as an asymptotic volume exponent: for independent samples from \(P\), most probability lies on about \(\exp(nH(P))\) typical strings. That operational interpretation is made precise by the asymptotic equipartition property.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Entropy as expected self-information</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The self-information of an event with probability \(p>0\) is
+  \[
+  \imath(p)=-\log p.
+  \]
+  Thus \(H(X)=\mathbb E\,\imath\{p_X(X)\}\). Changing the logarithm base rescales every information quantity; base \(2\) gives bits and base \(e\) gives nats.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(X\) takes at most \(m\) values, then
+  \[
+  0\le H(X)\le\log m.
+  \]
+  The lower equality holds exactly when \(X\) is constant, and the upper equality holds exactly when \(X\) is uniform on its support.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Every term
+  \(-p\log p\) is nonnegative. For the upper bound, let \(U\) be uniform:
+  \[
+  D(P_X\|U)=\sum_xp(x)\log\{p(x)m\}
+  =\log m-H(X)\ge0.
+  \]
+  Equality in KL occurs exactly at \(P_X=U\). Entropy zero forces every positive-mass term to have \(-\log p=0\), hence one atom has mass one.</p>
+</div>
+
+<h3>Concavity and mixing</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Entropy is concave on the probability simplex:
+  \[
+  H\{\lambda P+(1-\lambda)Q\}
+  \ge\lambda H(P)+(1-\lambda)H(Q),
+  \qquad0\le\lambda\le1.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The scalar function
+  \(\varphi(t)=-t\log t\) has
+  \(\varphi''(t)=-1/t<0\) on \((0,\infty)\). Apply scalar concavity coordinatewise and sum. Strict concavity gives equality, for \(0<\lambda<1\), exactly when \(P=Q\) on the common alphabet.</p>
+</div>
+
+<p>Mixing distributions increases uncertainty because forgetting the mixture label cannot reveal more than retaining it. If \(J\) is the label and \(X\mid J=j\sim P_j\), then
+\[
+\sum_j\pi_jH(P_j)=H(X\mid J)\le H(X)\le H(J)+H(X\mid J).
+\]</p>
+
+<h3>Conditional entropy as an average</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  H(X\mid Y)=\sum_yp_Y(y)H(P_{X\mid Y=y})
+  =-\sum_{x,y}p(x,y)\log p(x\mid y).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Use
+  \(p(x,y)=p(y)p(x\mid y)\):
+  \[
+  H(X,Y)=
+  -\sum_{x,y}p(x,y)\log p(y)
+  -\sum_{x,y}p(x,y)\log p(x\mid y)
+  =H(Y)+\text{second term}.
+  \]</p>
+</div>
+
+<h3>Deterministic maps and entropy</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(Y=f(X)\), then
+  \[
+  H(Y)\le H(X),
+  \]
+  with equality exactly when \(X\) is almost surely a function of \(Y\), equivalently when \(f\) is injective on the support of \(X\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(H(Y\mid X)=0\),
+  \[
+  H(X)=H(X,Y)=H(Y)+H(X\mid Y)\ge H(Y).
+  \]
+  Equality holds exactly when \(H(X\mid Y)=0\), which means each positive-probability fiber of \(f\) contains one possible \(X\)-value.</p>
+</div>
+
+<h3>Subadditivity and independence</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \[
+  H(X_1,\ldots,X_n)\le\sum_{i=1}^nH(X_i),
+  \]
+  with equality exactly when the variables are mutually independent.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the chain rule and
+  \(H(X_i\mid X_1,\ldots,X_{i-1})\le H(X_i)\). Equality at every step means \(X_i\) is independent of its predecessors, which is equivalent to joint factorization.</p>
+</div>
+
+<h3>Entropy of a Bernoulli variable</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If
+  \(X\sim\operatorname{Bernoulli}(p)\),
+  \[
+  h_2(p)=-p\log p-(1-p)\log(1-p).
+  \]
+  Its derivative is \(\log\{(1-p)/p\}\), and
+  \(h_2''(p)=-1/[p(1-p)]<0\). Hence entropy is symmetric about \(1/2\), maximal at \(p=1/2\), and locally
+  \[
+  h_2(1/2+u)=\log2-2u^2+O(u^4)
+  \]
+  in nats.</p>
+</div>
+
+<h3>Shearer's inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(X=(X_1,\ldots,X_n)\), and let \(\mathcal S\) be a multiset of coordinate subsets such that each coordinate occurs in at least \(k\) members. Then
+  \[
+  H(X)\le\frac1k\sum_{S\in\mathcal S}H(X_S).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Order coordinates. For each \(S\),
+  \[
+  H(X_S)=\sum_{i\in S}
+  H(X_i\mid X_{S\cap\{1,\ldots,i-1\}})
+  \ge\sum_{i\in S}H(X_i\mid X_1,\ldots,X_{i-1}),
+  \]
+  because conditioning reduces entropy. Summing over \(S\), each chain-rule term appears at least \(k\) times. Divide by \(k\).</p>
+</div>
+
+<p>Shearer's inequality is a reusable bridge from local projections to global combinatorial volume. It underlies Loomis-Whitney-type bounds, counting arguments, and entropy proofs in combinatorics.</p>

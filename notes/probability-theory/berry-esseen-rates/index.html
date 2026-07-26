@@ -8,56 +8,164 @@ note_prev_url: "/notes/probability-theory/central-limit-theorem/"
 note_next_url: "/notes/probability-theory/poisson-convergence-processes/"
 ---
 
-<p>Berry-Esseen theory quantifies the error in the central limit theorem. It measures how fast distribution functions approach the Gaussian distribution.</p>
+<p>The central limit theorem gives a qualitative weak limit. Berry-Esseen theory asks a finite-sample question: how far is the distribution function of a standardized sum from the Gaussian distribution function? The answer reveals both the role of the third absolute moment and the obstruction created by lattice jumps.</p>
 
-    <h3>Kolmogorov distance</h3>
+<h3>Distances between laws</h3>
 
-    <p>Rates are usually stated in the supremum distance between distribution functions.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For probability laws \(P,Q\) on \(\mathbb R\), with distribution functions \(F_P,F_Q\), the Kolmogorov distance is
+  \[
+  d_K(P,Q)=\sup_{x\in\mathbb R}|F_P(x)-F_Q(x)|.
+  \]
+  The Wasserstein-1 distance is
+  \[
+  d_W(P,Q)=\sup_{\|f\|_{\mathrm{Lip}}\le1}
+  \left|\int f\,\mathrm{d}P-\int f\,\mathrm{d}Q\right|.
+  \]
+  Kolmogorov distance tests discontinuous half-line indicators and is therefore more sensitive to atoms than \(d_W\).</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For distribution functions \(F,G\), the Kolmogorov distance is
-\[
-d_K(F,G)=\sup_x|F(x)-G(x)|.
-\]
-For standardized sums \(Z_n\), Berry-Esseen bounds \(d_K(\mathcal L(Z_n),\Phi)\).</p>
-    </div>
+<h3>Fourier smoothing</h3>
 
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (Esseen smoothing inequality).</span> Let \(F\) have characteristic function \(f\), and let \(G\) have bounded density \(G'\) and characteristic function \(g\). There is a universal constant \(C\) such that, for every \(T>0\),
+  \[
+  \sup_x|F(x)-G(x)|
+  \le
+  \frac1\pi\int_{-T}^{T}
+  \left|\frac{f(t)-g(t)}{t}\right|\,\mathrm{d}t
+  \frac{C\|G'\|_\infty}{T}.
+  \]</p>
+</div>
 
-    <h3>Berry-Esseen theorem</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Convolve \(F-G\) with a probability kernel whose Fourier transform is supported on \([-T,T]\). Fourier inversion controls the smoothed difference by the integral in the display. The original distribution functions differ from their smoothed versions only inside intervals of width \(O(T^{-1})\); boundedness of \(G'\), together with a comparison argument at points where \(F-G\) is nearly maximal, bounds this loss by \(C\|G'\|_\infty/T\). The factor \(1/t\) is the Fourier transform of a half-line indicator.</p>
+</div>
 
-    <p>A finite third absolute moment gives the canonical \(n^{-1/2}\) rate.</p>
+<h3>The Berry-Esseen bound</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X_i\) are i.i.d. with \(\mathbb E X_i=0\), \(\mathbb E X_i^2=\sigma^2\gt0\), and \(\rho=\mathbb E|X_i|^3\lt\infty\), then
-\[
-\sup_x\left|P\left(\frac{\sum_{i=1}^nX_i}{\sigma\sqrt n}\le x\right)-\Phi(x)\right|
-\le C\frac{\rho}{\sigma^3\sqrt n}.
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (independent Berry-Esseen bound).</span> Let \(X_1,\ldots,X_n\) be independent, centered random variables with
+  \[
+  \sigma_k^2=\mathbb EX_k^2,\qquad
+  \rho_k=\mathbb E|X_k|^3<\infty,\qquad
+  s_n^2=\sum_{k=1}^n\sigma_k^2>0.
+  \]
+  Then, for a universal constant \(C\),
+  \[
+  \sup_x\left|
+  P\!\left(\frac{\sum_{k=1}^nX_k}{s_n}\le x\right)-\Phi(x)
+  \right|
+  \le
+  C\,\frac{\sum_{k=1}^n\rho_k}{s_n^3}.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The proof smooths indicators by Fourier inversion. One bounds the difference between the characteristic function of the normalized sum and \(e^{-t^2/2}\) using a third-order Taylor expansion, integrates this difference over \(|t|\le T\), and controls the smoothing error by \(1/T\). Choosing \(T\asymp \sqrt n\,\sigma^3/\rho\) yields the stated rate.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Normalize \(s_n=1\) and write
+  \(\varphi_k(t)=\mathbb Ee^{itX_k}\). Taylor's inequality
+  \[
+  \left|e^{iu}-1-iu+\frac{u^2}{2}\right|
+  \le\frac{|u|^3}{6}
+  \]
+  gives
+  \[
+  \varphi_k(t)=1-\frac{\sigma_k^2t^2}{2}+r_k(t),
+  \qquad |r_k(t)|\le\frac{\rho_k|t|^3}{6}.
+  \]
+  A telescoping product comparison, combined with Gaussian decay of the partial products, yields for
+  \(|t|\le c/\max_k(\rho_k/\sigma_k^2)\),
+  \[
+  \left|\prod_k\varphi_k(t)-e^{-t^2/2}\right|
+  \le C\left(\sum_k\rho_k\right)|t|^3e^{-ct^2}.
+  \]
+  Insert this estimate into Esseen's smoothing inequality. The Fourier integral is bounded by
+  \(C\sum_k\rho_k\), while choosing the truncation frequency of order
+  \((\sum_k\rho_k)^{-1}\) makes the smoothing remainder of the same order. Rescaling restores the factor \(s_n^{-3}\).</p>
+</div>
 
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (i.i.d. form).</span> If \(X_i\) are i.i.d. with
+  \(\mathbb EX_i=0\),
+  \(\mathbb EX_i^2=\sigma^2>0\), and
+  \(\rho=\mathbb E|X_i|^3<\infty\), then
+  \[
+  d_K\!\left(
+  \mathcal L\!\left(\frac{S_n}{\sigma\sqrt n}\right),
+  N(0,1)\right)
+  \le C\frac{\rho}{\sigma^3\sqrt n}.
+  \]</p>
+</div>
 
-    <h3>Why the third moment appears</h3>
+<h3>Why the third absolute moment appears</h3>
 
-    <p>The first neglected term in the characteristic-function expansion is cubic.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(X\) is centered and
+  \(\mathbb E|X|^3<\infty\), then
+  \[
+  \varphi_X(t)
+  =1-\frac{\sigma^2t^2}{2}
+  -i\frac{\mathbb EX^3}{6}t^3+o(|t|^3).
+  \]
+  Without assuming the signed third moment explicitly, one still has
+  \[
+  \left|\varphi_X(t)-1+\frac{\sigma^2t^2}{2}\right|
+  \le\frac{|t|^3}{6}\mathbb E|X|^3.
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\mathbb E|X|^3\lt\infty\), then
-\[
-\varphi(u)=1-\frac{\sigma^2u^2}{2}+O(|u|^3\mathbb E|X|^3)
-\]
-near zero for centered \(X\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taylor's formula with integral remainder gives
+  \[
+  e^{iu}=1+iu-\frac{u^2}{2}-i\frac{u^3}{6}+o(|u|^3).
+  \]
+  The quotient of the remainder by \(|u|^3\) is bounded near zero, while for all \(u\) the third-order remainder is bounded by a constant times \(|u|^3\). Substitute \(u=tX\) and apply dominated convergence using \(|X|^3\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use Taylor's formula with remainder
-\(|e^{ix}-(1+ix-x^2/2)|\le C|x|^3\).
-Taking expectations gives the expansion because \(\mathbb E X=0\) and \(\mathbb E X^2=\sigma^2\).</p>
-    </div>
+<h3>Sharpness and lattice effects</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The \(n^{-1/2}\) rate is generally sharp under third-moment assumptions; lattice corrections and skewness can appear in finer Edgeworth expansions.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (symmetric Bernoulli law).</span> Let
+  \(P(X_i=1)=P(X_i=-1)=1/2\). For even \(n\), the standardized sum has an atom at zero of size
+  \[
+  P(S_n=0)=2^{-n}\binom{n}{n/2}\sim\sqrt{\frac{2}{\pi n}}.
+  \]
+  Since \(\Phi\) is continuous, at least one of the two one-sided discrepancies adjacent to zero is at least half this jump. Therefore
+  \[
+  d_K(\mathcal L(S_n/\sqrt n),N(0,1))\ge \frac{c}{\sqrt n}.
+  \]
+  The order \(n^{-1/2}\) cannot be improved uniformly under only a third-moment assumption.</p>
+</div>
+
+<p>For lattice laws, a continuity correction moves the Gaussian threshold by half a lattice spacing and often removes the largest visible discretization error. It changes the approximation, not the limit theorem.</p>
+
+<h3>First Edgeworth correction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (first-order Edgeworth expansion).</span> Suppose the standardized i.i.d. variables have
+  \(\mathbb EX=0\), \(\mathbb EX^2=1\), third cumulant
+  \(\kappa_3=\mathbb EX^3\), sufficiently many moments, and a nonlattice regularity condition such as Cramer's condition
+  \(\limsup_{|t|\to\infty}|\varphi_X(t)|<1\). Then
+  \[
+  P(S_n/\sqrt n\le x)
+  =
+  \Phi(x)+\frac{\kappa_3}{6\sqrt n}(1-x^2)\phi(x)
+  +o(n^{-1/2})
+  \]
+  uniformly in \(x\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Expand the cumulant generating exponent:
+  \[
+  n\log\varphi_X(t/\sqrt n)
+  =-\frac{t^2}{2}
+  -i\frac{\kappa_3t^3}{6\sqrt n}
+  +O\!\left(\frac{t^4}{n}\right).
+  \]
+  Exponentiation gives the Gaussian characteristic function plus a cubic correction. Fourier inversion converts multiplication by \((it)^3\) into the third derivative of \(\phi\); integration produces \((1-x^2)\phi(x)\). Cramer's condition controls the high-frequency part uniformly.</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Berry-Esseen is a robust inequality with an explicit error order. An Edgeworth expansion is a signed asymptotic approximation and requires stronger smoothness or nonlattice assumptions. It can be more accurate, but it need not define a monotone distribution function at finite \(n\).</p>
+</div>

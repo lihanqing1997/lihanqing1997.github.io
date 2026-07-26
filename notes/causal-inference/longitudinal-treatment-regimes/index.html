@@ -8,24 +8,136 @@ note_prev_url: "/notes/causal-inference/regression-discontinuity-designs/"
 note_next_url: "/notes/causal-inference/sensitivity-analysis/"
 ---
 
-<p>Longitudinal treatment regimes records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Longitudinal causal inference studies treatment sequences that respond to evolving covariates. Time-varying covariates can simultaneously predict future treatment, predict outcome, and be affected by prior treatment, creating treatment-confounder feedback.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A longitudinal regime assigns treatment decisions over time as functions of evolving history. Time-varying confounding can be affected by earlier treatment.</p>
-    </div>
+<h3>Histories and counterfactual regimes</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Sequential exchangeability, consistency, and positivity identify regime-specific mean outcomes by the longitudinal g-formula.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> At time \(t\), let
+  \[
+  H_t=(\overline L_t,\overline A_{t-1})
+  \]
+  be observed history. A deterministic dynamic regime
+  \(d=(d_0,\ldots,d_K)\) sets
+  \(A_t=d_t(H_t)\). The counterfactual outcome under this regime is \(Y^d\), and its value is \(V(d)=\mathbb EY^d\).</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Iterate conditional expectations backward through time, replacing each observed treatment mechanism by the regime rule while preserving the observed history distribution under identification assumptions.</p>
-    </div>
+<h3>Sequential exchangeability and positivity</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Time-varying confounding is why ordinary regression adjustment can fail: variables can be both confounders and mediators.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Sequential exchangeability requires
+  \[
+  Y^d\perp\!\!\!\perp A_t\mid H_t
+  \]
+  for every compatible regime \(d\) and time \(t\). Sequential positivity requires
+  \[
+  P\{A_t=d_t(H_t)\mid H_t\}>0
+  \]
+  on histories that can occur under \(d\).</p>
+</div>
+
+<p>Positivity is regime-specific. A deterministic regime may be unsupported even when a nearby stochastic intervention is well supported.</p>
+
+<h3>Iterated conditional expectation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Define recursively
+  \[
+  Q_{K+1}=Y,\qquad
+  Q_t(h_t)=
+  \mathbb E\{Q_{t+1}(H_{t+1})\mid
+  H_t=h_t,A_t=d_t(h_t)\}.
+  \]
+  Under consistency, sequential exchangeability, and positivity,
+  \[
+  V(d)=\mathbb E\{Q_0(L_0)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> At the final decision time, exchangeability and consistency identify the conditional mean of the future counterfactual under the prescribed action. Apply iterated expectation backward one time point at a time. Each recursion integrates over the covariate transition distribution generated under previous regime actions.</p>
+</div>
+
+<h3>Inverse-probability weights for regimes</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a fixed regime \(\overline a\),
+  \[
+  \mathbb EY^{\overline a}
+  =
+  \mathbb E\left[
+  \frac{\mathbf1(\overline A_K=\overline a_K)Y}
+  {\prod_{t=0}^K
+  p(A_t=a_t\mid H_t)}
+  \right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Condition successively on
+  \(H_K,H_{K-1},\ldots,H_0\). At each step, the indicator divided by its conditional treatment probability integrates to one, while exchangeability and consistency identify the counterfactual continuation. The telescoping expectations yield \(\mathbb EY^{\overline a}\).</p>
+</div>
+
+<h3>Marginal structural models</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A marginal structural model parameterizes
+  \[
+  \mathbb EY^{\overline a}=m(\overline a;\beta).
+  \]
+  It is fitted in a pseudo-population weighted by inverse probabilities of observed treatment histories, often stabilized by numerator probabilities with reduced conditioning sets.</p>
+</div>
+
+<p>The model is marginal over time-varying confounders. Including those confounders as ordinary regression covariates would condition away part of prior treatment effects; weighting instead balances them across subsequent treatment choices.</p>
+
+<h3>Structural nested mean models and g-estimation</h3>
+
+<p>A structural nested mean model parameterizes the causal contrast from “blipping down” one treatment at a time. G-estimation chooses the parameter that makes the blipped-down outcome conditionally independent of current treatment given history. This avoids modeling the full outcome distribution and is particularly useful when treatment effects are naturally expressed as sequential increments.</p>
+
+<h3>Optimal dynamic regimes</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For finite horizon and binary actions, define
+  \[
+  Q_t(h,a)=
+  \mathbb E\{V_{t+1}(H_{t+1})\mid H_t=h,A_t=a\},
+  \qquad
+  V_t(h)=\max_aQ_t(h,a),
+  \]
+  with \(V_{K+1}=Y\). Then the optimal regime is
+  \[
+  d_t^*(h)\in\arg\max_aQ_t(h,a).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Backward induction. At the final time, maximizing conditional expected outcome is optimal. Assuming \(V_{t+1}\) is the optimal continuation value, action \(a\) at time \(t\) yields conditional value \(Q_t(h,a)\); choosing its maximizer is therefore optimal from that history.</p>
+</div>
+
+<p>This is the causal analogue of Bellman's principle. Identification requires sequential exchangeability; statistical reinforcement learning often instead relies on an environment interaction or Markov decision process assumption.</p>
+
+<h3>Q-learning and nonregularity</h3>
+
+<p>Q-learning estimates the backward regressions and chooses the maximizing action. If two actions have equal value with positive probability, the max operator is nondifferentiable and treatment-rule parameters can be nonregular. Standard bootstrap or Wald inference may fail; margin conditions, smoothing, or value-focused inference are alternatives.</p>
+
+<h3>Stochastic and incremental policies</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An incremental propensity intervention with odds multiplier \(\delta>0\) sets
+  \[
+  q_\delta(1\mid h)=
+  \frac{\delta e(h)}
+  {\delta e(h)+1-e(h)}.
+  \]
+  It shifts observed treatment odds rather than assigning treatment where it was never observed.</p>
+</div>
+
+<p>Such policies can be identified without requiring both treatment levels at every history in the same strong form as deterministic regimes, because the intervention remains absolutely continuous with respect to the observed mechanism.</p>
+
+<h3>Censoring as a treatment process</h3>
+
+<p>Loss to follow-up can be represented by a censoring indicator at each time. Under conditional independent censoring, inverse probability of censoring weights multiply treatment weights. The product can be highly variable; separate diagnostics for treatment and censoring overlap are needed.</p>
+
+<h3>Cross-fitting longitudinal scores</h3>
+
+<p>Longitudinal TMLE and sequentially doubly robust estimators combine backward outcome regressions with treatment/censoring mechanisms. Their remainders contain sums of products of nuisance errors at each time. Cross-fitting permits machine learning, but long horizons magnify both positivity problems and accumulated nuisance error.</p>

@@ -8,14 +8,198 @@ note_prev_url: "/notes/statistical-inference/local-asymptotic-normality-contigui
 note_next_url: "/notes/statistical-inference/semiparametric-inference-interface/"
 ---
 
-<p>Efficiency theory asks whether an estimator uses all first-order information available in the experiment. In regular parametric models, Fisher information gives the lower bound.</p>
-    <div class="math-statement theorem"><p><span class="statement-title">Cramér-Rao bound.</span> If \(T\) is unbiased for scalar \(g(\theta)\) in a regular model, then
-    \[
-    \operatorname{Var}_\theta(T)\ge \frac{\{g'(\theta)\}^2}{I(\theta)}.
-    \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Differentiating \(E_\theta T=g(\theta)\) gives
-    \[
-    g'(\theta)=E_\theta\{T s_\theta(X)\}=E_\theta\{(T-g(\theta))s_\theta(X)\}.
-    \]
-    Cauchy-Schwarz gives \(\{g'(\theta)\}^2\le\operatorname{Var}_\theta(T)I(\theta)\).</p></div>
-    <h3>Asymptotic efficiency</h3><p>An estimator sequence is asymptotically efficient for \(\theta\) if \(\sqrt n(\hat\theta-\theta)\) has limiting variance \(I(\theta)^{-1}\). LAN and Le Cam convolution theorems generalize this: regular estimators have a Gaussian information-bound component plus possible extra noise.</p>
+<p>Efficiency theory asks how much unavoidable uncertainty remains in an experiment after regularity has ruled out unstable, pointwise tricks. Finite-sample information inequalities concern unbiased estimators; asymptotic convolution and local minimax theorems concern estimator sequences under contiguous alternatives.</p>
+
+<h3>Regular estimator sequences</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> In a LAN model at \(\theta_0\), an estimator \(T_n\) of \(g(\theta)\in\mathbb R^k\) is regular at \(\theta_0\) if there is a law \(L_{\theta_0}\) such that, for every fixed \(h\in\mathbb R^d\),
+  \[
+  \sqrt n\{T_n-g(\theta_0+h/\sqrt n)\}
+  \rightsquigarrow L_{\theta_0}
+  \quad\text{under }P_{\theta_0+h/\sqrt n}^{(n)},
+  \]
+  and the limit does not depend on \(h\).</p>
+</div>
+
+<p>Regularity requires stable behavior throughout a local \(n^{-1/2}\) neighborhood. Pointwise asymptotic normality only at \(\theta_0\) is weaker and permits superefficient constructions.</p>
+
+<h3>Influence functions in a parametric model</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Score identity for a regular asymptotically linear estimator.</span> Suppose
+  \[
+  T_n-g(\theta_0)
+  =\frac1n\sum_{i=1}^n\phi_{\theta_0}(X_i)
+  +o_{P_{\theta_0}}(n^{-1/2}),
+  \]
+  where \(P_{\theta_0}\phi_{\theta_0}=0\) and \(P_{\theta_0}\|\phi_{\theta_0}\|^2\lt\infty\). If \(T_n\) is regular and the model is quadratic-mean differentiable with score \(s_{\theta_0}\), then
+  \[
+  P_{\theta_0}
+  \{\phi_{\theta_0}s_{\theta_0}^\top\}
+  =Dg(\theta_0).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the null, the joint central limit theorem gives
+  \[
+  \left(
+  \frac1{\sqrt n}\sum_i\phi_{\theta_0}(X_i),
+  \Delta_n
+  \right)
+  \rightsquigarrow
+  N\!\left[
+  0,
+  \begin{pmatrix}
+  P\phi\phi^\top&P\phi s^\top\\
+  Ps\phi^\top&I
+  \end{pmatrix}
+  \right].
+  \]
+  Le Cam's third lemma shifts the first component under \(\theta_0+h/\sqrt n\) by
+  \[
+  P\phi s^\top h.
+  \]
+  Meanwhile
+  \[
+  \sqrt n\{g(\theta_0+h/\sqrt n)-g(\theta_0)\}
+  \to Dg(\theta_0)h.
+  \]
+  For the centered estimator to have the same limit for every \(h\), these shifts must agree for every \(h\), proving the identity.</p>
+</div>
+
+<h3>Information bound by orthogonal decomposition</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Asymptotic information bound.</span> Every influence function satisfying the score identity obeys
+  \[
+  P(\phi\phi^\top)
+  \succeq
+  Dg\,I^{-1}Dg^\top.
+  \]
+  Equality holds precisely for
+  \[
+  \phi_{\mathrm{eff}}
+  =Dg\,I^{-1}s.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put
+  \[
+  r=\phi-Dg\,I^{-1}s.
+  \]
+  The score identity gives
+  \[
+  P(rs^\top)=Dg-Dg\,I^{-1}I=0.
+  \]
+  Hence the two terms are orthogonal in \(L^2(P)\), and
+  \[
+  P(\phi\phi^\top)
+  =Dg\,I^{-1}Dg^\top+P(rr^\top)
+  \succeq Dg\,I^{-1}Dg^\top.
+  \]
+  Equality is equivalent to \(r=0\) almost surely.</p>
+</div>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A regular estimator is asymptotically efficient at \(\theta_0\) if its limit covariance equals
+  \[
+  Dg(\theta_0)I(\theta_0)^{-1}Dg(\theta_0)^\top.
+  \]</p>
+</div>
+
+<h3>Convolution theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Hajek-Le Cam convolution theorem.</span> In a LAN experiment, the limit law of every regular estimator of \(g(\theta)\) has the form
+  \[
+  L_{\theta_0}
+  =N\{0,Dg\,I^{-1}Dg^\top\}*M
+  \]
+  for some probability law \(M\). Equivalently, the limit can be represented as
+  \[
+  Dg\,I^{-1}Z+W,
+  \]
+  where \(Z\sim N(0,I)\) and \(W\) is independent extra noise.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> In the Gaussian shift limit experiment, equivariance imposed by regularity makes the estimation error distribution invariant under shifts of \(h\). Decompose any limit estimator into its linear least-squares projection on the Gaussian observation \(Z+Ih\) and an orthogonal residual. A characterization of Gaussian shifts upgrades orthogonality to an independent convolution remainder. Le Cam convergence transfers this representation back to the original experiments.</p>
+</div>
+
+<p>The theorem is stronger than a covariance inequality: even a non-Gaussian regular limit must contain the efficient Gaussian component, and every departure from efficiency appears as additional independent noise.</p>
+
+<h3>Local asymptotic minimax theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Local minimax lower bound.</span> Let \(\ell:\mathbb R^k\to[0,\infty)\) be bounded, continuous, and bowl-shaped. For every estimator sequence \(T_n\),
+  \[
+  \lim_{c\to\infty}\liminf_{n\to\infty}
+  \sup_{\|h\|\le c}
+  \mathbb E_{\theta_0+h/\sqrt n}
+  \ell\!\left(
+  \sqrt n\{T_n-g(\theta_0+h/\sqrt n)\}
+  \right)
+  \ge
+  \mathbb E\ell(Dg\,I^{-1}Z),
+  \]
+  where \(Z\sim N(0,I)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Restrict the local parameter \(h\) to large compact sets and place smooth finite priors on them. Convergence of the local experiments to the Gaussian shift transfers Bayes risks to the limit experiment. The equivariant estimator \(Dg\,I^{-1}Y\) is minimax for bowl-shaped loss in that Gaussian experiment. Bayes risk lower-bounds maximal risk; enlarging the compact sets yields the result.</p>
+</div>
+
+<h3>Efficient likelihood estimators</h3>
+
+<p>A regular MLE has expansion
+\[
+\sqrt n(\hat\theta-\theta_0)
+=I^{-1}\frac1{\sqrt n}\sum_{i=1}^ns_{\theta_0}(X_i)+o_p(1),
+\]
+so its influence function is \(I^{-1}s\) and it attains the bound. A one-step estimator can attain the same expansion from a weaker preliminary estimator. For \(g(\theta)\), the delta method gives efficient influence \(Dg\,I^{-1}s\).</p>
+
+<h3>Nuisance parameters</h3>
+
+<p>For \(\theta=(\psi,\lambda)\), the efficient score for \(\psi\) is
+\[
+s_\psi^{\mathrm{eff}}
+=s_\psi-I_{\psi\lambda}
+I_{\lambda\lambda}^{-1}s_\lambda,
+\]
+with efficient information
+\[
+I_{\psi\cdot\lambda}
+=I_{\psi\psi}
+-I_{\psi\lambda}I_{\lambda\lambda}^{-1}
+I_{\lambda\psi}.
+\]
+The efficient influence function is
+\[
+\phi_\psi^{\mathrm{eff}}
+=I_{\psi\cdot\lambda}^{-1}
+s_\psi^{\mathrm{eff}}.
+\]
+This finite-dimensional projection is the template for semiparametric tangent-space calculations.</p>
+
+<h3>Superefficiency and nonuniformity</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Hodges estimator).</span> If \(\bar X_n\sim N(\theta,1/n)\), define
+  \[
+  T_n=
+  \begin{cases}
+  0,&|\bar X_n|\le n^{-1/4},\\
+  \bar X_n,&|\bar X_n|>n^{-1/4}.
+  \end{cases}
+  \]
+  At \(\theta=0\), \(\sqrt nT_n\to_p0\), apparently beating variance one. But under \(\theta_n=h/\sqrt n\), the threshold \(n^{-1/4}\) is much larger than \(|\theta_n|\), so \(T_n=0\) with high probability and
+  \[
+  \sqrt n(T_n-\theta_n)\to-h.
+  \]
+  The limit depends on \(h\), so the estimator is not regular.</p>
+</div>
+
+<p>Superefficiency at isolated points is purchased by poor behavior in shrinking neighborhoods. Efficiency bounds are therefore local-uniform statements, not pointwise prohibitions.</p>

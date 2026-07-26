@@ -8,24 +8,121 @@ note_prev_url: "/notes/causal-inference/do-calculus/"
 note_next_url: "/notes/causal-inference/inverse-probability-weighting/"
 ---
 
-<p>Front-door adjustment records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Front-door adjustment identifies a treatment effect despite unmeasured treatment-outcome confounding by using a fully mediating variable whose treatment and outcome relations have appropriate observed adjustment structure.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The front-door criterion identifies an effect through a mediator that intercepts all directed paths from treatment to outcome and has controlled confounding relations.</p>
-    </div>
+<h3>The front-door criterion</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under the front-door conditions, the causal effect of \(A\) on \(Y\) is identifiable even when the treatment-outcome relation is confounded.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A mediator \(M\) satisfies the
+  front-door criterion relative to \(A,Y\) if:
+  <ol>
+    <li>\(M\) intercepts every directed path from \(A\) to \(Y\);</li>
+    <li>there is no unblocked back-door path from \(A\) to \(M\);</li>
+    <li>all back-door paths from \(M\) to \(Y\) are blocked by \(A\).</li>
+  </ol></p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> First identify the effect of treatment on the mediator, then identify the mediator-outcome relation after adjusting for treatment, and combine the two pieces by summing or integrating over mediator values.</p>
-    </div>
+<p>The first condition excludes a direct effect not mediated by \(M\). The second identifies how \(A\) changes \(M\). The third identifies how \(M\) changes \(Y\) after adjustment for \(A\).</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Front-door identification is important because it shows hidden treatment-outcome confounding is not always fatal.</p>
-    </div>
+<h3>Front-door formula</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under the front-door criterion,
+  \[
+  p(y\mid\operatorname{do}(a))
+  =
+  \int p(m\mid a)
+  \left\{
+  \int p(y\mid m,a')p(a')\,\mathrm{d}a'
+  \right\}\mathrm{d}m.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Decompose over the mediator:
+  \[
+  p(y\mid\operatorname{do}(a))
+  =\int p(y\mid\operatorname{do}(a),m)
+  p(m\mid\operatorname{do}(a))\,\mathrm{d}m.
+  \]
+  Condition 2 and action-observation exchange give
+  \(p(m\mid\operatorname{do}(a))=p(m\mid a)\).
+  Because \(M\) intercepts every directed path, intervening on \(M\) renders the action on \(A\) irrelevant for \(Y\), so the first factor can be represented through \(p(y\mid\operatorname{do}(m))\). Condition 3 permits back-door adjustment for the \(M\to Y\) effect using \(A\):
+  \[
+  p(y\mid\operatorname{do}(m))
+  =\int p(y\mid m,a')p(a')\,\mathrm{d}a'.
+  \]
+  Substitute both identities.</p>
+</div>
+
+<h3>Linear structural calculation</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Consider
+  \[
+  M=\alpha A+\varepsilon_M,\qquad
+  Y=\beta M+U+\varepsilon_Y,
+  \]
+  where an unobserved \(U\) confounds \(A\) and \(Y\), but
+  \(\varepsilon_M\) is independent of \(A,U,\varepsilon_Y\).
+  There is no direct \(A\to Y\) effect. Regressing \(M\) on \(A\) identifies
+  \(\alpha\). Regressing \(Y\) on \(M\) and \(A\) identifies \(\beta\), because conditioning on \(A\) blocks the back-door path
+  \(M\leftarrow A\leftarrow U\to Y\). The total effect is \(\alpha\beta\), even though the coefficient from regressing \(Y\) directly on \(A\) is confounded.</p>
+</div>
+
+<h3>Positivity requirements</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Front-door identification requires support for:
+  \[
+  p(m\mid a)\quad\text{over mediator values induced by each }a,
+  \]
+  and
+  \[
+  p(y\mid m,a')\quad\text{for treatment values }a'
+  \text{ across those mediator values}.
+  \]
+  These are stronger and less familiar than ordinary treatment overlap.</p>
+</div>
+
+<p>If treatment deterministically fixes the mediator, the outcome relation at a common mediator value across treatment levels may not be observed, and the front-door functional can require extrapolation.</p>
+
+<h3>Observed covariates in generalized front-door adjustment</h3>
+
+<p>With baseline covariates \(X\), a conditional front-door formula may take
+\[
+p(y\mid\operatorname{do}(a))
+=\int p(x)\int p(m\mid a,x)
+\left\{\int p(y\mid m,a',x)p(a'\mid x)\,\mathrm{d}a'\right\}
+\mathrm{d}m\,\mathrm{d}x,
+\]
+provided the corresponding conditional graphical criteria hold. Covariates can block confounding of \(A\to M\) and \(M\to Y\), but post-treatment covariates require a more careful longitudinal graph.</p>
+
+<h3>Why mediator-outcome confounding matters</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> If an unmeasured
+  \(V\) causes both \(M\) and \(Y\) independently of \(A\), then adjusting only for \(A\) does not identify the \(M\to Y\) relation. The inner integral
+  \(\int p(y\mid m,a')p(a')\,\mathrm{d}a'\) retains mediator-outcome confounding and the front-door formula fails.</p>
+</div>
+
+<h3>Direct effects violate interception</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> If
+  \(Y=\delta A+\beta M+U+\varepsilon_Y\) with \(\delta\ne0\), \(M\) no longer intercepts every directed path. The front-door formula identifies only the mediated component represented by its assumptions and misses \(\delta\). No observed statistical diagnostic can prove that the direct path is absent.</p>
+</div>
+
+<h3>Relation to mediation analysis</h3>
+
+<p>Front-door identification uses a mediator to identify the <em>total</em effect in the presence of treatment-outcome confounding. Natural direct and indirect effects ask cross-world questions such as
+\(Y\{1,M(0)\}\), require additional assumptions, and are not automatically identified by the front-door criterion. The same variable \(M\) appears, but the estimands and assumptions differ.</p>
+
+<h3>Estimation of the front-door functional</h3>
+
+<p>A plug-in estimator fits \(p(m\mid a,x)\) and
+\(\mathbb E(Y\mid m,a,x)\), then numerically evaluates the nested integrals. Semiparametric one-step and targeted estimators add influence-function corrections and can permit flexible nuisance learning under rate conditions. Because the functional combines several mechanisms, diagnostics should separately assess treatment-mediator overlap, mediator-outcome overlap, and sensitivity to violations of each front-door condition.</p>
+
+<h3>A credible-use checklist</h3>
+
+<p>Substantive use of front-door adjustment should explain why treatment has no effect outside the mediator, why there is no unmeasured \(A\)-\(M\) confounding, why adjustment for \(A\) removes all \(M\)-\(Y\) confounding, and whether mediator values overlap across treatment levels. The method is powerful precisely because these assumptions are strong.</p>

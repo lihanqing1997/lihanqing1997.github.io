@@ -34,3 +34,72 @@ note_next_url: "/notes/numerical-analysis/inverse-problems-regularization/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Spectral methods are excellent for smooth solutions on simple domains. Discontinuities, shocks, complex geometry, and local singularities often favor finite volume, finite difference, or finite element methods.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Global approximation</h3>
+
+<p>Spectral methods represent solutions by global trigonometric or orthogonal
+polynomial bases. For periodic \(u\),
+\[
+u_N(x)=\sum_{|k|\le N}\widehat u_ke^{ikx}.
+\]
+Differentiation is diagonal:
+\[
+\widehat{u_N'}_k=ik\widehat u_k.
+\]
+The FFT computes transforms in \(O(N\log N)\).</p>
+
+<h3>Convergence from regularity</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If periodic
+\(u\in H^s\), then its Fourier projection satisfies
+\[
+\|u-P_Nu\|_{H^r}
+\le N^{r-s}\|u\|_{H^s},
+\qquad 0\le r\le s.
+\]
+If \(u\) extends analytically to a strip \(|\operatorname{Im}z|<\alpha\),
+then Fourier coefficients and projection error decay exponentially like
+\(e^{-\alpha N}\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Parseval gives
+\[
+\|u-P_Nu\|_{H^r}^2
+=\sum_{|k|>N}(1+k^2)^r|\widehat u_k|^2
+\le(1+N^2)^{r-s}\|u\|_{H^s}^2.
+\]
+For analytic \(u\), shift the contour in the Fourier coefficient integral by
+\(\pm i\alpha'\), \(\alpha'<\alpha\), obtaining
+\(|\widehat u_k|\le Ce^{-\alpha'|k|}\).</p>
+</div>
+
+<h3>Chebyshev collocation</h3>
+
+<p>On \([-1,1]\), Chebyshev--Lobatto nodes
+\[
+x_j=\cos(j\pi/N)
+\]
+cluster near endpoints. Barycentric interpolation yields a dense
+differentiation matrix \(D_N\), so derivatives at nodes are \(D_Nu\).
+Fast cosine transforms avoid dense multiplication for repeated operations.
+Boundary conditions can be imposed by row replacement, basis construction, or
+tau methods.</p>
+
+<h3>Aliasing and dealiasing</h3>
+
+<p>Products of two degree-\(N\) expansions contain modes through \(2N\). On an
+\(N\)-point grid, unresolved modes fold into lower frequencies. The \(3/2\)
+rule pads Fourier coefficients, transforms to a finer grid, multiplies, then
+truncates. Without dealiasing, nonlinear conservation and stability can be
+corrupted.</p>
+
+<h3>Gibbs phenomenon</h3>
+
+<p>At a jump, spectral partial sums overshoot by a nonvanishing fraction of the
+jump, although convergence holds away from it and in \(L_2\). Filtering,
+domain decomposition, Gegenbauer reconstruction, or shock-capturing can reduce
+oscillation. Global spectral methods are strongest for smooth solutions; they
+do not turn discontinuities into exponential convergence.</p>

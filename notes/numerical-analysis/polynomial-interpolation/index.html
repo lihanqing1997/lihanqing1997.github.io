@@ -34,3 +34,102 @@ note_next_url: "/notes/numerical-analysis/orthogonal-polynomials-approximation/"
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> Divided differences build the Newton form of the interpolating polynomial incrementally. They are useful for adding nodes, estimating derivatives, and understanding interpolation as repeated slope extraction.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Unisolvence and divided differences</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For distinct nodes
+\(x_0,\ldots,x_n\) and data \(y_0,\ldots,y_n\), there is a unique polynomial
+\(p_n\) of degree at most \(n\) satisfying \(p_n(x_i)=y_i\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The Lagrange formula
+\[
+p_n(x)=\sum_{i=0}^ny_i\ell_i(x),\qquad
+\ell_i(x)=\prod_{j\ne i}\frac{x-x_j}{x_i-x_j},
+\]
+proves existence. The difference of two interpolants has \(n+1\) distinct
+zeros but degree at most \(n\), so it is zero.</p>
+</div>
+
+<p>Newton form,
+\[
+p_n(x)=f[x_0]+f[x_0,x_1](x-x_0)+\cdots+
+f[x_0,\ldots,x_n]\prod_{j=0}^{n-1}(x-x_j),
+\]
+supports incremental nodes and \(O(n)\) evaluation by nested multiplication.
+Divided differences remain meaningful with repeated nodes through derivatives,
+leading to Hermite interpolation.</p>
+
+<h3>Interpolation remainder</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\(f\in C^{n+1}[a,b]\), then for every \(x\in[a,b]\),
+\[
+f(x)-p_n(x)
+=\frac{f^{(n+1)}(\xi_x)}{(n+1)!}
+\omega_{n+1}(x),
+\qquad
+\omega_{n+1}(x)=\prod_{j=0}^n(x-x_j),
+\]
+for some \(\xi_x\in(a,b)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(x\) is not a node, choose
+\[
+C=\frac{f(x)-p_n(x)}{\omega_{n+1}(x)}
+\]
+and define \(g(t)=f(t)-p_n(t)-C\omega_{n+1}(t)\). It has zeros at all nodes and
+at \(x\). Repeated Rolle's theorem gives a point \(\xi_x\) where
+\(g^{(n+1)}(\xi_x)=0\), yielding the formula.</p>
+</div>
+
+<h3>Lebesgue constants and data amplification</h3>
+
+<p>The interpolation operator satisfies
+\[
+\|I_nf\|_\infty\le\Lambda_n\|f\|_\infty,\qquad
+\Lambda_n=\max_x\sum_{i=0}^n|\ell_i(x)|.
+\]
+Moreover,
+\[
+\|f-I_nf\|_\infty
+\le(1+\Lambda_n)
+\inf_{p\in\mathcal P_n}\|f-p\|_\infty.
+\]
+Thus convergence depends on both approximability and stability of the nodes.
+Equally spaced nodes have exponentially growing \(\Lambda_n\), enabling Runge
+oscillation; Chebyshev nodes have \(\Lambda_n=O(\log n)\).</p>
+
+<h3>Chebyshev nodes</h3>
+
+<p>The roots
+\[
+x_j=\cos\frac{(2j+1)\pi}{2n+2},\qquad j=0,\ldots,n,
+\]
+minimize the maximum of the monic nodal polynomial:
+\[
+\min_{\substack{q\text{ monic}\\\deg q=n+1}}
+\|q\|_{\infty,[-1,1]}=2^{-n},
+\]
+attained by \(2^{-n}T_{n+1}\). This controls the remainder factor and spreads
+nodes near endpoints where equispaced interpolation is least stable.</p>
+
+<h3>Barycentric evaluation</h3>
+
+<p>With weights
+\[
+w_i=\left(\prod_{j\ne i}(x_i-x_j)\right)^{-1},
+\]
+the interpolant is evaluated stably as
+\[
+p_n(x)=
+\frac{\sum_iw_i y_i/(x-x_i)}
+{\sum_iw_i/(x-x_i)}.
+\]
+At a node its limiting value is assigned exactly. This form avoids explicitly
+forming large polynomial coefficients and supports \(O(n)\) evaluation.</p>

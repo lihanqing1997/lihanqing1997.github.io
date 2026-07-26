@@ -8,22 +8,129 @@ note_prev_url: "/notes/statistical-decision-theory/sufficiency-and-reduction/"
 note_next_url: "/notes/statistical-decision-theory/deficiency-and-distance/"
 ---
 
-<p>Blackwell comparison orders experiments by information. One experiment is more informative if the other can be obtained from it by randomized post-processing.</p>
+<p>The Blackwell order defines “more informative” operationally. An experiment dominates another when randomized post-processing can reproduce the latter under every parameter value. Equivalently, every finite decision problem can be solved at least as well with the dominating experiment.</p>
 
-    <h3>Markov transition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A transition \(K\) from \(\mathcal X\) to \(\mathcal Y\) is a Markov kernel. It sends a measure \(P\) to \(PK\), defined by \((PK)(B)=\int K(x,B)\,P(\mathrm{d}x)\).</p>
-    </div>
+<h3>Markov transitions and composition</h3>
 
-    <h3>Blackwell order</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> \(\mathcal E=\{P_\theta\}\) is more informative than \(\mathcal F=\{Q_\theta\}\) if there exists \(K\) such that \(Q_\theta=P_\theta K\) for all \(\theta\). Then every decision problem has minimal risk under \(\mathcal E\) no larger than under \(\mathcal F\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A Markov transition
+  \(K:\mathcal X\rightsquigarrow\mathcal Y\) satisfies:</p>
+  <ol>
+    <li>\(B\mapsto K(x,B)\) is a probability measure for every \(x\);</li>
+    <li>\(x\mapsto K(x,B)\) is measurable for every measurable \(B\).</li>
+  </ol>
+  <p>It acts on a probability measure \(P\) by
+  \[
+  (PK)(B)=\int_{\mathcal X}K(x,B)P(\mathrm{d}x).
+  \]</p>
+</div>
 
-    <h3>Simulation of rules</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> A rule for \(\mathcal F\) can be run after observing \(X\sim P_\theta\) by first drawing \(Y\sim K(X,\cdot)\). The induced distribution of \(Y\) is \(Q_\theta\), so the risk matches the rule in \(\mathcal F\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(K:\mathcal X\rightsquigarrow\mathcal Y\) and
+  \(L:\mathcal Y\rightsquigarrow\mathcal Z\), then
+  \[
+  (KL)(x,C)=\int_{\mathcal Y}L(y,C)K(x,\mathrm{d}y)
+  \]
+  is a Markov transition and
+  \[
+  (PK)L=P(KL).
+  \]</p>
+</div>
 
-    <h3>Information as experiment dominance</h3>
-    <p>Blackwell comparison turns “more data” into an exact risk statement: a more informative experiment cannot make any decision problem harder.</p>
+<p>Composition formalizes a simulation pipeline. Deterministic statistics, adding independent noise, rounding, censoring, coarsening, and randomized privacy mechanisms are all Markov transitions.</p>
+
+<h3>The Blackwell order</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For experiments
+  \(\mathcal E=\{P_\theta:\theta\in\Theta\}\) and
+  \(\mathcal F=\{Q_\theta:\theta\in\Theta\}\), write
+  \[
+  \mathcal E\succeq_B\mathcal F
+  \]
+  if a transition \(K\) exists such that
+  \[
+  P_\theta K=Q_\theta
+  \quad\text{for every }\theta.
+  \]
+  Then \(\mathcal F\) is a garbling of \(\mathcal E\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (easy direction).</span> If
+  \(\mathcal E\succeq_B\mathcal F\), then for every action space, loss, prior, and rule \(\rho\) in \(\mathcal F\), a rule \(\delta\) in \(\mathcal E\) exists with identical risk function. Therefore every Bayes, minimax, or constrained value in \(\mathcal E\) is no larger than the corresponding value in \(\mathcal F\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Set \(\delta=K\rho\). Under \(P_\theta\), first simulating \(Y\sim K(X,\cdot)\) gives \(Y\sim Q_\theta\), after which \(\rho\) generates exactly the same action law as in \(\mathcal F\). Hence all risks agree. Taking infima over the larger collection of rules available in \(\mathcal E\) gives the value comparison. \(\square\)</p>
+</div>
+
+<h3>The Blackwell–Sherman–Stein converse</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(\Theta\), \(\mathcal X\), and \(\mathcal Y\) are finite. The following are equivalent:</p>
+  <ol>
+    <li>\(\mathcal E\succeq_B\mathcal F\);</li>
+    <li>for every finite action space, bounded loss, and prior, the minimum Bayes risk in \(\mathcal E\) is no larger than in \(\mathcal F\);</li>
+    <li>every risk vector attainable in \(\mathcal F\) is attainable in \(\mathcal E\).</li>
+  </ol>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the converse.</span> Identify an experiment with its stochastic matrix whose rows are parameter distributions. The set
+  \[
+  \mathcal C=\{PK:K\text{ is a stochastic matrix}\}
+  \]
+  of all garblings of \(\mathcal E\) is compact and convex. If \(Q\notin\mathcal C\), the separating-hyperplane theorem gives a matrix \(H=(h_{\theta y})\) such that
+  \[
+  \sum_{\theta,y}h_{\theta y}Q_{\theta y}
+  <
+  \inf_{K}\sum_{\theta,y}h_{\theta y}(PK)_{\theta y}.
+  \]
+  Add constants by parameter row and rescale so that
+  \(h_{\theta y}=\pi_\theta L(\theta,y)\) for a full-support prior \(\pi\) and bounded nonnegative loss, taking actions indexed by \(y\). The identity rule in \(\mathcal F\) then has smaller Bayes risk than every rule in \(\mathcal E\), contradicting assumption 2. Thus \(Q=PK\) for some \(K\). \(\square\)</p>
+</div>
+
+<p>On standard Borel spaces an analogous theorem holds with suitable topological and measurability conditions and often with closures of risk sets. The finite proof contains the essential separation argument.</p>
+
+<h3>Binary experiments and posterior spread</h3>
+
+<p>For \(\Theta=\{0,1\}\) with prior odds fixed, an experiment transforms prior probability into a posterior random variable. A more informative experiment produces a posterior distribution that is larger in convex order: it is a mean-preserving spread of the posterior from the less informative experiment. Every concave Bayes envelope therefore has smaller expectation under the more informative signal.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (binary symmetric channels).</span> Let the state \(\theta\in\{0,1\}\), and observe
+  \[
+  X=\theta\oplus E_p,\qquad E_p\sim\operatorname{Bernoulli}(p),
+  \quad0\leq p\leq\tfrac12.
+  \]
+  If \(0\leq p\leq q\leq1/2\), choose
+  \(r=(q-p)/(1-2p)\in[0,1/2]\) and add independent
+  \(E_r\). Then
+  \[
+  X\oplus E_r=\theta\oplus E_q.
+  \]
+  Hence the channel with crossover \(p\) Blackwell-dominates the one with crossover \(q\).</p>
+</div>
+
+<h3>Data processing</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If
+  \(\mathcal E\succeq_B\mathcal F\), every \(f\)-divergence contracts:
+  \[
+  D_f(Q_\theta\|Q_{\theta'})
+  \leq D_f(P_\theta\|P_{\theta'}).
+  \]
+  In particular, total variation cannot increase and Hellinger affinity cannot decrease under garbling.</p>
+</div>
+
+<p>Pairwise divergence inequalities are necessary but generally not sufficient for the Blackwell order. A single kernel must simulate all parameter distributions simultaneously; pairwise summaries can lose the compatibility information across \(\Theta\).</p>
+
+<h3>Equivalence of experiments</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Experiments are Blackwell equivalent if each dominates the other. This is equality of statistical information, even when the sample spaces differ.</p>
+</div>
+
+<p>The Blackwell order is therefore a preorder on raw experiments and a partial order on equivalence classes. Sufficiency gives a central example: the full data and a sufficient statistic are equivalent experiments.</p>

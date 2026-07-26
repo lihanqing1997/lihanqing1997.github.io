@@ -82,3 +82,122 @@ Also \(P_\Pi(\mathrm{d}x)=m(x)\mu(\mathrm{d}x)\). The displayed ratio gives a pr
 \]
 Thus the posterior odds equal prior odds times the likelihood ratio.</p>
     </div>
+
+<h3>Posterior kernels beyond densities</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (posterior disintegration).</span> Let \(\Theta\) and \(\mathcal X\) be standard Borel spaces, let \(\Pi\) be a prior on \(\Theta\), and let \(P_\theta\) be a probability kernel from \(\Theta\) to \(\mathcal X\). Under the joint law
+\[
+Q(\mathrm{d}\theta,\mathrm{d}x)
+=\Pi(\mathrm{d}\theta)P_\theta(\mathrm{d}x),
+\]
+there exists a posterior kernel \(x\mapsto\Pi(\cdot\mid x)\), unique for the marginal law \(m\) of \(X\), such that
+\[
+Q(A\times B)
+=\int_B\Pi(A\mid x)\,m(\mathrm{d}x).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> This is the existence theorem for regular conditional distributions on standard Borel spaces. Apply it to the coordinate map \(\Theta\) conditional on \(X\). Uniqueness follows because two versions have equal integrals over every measurable \(B\), hence agree \(m\)-almost surely on a countable generating class and then on the full \(\sigma\)-field by a monotone-class argument.</p>
+</div>
+
+<p>This formulation is essential in function-space models, where no Lebesgue density exists. Bayes' formula is then a Radon-Nikodym identity rather than a quotient of elementary densities.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (dominated Bayes formula).</span> Suppose \(P_\theta\ll\mu\) with jointly measurable density \(p_\theta(x)\), and define
+\[
+m(x)=\int_\Theta p_\vartheta(x)\,\Pi(\mathrm{d}\vartheta).
+\]
+For \(0<m(x)<\infty\),
+\[
+\Pi(A\mid x)
+=\frac{\int_Ap_\theta(x)\,\Pi(\mathrm{d}\theta)}
+{\int_\Theta p_\theta(x)\,\Pi(\mathrm{d}\theta)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For measurable \(A,B\),
+\[
+Q(A\times B)
+=\int_B\int_Ap_\theta(x)\,\Pi(\mathrm{d}\theta)\mu(\mathrm{d}x)
+=\int_B
+\frac{\int_Ap_\theta(x)\Pi(\mathrm{d}\theta)}{m(x)}
+m(x)\mu(\mathrm{d}x).
+\]
+Since \(m(x)\mu(\mathrm{d}x)\) is the marginal law of \(X\), the quotient satisfies the defining disintegration identity.</p>
+</div>
+
+<h3>Sequential coherence</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(X_1,\ldots,X_n\) are conditionally independent given \(\theta\), updating first with \(x_{1:k}\) and then with \(x_{k+1:n}\) gives the same posterior as one-step updating:
+\[
+\Pi(\mathrm{d}\theta\mid x_{1:n})
+\propto
+\left\{\prod_{i=k+1}^np_\theta(x_i)\right\}
+\Pi(\mathrm{d}\theta\mid x_{1:k}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The right-hand side is proportional to
+\[
+\left\{\prod_{i=k+1}^np_\theta(x_i)\right\}
+\left\{\prod_{i=1}^kp_\theta(x_i)\right\}\Pi(\mathrm{d}\theta),
+\]
+which is the full posterior kernel. The omitted normalizing constants do not depend on \(\theta\).</p>
+</div>
+
+<h3>A complete beta-binomial calculation</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+X\mid\theta\sim\operatorname{Binomial}(n,\theta),
+\qquad
+\theta\sim\operatorname{Beta}(a,b).
+\]
+After observing \(X=x\),
+\[
+\theta\mid x\sim\operatorname{Beta}(a+x,b+n-x).
+\]
+Indeed, the posterior kernel is
+\[
+\theta^{x}(1-\theta)^{n-x}
+\theta^{a-1}(1-\theta)^{b-1}
+=\theta^{a+x-1}(1-\theta)^{b+n-x-1}.
+\]
+Consequently,
+\[
+E(\theta\mid x)
+=\frac{a+x}{a+b+n}
+=\frac{a+b}{a+b+n}\frac{a}{a+b}
++\frac{n}{a+b+n}\frac{x}{n},
+\]
+an explicit precision-weighted compromise between prior and empirical proportions. Its posterior variance is
+\[
+\frac{(a+x)(b+n-x)}
+{(a+b+n)^2(a+b+n+1)}.
+\]</p>
+</div>
+
+<h3>Identifiability and posterior learning</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(P_\theta=P_{\theta'}\) for distinct \(\theta,\theta'\), no amount of data can make their posterior odds depart from their prior odds:
+\[
+\frac{\pi(\theta\mid X^{(n)})}
+{\pi(\theta'\mid X^{(n)})}
+=\frac{\pi(\theta)}{\pi(\theta')}
+\quad P_\theta^{(n)}\text{-almost surely}
+\]
+for discrete prior support.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Equal sampling laws give likelihood ratio one for every sample outside a common null set. The posterior-odds identity then leaves only prior odds.</p>
+</div>
+
+<p>Prior support is necessary for learning the truth, but it is not sufficient for a useful posterior rate. The likelihood must separate neighborhoods, and the prior must place enough local mass near the data-generating distribution. These requirements become the testing and concentration conditions used later in the note.</p>

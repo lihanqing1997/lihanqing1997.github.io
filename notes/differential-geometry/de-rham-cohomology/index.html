@@ -8,24 +8,109 @@ note_prev_url: "/notes/differential-geometry/stokes-theorem/"
 note_next_url: "/notes/differential-geometry/lie-derivative-and-cartan-formula/"
 ---
 
-<p>De Rham cohomology records the objects, main results, proof mechanisms, and boundary cases needed for the differential geometry note.</p>
+<p>De Rham cohomology measures the global failure of closed forms to be exact.
+It converts differential equations into topological invariants while
+retaining concrete representatives that can be integrated.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A form is closed if \(\mathrm{d}\omega=0\) and exact if \(\omega=\mathrm{d}\eta\). De Rham cohomology is \(H^k_{\mathrm{dR}}(M)=\ker \mathrm{d}/\operatorname{im}\mathrm{d}\).</p>
-    </div>
+<h3>The de Rham complex</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> De Rham cohomology is invariant under smooth homotopy equivalence. Contractible manifolds have the same de Rham cohomology as a point.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Since
+\(\mathrm{d}^2=0\), the sequence
+\[
+0\to\Omega^0(M)\xrightarrow{\mathrm{d}}\Omega^1(M)
+\xrightarrow{\mathrm{d}}\cdots\xrightarrow{\mathrm{d}}\Omega^n(M)\to0
+\]
+is a cochain complex. Its \(k\)-th cohomology is
+\[
+H_{\mathrm{dR}}^k(M)
+=\frac{\ker(\mathrm{d}:\Omega^k\to\Omega^{k+1})}
+{\operatorname{im}(\mathrm{d}:\Omega^{k-1}\to\Omega^k)}.
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Construct chain homotopy operators from a smooth homotopy and use Cartan-type formulas to show pullbacks by homotopic maps induce the same map on cohomology.</p>
-    </div>
+<p>The wedge product descends to cohomology because
+\(\mathrm{d}\) is a graded derivation, making
+\(H_{\mathrm{dR}}^\bullet(M)\) a graded-commutative algebra.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Cohomology measures global obstruction to solving \(\omega=\mathrm{d}\eta\) for closed forms. It is topology seen by calculus.</p>
-    </div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(M\) is connected,
+\(H_{\mathrm{dR}}^0(M)\cong\mathbb R\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> A zero-form \(f\) is closed
+exactly when \(\mathrm{d}f=0\), hence when it is locally constant. On a
+connected manifold it is constant. There are no exact zero-forms other than
+zero.</p>
+</div>
+
+<h3>Homotopy invariance</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Smoothly homotopic maps
+\(f_0,f_1:M\to N\) induce the same homomorphism on de Rham cohomology.
+Consequently homotopy-equivalent manifolds have isomorphic de Rham
+cohomology.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For a homotopy
+\(F:M\times[0,1]\to N\), integration along the interval defines an operator
+\(K:\Omega^k(N)\to\Omega^{k-1}(M)\) satisfying
+\[
+f_1^*-f_0^*=\mathrm{d}K+K\mathrm{d}.
+\]
+If \(\omega\) is closed, the difference
+\(f_1^*\omega-f_0^*\omega=\mathrm{d}(K\omega)\) is exact, so the induced
+cohomology classes agree.</p>
+</div>
+
+<h3>Computations</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (circle).</span> Every one-form on
+\(S^1\) is closed. The map
+\[
+[\omega]\longmapsto\int_{S^1}\omega
+\]
+is an isomorphism \(H_{\mathrm{dR}}^1(S^1)\cong\mathbb R\). Its kernel
+consists of exact forms: lift \(\omega\) to a periodic form \(a(t)\,\mathrm{d}t\)
+and integrate \(a\); zero period makes the primitive periodic.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Mayer-Vietoris).</span> If
+\(M=U\cup V\), there is a long exact sequence
+\[
+\cdots\to H^{k-1}(U\cap V)\to H^k(M)\to
+H^k(U)\oplus H^k(V)\to H^k(U\cap V)\to\cdots.
+\]</p>
+</div>
+
+<p>A partition of unity produces the cochain-level splitting behind this
+sequence. Applying it to two contractible arcs of \(S^1\), or to hemispheres
+of \(S^n\), gives
+\[
+H_{\mathrm{dR}}^k(S^n)\cong
+\begin{cases}
+\mathbb R,&k=0,n,\\
+0,&\text{otherwise}.
+\end{cases}
+\]</p>
+
+<h3>Integration and topology</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (de Rham).</span> Integration over
+smooth singular cycles induces an isomorphism
+\[
+H_{\mathrm{dR}}^k(M)\cong H^k_{\mathrm{sing}}(M;\mathbb R).
+\]</p>
+</div>
+
+<p>Thus a differential invariant defined using charts and derivatives depends
+only on the underlying topology. For a compact oriented \(n\)-manifold,
+integration identifies \(H_{\mathrm{dR}}^n(M)\cong\mathbb R\), and Poincare
+duality pairs \(H^k\) nondegenerately with \(H^{n-k}\) through
+\(([\alpha],[\beta])\mapsto\int_M\alpha\wedge\beta\).</p>

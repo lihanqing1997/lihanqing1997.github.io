@@ -34,3 +34,100 @@ note_next_url: "/notes/numerical-analysis/numerical-integration/"
     <div class="math-statement proposition">
         <p><span class="statement-title">Proposition.</span> For analytic real-valued functions extendable to complex inputs, \(\operatorname{Im} f(x+ih)/h\) approximates \(f'(x)\) without subtractive cancellation. This is a useful computational trick when complex arithmetic is available.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Finite-difference formulas</h3>
+
+<p>Taylor expansion gives
+\[
+\frac{f(x+h)-f(x)}h
+=f'(x)+\frac h2f''(x)+O(h^2),
+\]
+and the centered formula
+\[
+\frac{f(x+h)-f(x-h)}{2h}
+=f'(x)+\frac{h^2}{6}f^{(3)}(x)+O(h^4).
+\]
+Symmetry cancels even powers and raises the order.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (general weights).</span> A formula
+\[
+D_hf(x)=\frac1h\sum_{j=0}^m w_j f(x+c_jh)
+\]
+is exact for polynomials of degree at most \(p\) if and only if
+\[
+\sum_jw_jc_j^k=
+\begin{cases}
+1,&k=1,\\
+0,&0\le k\le p,\ k\ne1.
+\end{cases}
+\]
+If \(f\in C^{p+1}\), its truncation error is \(O(h^p)\), subject to the first
+nonvanishing moment.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Substitute Taylor expansions
+\[
+f(x+c_jh)=\sum_k
+\frac{f^{(k)}(x)}{k!}c_j^kh^k.
+\]
+Coefficient matching gives the moment conditions and the leading remainder.</p>
+</div>
+
+<h3>Roundoff versus truncation</h3>
+
+<p>If function values have relative errors of order \(u\), a first-difference
+roundoff contribution is roughly \(u|f(x)|/h\). For a centered formula,
+\[
+\text{error}\lesssim C_1h^2+C_2u/h.
+\]
+Balancing terms gives
+\[
+h_{\mathrm{opt}}\asymp u^{1/3},
+\qquad
+\text{minimum error}\asymp u^{2/3},
+\]
+after restoring problem scales. Taking \(h\) arbitrarily small makes the answer
+worse.</p>
+
+<h3>Richardson extrapolation</h3>
+
+<p>If
+\[
+D_h=D+c h^p+O(h^{p+q}),
+\]
+then
+\[
+D_{\mathrm{ext}}
+=\frac{2^pD_{h/2}-D_h}{2^p-1}
+=D+O(h^{p+q}).
+\]
+Repeated extrapolation produces high order, but also combines nearby noisy
+quantities with large coefficients. Smooth asymptotic expansions and roundoff
+control are required.</p>
+
+<h3>Complex-step differentiation</h3>
+
+<p>For a real-analytic function evaluated with complex arithmetic,
+\[
+f(x+ih)=f(x)+ihf'(x)-\frac{h^2}{2}f''(x)+O(h^3),
+\]
+so
+\[
+f'(x)=\frac{\operatorname{Im}f(x+ih)}h+O(h^2).
+\]
+There is no subtractive cancellation, permitting very small \(h\). The method
+fails for nonanalytic code paths such as absolute values, comparisons, or
+complex-unsafe library routines.</p>
+
+<h3>Automatic differentiation</h3>
+
+<p>Automatic differentiation applies the chain rule to the computational
+graph. Forward mode propagates directional derivatives at a cost proportional
+to the number of input directions; reverse mode propagates adjoints at a cost
+comparable to one function evaluation for scalar output, but stores or
+recomputes intermediates. It gives derivatives of the implemented algorithm,
+which may differ from derivatives of an ideal mathematical problem at
+nondifferentiable branches or unconverged iterative solvers.</p>

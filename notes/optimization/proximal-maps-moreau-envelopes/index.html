@@ -8,24 +8,156 @@ note_prev_url: "/notes/optimization/self-concordance-interior-point-newton/"
 note_next_url: "/notes/optimization/proximal-gradient-methods/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Proximal maps and Moreau envelopes.</p>
+<p>The proximal map is an implicit first-order step: instead of linearizing a
+nonsmooth function, it minimizes the function plus a quadratic penalty for
+moving too far. The same construction produces a smooth envelope whose
+gradient records the proximal displacement.</p>
 
-    <h3>Proximal map</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For proper closed convex \(g\), \(\operatorname{prox}_{\eta g}(x)=\arg\min_z\{g(z)+\frac{1}{2\eta}\|z-x\|^2\}\). It is an implicit gradient step for nonsmooth functions.</p>
-    </div>
+<h3>Existence, uniqueness, and optimality</h3>
 
-    <h3>Optimality condition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The point \(z=\operatorname{prox}_{\eta g}(x)\) satisfies \(0\in\partial g(z)+\eta^{-1}(z-x)\), or equivalently \(x-z\in\eta\partial g(z)\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> For a proper, closed,
+    convex function \(g:\mathbb R^d\to(-\infty,+\infty]\) and \(\eta>0\),
+    \[
+    \operatorname{prox}_{\eta g}(x)
+    =
+    \operatorname*{arg\,min}_{z}
+    \left\{g(z)+\frac1{2\eta}\|z-x\|^2\right\}.
+    \]</p>
+</div>
 
-    <h3>Moreau envelope</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Moreau envelope \(g_\eta(x)=\min_z\{g(z)+\frac{1}{2\eta}\|z-x\|^2\}\) is a smooth approximation of \(g\), with gradient \(\nabla g_\eta(x)=\eta^{-1}(x-\operatorname{prox}_{\eta g}(x))\).</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Resolvent identity.</span> The minimizer
+    exists and is unique. A point \(z\) equals
+    \(\operatorname{prox}_{\eta g}(x)\) if and only if
+    \[
+    0\in\partial g(z)+\frac1\eta(z-x),
+    \]
+    equivalently
+    \[
+    x\in z+\eta\partial g(z),\qquad
+    \operatorname{prox}_{\eta g}=(I+\eta\partial g)^{-1}.
+    \]</p>
+</div>
 
-    <h3>Examples</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Projection is the prox of an indicator. Soft-thresholding is the prox of the \(\ell_1\) norm. These two examples drive much of constrained and sparse optimization.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The quadratic term makes the
+    objective \(1/\eta\)-strongly convex and coercive, while closedness gives
+    lower semicontinuity. It therefore has a unique minimizer. The convex
+    Fermat rule and the subdifferential sum rule give the displayed inclusion,
+    and rearranging gives the resolvent form.</p>
+</div>
+
+<h3>Firm nonexpansiveness</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Proximal contraction inequality.</span>
+    For \(p=\operatorname{prox}_{\eta g}(x)\) and
+    \(q=\operatorname{prox}_{\eta g}(y)\),
+    \[
+    \|p-q\|^2\le\langle p-q,x-y\rangle.
+    \]
+    Consequently the proximal map is \(1\)-Lipschitz.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The optimality conditions
+    give
+    \((x-p)/\eta\in\partial g(p)\) and
+    \((y-q)/\eta\in\partial g(q)\). Monotonicity of the convex
+    subdifferential yields
+    \[
+    \left\langle
+      \frac{x-p}{\eta}-\frac{y-q}{\eta},p-q
+    \right\rangle\ge0.
+    \]
+    Rearrangement proves firm nonexpansiveness; Cauchy-Schwarz then gives
+    \(\|p-q\|\le\|x-y\|\).</p>
+</div>
+
+<h3>The smooth Moreau envelope</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> The Moreau envelope is
+    \[
+    g_\eta(x)
+    =\min_z\left\{g(z)+\frac1{2\eta}\|z-x\|^2\right\}.
+    \]</p>
+</div>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Differentiability of the envelope.</span>
+    The function \(g_\eta\) is finite, convex, and continuously differentiable,
+    with
+    \[
+    \nabla g_\eta(x)
+    =\frac1\eta\left(x-\operatorname{prox}_{\eta g}(x)\right).
+    \]
+    Its gradient is \(1/\eta\)-Lipschitz.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Let \(p(x)\) denote the
+    unique proximal point. Evaluating the minimization defining \(g_\eta(y)\)
+    at \(p(x)\) gives an upper directional bound, while evaluating
+    \(g_\eta(x)\) at \(p(y)\) gives the reverse bound. After expanding the
+    squared norms and letting \(y\to x\), firm nonexpansiveness implies
+    \[
+    g_\eta(y)-g_\eta(x)
+    =\left\langle\frac{x-p(x)}\eta,y-x\right\rangle
+      +o(\|y-x\|).
+    \]
+    This proves the gradient formula. Moreover
+    \(I-\operatorname{prox}_{\eta g}\) is firmly nonexpansive whenever the
+    proximal map is, so
+    \(\|\nabla g_\eta(x)-\nabla g_\eta(y)\|
+      \le\eta^{-1}\|x-y\|\).</p>
+</div>
+
+<p>At a differentiability point of \(g\), the proximal equation reads
+\(p=x-\eta\nabla g(p)\): an implicit gradient step. The envelope replaces a
+possibly set-valued subgradient by the single smooth vector
+\(\nabla g_\eta(x)\).</p>
+
+<h3>Moreau decomposition</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Primal-dual decomposition.</span> For
+    every \(x\),
+    \[
+    x=
+    \operatorname{prox}_{\eta g}(x)
+    +\eta\operatorname{prox}_{g^*/\eta}(x/\eta).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Put
+    \(p=\operatorname{prox}_{\eta g}(x)\) and
+    \(u=(x-p)/\eta\). Proximal optimality gives
+    \(u\in\partial g(p)\), hence
+    \(p\in\partial g^*(u)\). Therefore
+    \(0\in\partial(g^*/\eta)(u)+u-x/\eta\), which says
+    \(u=\operatorname{prox}_{g^*/\eta}(x/\eta)\). Since \(x=p+\eta u\), the
+    decomposition follows.</p>
+</div>
+
+<h3>Projection and thresholding</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Indicator functions.</span> If
+    \(g=\iota_C\) for a nonempty closed convex set, then
+    \(\operatorname{prox}_{\eta g}=P_C\). The Moreau envelope is
+    \(g_\eta(x)=\operatorname{dist}(x,C)^2/(2\eta)\).</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Soft thresholding.</span> For
+    \(g(z)=\lambda\|z\|_1\), the problem separates by coordinate and
+    \[
+    [\operatorname{prox}_{\eta g}(x)]_i
+    =\operatorname{sign}(x_i)(|x_i|-\eta\lambda)_+.
+    \]
+    For the nuclear norm, the analogous operation applies soft thresholding
+    to singular values.</p>
+</div>

@@ -8,35 +8,203 @@ note_prev_url: "/notes/statistical-inference/maximum-likelihood-estimation/"
 note_next_url: "/notes/statistical-inference/m-estimators-z-estimators/"
 ---
 
-<p>This page collects only the asymptotic tools used repeatedly in inference. Detailed probability limit theory belongs to the <a href="{{ '/notes/probability-theory/' | relative_url }}">probability theory</a> note.</p>
+<p>This page is a working calculus for statistical expansions. The underlying probability theorems, weak convergence, tightness, and central limit theory are proved in <a href="{{ '/notes/probability-theory/' | relative_url }}">probability theory</a>; here they are organized around the operations repeatedly needed for estimators and tests.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(X_n=o_p(a_n)\) means \(X_n/a_n\to0\) in probability. \(X_n=O_p(a_n)\) means \(X_n/a_n\) is tight. An estimator is asymptotically linear with influence function \(\phi\) if
-        \[
-        T_n-\theta_0=P_n\phi+o_p(n^{-1/2}),\qquad P\phi=0,\quad P\|\phi\|^2\lt\infty.
-        \]</p>
-    </div>
+<h3>Stochastic order</h3>
 
-    <h3>Slutsky and delta method</h3>
-    <p>If \(X_n\rightsquigarrow X\) and \(Y_n\to c\) in probability, then \(X_n+Y_n\rightsquigarrow X+c\) and \(X_nY_n\rightsquigarrow cX\). If \(\sqrt n(T_n-\theta)\rightsquigarrow Z\) and \(g\) is differentiable at \(\theta\), then
-    \[
-    \sqrt n\{g(T_n)-g(\theta)\}\rightsquigarrow \dot g_\theta Z.
-    \]</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For deterministic \(a_n>0\),
+  \[
+  X_n=o_p(a_n)
+  \quad\Longleftrightarrow\quad
+  \frac{X_n}{a_n}\to_p0,
+  \]
+  and
+  \[
+  X_n=O_p(a_n)
+  \quad\Longleftrightarrow\quad
+  \left\{\frac{X_n}{a_n}\right\}_{n\ge1}
+  \text{ is tight}.
+  \]
+  The notation is interpreted componentwise or through a norm for vectors and matrices.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Asymptotic linearity implies normality.</span> If \(T_n\) is asymptotically linear with influence function \(\phi\), then
-        \[
-        \sqrt n(T_n-\theta_0)\rightsquigarrow N(0,P\phi\phi^\top).
-        \]</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Stochastic-order algebra.</span> If \(X_n=O_p(a_n)\), \(Y_n=O_p(b_n)\), and \(Z_n=o_p(c_n)\), then
+  \[
+  X_n+Y_n=O_p(a_n+b_n),\qquad
+  X_nY_n=O_p(a_nb_n),\qquad
+  X_nZ_n=o_p(a_nc_n).
+  \]
+  If \(X_n=o_p(a_n)\), then \(X_n=O_p(a_n)\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Multiply the linear expansion by \(\sqrt n\):
-        \[
-        \sqrt n(T_n-\theta_0)=n^{-1/2}\sum_{i=1}^n\phi(X_i)+o_p(1).
-        \]
-        The vector CLT gives the Gaussian limit for the sum, and Slutsky removes the negligible remainder.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Tightness of \(X_n/a_n\) and \(Y_n/b_n\) implies joint tightness of the pair by the union bound. Products and sums are continuous images of a tight vector, giving the first two claims. For the mixed product, fix \(\varepsilon,\eta>0\). Choose \(M\) so that \(P(|X_n|>Ma_n)\lt\eta\) eventually, then
+  \[
+  P(|X_nZ_n|>\varepsilon a_nc_n)
+  \le P(|X_n|>Ma_n)
+  +P(|Z_n|>\varepsilon c_n/M),
+  \]
+  whose limsup is at most \(\eta\). Let \(\eta\downarrow0\).</p>
+</div>
 
-    <h3>Argmax and continuous mapping</h3>
-    <p>The argmax theorem turns uniform convergence of random criteria into consistency of optimizers. The continuous mapping theorem turns convergence of estimators into convergence of transformed estimators. These two tools explain a large fraction of large-sample statistical inference.</p>
+<h3>Slutsky and studentization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Slutsky theorem.</span> If \(X_n\rightsquigarrow X\) and \(Y_n\to_pc\), then
+  \[
+  X_n+Y_n\rightsquigarrow X+c,\qquad
+  X_nY_n\rightsquigarrow cX.
+  \]
+  If \(c\ne0\), then \(X_n/Y_n\rightsquigarrow X/c\).</p>
+</div>
+
+<p>Thus, if \(\sqrt n(T_n-\theta)\rightsquigarrow N(0,V)\) and \(\hat V_n\to_pV>0\), then
+\[
+\frac{\sqrt n(T_n-\theta)}{\sqrt{\hat V_n}}
+\rightsquigarrow N(0,1).
+\]
+Replacing an unknown asymptotic scale by a consistent estimate is studentization. The consistency requirement concerns the scale under the same sequence of laws for which the limit is asserted.</p>
+
+<h3>First- and second-order delta methods</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Multivariate delta method.</span> If
+  \[
+  r_n(T_n-\theta)\rightsquigarrow Z
+  \]
+  in \(\mathbb R^d\), \(r_n\to\infty\), and \(g:\mathbb R^d\to\mathbb R^k\) is differentiable at \(\theta\), then
+  \[
+  r_n\{g(T_n)-g(\theta)\}
+  \rightsquigarrow Dg(\theta)Z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiability means
+  \[
+  g(\theta+h)-g(\theta)=Dg(\theta)h+\|h\|r(h),
+  \qquad r(h)\to0.
+  \]
+  Tightness of \(r_n(T_n-\theta)\) implies \(T_n-\theta=O_p(r_n^{-1})\) and \(T_n\to_p\theta\). Therefore
+  \[
+  r_n\|T_n-\theta\|r(T_n-\theta)=O_p(1)o_p(1)=o_p(1).
+  \]
+  Apply Slutsky's theorem.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Second-order delta method.</span> Suppose \(\sqrt n(T_n-\theta)\rightsquigarrow Z\), \(g\) is twice continuously differentiable near \(\theta\), and \(Dg(\theta)=0\). Then
+  \[
+  n\{g(T_n)-g(\theta)\}
+  \rightsquigarrow\frac12Z^\top\nabla^2g(\theta)Z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taylor's theorem gives
+  \[
+  g(\theta+h)-g(\theta)
+  =\frac12h^\top\nabla^2g(\theta)h+o(\|h\|^2).
+  \]
+  Set \(h=T_n-\theta=O_p(n^{-1/2})\), multiply by \(n\), and use continuous mapping and Slutsky.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If \(\sqrt n\,\bar X_n\rightsquigarrow N(0,\sigma^2)\) and \(g(x)=x^2\), then
+  \[
+  n\bar X_n^2\rightsquigarrow\sigma^2\chi_1^2.
+  \]
+  The ordinary first-order delta method would return the degenerate zero limit because \(g'(0)=0\).</p>
+</div>
+
+<h3>Asymptotic linearity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator \(T_n\) of \(T(P)\in\mathbb R^k\) is asymptotically linear at \(P\) with influence function \(\phi_P\in L_0^2(P)^k\) if
+  \[
+  T_n-T(P)
+  =\frac1n\sum_{i=1}^n\phi_P(X_i)+o_p(n^{-1/2}),
+  \qquad P\phi_P=0.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Asymptotic linearity implies Gaussian inference.</span> If \(P\|\phi_P\|^2\lt\infty\), then
+  \[
+  \sqrt n\{T_n-T(P)\}
+  \rightsquigarrow
+  N\{0,P(\phi_P\phi_P^\top)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Multiply the expansion by \(\sqrt n\):
+  \[
+  \sqrt n\{T_n-T(P)\}
+  =\frac1{\sqrt n}\sum_{i=1}^n\phi_P(X_i)+o_p(1).
+  \]
+  The multivariate central limit theorem applies to the centered summands, and Slutsky removes the remainder.</p>
+</div>
+
+<p>An influence function is not merely a variance formula. It is the first derivative of the target along local perturbations of \(P\), and its tail behavior measures local sensitivity. The semiparametric page makes this derivative interpretation precise.</p>
+
+<h3>Hadamard differentiability and the functional delta method</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(T:\mathbb D\to\mathbb E\) be a map between normed spaces. It is Hadamard differentiable at \(x\), tangentially to \(\mathbb D_0\), if a continuous linear map \(T_x':\mathbb D_0\to\mathbb E\) satisfies
+  \[
+  \frac{T(x+t_nh_n)-T(x)}{t_n}\to T_x'h
+  \]
+  whenever \(t_n\downarrow0\), \(h_n\to h\in\mathbb D_0\), and \(x+t_nh_n\in\mathbb D\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Functional delta method.</span> If
+  \[
+  r_n(X_n-x)\rightsquigarrow X
+  \]
+  with \(X\) supported on \(\mathbb D_0\), and \(T\) is Hadamard differentiable at \(x\) tangentially to \(\mathbb D_0\), then
+  \[
+  r_n\{T(X_n)-T(x)\}\rightsquigarrow T_x'X.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> On a Skorokhod representation space, realize \(r_n(X_n-x)\to X\) almost surely along subsequences for which the representation theorem applies. Put \(t_n=r_n^{-1}\) and \(h_n=r_n(X_n-x)\). Hadamard differentiability gives
+  \[
+  r_n\{T(x+t_nh_n)-T(x)\}\to T_x'X.
+  \]
+  Transfer back to weak convergence. The extended continuous-mapping theorem gives the same argument without an explicit representation.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (quantile derivative).</span> Let \(q_p=F^{-1}(p)\), where \(F\) has a continuous positive density \(f(q_p)\). For a perturbation \(F+th\),
+  \[
+  (F+th)(q_p+t a)=p+t\{h(q_p)+a f(q_p)\}+o(t).
+  \]
+  Setting the first-order term to zero gives
+  \[
+  T_F'h=-\frac{h(q_p)}{f(q_p)}.
+  \]
+  Applied to the empirical process, this yields the quantile influence function
+  \[
+  \phi_p(x)=\frac{p-1_{\{x\le q_p\}}}{f(q_p)}.
+  \]</p>
+</div>
+
+<h3>Argmin and argmax mappings</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Localized argmin theorem.</span> Suppose random processes \(Z_n(h)\) converge weakly in \(\ell^\infty(K)\) to \(Z(h)\) on every compact \(K\subseteq\mathbb R^d\), the limit has an almost surely unique minimizer \(\hat h\), and approximate minimizers \(\hat h_n\) are tight. Then
+  \[
+  \hat h_n\rightsquigarrow\hat h.
+  \]</p>
+</div>
+
+<p>The tightness condition prevents minimizers from escaping beyond every compact set. In smooth regular problems, \(Z(h)\) is a random quadratic form and \(\hat h\) is Gaussian. For cube-root or change-point problems, \(Z\) is nonquadratic and the same theorem produces nonnormal limits.</p>
+
+<h3>Converging under changing laws</h3>
+
+<p>Many inferential statements must remain valid under local alternatives \(P_{\theta+h/\sqrt n}^{(n)}\), not only under \(P_\theta^{(n)}\). Ordinary \(o_{P_\theta}(1)\) terms need not remain negligible automatically. Contiguity is the condition that transfers such negligibility, and Le Cam's third lemma shifts Gaussian limits under local alternatives. Both are developed with local asymptotic normality on page 25.</p>

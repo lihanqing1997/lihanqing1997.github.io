@@ -67,3 +67,190 @@ X_{n+1}\mid X_{1:n}\sim
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> This clustering property is the basis of Chinese restaurant process representations and Dirichlet process mixture models.</p>
     </div>
+
+<h3>Finite-dimensional construction</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A random probability measure
+\[
+P\sim\operatorname{DP}(\alpha G_0)
+\]
+if, for every measurable partition
+\((A_1,\ldots,A_k)\),
+\[
+\{P(A_1),\ldots,P(A_k)\}
+\sim\operatorname{Dirichlet}
+\{\alpha G_0(A_1),\ldots,\alpha G_0(A_k)\}.
+\]
+Here \(G_0\) is the mean distribution and \(\alpha>0\) is the concentration parameter.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For measurable \(A,B\),
+\[
+E\{P(A)\}=G_0(A),
+\]
+\[
+\operatorname{Var}\{P(A)\}
+=\frac{G_0(A)\{1-G_0(A)\}}{\alpha+1},
+\]
+\[
+\operatorname{Cov}\{P(A),P(B)\}
+=\frac{G_0(A\cap B)-G_0(A)G_0(B)}
+{\alpha+1}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Refine \(A,B\) to the partition
+\[
+A\cap B,\quad A\setminus B,\quad
+B\setminus A,\quad(A\cup B)^c
+\]
+and apply the standard Dirichlet moment formulas. Add the appropriate cells.</p>
+</div>
+
+<h3>Conjugate posterior process</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+P\sim\operatorname{DP}(\alpha G_0),
+\qquad
+X_1,\ldots,X_n\mid P\stackrel{\mathrm{iid}}{\sim}P,
+\]
+then
+\[
+P\mid X_{1:n}
+\sim
+\operatorname{DP}\left(
+\alpha G_0+\sum_{i=1}^n\delta_{X_i}
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For any finite partition, observed cell counts have a multinomial likelihood. Dirichlet-multinomial conjugacy adds each count to the corresponding Dirichlet parameter. Since this holds consistently for every partition, the posterior random measure is the stated Dirichlet process.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> The posterior mean is
+\[
+E(P\mid X_{1:n})
+=\frac{\alpha}{\alpha+n}G_0
++\frac{n}{\alpha+n}\mathbb P_n.
+\]
+Thus \(\alpha\) acts as a prior precision relative to the empirical measure.</p>
+</div>
+
+<h3>Blackwell-MacQueen prediction</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Integrating out \(P\),
+\[
+X_{n+1}\mid X_{1:n}
+\sim
+\frac{\alpha}{\alpha+n}G_0
++\frac1{\alpha+n}\sum_{i=1}^n\delta_{X_i}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\[
+P(X_{n+1}\in A\mid X_{1:n})
+=E\{P(A)\mid X_{1:n}\}.
+\]
+Insert the posterior mean from the corollary.</p>
+</div>
+
+<p>If the distinct observed values are
+\(\theta_1^\star,\ldots,\theta_{K_n}^\star\) with multiplicities
+\(n_1,\ldots,n_{K_n}\), this becomes
+\[
+\frac{\alpha}{\alpha+n}G_0
++\sum_{k=1}^{K_n}\frac{n_k}{\alpha+n}
+\delta_{\theta_k^\star}.
+\]
+Existing clusters attract proportionally to size, while a new cluster is drawn from \(G_0\).</p>
+
+<h3>Expected number of clusters</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(G_0\) is nonatomic and \(K_n\) is the number of distinct values among \(X_1,\ldots,X_n\), then
+\[
+E(K_n)
+=\sum_{i=1}^n\frac{\alpha}{\alpha+i-1}
+=\alpha\log n+O(1).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(I_i\) indicate that observation \(i\) starts a new cluster. The predictive rule gives
+\[
+P(I_i=1)=\frac{\alpha}{\alpha+i-1}.
+\]
+Since \(K_n=\sum_iI_i\), linearity gives the sum. Comparison with the harmonic series gives the asymptotic expression.</p>
+</div>
+
+<h3>Stick-breaking representation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Sethuraman).</span> Let
+\[
+V_h\stackrel{\mathrm{iid}}{\sim}
+\operatorname{Beta}(1,\alpha),
+\qquad
+\theta_h\stackrel{\mathrm{iid}}{\sim}G_0,
+\]
+independently, and define
+\[
+w_1=V_1,\qquad
+w_h=V_h\prod_{\ell<h}(1-V_\ell).
+\]
+Then
+\[
+P=\sum_{h=1}^\infty w_h\delta_{\theta_h}
+\sim\operatorname{DP}(\alpha G_0).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Since
+\[
+E\{-\log(1-V_h)\}=1/\alpha>0,
+\]
+the remaining stick
+\(\prod_{\ell\le h}(1-V_\ell)\) tends to zero almost surely, so weights sum to one. For every partition, independently label atoms by their \(G_0\) cell. Beta-gamma algebra shows that the sums of weights in the cells have the required Dirichlet law. The finite-dimensional characterization then identifies the process.</p>
+</div>
+
+<h3>Dirichlet process mixtures</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A DP mixture is
+\[
+Y_i\mid\theta_i\sim K(\cdot\mid\theta_i),
+\qquad
+\theta_i\mid P\sim P,
+\qquad
+P\sim\operatorname{DP}(\alpha G_0).
+\]
+After integrating \(P\), latent parameters follow the Pólya-urn rule, producing a random mixture
+\[
+f_P(y)=\sum_hw_hK(y\mid\theta_h).
+\]</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Clusters are not automatically components of truth.</span> A DP mixture can estimate a smooth density consistently while the posterior number of occupied clusters fails to consistently estimate a finite true number of mixture components. Clustering is a prior-induced latent representation; interpreting each occupied cluster as a scientifically real subpopulation requires additional model and identifiability arguments.</p>
+</div>
+
+<h3>Concentration-parameter learning</h3>
+
+<p>A gamma hyperprior on \(\alpha\) allows data-informed clustering. Its posterior is not conjugate in one step because the partition probability contains
+\[
+\frac{\alpha^{K_n}\Gamma(\alpha)}
+{\Gamma(\alpha+n)}
+\prod_{k=1}^{K_n}\Gamma(n_k).
+\]
+Auxiliary-variable updates or numerical sampling are used. Large \(\alpha\) favors more, smaller clusters and makes \(P\) concentrate near \(G_0\); small \(\alpha\) favors fewer, larger clusters and greater random discreteness.</p>

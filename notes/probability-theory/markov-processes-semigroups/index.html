@@ -8,56 +8,187 @@ note_prev_url: "/notes/probability-theory/markov-chains-transition-kernels/"
 note_next_url: "/notes/probability-theory/recurrence-transience-invariant-measures/"
 ---
 
-<p>Markov processes generalize Markov chains to continuous time. Their transition operators form semigroups, linking probability to analysis and PDE.</p>
+<p>A time-homogeneous Markov process converts elapsed time into a semigroup of positive contraction operators. The infinitesimal generator contains its local drift and variation, while the semigroup contains its full transition law. This operator viewpoint connects stochastic processes with evolution equations, spectral theory, and numerical approximation.</p>
 
-    <h3>Transition semigroups</h3>
+<h3>Transition functions and semigroups</h3>
 
-    <p>A Markov semigroup acts on functions by conditional expectation.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A transition function is a family of kernels \(p_t(x,\mathrm{d} y)\), \(t\ge0\), satisfying
+  \[
+  p_0(x,\cdot)=\delta_x,\qquad
+  p_{t+s}(x,A)=\int p_s(y,A)p_t(x,\mathrm{d} y).
+  \]
+  Its operators are
+  \[
+  P_tf(x)=\int f(y)p_t(x,\mathrm{d} y)=\mathbb E_xf(X_t).
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a Markov process \(X_t\), define
-\[
-P_tf(x)=\mathbb E_x f(X_t)
-\]
-for bounded measurable \(f\). The transition probabilities are \(p_t(x,A)=P_t1_A(x)\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (semigroup property).</span> For a time-homogeneous Markov process,
+  \[
+  P_0=I,\qquad P_{t+s}=P_tP_s.
+  \]
+  Each \(P_t\) is positive, preserves constants, and is a contraction on bounded functions:
+  \(\|P_tf\|_\infty\le\|f\|_\infty\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Markov property and tower rule give
+  \[
+  \begin{aligned}
+  P_{t+s}f(x)
+  &=\mathbb E_xf(X_{t+s})\\
+  &=\mathbb E_x[
+  \mathbb E(f(X_{t+s})\mid\mathcal F_t)]\\
+  &=\mathbb E_x[P_sf(X_t)]
+  =P_t(P_sf)(x).
+  \end{aligned}
+  \]
+  The remaining properties follow because \(P_t\) integrates against a probability kernel.</p>
+</div>
 
-    <h3>Semigroup property</h3>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (Feller semigroup).</span> On a locally compact state space \(S\), a Markov semigroup is Feller if
+  \[
+  P_t:C_0(S)\to C_0(S)
+  \]
+  and
+  \[
+  \|P_tf-f\|_\infty\to0\qquad(t\downarrow0)
+  \]
+  for every \(f\in C_0(S)\). It is then a strongly continuous contraction semigroup on the Banach space \(C_0(S)\).</p>
+</div>
 
-    <p>Time homogeneity turns conditioning at an intermediate time into operator multiplication.</p>
+<h3>The infinitesimal generator</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a time-homogeneous Markov process, \(P_{t+s}=P_tP_s\) and \(P_0=I\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The generator \(A\) of a strongly continuous semigroup is the generally unbounded operator
+  \[
+  Af=\lim_{t\downarrow0}\frac{P_tf-f}{t},
+  \]
+  with domain
+  \[
+  D(A)=\left\{f:\text{the limit exists in the Banach-space norm}\right\}.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> By the Markov property,
-\[
-P_{t+s}f(x)=\mathbb E_x[f(X_{t+s})]
-=\mathbb E_x[\mathbb E(f(X_{t+s})\mid\mathcal F_t)]
-=\mathbb E_x[P_sf(X_t)]
-=P_t(P_sf)(x).
-\]</p>
-    </div>
+<p>The domain is part of the operator. Writing a differential expression without specifying its domain does not fully specify a generator; boundary behavior can produce different Markov processes from the same formal differential operator.</p>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (backward equation).</span> If \(f\in D(A)\), then
+  \(P_tf\in D(A)\) and
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}t}P_tf
+  =AP_tf=P_tAf.
+  \]</p>
+</div>
 
-    <h3>Generators</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The semigroup identity gives
+  \[
+  \frac{P_{t+h}f-P_tf}{h}
+  =P_t\frac{P_hf-f}{h}\to P_tAf
+  \]
+  by boundedness of \(P_t\). Also
+  \[
+  \frac{P_h(P_tf)-P_tf}{h}
+  =P_t\frac{P_hf-f}{h}\to P_tAf,
+  \]
+  showing \(P_tf\in D(A)\) and
+  \(AP_tf=P_tAf\).</p>
+</div>
 
-    <p>The infinitesimal generator is the derivative of the semigroup at zero.</p>
+<h3>Dynkin's formula and the martingale problem</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a strongly continuous semigroup on a Banach space, the generator is
-\[
-Af=\lim_{t\downarrow0}\frac{P_tf-f}{t}
-\]
-on the set of \(f\) for which the limit exists.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Dynkin martingale).</span> For suitable \(f\in D(A)\),
+  \[
+  M_t^f
+  =
+  f(X_t)-f(X_0)-\int_0^tAf(X_s)\,\mathrm{d} s
+  \]
+  is a martingale.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(f\) lies in the generator domain, the semigroup identity gives \(P_{t+h}f-P_tf=P_t(P_hf-f)\). Divide by \(h\) and let \(h\downarrow0\) to obtain \(\frac{\mathrm{d}}{\mathrm{d}t}P_tf=P_tAf\). Under domain invariance, also \(\frac{\mathrm{d}}{\mathrm{d}t}P_tf=AP_tf\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(s<t\), partition
+  \([s,t]\) and use the Markov property:
+  \[
+  \mathbb E[f(X_{u+h})-f(X_u)\mid\mathcal F_u]
+  =(P_hf-f)(X_u).
+  \]
+  Divide by \(h\), sum the conditional increments, and pass to the limit using
+  \((P_hf-f)/h\to Af\) and the assumed integrability. This gives
+  \[
+  \mathbb E[f(X_t)-f(X_s)\mid\mathcal F_s]
+  =
+  \mathbb E\!\left[\int_s^tAf(X_u)\,\mathrm{d} u
+  \middle|\mathcal F_s\right],
+  \]
+  which is the martingale identity.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> For Brownian motion, \(A=\frac12\Delta\), which is why Brownian expectations solve the heat equation.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A law solves the martingale problem for \((A,\mathcal D)\) if \(M_t^f\) is a martingale for every \(f\in\mathcal D\). Existence and uniqueness of this problem can define a Markov process even when no explicit transition density is available.</p>
+</div>
+
+<h3>Diffusion generators</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For the diffusion
+  \[
+  \mathrm{d}X_t=b(X_t)\,\mathrm{d}t+\sigma(X_t)\,\mathrm{d}W_t
+  \]
+  in \(\mathbb R^d\), Ito's formula identifies the formal generator
+  \[
+  Af(x)
+  =
+  b(x)^\top\nabla f(x)
+  +\frac12\operatorname{tr}
+  \!\left(a(x)\nabla^2f(x)\right),
+  \qquad a(x)=\sigma(x)\sigma(x)^\top.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Ito's formula gives
+  \[
+  f(X_t)-f(X_0)
+  =
+  \int_0^tAf(X_s)\,\mathrm{d} s
+  +\int_0^t\nabla f(X_s)^\top\sigma(X_s)\,\mathrm{d}W_s.
+  \]
+  The stochastic integral is a local martingale and, under boundedness or localization assumptions, a true martingale. Comparing with Dynkin's form identifies \(A\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Brownian motion).</span> For
+  \(X_t=x+W_t\),
+  \[
+  Af=\frac12\Delta f,\qquad
+  P_tf(x)=\int_{\mathbb R^d}f(y)
+  \frac{e^{-\|y-x\|^2/(2t)}}{(2\pi t)^{d/2}}\,\mathrm{d} y.
+  \]
+  Hence \(u(t,x)=P_tf(x)\) solves the heat equation
+  \(\partial_tu=\frac12\Delta u\) with \(u(0,x)=f(x)\).</p>
+</div>
+
+<h3>Continuous-time Markov chains</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> On a countable state space, a conservative rate matrix \(Q=(q_{ij})\) satisfies
+  \(q_{ij}\ge0\) for \(i\ne j\) and
+  \(q_{ii}=-\sum_{j\ne i}q_{ij}\). Formally,
+  \[
+  Af(i)=\sum_jq_{ij}f(j).
+  \]
+  When the semigroup is nonexplosive, its transition matrix solves the Kolmogorov equations
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}t}P_t=QP_t=P_tQ,
+  \qquad P_0=I,
+  \]
+  on the appropriate domain.</p>
+</div>
+
+<p>For finite matrices, \(P_t=e^{tQ}\). In infinite dimensions the generator is usually unbounded, and semigroup theory replaces the formal matrix exponential; this is one of the main interfaces with <a href="{{ '/notes/functional-analysis/semigroups-of-operators/' | relative_url }}">functional analysis</a>.</p>

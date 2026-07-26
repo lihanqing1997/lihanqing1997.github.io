@@ -69,3 +69,93 @@ where \(\Pi_d\) is \(L^2(d)\)-projection onto the feature span.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> This projection is the source of both the usefulness and the pathology of TD with function approximation, especially off-policy.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>TD(0) as stochastic approximation</h3>
+
+<p>For policy evaluation, the tabular update is
+\[
+V_{t+1}(S_t)
+=V_t(S_t)+\alpha_t\delta_t,\qquad
+\delta_t=R_{t+1}+\gamma V_t(S_{t+1})-V_t(S_t).
+\]
+Conditionally on \(S_t=s\),
+\[
+E(\delta_t\mid S_t=s)
+=(T^\pi V_t)(s)-V_t(s),
+\]
+so TD is a noisy asynchronous fixed-point iteration.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (tabular on-policy convergence).</span>
+Assume a finite MDP, bounded reward noise, an ergodic Markov chain under
+\(\pi\), every state visited infinitely often, and step sizes for each state
+satisfying
+\[
+\sum_t\alpha_t(s)=\infty,\qquad
+\sum_t\alpha_t(s)^2<\infty.
+\]
+Then tabular TD(0) converges almost surely to \(V^\pi\).</p>
+</div>
+
+<p>The proof is an asynchronous stochastic-approximation theorem: the mean
+field \(T^\pi V-V\) has a globally stable root because \(T^\pi\) is a
+contraction, while reward and transition fluctuations form a bounded-variance
+martingale difference after conditioning. The square-summable condition
+controls cumulative noise; the nonsummable condition prevents premature
+freezing.</p>
+
+<h3>Linear TD and projected Bellman equations</h3>
+
+<p>For \(V_w(s)=\phi(s)^\top w\), semi-gradient TD updates
+\[
+w_{t+1}
+=w_t+\alpha_t\phi_t
+\{R_{t+1}+\gamma\phi_{t+1}^\top w_t-\phi_t^\top w_t\}.
+\]
+Under stationarity its mean drift is \(b-Aw\), where
+\[
+A=E[\phi_t(\phi_t-\gamma\phi_{t+1})^\top],
+\qquad
+b=E(\phi_tR_{t+1}).
+\]
+The fixed point solves \(\Phi w=\Pi_D T^\pi\Phi w\), not generally the
+least-squares projection of \(V^\pi\).</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (approximation bound).</span> On
+policy, if \(\Pi_D T^\pi\) is a \(\gamma\)-contraction in \(L_2(D)\), its fixed
+point \(\widehat V\in\operatorname{span}(\Phi)\) satisfies
+\[
+\|\widehat V-V^\pi\|_D
+\le\frac1{\sqrt{1-\gamma^2}}
+\|\Pi_DV^\pi-V^\pi\|_D.
+\]</p>
+</div>
+
+<p>This compares TD with the best representable value. The factor worsens with
+the effective horizon and is not available without the on-policy contraction
+structure.</p>
+
+<h3>TD error is not a gradient</h3>
+
+<p>The expected update \(E(\delta_t\phi_t)\) is a semi-gradient: the bootstrap
+target contains \(w\), but its derivative is ignored. It is not the gradient of
+mean-squared Bellman error. The mean-squared projected Bellman error
+\[
+\operatorname{MSPBE}(w)
+=\|\Pi_D(T^\pi\Phi w-\Phi w)\|_D^2
+=(b-Aw)^\top C^{-1}(b-Aw),
+\quad C=E(\phi\phi^\top),
+\]
+has genuine gradient methods such as GTD2 and TDC, designed especially for
+off-policy stability.</p>
+
+<h3>Asymptotic fluctuations</h3>
+
+<p>With \(\alpha_t=a/t\) and suitable stability/mixing conditions,
+\(\sqrt t(w_t-w^*)\) can satisfy a central limit theorem. Its covariance solves
+a Lyapunov equation involving \(A\) and the long-run covariance of TD noise.
+Polyak--Ruppert averaging often attains a better covariance and reduces
+sensitivity to \(a\). Thus convergence alone does not characterize statistical
+efficiency.</p>

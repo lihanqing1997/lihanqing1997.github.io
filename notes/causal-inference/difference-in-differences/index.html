@@ -8,24 +8,137 @@ note_prev_url: "/notes/causal-inference/instrumental-variables/"
 note_next_url: "/notes/causal-inference/regression-discontinuity-designs/"
 ---
 
-<p>Difference-in-differences records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Difference-in-differences identifies treatment effects from changes over time, using untreated units to estimate the counterfactual trend of treated units. Its key assumption concerns trends in untreated potential outcomes, not equality of outcome levels.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Difference-in-differences compares outcome changes over time between treated and comparison groups.</p>
-    </div>
+<h3>Two groups and two periods</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under parallel trends, the treated group's untreated counterfactual change equals the comparison group's observed change, identifying the average treatment effect on the treated.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(G\in\{0,1\}\) indicate the treated group and \(t\in\{0,1\}\) the period. Treatment occurs only when \(G=t=1\). Write \(Y_t(1)\) and \(Y_t(0)\) for period-\(t\) potential outcomes. The target is
+  \[
+  \operatorname{ATT}
+  =\mathbb E\{Y_1(1)-Y_1(0)\mid G=1\}.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write the treated post-treatment counterfactual as treated baseline outcome plus the comparison trend. Subtract observed treated baseline and compare with observed treated post outcome.</p>
-    </div>
+<h3>Parallel trends</h3>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The key assumption is about untreated trends, not equality of levels. Event-study plots are diagnostics, not proofs.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Unconditional parallel trends is
+  \[
+  \mathbb E\{Y_1(0)-Y_0(0)\mid G=1\}
+  =
+  \mathbb E\{Y_1(0)-Y_0(0)\mid G=0\}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under consistency, no anticipation, and parallel trends,
+  \[
+  \operatorname{ATT}
+  =
+  [\mathbb E(Y_1\mid G=1)-\mathbb E(Y_0\mid G=1)]
+  -
+  [\mathbb E(Y_1\mid G=0)-\mathbb E(Y_0\mid G=0)].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> No anticipation and consistency identify treated-group baseline outcomes with \(Y_0(0)\), control outcomes with \(Y_t(0)\), and treated post outcomes with \(Y_1(1)\). Subtract the control trend from the treated change and replace the treated group's missing untreated trend by the parallel control trend. The remaining contrast is \(\mathbb E\{Y_1(1)-Y_1(0)\mid G=1\}\).</p>
+</div>
+
+<h3>Regression representation</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In the saturated two-by-two regression
+  \[
+  Y_{it}=\alpha+\gamma G_i+\lambda\,\mathbf1(t=1)
+  +\tau G_i\mathbf1(t=1)+\varepsilon_{it},
+  \]
+  the OLS coefficient \(\widehat\tau\) equals the sample difference-in-differences contrast.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A saturated model reproduces the four cell means. Solving for the interaction coefficient gives
+  \(\overline Y_{11}-\overline Y_{10}-
+  \overline Y_{01}+\overline Y_{00}\).</p>
+</div>
+
+<h3>Conditional parallel trends</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Conditional parallel trends requires
+  \[
+  \mathbb E\{Y_1(0)-Y_0(0)\mid G=1,X\}
+  =
+  \mathbb E\{Y_1(0)-Y_0(0)\mid G=0,X\}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under conditional parallel trends and group overlap,
+  \[
+  \operatorname{ATT}
+  =
+  \mathbb E\left[
+  \Delta Y-
+  \mathbb E(\Delta Y\mid G=0,X)
+  \,\middle|\,G=1\right],
+  \quad \Delta Y=Y_1-Y_0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(X\), subtract the control group's observed untreated trend from the treated group's observed change. Conditional parallel trends replaces the missing treated untreated trend. Average over the treated covariate distribution.</p>
+</div>
+
+<h3>Event studies</h3>
+
+<p>With multiple periods and a common treatment date, an event-study regression estimates coefficients at leads and lags relative to treatment. Pretreatment lead estimates diagnose certain deviations from parallel trends, but failure to reject zero leads does not prove the assumption: tests may have low power, and violations can occur only after treatment.</p>
+
+<h3>Staggered adoption and heterogeneous effects</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(G_i=g\) denote first treatment time. The cohort-time effect is
+  \[
+  \operatorname{ATT}(g,t)
+  =\mathbb E\{Y_t(1)-Y_t(0)\mid G=g\},
+  \qquad t\ge g.
+  \]</p>
+</div>
+
+<p>Two-way fixed-effects regressions with staggered adoption can compare already-treated units with newly treated units. With heterogeneous or dynamic effects, the coefficient is a nontransparent weighted average that may include negative weights.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under homogeneous treatment effects and a correctly specified additive untreated outcome model, the two-way fixed-effects coefficient recovers the common effect. Under heterogeneous \(\operatorname{ATT}(g,t)\), it generally does not equal a convex average of them.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Frisch-Waugh-Lovell residualizes treatment with respect to unit and time indicators. The coefficient is the covariance of residualized treatment and outcome divided by residualized treatment variance. Substituting cohort-time treatment effects yields weights proportional to residualized treatment values, which can be negative for already-treated comparison cells.</p>
+</div>
+
+<h3>Group-time estimators</h3>
+
+<p>Modern staggered-adoption methods identify each \(\operatorname{ATT}(g,t)\) using not-yet-treated or never-treated controls under a cohort-specific parallel-trends assumption, then aggregate with explicit nonnegative population weights. This preserves the estimand under effect heterogeneity.</p>
+
+<h3>Anticipation and treatment reversals</h3>
+
+<p>If units change behavior before recorded treatment, leads are themselves affected and cannot serve as untreated baselines. One must define an anticipation window or redefine treatment timing. Reversible or intermittent treatment requires methods for treatment histories rather than irreversible-adoption DiD.</p>
+
+<h3>Serial correlation and clustering</h3>
+
+<p>Outcomes and treatment are correlated within units and often within assignment clusters. Standard errors should reflect the level at which treatment shocks vary. With few clusters, ordinary cluster-robust asymptotics can be poor; randomization inference, wild cluster bootstrap, or small-sample corrections may be needed.</p>
+
+<h3>Sensitivity to differential trends</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If the treated group's untreated trend differs from the control trend by \(\delta\), then the DiD estimand equals
+  \[
+  \operatorname{ATT}+\delta.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Repeat the identification algebra without imposing equality of trends. The unmatched trend difference remains additively in the contrast.</p>
+</div>
+
+<p>This direct bias formula motivates sensitivity analyses that bound post-treatment trend deviations using pretreatment curvature or domain-specific limits rather than treating parallel trends as binary.</p>

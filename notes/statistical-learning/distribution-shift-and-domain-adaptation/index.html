@@ -67,3 +67,168 @@ R_Q(f)=\mathbb E_P\left[w(X)\ell(f(X),Y)\right].
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> If a map \(\Phi(X)\) removes all domain information but also removes label information, adaptation fails. Useful invariant representations balance small domain discrepancy with small conditional or approximation error in the representation.</p>
     </div>
+
+<h3>A taxonomy of shifts</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  <ul>
+    <li><em>Covariate shift:</em> \(P(Y\mid X)=Q(Y\mid X)\), while \(P_X\ne Q_X\).</li>
+    <li><em>Label shift:</em> \(P(X\mid Y)=Q(X\mid Y)\), while \(P_Y\ne Q_Y\).</li>
+    <li><em>Concept shift:</em> \(P(Y\mid X)\ne Q(Y\mid X)\).</li>
+    <li><em>Selection bias:</em> observed data are conditioned on a selection indicator whose law depends on \(X\), \(Y\), or both.</li>
+  </ul></p>
+</div>
+
+<p>These assumptions are not interchangeable. Covariate weighting is generally invalid under concept shift, and label-prior correction is invalid when class-conditional feature laws change.</p>
+
+<h3>Importance-weight variance and overlap</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under covariate shift, for a fixed \(f\),
+  \[
+  \widehat R_w(f)=\frac1n\sum_{i=1}^nw(X_i)\ell_f(X_i,Y_i)
+  \]
+  is unbiased for \(R_Q(f)\), and
+  \[
+  \operatorname{Var}_P\{\widehat R_w(f)\}
+  =\frac1n\operatorname{Var}_P\{w(X)\ell_f(X,Y)\}.
+  \]
+  If \(0\le\ell\le M\), then
+  \[
+  \operatorname{Var}_P\{\widehat R_w(f)\}
+  \le\frac{M^2}{n}\{1+\chi^2(Q_X\|P_X)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Unbiasedness is the change-of-measure identity. Independence gives the variance formula. Finally,
+  \(\mathbb E_Pw^2=1+\chi^2(Q_X\|P_X)\), and
+  \(\operatorname{Var}(w\ell)\le\mathbb E(w\ell)^2\le M^2\mathbb Ew^2\).</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Absolute continuity is not enough for stable adaptation. The second moment of the density ratio controls effective sample size; poor overlap can make unbiased weighting statistically useless.</p>
+</div>
+
+<h3>Self-normalized and clipped weights</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Self-normalized risk and clipped weighting are
+  \[
+  \widehat R_{\mathrm{SN}}(f)=
+  \frac{\sum_iw_i\ell_i}{\sum_iw_i},
+  \qquad
+  \widehat R_\tau(f)=\frac1n\sum_i(w_i\wedge\tau)\ell_i.
+  \]</p>
+</div>
+
+<p>Self-normalization introduces \(O(n^{-1})\) ratio bias but is invariant to an unknown multiplicative normalization of \(w\). Clipping bounds variance at the price of bias
+\[
+0\le R_Q(f)-\mathbb E\widehat R_\tau(f)
+\le M\,\mathbb E_P(w-\tau)_+.
+\]
+The threshold should therefore be chosen by an explicit bias-variance criterion rather than by the fiction that clipped weights remain unbiased.</p>
+
+<h3>Label-shift identification</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(Y\in\{1,\ldots,K\}\), and let
+  \(g(X)\in\{1,\ldots,K\}\) be a fixed classifier. Under label shift define the source confusion matrix
+  \[
+  C_{jk}=P\{g(X)=j\mid Y=k\}.
+  \]
+  If \(C\) is invertible, then target label proportions \(q_k=Q(Y=k)\) are identified from target predicted-label frequencies
+  \(\mu_j=Q\{g(X)=j\}\) by
+  \[
+  q=C^{-1}\mu.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Label shift makes the conditional distribution of \(g(X)\) given \(Y=k\) the same in both domains. Hence
+  \[
+  \mu_j=\sum_kQ\{g(X)=j\mid Y=k\}q_k
+  =\sum_kC_{jk}q_k.
+  \]
+  Invertibility gives the solution. Near-singularity makes estimation unstable even though population identification holds.</p>
+</div>
+
+<h3>The \(\mathcal H\Delta\mathcal H\) adaptation bound</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a binary hypothesis class
+  \(\mathcal H\), define
+  \[
+  d_{\mathcal H\Delta\mathcal H}(P_X,Q_X)
+  =2\sup_{h,h'\in\mathcal H}
+  |P_X(h\ne h')-Q_X(h\ne h')|.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every \(h\in\mathcal H\),
+  \[
+  R_Q(h)\le R_P(h)+
+  \frac12d_{\mathcal H\Delta\mathcal H}(P_X,Q_X)+\lambda_{\mathcal H},
+  \]
+  where
+  \[
+  \lambda_{\mathcal H}=\inf_{h^*\in\mathcal H}
+  \{R_P(h^*)+R_Q(h^*)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For any \(h^*\in\mathcal H\),
+  \[
+  R_Q(h)\le R_Q(h^*)+Q_X(h\ne h^*).
+  \]
+  By the discrepancy definition,
+  \(Q_X(h\ne h^*)\le
+  P_X(h\ne h^*)+\tfrac12d_{\mathcal H\Delta\mathcal H}\).
+  Moreover \(P_X(h\ne h^*)\le R_P(h)+R_P(h^*)\), since disagreement implies at least one classifier errs. Combine and minimize over \(h^*\).</p>
+</div>
+
+<p>The term \(\lambda_{\mathcal H}\) is unavoidable: matching feature marginals cannot help when no classifier performs well in both domains.</p>
+
+<h3>Distributionally robust risk</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given a nominal empirical law
+  \(\widehat P_n\) and discrepancy \(D\), distributionally robust learning solves
+  \[
+  \inf_f\sup_{Q:D(Q,\widehat P_n)\le\rho}Q\ell_f.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For a KL ball and bounded loss, convex duality gives
+  \[
+  \sup_{Q:\operatorname{KL}(Q\|\widehat P_n)\le\rho}Q\ell
+  =
+  \inf_{\eta>0}
+  \left\{\eta\rho+
+  \eta\log\widehat P_ne^{\ell/\eta}\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Introduce multiplier
+  \(\eta\ge0\) for the KL constraint. The inner supremum of
+  \(Q\ell-\eta\operatorname{KL}(Q\|\widehat P_n)\) is
+  \(\eta\log\widehat P_ne^{\ell/\eta}\) by the Gibbs variational principle. Strong duality holds under the usual interior condition.</p>
+</div>
+
+<h3>Impossibility without transport assumptions</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose only labeled source data and unlabeled target features are observed. Without a restriction linking
+  \(P(Y\mid X)\) and \(Q(Y\mid X)\), no learner can uniformly guarantee target classification error below \(1/2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Construct two target laws with the same feature marginal and the same source law, but with opposite deterministic target labels. All observed data have identical distributions under the two worlds. Any classifier's target errors in the two worlds sum to one, so its worst-case error is at least \(1/2\).</p>
+</div>
+
+<p>This indistinguishability argument is the right baseline for every adaptation theorem: each positive result must state the exact assumption that excludes the two-world construction.</p>

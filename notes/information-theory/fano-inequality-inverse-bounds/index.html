@@ -40,3 +40,138 @@ On \(E=0\), \(M\) is determined by \(Y\). On \(E=1\), at most \(N-1\) values rem
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> In minimax estimation one chooses a separated finite packing of parameters, places a uniform prior on it, and applies Fano to the induced testing problem. The resulting lower bound is controlled by mutual information or average KL divergence.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Fano's inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(V\) take values in an \(M\)-point set and let \(\widehat V=\widehat V(X)\). If
+  \(P_e=P(\widehat V\ne V)\), then
+  \[
+  H(V\mid X)\le h_2(P_e)+P_e\log(M-1).
+  \]
+  If \(V\) is uniform,
+  \[
+  P_e\ge1-\frac{I(V;X)+\log2}{\log M}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(E=\mathbf1\{\widehat V\ne V\}\). Because \(E\) is determined by
+  \((V,X)\),
+  \[
+  H(V\mid X)=H(E,V\mid X)-H(E\mid V,X)
+  =H(E\mid X)+H(V\mid E,X).
+  \]
+  The first term is at most \(h_2(P_e)\). If \(E=0\), \(V\) is known; if \(E=1\), at most \(M-1\) values remain, giving the first display. For uniform \(V\),
+  \(H(V\mid X)=\log M-I(V;X)\), use
+  \(h_2(P_e)\le\log2\) and
+  \(\log(M-1)\le\log M\), then rearrange.</p>
+</div>
+
+<h3>Nonuniform Fano inequality</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> For arbitrary \(V\),
+  \[
+  P_e\ge
+  \frac{H(V)-I(V;X)-\log2}{\log(M-1)}.
+  \]
+  The bound is useful only when the prior entropy is large; cardinality alone can be misleading for concentrated priors.</p>
+</div>
+
+<h3>Metric estimation reduction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\theta_1,\ldots,\theta_M\) be \(2\delta\)-separated under metric \(d\), let \(V\) be uniform, and draw \(X\sim P_{\theta_V}\). Then every estimator satisfies
+  \[
+  \sup_jP_{\theta_j}\{d(\widehat\theta,\theta_j)\ge\delta\}
+  \ge1-\frac{I(V;X)+\log2}{\log M}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Decode
+  \(\widehat V\) as the nearest packing point to \(\widehat\theta\). If
+  \(d(\widehat\theta,\theta_V)<\delta\), separation makes the nearest point uniquely \(V\). Thus decoding error is contained in the estimation-error event. Apply Fano and note that worst-case error dominates average error.</p>
+</div>
+
+<h3>Bounding the information by pairwise KL</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(\overline P=M^{-1}\sum_jP_j\), then
+  \[
+  I(V;X)=\frac1M\sum_jD(P_j\|\overline P)
+  \le\frac1{M^2}\sum_{j,k}D(P_j\|P_k).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The equality is the expected posterior-change representation. Convexity of \(D(P_j\|\cdot)\) in its second argument gives
+  \[
+  D(P_j\|\overline P)
+  \le\frac1M\sum_kD(P_j\|P_k).
+  \]
+  Average over \(j\).</p>
+</div>
+
+<h3>A reference-distribution bound</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For any reference law \(Q\),
+  \[
+  I(V;X)\le\frac1M\sum_jD(P_j\|Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The mixture \(\overline P\) minimizes
+  \(\frac1M\sum_jD(P_j\|Q)\) over \(Q\), because
+  \[
+  \frac1M\sum_jD(P_j\|Q)
+  =
+  I(V;X)+D(\overline P\|Q).
+  \]</p>
+</div>
+
+<h3>List decoding</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If a decoder outputs a list
+  \(\mathcal L(X)\) of at most \(L\) candidates and
+  \(P_e=P\{V\notin\mathcal L(X)\}\), then
+  \[
+  H(V\mid X)
+  \le h_2(P_e)+(1-P_e)\log L+
+  P_e\log M.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(E\) indicate whether \(V\) is outside the list. Given \(E=0,X\), there are at most \(L\) possibilities; given \(E=1,X\), at most \(M\). Decompose conditional entropy through \(E\) as in the ordinary Fano proof.</p>
+</div>
+
+<h3>When Fano is weak</h3>
+
+<p>Fano is effective for large finite packings whose pairwise distributions are hard to distinguish. It can be weak for two-point problems, very small error probabilities, or losses not naturally reduced to exact decoding. Le Cam's method, Assouad's lemma, hypothesis-testing divergences, or rate-distortion versions of Fano may then be sharper.</p>
+
+<h3>Rate-distortion Fano principle</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(V\sim\pi\) and let
+  \(\widehat V\) satisfy
+  \(\mathbb E d(V,\widehat V)\le D\). By the definition of the rate-distortion function,
+  \[
+  I(V;\widehat V)\ge R_\pi(D).
+  \]
+  Since \(V\to X\to\widehat V\),
+  \[
+  I(V;X)\ge R_\pi(D).
+  \]
+  Therefore any \(D\) with \(R_\pi(D)>I(V;X)\) is unattainable.</p>
+</div>
+
+<p>This form replaces a packing reduction by the exact information required to reproduce the parameter within average distortion \(D\).</p>

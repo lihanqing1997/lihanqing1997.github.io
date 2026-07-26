@@ -85,3 +85,127 @@ The first term is squared bias for \(s\)-smooth functions; the second is varianc
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A method can have zero training error and still generalize when the algorithmic bias selects a low-complexity interpolating solution. In such settings, norm, margin, stability, or compression may be more informative than the classical parameter-count variance.</p>
     </div>
+
+<h3>Orthogonal projection in regression</h3>
+
+<p>The regression decomposition is an instance of Hilbert-space projection. Let
+\(\mathcal H=L^2(P_X)\) and let \(\mathcal V\subset\mathcal H\) be a closed linear subspace.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The best approximation
+  \(m_{\mathcal V}=\operatorname{proj}_{\mathcal V}m\) satisfies
+  \[
+  \|m-f\|_{L^2(P_X)}^2
+  =\|m-m_{\mathcal V}\|_2^2+\|m_{\mathcal V}-f\|_2^2,
+  \qquad f\in\mathcal V.
+  \]
+  Therefore, for any random \(\widehat m\in\mathcal V\),
+  \[
+  \mathbb E\|\widehat m-m\|_2^2
+  =\|m-m_{\mathcal V}\|_2^2+
+  \mathbb E\|\widehat m-m_{\mathcal V}\|_2^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The projection residual
+  \(m-m_{\mathcal V}\) is orthogonal to \(\mathcal V\). Since
+  \(m_{\mathcal V}-f\in\mathcal V\), the cross term in the squared norm vanishes. Apply the identity pointwise in the training sample with \(f=\widehat m\), then average.</p>
+</div>
+
+<h3>Exact risk of ordinary least squares</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In the fixed-design model
+  \(Y=X\beta+\varepsilon\), with \(X\in\mathbb R^{n\times p}\) of full column rank,
+  \(\mathbb E\varepsilon=0\), and
+  \(\operatorname{Cov}(\varepsilon)=\sigma^2I_n\), ordinary least squares obeys
+  \[
+  \mathbb E\|\widehat\beta-\beta\|_2^2
+  =\sigma^2\operatorname{tr}\{(X^\top X)^{-1}\},
+  \]
+  and its in-sample prediction risk is
+  \[
+  \frac1n\mathbb E\|X\widehat\beta-X\beta\|_2^2
+  =\frac{\sigma^2p}{n}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \(\widehat\beta-\beta=(X^\top X)^{-1}X^\top\varepsilon\),
+  its covariance is \(\sigma^2(X^\top X)^{-1}\); trace gives the first identity.
+  For prediction, \(X(\widehat\beta-\beta)=H\varepsilon\), where
+  \(H=X(X^\top X)^{-1}X^\top\) is an orthogonal projector. Thus
+  \(\mathbb E\|H\varepsilon\|_2^2=\sigma^2\operatorname{tr}(H)=\sigma^2p\).</p>
+</div>
+
+<h3>Ridge shrinkage in the singular basis</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(X=U\operatorname{diag}(s_1,\ldots,s_r)V^\top\) be a singular-value decomposition. The ridge estimator
+  \(\widehat\beta_\lambda=(X^\top X+\lambda I)^{-1}X^\top Y\) has, in the \(V\)-basis,
+  \[
+  \mathbb E(v_j^\top\widehat\beta_\lambda)
+  =\frac{s_j^2}{s_j^2+\lambda}\,v_j^\top\beta,
+  \qquad
+  \operatorname{Var}(v_j^\top\widehat\beta_\lambda)
+  =\frac{\sigma^2s_j^2}{(s_j^2+\lambda)^2}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Substitute the SVD into the ridge formula:
+  \[
+  \widehat\beta_\lambda
+  =V\operatorname{diag}\!\left(\frac{s_j}{s_j^2+\lambda}\right)U^\top Y.
+  \]
+  Insert \(Y=U\operatorname{diag}(s_j)V^\top\beta+\varepsilon\), then take coordinatewise means and variances.</p>
+</div>
+
+<p>Small-singular-value directions are precisely where least squares has high variance. Ridge suppresses those directions most strongly, accepting bias in exchange for a potentially much larger variance reduction.</p>
+
+<h3>Nonparametric series estimators</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In Gaussian white noise,
+  \[
+  Y_j=\theta_j+\frac{\sigma}{\sqrt n}\xi_j,\qquad \xi_j\stackrel{\mathrm{iid}}{\sim}N(0,1),
+  \]
+  consider the truncation estimator
+  \(\widehat\theta_j=Y_j\mathbf1(j\le k)\). Its exact squared \(\ell^2\)-risk is
+  \[
+  \mathbb E_\theta\|\widehat\theta-\theta\|_2^2
+  =\sum_{j>k}\theta_j^2+\frac{\sigma^2k}{n}.
+  \]
+  On the Sobolev ellipsoid
+  \(\sum_{j\ge1}j^{2s}\theta_j^2\le L^2\), the bias is at most
+  \(L^2k^{-2s}\). Balancing it against \(k/n\) gives
+  \(k\asymp n^{1/(2s+1)}\) and risk \(n^{-2s/(2s+1)}\).</p>
+</div>
+
+<h3>Model selection adds search variance</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> A bias-variance calculation conditional on a selected model omits the randomness of selection. If one searches over \(M\) candidate models, the effective stochastic price generally contains \(\log M\), not merely the dimension of the winner. Oracle inequalities account for this search cost; a post-selection calculation that treats the selected model as fixed does not.</p>
+</div>
+
+<h3>Interpolation and the minimum-norm solution</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(p>n\) and \(X\) has full row rank, the minimum-Euclidean-norm interpolator is
+  \[
+  \widehat\beta_{\min}=X^\top(XX^\top)^{-1}Y.
+  \]
+  Its prediction at \(x\) depends only on the projection of \(x\) onto the row space of \(X\); components in \(\ker(X)\) are set to zero.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Every interpolator has the form
+  \(X^\top(XX^\top)^{-1}Y+v\) with \(v\in\ker(X)\). The first summand lies in
+  \(\operatorname{row}(X)=\ker(X)^\perp\), so Pythagoras gives
+  \(\|\beta\|_2^2=\|\widehat\beta_{\min}\|_2^2+\|v\|_2^2\). Hence \(v=0\) uniquely minimizes norm.</p>
+</div>
+
+<p>The minimum-norm constraint is an algorithmic inductive bias. Whether interpolation generalizes depends on the alignment of the signal and covariance spectrum, not on training error alone. This spectral viewpoint reappears in kernel ridgeless regression and neural tangent models.</p>

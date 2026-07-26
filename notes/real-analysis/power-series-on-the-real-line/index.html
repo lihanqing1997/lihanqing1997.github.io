@@ -20,6 +20,10 @@ note_next_url: "/notes/real-analysis/multivariable-differentiation/"
         <p><span class="statement-title">Proof.</span> Apply the root test to terms \(a_n(x-c)^n\). The limsup of the \(n\)-th roots is \(|x-c|\limsup |a_n|^{1/n}\). It is below \(1\) inside the radius and above \(1\) outside.</p>
     </div>
 
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark (the boundary is separate data).</span> The radius theorem says nothing at \(|x-c|=R\). For \(c=0\) and \(R=1\), the series \(\sum x^n\) diverges at both endpoints, \(\sum x^n/n\) converges at \(-1\) but diverges at \(1\), and \(\sum x^n/n^2\) converges at both. Endpoint behavior must therefore be checked directly.</p>
+    </div>
+
     <h3>Uniform convergence on compact subintervals</h3>
     <p>Inside the radius, convergence is locally uniform.</p>
     <div class="math-statement proposition">
@@ -27,7 +31,12 @@ note_next_url: "/notes/real-analysis/multivariable-differentiation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose \(\rho\) with \(r\lt \rho\lt R\). Since \(\sum |a_n|\rho^n\) converges, \(|a_n(x-c)^n|\le |a_n|r^n\le |a_n|\rho^n\) on \(|x-c|\le r\). The Weierstrass test gives uniform absolute convergence.</p>
+        <p><span class="statement-title">Proof.</span> Choose \(\rho\) with \(r\lt \rho\lt R\). Convergence at \(c+\rho\) implies the terms \(a_n\rho^n\) are bounded, say \(|a_n|\rho^n\le M\). Therefore, on \(|x-c|\le r\),
+\[
+|a_n(x-c)^n|
+\le M\left(\frac r\rho\right)^n.
+\]
+The geometric majorant is summable, so the Weierstrass test gives uniform absolute convergence.</p>
     </div>
 
     <h3>Termwise differentiation</h3>
@@ -40,7 +49,16 @@ f'(x)=\sum_{n=1}^\infty n a_n(x-c)^{n-1}.
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The differentiated series has the same radius because \(\lim n^{1/n}=1\). On every compact subinterval inside the radius, the derivative series converges uniformly, and the original series converges at \(c\). The theorem on differentiating uniformly convergent derivative series applies.</p>
+        <p><span class="statement-title">Proof.</span> The differentiated coefficients satisfy
+\[
+\limsup_{n\to\infty}|na_n|^{1/n}
+=\left(\lim_{n\to\infty}n^{1/n}\right)\limsup_{n\to\infty}|a_n|^{1/n}
+=R^{-1},
+\]
+so the differentiated series has radius \(R\). Fix \(r<R\). Its partial sums converge uniformly on \([c-r,c+r]\), while the original partial sums agree at \(c\). The uniform limit theorem for derivatives therefore yields differentiability of the sum and the asserted derivative. Repetition shows that \(f\in C^\infty(c-R,c+R)\) and
+\[
+f^{(k)}(x)=\sum_{n=k}^{\infty}\frac{n!}{(n-k)!}a_n(x-c)^{n-k}.
+\]</p>
     </div>
 
     <h3>Termwise integration</h3>
@@ -57,12 +75,41 @@ f'(x)=\sum_{n=1}^\infty n a_n(x-c)^{n-1}.
         <p><span class="statement-title">Proof.</span> On the interval between \(c\) and \(x\), choose a compact subinterval strictly inside the radius. Uniform convergence permits interchanging the Riemann or Lebesgue integral with the infinite sum.</p>
     </div>
 
-    <h3>Identity principle on intervals</h3>
+    <h3>Taylor coefficients and the identity principle</h3>
     <p>Coefficients are uniquely determined by the local function.</p>
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> If \(f(x)=\sum_{n=0}^{\infty}a_n(x-c)^n\) on \(|x-c|<R\), then
+\[
+a_n=\frac{f^{(n)}(c)}{n!}.
+\]
+Consequently, two power series with the same sum on a neighborhood of their common center have identical coefficients.</p>
+    </div>
+
     <div class="math-statement theorem">
         <p><span class="statement-title">Theorem.</span> If a power series centered at \(c\) vanishes on a nonempty open interval inside its radius, then every coefficient is zero.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since the sum is infinitely differentiable and derivatives are obtained termwise, \(a_n=f^{(n)}(c)/n!\). If the function vanishes on a neighborhood of \(c\), all derivatives at \(c\) vanish, hence all coefficients vanish. If the open interval does not contain \(c\), recenter at a point in the interval and continue by overlapping intervals.</p>
+        <p><span class="statement-title">Proof.</span> Let \(I=(c-R,c+R)\) and
+\[
+Z=\{x\in I:f\text{ vanishes on a neighborhood of }x\}.
+\]
+The given open interval shows \(Z\ne\varnothing\), and \(Z\) is open by definition. To prove that \(Z\) is closed in \(I\), let \(x_j\in Z\) and \(x_j\to x\in I\). Every derivative \(f^{(m)}\) vanishes at every \(x_j\), hence continuity gives \(f^{(m)}(x)=0\) for all \(m\). A power series can be recentered at any interior point: for \(|h|<R-|x-c|\), absolute convergence and the binomial theorem give
+\[
+f(x+h)
+=\sum_{m=0}^{\infty}\frac{f^{(m)}(x)}{m!}h^m.
+\]
+Thus \(f\) vanishes near \(x\), so \(x\in Z\). The interval \(I\) is connected; therefore \(Z=I\). In particular all \(f^{(n)}(c)\) vanish, and \(a_n=f^{(n)}(c)/n!=0\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (smooth need not mean analytic).</span> Define
+\[
+g(x)=
+\begin{cases}
+e^{-1/x^2},&x\ne0,\\
+0,&x=0.
+\end{cases}
+\]
+Repeated differentiation shows \(g^{(k)}(x)=P_k(1/x)e^{-1/x^2}\) for \(x\ne0\), where \(P_k\) is a polynomial. Since \(t^m e^{-t^2}\to0\) as \(t\to\infty\), every derivative extends continuously to \(0\) with \(g^{(k)}(0)=0\). Its Taylor series at \(0\) is therefore identically zero although \(g(x)>0\) for \(x\ne0\). Power-series representability is strictly stronger than \(C^\infty\)-smoothness.</p>
     </div>

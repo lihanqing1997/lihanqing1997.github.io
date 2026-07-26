@@ -8,42 +8,166 @@ note_prev_url: "/notes/probability-theory/optional-stopping-sampling/"
 note_next_url: "/notes/probability-theory/square-integrable-martingales-quadratic-variation/"
 ---
 
-<p>Uniform integrability is the exact condition for \(L^1\) martingale convergence. It prevents mass from escaping into rare but huge terminal values.</p>
+<p>Almost-sure martingale convergence does not preserve expectations by itself. Uniform integrability is the exact condition preventing a fixed amount of \(L^1\) mass from escaping to rarer and larger values. It characterizes martingales that genuinely possess an integrable terminal value.</p>
 
-    <h3>Uniformly integrable martingales</h3>
+<h3>Uniform integrability criteria</h3>
 
-    <p>A martingale bounded in \(L^1\) need not be uniformly integrable.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A family
+  \(\mathcal X\subset L^1(P)\) is uniformly integrable if
+  \[
+  \lim_{K\to\infty}\sup_{X\in\mathcal X}
+  \mathbb E[|X|1_{\{|X|>K\}}]=0.
+  \]
+  Uniform integrability implies
+  \(\sup_{X\in\mathcal X}\mathbb E|X|<\infty\), but the converse is false.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A family \(\{X_i\}\subset L^1\) is uniformly integrable if \(\sup_i\mathbb E|X_i|\lt\infty\) and the tails \(\sup_i\mathbb E[|X_i|1_{\{|X_i|\gt K\}}]\) vanish as \(K\to\infty\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Each of the following is sufficient for uniform integrability:
+  \[
+  \sup_{X\in\mathcal X}\mathbb E|X|^p<\infty
+  \quad\text{for some }p>1;
+  \]
+  or there is an increasing convex function
+  \(\Phi:[0,\infty)\to[0,\infty)\) with
+  \(\Phi(x)/x\to\infty\) and
+  \[
+  \sup_{X\in\mathcal X}\mathbb E\Phi(|X|)<\infty.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In the first case,
+  \[
+  |X|1_{\{|X|>K\}}
+  \le K^{1-p}|X|^p.
+  \]
+  In the second,
+  \[
+  |X|1_{\{|X|>K\}}
+  \le
+  \sup_{x>K}\frac{x}{\Phi(x)}\,\Phi(|X|),
+  \]
+  and the scalar supremum tends to zero. The second criterion is the de la Vallee Poussin criterion; its converse also holds.</p>
+</div>
 
-    <h3>UI convergence theorem</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Vitali).</span> If
+  \(X_n\to X\) in probability, then
+  \[
+  X_n\to X\text{ in }L^1
+  \quad\Longleftrightarrow\quad
+  \{X_n:n\ge1\}\text{ is uniformly integrable}.
+  \]</p>
+</div>
 
-    <p>Uniform integrability is equivalent to convergence in \(L^1\) for martingales.</p>
+<p>A proof, including the finite-measure qualifications and tail decomposition, appears in <a href="{{ '/notes/real-analysis/uniform-integrability-and-vitali-theorem/' | relative_url }}">real analysis</a>. Here it supplies the passage from almost-sure martingale limits to \(L^1\) limits.</p>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a martingale \(M_n\), the following are equivalent: \(\{M_n\}\) is uniformly integrable; \(M_n\to M_\infty\) almost surely and in \(L^1\); and there exists \(M_\infty\in L^1\) such that \(M_n=\mathbb E[M_\infty\mid\mathcal F_n]\).</p>
-    </div>
+<h3>Terminal-value characterization</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Uniform integrability gives \(L^1\)-boundedness, hence almost-sure convergence by the martingale convergence theorem. UI plus a.s. convergence gives \(L^1\)-convergence by Vitali's theorem. If \(M_n\to M_\infty\) in \(L^1\), then for \(A\in\mathcal F_n\), \(\int_A M_m\,\mathrm{d}P=\int_A M_n\,\mathrm{d}P\) for \(m\ge n\); letting \(m\to\infty\) gives \(M_n=\mathbb E[M_\infty\mid\mathcal F_n]\). The representation implies UI because conditional expectations of a fixed \(L^1\) variable form a uniformly integrable family.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (uniformly integrable martingales).</span> For a martingale \(M_n\), the following are equivalent:
+  <ol>
+    <li>\(\{M_n:n\ge0\}\) is uniformly integrable;</li>
+    <li>there is \(M_\infty\in L^1\) such that
+    \(M_n\to M_\infty\) almost surely and in \(L^1\);</li>
+    <li>there is \(Y\in L^1\) such that
+    \[
+    M_n=\mathbb E[Y\mid\mathcal F_n]\quad\text{for all }n.
+    \]
+  </ol>
+  In (3), one may take \(Y=M_\infty\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  Assume (1). Uniform integrability implies boundedness in \(L^1\), so the martingale convergence theorem gives an almost-sure finite limit \(M_\infty\). Vitali's theorem gives \(L^1\)-convergence, proving (2).
 
-    <h3>Closed martingales</h3>
+  Assume (2). For \(A\in\mathcal F_n\) and \(m\ge n\),
+  \[
+  \mathbb E[1_AM_m]=\mathbb E[1_AM_n].
+  \]
+  Let \(m\to\infty\). Since \(M_m\to M_\infty\) in \(L^1\),
+  \[
+  \mathbb E[1_AM_\infty]=\mathbb E[1_AM_n].
+  \]
+  Hence \(M_n=\mathbb E[M_\infty\mid\mathcal F_n]\), proving (3).
 
-    <p>A martingale represented as conditional expectations of a terminal variable is called closed.</p>
+  Assume (3). To prove uniform integrability, choose \(K>0\) and split
+  \(Y=Y1_{\{|Y|\le R\}}+Y1_{\{|Y|>R\}}\). Conditional contraction gives
+  \[
+  |M_n|
+  \le R+\mathbb E[|Y|1_{\{|Y|>R\}}\mid\mathcal F_n].
+  \]
+  For \(K>2R\), the event \(\{|M_n|>K\}\) forces the second term above to exceed \(K-R\), and a standard conditional Markov estimate yields
+  \[
+  \sup_n\mathbb E[|M_n|1_{\{|M_n|>K\}}]
+  \le C\,\mathbb E[|Y|1_{\{|Y|>R\}}].
+  \]
+  First choose \(R\) large and then \(K>2R\); the right side tends to zero. Thus (1) holds.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(M_n=\mathbb E[X\mid\mathcal F_n]\) for \(X\in L^p\), \(p\ge1\), then \(M_n\to\mathbb E[X\mid\mathcal F_\infty]\) in \(L^p\) for \(p\gt1\), and in \(L^1\) under uniform integrability.</p>
-    </div>
+<p>A martingale satisfying these conditions is called <em>closed</em> by its terminal variable. The representation says the entire process is obtained by revealing more information about one integrable object.</p>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The subspaces \(L^p(\mathcal F_n)\) increase to \(L^p(\mathcal F_\infty)\). Conditional expectation is a contraction, and approximation of \(X\) by \(\mathcal F_m\)-measurable variables reduces convergence to the case where the martingale is eventually constant.</p>
-    </div>
+<h3>Levy's upward theorem</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Uniform integrability is the martingale version of compactness in \(L^1\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\mathcal F_n\uparrow\mathcal F_\infty
+  :=\sigma(\bigcup_n\mathcal F_n)\). For \(X\in L^1\),
+  \[
+  \mathbb E[X\mid\mathcal F_n]
+  \longrightarrow
+  \mathbb E[X\mid\mathcal F_\infty]
+  \quad\text{almost surely and in }L^1.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The conditional expectations form a uniformly integrable martingale, so they converge almost surely and in \(L^1\) to some \(Y\in L^1(\mathcal F_\infty)\). If
+  \(A\in\bigcup_n\mathcal F_n\), then for all sufficiently large \(m\),
+  \[
+  \mathbb E[1_A\mathbb E(X\mid\mathcal F_m)]
+  =\mathbb E[1_AX].
+  \]
+  Passing to the \(L^1\) limit gives
+  \(\mathbb E[1_AY]=\mathbb E[1_AX]\). A monotone-class argument extends the identity to every
+  \(A\in\mathcal F_\infty\), identifying
+  \(Y=\mathbb E[X\mid\mathcal F_\infty]\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (\(L^p\) closure).</span> If
+  \(X\in L^p\), \(1<p<\infty\), then
+  \[
+  \mathbb E[X\mid\mathcal F_n]
+  \to\mathbb E[X\mid\mathcal F_\infty]
+  \quad\text{in }L^p.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional Jensen gives uniform \(L^p\)-boundedness. Approximate
+  \(\mathbb E[X\mid\mathcal F_\infty]\) in \(L^p\) by a bounded
+  \(\mathcal F_m\)-measurable variable \(Z\). For \(n\ge m\),
+  \[
+  \|\mathbb E[X\mid\mathcal F_n]-Z\|_p
+  =
+  \|\mathbb E[X-Z\mid\mathcal F_n]\|_p
+  \le\|X-Z\|_p,
+  \]
+  and refine the approximation using the \(L^p\)-density of
+  \(\bigcup_mL^p(\mathcal F_m)\) in
+  \(L^p(\mathcal F_\infty)\).</p>
+</div>
+
+<h3>An \(L^1\)-bounded martingale that is not closed</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(S_n\) be simple symmetric random walk, and
+  \(\tau=\inf\{n:S_n=1\}\). Then
+  \(M_n=S_{n\wedge\tau}\) is a martingale and
+  \(M_n\to1\) almost surely. Nevertheless
+  \(\mathbb EM_n=0\) for every \(n\), whereas the limit has mean \(1\). Hence convergence is not in \(L^1\), and \(\{M_n\}\) is not uniformly integrable. This is the same missing-mass mechanism that invalidates optional stopping at \(\tau\).</p>
+</div>

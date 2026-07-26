@@ -80,3 +80,100 @@ v_\pi=(I-\gamma P_\pi)^{-1}r_\pi.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Many algorithms alternate these two roles: estimate \(v_\pi\) or \(q_\pi\), then choose actions greedily or approximately greedily with respect to that estimate.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Operators and resolvents</h3>
+
+<p>For a stationary policy \(\pi\), define
+\[
+r_\pi(s)=\int r(s,a)\pi(\mathrm{d}a\mid s),\qquad
+P_\pi(\mathrm{d}s'\mid s)
+=\int P(\mathrm{d}s'\mid s,a)\pi(\mathrm{d}a\mid s),
+\]
+and
+\[
+(T^\pi V)(s)=r_\pi(s)+\gamma(P_\pi V)(s).
+\]
+The Bellman expectation equation is \(V^\pi=T^\pi V^\pi\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> On bounded measurable
+functions,
+\[
+V^\pi=(I-\gamma P_\pi)^{-1}r_\pi
+=\sum_{t=0}^{\infty}\gamma^tP_\pi^tr_\pi,
+\]
+where the series converges in sup norm.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Markov kernels are sup-norm
+contractions, so
+\(\sum_t\|\gamma^tP_\pi^tr_\pi\|_\infty
+\le\|r_\pi\|_\infty/(1-\gamma)\).
+Multiplying partial sums by \(I-\gamma P_\pi\) telescopes to
+\(r_\pi-\gamma^{n+1}P_\pi^{n+1}r_\pi\), whose remainder vanishes. The series
+also equals the expected discounted reward by the Markov property.</p>
+</div>
+
+<h3>Action-value equations</h3>
+
+<p>Define the state-action transition kernel
+\[
+P^\pi_Q((s',a')\mid s,a)
+=P(s'\mid s,a)\pi(a'\mid s').
+\]
+Then
+\[
+Q^\pi=r+\gamma P^\pi_QQ^\pi,
+\qquad
+Q^\pi=(I-\gamma P^\pi_Q)^{-1}r.
+\]
+The value and action-value equations are linked by
+\[
+V^\pi=\Pi_\pi Q^\pi,\qquad
+Q^\pi=r+\gamma P V^\pi,
+\]
+where \((\Pi_\pi Q)(s)=\int Q(s,a)\pi(\mathrm{d}a\mid s)\).</p>
+
+<h3>Monotonicity and comparison</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(r_\pi\le\tilde r_\pi\)
+and \(V\le W\), then \(T^\pi V\le\widetilde T^\pi W\). In particular, larger
+rewards produce larger values. Moreover, if \(V\le T^\pi V\), then
+\(V\le V^\pi\); if \(V\ge T^\pi V\), then \(V\ge V^\pi\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Positivity of \(P_\pi\) proves
+operator monotonicity. Iterating \(V\le T^\pi V\) gives
+\(V\le(T^\pi)^nV\), and contraction implies
+\((T^\pi)^nV\to V^\pi\). The supersolution case is identical.</p>
+</div>
+
+<h3>Potential-based reward shaping</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For a bounded potential
+\(\Phi\), replace reward by
+\[
+r'(s,a,s')=r(s,a,s')+\gamma\Phi(s')-\Phi(s).
+\]
+Then
+\[
+V'^\pi(s)=V^\pi(s)-\Phi(s),\qquad
+Q'^\pi(s,a)=Q^\pi(s,a)-\Phi(s),
+\]
+so all advantage functions and greedy policies are unchanged.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The shaping rewards telescope:
+\[
+\sum_{t\ge0}\gamma^t
+\{\gamma\Phi(S_{t+1})-\Phi(S_t)\}
+=-\Phi(S_0),
+\]
+because boundedness makes the terminal remainder vanish.</p>
+</div>

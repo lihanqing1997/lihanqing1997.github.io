@@ -13,7 +13,14 @@ note_next_url: "/notes/real-analysis/mean-value-theorems/"
     <h3>Derivative as best linear approximation</h3>
     <p>In one dimension, the derivative is the coefficient of the first-order local model.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A function \(f:I\to\mathbb R\) is differentiable at \(x\in I\) if the limit \(f'(x)=\lim_{h\to0}(f(x+h)-f(x))/h\) exists.</p>
+        <p><span class="statement-title">Definition.</span> Let \(x\) be an interior point of an interval \(I\). A function \(f:I\to\mathbb R\) is differentiable at \(x\) if there is a number \(A\) such that
+\[
+f(x+h)=f(x)+Ah+r(h),\qquad \frac{r(h)}{|h|}\longrightarrow0.
+\]
+The unique coefficient \(A\) is denoted \(f'(x)\). Equivalently,
+\[
+f'(x)=\lim_{h\to0}\frac{f(x+h)-f(x)}h.
+\]</p>
     </div>
 
     <div class="math-statement proposition">
@@ -31,7 +38,32 @@ note_next_url: "/notes/real-analysis/mean-value-theorems/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write first-order expansions \(f(x+h)=f(x)+f'(x)h+o(h)\) and \(g(x+h)=g(x)+g'(x)h+o(h)\). Multiplying expansions gives the product rule, and applying the product rule to \(g^{-1}\) gives the quotient rule. For the chain rule, use \(g(x+h)-g(x)=g'(x)h+o(h)\) inside the first-order expansion of \(f\) at \(g(x)\).</p>
+        <p><span class="statement-title">Proof.</span> Addition and scalar multiplication follow by adding the first-order expansions. For the product,
+\[
+\begin{aligned}
+f(x+h)g(x+h)-f(x)g(x)
+&=f(x)\bigl(g(x+h)-g(x)\bigr)\\
+&\quad+g(x)\bigl(f(x+h)-f(x)\bigr)\\
+&\quad+\bigl(f(x+h)-f(x)\bigr)\bigl(g(x+h)-g(x)\bigr).
+\end{aligned}
+\]
+The last term is \(o(h)\) because each increment is \(O(h)\), giving \((fg)'=f'g+fg'\). Since \(g(x+h)\to g(x)\ne0\),
+\[
+\frac{g(x+h)^{-1}-g(x)^{-1}}h
+=-\frac{1}{g(x+h)g(x)}\frac{g(x+h)-g(x)}h
+\longrightarrow-\frac{g'(x)}{g(x)^2}.
+\]
+This and the product rule give the quotient rule.</p>
+        <p>For the chain rule set \(k(h)=g(x+h)-g(x)\). Write
+\[
+f(g(x)+u)-f(g(x))=f'(g(x))u+u\eta(u),
+\]
+where \(\eta(u)\to0\), defining \(\eta(0)=0\). Since \(k(h)=g'(x)h+o(h)=O(h)\),
+\[
+f(g(x+h))-f(g(x))
+=f'(g(x))k(h)+k(h)\eta(k(h))
+=f'(g(x))g'(x)h+o(h).
+\]</p>
     </div>
 
     <h3>Taylor theorem with remainder</h3>
@@ -45,7 +77,48 @@ for some \(\xi\) between \(a\) and \(x\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Subtract the degree \(n\) Taylor polynomial and choose \(C\) so that the remainder equals \(C(x-a)^{n+1}\) at the endpoint. Repeatedly apply Rolle's theorem to the function \(f(t)-T_n(t)-C(t-a)^{n+1}\), which has enough vanishing derivatives at \(a\) and vanishes at \(x\). After \(n+1\) applications, \(C=f^{(n+1)}(\xi)/(n+1)!\).</p>
+        <p><span class="statement-title">Proof.</span> Assume \(x\ne a\) and let
+\[
+T_n(t)=\sum_{k=0}^n\frac{f^{(k)}(a)}{k!}(t-a)^k,\qquad
+C=\frac{f(x)-T_n(x)}{(x-a)^{n+1}}.
+\]
+The function \(G(t)=f(t)-T_n(t)-C(t-a)^{n+1}\) satisfies \(G(x)=0\) and
+\[
+G(a)=G'(a)=\cdots=G^{(n)}(a)=0.
+\]
+Rolle's theorem applied successively to \(G,G',\ldots,G^{(n)}\) yields \(\xi\) between \(a\) and \(x\) with \(G^{(n+1)}(\xi)=0\). Since
+\[
+G^{(n+1)}(\xi)=f^{(n+1)}(\xi)-(n+1)!C,
+\]
+the asserted formula follows.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (quantitative remainder).</span> If \(|f^{(n+1)}(t)|\le M\) between \(a\) and \(x\), then
+\[
+\left|f(x)-\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k\right|
+\le\frac{M}{(n+1)!}|x-a|^{n+1}.
+\]
+For example, taking \(f(x)=e^x\) at \(a=0\) proves convergence of its Taylor polynomials uniformly on every bounded interval.</p>
+    </div>
+
+    <h3>Integral remainder</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(f^{(n)}\) is absolutely continuous between \(a\) and \(x\), then
+\[
+f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k
++\frac1{n!}\int_a^x f^{(n+1)}(t)(x-t)^n\,\mathrm{d}t.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(n=0\), this is the fundamental theorem of calculus. If it holds for \(n-1\), integrate the last term by parts:
+\[
+\frac1{(n-1)!}\int_a^x f^{(n)}(t)(x-t)^{n-1}\,\mathrm{d}t
+=\frac{f^{(n)}(a)}{n!}(x-a)^n
++\frac1{n!}\int_a^x f^{(n+1)}(t)(x-t)^n\,\mathrm{d}t.
+\]
+Induction proves the formula. Unlike the Lagrange form, this remainder also works naturally with weak integrability assumptions.</p>
     </div>
 
     <h3>Peano form</h3>
@@ -58,11 +131,21 @@ f(a+h)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}h^k+o(h^n).
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply Taylor's formula with integral or repeated mean-value remainder to \(f^{(n-1)}\), using continuity of \(f^{(n)}\) at \(a\). The error is bounded by \(|h|^n\) times the oscillation of \(f^{(n)}\) near \(a\), which tends to zero.</p>
+        <p><span class="statement-title">Proof.</span> Subtract the Taylor polynomial and write the remainder as \(R_n(h)\). Repeated Cauchy mean-value arguments give, for \(h\ne0\), a point \(\xi_h\) between \(a\) and \(a+h\) such that
+\[
+\frac{R_n(h)}{h^n}
+=\frac{f^{(n)}(\xi_h)-f^{(n)}(a)}{n!}.
+\]
+Since \(\xi_h\to a\) and \(f^{(n)}\) is continuous at \(a\), the right side tends to zero.</p>
     </div>
 
-    <h3>Taylor expansion as local geometry</h3>
-    <p>The first derivative gives slope; the second derivative gives curvature.</p>
+    <h3>Quadratic expansions in statistical asymptotics</h3>
+    <p>The first derivative gives the local linear response; the second derivative controls local curvature and identifiability.</p>
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In asymptotic statistics, Taylor expansion of criteria and log-likelihoods is the deterministic core behind consistency rates, asymptotic normality, Laplace approximation, and local asymptotic quadraticity.</p>
+        <p><span class="statement-title">Remark.</span> If \(M_n'(\widehat\theta_n)=0\), expansion around \(\theta_0\) gives
+\[
+0=M_n'(\theta_0)+M_n''(\theta_0)(\widehat\theta_n-\theta_0)
++o\bigl(|\widehat\theta_n-\theta_0|\bigr).
+\]
+After proving that \(M_n''(\theta_0)\) stays away from zero and controlling the remainder uniformly, this identity turns a limit theorem for the score \(M_n'(\theta_0)\) into one for the estimator. The multivariate and stochastic versions are developed in <a href="{{ '/notes/statistical-inference/m-estimators-z-estimators/' | relative_url }}">Statistical inference</a>.</p>
     </div>

@@ -8,25 +8,163 @@ note_prev_url: "/notes/statistical-decision-theory/iid-experiments-and-dqm/"
 note_next_url: "/notes/statistical-decision-theory/maximum-likelihood-and-pathologies/"
 ---
 
-<p>Consistency localizes the parameter; root-(n) estimation enters the LAN scale. One-step estimators show how rough consistency can be upgraded by likelihood curvature.</p>
+<p>Consistency identifies the correct local experiment. Root-\(n\) estimation then asks whether a procedure tracks every contiguous local alternative with a stable Gaussian error. One-step correction shows that a preliminary estimator can be substantially rougher than root-\(n\) and still be upgraded to efficiency.</p>
 
-    <h3>Consistency by separation</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An estimator \(\hat\theta_n\) is consistent if \(P_\theta\{d(\hat\theta_n,\theta)>\varepsilon\}\to0\) for every \(\varepsilon>0\). Separation of risks or likelihoods supplies a common proof.</p>
-    </div>
+<h3>Pointwise and uniform consistency</h3>
 
-    <h3>One-step estimator</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Given a consistent \(\tilde\theta_n\), a score \(S_n(\tilde\theta_n)\), and information \(J_n(\tilde\theta_n)\), define</p>
-        <p>\[
-\hat\theta_n=\tilde\theta_n+J_n(\tilde\theta_n)^{-1}S_n(\tilde\theta_n).
-\]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator
+  \(\tilde\theta_n\) is pointwise consistent if
+  \[
+  P_\theta\{d(\tilde\theta_n,\theta)>\varepsilon\}\to0
+  \]
+  for every fixed \(\theta\) and \(\varepsilon>0\). It is uniformly consistent on \(K\subset\Theta\) if
+  \[
+  \sup_{\theta\in K}
+  P_\theta\{d(\tilde\theta_n,\theta)>\varepsilon\}\to0.
+  \]</p>
+</div>
 
-    <h3>Newton expansion</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Taylor expansion of the score around \(\theta_0\) gives \(S_n(\tilde\theta_n)\approx S_n(\theta_0)-J_n(\theta_0)(\tilde\theta_n-\theta_0)\). The correction cancels the preliminary error to first order.</p>
-    </div>
+<p>Globalization and uniform confidence statements require the second form. Pointwise consistency can coexist with severe nonuniformity near boundaries or weakly identified sequences.</p>
 
-    <h3>Root-n scale</h3>
-    <p>If the preliminary estimator is close enough for the Taylor remainder to be negligible, the one-step estimator has the same first-order limit as the MLE.</p>
+<h3>Consistency from uniformly consistent tests</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose for every
+  \(\varepsilon>0\) there is a finite cover of
+  \(\{\theta:d(\theta,\theta_0)\geq\varepsilon\}\) by sets
+  \(\Theta_{\varepsilon,j}\), and tests \(\varphi_{n,j}\) such that
+  \[
+  P_{\theta_0}\varphi_{n,j}\to0,
+  \qquad
+  \sup_{\theta\in\Theta_{\varepsilon,j}}
+  P_\theta(1-\varphi_{n,j})\to0.
+  \]
+  Then one can construct an estimator consistent at \(\theta_0\); with uniform versions over \(\theta_0\), a uniformly consistent estimator exists.</p>
+</div>
+
+<p>This testing construction underlies minimum-distance estimators and posterior consistency. Identifiability alone is qualitative; uniformly powerful tests make it statistical.</p>
+
+<h3>Root-\(n\) consistency and regularity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator is root-\(n\) consistent at \(\theta_0\) if
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)=O_{P_{\theta_0}}(1).
+  \]
+  It is regular if the centered limit under every
+  \(\theta_0+h/\sqrt n\) is the same law.</p>
+</div>
+
+<p>Root-\(n\) consistency at one point does not imply regularity. Hodges' estimator is even degenerate at its favored point while failing stability under local alternatives.</p>
+
+<h3>One-step correction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In an i.i.d. DQM model, let
+  \(\tilde\theta_n\) satisfy
+  \[
+  \tilde\theta_n-\theta_0=o_p(n^{-1/4}).
+  \]
+  Suppose the score obeys the stochastic expansion
+  \[
+  \frac1n\sum_{i=1}^n
+  \dot\ell_{\tilde\theta_n}(X_i)
+  =
+  \frac1n\sum_{i=1}^n
+  \dot\ell_{\theta_0}(X_i)
+  -I_{\theta_0}(\tilde\theta_n-\theta_0)
+  +o_p(n^{-1/2}),
+  \]
+  and \(\hat I_n\to_pI_{\theta_0}\). Define
+  \[
+  \hat\theta_n
+  =
+  \tilde\theta_n+
+  \hat I_n^{-1}
+  \frac1n\sum_{i=1}^n
+  \dot\ell_{\tilde\theta_n}(X_i).
+  \]
+  Then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =
+  I_{\theta_0}^{-1}
+  \frac1{\sqrt n}\sum_{i=1}^n
+  \dot\ell_{\theta_0}(X_i)
+  +o_p(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Substitute the score expansion:
+  \[
+  \begin{aligned}
+  \hat\theta_n-\theta_0
+  &=
+  \tilde\theta_n-\theta_0
+  +\hat I_n^{-1}\left[
+  \frac1n\sum_i\dot\ell_{\theta_0}(X_i)
+  -I_{\theta_0}(\tilde\theta_n-\theta_0)
+  +o_p(n^{-1/2})
+  \right].
+  \end{aligned}
+  \]
+  Consistency of \(\hat I_n\) makes the first and third terms cancel to
+  \(o_p(n^{-1/2})\). Multiply by \(\sqrt n\). \(\square\)</p>
+</div>
+
+<p>The \(o_p(n^{-1/4})\) preliminary rate is a common sufficient condition because a second-order score remainder is then
+\[
+\|\tilde\theta_n-\theta_0\|^2=o_p(n^{-1/2}).
+\]
+With sample splitting and stronger smoothness, related conditions can be weakened or reformulated.</p>
+
+<h3>Asymptotic linearity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator is asymptotically linear if
+  \[
+  \hat\theta_n-\theta_0
+  =
+  \frac1n\sum_{i=1}^n\varphi_{\theta_0}(X_i)
+  +o_p(n^{-1/2}),
+  \]
+  where \(P_{\theta_0}\varphi_{\theta_0}=0\) and
+  \(P_{\theta_0}\|\varphi_{\theta_0}\|^2<\infty\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In a regular parametric model, any regular asymptotically linear estimator satisfies
+  \[
+  P_{\theta_0}
+  \{\varphi_{\theta_0}\dot\ell_{\theta_0}^\top\}
+  =I_p.
+  \]
+  Therefore
+  \[
+  \operatorname{Var}(\varphi_{\theta_0})
+  \succeq I_{\theta_0}^{-1},
+  \]
+  with equality for
+  \(\varphi_{\mathrm{eff}}=I_{\theta_0}^{-1}\dot\ell_{\theta_0}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Le Cam's third lemma says that under local parameter \(h\), the asymptotic mean shift of
+  \(n^{-1/2}\sum\varphi(X_i)\) is
+  \(P(\varphi\dot\ell^\top)h\). Regularity requires this shift to equal \(h\), proving the identity. In the Hilbert space \(L_2(P)\), write
+  \[
+  \varphi=I^{-1}\dot\ell+r,
+  \qquad P(r\dot\ell^\top)=0.
+  \]
+  Then
+  \[
+  P(\varphi\varphi^\top)=I^{-1}+P(rr^\top)\succeq I^{-1}.
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Construction versus lower bounds</h3>
+
+<p>LAN and the convolution theorem say what an efficient regular estimator must look like. A one-step estimator constructs it from a preliminary localization and a score. Both halves are needed: a covariance lower bound without a procedure is not attainability, and an asymptotic normal estimator without comparison to the limit experiment is not an efficiency theorem.</p>

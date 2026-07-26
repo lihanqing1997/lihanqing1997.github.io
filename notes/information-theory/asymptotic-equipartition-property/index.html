@@ -38,3 +38,132 @@ in probability and almost surely. Consequently, for large \(n\), \(P^n(A_\vareps
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The AEP explains why entropy is the compression rate: a high-probability set has exponential size \(\exp(nH)\), so about \(nH\) nats are necessary and sufficient to name its elements.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Information density of an iid sample</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(X_1,X_2,\ldots\) are iid on a finite alphabet with law \(P\), then
+  \[
+  -\frac1n\log P(X_1,\ldots,X_n)
+  \longrightarrow H(P)
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Product structure gives
+  \[
+  -\frac1n\log P(X^n)
+  =\frac1n\sum_{i=1}^n-\log P(X_i).
+  \]
+  The summands are iid and integrable on a finite alphabet, with mean \(H(P)\). Apply the strong law of large numbers.</p>
+</div>
+
+<h3>Weakly typical sets</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  \[
+  \mathcal T_\varepsilon^{(n)}
+  =\left\{x^n:
+  \left|-\frac1n\log P(x^n)-H(P)\right|
+  \le\varepsilon\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every \(\varepsilon>0\),
+  \[
+  P\{X^n\in\mathcal T_\varepsilon^{(n)}\}\to1,
+  \]
+  and, for large \(n\),
+  \[
+  (1-o(1))e^{n(H-\varepsilon)}
+  \le|\mathcal T_\varepsilon^{(n)}|
+  \le e^{n(H+\varepsilon)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The probability statement is the AEP. Each typical string has probability between
+  \(e^{-n(H+\varepsilon)}\) and
+  \(e^{-n(H-\varepsilon)}\). Since total probability is at most one, the lower probability bound per string gives the cardinality upper bound. Since typical-set probability tends to one, the upper probability bound per string gives the cardinality lower bound.</p>
+</div>
+
+<h3>Strong typicality</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence \(x^n\) is strongly
+  \(\varepsilon\)-typical if its empirical frequencies satisfy
+  \[
+  |\widehat P_{x^n}(a)-P(a)|\le\varepsilon
+  \]
+  for every symbol \(a\), with no occurrence of symbols having \(P(a)=0\).</p>
+</div>
+
+<p>Strong typicality controls frequencies of every symbol and extends naturally to joint and conditional typicality. Weak typicality controls only the average log probability. They coincide at the exponential scale for finite iid alphabets but support different technical lemmas.</p>
+
+<h3>Joint typicality lemma</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \((X^n,Y^n)\) are iid from \(P_{XY}\), they are jointly typical with probability tending to one. If instead \(X^n\sim P_X^n\) and \(Y^n\sim P_Y^n\) independently, then
+  \[
+  P\{(X^n,Y^n)\text{ jointly typical}\}
+  \doteq e^{-nI(X;Y)},
+  \]
+  where \(\doteq\) denotes equality at exponential rate.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The first claim is a law of large numbers for joint empirical frequencies. A jointly typical pair has
+  \(P_{XY}^n(x^n,y^n)\approx e^{-nH(X,Y)}\), while under independent sampling its probability is
+  \(P_X^n(x^n)P_Y^n(y^n)\approx e^{-n\{H(X)+H(Y)\}}\). Summing over about
+  \(e^{nH(X,Y)}\) jointly typical pairs gives exponent
+  \(-I(X;Y)\).</p>
+</div>
+
+<h3>Conditional typicality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(x^n\) is typical and
+  \(Y_i\) are generated independently through a memoryless channel
+  \(P_{Y\mid X}(\cdot\mid x_i)\), then \((x^n,Y^n)\) is jointly typical with probability tending to one.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Within positions carrying each input symbol \(x\), channel outputs are iid with law \(P_{Y\mid X=x}\). Conditional laws of large numbers make each joint frequency close to
+  \(\widehat P_{x^n}(x)P(y\mid x)\), which is close to \(P(x,y)\).</p>
+</div>
+
+<h3>Second-order fluctuations</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \[
+  V(P)=\operatorname{Var}\{-\log P(X)\}<\infty,
+  \]
+  then
+  \[
+  \sqrt n\left\{-\frac1n\log P(X^n)-H(P)\right\}
+  \rightsquigarrow N\{0,V(P)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> This is the classical central limit theorem for the iid self-information variables.</p>
+</div>
+
+<p>The varentropy \(V(P)\) governs finite-blocklength source coding: at error probability \(\epsilon\), the required log codebook size has correction approximately
+\(\sqrt{nV(P)}\,\Phi^{-1}(1-\epsilon)\).</p>
+
+<h3>Beyond iid sources</h3>
+
+<p>The Shannon-McMillan-Breiman theorem extends the AEP to stationary ergodic finite-alphabet processes:
+\[
+-\frac1n\log P(X_1,\ldots,X_n)\to\overline H
+\quad\text{almost surely},
+\]
+where \(\overline H\) is the entropy rate. Without ergodicity, the limit can be a random component-specific entropy rate rather than a constant.</p>

@@ -8,24 +8,158 @@ note_prev_url: "/notes/causal-inference/doubly-robust-estimation/"
 note_next_url: "/notes/causal-inference/instrumental-variables/"
 ---
 
-<p>Efficient influence functions records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Efficient influence functions connect causal identification to semiparametric estimation. They provide the first-order derivative of a target functional, the efficiency bound, an estimating equation, and the correction used by one-step and targeted estimators.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Efficient influence functions describe first-order sensitivity of causal parameters in semiparametric models and determine efficiency bounds.</p>
-    </div>
+<h3>Regular parametric submodels</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For the ATE under nonparametric point-treatment assumptions, the efficient influence function is the difference of augmented treatment-specific scores minus the ATE.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A regular parametric submodel
+  \(\{P_\varepsilon:|\varepsilon|<\delta\}\) through \(P=P_0\) has score
+  \[
+  s(O)=
+  \left.\frac{\partial}{\partial\varepsilon}
+  \log p_\varepsilon(O)\right|_{\varepsilon=0},
+  \qquad Ps=0,\quad Ps^2<\infty.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Derive pathwise derivatives of the parameter along regular submodels and identify the unique gradient in the tangent space inner product. Orthogonal projection removes nuisance directions.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A functional \(\Psi(P)\) is pathwise differentiable at \(P\) if there exists
+  \(\phi_P\in L_0^2(P)\) such that for every regular submodel,
+  \[
+  \left.\frac{\mathrm{d}}{\mathrm{d}\varepsilon}
+  \Psi(P_\varepsilon)\right|_0
+  =P(\phi_Ps).
+  \]
+  Any such \(\phi_P\) in the tangent space is an influence function; the canonical gradient is the one in the closure of the tangent space with minimum variance.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Influence-function language connects causal inference to statistical decision theory and semiparametric efficiency.</p>
-    </div>
+<h3>Efficient influence function for a treatment-specific mean</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In the nonparametric observed-data model,
+  \[
+  \Psi_a(P)=\mathbb E\{m_a(X)\}
+  \]
+  has efficient influence function
+  \[
+  \phi_a(O)=
+  \frac{\mathbf1(A=a)}{p_a(X)}
+  \{Y-m_a(X)\}+m_a(X)-\Psi_a(P),
+  \]
+  where \(p_1=e\) and \(p_0=1-e\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Factor
+  \(p(o)=p(y\mid a,x)p(a\mid x)p(x)\), so every score decomposes orthogonally as
+  \(s=s_Y+s_A+s_X\). Perturbing \(p(y\mid a,x)\) differentiates \(m_a(x)\):
+  \[
+  \dot m_a(x)=
+  \mathbb E[\{Y-m_a(x)\}s_Y\mid A=a,X=x].
+  \]
+  Weighting by \(\mathbf1(A=a)/p_a(X)\) reproduces its integral against \(P_X\). Perturbing \(P_X\) contributes
+  \(P[\{m_a(X)-\Psi_a\}s_X]\). The functional does not depend on the treatment mechanism, and the candidate is orthogonal to \(s_A\). Summing gives
+  \(P(\phi_as)\) for every score.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> The ATE efficient influence function is
+  \[
+  \phi_\tau(O)=
+  \frac{A\{Y-m_1(X)\}}{e(X)}
+  -\frac{(1-A)\{Y-m_0(X)\}}{1-e(X)}
+  +m_1(X)-m_0(X)-\tau.
+  \]</p>
+</div>
+
+<h3>The efficiency bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every regular asymptotically linear estimator of \(\tau\) in the nonparametric model has asymptotic variance at least
+  \[
+  V_{\mathrm{eff}}=P\phi_\tau^2.
+  \]
+  An estimator with expansion
+  \[
+  \widehat\tau-\tau=P_n\phi_\tau+o_P(n^{-1/2})
+  \]
+  attains the bound.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Any regular estimator's influence function must represent the same pathwise derivative. Its projection onto the tangent space is the canonical gradient \(\phi_\tau\). Orthogonal projection gives
+  \(\|\phi\|_2^2=\|\phi_\tau\|_2^2+
+  \|\phi-\phi_\tau\|_2^2\ge\|\phi_\tau\|_2^2\).
+  The stated expansion and central limit theorem attain equality.</p>
+</div>
+
+<h3>Variance decomposition</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  V_{\mathrm{eff}}=
+  \mathbb E\left[
+  \frac{\sigma_1^2(X)}{e(X)}
+  +\frac{\sigma_0^2(X)}{1-e(X)}
+  +\{\tau(X)-\tau\}^2
+  \right].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on \(X\), the two residual terms are mutually exclusive, centered, and have variances
+  \(\sigma_1^2/e\) and \(\sigma_0^2/(1-e)\). The remaining conditional mean is \(\tau(X)-\tau\). Apply total variance.</p>
+</div>
+
+<h3>One-step construction</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given an initial plug-in
+  \(\Psi(\widehat P)\), the one-step estimator is
+  \[
+  \widehat\Psi_{\mathrm{1step}}
+  =\Psi(\widehat P)+P_n\phi_{\widehat P}.
+  \]</p>
+</div>
+
+<p>For the ATE this simplifies algebraically to AIPW. The correction estimates the first-order plug-in bias. Its residual bias is the second-order remainder controlled by products of nuisance errors.</p>
+
+<h3>Von Mises expansion</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a pathwise differentiable functional,
+  \[
+  \Psi(\widehat P)-\Psi(P)
+  =-P\phi_{\widehat P}+\operatorname{Rem}_2(\widehat P,P)
+  \]
+  under the convention \(\widehat P\phi_{\widehat P}=0\). Therefore
+  \[
+  \widehat\Psi_{\mathrm{1step}}-\Psi(P)
+  =(P_n-P)\phi_P+
+  (P_n-P)(\phi_{\widehat P}-\phi_P)
+  +\operatorname{Rem}_2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Integrate the pathwise derivative along a smooth path from \(P\) to \(\widehat P\) and isolate the derivative at one endpoint. Add the empirical influence correction, then add and subtract \((P_n-P)\phi_P\). For the ATE, direct conditional-expectation algebra yields the exact product remainder.</p>
+</div>
+
+<h3>Nonregular targets</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> The optimal treatment value
+  \[
+  \Psi(P)=\mathbb E\max\{m_1(X),m_0(X)\}
+  \]
+  is not pathwise differentiable at laws assigning positive probability to
+  \(m_1(X)=m_0(X)\). The maximizing treatment changes discontinuously under local perturbations. Ordinary influence-function normal inference can fail without a margin condition or a smoothed target.</p>
+</div>
+
+<h3>Influence curves as diagnostics</h3>
+
+<p>Estimated influence values reveal which observations dominate uncertainty, especially under weak overlap. A few enormous values indicate that nominal asymptotic normality may be fragile. Their empirical variance estimates asymptotic variance, but this estimate is reliable only if nuisance remainder and tail conditions are controlled.</p>
+
+<p>For the general tangent-space and convolution theory behind efficiency bounds, see <a href="{{ '/notes/statistical-inference/semiparametric-inference-interface/' | relative_url }}">the semiparametric inference interface</a>.</p>

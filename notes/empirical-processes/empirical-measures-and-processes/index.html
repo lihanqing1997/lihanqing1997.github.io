@@ -8,32 +8,172 @@ note_prev_url: "/notes/empirical-processes/bounded-function-spaces/"
 note_next_url: "/notes/empirical-processes/empirical-distribution-functions/"
 ---
 
-<p>The empirical measure turns data into a random probability measure. Empirical processes are its centered and rescaled fluctuations.</p>
+<p>The empirical measure is a random probability measure, while the empirical process is a centered random linear functional. Its covariance is determined entirely by \(P\), and finite classes reduce exactly to multivariate probability. Infinite-class theory begins when the class size grows beyond a single union bound.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For measurable \(f\), \(P_nf=\int f\,\mathrm{d}P_n=n^{-1}\sum_{i=1}^nf(X_i)\), \(Pf=\int f\,\mathrm{d}P\), and \((P_n-P)f=P_nf-Pf\).</p>
-    </div>
+<h3>Random signed functionals</h3>
 
-    <h3>LLN and CLT scales</h3>
-    <ul>
-        <li>For fixed \(f\), the LLN and CLT control \(P_nf\); empirical-process theory asks for control uniformly over \(f\in\mathcal F\).</li>
-        <li>The centered object \(\mathbb G_n f=\sqrt n(P_n-P)f\) separates random fluctuation from deterministic approximation.</li>
-        <li>Indicator classes recover empirical distribution functions; smooth or loss-function classes lead to estimators.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a measurable \(f\) with \(P|f|\lt\infty\),
+  \[
+  P_nf=\frac1n\sum_{i=1}^nf(X_i),\qquad
+  \mathbb G_nf=\frac1{\sqrt n}\sum_{i=1}^n\{f(X_i)-Pf\}.
+  \]
+  On a vector space of functions, both \(P_n-P\) and \(\mathbb G_n\) are linear:
+  \[
+  \mathbb G_n(af+bg)
+  =a\mathbb G_nf+b\mathbb G_ng.
+  \]</p>
+</div>
 
-    <h3>Finite classes</h3>
-    <p>This notation is used everywhere: uniform consistency is about \(P_n-P\), while weak limits and stochastic expansions are about \(\mathbb G_n\).</p>
-
-    <!-- expanded-learning -->
-    <h3>Two empirical-process scales</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> Two scales appear constantly:
+<p>The empirical measure \(P_n\) is positive and has total mass one. The centered measure \(P_n-P\) is signed and has total mass zero. This is why constants vanish:
 \[
-\|P_n-P\|_{\mathcal F}\quad\text{for laws of large numbers},\qquad
-\|\mathbb G_n\|_{\mathcal F}=\sqrt n\|P_n-P\|_{\mathcal F}\quad\text{for central limits}.
-\]
-The first scale proves consistency; the second scale gives distributional approximations.</p>
-    </div>
+\mathbb G_n(f+c)=\mathbb G_nf.
+\]</p>
 
-    <h3>Finite-class prototype</h3>
-    <p>For a finite class \(\mathcal F=\{f_1,\ldots,f_N\}\), the vector \((P_nf_j-Pf_j)_{j\le N}\) is controlled by ordinary LLNs and CLTs plus a union bound. Infinite-class theory replaces \(N\) by entropy.</p>
+<h3>Mean and covariance</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Empirical-process covariance.</span> If \(f,g\in L^2(P)\), then
+  \[
+  \mathbb E(\mathbb G_nf)=0
+  \]
+  and, for every \(n\),
+  \[
+  \operatorname{Cov}(\mathbb G_nf,\mathbb G_ng)
+  =P(fg)-Pf\,Pg.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Centering gives the zero mean. Independence makes cross-observation covariances vanish, so
+  \[
+  \begin{aligned}
+  \operatorname{Cov}(\mathbb G_nf,\mathbb G_ng)
+  &=\frac1n\sum_{i=1}^n
+  \operatorname{Cov}\{f(X_i),g(X_i)\}\\
+  &=P(fg)-Pf\,Pg.
+  \end{aligned}
+  \]</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Increment variance.</span>
+  \[
+  \mathbb E\{\mathbb G_n(f-g)\}^2
+  =\rho_P(f,g)^2,
+  \]
+  where
+  \[
+  \rho_P(f,g)^2
+  =P\{(f-g)-P(f-g)\}^2.
+  \]</p>
+</div>
+
+<h3>Finite-dimensional central limit theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For \(f_1,\ldots,f_k\in L^2(P)\),
+  \[
+  (\mathbb G_nf_1,\ldots,\mathbb G_nf_k)
+  \rightsquigarrow N_k(0,\Sigma),
+  \]
+  where
+  \[
+  \Sigma_{ij}=P(f_if_j)-Pf_i\,Pf_j.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(a\in\mathbb R^k\),
+  \[
+  \sum_{j=1}^ka_j\mathbb G_nf_j
+  =\frac1{\sqrt n}\sum_{i=1}^n
+  \left[
+  \sum_{j=1}^ka_jf_j(X_i)
+  -P\sum_{j=1}^ka_jf_j
+  \right].
+  \]
+  The scalar central limit theorem gives a centered normal limit with variance \(a^\top\Sigma a\). Cramer-Wold proves the vector convergence.</p>
+</div>
+
+<h3>Finite-class uniform laws</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Finite-class law of large numbers.</span> If \(\mathcal F=\{f_1,\ldots,f_N\}\) is finite and every \(f_j\in L^1(P)\), then
+  \[
+  \|P_n-P\|_{\mathcal F}\to0
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The strong law gives \((P_n-P)f_j\to0\) almost surely for each \(j\). The intersection of finitely many probability-one events still has probability one, and the maximum of finitely many convergent absolute values tends to zero.</p>
+</div>
+
+<h3>Sub-Gaussian bound for a finite bounded class</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Finite-class maximal inequality.</span> Suppose \(\mathcal F\) has \(N\) elements and every centered coordinate satisfies
+  \[
+  \mathbb E\exp\{\lambda\mathbb G_nf\}
+  \le\exp(\lambda^2\sigma^2/2)
+  \quad\text{for all }\lambda\in\mathbb R.
+  \]
+  Then
+  \[
+  \mathbb E\max_{f\in\mathcal F}
+  |\mathbb G_nf|
+  \le\sigma\sqrt{2\log(2N)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the exponential maximum bound to the \(2N\) variables \(\{\mathbb G_nf,-\mathbb G_nf:f\in\mathcal F\}\):
+  \[
+  \begin{aligned}
+  \mathbb E\max_f|\mathbb G_nf|
+  &\le\frac1\lambda
+  \log\sum_{f,\pm}
+  \mathbb E e^{\pm\lambda\mathbb G_nf}\\
+  &\le\frac{\log(2N)}{\lambda}
+  +\frac{\lambda\sigma^2}{2}.
+  \end{aligned}
+  \]
+  Minimize at \(\lambda=\sqrt{2\log(2N)}/\sigma\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Bounded coordinates.</span> If every \(f\in\mathcal F\) takes values in an interval of length \(b\), Hoeffding's lemma gives the preceding condition with \(\sigma=b/2\), and hence
+  \[
+  \mathbb E\|\mathbb G_n\|_{\mathcal F}
+  \le\frac b2\sqrt{2\log(2N)}.
+  \]</p>
+</div>
+
+<h3>Envelopes and normalization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A measurable function \(F\ge0\) is an envelope for \(\mathcal F\) if
+  \[
+  |f(x)|\le F(x)
+  \quad\text{for every }f\in\mathcal F,\ x\in\mathcal X.
+  \]
+  Moment assumptions are stated through \(PF^r\), and entropy is often normalized by \(\|F\|_{Q,2}\).</p>
+</div>
+
+<p>An integrable envelope alone does not control an arbitrary infinite class: the class can contain all measurable indicators and overfit the sample. Complexity measures quantify how many genuinely different coordinates exist after identifying functions close in \(L^2(Q)\).</p>
+
+<h3>Centered and uncentered symmetrized processes</h3>
+
+<p>Independent Rademacher signs \(\varepsilon_i\) lead to
+\[
+\mathbb G_n^\circ f
+=\frac1{\sqrt n}\sum_{i=1}^n
+\varepsilon_if(X_i).
+\]
+Conditionally on the data, this process is centered and has increment metric
+\[
+d_{P_n}(f,g)
+=\{P_n(f-g)^2\}^{1/2}.
+\]
+Symmetrization compares \(\mathbb G_n\) to \(\mathbb G_n^\circ\); chaining then controls the latter through random covering numbers in this empirical metric.</p>

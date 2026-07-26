@@ -8,24 +8,109 @@ note_prev_url: "/notes/number-theory/quadratic-residues-and-reciprocity/"
 note_next_url: "/notes/number-theory/mobius-inversion/"
 ---
 
-<p>Arithmetic functions and convolution records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>Arithmetic functions encode numerical data of integers. Dirichlet
+convolution turns divisor sums into an algebra in which multiplicativity,
+inversion, and Euler products become transparent.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An arithmetic function is a function on positive integers. Dirichlet convolution is \((f*g)(n)=\sum_{d\mid n}f(d)g(n/d)\).</p>
-    </div>
+<h3>Multiplicative functions</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Multiplicative functions are closed under Dirichlet convolution, and a function with \(f(1)\ne0\) has a convolution inverse.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> An arithmetic function is
+\(f:\mathbb N\to\mathbb C\). It is multiplicative if
+\[
+f(mn)=f(m)f(n)\quad\text{when }\gcd(m,n)=1,
+\]
+and completely multiplicative if this holds for all \(m,n\).</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Factor divisors prime-by-prime for multiplicativity. The inverse is constructed recursively from the equation \(f*g=\varepsilon\), where \(\varepsilon(1)=1\) and \(\varepsilon(n)=0\) for \(n>1\).</p>
-    </div>
+<p>Examples include \(1(n)=1\), the identity
+\(\operatorname{id}(n)=n\), Euler's \(\varphi\), the divisor functions
+\[
+\tau(n)=\sum_{d\mid n}1,\qquad
+\sigma_k(n)=\sum_{d\mid n}d^k,
+\]
+and the Mobius function \(\mu\).</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Convolution is algebra for divisors. It organizes Möbius inversion, divisor sums, and Euler products.</p>
-    </div>
+<h3>Dirichlet convolution</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span>
+\[
+(f*g)(n)=\sum_{d\mid n}f(d)g(n/d).
+\]
+The identity is \(\varepsilon(1)=1\), \(\varepsilon(n)=0\) for \(n>1\).</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Dirichlet convolution is
+commutative and associative. If \(f(1)\ne0\), then \(f\) has a unique
+convolution inverse. The convolution of multiplicative functions is
+multiplicative.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Commutativity follows from
+\(d\leftrightarrow n/d\). Associativity follows by rewriting both sides as
+\[
+\sum_{abc=n}f(a)g(b)h(c).
+\]
+For inversion, solve recursively from
+\[
+f(1)g(n)+\sum_{\substack{d\mid n\\d>1}}f(d)g(n/d)=0.
+\]
+If \(\gcd(m,n)=1\), every divisor of \(mn\) uniquely splits as \(ab\) with
+\(a\mid m,b\mid n\); this proves multiplicativity of \(f*g\).</p>
+</div>
+
+<h3>Prime-power reduction</h3>
+
+<p>A multiplicative function is determined by its values on prime powers:
+\[
+f(n)=\prod_{p^\alpha\parallel n}f(p^\alpha).
+\]
+Consequently,
+\[
+\tau(n)=\prod_{p^\alpha\parallel n}(\alpha+1),\qquad
+\sigma_k(n)=\prod_{p^\alpha\parallel n}
+\frac{p^{k(\alpha+1)}-1}{p^k-1}.
+\]</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span>
+\[
+\varphi=\operatorname{id}*\mu,\qquad
+\operatorname{id}=\varphi*1.
+\]
+Equivalently,
+\[
+\sum_{d\mid n}\varphi(d)=n.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Partition the integers
+\(1\le k\le n\) according to \(d=\gcd(k,n)\). For a fixed divisor \(d\),
+writing \(k=d\ell\) leaves \(\varphi(n/d)\) choices. Hence
+\(\sum_{e\mid n}\varphi(e)=n\). Convolution with \(\mu=1^{-1}\) yields the
+first identity.</p>
+</div>
+
+<h3>Average order</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (divisor summatory function).</span>
+Changing the order of summation gives
+\[
+\sum_{n\le x}\tau(n)
+=\sum_{ab\le x}1
+=2\sum_{a\le\sqrt x}\left\lfloor\frac xa\right\rfloor
+-\lfloor\sqrt x\rfloor^2.
+\]
+Using the harmonic-sum asymptotic yields
+\[
+\sum_{n\le x}\tau(n)
+=x\log x+(2\gamma-1)x+O(\sqrt x).
+\]
+This Dirichlet hyperbola method turns a divisor convolution into a lattice
+point count.</p>
+</div>

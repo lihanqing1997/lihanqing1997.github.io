@@ -8,27 +8,191 @@ note_prev_url: "/notes/empirical-processes/covering-and-bracketing-numbers/"
 note_next_url: "/notes/empirical-processes/vc-classes/"
 ---
 
-<p>Symmetrization replaces the centered empirical process by a conditionally simpler process with random signs. It is the first reduction behind many maximal inequalities.</p>
+<p>The centered empirical process contains the unknown mean \(Pf\). Symmetrization removes it by comparing the sample with an independent copy and then replacing that difference by random signs. Conditional on the observations, the resulting process has explicit sub-Gaussian increments in the empirical \(L_2\) metric.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Let \(\varepsilon_1,\ldots,\varepsilon_n\) be independent Rademacher signs. The symmetrized process is \(f\mapsto n^{-1/2}\sum_{i=1}^n\varepsilon_i f(X_i)\).</p>
-    </div>
+<h3>Ghost samples and random signs</h3>
 
-    <h3>Rademacher reduction</h3>
-    <ul>
-        <li>A basic inequality is \(E^*\|P_n-P\|_{\mathcal F}\le 2E^*\|n^{-1}\sum_i\varepsilon_i\delta_{X_i}\|_{\mathcal F}\).</li>
-        <li>Conditioning on the data turns the problem into bounding a sub-Gaussian process over a finite sample metric.</li>
-        <li>Contraction inequalities let Lipschitz transformations pass through Rademacher averages.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(X_1',\ldots,X_n'\) be an independent copy of the sample, and let \(\varepsilon_1,\ldots,\varepsilon_n\) be independent Rademacher variables,
+  \[
+  P(\varepsilon_i=1)=P(\varepsilon_i=-1)=\tfrac12,
+  \]
+  independent of both samples. The conditional Rademacher process is
+  \[
+  \mathbb G_n^\varepsilon f
+  =\frac1{\sqrt n}\sum_{i=1}^n\varepsilon_i f(X_i).
+  \]</p>
+</div>
 
-    <h3>Finite-class maximal bounds</h3>
-    <p>Use symmetrization whenever a direct bound on \(\sup_f|(P_n-P)f|\) is hard but the sample-conditioned geometry is manageable.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (symmetrization).</span> For every class \(\mathcal F\) for which the outer expectations are defined,
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F}
+  \leq 2E^*\|\mathbb G_n^\varepsilon\|_{\mathcal F}.
+  \]
+  More generally, for every nondecreasing convex function \(\Phi:\mathbb R_+\to\mathbb R_+\),
+  \[
+  E^*\Phi\!\left(\frac12\|\mathbb G_n\|_{\mathcal F}\right)
+  \leq E^*\Phi(\|\mathbb G_n^\varepsilon\|_{\mathcal F}).
+  \]</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Symmetrization and contraction</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> The symmetrization principle says that empirical fluctuations can be bounded by a conditionally centered sign process. With a Lipschitz map \(\phi\), contraction further gives bounds for \(\phi\circ\mathcal F\) from bounds for \(\mathcal F\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional Jensen inequality with respect to the ghost sample gives
+  \[
+  \begin{aligned}
+  E\Phi\!\left(\left\|\frac1{\sqrt n}
+      \sum_{i=1}^n\{f(X_i)-Pf\}\right\|_{\mathcal F}\right)
+  &\leq
+  EE'\Phi\!\left(\left\|\frac1{\sqrt n}
+      \sum_{i=1}^n\{f(X_i)-f(X_i')\}\right\|_{\mathcal F}\right).
+  \end{aligned}
+  \]
+  Each pair \((X_i,X_i')\) is exchangeable, so the joint law is unchanged when its difference is multiplied by an independent sign:
+  \[
+  \sum_i\{f(X_i)-f(X_i')\}
+  \overset d=\sum_i\varepsilon_i\{f(X_i)-f(X_i')\}.
+  \]
+  By the triangle inequality,
+  \[
+  \left\|\sum_i\varepsilon_i\{f(X_i)-f(X_i')\}\right\|_{\mathcal F}
+  \leq
+  \left\|\sum_i\varepsilon_if(X_i)\right\|_{\mathcal F}
+  \left\|\sum_i\varepsilon_if(X_i')\right\|_{\mathcal F}.
+  \]
+  Convexity, \(\Phi((a+b)/2)\leq\{\Phi(a)+\Phi(b)\}/2\), and identical distribution of the two terms prove the general inequality. Taking \(\Phi(t)=t\) yields the first statement. \(\square\)</p>
+</div>
 
-    <h3>Finite-class ancestor</h3>
-    <p>For bounded finite classes, conditioning on \(X_1,\ldots,X_n\) and applying Hoeffding to the signs gives a maximal bound of order \(\sqrt{\log N}\). This is the finite-sample ancestor of entropy integrals.</p>
+<h3>Conditional sub-Gaussian increments</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Conditional on \(X_1,\ldots,X_n\), for every \(f,g\in\mathcal F\) and \(\lambda\in\mathbb R\),
+  \[
+  E_\varepsilon
+  \exp\{\lambda(\mathbb G_n^\varepsilon f-\mathbb G_n^\varepsilon g)\}
+  \leq
+  \exp\!\left\{\frac{\lambda^2}{2}P_n(f-g)^2\right\}.
+  \]
+  Thus \(\mathbb G_n^\varepsilon\) is sub-Gaussian for the random semimetric
+  \(d_n(f,g)=\|f-g\|_{P_n,2}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independence of the signs and \(\cosh u\leq e^{u^2/2}\) imply
+  \[
+  \begin{aligned}
+  E_\varepsilon e^{\lambda n^{-1/2}\sum_i\varepsilon_i(f-g)(X_i)}
+  &=\prod_{i=1}^n
+  \cosh\!\left(\frac{\lambda(f-g)(X_i)}{\sqrt n}\right)\\
+  &\leq
+  \exp\!\left\{\frac{\lambda^2}{2n}\sum_{i=1}^n(f-g)^2(X_i)\right\}.
+  \end{aligned}
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Finite classes</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (finite-class maximal inequality).</span> Let \(Z_1,\ldots,Z_N\) be centered random variables satisfying
+  \(E e^{\lambda Z_j}\leq e^{\lambda^2\sigma^2/2}\) for all \(\lambda\in\mathbb R\). Then
+  \[
+  E\max_{1\leq j\leq N}|Z_j|
+  \leq \sigma\sqrt{2\log(2N)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(\lambda>0\),
+  \[
+  e^{\lambda E\max_j|Z_j|}
+  \leq E e^{\lambda\max_j|Z_j|}
+  \leq\sum_{j=1}^N E(e^{\lambda Z_j}+e^{-\lambda Z_j})
+  \leq2Ne^{\lambda^2\sigma^2/2}.
+  \]
+  Therefore
+  \[
+  E\max_j|Z_j|
+  \leq\frac{\log(2N)}{\lambda}+\frac{\lambda\sigma^2}{2}.
+  \]
+  Optimize at \(\lambda=\sqrt{2\log(2N)}/\sigma\). \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(\mathcal F=\{f_1,\ldots,f_N\}\), then conditionally on the sample,
+  \[
+  E_\varepsilon\|\mathbb G_n^\varepsilon\|_{\mathcal F}
+  \leq
+  \max_{1\leq j\leq N}\|f_j\|_{P_n,2}
+  \sqrt{2\log(2N)}.
+  \]
+  If \(|f|\leq b\) for all \(f\in\mathcal F\), then
+  \[
+  E\|\mathbb G_n\|_{\mathcal F}
+  \leq 2b\sqrt{2\log(2N)}.
+  \]</p>
+</div>
+
+<p>The \(\sqrt{\log N}\) term is the atom from which chaining is built: at each resolution one applies this finite maximum bound to all increments between two successive nets.</p>
+
+<h3>Contraction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Rademacher contraction).</span> Let \(\phi_i:\mathbb R\to\mathbb R\) satisfy \(\phi_i(0)=0\) and
+  \[
+  |\phi_i(s)-\phi_i(t)|\leq L|s-t|.
+  \]
+  For any \(T\subset\mathbb R^n\),
+  \[
+  E_\varepsilon\sup_{t\in T}
+  \left|\sum_{i=1}^n\varepsilon_i\phi_i(t_i)\right|
+  \leq
+  2L E_\varepsilon\sup_{t\in T}
+  \left|\sum_{i=1}^n\varepsilon_it_i\right|.
+  \]</p>
+</div>
+
+<p>The factor \(2\) disappears in several one-sided formulations. The theorem says that a Lipschitz loss cannot make a class substantially more complex than its predictions. For example, if \(|y|,|f(x)|\leq B\), then \(u\mapsto(y-u)^2\) is \(4B\)-Lipschitz on \([-B,B]\), so the Rademacher complexity of squared losses is controlled by that of the regression class.</p>
+
+<h3>Rademacher complexity and generalization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The conditional and expected Rademacher complexities are
+  \[
+  \widehat{\mathfrak R}_n(\mathcal F)
+  =E_\varepsilon\sup_{f\in\mathcal F}
+    \frac1n\sum_{i=1}^n\varepsilon_if(X_i),
+  \qquad
+  \mathfrak R_n(\mathcal F)
+  =E\widehat{\mathfrak R}_n(\mathcal F).
+  \]</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(\mathcal F\) is symmetric, meaning \(f\in\mathcal F\) implies \(-f\in\mathcal F\), then
+  \[
+  E\sup_{f\in\mathcal F}|(P_n-P)f|
+  \leq 2\mathfrak R_n(\mathcal F).
+  \]</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (linear predictors).</span> Suppose \(\|x\|_2\leq R\) and
+  \[
+  \mathcal F=\{x\mapsto w^\top x:\|w\|_2\leq B\}.
+  \]
+  Then
+  \[
+  \begin{aligned}
+  \widehat{\mathfrak R}_n(\mathcal F)
+  &=\frac Bn E_\varepsilon
+    \left\|\sum_{i=1}^n\varepsilon_iX_i\right\|_2\\
+  &\leq\frac Bn
+    \left(\sum_{i=1}^n\|X_i\|_2^2\right)^{1/2}
+  \leq\frac{BR}{\sqrt n}.
+  \end{aligned}
+  \]
+  The first equality is Euclidean duality and the inequality is Jensen combined with cancellation of cross terms. The bound depends on norm geometry rather than the ambient dimension.</p>
+</div>
+
+<p>Symmetrization is a reduction, not the end of the proof. The remaining problem is geometric: bound a sub-Gaussian supremum in the random metric \(L_2(P_n)\). VC entropy, analytic entropy, and chaining provide three complementary answers.</p>

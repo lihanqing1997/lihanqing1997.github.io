@@ -43,3 +43,154 @@ so \(n^{-1}H(X_1^n)\) is the Cesàro average of the conditional entropies and ha
 \overline H=\sum_x\pi(x)H(P(\cdot\mid x)).
 \]</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Block entropy and entropy rate</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a discrete process
+  \((X_t)\), let
+  \[
+  H_n=H(X_1,\ldots,X_n).
+  \]
+  The entropy rate, when it exists, is
+  \[
+  \overline H(X)=\lim_{n\to\infty}\frac{H_n}{n}.
+  \]</p>
+</div>
+
+<h3>Existence under stationarity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a stationary finite-alphabet process,
+  \[
+  \overline H(X)=\inf_{n\ge1}\frac{H_n}{n}
+  =\lim_{n\to\infty}H(X_n\mid X_1,\ldots,X_{n-1}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Stationarity and subadditivity give
+  \(H_{m+n}\le H_m+H_n\). Fekete's lemma yields
+  \(\lim H_n/n=\inf H_n/n\).
+  Let \(a_n=H(X_n\mid X_1^{n-1})\). By stationarity,
+  \[
+  a_{n+1}=H(X_{n+1}\mid X_1^n)
+  \le H(X_{n+1}\mid X_2^n)=a_n,
+  \]
+  so \(a_n\downarrow a\). The chain rule gives
+  \(H_n/n=n^{-1}\sum_{i=1}^na_i\to a\) by Cesàro convergence.</p>
+</div>
+
+<h3>Conditioning on the infinite past</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> For a two-sided stationary process,
+  \[
+  \overline H(X)=
+  H(X_0\mid X_{-1},X_{-2},\ldots),
+  \]
+  where conditional entropy is the limit along increasing finite pasts.</p>
+</div>
+
+<h3>Markov-chain entropy rate</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(X_t\) is a stationary Markov chain with invariant law \(\pi\) and transition matrix \(P\), then
+  \[
+  \overline H(X)=H(X_1\mid X_0)
+  =-\sum_i\pi_i\sum_jP_{ij}\log P_{ij}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Markov property gives
+  \[
+  H(X_n\mid X_1^{n-1})=H(X_n\mid X_{n-1}).
+  \]
+  Stationarity makes this quantity independent of \(n\). Expand conditional entropy under the stationary joint law \(\pi_iP_{ij}\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For a binary symmetric Markov chain with flip probability \(q\) and stationary law \((1/2,1/2)\),
+  \[
+  \overline H=h_2(q).
+  \]
+  Marginal entropy is \(\log2\), but predictable persistence reduces new information per symbol.</p>
+</div>
+
+<h3>Deterministic processes</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(X_t=X_0\) for all \(t\), with
+  \(X_0\) a fair bit. Then \(H_n=\log2\) for every \(n\), so
+  \(\overline H=0\), despite \(H(X_t)=\log2\). Entropy rate measures new uncertainty per time step, not marginal randomness.</p>
+</div>
+
+<h3>Mutual-information rate</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For jointly stationary processes,
+  \[
+  \overline I(X;Y)=
+  \lim_{n\to\infty}\frac1nI(X_1^n;Y_1^n)
+  \]
+  when the limit exists. Since
+  \[
+  I(X_1^n;Y_1^n)=H(X_1^n)+H(Y_1^n)-H(X_1^n,Y_1^n),
+  \]
+  existence follows whenever the three entropy rates exist.</p>
+</div>
+
+<h3>Directed information for feedback</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Directed information from \(X^n\) to \(Y^n\) is
+  \[
+  I(X^n\to Y^n)
+  =\sum_{t=1}^nI(X^t;Y_t\mid Y^{t-1}).
+  \]</p>
+</div>
+
+<p>Ordinary mutual information is symmetric and cannot distinguish direction under feedback. Directed information measures the information flowing causally from past and present inputs to the current output and appears in feedback-channel capacity.</p>
+
+<h3>Excess entropy</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> When finite,
+  \[
+  \mathcal E=
+  \lim_{n\to\infty}\{H_n-n\overline H\}
+  =I(X_{-\infty}^0;X_1^\infty)
+  \]
+  is the excess entropy, measuring predictable structure shared between past and future.</p>
+</div>
+
+<h3>Shannon-McMillan-Breiman theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a stationary ergodic finite-alphabet process,
+  \[
+  -\frac1n\log P(X_1^n)\to\overline H(X)
+  \quad\text{almost surely and in }L^1.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Express log likelihood as a sum of conditional log probabilities given finite pasts. Martingale convergence identifies their limit with the conditional law given the infinite past, and Birkhoff's ergodic theorem averages the stationary limiting information function. Uniform integrability gives \(L^1\) convergence.</p>
+</div>
+
+<h3>Spectral formula for Gaussian processes</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> A zero-mean stationary Gaussian process with spectral density \(f(\omega)>0\) has differential entropy rate
+  \[
+  \overline h=
+  \frac1{4\pi}\int_{-\pi}^{\pi}
+  \log\{2\pi e\,f(\omega)\}\,\mathrm{d}\omega
+  \]
+  under standard integrability conditions.</p>
+</div>
+
+<p>This follows from Toeplitz determinant asymptotics applied to
+\(h(X_1^n)=\tfrac12\log\{(2\pi e)^n\det\Sigma_n\}\).</p>

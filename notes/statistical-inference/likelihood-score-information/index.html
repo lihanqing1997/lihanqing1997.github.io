@@ -8,44 +8,192 @@ note_prev_url: "/notes/statistical-inference/statistical-models-experiments/"
 note_next_url: "/notes/statistical-inference/sufficiency-ancillarity-exponential-families/"
 ---
 
-<p>Likelihood is the central object of parametric inference. It treats the observed data as fixed and compares parameter values by how much probability density they assign to the observation.</p>
+<p>Likelihood compares parameter values after the data have been observed. Its first derivative is the random local direction in which the data favor moving the parameter; its quadratic variation is Fisher information. These objects become reliable asymptotic coordinates only under explicit regularity conditions.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> In a dominated model with i.i.d. observations, the likelihood and log-likelihood are
-        \[
-        L_n(\theta)=\prod_{i=1}^np_\theta(X_i),\qquad
-        \ell_n(\theta)=\sum_{i=1}^n\log p_\theta(X_i).
-        \]
-        The score is \(S_n(\theta)=\dot\ell_n(\theta)\), and the observed Hessian is \(H_n(\theta)=\ddot\ell_n(\theta)\).</p>
-    </div>
+<h3>Likelihood and score</h3>
 
-    <h3>Fisher information</h3>
-    <p>For one observation write \(s_\theta(X)=\partial_\theta\log p_\theta(X)\). Under regularity conditions, the Fisher information is
-    \[
-    I(\theta)=E_\theta s_\theta(X)s_\theta(X)^\top.
-    \]</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> In a dominated model with density \(p_\theta\), the likelihood at \(x\) is \(L(\theta;x)=p_\theta(x)\). On \(\{p_\theta(x)>0\}\), define
+  \[
+  \ell(\theta;x)=\log p_\theta(x),\qquad
+  s_\theta(x)=\nabla_\theta\ell(\theta;x),\qquad
+  J_\theta(x)=-\nabla_\theta^2\ell(\theta;x).
+  \]
+  Here \(s_\theta\) is the score and \(J_\theta\) is observed information. For an i.i.d. sample,
+  \[
+  \ell_n(\theta)=\sum_{i=1}^n\ell(\theta;X_i),\quad
+  S_n(\theta)=\sum_{i=1}^ns_\theta(X_i),\quad
+  J_n(\theta)=\sum_{i=1}^nJ_\theta(X_i).
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Information identity.</span> If differentiation may be passed under the integral sign and \(p_\theta\) is twice differentiable, then
-        \[
-        E_\theta s_\theta(X)=0,\qquad
-        I(\theta)=-E_\theta\partial_\theta^2\log p_\theta(X).
-        \]</p>
-    </div>
+<p>Derivatives of \(\log p_\theta\) are meaningful only where the support is locally stable. The uniform model \(U[0,\theta]\) violates this condition: the moving boundary contains first-order information that the ordinary score misses.</p>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since \(\int p_\theta\,\mathrm{d}\mu=1\), differentiating gives
-        \[
-        0=\int \dot p_\theta\,\mathrm{d}\mu
-        =\int \frac{\dot p_\theta}{p_\theta}p_\theta\,\mathrm{d}\mu
-        =E_\theta s_\theta(X).
-        \]
-        Differentiate \(E_\theta s_\theta=0\) once more. The derivative of the density contributes \(s_\theta s_\theta^\top\), while the derivative of the score contributes \(\partial_\theta s_\theta=\partial_\theta^2\log p_\theta\). Thus \(0=E_\theta\partial_\theta^2\log p_\theta+E_\theta s_\theta s_\theta^\top\).</p>
-    </div>
+<h3>Fisher information identities</h3>
 
-    <h3>Reparametrization</h3>
-    <p>If \(\eta=g(\theta)\) is one-to-one and differentiable, information transforms by the chain rule. For scalar \(\theta\),
-    \[
-    I_\eta(\eta)=I_\theta(\theta)\left(\frac{\mathrm{d}\theta}{\mathrm{d}\eta}\right)^2.
-    \]
-    This is why standard errors should be transformed with the delta method rather than by informal algebra alone.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (Fisher information).</span> If \(s_\theta\in L^2(P_\theta)^d\), the information matrix is
+  \[
+  I(\theta)=\mathbb E_\theta[s_\theta(X)s_\theta(X)^\top].
+  \]
+  It is positive semidefinite because \(a^\top I(\theta)a=\mathbb E_\theta(a^\top s_\theta)^2\ge0\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (first and second information identities).</span> Suppose \(\Theta\) is open, the support does not depend on \(\theta\), \(p_\theta(x)\) is twice differentiable, and differentiation can be passed under the integral sign. Then
+  \[
+  \mathbb E_\theta s_\theta(X)=0,\qquad
+  I(\theta)=\mathbb E_\theta J_\theta(X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Componentwise,
+  \[
+  \mathbb E_\theta s_{\theta,j}
+  =\int\frac{\partial_jp_\theta}{p_\theta}p_\theta\,\mathrm{d}\mu
+  =\partial_j\int p_\theta\,\mathrm{d}\mu=0.
+  \]
+  Differentiate this zero identity with respect to \(\theta_k\):
+  \[
+  0=\int\{\partial_ks_{\theta,j}
+  +s_{\theta,j}s_{\theta,k}\}p_\theta\,\mathrm{d}\mu.
+  \]
+  Since \(\partial_ks_{\theta,j}=\partial_{kj}^2\ell_\theta=-J_{\theta,jk}\), rearrangement gives \(\mathbb E_\theta J_{\theta,jk}=\mathbb E_\theta(s_{\theta,j}s_{\theta,k})\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (information additivity).</span> For \(n\) independent observations with information matrices \(I_i(\theta)\),
+  \[
+  I_n(\theta)=\sum_{i=1}^n I_i(\theta).
+  \]
+  In particular, an i.i.d. sample has information \(nI(\theta)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The joint score is \(\sum_i s_{\theta,i}\). The cross terms have expectation zero because independence and score centering give \(\mathbb E(s_{\theta,i}s_{\theta,j}^\top)=0\) for \(i\ne j\).</p>
+</div>
+
+<h3>Normal location-scale calculation</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If \(X\sim N(\mu,\sigma^2)\) and \(\theta=(\mu,\sigma)^\top\), then
+  \[
+  s_\mu(X)=\frac{X-\mu}{\sigma^2},\qquad
+  s_\sigma(X)=-\frac1\sigma+\frac{(X-\mu)^2}{\sigma^3}.
+  \]
+  Writing \(Z=(X-\mu)/\sigma\sim N(0,1)\) gives
+  \[
+  I(\mu,\sigma)
+  =
+  \begin{pmatrix}
+  \sigma^{-2}&0\\
+  0&2\sigma^{-2}
+  \end{pmatrix}.
+  \]
+  The zero off-diagonal term follows from \(\mathbb EZ^3=0\): mean and scale are information-orthogonal in this parametrization.</p>
+</div>
+
+<h3>Reparametrization</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(\eta=g(\theta)\) be a \(C^1\) one-to-one reparametrization with inverse \(\theta=h(\eta)\) and Jacobian \(D h(\eta)\). Then
+  \[
+  s_\eta=(D h(\eta))^\top s_\theta,\qquad
+  I_\eta(\eta)=(D h(\eta))^\top I_\theta(\theta)D h(\eta).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The score identity is the multivariate chain rule applied to \(\ell(h(\eta);x)\). Taking the second moment of that identity gives the information transformation law.</p>
+</div>
+
+<p>This covariance law is why Fisher information behaves as a Riemannian metric rather than as an ordinary matrix attached to a coordinate system; the geometric interpretation is developed in <a href="{{ '/notes/information-geometry/fisher-information-metric/' | relative_url }}">information geometry</a>.</p>
+
+<h3>Differentiability in quadratic mean</h3>
+
+<p>Pointwise differentiability of densities is stronger than necessary and can be unstable under changes of versions. The intrinsic regularity condition differentiates square-root densities in \(L^2(\mu)\).</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (quadratic-mean differentiability).</span> The model is differentiable in quadratic mean at \(\theta\) if a measurable vector \(\dot\ell_\theta\in L^2(P_\theta)^d\) exists such that, as \(h\to0\),
+  \[
+  \int\left[
+  \sqrt{p_{\theta+h}}-\sqrt{p_\theta}
+  -\frac12h^\top\dot\ell_\theta\sqrt{p_\theta}
+  \right]^2\mathrm{d}\mu=o(\|h\|^2).
+  \]
+  The function \(\dot\ell_\theta\) is the quadratic-mean score and \(I(\theta)=P_\theta\dot\ell_\theta\dot\ell_\theta^\top\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Quadratic-mean differentiability implies
+  \[
+  P_\theta\dot\ell_\theta=0
+  \quad\text{and}\quad
+  H^2(P_{\theta+h},P_\theta)
+  =\frac14h^\top I(\theta)h+o(\|h\|^2),
+  \]
+  where \(H^2(P,Q)=\int(\sqrt p-\sqrt q)^2\,\mathrm{d}\mu\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(r_h\) denote the \(L^2(\mu)\) remainder. Because both square-root densities have norm one,
+  \[
+  0=\|{\sqrt{p_{\theta+h}}}\|_2^2-\|\sqrt{p_\theta}\|_2^2
+  =h^\top P_\theta\dot\ell_\theta+o(\|h\|),
+  \]
+  so \(P_\theta\dot\ell_\theta=0\). The defining expansion then gives
+  \[
+  \|\sqrt{p_{\theta+h}}-\sqrt{p_\theta}\|_2^2
+  =\left\|\frac12h^\top\dot\ell_\theta\sqrt{p_\theta}+r_h\right\|_2^2
+  =\frac14h^\top I(\theta)h+o(\|h\|^2).
+  \]</p>
+</div>
+
+<h3>Local Kullback-Leibler curvature</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under sufficient third-order domination in a regular model,
+  \[
+  \operatorname{KL}(P_\theta\|P_{\theta+h})
+  =\frac12h^\top I(\theta)h+o(\|h\|^2).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taylor expansion gives
+  \[
+  \ell(\theta+h;X)-\ell(\theta;X)
+  =h^\top s_\theta(X)-\frac12h^\top J_\theta(X)h+R_h(X),
+  \]
+  with \(P_\theta|R_h|=o(\|h\|^2)\). Negating and taking \(P_\theta\)-expectations, then using the two information identities, yields the result.</p>
+</div>
+
+<h3>Nuisance parameters and efficient information</h3>
+
+<p>Partition \(\theta=(\psi^\top,\lambda^\top)^\top\) and the information matrix as
+\[
+I=
+\begin{pmatrix}
+I_{\psi\psi}&I_{\psi\lambda}\\
+I_{\lambda\psi}&I_{\lambda\lambda}
+\end{pmatrix}.
+\]
+Projecting the target score onto the orthocomplement of the nuisance-score span gives
+\[
+s_\psi^{\mathrm{eff}}
+=s_\psi-I_{\psi\lambda}I_{\lambda\lambda}^{-1}s_\lambda,
+\qquad
+I_{\psi\cdot\lambda}
+=I_{\psi\psi}-I_{\psi\lambda}I_{\lambda\lambda}^{-1}I_{\lambda\psi}.
+\]
+The Schur complement \(I_{\psi\cdot\lambda}\) is the information remaining after the nuisance parameter must also be learned. Its infinite-dimensional analogue is the central construction of semiparametric efficiency theory.</p>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Verification.</span> The proposed residual is orthogonal to \(s_\lambda\) because
+  \[
+  \mathbb E(s_\psi^{\mathrm{eff}}s_\lambda^\top)
+  =I_{\psi\lambda}-I_{\psi\lambda}I_{\lambda\lambda}^{-1}I_{\lambda\lambda}=0.
+  \]
+  Expanding its covariance gives the Schur complement.</p>
+</div>

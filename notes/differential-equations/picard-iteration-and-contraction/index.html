@@ -8,24 +8,128 @@ note_prev_url: "/notes/differential-equations/initial-value-problems/"
 note_next_url: "/notes/differential-equations/maximal-solutions-and-blow-up/"
 ---
 
-<p>Picard iteration and contraction records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>Picard iteration is both a proof of local well-posedness and a constructive
+successive-approximation scheme. The contraction is obtained by controlling
+the state range and shortening the time interval.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Picard iteration rewrites an ODE as an integral equation \(x(t)=x_0+\int_{t_0}^t f(s,x(s))\,\mathrm{d}s\) and iterates the right-hand side.</p>
-    </div>
+<h3>The Picard operator</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> On a short enough time interval, a Lipschitz vector field makes the Picard operator a contraction on a complete space of continuous curves.</p>
-    </div>
+<p>Assume on
+\[
+R=[t_0-a,t_0+a]\times\overline{B(x_0,b)}
+\]
+that
+\[
+\|f(t,x)\|\le M,\qquad
+\|f(t,x)-f(t,y)\|\le L\|x-y\|.
+\]
+Let \(h\le\min(a,b/M)\) and define
+\[
+(Tx)(t)=x_0+\int_{t_0}^tf(s,x(s))\,\mathrm{d}s.
+\]</p>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The sup norm controls the integral of the difference of two curves by the interval length times the Lipschitz constant. Choose the interval short enough and apply Banach fixed point theorem.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(Lh<1\), \(T\) is a
+contraction on
+\[
+X=\{x\in C([t_0-h,t_0+h]):\|x-x_0\|_\infty\le b\}.
+\]
+It has a unique fixed point, and Picard iterates
+\(x^{(n+1)}=Tx^{(n)}\) converge uniformly to it.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This is the model proof where differential equations are solved by functional analysis.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> First,
+\[
+\|Tx(t)-x_0\|
+\le M|t-t_0|\le Mh\le b,
+\]
+so \(T(X)\subset X\). Also,
+\[
+\|Tx-Ty\|_\infty
+\le Lh\|x-y\|_\infty.
+\]
+Banach's fixed-point theorem gives a unique fixed point and geometric
+convergence.</p>
+</div>
+
+<h3>Factorial error bounds</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Starting with
+\(x^{(0)}(t)=x_0\),
+\[
+\|x^{(n+1)}(t)-x^{(n)}(t)\|
+\le \frac{M L^n|t-t_0|^{n+1}}{(n+1)!}.
+\]
+Consequently, the Picard sequence converges whenever the iterates stay in the
+rectangle, even without imposing \(Lh<1\) for the final interval.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The first difference is bounded
+by \(M|t-t_0|\). If the claim holds at \(n-1\), then
+\[
+\|x^{(n+1)}(t)-x^{(n)}(t)\|
+\le L\int_{t_0}^t
+\frac{ML^{n-1}|s-t_0|^n}{n!}\,\mathrm{d}s,
+\]
+which gives the next bound. The exponential series makes the differences
+summable uniformly.</p>
+</div>
+
+<h3>Uniqueness without a short interval</h3>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(x,y\) are two solutions
+with the same initial value, repeated substitution gives
+\[
+\|x(t)-y(t)\|
+\le\frac{L^n|t-t_0|^n}{n!}
+\|x-y\|_\infty.
+\]
+For fixed \(t\), the factor tends to zero as \(n\to\infty\), proving equality.
+Equivalently, Gronwall gives the result immediately.</p>
+</div>
+
+<h3>Weighted norms</h3>
+
+<p>On a longer interval \([t_0,t_0+T]\), use the Bielecki norm
+\[
+\|x\|_\alpha
+=\sup_{t_0\le t\le t_0+T}
+e^{-\alpha(t-t_0)}\|x(t)\|.
+\]
+Then
+\[
+\|Tx-Ty\|_\alpha
+\le\frac L\alpha\|x-y\|_\alpha.
+\]
+Choosing \(\alpha>L\) makes \(T\) contractive without shortening \(T\), provided
+the operator maps the chosen complete set into itself.</p>
+
+<h3>Picard series for linear systems</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For
+\(\dot x=Ax\), \(x(0)=x_0\), Picard iteration yields
+\[
+x^{(n)}(t)
+=\sum_{k=0}^n\frac{t^kA^k}{k!}x_0.
+\]
+The limit is
+\[
+x(t)=e^{tA}x_0,
+\qquad
+e^{tA}=\sum_{k\ge0}\frac{t^kA^k}{k!}.
+\]
+Thus the matrix exponential emerges directly from successive substitution.</p>
+</div>
+
+<h3>Beyond Lipschitz contraction</h3>
+
+<p>One-sided Lipschitz conditions can give uniqueness even when ordinary
+Lipschitz bounds are poor. Osgood's criterion replaces
+\(L\|x-y\|\) by a modulus \(\omega(\|x-y\|)\) with
+\(\int_{0+}\mathrm{d}s/\omega(s)=\infty\). Compact fixed-point methods give
+existence under continuity but cannot by themselves supply uniqueness.</p>

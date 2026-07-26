@@ -5,26 +5,143 @@ breadcrumb_child_label_fr: "30. Erreur d’optimisation et erreur statistique"
 breadcrumb_child_label_zh: "30. 优化误差与统计误差"
 note_back_url: "/notes/optimization/"
 note_prev_url: "/notes/optimization/variational-inference-as-optimization/"
+note_next_url: "/notes/optimization/entropic-vi-mirror-descent/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Optimization error and statistical error.</p>
+<p>A computed estimator differs from an ideal population target for three
+reasons: the model class may be restricted, the sample criterion fluctuates,
+and the algorithm may stop before exact empirical optimization. These errors
+live in different mathematical spaces and should not be collapsed into one
+tolerance.</p>
 
-    <h3>Error decomposition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For an estimator computed by optimization, the excess risk can be decomposed into statistical error from replacing \(P\) by \(P_n\), approximation error from model restriction, and optimization error from not solving the empirical problem exactly.</p>
-    </div>
+<h3>Excess-risk decomposition</h3>
 
-    <h3>Optimization tolerance</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If the statistical target fluctuates at scale \(r_n\), there is usually no inferential benefit in solving the empirical problem to accuracy much smaller than \(r_n\), unless the optimization error affects bias or constraints differently.</p>
-    </div>
+<p>Let \(\mathcal F\) be a model class, \(R(f)=P\ell_f\) population risk, and
+\(\widehat R_n(f)=P_n\ell_f\) empirical risk. Let
+\[
+f^\circ\in\operatorname*{arg\,min}_{f\in\mathcal F}R(f),\qquad
+\widehat f_n\in\mathcal F,
+\]
+with
+\[
+\widehat R_n(\widehat f_n)
+\le\inf_{f\in\mathcal F}\widehat R_n(f)+\varepsilon_{\mathrm{opt}}.
+\]</p>
 
-    <h3>Stability and generalization</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Algorithmic stability can convert properties of the optimization map into generalization bounds: if replacing one observation changes the output little, empirical and population risks are close.</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Basic excess-risk bound.</span>
+    \[
+    R(\widehat f_n)-R(f^\circ)
+    \le
+    2\sup_{f\in\mathcal F}
+      |\widehat R_n(f)-R(f)|
+    +\varepsilon_{\mathrm{opt}}.
+    \]
+    Relative to an unrestricted Bayes rule \(f^\star\), add the approximation
+    error \(R(f^\circ)-R(f^\star)\).</p>
+</div>
 
-    <h3>Practical principle</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Statistical computation asks for the right mathematical tolerance, not exact arithmetic minimization. The algorithm should be accurate enough for inference but not divorced from sampling uncertainty.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Add and subtract empirical
+    risks:
+    \[
+    \begin{aligned}
+    R(\widehat f_n)-R(f^\circ)
+    &=[R-\widehat R_n](\widehat f_n)
+      +[\widehat R_n(\widehat f_n)-\widehat R_n(f^\circ)]\\
+    &\quad+[\widehat R_n-R](f^\circ).
+    \end{aligned}
+    \]
+    The middle term is at most \(\varepsilon_{\mathrm{opt}}\), and each outer
+    term is bounded by the uniform deviation.</p>
+</div>
+
+<p>This inequality is deliberately agnostic about algorithms and probability.
+Empirical-process or concentration theory controls the deviation; an
+optimization theorem controls \(\varepsilon_{\mathrm{opt}}\).</p>
+
+<h3>Objective tolerance versus parameter tolerance</h3>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Curvature conversion.</span> Suppose the
+    empirical criterion \(M_n\) is \(\mu\)-strongly convex with exact minimizer
+    \(\widehat\theta_n\), and an algorithm returns \(\widetilde\theta_n\) with
+    \[
+    M_n(\widetilde\theta_n)-M_n(\widehat\theta_n)
+    \le\varepsilon_{\mathrm{opt}}.
+    \]
+    Then
+    \[
+    \|\widetilde\theta_n-\widehat\theta_n\|
+    \le\sqrt{\frac{2\varepsilon_{\mathrm{opt}}}{\mu}}.
+    \]</p>
+</div>
+
+<p>If statistical estimation error is \(r_n\) in parameter norm, making
+algorithmic error negligible requires
+\(\varepsilon_{\mathrm{opt}}=o(\mu r_n^2)\). For an asymptotically linear
+root-\(n\) estimator, a gradient-based stopping rule often needs
+\(\|\nabla M_n(\widetilde\theta_n)\|=o_P(n^{-1/2})\), which is more directly
+connected to the estimating equation than machine precision is.</p>
+
+<h3>Early stopping at the statistical scale</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> Suppose an algorithm has
+    deterministic optimization error
+    \(M_n(\theta_k)-\inf M_n\le C\rho^k\), \(0<\rho<1\), while the statistical
+    excess-risk scale is \(a_n\). Choosing
+    \[
+    k_n\ge
+    \frac{\log(C/a_n)}{\log(1/\rho)}
+    \]
+    makes optimization error no larger than sampling error. Further iterations
+    improve the numerical solution but not the leading statistical rate.
+    Early stopping can also act as regularization, in which case its bias is
+    part of the statistical analysis rather than disposable optimization
+    error.</p>
+</div>
+
+<h3>Uniform stability of regularized ERM</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Replace-one stability.</span> Let
+    \[
+    F_S(w)=\frac1n\sum_{i=1}^n\ell(w;Z_i)+\frac\lambda2\|w\|^2,
+    \]
+    where each \(\ell(\cdot;z)\) is convex and \(L\)-Lipschitz. Let
+    \(w_S\) minimize \(F_S\), and let \(S^{(i)}\) replace one observation.
+    Then
+    \[
+    \|w_S-w_{S^{(i)}}\|\le\frac{2L}{\lambda n},
+    \]
+    and for every \(z\),
+    \[
+    |\ell(w_S;z)-\ell(w_{S^{(i)}};z)|
+    \le\frac{2L^2}{\lambda n}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Strong convexity and
+    optimality imply
+    \[
+    F_S(w_{S^{(i)}})-F_S(w_S)
+      \ge\frac\lambda2\|w_S-w_{S^{(i)}}\|^2,
+    \]
+    and the analogous inequality with \(S,S^{(i)}\) reversed. Add them. All
+    common loss terms cancel, leaving only the two replaced losses, whose
+    total change is at most
+    \((2L/n)\|w_S-w_{S^{(i)}}\|\). Cancel one distance factor to obtain the
+    parameter bound. Lipschitz continuity gives the loss bound.</p>
+</div>
+
+<p>Taking expectation over a fresh observation and a replaced training point
+turns this stability bound into an expected generalization bound of the same
+order. The optimization geometry, here strong convexity, directly controls
+sensitivity to the data.</p>
+
+<p>A valid stopping rule must therefore be matched to the inferential target:
+objective error for prediction, parameter or score error for asymptotic
+inference, feasibility error for constrained estimands, and distributional
+error for approximate posteriors.</p>

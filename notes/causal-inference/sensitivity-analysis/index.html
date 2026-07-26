@@ -8,24 +8,117 @@ note_prev_url: "/notes/causal-inference/longitudinal-treatment-regimes/"
 note_next_url: "/notes/causal-inference/transportability-and-external-validity/"
 ---
 
-<p>Sensitivity analysis records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Sensitivity analysis quantifies how causal conclusions change when an identifying assumption is relaxed. It should parameterize a scientifically interpretable departure, derive its effect on the estimand, and report the range required to alter the conclusion.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Sensitivity analysis quantifies how conclusions change when identification assumptions such as no unmeasured confounding are relaxed.</p>
-    </div>
+<h3>Bias from an omitted binary confounder</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Bounds or bias formulas can be derived by parameterizing departures from exchangeability, such as odds-ratio bounds, selection functions, or negative-control restrictions.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In a linear outcome model
+  \[
+  Y=\tau A+\gamma U+\varepsilon,
+  \]
+  the unadjusted mean difference equals
+  \[
+  \mathbb E(Y\mid A=1)-\mathbb E(Y\mid A=0)
+  =
+  \tau+\gamma\{
+  \mathbb E(U\mid A=1)-\mathbb E(U\mid A=0)\}.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write the target causal estimand as the identified functional plus a bias term involving the sensitivity parameter. Vary the parameter over a scientifically meaningful range.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Take conditional expectations in each treatment group and subtract. The second term is the product of the confounder-outcome effect and treatment-group imbalance.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Sensitivity analysis does not eliminate uncertainty about assumptions; it makes that uncertainty explicit and quantitative.</p>
-    </div>
+<p>This simple product decomposition motivates benchmark analyses: compare the strength an omitted confounder would need with the observed strength of important measured covariates.</p>
+
+<h3>Rosenbaum's hidden-bias model</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Within a matched set of units with identical observed covariates, treatment odds satisfy
+  \[
+  \frac1\Gamma\le
+  \frac{\pi_i(1-\pi_j)}{\pi_j(1-\pi_i)}
+  \le\Gamma.
+  \]
+  \(\Gamma=1\) is randomized assignment within sets; larger \(\Gamma\) permits an unmeasured factor to tilt treatment odds.</p>
+</div>
+
+<p>For each \(\Gamma\), worst-case assignment probabilities yield upper and lower randomization-inference \(p\)-values or confidence bounds. The sensitivity value is the smallest \(\Gamma\) at which the conclusion changes.</p>
+
+<h3>The E-value</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For an observed risk ratio
+  \(RR\ge1\), the E-value is
+  \[
+  E=RR+\sqrt{RR(RR-1)}.
+  \]
+  It is the minimum strength, on the risk-ratio scale, that an unmeasured confounder would need with both treatment and outcome, conditional on measured covariates, to explain away the association under the bounding model.</p>
+</div>
+
+<p>The E-value is a summary bound, not a universal measure of robustness. It depends on scale and assumptions and does not address selection bias, measurement error, or violations of consistency.</p>
+
+<h3>Partial \(R^2\) sensitivity in linear regression</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \(R^2_{A\sim U\mid X}\) measure residual association between treatment and omitted confounder, and
+  \(R^2_{Y\sim U\mid A,X}\) its residual outcome association. In linear regression, omitted-variable bias relative to the standard error of the treatment coefficient is determined by these two partial \(R^2\) values and the residual degrees of freedom.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Residualize \(A,Y,U\) on \(X\). Frisch-Waugh-Lovell reduces the problem to three centered variables. The omitted-variable bias is the coefficient of \(U\) in the full outcome regression times the coefficient from regressing \(U\) on residualized \(A\). Express both through correlations and residual variances, then rewrite squared correlations as partial \(R^2\).</p>
+</div>
+
+<h3>Negative controls</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A negative-control outcome is known not to be caused by treatment but shares confounding pathways. A negative-control exposure does not cause the primary outcome but shares confounders with treatment.</p>
+</div>
+
+<p>An association with a negative control can falsify the no-unmeasured-confounding model. Under stronger completeness and proxy assumptions, paired negative controls can identify confounding bridges and correct bias. Failure to detect an association does not prove absence of confounding.</p>
+
+<h3>Selection-bias functions</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For each \(a\), a selection-bias function can be written
+  \[
+  \delta_a(x)=
+  \mathbb E\{Y(a)\mid A=1,X=x\}-
+  \mathbb E\{Y(a)\mid A=0,X=x\}.
+  \]
+  Exchangeability sets \(\delta_a(x)=0\). Specifying plausible nonzero functions yields adjusted causal means through the observed and counterfactual group decomposition.</p>
+</div>
+
+<h3>Marginal sensitivity models</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \(e(X,U)=P(A=1\mid X,U)\). A marginal sensitivity model bounds
+  \[
+  \frac1\Lambda\le
+  \frac{e(X,U)/(1-e(X,U))}
+  {e(X)/(1-e(X))}
+  \le\Lambda.
+  \]
+  It limits how much an unmeasured confounder can shift treatment odds beyond the observed propensity.</p>
+</div>
+
+<p>Optimization over admissible latent weights yields sharp or conservative bounds on treatment effects. The worst-case confounding allocation often upweights outcomes in an extremal order, turning the bound into a tractable linear or convex program.</p>
+
+<h3>Violations of parallel trends</h3>
+
+<p>For difference-in-differences, let the treated untreated trend differ from the control trend by \(\delta_t\). The observed DiD equals the effect plus \(\delta_t\). Restrictions on post-treatment \(\delta_t\) based on the magnitude or smoothness of pretreatment deviations produce honest sensitivity intervals rather than a binary pretrend test.</p>
+
+<h3>Instrument exclusion violations</h3>
+
+<p>If an instrument has direct effect \(\delta\) on outcome, the Wald estimand is biased by \(\delta/\Delta_A\) under a binary normalized instrument, where \(\Delta_A\) is the first-stage jump. This makes exclusion sensitivity especially important for weak instruments.</p>
+
+<h3>Positivity sensitivity</h3>
+
+<p>Trimming and weight truncation are often described as robustness procedures, but they combine a variance intervention with either estimand change or bias. Report estimates across explicit overlap targets or truncation thresholds, together with effective sample size and covariate coverage.</p>
+
+<h3>Tipping points and calibration</h3>
+
+<p>A useful sensitivity analysis reports not only a curve over abstract parameters but a tipping point: the smallest violation that changes a decision or interval conclusion. Calibrate this value against measured covariates, known institutional mechanisms, or external studies. Implausibility should be argued substantively, not inferred from a large numerical parameter alone.</p>

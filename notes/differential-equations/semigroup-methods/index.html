@@ -8,24 +8,122 @@ note_prev_url: "/notes/differential-equations/conservation-laws/"
 note_next_url: "/notes/differential-equations/variational-methods/"
 ---
 
-<p>Semigroup methods records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>Semigroup theory treats an evolution equation as an ordinary differential
+equation in an infinite-dimensional space. The unbounded spatial operator is
+encoded by its generator, while the semigroup carries existence, uniqueness,
+regularity, and long-time behavior.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Evolution equations can be written as \(\mathrm{d}u/\mathrm{d}t=Au\), where \(A\) is often an unbounded operator on a Banach space.</p>
-    </div>
+<h3>Strongly continuous semigroups</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(A\) generates a strongly continuous semigroup \(T(t)\), then \(u(t)=T(t)u_0\) is the abstract solution to the linear evolution problem.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A \(C_0\)-semigroup on a
+Banach space \(X\) is a family \(T(t)\in\mathcal L(X)\), \(t\ge0\), such that
+\[
+T(0)=I,\qquad T(t+s)=T(t)T(s),\qquad
+\lim_{t\downarrow0}T(t)x=x
+\]
+for every \(x\in X\). Its generator is
+\[
+Ax=\lim_{t\downarrow0}\frac{T(t)x-x}{t},
+\qquad
+D(A)=\left\{x:\text{the limit exists}\right\}.
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Resolvent estimates and density conditions identify generators. Once a semigroup exists, differentiability on the generator domain verifies the equation.</p>
-    </div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(A\in\mathcal L(X)\),
+then
+\[
+e^{tA}=\sum_{k=0}^{\infty}\frac{t^kA^k}{k!}
+\]
+is a uniformly continuous semigroup with generator \(A\). Conversely, every
+uniformly continuous semigroup has a bounded generator and this form.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Semigroup theory unifies ODE, heat flow, transport, and Markov evolution in one operator framework.</p>
-    </div>
+<p>Differential operators are normally unbounded. Their domain is therefore
+part of the operator and cannot be omitted: the same formal expression with
+Dirichlet, Neumann, or periodic domains generates different dynamics.</p>
+
+<h3>Generation theorems</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Hille-Yosida, contraction
+case).</span> A densely defined operator \(A\) generates a contraction
+\(C_0\)-semigroup if and only if \(A\) is closed,
+\((0,\infty)\subset\rho(A)\), and
+\[
+\|(\lambda I-A)^{-1}\|\le\frac1\lambda
+\qquad(\lambda>0).
+\]</p>
+</div>
+
+<p>The resolvent estimates are the infinite-dimensional analogue of
+controlling \((\lambda I-A)^{-1}\) for a matrix. On a Hilbert space, the
+Lumer-Phillips theorem is often easier to apply: \(A\) generates a contraction
+semigroup exactly when \(A\) is maximal dissipative,
+\[
+\operatorname{Re}\langle Ax,x\rangle\le0,
+\qquad
+\operatorname{Ran}(\lambda I-A)=X
+\]
+for some \(\lambda>0\).</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (Dirichlet heat flow).</span> On
+\(X=L^2(\Omega)\), let \(A=\Delta\) with
+\(D(A)=H^2(\Omega)\cap H_0^1(\Omega)\). Integration by parts gives
+\[
+\langle Au,u\rangle=-\|\nabla u\|_2^2\le0.
+\]
+Lax-Milgram solves \((\lambda I-\Delta)u=f\), so \(A\) is maximal
+dissipative and generates the heat semigroup.</p>
+</div>
+
+<h3>Classical and mild solutions</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (variation of constants).</span> If
+\(A\) generates \(T(t)\), the inhomogeneous problem
+\[
+u'(t)=Au(t)+f(t),\qquad u(0)=u_0,
+\]
+has the mild solution
+\[
+u(t)=T(t)u_0+\int_0^tT(t-s)f(s)\,\mathrm{d}s.
+\]
+If \(u_0\in D(A)\) and \(f\) has suitable regularity, this is a classical
+solution.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For a classical solution,
+differentiate \(T(t-s)u(s)\) with respect to \(s\):
+\[
+\frac{\mathrm{d}}{\mathrm{d}s}\bigl(T(t-s)u(s)\bigr)
+=T(t-s)f(s).
+\]
+Integration from \(0\) to \(t\) yields the formula. For general data, the
+right-hand side defines the mild solution by density and continuity.</p>
+</div>
+
+<h3>Analyticity and smoothing</h3>
+
+<p>A semigroup is analytic if \(T(z)\) extends holomorphically to a sector in
+the complex plane. Sectorial generators satisfy estimates such as
+\[
+\|A^kT(t)\|\le C_k t^{-k},\qquad t>0,
+\]
+which express instantaneous regularization. Elliptic operators generate
+analytic parabolic semigroups; skew-adjoint operators generate unitary groups
+and describe conservative wave or Schrödinger evolution instead.</p>
+
+<h3>Nonlinear evolution</h3>
+
+<p>For \(u'=Au+F(u)\), the mild equation
+\[
+u(t)=T(t)u_0+\int_0^tT(t-s)F(u(s))\,\mathrm{d}s
+\]
+is solved locally by contraction when \(F\) is locally Lipschitz. A priori
+estimates then decide continuation or blow-up. Maximal monotone and
+\(m\)-accretive operators extend the framework to nonlinear diffusion and
+subgradient flows where differentiability of \(F\) is unavailable.</p>

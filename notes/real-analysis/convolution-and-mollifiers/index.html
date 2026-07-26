@@ -27,6 +27,27 @@ note_next_url: "/notes/real-analysis/fourier-series-and-orthogonality/"
         <p><span class="statement-title">Proof.</span> Minkowski's integral inequality gives \(\|f*g\|_p\le\int |g(y)|\|f(\cdot-y)\|_p\,\mathrm{d}y=\|f\|_p\|g\|_1\). The \(p=\infty\) case is direct from the essential supremum.</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (algebraic identities).</span> Whenever absolute integrability justifies the operations,
+\[
+f*g=g*f,\qquad
+(f*g)*h=f*(g*h),\qquad
+\tau_a(f*g)=(\tau_af)*g=f*(\tau_ag).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Commutativity follows from \(y\mapsto x-y\). Associativity follows from Fubini:
+\[
+\begin{aligned}
+((f*g)*h)(x)
+&=\iint f(x-z-y)g(y)h(z)\,\mathrm{d}y\,\mathrm{d}z\\
+&=\int f(x-u)\left(\int g(u-z)h(z)\,\mathrm{d}z\right)\mathrm{d}u.
+\end{aligned}
+\]
+The translation identities are direct substitutions.</p>
+    </div>
+
     <h3>Smoothness by convolution</h3>
     <p>Smooth kernels transfer smoothness to the convolution.</p>
     <div class="math-statement proposition">
@@ -34,7 +55,16 @@ note_next_url: "/notes/real-analysis/fourier-series-and-orthogonality/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Difference quotients may be passed under the integral because the support of \(g\) is compact and derivatives of \(g\) are bounded. Dominated convergence justifies differentiating under the integral, and iteration gives all multi-index derivatives.</p>
+        <p><span class="statement-title">Proof.</span> Write
+\[
+(f*g)(x)=\int f(y)g(x-y)\,\mathrm{d}y.
+\]
+On a compact set of \(x\)-values, the integrand uses \(y\) in one fixed compact enlargement of \(\operatorname{supp}g\), where \(f\) is integrable. For a coordinate direction,
+\[
+\frac{g(x+he_i-y)-g(x-y)}h
+\longrightarrow\partial_i g(x-y),
+\]
+and the mean value theorem bounds the quotient by \(\|\partial_i g\|_\infty\) on that compact support. Dominated convergence yields \(\partial_i(f*g)=f*(\partial_i g)\). Iteration gives every multi-index derivative, continuously.</p>
     </div>
 
     <h3>Approximate identities</h3>
@@ -51,6 +81,27 @@ note_next_url: "/notes/real-analysis/fourier-series-and-orthogonality/"
         <p><span class="statement-title">Proof.</span> Write \(\rho_\varepsilon*f-f=\int\rho_\varepsilon(y)(f(\cdot-y)-f)\,\mathrm{d}y\). For \(L^p\), use Minkowski and continuity of translations in \(L^p\). For uniform convergence, use the modulus of continuity and the fact that \(\rho_\varepsilon\) is supported near zero.</p>
     </div>
 
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (pointwise recovery at Lebesgue points).</span> If \(f\in L^1_{\mathrm{loc}}\) and \(\rho\) is bounded, compactly supported, and nonnegative with integral one, then
+\[
+(\rho_\varepsilon*f)(x)\longrightarrow f(x)
+\]
+at every Lebesgue point \(x\) of \(f\), hence almost everywhere.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(\operatorname{supp}\rho\subset B(0,R)\), then
+\[
+\begin{aligned}
+|(\rho_\varepsilon*f)(x)-f(x)|
+&\le\int\rho_\varepsilon(y)|f(x-y)-f(x)|\,\mathrm{d}y\\
+&\le\|\rho\|_\infty\varepsilon^{-d}
+\int_{B(0,R\varepsilon)}|f(x-y)-f(x)|\,\mathrm{d}y.
+\end{aligned}
+\]
+The last expression is a constant multiple of the mean oscillation of \(f\) over \(B(x,R\varepsilon)\), which tends to zero at a Lebesgue point.</p>
+    </div>
+
     <h3>Support and boundary effects</h3>
     <p>Convolution expands support by the support of the kernel.</p>
     <div class="math-statement proposition">
@@ -58,11 +109,26 @@ note_next_url: "/notes/real-analysis/fourier-series-and-orthogonality/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(x\) is outside the Minkowski sum of the supports, then for every \(y\), either \(y\notin\operatorname{supp}g\) or \(x-y\notin\operatorname{supp}f\). Thus the integrand vanishes in a neighborhood sense almost everywhere, so \((f*g)(x)=0\).</p>
+        <p><span class="statement-title">Proof.</span> Interpret support as essential support for \(L^p\) functions. If \(x\) lies outside the closed Minkowski sum, a neighborhood \(U\) of \(x\) is disjoint from it. For \(z\in U\) and almost every \(y\), \(g(y)\ne0\) implies \(y\) lies in the essential support of \(g\), while \(f(z-y)\ne0\) implies \(z-y\) lies in that of \(f\). Both cannot occur, so the integrand vanishes almost everywhere and \(f*g=0\) on \(U\).</p>
     </div>
 
-    <h3>Mollifiers as local averages</h3>
-    <p>Mollification is a controlled local blur.</p>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Mollifiers preserve constants, commute with derivatives in the weak sense, and provide the standard path from \(L^p\) functions to smooth test functions.</p>
+    <h3>Weak derivatives commute with mollification</h3>
+    <p>Mollification regularizes without destroying distributional derivative identities.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f\in L^1_{\mathrm{loc}}\) has weak derivative \(\partial^\alpha f\in L^1_{\mathrm{loc}}\), then on every region where the convolution is defined,
+\[
+\partial^\alpha(\rho_\varepsilon*f)
+=\rho_\varepsilon*(\partial^\alpha f)
+=(\partial^\alpha\rho_\varepsilon)*f.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For a test function \(\varphi\), Fubini and the definition of weak derivative give
+\[
+\int(\rho_\varepsilon*f)\,\partial^\alpha\varphi
+=(-1)^{|\alpha|}
+\int(\rho_\varepsilon*\partial^\alpha f)\,\varphi.
+\]
+Thus the weak derivative of the smooth convolution is \(\rho_\varepsilon*(\partial^\alpha f)\). The earlier differentiation-under-the-integral formula gives the kernel-derivative representation.</p>
     </div>

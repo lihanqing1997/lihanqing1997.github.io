@@ -8,24 +8,122 @@ note_prev_url: "/notes/number-theory/prime-number-theorem/"
 note_next_url: "/notes/number-theory/number-fields-and-algebraic-integers/"
 ---
 
-<p>Dirichlet characters and primes in progressions records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>Dirichlet characters are the finite Fourier modes of
+\((\mathbb Z/q\mathbb Z)^\times\). They isolate residue classes in prime
+counting, and their \(L\)-functions extend Euler's argument from all primes to
+primes in a prescribed arithmetic progression.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Dirichlet character modulo \(q\) is a periodic completely multiplicative function adapted to the unit group modulo \(q\).</p>
-    </div>
+<h3>Characters and orthogonality</h3>
 
-    <h3>Dirichlet theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\gcd(a,q)=1\), then there are infinitely many primes \(p\equiv a\pmod q\).</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A Dirichlet character
+modulo \(q\) is a group homomorphism
+\[
+\chi:(\mathbb Z/q\mathbb Z)^\times\to\mathbb C^\times
+\]
+extended periodically to \(\mathbb Z\) by \(\chi(n)=0\) when
+\(\gcd(n,q)>1\). The principal character \(\chi_0\) equals \(1\) on units.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Characters separate residue classes. Dirichlet \(L\)-functions encode primes in those classes, and nonvanishing at \(s=1\) supplies divergence of the corresponding prime sum.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Orthogonality relations.</span> For
+\(a,b\in(\mathbb Z/q\mathbb Z)^\times\),
+\[
+\frac1{\varphi(q)}\sum_{\chi\bmod q}\chi(a)\overline{\chi(b)}
+=\mathbf1_{\{a=b\}},
+\]
+and for characters \(\chi,\psi\),
+\[
+\frac1{\varphi(q)}\sum_{a\bmod q}^{*}
+\chi(a)\overline{\psi(a)}=\mathbf1_{\{\chi=\psi\}}.
+\]</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Characters are Fourier analysis on finite abelian groups. They transform congruence questions into analytic statements about \(L\)-functions.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If a character \(\eta\) is
+nontrivial, choose \(g\) with \(\eta(g)\ne1\). Translation by \(g\) permutes
+the finite group, so
+\[
+\sum_a\eta(a)=\sum_a\eta(ga)=\eta(g)\sum_a\eta(a),
+\]
+forcing the sum to vanish. Apply this to
+\(\eta=\chi\overline\psi\), and dually to the character group.</p>
+</div>
+
+<h3>Dirichlet \(L\)-functions</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For
+\(\operatorname{Re}s>1\),
+\[
+L(s,\chi)=\sum_{n=1}^{\infty}\frac{\chi(n)}{n^s}
+=\prod_p(1-\chi(p)p^{-s})^{-1}.
+\]</p>
+</div>
+
+<p>For a nonprincipal character, boundedness of partial sums
+\(\sum_{n\le x}\chi(n)\) and summation by parts extend \(L(s,\chi)\)
+holomorphically to \(\operatorname{Re}s>0\). The principal \(L\)-function is
+\[
+L(s,\chi_0)=\zeta(s)\prod_{p\mid q}(1-p^{-s})
+\]
+and has a simple pole at \(s=1\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (nonvanishing at one).</span> For
+every nonprincipal character \(\chi\),
+\[
+L(1,\chi)\ne0.
+\]</p>
+</div>
+
+<p>For complex characters this follows from positivity after combining
+conjugate Euler products. Real characters require a subtler argument:
+assuming \(L(1,\chi)=0\) would force coefficients of
+\(\zeta(s)L(s,\chi)\) to violate their nonnegative partial-sum growth.
+This nonvanishing is the decisive analytic input.</p>
+
+<h3>Primes in arithmetic progressions</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Dirichlet).</span> If
+\(\gcd(a,q)=1\), there are infinitely many primes
+\[
+p\equiv a\pmod q.
+\]
+In fact,
+\[
+\pi(x;q,a)\sim\frac1{\varphi(q)}\frac{x}{\log x}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Analytic reduction.</span> Orthogonality
+extracts the residue class:
+\[
+\mathbf1_{\{n\equiv a\bmod q\}}
+=\frac1{\varphi(q)}\sum_{\chi\bmod q}\overline{\chi(a)}\chi(n).
+\]
+Applying this to the von Mangoldt function gives
+\[
+\psi(x;q,a)
+=\frac1{\varphi(q)}\sum_\chi\overline{\chi(a)}
+\sum_{n\le x}\chi(n)\Lambda(n).
+\]
+The Dirichlet series of the inner sum is
+\(-L'(s,\chi)/L(s,\chi)\). Only the principal character has a pole at
+\(s=1\); nonvanishing on the boundary controls all others. A Tauberian
+argument yields \(\psi(x;q,a)\sim x/\varphi(q)\), and partial summation gives
+the stated prime asymptotic.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Modulo \(4\), the nontrivial
+character is \(\chi_4(n)=0\) for even \(n\), \(1\) for \(n\equiv1\), and
+\(-1\) for \(n\equiv3\). Its value
+\[
+L(1,\chi_4)=1-\frac13+\frac15-\frac17+\cdots=\frac\pi4
+\]
+is nonzero, and the primes are asymptotically split equally between
+\(1\) and \(3\) modulo \(4\).</p>
+</div>

@@ -33,3 +33,165 @@ I(V;X)\ll \log N.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> This page is a map rather than a replacement: LAN, minimax risk, deficiency, posterior contraction, and empirical-process entropy are developed in their own notes. Information theory supplies reusable inequalities and operational interpretations that those notes call upon.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Experiments as channels from parameters to data</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A statistical experiment
+  \(\mathcal E=(\mathcal X,\{P_\theta:\theta\in\Theta\})\) is a channel
+  \(\theta\mapsto X\). Under prior \(\pi\),
+  \[
+  I_\pi(\Theta;X)=
+  \int D(P_\theta\|P_\pi)\,\pi(\mathrm{d}\theta),
+  \qquad
+  P_\pi=\int P_\theta\,\pi(\mathrm{d}\theta).
+  \]</p>
+</div>
+
+<p>This is the expected information gained from the observation about the random parameter. It depends on the prior and is not by itself a frequentist information matrix.</p>
+
+<h3>Randomization of experiments loses information</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If experiment \(\mathcal F\) is obtained from
+  \(\mathcal E\) by a parameter-free Markov kernel, then for every prior
+  \[
+  I_\pi(\Theta;Y)\le I_\pi(\Theta;X),
+  \]
+  every pairwise \(f\)-divergence contracts, and every decision problem has Bayes risk under \(\mathcal E\) no larger than under \(\mathcal F\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Markov chain
+  \(\Theta\to X\to Y\) gives information contraction. Pairwise divergence contraction is data processing. Any rule based on \(Y\) can be simulated by first generating \(Y\) from \(X\), so the rule class available under \(\mathcal E\) contains all randomized rules from \(\mathcal F\).</p>
+</div>
+
+<h3>Le Cam deficiency</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The deficiency of
+  \(\mathcal E\) relative to \(\mathcal F\) is
+  \[
+  \delta(\mathcal E,\mathcal F)=
+  \inf_K\sup_{\theta}
+  \|KP_\theta-Q_\theta\|_{\mathrm{TV}},
+  \]
+  where \(K\) ranges over Markov kernels from the sample space of
+  \(\mathcal E\) to that of \(\mathcal F\). The Le Cam distance is
+  \[
+  \Delta(\mathcal E,\mathcal F)=
+  \max\{\delta(\mathcal E,\mathcal F),
+  \delta(\mathcal F,\mathcal E)\}.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If losses are bounded by \(M\), then corresponding minimax and Bayes risks in two experiments differ by at most a constant multiple of
+  \(M\Delta(\mathcal E,\mathcal F)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Approximately simulate data from one experiment using a near-optimal randomization kernel, then apply a decision rule from the other. Total variation bounds the change in expected bounded loss. Repeat in both directions.</p>
+</div>
+
+<h3>Mutual information lower bounds for estimation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let prior \(\pi\) on parameter space have rate-distortion function
+  \[
+  R_\pi(D)=
+  \inf_{P_{\widehat\Theta\mid\Theta}:
+  \mathbb Ed(\Theta,\widehat\Theta)\le D}
+  I(\Theta;\widehat\Theta).
+  \]
+  For every estimator based on \(X\),
+  \[
+  R_\pi\{\mathbb Ed(\Theta,\widehat\Theta)\}
+  \le I_\pi(\Theta;X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \(\Theta\to X\to\widehat\Theta\) gives
+  \(I(\Theta;\widehat\Theta)\le I(\Theta;X)\). By definition, any reproduction achieving distortion \(D\) has information at least \(R_\pi(D)\).</p>
+</div>
+
+<p>Fano is recovered by choosing a uniform finite prior and a zero-one or packing distortion. Rate-distortion lower bounds can use the prior geometry more efficiently than exact decoding.</p>
+
+<h3>Bayesian Cramér-Rao and van Trees</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In a regular scalar model with prior density \(\pi\) vanishing suitably at boundaries, every estimator satisfies
+  \[
+  \mathbb E(\widehat\theta-\theta)^2
+  \ge
+  \frac1{
+  \mathbb E_\pi I_X(\theta)+I(\pi)},
+  \]
+  where
+  \[
+  I(\pi)=\int\frac{\{\pi'(\theta)\}^2}{\pi(\theta)}\,\mathrm{d}\theta.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the joint law, integrate by parts to obtain
+  \[
+  \mathbb E[
+  (\widehat\theta-\theta)
+  \{\partial_\theta\log p_\theta(X)+
+  \partial_\theta\log\pi(\theta)\}]=1.
+  \]
+  Cauchy-Schwarz bounds one by the product of mean-squared error and the joint score variance. Conditional score mean zero eliminates the cross term, leaving expected model Fisher information plus prior Fisher information.</p>
+</div>
+
+<h3>I-MMSE in a Gaussian experiment</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For
+  \(Y_\gamma=\sqrt\gamma\,\Theta+Z\),
+  \[
+  I(\Theta;Y_\gamma)
+  =\frac12\int_0^\gamma
+  \mathbb E\{\Theta-\mathbb E(\Theta\mid Y_s)\}^2\,\mathrm{d}s.
+  \]</p>
+</div>
+
+<p>This identity directly links information gained along signal-to-noise ratio with integrated Bayes estimation error. It is exact for any prior with finite second moment.</p>
+
+<h3>Local asymptotic normality</h3>
+
+<p>In regular iid models, local log likelihood ratios satisfy
+\[
+\log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^n}
+{\mathrm{d}P_{\theta_0}^n}
+=h^\top\Delta_n-\frac12h^\top I(\theta_0)h+o_P(1),
+\quad
+\Delta_n\Rightarrow N\{0,I(\theta_0)\}.
+\]
+The limit experiment is a Gaussian shift. Le Cam convergence transfers local minimax risk and testing limits, while KL between local alternatives converges to
+\(\tfrac12(h-k)^\top I(\theta_0)(h-k)\).</p>
+
+<h3>Sufficiency and posterior compression</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For prior \(\pi\) and statistic \(T(X)\),
+  \[
+  I(\Theta;X)-I(\Theta;T)
+  =I(\Theta;X\mid T)
+  =\mathbb E_XD\{\pi(\cdot\mid X)\|
+  \pi(\cdot\mid T)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The first equality is the mutual-information chain rule because \(T\) is a function of \(X\). The second is conditional mutual information represented as expected KL between the full posterior and the posterior using only \(T\).</p>
+</div>
+
+<p>This gives an information measure of approximate sufficiency. Small average posterior KL does not automatically imply uniform decision equivalence; deficiency controls all bounded losses more directly.</p>
+
+<h3>Interfaces rather than duplication</h3>
+
+<p>Information theory supplies divergence contraction, testing exponents, and coding-style lower bounds. The full theories of minimax risk, tangent spaces, LAN, Bayes procedures, posterior contraction, and experiment comparison belong to the <a href="{{ '/notes/statistical-inference/' | relative_url }}">statistical inference</a>, <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">statistical decision theory</a>, and <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a> notes. Cross-references preserve those distinctions while making the common information structure explicit.</p>

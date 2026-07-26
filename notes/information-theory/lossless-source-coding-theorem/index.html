@@ -28,3 +28,111 @@ note_next_url: "/notes/information-theory/redundancy-mismatched-coding/"
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Any code with \(M_n\le\exp(nR)\) can decode correctly on at most \(M_n\) strings. If \(R<H\), the AEP says no set of that exponential size can carry probability tending to one. Hence vanishing error is impossible.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Fixed-length almost-lossless coding</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An \((n,M_n)\) source code consists of encoder
+  \(f_n:\mathcal X^n\to\{1,\ldots,M_n\}\) and decoder
+  \(g_n\). Its error probability is
+  \[
+  \epsilon_n=P\{g_n(f_n(X^n))\ne X^n\},
+  \]
+  and its rate is \(n^{-1}\log M_n\).</p>
+</div>
+
+<h3>Achievability</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For an iid finite-alphabet source,
+  every rate \(R>H(X)\) is achievable with \(\epsilon_n\to0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose
+  \(\varepsilon>0\) with \(H+\varepsilon<R\). Assign distinct indices to sequences in the typical set
+  \(\mathcal T_\varepsilon^{(n)}\), whose cardinality is at most
+  \(e^{n(H+\varepsilon)}\le e^{nR}\). Encode all atypical sequences to one arbitrary index. Decoding is correct on the typical set, whose probability tends to one.</p>
+</div>
+
+<h3>Converse</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(R<H(X)\), every sequence of codes with
+  \(\limsup n^{-1}\log M_n\le R\) has error probability bounded away from zero; in fact \(\epsilon_n\to1\) for the iid finite-alphabet source.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The decoder can reproduce correctly on at most \(M_n\) source strings. Fix
+  \(\varepsilon>0\) with \(R<H-\varepsilon\). AEP gives probability tending to one to strings each having probability at most
+  \(e^{-n(H-\varepsilon)}\). Hence correct-decoding probability on the typical set is at most
+  \[
+  M_ne^{-n(H-\varepsilon)}
+  \le e^{-n(H-\varepsilon-R+o(1))}\to0.
+  \]
+  Add the vanishing atypical probability.</p>
+</div>
+
+<h3>Entropy proof of the weak converse</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(\epsilon_n\to0\), then
+  \[
+  \liminf_{n\to\infty}\frac1n\log M_n\ge H(X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\widehat X^n\) be the decoded sequence. Data processing gives
+  \[
+  \log M_n\ge H(f_n(X^n))\ge I(X^n;\widehat X^n)
+  =nH(X)-H(X^n\mid\widehat X^n).
+  \]
+  Fano bounds the final term by
+  \(h_2(\epsilon_n)+\epsilon_n n\log|\mathcal X|\). Divide by \(n\).</p>
+</div>
+
+<h3>Variable-length lossless coding</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The minimum expected length \(L^*\) of a binary prefix code satisfies
+  \[
+  H(X)\le L^*<H(X)+1
+  \]
+  in bits. For iid blocks,
+  \[
+  \frac1nL_n^*\to H(X).
+  \]</p>
+</div>
+
+<p>Fixed-length coding permits a small error and compresses nearly all mass into a typical set. Variable-length lossless coding has zero error and assigns shorter words to more probable strings. Both have the same asymptotic entropy rate.</p>
+
+<h3>Second-order source coding</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(V=\operatorname{Var}\{-\log P(X)\}>0\). The minimum fixed-length code size with error at most \(\epsilon\in(0,1)\) obeys
+  \[
+  \log M_n^*(\epsilon)
+  =
+  nH(X)+\sqrt{nV}\,\Phi^{-1}(1-\epsilon)
+  -\frac12\log n+O(1)
+  \]
+  under standard nonlattice refinements; the first two terms hold more generally.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The optimal code retains the \(M\) most probable strings, equivalently those below an information-density threshold. The central limit theorem approximates the quantile of
+  \(-\log P(X^n)\), giving the \(\sqrt{nV}\) term. Refined local-limit or saddlepoint analysis yields the logarithmic correction.</p>
+</div>
+
+<h3>Sources with memory</h3>
+
+<p>For stationary ergodic sources, Shannon-McMillan-Breiman replaces the iid AEP and the threshold remains the entropy rate. For arbitrary sources, the operational threshold is the spectral sup-entropy rate from the information-spectrum page.</p>
+
+<h3>Arithmetic coding</h3>
+
+<p>Arithmetic coding represents a sequence by a subinterval whose length equals its model probability. It achieves code length approximately
+\(-\log P(x^n)\) plus a bounded implementation overhead, avoiding the one-bit-per-symbol rounding cost of separate Shannon codes. Under a mismatched model \(Q\), expected length increases by
+\(D(P^n\|Q^n)\).</p>

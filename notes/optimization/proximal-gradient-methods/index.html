@@ -8,24 +8,140 @@ note_prev_url: "/notes/optimization/proximal-maps-moreau-envelopes/"
 note_next_url: "/notes/optimization/splitting-methods-admm/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Proximal gradient methods.</p>
+<p>Composite optimization separates a differentiable loss from a nonsmooth
+penalty or constraint. Proximal gradient linearizes only the smooth term and
+keeps the nonsmooth term exact.</p>
 
-    <h3>Composite objective</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(F(x)=f(x)+g(x)\), with \(f\) smooth and \(g\) convex possibly nonsmooth, proximal gradient uses \(x_{k+1}=\operatorname{prox}_{\eta g}(x_k-\eta\nabla f(x_k))\).</p>
-    </div>
+<h3>The proximal quadratic model</h3>
 
-    <h3>Descent theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\) is \(L\)-smooth and \(0<\eta\le1/L\), proximal gradient decreases the standard quadratic upper model and converges to a minimizer for closed convex composite objectives.</p>
-    </div>
+<p>Let
+\[
+F(x)=f(x)+g(x),
+\]
+where \(f\) is convex and \(L\)-smooth and \(g\) is proper, closed, and convex.
+At \(x\), define
+\[
+Q_L(z;x)
+=f(x)+\langle\nabla f(x),z-x\rangle
+ +\frac L2\|z-x\|^2+g(z).
+\]
+Smoothness gives \(F(z)\le Q_L(z;x)\).</p>
 
-    <h3>Accelerated proximal gradient</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> FISTA combines Nesterov extrapolation with a proximal step and obtains \(O(1/k^2)\) objective convergence for convex composite objectives.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> The proximal-gradient
+    update is
+    \[
+    x^+=\operatorname*{arg\,min}_zQ_L(z;x)
+    =\operatorname{prox}_{g/L}
+      \left(x-\frac1L\nabla f(x)\right).
+    \]
+    The gradient mapping is
+    \(G_L(x)=L(x-x^+)\).</p>
+</div>
 
-    <h3>Statistical penalties</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Lasso, group lasso, nuclear-norm regularization, and constrained empirical risk are naturally composite: smooth loss plus nonsmooth structure penalty.</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Composite stationarity.</span>
+    \(G_L(x)=0\) if and only if
+    \(0\in\nabla f(x)+\partial g(x)\), equivalently \(x\) minimizes \(F\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Proximal optimality gives
+    \[
+    0\in\nabla f(x)+L(x^+-x)+\partial g(x^+).
+    \]
+    If \(x^+=x\), this is the composite Fermat rule. Conversely, the Fermat
+    rule makes \(x\) the unique minimizer of the strongly convex model, so
+    \(x^+=x\).</p>
+</div>
+
+<h3>Descent and the \(1/k\) rate</h3>
+
+<div class="math-statement lemma">
+    <p><span class="statement-title">Composite three-point inequality.</span>
+    For every \(z\in\operatorname{dom}g\),
+    \[
+    F(x^+)-F(z)
+    \le\frac L2\bigl(\|x-z\|^2-\|x^+-z\|^2\bigr).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Strong convexity of
+    \(Q_L(\cdot;x)\) and optimality of \(x^+\) give
+    \[
+    Q_L(x^+;x)+\frac L2\|z-x^+\|^2\le Q_L(z;x).
+    \]
+    Use \(F(x^+)\le Q_L(x^+;x)\), and use convexity of \(f\) to replace
+    \(f(x)+\langle\nabla f(x),z-x\rangle\) by at most \(f(z)\). Rearranging
+    the remaining squared norms yields the result.</p>
+</div>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Proximal-gradient convergence.</span> If
+    \(x^\star\) minimizes \(F\), then
+    \[
+    F(x_k)-F^\star
+    \le\frac{L\|x_0-x^\star\|^2}{2k}.
+    \]
+    If \(F\) is \(\mu\)-strongly convex, the iterates converge geometrically,
+    with a contraction factor bounded in terms of \(\mu/L\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Apply the three-point
+    inequality with \(z=x^\star\), sum over \(k\), and use monotonicity of
+    \(F(x_k)\), exactly as in gradient descent. Under strong convexity,
+    combine the same inequality with
+    \(F(x)-F^\star\ge\frac\mu2\|x-x^\star\|^2\) to obtain a geometric
+    recursion for distance and objective error.</p>
+</div>
+
+<h3>FISTA acceleration</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Accelerated composite rate.</span> Set
+    \(x_0=y_0\), \(t_0=1\), and
+    \[
+    \begin{aligned}
+    x_{k+1}&=\operatorname{prox}_{g/L}
+      (y_k-L^{-1}\nabla f(y_k)),\\
+    t_{k+1}&=\frac{1+\sqrt{1+4t_k^2}}2,\\
+    y_{k+1}&=x_{k+1}
+      +\frac{t_k-1}{t_{k+1}}(x_{k+1}-x_k).
+    \end{aligned}
+    \]
+    Then
+    \[
+    F(x_k)-F^\star
+    \le\frac{2L\|x_0-x^\star\|^2}{(k+1)^2}.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Replace the smooth
+    gradient-step three-point inequality in Nesterov's potential proof by the
+    composite three-point inequality above. The same identity
+    \(t_{k+1}^2-t_{k+1}=t_k^2\) cancels the extrapolation cross terms, making
+    \(t_k^2(F(x_k)-F^\star)\) plus a squared-distance term nonincreasing.
+    Since \(t_k\ge(k+1)/2\), the displayed bound follows.</p>
+</div>
+
+<h3>Lasso as a proximal-gradient problem</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> For
+    \[
+    F(\beta)=\frac1{2n}\|y-X\beta\|^2+\lambda\|\beta\|_1,
+    \]
+    the smoothness constant is
+    \(L=\|X^\top X/n\|_{\mathrm{op}}\). One iteration is
+    \[
+    \beta^+
+    =S_{\lambda/L}\!\left(
+      \beta+\frac1{nL}X^\top(y-X\beta)
+    \right),
+    \]
+    with coordinatewise soft thresholding \(S\). The gradient step follows the
+    least-squares loss; the proximal step imposes exact zeros.</p>
+</div>

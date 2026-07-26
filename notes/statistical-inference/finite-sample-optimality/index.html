@@ -8,23 +8,155 @@ note_prev_url: "/notes/statistical-inference/confidence-sets-pivots/"
 note_next_url: "/notes/statistical-inference/linear-and-generalized-linear-models/"
 ---
 
-<p>This page records the classical exact optimality results that belong naturally to inference. Broader risk, admissibility, and minimax theory is treated in the <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">statistical decision theory</a> note.</p>
+<p>Finite-sample optimality compares procedures without taking \(n\to\infty\). Strong universal optima are rare, so classical theory obtains them by restricting the comparison class: unbiased estimators, level-\(\alpha\) tests, invariant procedures, or one-sided alternatives in monotone-likelihood-ratio families. Admissibility and minimaxity over unrestricted risk functions belong to <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">statistical decision theory</a>.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An unbiased estimator \(T\) of \(g(\theta)\) satisfies \(E_\theta T=g(\theta)\). It is UMVUE if it has minimum variance among all unbiased estimators for every \(\theta\).</p>
-    </div>
+<h3>Minimum-variance unbiased estimation</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Lehmann-Scheffé theorem.</span> If \(T\) is complete sufficient for \(\theta\), and \(U\) is any unbiased estimator of \(g(\theta)\), then \(E(U\mid T)\) is the unique UMVUE of \(g(\theta)\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator \(U\) is unbiased for \(g(\theta)\) if \(\mathbb E_\theta U=g(\theta)\) for every \(\theta\). It is uniformly minimum-variance unbiased if, for every unbiased \(V\) with finite variance,
+  \[
+  \operatorname{Var}_\theta(U)
+  \le\operatorname{Var}_\theta(V)
+  \qquad\text{for every }\theta.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Rao-Blackwellization gives \(E_\theta\{E(U\mid T)\}=g(\theta)\) and
-        \[
-        \operatorname{Var}_\theta(E(U\mid T))\le\operatorname{Var}_\theta(U).
-        \]
-        Thus \(E(U\mid T)\) is at least as good as every unbiased estimator after conditioning on \(T\). If \(V\) is another unbiased function of \(T\), then \(E_\theta(V-E(U\mid T))=0\) for all \(\theta\). Completeness implies \(V=E(U\mid T)\) a.s.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Lehmann-Scheffe theorem.</span> If \(T\) is complete and sufficient and \(U\) is unbiased, then
+  \[
+  U^\star=\mathbb E(U\mid T)
+  \]
+  is the unique UMVU estimator of \(\mathbb E_\theta U\).</p>
+</div>
 
-    <h3>UMP and UMPU tests</h3>
-    <p>Uniformly most powerful tests exist in special settings, especially one-parameter exponential families with monotone likelihood ratio. For two-sided problems, unbiasedness restrictions lead to UMPU tests. These exact results are elegant, but many modern problems rely instead on asymptotic likelihood theory.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Sufficiency makes \(U^\star\) a parameter-free function of \(T\), and iterated expectation preserves unbiasedness. Rao-Blackwell gives
+  \[
+  \operatorname{Var}_\theta(U^\star)
+  \le\operatorname{Var}_\theta(U).
+  \]
+  Apply the same conditioning to every competing unbiased estimator. If \(V_1(T)\) and \(V_2(T)\) are both unbiased for the same target, then \(\mathbb E_\theta(V_1-V_2)=0\) for all \(\theta\); completeness forces equality almost surely. Thus every Rao-Blackwellized competitor equals \(U^\star\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Poisson functional).</span> If \(X_1,\ldots,X_n\) are i.i.d. \(\operatorname{Poisson}(\lambda)\), then \(T=\sum_iX_i\sim\operatorname{Poisson}(n\lambda)\) is complete sufficient. Since
+  \[
+  \mathbb E\{T(T-1)\}=n^2\lambda^2,
+  \]
+  the estimator \(T(T-1)/n^2\) is the unique UMVU estimator of \(\lambda^2\).</p>
+</div>
+
+<h3>Cramer-Rao inequality and equality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Multivariate information inequality.</span> Let \(U\in\mathbb R^k\) be unbiased for \(g(\theta)\), and suppose the regular score \(s_\theta\in\mathbb R^d\) has nonsingular information \(I(\theta)\). Then
+  \[
+  \operatorname{Cov}_\theta(U)
+  \succeq
+  Dg(\theta)I(\theta)^{-1}Dg(\theta)^\top.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiating \(\mathbb E_\theta U=g(\theta)\) gives
+  \[
+  \operatorname{Cov}_\theta(U,s_\theta)=Dg(\theta).
+  \]
+  Put
+  \[
+  R=U-g(\theta)-Dg(\theta)I^{-1}s_\theta.
+  \]
+  Expanding the positive semidefinite matrix \(\mathbb E(RR^\top)\) and using \(\mathbb E(s_\theta s_\theta^\top)=I\) yields
+  \[
+  \operatorname{Cov}(U)-Dg\,I^{-1}Dg^\top\succeq0.
+  \]</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Equality condition.</span> Equality holds exactly when
+  \[
+  U-g(\theta)=Dg(\theta)I(\theta)^{-1}s_\theta(X)
+  \quad P_\theta\text{-almost surely}.
+  \]
+  Thus exact attainment requires the estimation error to be a linear function of the score at every parameter value, a stringent structural condition.</p>
+</div>
+
+<h3>Monotone likelihood ratios</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A family \(\{P_\theta:\theta\in\mathbb R\}\) has monotone likelihood ratio in \(T\) if, whenever \(\theta_1>\theta_0\),
+  \[
+  \frac{p_{\theta_1}(x)}{p_{\theta_0}(x)}
+  \]
+  is a nondecreasing function of \(T(x)\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Karlin-Rubin theorem.</span> In a monotone-likelihood-ratio family, a test
+  \[
+  \phi^\star=1_{\{T>c\}}+\gamma1_{\{T=c\}},
+  \qquad \mathbb E_{\theta_0}\phi^\star=\alpha,
+  \]
+  is uniformly most powerful of level \(\alpha\) for
+  \[
+  H_0:\theta\le\theta_0
+  \quad\text{against}\quad
+  H_1:\theta>\theta_0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every fixed \(\theta_1>\theta_0\), monotone likelihood ratio makes the Neyman-Pearson rejection region for \(\theta_0\) versus \(\theta_1\) an upper set in \(T\). The same critical value \(c\), determined by size at \(\theta_0\), is therefore most powerful against every \(\theta_1>\theta_0\). Moreover, stochastic monotonicity of \(T\) implies
+  \[
+  \sup_{\theta\le\theta_0}\mathbb E_\theta\phi^\star
+  =\mathbb E_{\theta_0}\phi^\star=\alpha.
+  \]
+  Hence the test is level \(\alpha\) for the composite null and simultaneously most powerful at every alternative.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (binomial one-sided test).</span> For \(X\sim\operatorname{Binomial}(n,p)\),
+  \[
+  \frac{P_{p_1}(X=x)}{P_{p_0}(X=x)}
+  =\left(\frac{p_1(1-p_0)}{p_0(1-p_1)}\right)^x
+  \left(\frac{1-p_1}{1-p_0}\right)^n,
+  \]
+  which increases in \(x\) when \(p_1>p_0\). Therefore upper-tail tests are UMP for \(p\le p_0\) against \(p>p_0\), with boundary randomization if exact size is required.</p>
+</div>
+
+<h3>Why two-sided UMP tests usually fail</h3>
+
+<p>For testing \(\theta=\theta_0\) against \(\theta\ne\theta_0\), the most powerful test against \(\theta_1>\theta_0\) rejects in the upper tail, while the most powerful test against \(\theta_1<\theta_0\) rejects in the lower tail. No single level-\(\alpha\) allocation can usually be most powerful in both directions. Imposing unbiasedness leads to the weaker UMPU criterion.</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A level-\(\alpha\) test of \(H_0:\theta\in\Theta_0\) is unbiased if
+  \[
+  \mathbb E_\theta\phi\ge\alpha
+  \quad\text{for every }\theta\in\Theta_1,
+  \]
+  when its null rejection probability is exactly \(\alpha\). It is UMPU if it maximizes power at each alternative among all unbiased level-\(\alpha\) tests.</p>
+</div>
+
+<p>In regular one-parameter exponential families, conditioning on a complete sufficient statistic for nuisance parameters and choosing two critical tails to satisfy both a size equation and a zero derivative of power at the null often yields a UMPU test. The classical two-sided \(t\)-test and equal-tail exact tests fit this structure.</p>
+
+<h3>Conditioning away nuisance parameters</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Conditional exactness.</span> Suppose \(S\) is sufficient for a nuisance parameter under the null and the conditional distribution of \(T\mid S\) depends only on the target null value. A conditional test satisfying
+  \[
+  \mathbb E_{\theta,\eta}(\phi\mid S)=\alpha
+  \quad\text{under }H_0
+  \]
+  has unconditional size \(\alpha\) for every nuisance value \(\eta\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By iterated expectation,
+  \[
+  \mathbb E_{\theta,\eta}\phi
+  =\mathbb E_{\theta,\eta}\{\mathbb E_{\theta,\eta}(\phi\mid S)\}
+  =\alpha.
+  \]</p>
+</div>
+
+<p>Fisher's exact test conditions on fixed margins so that the remaining hypergeometric law no longer contains the nuisance success probabilities. Such exactness is model-specific: conditioning can also discard power when the chosen statistic is not genuinely ancillary or sufficient for nuisance structure.</p>

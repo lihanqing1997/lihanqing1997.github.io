@@ -24,6 +24,19 @@ note_next_url: "/notes/real-analysis/metric-spaces-and-compactness/"
         <p><span class="statement-title">Proof.</span> This is exactly the Cauchy criterion for the sequence of partial sums, since \(s_m-s_n=\sum_{k=n+1}^m a_k\).</p>
     </div>
 
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> Convergence of \(\sum a_n\) implies \(a_n\to0\), but the converse fails.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(s_n\to s\), then \(a_n=s_n-s_{n-1}\to0\). For the converse, \(1/n\to0\), while
+\[
+\sum_{n=1}^{2^m}\frac1n
+\ge 1+\sum_{j=0}^{m-1}2^j\frac1{2^{j+1}}
+=1+\frac m2\longrightarrow\infty.
+\]</p>
+    </div>
+
     <h3>Absolute convergence and comparison</h3>
     <p>Absolute convergence removes dependence on cancellation.</p>
     <div class="math-statement theorem">
@@ -34,14 +47,55 @@ note_next_url: "/notes/real-analysis/metric-spaces-and-compactness/"
         <p><span class="statement-title">Proof.</span> For tails, \(|\sum_{k=n+1}^m a_k|\le\sum_{k=n+1}^m |a_k|\). The right side tends to zero by convergence of the nonnegative series. The comparison statement follows by applying this to \(\sum |a_n|\).</p>
     </div>
 
-    <h3>Root and ratio tests</h3>
+    <h3>Condensation, integral comparison, root, and ratio tests</h3>
     <p>Exponential rates decide many series.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Cauchy condensation).</span> If \(a_n\ge0\) is decreasing, then
+\[
+\sum_{n=1}^{\infty}a_n<\infty
+\quad\Longleftrightarrow\quad
+\sum_{k=0}^{\infty}2^k a_{2^k}<\infty.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On the block \(2^k\le n<2^{k+1}\), monotonicity gives
+\[
+2^k a_{2^{k+1}}
+\le \sum_{n=2^k}^{2^{k+1}-1}a_n
+\le 2^k a_{2^k}.
+\]
+Summing the block inequalities proves both implications; the lower condensed series differs from the upper one only by an index shift and a factor \(1/2\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (\(p\)-series and logarithmic refinement).</span> Condensation gives
+\[
+\sum_{n\ge1}\frac1{n^p}<\infty\iff p>1,
+\qquad
+\sum_{n\ge2}\frac1{n(\log n)^q}<\infty\iff q>1.
+\]
+Indeed, their condensed terms are respectively \(2^{k(1-p)}\) and comparable to \(k^{-q}\).</p>
+    </div>
+
     <div class="math-statement proposition">
         <p><span class="statement-title">Proposition.</span> If \(\limsup |a_n|^{1/n}\lt 1\), then \(\sum a_n\) converges absolutely. If \(\liminf |a_n|^{1/n}>1\), then \(a_n\not\to0\) and the series diverges.</p>
     </div>
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> In the first case choose \(r\lt 1\) such that \(|a_n|^{1/n}\le r\) eventually. Then \(|a_n|\le r^n\), and comparison with a geometric series applies. In the second case \(|a_n|\) is eventually bounded below by \(r^n\) for some \(r>1\), so the terms cannot tend to zero.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (ratio test).</span> If \(a_n\ne0\) eventually and
+\[
+\limsup_{n\to\infty}\left|\frac{a_{n+1}}{a_n}\right|<1,
+\]
+then \(\sum a_n\) converges absolutely. If the corresponding liminf is \(>1\), the terms fail to converge to zero.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> In the first case choose \(r<1\) such that \(|a_{n+1}|\le r|a_n|\) eventually. Iteration gives \(|a_{N+k}|\le |a_N|r^k\). The divergent case follows from eventual geometric growth.</p>
     </div>
 
     <h3>Alternating and Dirichlet tests</h3>
@@ -51,7 +105,16 @@ note_next_url: "/notes/real-analysis/metric-spaces-and-compactness/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The alternating test follows because even and odd partial sums are monotone and squeeze each other. For Dirichlet, summation by parts gives \(\sum_{k=m}^n a_kb_k=A_nb_n-A_{m-1}b_m+\sum_{k=m}^{n-1}A_k(b_k-b_{k+1})\), where \(A_k=\sum_{j=m}^k a_j\). Boundedness of \(A_k\) and \(b_k\to0\) make the tail small.</p>
+        <p><span class="statement-title">Proof.</span> For the alternating series, \(s_{2m}\) and \(s_{2m+1}\) are monotone in opposite directions and
+\[
+|s_{2m+1}-s_{2m}|=b_{2m+1}\longrightarrow0,
+\]
+so they converge to the same limit. More precisely, the remainder after \(N\) terms has the sign of the first omitted term and absolute value at most \(b_{N+1}\). For Dirichlet, put \(A_k=\sum_{j=m}^k a_j\). Summation by parts gives
+\[
+\sum_{k=m}^n a_kb_k
+=A_nb_n+\sum_{k=m}^{n-1}A_k(b_k-b_{k+1}).
+\]
+If \(|A_k|\le M\), the right side has absolute value at most \(Mb_n+M(b_m-b_n)\le 2Mb_m\), which tends to zero with \(m\). The Cauchy criterion completes the proof.</p>
     </div>
 
     <h3>Rearrangements</h3>
@@ -62,4 +125,38 @@ note_next_url: "/notes/real-analysis/metric-spaces-and-compactness/"
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Given \(\varepsilon>0\), choose \(N\) so that \(\sum_{n>N}|a_n|\lt \varepsilon\). Any rearranged partial sum containing all terms \(a_1,\ldots,a_N\) differs from the original sum only by a subseries of the absolute tail, hence by at most \(\varepsilon\).</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Riemann rearrangement).</span> If a real series converges conditionally, then for every \(L\in\mathbb R\) there is a permutation \(\pi\) of \(\mathbb N\) such that
+\[
+\sum_{n=1}^{\infty}a_{\pi(n)}=L.
+\]
+There are also rearrangements diverging to \(+\infty\), to \(-\infty\), or oscillating without a limit.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Write \(a_n^+=\max(a_n,0)\) and \(a_n^-=\max(-a_n,0)\). Conditional convergence forces
+\[
+\sum a_n^+=\sum a_n^-=\infty;
+\]
+otherwise both would be finite and \(\sum|a_n|=\sum a_n^++\sum a_n^-\) would converge. List the positive terms as \(p_j\) and the absolute values of negative terms as \(q_j\). Add unused \(p_j\)'s until the running sum first exceeds \(L\), then unused \(-q_j\)'s until it first falls below \(L\), and repeat. Every term is eventually used, because either list left unused forever would force the construction to remain permanently on one side of \(L\). Since \(p_j,q_j\to0\), the successive overshoots and undershoots tend to zero, so the rearranged partial sums converge to \(L\). Modifying the lengths of the positive and negative blocks gives the three divergent behaviors.</p>
+    </div>
+
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (Cauchy product).</span> If \(\sum a_n\) and \(\sum b_n\) converge absolutely, then
+\[
+\left(\sum_{n=0}^{\infty}a_n\right)\left(\sum_{n=0}^{\infty}b_n\right)
+=\sum_{n=0}^{\infty}\sum_{k=0}^{n}a_kb_{n-k},
+\]
+and the series on the right converges absolutely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The double series is absolutely summable because
+\[
+\sum_{j,k\ge0}|a_jb_k|
+=\left(\sum_j|a_j|\right)\left(\sum_k|b_k|\right)<\infty.
+\]
+Hence its terms may be grouped by diagonals \(j+k=n\). Rectangular partial sums factor as products of partial sums, and their limit is the product of the two original sums.</p>
     </div>

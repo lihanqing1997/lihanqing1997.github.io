@@ -43,3 +43,143 @@ D(P_\theta\|P_{\theta'})=D(P_\theta T^{-1}\|P_{\theta'}T^{-1})
 \]
 for all \(\theta,\theta'\). In dominated finite models, this is equivalent to the usual factorization form of sufficiency.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Data-processing inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(X\to Y\to Z\) is a Markov chain, then
+  \[
+  I(X;Z)\le I(X;Y).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By the chain rule,
+  \[
+  I(X;Y,Z)=I(X;Y)+I(X;Z\mid Y)=I(X;Y)
+  \]
+  because the Markov property makes the conditional information zero. Also
+  \[
+  I(X;Y,Z)=I(X;Z)+I(X;Y\mid Z)\ge I(X;Z).
+  \]</p>
+</div>
+
+<h3>Divergence contraction under a channel</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a Markov kernel \(K\),
+  \[
+  D(PK\|QK)\le D(P\|Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define joint laws
+  \(P_{XY}=P_XK_{Y\mid X}\) and
+  \(Q_{XY}=Q_XK_{Y\mid X}\). The KL chain rule gives
+  \(D(P_{XY}\|Q_{XY})=D(P\|Q)\) because conditional kernels agree. Reversing the chain rule,
+  \[
+  D(P_{XY}\|Q_{XY})
+  =D(PK\|QK)+
+  \mathbb E_{PK}D(P_{X\mid Y}\|Q_{X\mid Y})
+  \ge D(PK\|QK).
+  \]</p>
+</div>
+
+<h3>Equality and reverse kernels</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Equality
+  \(D(PK\|QK)=D(P\|Q)\) holds exactly when
+  \[
+  P_{X\mid Y}=Q_{X\mid Y}
+  \quad PK\text{-almost surely},
+  \]
+  under common-support conditions. Equivalently, there is a reverse kernel \(L\) such that
+  \(PKL=P\) and \(QKL=Q\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Equality in the preceding chain-rule decomposition is equivalent to zero conditional KL, hence equal reverse conditional laws. Taking this common conditional law as \(L\) reconstructs both inputs. Conversely, a common reverse kernel and two applications of data processing give
+  \[
+  D(P\|Q)=D(PKL\|QKL)\le D(PK\|QK)\le D(P\|Q).
+  \]</p>
+</div>
+
+<h3>Statistical sufficiency</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A statistic \(T(X)\) is sufficient for a family
+  \(\{P_\theta\}\) if the conditional law of \(X\) given \(T\) does not depend on \(\theta\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In a dominated family,
+  \(T\) is sufficient if and only if the density factorizes as
+  \[
+  p_\theta(x)=g_\theta\{T(x)\}h(x).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> If factorization holds, normalization within each fiber of \(T\) cancels \(g_\theta\), so the conditional law is parameter-free. Conversely, choose a reference conditional density on each fiber and write the joint density as the marginal density of \(T\), which carries all \(\theta\)-dependence, times this common conditional density.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(T\) is sufficient, then for every pair \(\theta,\theta'\),
+  \[
+  D(P_\theta^T\|P_{\theta'}^T)
+  =D(P_\theta\|P_{\theta'}).
+  \]</p>
+</div>
+
+<h3>Bayesian sufficiency and information equality</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(\Theta\sim\pi\) and
+  \(X\sim P_\Theta\). For any statistic \(T=T(X)\),
+  \[
+  I(\Theta;T)\le I(\Theta;X).
+  \]
+  Equality holds exactly when
+  \(\Theta\perp\!\!\!\perp X\mid T\), that is, when the posterior based on \(X\) depends on \(X\) only through \(T\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \(\Theta\to X\to T\), data processing gives the inequality. The information loss is
+  \[
+  I(\Theta;X)-I(\Theta;T)=I(\Theta;X\mid T),
+  \]
+  which vanishes exactly at conditional independence.</p>
+</div>
+
+<h3>Blackwell comparison of experiments</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Experiment
+  \(\mathcal E=\{P_\theta\}\) Blackwell-dominates
+  \(\mathcal F=\{Q_\theta\}\) if there is a parameter-free Markov kernel \(K\) with
+  \(Q_\theta=P_\theta K\) for every \(\theta\).</p>
+</div>
+
+<p>Every decision rule in \(\mathcal F\) can then be simulated from \(\mathcal E\), so \(\mathcal E\) has no larger Bayes risk for every prior and loss. Pairwise divergence contraction is necessary for dominance but generally not sufficient; Blackwell order is a simultaneous decision-theoretic comparison.</p>
+
+<h3>Strong data-processing inequalities</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A channel \(K\) has KL contraction coefficient
+  \[
+  \eta_{\mathrm{KL}}(K)=
+  \sup_{P\ne Q}\frac{D(PK\|QK)}{D(P\|Q)}\le1.
+  \]
+  If \(\eta_{\mathrm{KL}}<1\), information decays quantitatively:
+  \[
+  I(U;Y)\le\eta_{\mathrm{KL}}I(U;X)
+  \]
+  for \(U\to X\to Y\), under the corresponding input restrictions.</p>
+</div>
+
+<p>For a binary symmetric channel with crossover probability \(\varepsilon\), contraction is strict unless \(\varepsilon\in\{0,1\}\). Strong inequalities quantify how repeated noisy channels erase information and connect to mixing, functional inequalities, and privacy.</p>

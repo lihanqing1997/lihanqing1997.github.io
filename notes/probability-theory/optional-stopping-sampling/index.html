@@ -8,42 +8,173 @@ note_prev_url: "/notes/probability-theory/doob-inequalities-martingale-convergen
 note_next_url: "/notes/probability-theory/uniform-integrability-martingale-convergence/"
 ---
 
-<p>Optional stopping explains when a martingale remains fair at random times. The hypotheses are not cosmetic: without boundedness, integrability, or uniform integrability, stopping can create paradoxes.</p>
+<p>Optional sampling compares a martingale at random observation times. Stopping preserves the local martingale property automatically, but preserving expectations at an unbounded terminal time requires a genuine limiting condition. Most apparent “gambling paradoxes” are failures of uniform integrability or integrable stopping time assumptions.</p>
 
-    <h3>Stopped processes</h3>
+<h3>Stopped processes</h3>
 
-    <p>Stopping a martingale at a stopping time preserves the martingale property under mild hypotheses.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a process \(X_n\) and a stopping time \(\tau\), the stopped process is
+  \[
+  X_n^\tau=X_{n\wedge\tau}.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a process \(M_n\) and stopping time \(\tau\), the stopped process is \(M_{n\wedge\tau}\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(M_n\) is a martingale and \(\tau\) is a stopping time, then
+  \(M_n^\tau\) is a martingale.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Its increment is
+  \[
+  M_{n+1}^\tau-M_n^\tau
+  =1_{\{\tau>n\}}(M_{n+1}-M_n).
+  \]
+  The event \(\{\tau>n\}\) belongs to \(\mathcal F_n\), so
+  \[
+  \mathbb E[M_{n+1}^\tau-M_n^\tau\mid\mathcal F_n]
+  =
+  1_{\{\tau>n\}}
+  \mathbb E[M_{n+1}-M_n\mid\mathcal F_n]=0.
+  \]
+  Integrability follows because
+  \(M_n^\tau=\sum_{k=0}^{n-1}M_k1_{\{\tau=k\}}+M_n1_{\{\tau\ge n\}}\).</p>
+</div>
 
-    <h3>Bounded optional stopping</h3>
+<h3>Bounded optional sampling</h3>
 
-    <p>Bounded stopping times are the safest form of the theorem.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (optional sampling).</span> Let
+  \(M\) be a martingale and let \(\sigma\le\tau\) be bounded stopping times. Then
+  \[
+  \mathbb E[M_\tau\mid\mathcal F_\sigma]=M_\sigma
+  \quad\text{almost surely},
+  \qquad
+  \mathbb EM_\tau=\mathbb EM_\sigma=\mathbb EM_0.
+  \]
+  For a submartingale, the conditional equality is replaced by \(\ge\).</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(M_n\) is a martingale and \(\tau\le N\) is a bounded stopping time, then \(\mathbb E M_\tau=\mathbb E M_0\). More generally, \(M_{n\wedge\tau}\) is a martingale.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose \(N\) with
+  \(\tau\le N\). For \(A\in\mathcal F_\sigma\), the definition of
+  \(\mathcal F_\sigma\) implies
+  \(A\cap\{\sigma=k\}\in\mathcal F_k\). Decompose
+  \[
+  M_\tau-M_\sigma
+  =\sum_{j=1}^N1_{\{\sigma<j\le\tau\}}\Delta M_j.
+  \]
+  The indicator \(1_A1_{\{\sigma<j\le\tau\}}\) is
+  \(\mathcal F_{j-1}\)-measurable: by time \(j-1\) one knows whether
+  \(\sigma<j\) and \(\tau\ge j\). Hence
+  \[
+  \mathbb E[
+  1_A1_{\{\sigma<j\le\tau\}}\Delta M_j]=0.
+  \]
+  Summation gives
+  \(\mathbb E[1_AM_\tau]=\mathbb E[1_AM_\sigma]\), the defining identity for the conditional expectation. For a submartingale, each conditional increment has nonnegative expectation.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(M_{(n+1)\wedge\tau}-M_{n\wedge\tau}=1_{\{\tau\gt n\}}(M_{n+1}-M_n)\). The indicator is \(\mathcal F_n\)-measurable, so its conditional expectation times the martingale increment is zero. Thus the stopped process is a martingale. Since \(\tau\le N\), \(M_\tau=M_{N\wedge\tau}\), and expectations are constant.</p>
-    </div>
+<h3>Unbounded stopping times</h3>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (uniformly integrable stopping).</span> Let \(M\) be a martingale and let \(\tau<\infty\) almost surely. If
+  \[
+  \{M_{n\wedge\tau}:n\ge0\}
+  \quad\text{is uniformly integrable},
+  \]
+  then \(M_\tau\in L^1\) and
+  \[
+  \mathbb EM_\tau=\mathbb EM_0.
+  \]
+  More generally, if \(\sigma\le\tau\) and the stopped family is uniformly integrable, then
+  \(\mathbb E[M_\tau\mid\mathcal F_\sigma]=M_\sigma\).</p>
+</div>
 
-    <h3>Uniform integrability condition</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(\tau<\infty\),
+  \(M_{n\wedge\tau}\to M_\tau\) almost surely. Uniform integrability and Vitali's theorem upgrade this to \(L^1\)-convergence. Bounded optional stopping gives
+  \(\mathbb EM_{n\wedge\tau}=\mathbb EM_0\); pass to the limit. For the conditional assertion, multiply by
+  \(1_A\), \(A\in\mathcal F_\sigma\), apply bounded optional sampling to
+  \(\sigma\wedge n\le\tau\wedge n\), and pass to the limit in \(L^1\).</p>
+</div>
 
-    <p>Unbounded stopping requires a limiting argument with uniform integrability.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (bounded increments and integrable time).</span> Suppose
+  \(|M_n-M_{n-1}|\le C\) almost surely and
+  \(\mathbb E\tau<\infty\). Then
+  \(\{M_{n\wedge\tau}\}\) is uniformly integrable and
+  \(\mathbb EM_\tau=\mathbb EM_0\).</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(M_n\) is a martingale, \(\tau\) is finite a.s., and \(\{M_{n\wedge\tau}:n\ge0\}\) is uniformly integrable, then \(M_\tau\in L^1\) and \(\mathbb E M_\tau=\mathbb E M_0\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Pathwise,
+  \[
+  |M_{n\wedge\tau}|
+  \le |M_0|+C(n\wedge\tau)
+  \le |M_0|+C\tau.
+  \]
+  The right side is integrable and independent of \(n\), so the stopped family is dominated by one \(L^1\) variable and is uniformly integrable.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Bounded optional stopping gives \(\mathbb E M_{n\wedge\tau}=\mathbb E M_0\). Since \(\tau\lt\infty\) a.s., \(M_{n\wedge\tau}\to M_\tau\) a.s. Uniform integrability upgrades this to \(L^1\)-convergence, so expectations converge to \(\mathbb E M_\tau\).</p>
-    </div>
+<h3>Gambler's ruin</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Classic gambler's ruin computations are optional-stopping arguments with bounded hitting times or carefully justified limits.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let
+  \(S_n=i+\sum_{k=1}^n\xi_k\), where
+  \(P(\xi_k=\pm1)=1/2\), and stop at
+  \[
+  \tau=\inf\{n:S_n\in\{0,N\}\},
+  \qquad0<i<N.
+  \]
+  Because \(S_{n\wedge\tau}\in[0,N]\), the stopped martingale is uniformly integrable. Therefore
+  \[
+  i=\mathbb ES_\tau
+  =N\,P(S_\tau=N),
+  \]
+  so
+  \[
+  P_i(S_\tau=N)=\frac{i}{N}.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (expected ruin time).</span> In the same model,
+  \[
+  \mathbb E_i\tau=i(N-i).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \(\mathbb E[\xi_{n+1}^2]=1\), the process
+  \(S_n^2-n\) is a martingale. Apply bounded optional stopping to
+  \(\tau\wedge m\):
+  \[
+  \mathbb E S_{\tau\wedge m}^2-\mathbb E(\tau\wedge m)=i^2.
+  \]
+  The stopped positions are bounded by \(N\), and
+  \(\tau\wedge m\uparrow\tau\). Dominated convergence on the first term and monotone convergence on the second give
+  \[
+  \mathbb E\tau=\mathbb ES_\tau^2-i^2
+  =N^2P(S_\tau=N)-i^2
+  =Ni-i^2.
+  \]</p>
+</div>
+
+<h3>Why hypotheses cannot be dropped</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (failure at an unbounded time).</span> Let \(S_n\) be a simple symmetric random walk starting at zero and
+  \[
+  \tau=\inf\{n\ge0:S_n=1\}.
+  \]
+  Recurrence gives \(\tau<\infty\) almost surely, yet
+  \(S_\tau=1\), so
+  \[
+  \mathbb ES_\tau=1\ne0=\mathbb ES_0.
+  \]
+  There is no contradiction: \(S_{n\wedge\tau}\to1\) almost surely but the stopped family is not uniformly integrable. Rare paths with a large negative position carry the missing expectation.</p>
+</div>
+
+<p>A reliable optional-stopping argument therefore has two separate parts: first apply the theorem to bounded truncations \(\tau\wedge n\); then justify passage to \(\tau\) by domination, uniform integrability, or another explicit convergence theorem.</p>

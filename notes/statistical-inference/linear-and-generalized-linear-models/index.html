@@ -8,78 +8,308 @@ note_prev_url: "/notes/statistical-inference/finite-sample-optimality/"
 note_next_url: "/notes/statistical-inference/misspecification-robust-covariance/"
 ---
 
-<h3>Linear model as baseline</h3>
+<p>The Gaussian linear model is the finite-dimensional projection prototype for regression. Generalized linear models retain a linear predictor while replacing Gaussian constant variance by an exponential-family mean-variance relation and a link function.</p>
 
-    <p>Linear models are the Euclidean case of likelihood geometry. GLMs replace constant Gaussian variance by a mean-variance relation and a link function.</p>
+<h3>Linear projection and least squares</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A GLM specifies independent observations with \(E(Y_i\mid x_i)=\mu_i\), variance \(\operatorname{var}(Y_i\mid x_i)=a(\phi)V(\mu_i)\), and link \(g(\mu_i)=x_i^\top\beta\).</p>
-    </div>
-    <h3>Canonical exponential-family likelihood</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> In canonical form,
-\[
-\ell(\beta)=\sum_{i=1}^n {y_ix_i^\top\beta-b(x_i^\top\beta)\over a(\phi)}+c(y_i,\phi).
-\]
-Logistic regression has \(b(\eta)=\log(1+e^\eta)\); Poisson regression has \(b(\eta)=e^\eta\).</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The score and observed information are
-\[
-U(\beta)=X^\top(y-\mu)/a(\phi),\qquad I(\beta)=X^\top W(\beta)X/a(\phi),
-\]
-where \(W_{ii}=b''(x_i^\top\beta)\) in the canonical case.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiate the canonical log likelihood. The first derivative of \(b\) gives \(\mu_i\), and the second derivative gives the weight \(b''(\eta_i)\). Stacking the derivatives gives the matrix formula.</p>
-    </div>
-    <h3>Canonical and noncanonical links</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A link is canonical when the natural parameter equals the linear predictor: \(\theta_i=x_i^\top\beta\). For a noncanonical link, \(\theta_i=(b')^{-1}(g^{-1}(x_i^\top\beta))\), and the score contains an extra derivative factor.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Canonical links simplify likelihood curvature and Fisher scoring. Noncanonical links can be scientifically natural, but their Hessians include additional terms and require more care in asymptotic expansions.</p>
-    </div>
-    <h3>Fisher scoring and IRLS</h3>
+  <p><span class="statement-title">Definition.</span> For a fixed \(n\times p\) design matrix \(X\) of rank \(p\), the linear model is
+  \[
+  Y=X\beta+\varepsilon,\qquad
+  \mathbb E(\varepsilon\mid X)=0,\qquad
+  \operatorname{Cov}(\varepsilon\mid X)=\sigma^2I_n.
+  \]
+  The ordinary least-squares estimator minimizes
+  \[
+  \|Y-Xb\|_2^2
+  \]
+  over \(b\in\mathbb R^p\).</p>
+</div>
+
 <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The Fisher scoring step for a GLM can be written as an iteratively reweighted least-squares update
-\[
-\beta^{(k+1)}=(X^\top W^{(k)}X)^{-1}X^\top W^{(k)}z^{(k)},
-\]
-where \(z^{(k)}=\eta^{(k)}+(y-\mu^{(k)})\,\mathrm{d}\eta/\mathrm{d}\mu\) is the working response.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Quadratically approximate the log likelihood at the current \(\beta^{(k)}\). The gradient gives the linear term and expected information gives the quadratic weight matrix. Completing the square produces a weighted least-squares problem in the working response.</p>
-    </div>
-    <h3>Examples</h3>
+  <p><span class="statement-title">Normal equations and orthogonal projection.</span> The unique minimizer is
+  \[
+  \hat\beta=(X^\top X)^{-1}X^\top Y.
+  \]
+  The fitted vector and residual are
+  \[
+  \hat Y=H Y,\qquad e=(I-H)Y,\qquad
+  H=X(X^\top X)^{-1}X^\top,
+  \]
+  where \(H\) is the orthogonal projector onto \(\operatorname{col}(X)\). Consequently,
+  \[
+  X^\top e=0,\qquad
+  \|Y\|^2=\|\hat Y\|^2+\|e\|^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiating the least-squares criterion gives
+  \[
+  -2X^\top(Y-Xb)=0.
+  \]
+  Rank \(p\) makes \(X^\top X\) invertible and yields \(\hat\beta\). Direct calculation gives \(H^\top=H\) and \(H^2=H\), so \(H\) is an orthogonal projection. Since \(X^\top(I-H)=0\), residuals are orthogonal to the fitted subspace, and Pythagoras gives the norm decomposition.</p>
+</div>
+
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Logistic, Poisson, Gamma, negative-binomial, and probit models differ in link, variance function, and tail behavior. Logistic and Poisson are canonical for Bernoulli and Poisson families; probit is noncanonical but often useful for latent-Gaussian modeling.</p>
-    </div>
-    <h3>High-dimensional likelihood geometry</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In high-dimensional GLMs, asymptotic normality and BvM approximations require sparse curvature, score concentration, and localization away from separation or explosive mean regions.</p>
-    </div>
-    <h3>Full exponential-family calculus</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A regular one-parameter exponential family has density
-\[
-p_\theta(y)=\exp\{y\theta-b(\theta)+c(y)\},
-\]
-with mean \(b'(\theta)\), variance \(b''(\theta)\), and cumulants given by higher derivatives of \(b\).</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For canonical GLMs, the log likelihood is concave whenever \(b\) is convex, and its curvature is exactly a weighted Gram matrix.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Convexity of \(b\) gives \(b''\ge0\). Differentiating twice yields \(-\ddot\ell(\beta)=X^\top W(\beta)X/a(\phi)\), with nonnegative diagonal weights. Hence the negative Hessian is positive semidefinite.</p>
-    </div>
-    <h3>Likelihood expansion and asymptotic normality</h3>
+  <p><span class="statement-title">Conditional moments.</span>
+  \[
+  \mathbb E(\hat\beta\mid X)=\beta,\qquad
+  \operatorname{Cov}(\hat\beta\mid X)
+  =\sigma^2(X^\top X)^{-1}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The exact error identity
+  \[
+  \hat\beta-\beta
+  =(X^\top X)^{-1}X^\top\varepsilon
+  \]
+  gives both statements by conditional expectation and covariance.</p>
+</div>
+
+<h3>Gauss-Markov optimality</h3>
+
 <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(p\) is fixed, \(n^{-1}X^\top W(\beta_0)X\to I(\beta_0)\) nonsingular, and a Lindeberg condition holds, then the GLM maximum likelihood estimator satisfies
+  <p><span class="statement-title">Gauss-Markov theorem.</span> Among all linear unbiased estimators \(AY\) of \(\beta\), OLS has minimum covariance:
+  \[
+  \operatorname{Cov}(AY\mid X)
+  -\operatorname{Cov}(\hat\beta\mid X)
+  \succeq0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Unbiasedness requires \(AX=I_p\). Write
+  \[
+  A=(X^\top X)^{-1}X^\top+D,
+  \qquad DX=0.
+  \]
+  The cross terms vanish because \(DX=0\), and
+  \[
+  AA^\top
+  =(X^\top X)^{-1}+DD^\top.
+  \]
+  Multiplication by \(\sigma^2\) gives the covariance decomposition.</p>
+</div>
+
+<h3>Exact Gaussian inference</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Normal linear model distributions.</span> If
+  \[
+  \varepsilon\mid X\sim N(0,\sigma^2I_n),
+  \]
+  then
+  \[
+  \hat\beta\mid X\sim
+  N\{\beta,\sigma^2(X^\top X)^{-1}\},
+  \]
+  \[
+  \frac{\operatorname{RSS}}{\sigma^2}
+  =\frac{\|e\|^2}{\sigma^2}
+  \sim\chi_{n-p}^2,
+  \]
+  and \(\hat\beta\) is independent of \(\operatorname{RSS}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Both \(\hat\beta-\beta\) and \(e\) are linear transformations of a Gaussian vector. Their conditional covariance is
+  \[
+  \sigma^2(X^\top X)^{-1}X^\top(I-H)=0,
+  \]
+  so they are independent. The residual projector \(I-H\) is symmetric idempotent of rank \(n-p\); diagonalizing it orthogonally shows that \(\varepsilon^\top(I-H)\varepsilon/\sigma^2\) is the sum of \(n-p\) independent squared standard normals.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Student inference for a contrast.</span> Let
+  \[
+  \hat\sigma^2=\frac{\operatorname{RSS}}{n-p}.
+  \]
+  For \(c\in\mathbb R^p\),
+  \[
+  \frac{c^\top\hat\beta-c^\top\beta}
+  {\hat\sigma\{c^\top(X^\top X)^{-1}c\}^{1/2}}
+  \sim t_{n-p}.
+  \]</p>
+</div>
+
+<h3>Generalized least squares</h3>
+
+<p>If \(\operatorname{Cov}(\varepsilon\mid X)=\Sigma\) is known and positive definite, whitening gives
 \[
-\sqrt n(\hat\beta-\beta_0)\Rightarrow N(0,I(\beta_0)^{-1}).
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The score at the truth is a sum of independent mean-zero vectors. The central limit theorem gives \(n^{-1/2}U(\beta_0)\Rightarrow N(0,I)\). Taylor expansion \(0=U(\hat\beta)=U(\beta_0)-I_n(\tilde\beta)(\hat\beta-\beta_0)\), together with information convergence, gives the result.</p>
-    </div>
-    <h3>Canonical examples</h3>
+\hat\beta_{\mathrm{GLS}}
+=(X^\top\Sigma^{-1}X)^{-1}
+X^\top\Sigma^{-1}Y.
+\]
+It is the projection of \(Y\) onto \(\operatorname{col}(X)\) in the inner product
+\[
+\langle u,v\rangle_{\Sigma^{-1}}
+=u^\top\Sigma^{-1}v.
+\]
+If \(\Sigma\) is unknown, feasible GLS must account for its estimation; misspecified GLS covariance is again a sandwich.</p>
+
+<h3>Exponential-family responses</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A one-parameter exponential-dispersion family has density
+  \[
+  p(y;\vartheta,\phi)
+  =\exp\left\{
+  \frac{y\vartheta-b(\vartheta)}
+  {a(\phi)}+c(y,\phi)
+  \right\}.
+  \]
+  Its mean and variance are
+  \[
+  \mu=b'(\vartheta),\qquad
+  \operatorname{Var}(Y)=a(\phi)b''(\vartheta).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Normalization implies
+  \[
+  \mathbb E\left[
+  \frac{Y-b'(\vartheta)}{a(\phi)}
+  \right]=0,
+  \]
+  giving the mean. Differentiating this score identity once more gives the variance relation.</p>
+</div>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (GLM).</span> A generalized linear model specifies independent responses with
+  \[
+  \mathbb E(Y_i\mid x_i)=\mu_i,\qquad
+  \operatorname{Var}(Y_i\mid x_i)
+  =a(\phi)V(\mu_i),
+  \]
+  and a link
+  \[
+  g(\mu_i)=\eta_i=x_i^\top\beta.
+  \]
+  The link is canonical when \(\eta_i=\vartheta_i\).</p>
+</div>
+
+<h3>Score and information</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">GLM score and Fisher information.</span> Let
+  \[
+  d_i=\frac{\mathrm{d}\mu_i}{\mathrm{d}\eta_i},
+  \qquad
+  w_i=\frac{d_i^2}{a(\phi)V(\mu_i)}.
+  \]
+  Then
+  \[
+  U(\beta)
+  =X^\top D V^{-1}(Y-\mu)/a(\phi)
+  =X^\top W D^{-1}(Y-\mu),
+  \]
+  with the first expression interpreted componentwise, and
+  \[
+  I(\beta)=X^\top W X.
+  \]
+  For a canonical link,
+  \[
+  U(\beta)=\frac1{a(\phi)}X^\top(Y-\mu),
+  \qquad
+  W_{ii}=\frac{V(\mu_i)}{a(\phi)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For one response,
+  \[
+  \frac{\partial\ell_i}{\partial\beta}
+  =\frac{Y_i-\mu_i}{a(\phi)}
+  \frac{\mathrm{d}\vartheta_i}{\mathrm{d}\mu_i}
+  \frac{\mathrm{d}\mu_i}{\mathrm{d}\eta_i}x_i.
+  \]
+  Since \(\mathrm{d}\mu/\mathrm{d}\vartheta=b''(\vartheta)=V(\mu)\), this becomes
+  \[
+  \frac{Y_i-\mu_i}{a(\phi)V(\mu_i)}d_ix_i.
+  \]
+  Summing gives the score. Its covariance uses
+  \(\operatorname{Var}(Y_i)=a(\phi)V(\mu_i)\), producing \(X^\top W X\).</p>
+</div>
+
+<h3>Fisher scoring and IRLS</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Iteratively reweighted least squares.</span> At a current value \(\beta^{(k)}\), define
+  \[
+  z_i^{(k)}
+  =\eta_i^{(k)}
+  +(Y_i-\mu_i^{(k)})
+  \left.\frac{\mathrm{d}\eta_i}
+  {\mathrm{d}\mu_i}\right|_{\mu_i^{(k)}}.
+  \]
+  The Fisher-scoring update is
+  \[
+  \beta^{(k+1)}
+  =\{X^\top W^{(k)}X\}^{-1}
+  X^\top W^{(k)}z^{(k)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fisher scoring solves
+  \[
+  I(\beta^{(k)})
+  (\beta^{(k+1)}-\beta^{(k)})
+  =U(\beta^{(k)}).
+  \]
+  From the score formula,
+  \[
+  U=X^\top W(z-X\beta^{(k)}).
+  \]
+  Substitute and rearrange to obtain the weighted least-squares update.</p>
+</div>
+
+<h3>Canonical examples</h3>
+
 <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> Bernoulli logistic regression has \(b(\eta)=\log(1+e^\eta)\), \(\mu=e^\eta/(1+e^\eta)\), and weight \(\mu(1-\mu)\). Poisson log-linear regression has \(b(\eta)=e^\eta\), \(\mu=e^\eta\), and weight \(\mu\). Gaussian linear regression has \(b(\eta)=\eta^2/2\), identity link, and constant weight.</p>
-    </div>
-    <h3>Separation, overdispersion, and misspecification</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Logistic separation can make the MLE diverge. Poisson overdispersion can make model-based standard errors too small. Under misspecification, inference should use the sandwich form \(A^{-1}BA^{-1}\), with \(A\) the Hessian limit and \(B\) the score variance.</p>
-    </div>
+  <p><span class="statement-title">Examples.</span>
+  <ul>
+    <li>Gaussian identity: \(b(\eta)=\eta^2/2\), \(\mu=\eta\), and constant weights.</li>
+    <li>Bernoulli logistic: \(b(\eta)=\log(1+e^\eta)\), \(\mu=e^\eta/(1+e^\eta)\), and \(w=\mu(1-\mu)\).</li>
+    <li>Poisson log-linear: \(b(\eta)=e^\eta\), \(\mu=e^\eta\), and \(w=\mu\).</li>
+  </ul>
+  Probit regression uses \(g(\mu)=\Phi^{-1}(\mu)\) and is noncanonical.</p>
+</div>
+
+<h3>Fixed-dimensional asymptotic normality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">GLM MLE limit.</span> Suppose \(p\) is fixed, the true means remain in a regular interior region,
+  \[
+  \frac1nX^\top W(\beta_0)X\to I_0
+  \]
+  with \(I_0\) positive definite, a Lindeberg condition holds for score contributions, and the MLE is consistent. Then
+  \[
+  \sqrt n(\hat\beta-\beta_0)
+  \rightsquigarrow N(0,I_0^{-1}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The score is a sum of independent centered vectors and satisfies
+  \[
+  n^{-1/2}U(\beta_0)\rightsquigarrow N(0,I_0).
+  \]
+  Taylor expansion gives
+  \[
+  0=U(\hat\beta)
+  =U(\beta_0)-I_n(\tilde\beta)
+  (\hat\beta-\beta_0),
+  \]
+  where \(n^{-1}I_n(\tilde\beta)\to_pI_0\). Solve and apply Slutsky.</p>
+</div>
+
+<h3>Separation, dispersion, and model failure</h3>
+
+<p>In logistic regression, complete separation gives a direction \(v\) along which fitted probabilities approach the observed labels and the likelihood supremum occurs at \(\|\beta\|=\infty\). Existence must therefore be checked before reporting a Hessian-based standard error. Penalized or bias-reduced estimators change the target and finite-sample procedure.</p>
+
+<p>For Poisson regression, conditional variance exceeding the mean produces overdispersion. A quasi-likelihood can retain the mean model while estimating a dispersion factor, or a negative-binomial model can specify an explicit variance function. If only the conditional mean is trusted, sandwich covariance provides inference for the estimating-equation target. High-dimensional GLMs additionally require sparsity, restricted curvature, score concentration, and debiasing; fixed-\(p\) likelihood theory does not survive simply by replacing \(p\) with \(p_n\).</p>

@@ -8,24 +8,136 @@ note_prev_url: "/notes/optimization/fenchel-conjugates-duality/"
 note_next_url: "/notes/optimization/normal-cones-projected-optimality/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for KKT conditions.</p>
+<p>The Karush-Kuhn-Tucker conditions combine stationarity with the one-sided
+geometry of inequality constraints. They are necessary only under a constraint
+qualification, but in convex problems they become a complete certificate of
+global optimality.</p>
 
-    <h3>Inequality-constrained problem</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(\min f(x)\) subject to \(g_i(x)\le0\) and \(h_j(x)=0\), the Lagrangian is \(\mathcal L=f+\sum_i\lambda_i g_i+\sum_j\nu_j h_j\), with \(\lambda_i\ge0\).</p>
-    </div>
+<h3>Primal and dual variables</h3>
 
-    <h3>KKT theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under a constraint qualification, every local optimum satisfies stationarity, primal feasibility, dual feasibility \(\lambda_i\ge0\), and complementary slackness \(\lambda_i g_i(x^\star)=0\). For convex problems, these conditions are sufficient for global optimality.</p>
-    </div>
+<p>Consider
+\[
+\min_x f(x)
+\quad\text{subject to}\quad
+g_i(x)\le0\ (1\le i\le m),\qquad
+h_j(x)=0\ (1\le j\le r).
+\]
+Its Lagrangian is
+\[
+\mathcal L(x,\lambda,\nu)
+=f(x)+\sum_{i=1}^m\lambda_i g_i(x)
+ +\sum_{j=1}^r\nu_jh_j(x),
+\qquad \lambda\in\mathbb R_+^m,\quad\nu\in\mathbb R^r.
+\]</p>
 
-    <h3>Complementary slackness</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A multiplier can be positive only for an active constraint. Inactive constraints have zero price because locally relaxing them changes nothing.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A feasible point
+    \(x^\star\) and multipliers \((\lambda^\star,\nu^\star)\) satisfy the KKT
+    conditions if</p>
+    <p>
+    \[
+    \begin{aligned}
+    &\nabla f(x^\star)+\sum_i\lambda_i^\star\nabla g_i(x^\star)
+       +\sum_j\nu_j^\star\nabla h_j(x^\star)=0
+       &&\text{(stationarity)},\\
+    &g_i(x^\star)\le0,\quad h_j(x^\star)=0
+       &&\text{(primal feasibility)},\\
+    &\lambda_i^\star\ge0
+       &&\text{(dual feasibility)},\\
+    &\lambda_i^\star g_i(x^\star)=0
+       &&\text{(complementary slackness)}.
+    \end{aligned}
+    \]</p>
+</div>
 
-    <h3>Convex proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If KKT holds and the problem is convex, then the Lagrangian gives a global affine lower bound: \(f(x)\ge\mathcal L(x,\lambda,\nu)\ge\mathcal L(x^\star,\lambda,\nu)=f(x^\star)\) for feasible \(x\).</p>
-    </div>
+<p>Complementary slackness says that an inactive constraint has zero
+multiplier. A positive multiplier can occur only where the constraint touches
+the solution.</p>
+
+<h3>Necessity under linear independence</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">KKT necessity under LICQ.</span> Suppose
+    \(f,g_i,h_j\) are continuously differentiable and \(x^\star\) is a local
+    minimizer. Let
+    \(I(x^\star)=\{i:g_i(x^\star)=0\}\). If the vectors
+    \[
+    \{\nabla g_i(x^\star):i\in I(x^\star)\}
+    \cup\{\nabla h_j(x^\star):1\le j\le r\}
+    \]
+    are linearly independent, then KKT multipliers exist.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Under LICQ, the
+    feasible-direction cone is described to first order by
+    \[
+    \langle\nabla g_i(x^\star),v\rangle\le0
+    \quad(i\in I(x^\star)),\qquad
+    \langle\nabla h_j(x^\star),v\rangle=0.
+    \]
+    Local optimality rules out a vector satisfying these relations and
+    \(\langle\nabla f(x^\star),v\rangle<0\). The separating alternative for
+    linear inequalities, equivalently Farkas' lemma, therefore represents
+    \(-\nabla f(x^\star)\) as a nonnegative combination of active inequality
+    gradients plus a linear combination of equality gradients. Set inactive
+    multipliers to zero. This gives stationarity, dual feasibility, and
+    complementary slackness.</p>
+</div>
+
+<p>Constraint qualifications cannot simply be omitted. Minimizing \(x\)
+subject to \(x^2\le0\) has the unique feasible solution \(0\), but
+\(\nabla g(0)=0\), and stationarity \(1+\lambda\nabla g(0)=0\) is impossible.</p>
+
+<h3>Slater's condition and convex strong duality</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Convex KKT theorem.</span> Assume \(f\)
+    and \(g_i\) are proper convex functions, the equality constraints are
+    affine, and there is a point \(\bar x\) in the relative interior of the
+    common domain such that
+    \(g_i(\bar x)<0\) and \(h_j(\bar x)=0\). Then a feasible \(x^\star\) is
+    optimal if and only if it admits KKT multipliers. The primal and Lagrange
+    dual values coincide.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Slater's condition makes the
+    perturbation value function closed at the origin. A supporting hyperplane
+    at the optimal value produces nonnegative inequality multipliers and free
+    equality multipliers, proving necessity and zero duality gap.</p>
+    <p>For sufficiency, stationarity and convexity imply that \(x^\star\)
+    globally minimizes
+    \(x\mapsto\mathcal L(x,\lambda^\star,\nu^\star)\). For any feasible \(x\),
+    \[
+    f(x)\ge\mathcal L(x,\lambda^\star,\nu^\star)
+    \ge\mathcal L(x^\star,\lambda^\star,\nu^\star)
+    =f(x^\star),
+    \]
+    where the first inequality uses
+    \(\lambda^\star\ge0,\ g(x)\le0\), and the last equality uses feasibility
+    and complementary slackness.</p>
+</div>
+
+<h3>A quadratic program with an active boundary</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> Minimize
+    \[
+    f(x)=\frac12\|x-a\|^2
+    \quad\text{subject to}\quad c^\top x\le b,
+    \]
+    with \(c\ne0\). The KKT equations are
+    \(x-a+\lambda c=0\),
+    \(c^\top x\le b\), \(\lambda\ge0\), and
+    \(\lambda(c^\top x-b)=0\). If \(c^\top a\le b\), then
+    \(x^\star=a,\lambda^\star=0\). Otherwise the constraint is active and
+    \[
+    \lambda^\star=\frac{c^\top a-b}{\|c\|^2},
+    \qquad
+    x^\star=a-\frac{c^\top a-b}{\|c\|^2}c.
+    \]
+    Thus KKT recovers the orthogonal projection onto a half-space, and the
+    multiplier equals the normal displacement measured in the constraint's
+    scale.</p>
+</div>

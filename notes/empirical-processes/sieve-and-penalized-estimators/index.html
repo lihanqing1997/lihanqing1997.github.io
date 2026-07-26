@@ -2,37 +2,176 @@
 layout: note-detail
 breadcrumb_child_label_en: "27. Sieve and penalized estimators"
 breadcrumb_child_label_fr: "27. Estimateurs par tamis et pénalisés"
-breadcrumb_child_label_zh: "27. Sieve 与惩罚估计量"
+breadcrumb_child_label_zh: "27. 筛估计与惩罚估计量"
 note_back_url: "/notes/empirical-processes/"
 note_prev_url: "/notes/empirical-processes/rates-of-m-estimators/"
 note_next_url: "/notes/empirical-processes/semiparametric-and-random-empirical-processes/"
 ---
 
-<p>Sieve and penalized estimators control infinite-dimensional problems by restricting or penalizing complexity.</p>
+<p>Infinite-dimensional estimation requires a mechanism that prevents the empirical criterion from fitting arbitrarily fine noise. A sieve imposes a hard complexity bound; a penalty imposes a soft one. In both cases, approximation error decreases as the admissible model expands, while empirical-process fluctuation increases.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A sieve estimator optimizes over \(\Theta_n\subset\Theta\). A penalized estimator optimizes \(P_nm_\theta-\lambda_nJ(\theta)\), where \(J\) measures complexity.</p>
-    </div>
+<h3>Sieve estimators</h3>
 
-    <h3>Bias-complexity tradeoff</h3>
-    <ul>
-        <li>Approximation error decreases as \(\Theta_n\) grows; stochastic error increases with entropy.</li>
-        <li>Penalty terms localize the estimator to sublevel sets with smaller effective entropy.</li>
-        <li>Oracle inequalities compare the selected estimator with the best available tradeoff in the class.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sieve is a sequence
+  \(\Theta_n\subset\Theta\), usually finite dimensional, whose union is dense in the target space. A sieve \(M\)-estimator satisfies
+  \[
+  M_n(\hat\theta_n)
+  \geq\sup_{\theta\in\Theta_n}M_n(\theta)-o_p(1).
+  \]
+  Let
+  \[
+  \theta_n^\circ\in\arg\max_{\theta\in\Theta_n}M(\theta)
+  \]
+  be a population sieve projection.</p>
+</div>
 
-    <h3>Penalty localization</h3>
-    <p>This page is the interface to density estimation, nonparametric regression, penalized least squares, classification, support vector machines, and lasso-type methods.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (basic sieve decomposition).</span> For any metric \(d\),
+  \[
+  d(\hat\theta_n,\theta_0)
+  \leq
+  d(\hat\theta_n,\theta_n^\circ)
+  +d(\theta_n^\circ,\theta_0).
+  \]
+  The second term is approximation bias. The first is stochastic estimation error within \(\Theta_n\), controlled by local curvature and entropy of the sieve criterion class.</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Sieve error decomposition</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> The central balance is
+<p>The decomposition is elementary but organizes the proof: first approximate the target by a sieve element, then analyze the empirical optimizer relative to that projection. Treating \(\theta_n^\circ\) as if it were exactly \(\theta_0\) can conceal a bias larger than the stochastic limit.</p>
+
+<h3>Series least squares</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (rate calculation).</span> Suppose
+  \(g_0\) is \(s\)-smooth on \([0,1]^d\), and a \(k\)-dimensional basis admits an approximation \(g_k^\circ\) satisfying
+  \[
+  \|g_k^\circ-g_0\|_{P_X,2}\lesssim k^{-s/d}.
+  \]
+  If the empirical Gram matrix is well conditioned and noise has bounded conditional variance, series least squares has
+  \[
+  \|\hat g_k-g_0\|_{P_X,2}
+  =
+  O_p\!\left(k^{-s/d}+\sqrt{k/n}\right).
+  \]
+  Balancing the two terms gives
+  \[
+  k\asymp n^{d/(2s+d)},
+  \qquad
+  \|\hat g_k-g_0\|_{P_X,2}
+  =O_p(n^{-s/(2s+d)}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Orthogonality of least squares gives a basic inequality comparing \(\hat g_k\) with \(g_k^\circ\). The quadratic term is the empirical \(L_2\)-norm of their difference; the noise term is an empirical process over a \(k\)-dimensional linear ball. Euclidean entropy or direct linear algebra bounds that term by
+  \(O_p(\sqrt{k/n})\) in \(L_2\)-norm. Uniform Gram-matrix control transfers empirical norm to population norm. Add the approximation error and optimize \(k\). \(\square\)</p>
+</div>
+
+<h3>Penalized empirical risk</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given a nonnegative complexity functional \(J\), a penalized estimator minimizes
+  \[
+  P_n\ell_\theta+\lambda_nJ(\theta)
+  \]
+  or equivalently maximizes \(P_nm_\theta-\lambda_nJ(\theta)\).</p>
+</div>
+
+<p>The penalty is not only a numerical device. Its sublevel sets
 \[
-\text{total error}\approx \text{approximation error of the sieve}+\text{stochastic error of the selected class}.
+\Theta(R)=\{\theta:J(\theta)\leq R\}
 \]
-Growing the sieve lowers approximation error but raises entropy.</p>
-    </div>
+often have finite entropy. The basic inequality shows that \(\hat\theta_n\) lies in a random sublevel set whose radius can be bounded, thereby localizing the empirical process.</p>
 
-    <h3>Penalized least squares</h3>
-    <p>For penalized least squares, sublevel sets \(\{J(\theta)\le c\}\) often have smaller entropy than the full space. The penalty is useful not only computationally, but also because it localizes the empirical process.</p>
+<h3>The penalized least-squares basic inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In the regression model
+  \(Y=f_0(X)+\varepsilon\), \(E(\varepsilon\mid X)=0\), let
+  \[
+  \hat f\in\arg\min_{f\in\mathcal F}
+  \left\{P_n(Y-f(X))^2+\lambda J(f)\right\}.
+  \]
+  Then, for every \(f\in\mathcal F\),
+  \[
+  \|\hat f-f_0\|_{P_n,2}^2
+  +\lambda J(\hat f)
+  \leq
+  \|f-f_0\|_{P_n,2}^2
+  +\lambda J(f)
+  +2P_n\{\varepsilon(\hat f-f)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Optimality gives
+  \[
+  P_n(Y-\hat f)^2+\lambda J(\hat f)
+  \leq P_n(Y-f)^2+\lambda J(f).
+  \]
+  Substitute \(Y=f_0+\varepsilon\) and expand both squares. The common
+  \(P_n\varepsilon^2\) terms cancel, leaving the displayed inequality. \(\square\)</p>
+</div>
+
+<p>All stochastic analysis is now concentrated in the multiplier-type term
+\(P_n\{\varepsilon(\hat f-f)\}\). One bounds it uniformly over sets indexed by both prediction distance and penalty radius, then absorbs part of the quadratic loss into the left side.</p>
+
+<h3>An abstract oracle inequality</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose an event of probability at least \(1-\eta\) satisfies, for every \(g\) in the relevant difference class,
+  \[
+  2|P_n(\varepsilon g)|
+  \leq\frac12\|g\|_{P_n,2}^2+\operatorname{pen}(g).
+  \]
+  Then the basic inequality implies, on this event,
+  \[
+  \|\hat f-f_0\|_{P_n,2}^2
+  \lesssim
+  \inf_{f\in\mathcal F}
+  \left[
+    \|f-f_0\|_{P_n,2}^2
+    +\lambda J(f)
+    +\operatorname{pen}(\hat f-f)
+  \right].
+  \]</p>
+</div>
+
+<p>A useful oracle inequality makes the last penalty deterministic or bounds it by the same complexity assigned to \(f\). The result then compares \(\hat f\) with every candidate, automatically selecting a near-optimal approximation–estimation tradeoff.</p>
+
+<h3>Sparsity penalties</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (lasso basic inequality).</span> In fixed-design linear regression \(Y=X\beta_0+\varepsilon\),
+  \[
+  \hat\beta
+  \in\arg\min_\beta
+  \left\{\frac1n\|Y-X\beta\|_2^2+2\lambda\|\beta\|_1\right\}.
+  \]
+  With \(\Delta=\hat\beta-\beta_0\),
+  \[
+  \frac1n\|X\Delta\|_2^2
+  2\lambda\|\hat\beta\|_1
+  \leq
+  \frac2n\varepsilon^\top X\Delta
+  2\lambda\|\beta_0\|_1.
+  \]
+  On \(\|X^\top\varepsilon/n\|_\infty\leq\lambda/2\), duality bounds the stochastic term by \(\lambda\|\Delta\|_1\). Decomposability of the \(\ell^1\)-norm yields a cone condition, and a restricted eigenvalue converts prediction error to coefficient error.</p>
+</div>
+
+<h3>Quadratic penalties and effective dimension</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (spectral regularization).</span> For a Hilbert-space penalty
+  \(J(f)=\|f\|_{\mathcal H}^2\), diagonalize the empirical or population covariance operator with eigenvalues \(\mu_j\). The regularized effective dimension
+  \[
+  d_{\mathrm{eff}}(\lambda)
+  =\sum_{j\geq1}\frac{\mu_j}{\mu_j+\lambda}
+  \]
+  replaces the raw dimension in variance bounds. The estimation term is typically of order
+  \(\sqrt{d_{\mathrm{eff}}(\lambda)/n}\), while regularization bias grows with \(\lambda\).</p>
+</div>
+
+<h3>Choosing complexity</h3>
+
+<p>For a sieve, choose dimension so approximation and stochastic errors balance. For a penalty, choose \(\lambda_n\) large enough to dominate the localized empirical process but small enough that regularization bias vanishes. Data-dependent selection by cross-validation, Lepski's method, information criteria, or aggregation requires another uniform argument over the candidate tuning parameters; it is not automatically justified by a rate proved for one deterministic choice.</p>

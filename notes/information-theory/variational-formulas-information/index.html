@@ -40,3 +40,160 @@ Equality holds when \(Q_f=P\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Minimizing \(D(P\|Q)\) over a convex constraint set gives an information projection. This is the geometric core behind maximum entropy distributions and Sanov conditional limit theorems.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Gibbs variational principle</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a reference probability \(Q\) and measurable \(f\) with \(Qe^f<\infty\),
+  \[
+  \log Qe^f=
+  \sup_{P\ll Q}\{Pf-D(P\|Q)\}.
+  \]
+  The optimizer is
+  \[
+  \frac{\mathrm{d}P_f}{\mathrm{d}Q}
+  =\frac{e^f}{Qe^f}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  D(P\|P_f)
+  =D(P\|Q)-Pf+\log Qe^f\ge0.
+  \]
+  Rearrangement gives the upper bound; \(P=P_f\) attains equality.</p>
+</div>
+
+<h3>Dual formula for KL divergence</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \[
+  D(P\|Q)=
+  \sup_f\{Pf-\log Qe^f\},
+  \]
+  where the supremum ranges over bounded measurable \(f\), or a larger integrable class when justified.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Gibbs principle gives
+  \(Pf-\log Qe^f\le D(P\|Q)\). For
+  \(f=\log(\mathrm{d}P/\mathrm{d}Q)\), truncation if needed, equality is approached or attained.</p>
+</div>
+
+<h3>Mutual information as a variational divergence</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  I(X;Y)=
+  \inf_{Q_Y}\mathbb E_XD(P_{Y\mid X}\|Q_Y),
+  \]
+  and the unique minimizer on the relevant support is \(Q_Y=P_Y\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(Q_Y\),
+  \[
+  \mathbb E_XD(P_{Y\mid X}\|Q_Y)
+  =I(X;Y)+D(P_Y\|Q_Y)
+  \]
+  by adding and subtracting \(\log p_Y(Y)\). Minimize the nonnegative second term.</p>
+</div>
+
+<h3>Donsker-Varadhan neural lower bounds</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> For every critic \(f(x,y)\),
+  \[
+  I(X;Y)\ge
+  \mathbb E_{P_{XY}}f(X,Y)
+  -\log\mathbb E_{P_XP_Y}e^{f(X,Y)}.
+  \]</p>
+</div>
+
+<p>Optimizing a restricted critic class gives a lower bound, not generally the exact information. Estimating the log moment from finite samples can have high variance and bias, especially when true information is large because the optimal density ratio is heavy-tailed.</p>
+
+<h3>Fenchel representation of \(f\)-divergences</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(D_f(P\|Q)=Q f(\mathrm{d}P/\mathrm{d}Q)\) for convex \(f\) with \(f(1)=0\). If \(f^*\) is the convex conjugate, then
+  \[
+  D_f(P\|Q)\ge
+  \sup_T\{PT-Qf^*(T)\},
+  \]
+  with equality under standard regularity when the function class contains
+  \(T=f'(\mathrm{d}P/\mathrm{d}Q)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fenchel-Young gives
+  \(ut\le f(u)+f^*(t)\). Set
+  \(u=\mathrm{d}P/\mathrm{d}Q\), \(t=T\), integrate under \(Q\), and rearrange. Equality is the pointwise equality condition \(T\in\partial f(u)\).</p>
+</div>
+
+<h3>Log-partition derivatives</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \[
+  A(\lambda)=\log Qe^{\lambda f},
+  \qquad
+  \frac{\mathrm{d}Q_\lambda}{\mathrm{d}Q}
+  =e^{\lambda f-A(\lambda)}.
+  \]
+  Then
+  \[
+  A'(\lambda)=Q_\lambda f,\qquad
+  A''(\lambda)=\operatorname{Var}_{Q_\lambda}(f)\ge0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Differentiate under the integral. The first derivative divides the weighted first moment by the normalizing integral. Differentiating again gives weighted second moment minus squared weighted mean.</p>
+</div>
+
+<p>This convexity is the basis of Chernoff bounds, exponential families, thermodynamic integration, and entropic risk.</p>
+
+<h3>Entropic risk and robust expectations</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For \(\eta>0\),
+  \[
+  \frac1\eta\log Qe^{\eta f}
+  =
+  \sup_P\left\{
+  Pf-\frac1\eta D(P\|Q)\right\}.
+  \]</p>
+</div>
+
+<p>The left side is an entropic risk measure; the right side is a distributionally robust expectation penalized by KL distance. The optimizer exponentially tilts toward high-loss outcomes.</p>
+
+<h3>Variational characterization of channel capacity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For channel \(W(\mathrm{d}y\mid x)\),
+  \[
+  C=\sup_{P_X}I(X;Y)
+  =\inf_{Q_Y}\sup_xD\{W(\cdot\mid x)\|Q_Y\}.
+  \]
+  This is the information-radius formula.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The identity
+  \[
+  \mathbb E_{P_X}D(W_x\|Q)
+  =I(P_X,W)+D(P_Y\|Q)
+  \]
+  gives the upper bound
+  \(I(P_X,W)\le\sup_xD(W_x\|Q)\). Minimize over \(Q\).
+  Convex minimax theory supplies equality for compact finite-alphabet simplices; an optimal output distribution equalizes divergence on the support of a capacity-achieving input.</p>
+</div>
+
+<h3>Variational formulas require domains</h3>
+
+<p>Extended values matter. If \(P\not\ll Q\), KL is infinite and critics can diverge on a \(P\)-positive, \(Q\)-null set. Interchanging supremum, expectation, and differentiation requires measurability and integrability. A formal variational expression is not a computational guarantee until these domains and approximation errors are controlled.</p>

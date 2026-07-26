@@ -8,24 +8,153 @@ note_prev_url: "/notes/causal-inference/efficient-influence-functions/"
 note_next_url: "/notes/causal-inference/difference-in-differences/"
 ---
 
-<p>Instrumental variables records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Instrumental variables identify causal effects when treatment is confounded but an observed variable shifts treatment through a restricted pathway. Different assumptions identify different objects: a structural coefficient, an average derivative, or a local average treatment effect.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An instrument affects treatment, is independent of unmeasured outcome causes, and affects the outcome only through treatment.</p>
-    </div>
+<h3>Core instrument conditions</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under monotonicity and exclusion restrictions, the Wald ratio identifies a local average treatment effect among compliers.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For instrument \(Z\), treatment \(A\), and outcome \(Y\), the classical conditions are:
+  <ol>
+    <li><em>relevance:</em> \(Z\) changes the distribution of \(A\);</li>
+    <li><em>independence:</em> \(Z\) is independent of potential treatments and outcomes, possibly conditional on \(X\);</li>
+    <li><em>exclusion:</em> \(Z\) affects \(Y\) only through \(A\).</li>
+  </ol></p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Decompose observed treatment and outcome by principal strata. The instrument changes treatment only for compliers, so the reduced-form outcome difference equals the treatment difference times the complier effect.</p>
-    </div>
+<p>Relevance is partly testable. Independence and exclusion are causal restrictions and generally are not testable from the observed distribution alone.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Instrumental variables identify a specific causal margin. The estimand is not generally the population ATE.</p>
-    </div>
+<h3>Linear structural identification</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose
+  \[
+  Y=\beta A+U,\qquad \mathbb E(ZU)=0,
+  \qquad \operatorname{Cov}(Z,A)\ne0.
+  \]
+  Then
+  \[
+  \beta=\frac{\operatorname{Cov}(Z,Y)}
+  {\operatorname{Cov}(Z,A)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taking covariance with \(Z\) gives
+  \(\operatorname{Cov}(Z,Y)=
+  \beta\operatorname{Cov}(Z,A)+\operatorname{Cov}(Z,U)\).
+  Exogeneity removes the final term; divide by the nonzero first-stage covariance.</p>
+</div>
+
+<h3>Two-stage least squares</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> With instrument matrix \(Z\) and endogenous regressor matrix \(X\), let
+  \(P_Z=Z(Z^\top Z)^{-1}Z^\top\). The 2SLS estimator is
+  \[
+  \widehat\beta_{\mathrm{2SLS}}
+  =(X^\top P_ZX)^{-1}X^\top P_ZY.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> 2SLS is the generalized method-of-moments estimator solving
+  \[
+  \frac1nZ^\top(Y-X\beta)\approx0
+  \]
+  with weighting matrix proportional to \((Z^\top Z/n)^{-1}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Minimize
+  \[
+  \{Z^\top(Y-X\beta)\}^\top(Z^\top Z)^{-1}
+  \{Z^\top(Y-X\beta)\}.
+  \]
+  Differentiation gives
+  \(X^\top P_ZX\beta=X^\top P_ZY\).</p>
+</div>
+
+<h3>Binary instrument and the Wald estimand</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \(A(z)\) be treatment under instrument \(z\), and \(Y(a)\) the outcome under treatment \(a\). Observed treatment and outcome satisfy
+  \(A=A(Z)\) and, under exclusion, \(Y=Y\{A(Z)\}\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(Z\in\{0,1\}\) is independent of
+  \(\{A(0),A(1),Y(0),Y(1)\}\), exclusion and consistency hold, and monotonicity
+  \[
+  A(1)\ge A(0)\quad\text{almost surely}
+  \]
+  excludes defiers. Then
+  \[
+  \frac{\mathbb E(Y\mid Z=1)-\mathbb E(Y\mid Z=0)}
+  {\mathbb E(A\mid Z=1)-\mathbb E(A\mid Z=0)}
+  =
+  \mathbb E\{Y(1)-Y(0)\mid A(1)>A(0)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By random assignment and exclusion,
+  \[
+  \mathbb E(Y\mid Z=1)-\mathbb E(Y\mid Z=0)
+  =\mathbb E\big[
+  \{Y(1)-Y(0)\}\{A(1)-A(0)\}
+  \big].
+  \]
+  Monotonicity makes \(A(1)-A(0)\) the indicator of being a complier. The first-stage difference is its expectation. Divide to obtain the complier average effect.</p>
+</div>
+
+<h3>Principal strata</h3>
+
+<p>The pair \(\{A(0),A(1)\}\) defines never-takers, always-takers, compliers, and defiers. LATE concerns compliers, whose membership is latent for every unit. It need not equal the ATE or ATT when treatment effects are heterogeneous.</p>
+
+<h3>Weak instruments</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In the just-identified scalar model, delta-method variance of the Wald ratio contains the inverse square of the first-stage effect. As
+  \(\Delta_A=\mathbb E(A\mid Z=1)-\mathbb E(A\mid Z=0)\to0\),
+  ordinary normal approximation becomes unstable.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For ratio \(g(u,v)=u/v\),
+  \(\nabla g=(1/v,-u/v^2)\). Both components diverge as \(v=\Delta_A\to0\), so the delta-method variance does as well.</p>
+</div>
+
+<p>Weak-instrument-robust procedures such as Anderson-Rubin tests invert a test of the reduced-form moment without dividing by an imprecise first stage. First-stage \(F\)-statistics are diagnostics, not universal proofs of strong identification, especially with heteroskedasticity or many instruments.</p>
+
+<h3>Overidentification and invalid instruments</h3>
+
+<p>With more instruments than endogenous regressors, overidentifying restrictions can be tested by whether sample moments agree at the fitted parameter. Rejection indicates that at least one maintained restriction fails. Nonrejection does not prove validity, and the test can have low power when instruments are weak or violations align.</p>
+
+<h3>Conditional instruments and covariates</h3>
+
+<p>When instrument independence holds conditional on \(X\), one uses residualized moments
+\[
+\mathbb E[
+\{Z-\mathbb E(Z\mid X)\}
+\{Y-\beta A-g(X)\}
+]=0
+\]
+or stratified Wald effects. Flexible nuisance estimates can be combined with orthogonal scores and cross-fitting.</p>
+
+<h3>Exclusion sensitivity</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Sensitivity model.</span> If
+  \(Y=\beta A+\delta Z+U\) with \(\mathbb E(ZU)=0\), the Wald estimand equals
+  \[
+  \beta+\delta\,
+  \frac{\operatorname{Var}(Z)}
+  {\operatorname{Cov}(Z,A)}.
+  \]
+  Even a small direct effect \(\delta\) is magnified by a weak first stage. This algebra explains why weak and slightly invalid instruments are a dangerous combination.</p>
+</div>
+
+<h3>Instrumental inequalities</h3>
+
+<p>For discrete variables, valid IV models imply observable inequality constraints. Violations can falsify the model, but satisfaction does not establish independence or exclusion. Partial-identification methods bound effects under weakened monotonicity, exclusion, or treatment-effect assumptions rather than forcing point identification.</p>

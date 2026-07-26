@@ -91,3 +91,148 @@ for all \(\Delta\) satisfying \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\).</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> For each coordinate, \(X_j^\top\xi/n\) is sub-Gaussian with scale at most \(\sigma/\sqrt n\). A union bound over \(p\) coordinates gives the \(\sqrt{\log p/n}\) maximum scale.</p>
     </div>
+
+<h3>Compatibility and restricted curvature</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(L\ge1\) and
+  \(S\subset\{1,\ldots,p\}\), the compatibility constant is
+  \[
+  \phi^2(L,S)=
+  \min_{\substack{\Delta\ne0\\
+  \|\Delta_{S^c}\|_1\le L\|\Delta_S\|_1}}
+  \frac{|S|\|X\Delta\|_2^2}
+  {n\|\Delta_S\|_1^2}.
+  \]
+  It is weaker than a restricted eigenvalue condition because it controls
+  \(\|\Delta_S\|_1\), not the full Euclidean norm.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> On the event
+  \(\lambda\ge2\|X^\top\xi/n\|_\infty\), if
+  \(\phi(3,S)>0\), then
+  \[
+  \frac1n\|X\Delta\|_2^2+\lambda\|\Delta\|_1
+  \le C\frac{\lambda^2s}{\phi^2(3,S)}
+  \]
+  for a universal constant \(C\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The basic inequality gives the cone
+  \(\|\Delta_{S^c}\|_1\le3\|\Delta_S\|_1\) and
+  \[
+  \frac1{2n}\|X\Delta\|^2+\frac\lambda2\|\Delta_{S^c}\|_1
+  \le\frac{3\lambda}{2}\|\Delta_S\|_1.
+  \]
+  Compatibility yields
+  \(\|\Delta_S\|_1\le
+  \sqrt{s}\|X\Delta\|/(\sqrt n\,\phi)\).
+  Apply \(2ab\le a^2+b^2\) to absorb half of the prediction term. The resulting bound on \(\|X\Delta\|^2/n\), together with the cone inequality, controls \(\lambda\|\Delta\|_1\).</p>
+</div>
+
+<h3>Gaussian penalty calibration</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose
+  \(\xi\sim N(0,\sigma^2I_n)\) and
+  \(\|X_j\|_2^2/n\le1\). Then for every \(\delta\in(0,1)\),
+  \[
+  P\!\left(
+  \left\|\frac{X^\top\xi}{n}\right\|_\infty
+  \le\sigma\sqrt{\frac{2\log(2p/\delta)}{n}}
+  \right)\ge1-\delta.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Each coordinate is centered normal with variance at most \(\sigma^2/n\). The Gaussian tail bound and a union bound over both signs and \(p\) coordinates give the display.</p>
+</div>
+
+<h3>Slow and fast oracle inequalities</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Without a restricted-eigenvalue assumption, on the penalty event the Lasso satisfies for every comparator \(\beta\),
+  \[
+  \frac1n\|X\widehat\beta-X\beta^*\|_2^2
+  \le
+  \frac1n\|X\beta-X\beta^*\|_2^2
+  4\lambda\|\beta\|_1.
+  \]
+  This is a slow-rate oracle inequality. Restricted curvature converts the linear penalty term into the fast term
+  \(\lambda^2|S|/\kappa^2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Compare the penalized objective at
+  \(\widehat\beta\) and \(\beta\), expand \(Y=X\beta^*+\xi\), and bound
+  \(2\xi^\top X(\widehat\beta-\beta)/n\) by
+  \(\lambda\|\widehat\beta-\beta\|_1\). Triangle inequalities then leave at most a constant times \(\lambda\|\beta\|_1\). No conversion of \(\ell^1\)-error to prediction error is used, which is why no design condition is needed and why the rate is slower.</p>
+</div>
+
+<h3>Prediction is easier than support recovery</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Counterexample.</span> If two columns are identical,
+  \(X_1=X_2\), then the distributions induced by
+  \((\beta_1,\beta_2)=(a,0)\) and \((0,a)\) are identical. Prediction of
+  \(X\beta\) may be exact, but no procedure can identify which variable is active. Thus prediction rates require only curvature on identifiable directions; exact support recovery requires stronger nonredundancy and signal conditions.</p>
+</div>
+
+<h3>Group sparsity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given a partition
+  \(\mathcal G\) of coordinates, the group Lasso solves
+  \[
+  \min_\beta\frac1{2n}\|Y-X\beta\|_2^2+
+  \lambda\sum_{g\in\mathcal G}w_g\|\beta_g\|_2.
+  \]
+  Its dual norm is
+  \(\max_g\|u_g\|_2/w_g\), so the penalty event controls the maximum groupwise noise correlation.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If the true support consists of
+  \(s_G\) groups and a group restricted-eigenvalue condition holds, then the prediction rate has order
+  \[
+  \frac{\sigma^2}{n}
+  \left\{\sum_{g\in S}|g|+s_G\log|\mathcal G|\right\},
+  \]
+  up to design constants and weighting conventions.</p>
+</div>
+
+<p>The first term estimates coefficients within active groups; the second searches over groups. This decomposition generalizes the scalar sparse complexity \(s\log(p/s)\).</p>
+
+<h3>Debiasing a Lasso coordinate</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \(\widehat\Sigma=X^\top X/n\), and let \(\widehat\Theta_j\) approximate the
+  \(j\)th column of \(\widehat\Sigma^{-1}\), often by nodewise Lasso. The debiased estimator is
+  \[
+  \widetilde\beta_j
+  =\widehat\beta_j+
+  \widehat\Theta_j^\top X^\top(Y-X\widehat\beta)/n.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Its exact decomposition is
+  \[
+  \widetilde\beta_j-\beta_j^*
+  =
+  \widehat\Theta_j^\top X^\top\xi/n+
+  (e_j^\top-\widehat\Theta_j^\top\widehat\Sigma)
+  (\widehat\beta-\beta^*).
+  \]
+  If the second term is \(o_P(n^{-1/2})\), then conditional Gaussian or central-limit arguments make the first term asymptotically normal.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Substitute
+  \(Y-X\widehat\beta=\xi-X(\widehat\beta-\beta^*)\) into the definition and collect terms. The identity separates the leading score from the inverse-covariance approximation remainder.</p>
+</div>
+
+<p>Support recovery conditions are treated separately on the page about <a href="{{ '/notes/statistical-learning/compatibility-irrepresentability-support-recovery/' | relative_url }}">compatibility and irrepresentability</a>; minimax optimality appears on the final page.</p>

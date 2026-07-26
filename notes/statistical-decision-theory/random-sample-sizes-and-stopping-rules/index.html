@@ -8,22 +8,116 @@ note_prev_url: "/notes/statistical-decision-theory/maximum-likelihood-and-pathol
 note_next_url: "/notes/statistical-decision-theory/synthesis-experiments-to-procedures/"
 ---
 
-<p>Random sample sizes change the experiment because the stopping rule is part of the observation. Under stable information accumulation, many LAN results survive.</p>
+<p>A random sample size is observed together with the data and may carry information about the parameter. When it is external or asymptotically deterministic, fixed-sample LAN survives under a time change. When it is data dependent, martingale likelihood theory and stable convergence are needed.</p>
 
-    <h3>Randomized observation horizon</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Let \(N_n\) be a data-dependent or external sample size. The observed experiment contains both \(N_n\) and \(X_1,\ldots,X_{N_n}\).</p>
-    </div>
+<h3>The random-horizon experiment</h3>
 
-    <h3>Information-time normalization</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(N_n/n\to \tau>0\) in probability and the fixed-\(n\) experiment is LAN with information \(I\), then the random-size experiment is LAN with information \(\tau I\), under suitable independence or stopping assumptions.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For an integer-valued \(N_n\), the observed data are
+  \[
+  (N_n,X_1,\ldots,X_{N_n}).
+  \]
+  If \(N_n\) is a stopping time, this is the stopped \(\sigma\)-field
+  \(\mathcal F_{N_n}\). If \(N_n\) is external and independent, it is an ancillary randomization of information time.</p>
+</div>
 
-    <h3>Random time-change proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The central sequence at time \(N_n\) is a stopped or randomly indexed partial sum. Martingale CLTs and random time-change arguments replace \(n\) by \(N_n\).</p>
-    </div>
+<h3>Anscombe's random-index theorem</h3>
 
-    <h3>Sequential design consequences</h3>
-    <p>Stopping rules can improve cost or ethical performance without changing first-order local risk, provided they do not destroy contiguity or information stability.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(S_k=\sum_{i=1}^kY_i\), where \(Y_i\) are i.i.d., centered, with variance \(\sigma^2\). If
+  \[
+  \frac{N_n}{n}\to_p\tau>0
+  \]
+  and the partial-sum process satisfies the usual stochastic equicontinuity in time, then
+  \[
+  \frac{S_{N_n}}{\sqrt n}
+  \rightsquigarrow N(0,\tau\sigma^2).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Donsker's theorem gives
+  \[
+  t\mapsto\frac{S_{\lfloor nt\rfloor}}{\sqrt n}
+  \rightsquigarrow\sigma W(t)
+  \]
+  in \(D[0,\infty)\). Jointly,
+  \(N_n/n\to_p\tau\). Brownian paths are continuous, so evaluation at the random time is a continuous mapping at the limit:
+  \[
+  \frac{S_{N_n}}{\sqrt n}
+  \rightsquigarrow\sigma W(\tau)
+  \sim N(0,\tau\sigma^2).
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Random-size LAN</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose an i.i.d. model is DQM at \(\theta_0\) with information \(I\), and
+  \(N_n/n\to_p\tau>0\) under \(\theta_0\). Under conditions allowing the stopped score and likelihood remainder to obey Anscombe-type convergence,
+  \[
+  \log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{\,N_n}}
+                {\mathrm{d}P_{\theta_0}^{\,N_n}}
+  =
+  h^\top\Delta_{N_n,n}
+  -\frac12\tau h^\top Ih+o_p(1),
+  \]
+  where
+  \[
+  \Delta_{N_n,n}
+  =
+  \frac1{\sqrt n}\sum_{i=1}^{N_n}\dot\ell_{\theta_0}(X_i)
+  \rightsquigarrow N(0,\tau I).
+  \]
+  Thus information at the \(\sqrt n\) scale is \(\tau I\).</p>
+</div>
+
+<p>If one instead normalizes by \(\sqrt{N_n}\), the information returns to \(I\), provided \(N_n\to\infty\).</p>
+
+<h3>Random information fractions</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \[
+  N_n/n\rightsquigarrow T>0
+  \]
+  stably, with nondegenerate random \(T\), then the central sequence can have mixed normal limit
+  \[
+  \Delta_{N_n,n}\rightsquig T^{1/2}I^{1/2}Z,
+  \]
+  and the local experiment is LAMN with random information \(TI\).</p>
+</div>
+
+<p>Stable convergence is needed because the random information \(T\) remains part of the limit experiment and may be related to ancillary or design variables.</p>
+
+<h3>Data-dependent stopping</h3>
+
+<p>If \(N_n\) depends on the data, the likelihood ratio is the stopped likelihood martingale, not merely a fixed-\(N_n\) density with \(N_n\) treated as external. Martingale central limit conditions require predictable quadratic variation:
+\[
+\langle M\rangle_{N_n}/n\to_p\tau I
+\]
+and a conditional Lindeberg condition. Optional stopping must preserve likelihood-ratio mean to retain contiguity.</p>
+
+<h3>Informative sample sizes</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Suppose sampling stops early when observations are large. Then \(N_n\) itself is associated with the parameter, and conditioning on \(N_n\) can discard information or alter the sampling law. Treating the realized size as if it had been fixed in advance may give correct likelihood ratios under a stopping-rule principle but incorrect unconditional frequentist calibration.</p>
+</div>
+
+<h3>Group-sequential designs</h3>
+
+<p>At predetermined information fractions
+\[
+0<t_1<\cdots<t_K=1,
+\]
+the standardized score vector converges to Gaussian Brownian increments with covariance
+\[
+\operatorname{Cov}\{\Delta(t_j),\Delta(t_k)\}
+=(t_j\wedge t_k)I.
+\]
+Stopping boundaries are calibrated against this joint law. Repeatedly applying a fixed-sample critical value would inflate type-I error because the looks are correlated opportunities to reject.</p>
+
+<h3>Cost and information</h3>
+
+<p>A sequential rule can reduce expected sample size under favorable parameter values while preserving error probabilities. It does not create Fisher information for free: expected information, sampling cost, and terminal loss must all appear in the decision criterion. Fixed-sample efficiency and sequential optimality answer different questions.</p>

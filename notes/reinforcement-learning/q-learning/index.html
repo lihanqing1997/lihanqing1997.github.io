@@ -56,3 +56,86 @@ Q_{t+1}(S_t,A_t)=Q_t(S_t,A_t)+\alpha_t\{R_{t+1}+\gamma\max_aQ_t(S_{t+1},a)-Q_t(S
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> With function approximation, bootstrapping, and off-policy data, the update may diverge. Stabilizing devices such as target networks and replay buffers are algorithmic remedies, not replacements for the tabular contraction proof.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Off-policy stochastic Bellman iteration</h3>
+
+<p>Tabular Q-learning updates
+\[
+Q_{t+1}(S_t,A_t)
+=Q_t(S_t,A_t)+\alpha_t
+\left[
+R_{t+1}+\gamma\max_bQ_t(S_{t+1},b)-Q_t(S_t,A_t)
+\right].
+\]
+The behavior policy generates \((S_t,A_t)\), while the max defines the greedy
+target policy. Conditionally,
+\[
+E[\text{target}-Q_t(s,a)\mid s,a]
+=(\mathcal TQ_t)(s,a)-Q_t(s,a).
+\]</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (tabular convergence).</span> In a
+finite discounted MDP with bounded reward variance, if every state-action pair
+is sampled infinitely often and its step sizes satisfy
+\[
+\sum_t\alpha_t(s,a)=\infty,\qquad
+\sum_t\alpha_t(s,a)^2<\infty,
+\]
+then \(Q_t\to Q^*\) almost surely.</p>
+</div>
+
+<p>The proof combines asynchronous stochastic approximation with the
+\(\gamma\)-contraction of \(\mathcal T\). Exploration need not converge to the
+greedy policy during learning, but it must maintain infinite coverage. A fixed
+\(\varepsilon\)-greedy behavior policy suffices in communicating finite MDPs;
+rapidly vanishing exploration may not.</p>
+
+<h3>SARSA and expected SARSA</h3>
+
+<p>SARSA uses the sampled next action,
+\[
+R_{t+1}+\gamma Q_t(S_{t+1},A_{t+1}),
+\]
+and is on-policy for the behavior rule. Expected SARSA replaces the last term
+by
+\(\gamma\sum_a\pi_t(a\mid S_{t+1})Q_t(S_{t+1},a)\), reducing conditional
+variance. Under greedy-in-the-limit with infinite exploration, tabular SARSA
+can converge to \(Q^*\); with fixed exploration it evaluates the exploratory
+policy instead.</p>
+
+<h3>Maximization bias and double Q-learning</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\(\widehat q_a=q_a+\varepsilon_a\) with \(E\varepsilon_a=0\), then
+\[
+E\max_a\widehat q_a\ge\max_a q_a.
+\]
+The inequality is strict in typical noisy, tied-action settings.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The maximum is convex, so Jensen
+gives
+\[
+E\max_a(q_a+\varepsilon_a)
+\ge\max_aE(q_a+\varepsilon_a)=\max_aq_a.
+\]</p>
+</div>
+
+<p>Double Q-learning decouples selection and evaluation: choose
+\(a^*=\arg\max_aQ^A(s',a)\) and evaluate with \(Q^B(s',a^*)\), alternating
+roles. Independence is imperfect during online learning, but the construction
+substantially reduces the same-noise maximization bias.</p>
+
+<h3>The function-approximation boundary</h3>
+
+<p>Convergence of tabular Q-learning does not extend automatically to
+\(Q_w\). Bootstrapping, off-policy sampling, and function approximation form
+the “deadly triad”; even linear semi-gradient methods can diverge because the
+projected optimality operator need not be a contraction in the sampling norm.
+Target networks, replay buffers, clipping, and conservative objectives improve
+practice but do not turn the tabular theorem into a general nonlinear
+convergence result.</p>

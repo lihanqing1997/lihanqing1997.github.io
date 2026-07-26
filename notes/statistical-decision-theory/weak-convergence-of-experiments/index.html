@@ -8,22 +8,139 @@ note_prev_url: "/notes/statistical-decision-theory/contiguity/"
 note_next_url: "/notes/statistical-decision-theory/le-cam-lemmas/"
 ---
 
-<p>Weak convergence of experiments is convergence of all finite likelihood-ratio coordinates. It is the minimum structure needed for local decision limits.</p>
+<p>Weak convergence of experiments is convergence of their finite likelihood-ratio structures. It is weaker than convergence in Le Cam distance, but it is sufficient to identify limit experiments and transfer finite Bayes lower bounds.</p>
 
-    <h3>Finite likelihood-ratio vectors</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(\theta_0,\theta_1,\ldots,\theta_k\), consider the vector \((\mathrm{d}P_{\theta_j,n}/\mathrm{d}P_{\theta_0,n})_{j=1}^k\) under \(P_{\theta_0,n}\). Weak convergence of experiments requires convergence of these vectors for every finite set.</p>
-    </div>
+<h3>Canonical finite experiments</h3>
 
-    <h3>Determination of finite experiment limits</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For finite parameter sets, convergence in distribution of likelihood-ratio vectors under one base point determines the weak limit experiment.</p>
-    </div>
+<p>Let
+\[
+\mathcal E_n=\{P_{n,0},P_{n,1},\ldots,P_{n,k}\}
+\]
+and assume \(P_{n,j}\ll P_{n,0}\). Define
+\[
+L_n=(L_{n,1},\ldots,L_{n,k}),
+\qquad
+L_{n,j}=\frac{\mathrm{d}P_{n,j}}{\mathrm{d}P_{n,0}}.
+\]</p>
 
-    <h3>Recovering the remaining laws</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The law under another parameter is obtained by weighting with the corresponding likelihood-ratio coordinate. Thus the whole finite experiment is encoded by the base law and the likelihood-ratio vector.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The finite experiments
+  \(\mathcal E_n\) converge weakly to
+  \(\mathcal E=\{P_0,\ldots,P_k\}\) if, under \(P_{n,0}\),
+  \[
+  L_n\rightsquigarrow L
+  =
+  \left(
+    \frac{\mathrm{d}P_1}{\mathrm{d}P_0},
+    \ldots,
+    \frac{\mathrm{d}P_k}{\mathrm{d}P_0}
+  \right)
+  \]
+  under \(P_0\).</p>
+</div>
 
-    <h3>From finite coordinates to local theory</h3>
-    <p>LAN is a special case where the likelihood-ratio vector converges to the likelihood-ratio vector of a Gaussian shift experiment.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (canonical representation).</span> Suppose
+  \[
+  L_n\rightsquigarrow L=(L_1,\ldots,L_k)
+  \quad\text{under }P_{n,0},
+  \]
+  where \(L_j\geq0\) and \(EL_j=1\). Let \(\mu\) be the law of \(L\) on
+  \(\mathbb R_+^k\), and define
+  \[
+  Q_0=\mu,\qquad
+  \frac{\mathrm{d}Q_j}{\mathrm{d}\mu}(z)=z_j.
+  \]
+  Then \(\{Q_0,\ldots,Q_k\}\) is the weak limit experiment.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Nonnegativity and \(EL_j=1\) make each \(Q_j\) a probability measure. Under \(Q_0\), the coordinate map \(z\mapsto z_j\) is precisely the likelihood ratio \(\mathrm{d}Q_j/\mathrm{d}Q_0\). Hence the limiting vector has exactly the likelihood-ratio law of the canonical experiment. \(\square\)</p>
+</div>
+
+<p>The condition \(EL_j=1\) prevents probability mass from disappearing in the limit. Since \(E_{P_{n,0}}L_{n,j}=1\), weak convergence alone gives only \(EL_j\leq1\) by Fatou. Equality is equivalent to uniform integrability and to \(P_{n,j}\triangleleft P_{n,0}\).</p>
+
+<h3>Recovering laws under other parameters</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \((T_n,L_n)\rightsquigarrow(T,L)\) under \(P_{n,0}\) and
+  \(L_{n,j}\) is uniformly integrable, then under \(P_{n,j}\),
+  \[
+  T_n\rightsquigarrow T^{(j)},
+  \]
+  where
+  \[
+  E f(T^{(j)})=E\{L_jf(T)\}
+  \]
+  for every bounded continuous \(f\).</p>
+</div>
+
+<p>This is Le Cam's third lemma. It shows that the base law and likelihood-ratio coordinates encode all other parameter laws by tilting.</p>
+
+<h3>General parameter sets</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Experiments
+  \(\mathcal E_n=\{P_{n,\theta}:\theta\in\Theta\}\) converge weakly to
+  \(\mathcal E=\{P_\theta:\theta\in\Theta\}\) if, for every finite
+  \(I=\{\theta_0,\theta_1,\ldots,\theta_k\}\subset\Theta\), the restricted finite experiments
+  \(\mathcal E_n|_I\) converge through their likelihood-ratio vectors to
+  \(\mathcal E|_I\).</p>
+</div>
+
+<p>This projective definition does not require one dominating measure for the entire parameter set. Every finite subexperiment may choose its own base or common dominating mixture.</p>
+
+<h3>Finite decision values</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose a finite experiment
+  \(\mathcal E_n\) converges weakly to \(\mathcal E\), and let the action space be finite with bounded loss. Then the optimal Bayes risks converge:
+  \[
+  \inf_{\delta_n}r_{\mathcal E_n}(\pi,\delta_n)
+  \longrightarrow
+  \inf_\delta r_{\mathcal E}(\pi,\delta)
+  \]
+  for every prior \(\pi\) on the finite parameter set.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> In canonical likelihood-ratio coordinates, a randomized rule is a measurable map from \(\mathbb R_+^k\) into an action simplex. For a finite action set, the pointwise Bayes action minimizes a finite collection of affine functions of the likelihood-ratio vector. The resulting Bayes envelope is bounded and continuous except on finitely many tie hyperplanes; ties can be resolved by approximation. Weak convergence and uniform integrability then give convergence of its expectation. \(\square\)</p>
+</div>
+
+<h3>Weak convergence versus Le Cam distance</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \[
+  \Delta(\mathcal E_n,\mathcal E)\to0,
+  \]
+  then \(\mathcal E_n\) converges weakly to \(\mathcal E\). The converse need not hold without compactness or uniformity.</p>
+</div>
+
+<p>Le Cam distance transfers all bounded-loss decision problems uniformly over the parameter set. Weak convergence controls each fixed finite subexperiment. Local asymptotic minimax lower bounds need only finite priors at first, so weak convergence is often the appropriate tool.</p>
+
+<h3>Gaussian likelihood-ratio limits</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If for each finite
+  \(h_1,\ldots,h_k\),
+  \[
+  \log L_{n,h_j}
+  =
+  h_j^\top\Delta_n-\tfrac12h_j^\top Ih_j+o_p(1),
+  \qquad
+  \Delta_n\rightsquigarrow N(0,I),
+  \]
+  then
+  \[
+  (L_{n,h_1},\ldots,L_{n,h_k})
+  \rightsquigarrow
+  \left(
+  e^{h_1^\top Z-\frac12h_1^\top Ih_1},
+  \ldots,
+  e^{h_k^\top Z-\frac12h_k^\top Ih_k}
+  \right).
+  \]
+  These are exactly the likelihood ratios of the Gaussian shift experiment. This is the likelihood-ratio content of LAN.</p>
+</div>

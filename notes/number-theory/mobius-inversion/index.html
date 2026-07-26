@@ -8,24 +8,119 @@ note_prev_url: "/notes/number-theory/arithmetic-functions-and-convolution/"
 note_next_url: "/notes/number-theory/euler-phi-function-and-primitive-roots/"
 ---
 
-<p>Mobius inversion records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>Mobius inversion removes a divisor sum. It is the incidence-algebra
+inverse of summation over the divisibility poset and appears whenever a count
+mixes primitive objects with their repetitions.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Möbius function \(\mu\) is the Dirichlet inverse of the constant function \(1\). It detects squarefree parity of prime factors.</p>
-    </div>
+<h3>The Mobius function</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(F(n)=\sum_{d\mid n}f(d)\), then \(f(n)=\sum_{d\mid n}\mu(d)F(n/d)\).</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span>
+\[
+\mu(n)=
+\begin{cases}
+1,&n=1,\\
+(-1)^r,&n\text{ is a product of \(r\) distinct primes},\\
+0,&p^2\mid n\text{ for some prime }p.
+\end{cases}
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(F=1*f\) under Dirichlet convolution. Convolve both sides with \(\mu\), using \(\mu*1=\varepsilon\).</p>
-    </div>
+<div class="math-statement lemma">
+<p><span class="statement-title">Lemma.</span>
+\[
+\sum_{d\mid n}\mu(d)=
+\begin{cases}1,&n=1,\\0,&n>1.\end{cases}
+\]
+Thus \(\mu*1=\varepsilon\).</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Möbius inversion is inclusion-exclusion on the divisor lattice. It is a recurring method in elementary and analytic number theory.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If
+\(n\) has distinct prime divisors \(p_1,\ldots,p_r\), only squarefree divisors
+contribute, and
+\[
+\sum_{d\mid n}\mu(d)=
+\sum_{S\subset\{1,\ldots,r\}}(-1)^{|S|}
+=(1-1)^r.
+\]</p>
+</div>
+
+<h3>Inversion theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Mobius inversion).</span> The
+relations
+\[
+F(n)=\sum_{d\mid n}f(d)
+\quad\text{and}\quad
+f(n)=\sum_{d\mid n}\mu(d)F(n/d)
+\]
+are equivalent.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The first relation is
+\(F=1*f\). Convolve with \(\mu\):
+\[
+\mu*F=(\mu*1)*f=\varepsilon*f=f.
+\]
+The reverse implication follows by convolution with \(1\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (primitive words).</span> Let
+\(q^n\) count all words of length \(n\) on \(q\) symbols, and let \(P(n)\)
+count words with least period \(n\). Every word has a unique least period
+dividing \(n\), so
+\[
+q^n=\sum_{d\mid n}P(d).
+\]
+Hence
+\[
+P(n)=\sum_{d\mid n}\mu(d)q^{n/d}.
+\]
+Dividing by \(n\) counts primitive necklaces.</p>
+</div>
+
+<h3>Floor-sum form</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+G(x)=\sum_{n\le x}f(x/n)
+\]
+in a setting where the sums are finite, then
+\[
+f(x)=\sum_{n\le x}\mu(n)G(x/n)
+\]
+with appropriate floor interpretation.</p>
+</div>
+
+<p>A basic consequence is the count of coprime integers:
+\[
+\#\{1\le k\le x:\gcd(k,n)=1\}
+=\sum_{d\mid n}\mu(d)\left\lfloor\frac xd\right\rfloor.
+\]
+At \(x=n\), this becomes
+\[
+\varphi(n)=n\sum_{d\mid n}\frac{\mu(d)}d
+=n\prod_{p\mid n}\left(1-\frac1p\right).
+\]</p>
+
+<h3>Squarefree counting</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Since
+\[
+\mu^2(n)=\sum_{d^2\mid n}\mu(d),
+\]
+one obtains
+\[
+\sum_{n\le x}\mu^2(n)
+=\sum_{d\le\sqrt x}\mu(d)\left\lfloor\frac{x}{d^2}\right\rfloor
+=\frac{x}{\zeta(2)}+O(\sqrt x)
+=\frac6{\pi^2}x+O(\sqrt x).
+\]
+Thus the natural density of squarefree integers is \(6/\pi^2\).</p>
+</div>

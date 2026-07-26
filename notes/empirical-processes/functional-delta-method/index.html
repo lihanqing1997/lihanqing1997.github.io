@@ -2,37 +2,180 @@
 layout: note-detail
 breadcrumb_child_label_en: "23. Functional delta method"
 breadcrumb_child_label_fr: "23. Méthode delta fonctionnelle"
-breadcrumb_child_label_zh: "23. 泛函 Delta Method"
+breadcrumb_child_label_zh: "23. 泛函 Delta 方法"
 note_back_url: "/notes/empirical-processes/"
 note_prev_url: "/notes/empirical-processes/goodness-of-fit-statistics/"
 note_next_url: "/notes/empirical-processes/z-estimators/"
 ---
 
-<p>The functional delta method turns empirical-process convergence into limits for plug-in estimators and statistical functionals.</p>
+<p>The functional delta method transports weak convergence through maps between infinite-dimensional spaces. Its differentiability notion must be uniform along perturbing directions because the empirical process itself is random and only converges, rather than approaching the target along one fixed line.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> If \(\phi\) is Hadamard differentiable at \(P\) tangentially to a set containing \(\mathbb G\), then \(\sqrt n\{\phi(P_n)-\phi(P)\}\rightsquigarrow \phi'_P(\mathbb G)\).</p>
-    </div>
+<h3>Hadamard differentiability</h3>
 
-    <h3>Hadamard differentiability</h3>
-    <ul>
-        <li>Hadamard differentiability is the right differentiability notion for weak convergence in function spaces.</li>
-        <li>The derivative acts on the limiting process, not on individual observations.</li>
-        <li>Bootstrap validity follows from the conditional version of the same delta method.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\mathbb D,\mathbb E\) be normed spaces, \(\phi:\mathbb D_\phi\subset\mathbb D\to\mathbb E\), and \(\theta\in\mathbb D_\phi\). The map \(\phi\) is <em>Hadamard differentiable at \(\theta\), tangentially to \(\mathbb D_0\subset\mathbb D\)</em>, if a continuous linear map
+  \[
+  \phi'_\theta:\mathbb D_0\to\mathbb E
+  \]
+  exists such that, whenever \(t_n\to0\), \(h_n\to h\in\mathbb D_0\), and
+  \(\theta+t_nh_n\in\mathbb D_\phi\),
+  \[
+  \left\|
+  \frac{\phi(\theta+t_nh_n)-\phi(\theta)}{t_n}
+  -\phi'_\theta(h)
+  \right\|_{\mathbb E}\longrightarrow0.
+  \]</p>
+</div>
 
-    <h3>Quantile derivative</h3>
-    <p>Use this page for quantiles, distributional functionals, smooth plug-in estimators, and maps from empirical measures to curves or bands.</p>
+<p>Gâteaux differentiability tests only fixed \(h\). Hadamard differentiability permits \(h_n\to h\), which is the stability needed when \(h_n=r_n(T_n-\theta)\) is random. Fréchet differentiability is stronger: it requires a remainder uniformly small over all sufficiently small perturbations in the ambient norm.</p>
 
-    <!-- expanded-learning -->
-    <h3>Hadamard derivative</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Definition.</span> Hadamard differentiability means that for \(t_n\downarrow0\) and \(h_n\to h\),
-\[
-\frac{\phi(P+t_nh_n)-\phi(P)}{t_n}\to \phi'_P(h).
-\]
-The convergence must be stable along perturbations, which is stronger than pointwise Gateaux differentiability.</p>
-    </div>
+<h3>The functional delta theorem</h3>
 
-    <h3>Quantile map</h3>
-    <p>For the quantile map \(F\mapsto F^{-1}(p)\), the derivative is \(-h(q_p)/f(q_p)\) when the density \(f\) is positive at the quantile. Applying it to the Brownian bridge gives the asymptotic law of sample quantiles.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose
+  \[
+  r_n(T_n-\theta)\rightsquigarrow T
+  \]
+  in \(\mathbb D\), where \(r_n\to\infty\), \(T\) is separable, and
+  \(T\in\mathbb D_0\) almost surely. If \(\phi\) is Hadamard differentiable at \(\theta\) tangentially to \(\mathbb D_0\), then
+  \[
+  r_n\{\phi(T_n)-\phi(\theta)\}
+  \rightsquigarrow\phi'_\theta(T).
+  \]
+  Moreover,
+  \[
+  r_n\{\phi(T_n)-\phi(\theta)\}
+  -\phi'_\theta\{r_n(T_n-\theta)\}
+  \xrightarrow{p}0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define
+  \[
+  g_n(h)=r_n\{\phi(\theta+r_n^{-1}h)-\phi(\theta)\}
+  \]
+  on the admissible directions. Hadamard differentiability says that
+  \(g_n(h_n)\to\phi'_\theta(h)\) whenever \(h_n\to h\in\mathbb D_0\). This is the sequential condition in the extended continuous-mapping theorem. Apply it to
+  \(h_n=r_n(T_n-\theta)\rightsquigarrow T\). The same argument applied to
+  \(g_n(h)-\phi'_\theta(h)\), whose limit is zero, gives the asymptotic linear remainder. \(\square\)</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (chain rule).</span> If \(\phi:\mathbb D\to\mathbb E\) is Hadamard differentiable at \(\theta\) tangentially to \(\mathbb D_0\), and \(\psi:\mathbb E\to\mathbb F\) is Hadamard differentiable at \(\phi(\theta)\) tangentially to \(\phi'_\theta(\mathbb D_0)\), then
+  \[
+  (\psi\circ\phi)'_\theta
+  =
+  \psi'_{\phi(\theta)}\circ\phi'_\theta.
+  \]</p>
+</div>
+
+<h3>Elementary statistical functionals</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (ratio).</span> For
+  \(\phi(a,b)=a/b\), \(b\ne0\),
+  \[
+  \phi'_{(a,b)}(h_1,h_2)
+  =\frac{h_1}{b}-\frac{a h_2}{b^2}.
+  \]
+  If \(a=Pg\) and \(b=Ph\), the plug-in estimator \(P_ng/P_nh\) therefore has influence function
+  \[
+  \frac{g-Pg}{Ph}
+  -\frac{Pg}{(Ph)^2}(h-Ph).
+  \]</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (integral functional).</span> Let
+  \[
+  \phi(F)=\int\varphi(x)\,\mathrm{d}F(x).
+  \]
+  On signed measures for which the integral is continuous,
+  \[
+  \phi'_F(H)=\int\varphi\,\mathrm{d}H.
+  \]
+  The delta method reduces to the ordinary central limit theorem for the sample average.</p>
+</div>
+
+<h3>The inverse and quantile maps</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (quantile derivative).</span> Let \(F\) be continuously differentiable on a neighborhood of
+  \[
+  q_p=F^{-1}(p)=\inf\{x:F(x)\geq p\},
+  \]
+  with density \(f(q_p)>0\). Then the quantile map
+  \(\phi_p(G)=G^{-1}(p)\) is Hadamard differentiable at \(F\), tangentially to functions continuous at \(q_p\), with
+  \[
+  \phi'_{p,F}(h)=-\frac{h(q_p)}{f(q_p)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(t_n\to0\), \(h_n\to h\) uniformly, \(F_n=F+t_nh_n\), and \(q_n=F_n^{-1}(p)\). Monotonicity and local strict increase imply \(q_n\to q_p\). Up to a term \(o(t_n)\) caused by the generalized inverse,
+  \[
+  0=F_n(q_n)-F(q_p)
+  =F(q_n)-F(q_p)+t_nh_n(q_n).
+  \]
+  By differentiability of \(F\),
+  \[
+  F(q_n)-F(q_p)
+  =f(q_p)(q_n-q_p)+o(|q_n-q_p|).
+  \]
+  The equation first yields \(q_n-q_p=O(t_n)\); divide by \(t_n\), use
+  \(h_n(q_n)\to h(q_p)\), and solve for the limit. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (sample quantile).</span> If \(F\) is continuous and \(f(q_p)>0\), then
+  \[
+  \sqrt n(\hat q_p-q_p)
+  =
+  -\frac{\mathbb G_n1_{(-\infty,q_p]}}{f(q_p)}
+  +o_p(1)
+  \rightsquigarrow
+  N\!\left(0,\frac{p(1-p)}{f(q_p)^2}\right).
+  \]</p>
+</div>
+
+<p>For a compact interval \(p\in[a,b]\subset(0,1)\), if \(f\) is continuous and bounded away from zero on the corresponding quantile range, the inverse map is Hadamard differentiable as a map into \(\ell^\infty[a,b]\). This gives a quantile-process limit and simultaneous bands.</p>
+
+<h3>Distributional transformations</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (composition).</span> Let
+  \(\Phi(F,G)=F\circ G^{-1}\). Under smoothness and positive density of \(G\), the chain rule combines evaluation, inversion, and composition:
+  \[
+  \Phi'_{(F,G)}(h_F,h_G)(u)
+  =
+  h_F(G^{-1}(u))
+  -\frac{f(G^{-1}(u))}{g(G^{-1}(u))}
+   h_G(G^{-1}(u)).
+  \]
+  Such derivatives underlie Q–Q processes, ROC curves, and distributional treatment-effect functionals.</p>
+</div>
+
+<h3>Directional derivatives and nonregular maps</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A map is Hadamard directionally differentiable if the same sequential limit exists, but
+  \(\phi'_\theta\) need only be continuous and positively homogeneous, not linear.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (maximum).</span> For
+  \(\phi(x)=\max_{1\leq j\leq k}x_j\), let
+  \(I(x)=\{j:x_j=\phi(x)\}\). Then
+  \[
+  \phi'_x(h)=\max_{j\in I(x)}h_j.
+  \]
+  At a unique maximizer this derivative is linear; at a tie it is nonlinear. The directional delta method still gives
+  \[
+  r_n\{\phi(T_n)-\phi(\theta)\}
+  \rightsquigarrow\max_{j\in I(\theta)}T_j,
+  \]
+  but the ordinary bootstrap may fail because it differentiates at the random \(T_n\), whose active set need not stabilize.</p>
+</div>
+
+<p>The practical hierarchy is therefore: identify the process limit, determine the strongest valid differentiability of the final map, apply the corresponding delta theorem, and only then decide whether an ordinary bootstrap consistently reproduces that derivative.</p>

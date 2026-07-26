@@ -59,3 +59,159 @@ where \(m_j\) is the marginal likelihood under \(H_j\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> If a continuous prior assigns zero mass to \(\theta=\theta_0\), then the posterior probability of the point null remains zero. Bayesian point-null testing therefore uses a mixture prior with an atom at the null and a continuous alternative component.</p>
     </div>
+
+<h3>Posterior odds and exponential separation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (simple hypotheses).</span> Let
+\(H_0:P=P_0\) and \(H_1:P=P_1\), both with positive prior mass. Under \(P_0\),
+\[
+\frac1n\log
+\frac{\Pi(H_1\mid X_{1:n})}
+{\Pi(H_0\mid X_{1:n})}
+\longrightarrow
+-K(P_0,P_1)
+\quad\text{almost surely}.
+\]
+If \(P_0\ne P_1\), posterior probability of \(H_1\) therefore decays exponentially.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Posterior log odds equal constant prior log odds plus
+\[
+\sum_{i=1}^n
+\log\frac{p_1(X_i)}{p_0(X_i)}.
+\]
+The strong law sends the average log likelihood ratio to
+\[
+E_0\log(p_1/p_0)
+=-K(P_0,P_1).
+\]</p>
+</div>
+
+<h3>Composite testing with tests and prior mass</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose the truth lies in model \(M_0\), the prior gives \(M_0\) positive probability and KL mass near truth, and there are exponentially consistent tests separating \(P_0\) from all distributions in \(M_1\). Then
+\[
+\Pi(M_1\mid X^{(n)})
+\xrightarrow{P_0}0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Bound the integrated likelihood over \(M_1\) by splitting according to the test. Its type-II bound controls the un-rejected part after change of measure; type-I error controls the rejected part under truth. A KL neighborhood inside \(M_0\) lower-bounds the posterior denominator. Their ratio vanishes.</p>
+</div>
+
+<h3>Nested regular models and dimension penalty</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\(M_0\subset M_1\) be regular nested models of dimensions \(d_0<d_1\), with fixed proper priors positive near truth.</p>
+<ul>
+<li>If \(M_0\) is true,
+\[
+\log BF_{10}
+=-\frac{d_1-d_0}{2}\log n+O_P(1),
+\]
+so \(BF_{10}\to0\).</li>
+<li>If truth belongs to \(M_1\) at positive KL distance from \(M_0\),
+\[
+\frac1n\log BF_{10}\to
+\inf_{\theta_0\in M_0}K(P^\star,P_{\theta_0})>0,
+\]
+up to sign convention, so \(M_1\) wins exponentially.</li>
+</ul>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Under the null, maximized log-likelihood improvement is \(O_P(1)\), while Laplace approximation contributes
+\(-\{d_1-d_0\}\log n/2\). Under a fixed alternative, the law of large numbers makes the log-likelihood gap order \(n\) with coefficient equal to the KL projection gap; this dominates logarithmic complexity.</p>
+</div>
+
+<h3>Spike-and-slab point-null posterior</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+\theta\sim w_0\delta_0+(1-w_0)N(0,\tau^2),
+\qquad
+\bar X\mid\theta\sim N(\theta,1/n).
+\]
+Then
+\[
+P(\theta=0\mid\bar X)
+=\frac{w_0\varphi(\bar X;0,1/n)}
+{w_0\varphi(\bar X;0,1/n)
++(1-w_0)\varphi(\bar X;0,\tau^2+1/n)}.
+\]
+Conditional on the slab, the posterior is normal with variance
+\[
+v_n=(n+\tau^{-2})^{-1}
+\]
+and mean \(v_nn\bar X\). Model uncertainty and within-model parameter uncertainty are distinct posterior components.</p>
+</div>
+
+<h3>Multiplicity correction through model priors</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> In variable selection with \(p\) predictors, assign model size \(s\) prior \(\pi(s)\) and choose a subset uniformly conditional on \(s\). Then each model \(S\) of size \(s\) has prior
+\[
+\Pi(S)=\frac{\pi(s)}{\binom ps}.
+\]
+For fixed \(s\ll p\),
+\[
+-\log\Pi(S)
+\asymp s\log(p/s)-\log\pi(s),
+\]
+which supplies an automatic multiplicity penalty.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The first identity is conditional probability. Stirling's approximation gives
+\[
+\log\binom ps
+=s\log(p/s)+O(s)
+\]
+for sparse \(s\).</p>
+</div>
+
+<h3>Selection consistency and beta-min</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (sparse selection template).</span> In a sparse regular regression model, posterior model-selection consistency
+\[
+\Pi(S=S_0\mid X^{(n)})\to1
+\]
+requires, besides compatible design and suitable model-size priors, a signal condition of the form
+\[
+\min_{j\in S_0}|\beta_{0j}|
+\gtrsim
+\sqrt{\frac{\log p}{n}}.
+\]
+Without separation above the testing noise level, uniform exact support recovery is impossible.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Reason.</span> Distinguishing a coefficient zero from
+\(\delta_n\) is a two-point testing problem. In a normalized regular design, KL divergence is order \(n\delta_n^2\). Searching among \(p\) coordinates costs order \(\log p\). If
+\(n\delta_n^2\ll\log p\), Fano or multiple-testing lower bounds prevent uniformly reliable localization. Above that scale, Bayes factors can overcome model multiplicity under compatible priors.</p>
+</div>
+
+<h3>Prediction and selection diverge</h3>
+
+<p>A posterior can contract at an optimal predictive rate while spreading mass over many nearly equivalent models. Exact support recovery is stronger than estimating \(X\beta\), and correlated predictors can make the “true model” unstable or scientifically unhelpful. Bayesian model averaging targets posterior prediction across models; median-probability or decision-theoretic selection targets a chosen action. These goals need not return the same subset.</p>
+
+<h3>Nonlocal priors</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A nonlocal slab prior vanishes when an alternative parameter approaches the null, for example
+\[
+\pi(\theta\mid H_1)
+\propto\theta^{2r}N(\theta;0,\tau^2),
+\qquad r\ge1.
+\]
+It increases the asymptotic penalty on alternatives whose parameters lie near the null and can accelerate deletion of spurious variables. It also encodes a substantive gap between null and meaningful effects and can reduce power for genuinely small signals.</p>
+</div>
+
+<p>Testing claims must always report the model prior, slab scale, and whether asymptotics concern fixed alternatives, local alternatives, or growing model spaces. “Bayesian consistency” without that regime is incomplete.</p>

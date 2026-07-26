@@ -8,24 +8,144 @@ note_prev_url: "/notes/optimization/gradient-descent/"
 note_next_url: "/notes/optimization/coordinate-descent-block-methods/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Accelerated gradient methods.</p>
+<p>Acceleration adds a carefully tuned extrapolation to the gradient step.
+The extra sequence is not merely physical momentum: its coefficients are
+chosen so that a weighted objective error and a weighted distance decrease
+together, producing a \(1/k^2\) rate.</p>
 
-    <h3>Momentum form</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Accelerated methods combine a gradient step with an extrapolated point, for example \(y_k=x_k+\beta_k(x_k-x_{k-1})\), \(x_{k+1}=y_k-L^{-1}\nabla f(y_k)\).</p>
-    </div>
+<h3>Nesterov's convex iteration</h3>
 
-    <h3>Nesterov rate</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For convex \(L\)-smooth \(f\), Nesterov acceleration achieves \(f(x_k)-f^\star=O(L\|x_0-x^\star\|^2/k^2)\), improving the \(O(1/k)\) rate of ordinary gradient descent.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Set \(x_0=y_0\) and
+    \(t_0=1\). For \(k\ge0\), define
+    \[
+    \begin{aligned}
+    x_{k+1}&=y_k-\frac1L\nabla f(y_k),\\
+    t_{k+1}&=\frac{1+\sqrt{1+4t_k^2}}2,\\
+    y_{k+1}&=x_{k+1}
+      +\frac{t_k-1}{t_{k+1}}(x_{k+1}-x_k).
+    \end{aligned}
+    \]
+    The recurrence implies \(t_{k+1}^2-t_{k+1}=t_k^2\) and
+    \(t_k\ge(k+2)/2\).</p>
+</div>
 
-    <h3>Strongly convex rate</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(\mu\)-strongly convex and \(L\)-smooth objectives, accelerated schemes reach a linear rate governed by \(1-1/\sqrt\kappa\), where \(\kappa=L/\mu\).</p>
-    </div>
+<div class="math-statement lemma">
+    <p><span class="statement-title">One-step model inequality.</span> If \(f\)
+    is convex and \(L\)-smooth and
+    \(p_L(y)=y-L^{-1}\nabla f(y)\), then for every \(x\),
+    \[
+    f(p_L(y))-f(x)
+    \le\frac L2\bigl(\|x-y\|^2-\|x-p_L(y)\|^2\bigr).
+    \]</p>
+</div>
 
-    <h3>Caution</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Acceleration is sensitive to curvature estimates and noise. In statistical optimization it may reduce deterministic optimization error while amplifying stochastic variation if used without damping.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> This is the three-point
+    inequality for a gradient step, with the base point renamed \(y\). It
+    follows by subtracting the convex lower model of \(f(x)\) from the
+    smooth quadratic upper model of \(f(p_L(y))\), then substituting
+    \(\nabla f(y)=L(y-p_L(y))\).</p>
+</div>
+
+<h3>The accelerated potential</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Accelerated \(1/k^2\) rate.</span> If
+    \(f\) is convex and \(L\)-smooth and \(x^\star\) is a minimizer, then the
+    preceding iteration satisfies
+    \[
+    f(x_k)-f^\star
+    \le\frac{2L\|x_0-x^\star\|^2}{(k+1)^2}
+    \qquad(k\ge1).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Define
+    \(E_k=f(x_k)-f^\star\) and
+    \[
+    z_k=x_k+(t_k-1)(x_k-x_{k-1})
+    \quad(k\ge1),\qquad z_0=x_0.
+    \]
+    Apply the one-step model inequality at \(y_k\), first with
+    \(x=x_k\) and then with \(x=x^\star\). Multiply the second inequality by
+    \(t_{k+1}-1\), add the first, and use convexity to combine the two
+    comparison points. The identities defining \(y_k,t_k,z_k\) reduce the
+    result to
+    \[
+    t_{k+1}^2E_{k+1}
+      +\frac L2\|z_{k+1}-x^\star\|^2
+    \le
+    t_k^2E_k+\frac L2\|z_k-x^\star\|^2.
+    \]
+    Thus the potential telescopes. At \(k=0\), a gradient step and the
+    three-point inequality bound the initial potential by
+    \(\frac L2\|x_0-x^\star\|^2\). Since
+    \(t_k\ge(k+2)/2\), division by \(t_k^2\) gives the claimed rate after
+    reindexing.</p>
+</div>
+
+<p>The potential explains the extrapolation coefficient: it is precisely what
+makes the cross terms become \(\|z_{k+1}-x^\star\|^2\). Arbitrary momentum does
+not preserve this cancellation.</p>
+
+<h3>Acceleration with strong convexity</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Square-root condition-number rate.</span>
+    Suppose \(f\) is \(\mu\)-strongly convex and \(L\)-smooth. With
+    \[
+    \beta=\frac{\sqrt L-\sqrt\mu}{\sqrt L+\sqrt\mu},\qquad
+    y_k=x_k+\beta(x_k-x_{k-1}),\qquad
+    x_{k+1}=y_k-\frac1L\nabla f(y_k),
+    \]
+    an accelerated Lyapunov function decreases geometrically at rate
+    \(1-\sqrt{\mu/L}\). Consequently
+    \[
+    f(x_k)-f^\star
+    \le C\left(1-\frac1{\sqrt\kappa}\right)^k,
+    \qquad \kappa=L/\mu,
+    \]
+    where \(C\) depends on the initial point and momentum state.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Apply the
+    smoothness upper model at the extrapolated point and the strong-convexity
+    lower model at \(x^\star\). With
+    \(q=\sqrt{\mu/L}\), introduce the shifted state
+    \(z_k=x_k+q^{-1}(x_k-x_{k-1})\). Direct substitution of
+    \(\beta=(1-q)/(1+q)\) cancels the mixed terms and gives a Lyapunov
+    recursion of the form
+    \[
+    f(x_{k+1})-f^\star+\frac\mu2\|z_{k+1}-x^\star\|^2
+    \le(1-q)
+    \left[f(x_k)-f^\star+\frac\mu2\|z_k-x^\star\|^2\right].
+    \]
+    Iteration yields the displayed rate. The square root enters because the
+    momentum coefficient is chosen to equalize contraction over the extreme
+    curvatures \(\mu\) and \(L\).</p>
+</div>
+
+<p>Ordinary gradient descent needs order
+\(\kappa\log(1/\varepsilon)\) iterations for relative accuracy
+\(\varepsilon\); acceleration reduces this to
+\(\sqrt\kappa\log(1/\varepsilon)\). This dependence is optimal among
+first-order black-box methods for smooth strongly convex functions.</p>
+
+<h3>Oscillation, restart, and noise</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Quadratic modes.</span> On
+    \(f(x)=\frac12x^\top Qx\), every eigencomponent follows a second-order
+    scalar recurrence. Tuning momentum to the spectral interval
+    \([\mu,L]\) damps all modes much faster than a first-order recurrence, but
+    an underestimated \(L\) can make high-curvature modes unstable.</p>
+</div>
+
+<p>In practice, backtracking estimates \(L\), and adaptive restart resets the
+momentum when the objective rises or the extrapolation points in an
+unproductive direction. Persistent stochastic-gradient noise can be amplified
+by momentum; acceleration of deterministic optimization error does not
+automatically accelerate statistical accuracy.</p>

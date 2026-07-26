@@ -8,46 +8,191 @@ note_prev_url: "/notes/probability-theory/square-integrable-martingales-quadrati
 note_next_url: "/notes/probability-theory/kolmogorov-extension/"
 ---
 
-<p>Martingale central limit theorems replace independence with conditional mean-zero increments. They are indispensable for dependent data and stochastic approximation.</p>
+<p>Martingale central limit theorems replace independence by conditional centering. Their variance is accumulated predictably, so they apply to serially dependent data, likelihood scores, adaptive designs, stochastic approximation, and conditionally heteroskedastic models.</p>
 
-    <h3>Martingale difference arrays</h3>
+<h3>Martingale-difference arrays</h3>
 
-    <p>The conditional variance process replaces deterministic variance.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A martingale-difference array is a collection
+  \[
+  (X_{n,k},\mathcal F_{n,k}),
+  \qquad1\le k\le k_n,
+  \]
+  such that
+  \(\mathcal F_{n,k-1}\subseteq\mathcal F_{n,k}\),
+  \(X_{n,k}\in L^1(\mathcal F_{n,k})\), and
+  \[
+  \mathbb E[X_{n,k}\mid\mathcal F_{n,k-1}]=0.
+  \]
+  Its row sum and predictable variance are
+  \[
+  S_n=\sum_{k=1}^{k_n}X_{n,k},
+  \qquad
+  V_n=\sum_{k=1}^{k_n}
+  \mathbb E[X_{n,k}^2\mid\mathcal F_{n,k-1}].
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A martingale difference array is a row-wise adapted family \((X_{n,k},\mathcal F_{n,k})\) with \(\mathbb E[X_{n,k}\mid\mathcal F_{n,k-1}]=0\). Its conditional variance is \(V_n=\sum_k\mathbb E[X_{n,k}^2\mid\mathcal F_{n,k-1}]\).</p>
-    </div>
+<h3>Conditional Lindeberg theorem</h3>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (martingale CLT).</span> Suppose
+  \(X_{n,k}\in L^2\) form a martingale-difference array. If
+  \[
+  V_n\to\sigma^2
+  \quad\text{in probability}
+  \]
+  for a constant \(\sigma^2\ge0\), and for every \(\varepsilon>0\),
+  \[
+  L_n(\varepsilon)
+  :=
+  \sum_{k=1}^{k_n}
+  \mathbb E[
+  X_{n,k}^2 1_{\{|X_{n,k}|>\varepsilon\}}
+  \mid\mathcal F_{n,k-1}]
+  \to0
+  \quad\text{in probability},
+  \]
+  then
+  \[
+  S_n\Rightarrow N(0,\sigma^2).
+  \]</p>
+</div>
 
-    <h3>Martingale central limit theorem</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Fix \(t\). Conditional Taylor expansion gives
+  \[
+  \mathbb E[e^{itX_{n,k}}\mid\mathcal F_{n,k-1}]
+  =
+  1-\frac{t^2}{2}
+  \mathbb E[X_{n,k}^2\mid\mathcal F_{n,k-1}]
+  +r_{n,k}(t),
+  \]
+  where, for every cutoff \(\varepsilon\),
+  \[
+  \sum_k|r_{n,k}(t)|
+  \le C t^2L_n(\varepsilon)
+  +C|t|^3\varepsilon V_n.
+  \]
+  First take \(n\to\infty\), then \(\varepsilon\downarrow0\), to make the aggregate remainder vanish in probability.
 
-    <p>Conditional variance convergence plus conditional Lindeberg gives Gaussian fluctuations.</p>
+  Unlike the independent case, the characteristic function is not literally a product of deterministic factors. One iteratively conditions backward and compares
+  \(e^{itS_n}\) with
+  \[
+  \prod_{k=1}^{k_n}
+  \left\{1-\frac{t^2}{2}
+  \mathbb E[X_{n,k}^2\mid\mathcal F_{n,k-1}]\right\}.
+  \]
+  Conditional Lindeberg implies maximal conditional variances vanish; the logarithm of this product converges in probability to
+  \(-t^2V_n/2\to-t^2\sigma^2/2\). Uniform integrability permits taking expectations, so
+  \[
+  \mathbb Ee^{itS_n}\to e^{-t^2\sigma^2/2}.
+  \]
+  The estimates can be localized on events where \(V_n\) and
+  \(L_n(\varepsilon)\) are controlled; a subsequence argument converts their convergence in probability into the required expectation convergence. Levy's continuity theorem gives the result.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(V_n\to\sigma^2\) in probability and
-\[
-\sum_k\mathbb E[X_{n,k}^2 1_{\{|X_{n,k}|\gt\varepsilon\}}\mid\mathcal F_{n,k-1}]\to0
-\]
-in probability for every \(\varepsilon\gt0\), then \(\sum_kX_{n,k}\Rightarrow N(0,\sigma^2)\).</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (conditional Lyapunov condition).</span> If for some \(\delta>0\),
+  \[
+  \sum_{k=1}^{k_n}
+  \mathbb E[
+  |X_{n,k}|^{2+\delta}\mid\mathcal F_{n,k-1}]
+  \to0
+  \quad\text{in probability},
+  \]
+  then the conditional Lindeberg condition holds.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use conditional characteristic functions. Taylor expand \(\mathbb E[e^{itX_{n,k}}\mid\mathcal F_{n,k-1}]\) as \(1-\frac12t^2\mathbb E[X_{n,k}^2\mid\mathcal F_{n,k-1}]+r_{n,k}\). The conditional Lindeberg condition makes \(\sum_kr_{n,k}\to0\) in probability. Multiplying conditional factors yields convergence of characteristic functions to \(e^{-\sigma^2t^2/2}\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On
+  \(\{|X_{n,k}|>\varepsilon\}\),
+  \[
+  X_{n,k}^2
+  \le\varepsilon^{-\delta}|X_{n,k}|^{2+\delta}.
+  \]
+  Take conditional expectations and sum.</p>
+</div>
 
+<h3>Self-normalization</h3>
 
-    <h3>Stable convergence variant</h3>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(V_n>0\) with probability tending to one, \(V_n\to\sigma^2>0\), and the martingale CLT assumptions hold, then
+  \[
+  \frac{S_n}{\sqrt{V_n}}\Rightarrow N(0,1).
+  \]</p>
+</div>
 
-    <p>Random limiting variances lead to mixed normal limits.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The CLT gives
+  \(S_n\Rightarrow N(0,\sigma^2)\), while
+  \(\sqrt{V_n}\to\sigma\) in probability. Apply Slutsky's theorem.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(V_n\to V\) in probability for a nonnegative random variable \(V\), then under strengthened conditional characteristic-function assumptions the limit is conditionally normal with characteristic function \(\mathbb E e^{-t^2V/2}\).</p>
-    </div>
+<h3>Random variance and stable convergence</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The same proof gives conditional characteristic functions converging to \(e^{-t^2V/2}\). Taking expectations gives the mixed normal characteristic function. Stable convergence requires checking convergence after multiplication by bounded variables measurable with respect to the limiting background sigma-field.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Relative to a background sigma-field \(\mathcal G\), \(Y_n\) converges \(\mathcal G\)-stably to \(Y\) if
+  \[
+  \mathbb E[Zf(Y_n)]\to\mathbb E[Zf(Y)]
+  \]
+  for every bounded \(\mathcal G\)-measurable \(Z\) and every bounded continuous \(f\). Stable convergence is stronger than weak convergence and preserves joint limits with background variables.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Many asymptotic normality proofs in statistics can be read as martingale CLTs after revealing observations sequentially.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (mixed normal limit).</span> Suppose the conditional Lindeberg condition holds and
+  \(V_n\to V\) in probability for a nonnegative
+  \(\mathcal G\)-measurable random variable \(V\). Under the corresponding conditional characteristic-function condition relative to \(\mathcal G\),
+  \[
+  S_n\ \Longrightarrow_{\mathrm{st}}\ \sqrt V\,Z,
+  \]
+  where \(Z\sim N(0,1)\) is independent of \(\mathcal G\). In particular,
+  \[
+  \mathbb Ee^{it\sqrt VZ}
+  =\mathbb Ee^{-t^2V/2}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Repeat the conditional characteristic-function proof after multiplying by an arbitrary bounded
+  \(\mathcal G\)-measurable \(Z_0\). The limiting conditional characteristic function is
+  \(e^{-t^2V/2}\). Thus
+  \[
+  \mathbb E[Z_0e^{itS_n}]
+  \to\mathbb E[Z_0e^{-t^2V/2}],
+  \]
+  which identifies stable convergence to a Gaussian variable conditionally on \(\mathcal G\), with conditional variance \(V\).</p>
+</div>
+
+<h3>Predictable regression scores</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let
+  \[
+  Y_k=x_k^\top\beta+\varepsilon_k,
+  \]
+  where \(x_k\in\mathcal F_{k-1}\) is predictable,
+  \(\mathbb E[\varepsilon_k\mid\mathcal F_{k-1}]=0\), and
+  \(\mathbb E[\varepsilon_k^2\mid\mathcal F_{k-1}]=\sigma_k^2\).
+  For a deterministic or predictable vector \(a_n\), the normalized score
+  \[
+  S_n=\sum_{k=1}^n a_n^\top x_k\varepsilon_k
+  \]
+  is a martingale sum with predictable variance
+  \[
+  V_n=\sum_{k=1}^n
+  (a_n^\top x_k)^2\sigma_k^2.
+  \]
+  If \(V_n\to1\) and no individual score contribution is asymptotically visible, the martingale CLT gives \(S_n\Rightarrow N(0,1)\). This is the basic mechanism behind asymptotic normality with adaptive regressors and dependent but conditionally centered errors.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (likelihood scores).</span> In a sequential model with conditional densities
+  \(p_\theta(Y_k\mid\mathcal F_{k-1})\), regularity gives
+  \[
+  \mathbb E_\theta[
+  \partial_\theta\log p_\theta(Y_k\mid\mathcal F_{k-1})
+  \mid\mathcal F_{k-1}]=0.
+  \]
+  The score is therefore a martingale sum, and its predictable bracket is the accumulated conditional Fisher information. Martingale CLTs turn convergence of that information into asymptotic normality of the score, which then feeds likelihood expansions in <a href="{{ '/notes/statistical-inference/local-asymptotic-normality-contiguity/' | relative_url }}">local asymptotic normality and contiguity</a>.</p>
+</div>

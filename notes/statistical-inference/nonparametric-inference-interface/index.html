@@ -8,16 +8,185 @@ note_prev_url: "/notes/statistical-inference/semiparametric-inference-interface/
 note_next_url: "/notes/statistical-inference/modern-inference-topics/"
 ---
 
-<p>Nonparametric inference estimates distributions or functions without finite-dimensional parameterization. This page keeps only the inference interface; rates and minimax theory can be expanded in separate nonparametric or <a href="{{ '/notes/statistical-learning/' | relative_url }}">statistical learning</a> notes.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> The empirical distribution is \(P_n=n^{-1}\sum_{i=1}^n\delta_{X_i}\). A plug-in estimator of a functional \(\theta(P)\) is \(\theta(P_n)\).</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">Functional delta principle.</span> If \(\theta\) is Hadamard differentiable at \(P\) with derivative \(\dot\theta_P\), then
-    \[
-    \sqrt n\{\theta(P_n)-\theta(P)\}
-    =\dot\theta_P\{\sqrt n(P_n-P)\}+o_p(1).
-    \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Hadamard differentiability means that, uniformly for \(h_t\to h\),
-    \[
-    \frac{\theta(P+t h_t)-\theta(P)}{t}\to \dot\theta_P(h).
-    \]
-    Take \(t=n^{-1/2}\) and \(h_t=\sqrt n(P_n-P)\). On classes where \(\sqrt n(P_n-P)\) is tight and converges weakly, the directional expansion is valid with a negligible remainder. Therefore \(\sqrt n\{\theta(P_n)-\theta(P)\}=\dot\theta_P\{\sqrt n(P_n-P)\}+o_p(1)\).</p></div>
-    <h3>EDF, quantiles, kernels, and bands</h3><p>The EDF, sample quantiles, kernel density estimators, and confidence bands are typical nonparametric objects. <a href="{{ '/notes/empirical-processes/' | relative_url }}">Empirical-process</a> machinery controls stochastic fluctuations; smoothing bias controls deterministic approximation.</p>
+<p>Nonparametric inference estimates a distribution, regression function, density, or other infinite-dimensional object without a fixed finite-dimensional parametrization. Its central balance is between stochastic fluctuation and approximation bias. Smooth finite-dimensional functionals can still be root-\(n\) regular, while pointwise function estimation usually has slower rates.</p>
+
+<h3>Empirical distribution and regular functionals</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The empirical measure and empirical distribution function are
+  \[
+  P_n=\frac1n\sum_{i=1}^n\delta_{X_i},
+  \qquad
+  F_n(x)=P_n1_{(-\infty,x]}.
+  \]
+  For a functional \(T:\mathcal P\to\mathbb R^k\), \(T(P_n)\) is the empirical plug-in estimator.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Functional delta principle.</span> If
+  \[
+  \sqrt n(P_n-P)\rightsquigarrow\mathbb G_P
+  \]
+  in a tangent space and \(T\) is Hadamard differentiable at \(P\), then
+  \[
+  \sqrt n\{T(P_n)-T(P)\}
+  \rightsquigarrow T_P'\mathbb G_P.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write \(t_n=n^{-1/2}\) and \(h_n=\sqrt n(P_n-P)\). Hadamard differentiability gives
+  \[
+  \frac{T(P+t_nh_n)-T(P)}{t_n}
+  =T_P'h_n+o_p(1)
+  \]
+  for tight tangential \(h_n\). Since \(T_P'\) is continuous and linear, the continuous-mapping theorem gives \(T_P'h_n\rightsquigarrow T_P'\mathbb G_P\).</p>
+</div>
+
+<p>Means, smooth moments, distribution values, and interior quantiles are regular functionals under suitable moments and positive density. Pointwise density values are not regular in an unrestricted model and require smoothing.</p>
+
+<h3>Kernel density estimation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a kernel \(K\) with \(\int K=1\) and bandwidth \(h>0\),
+  \[
+  \hat f_h(x)
+  =\frac1{nh}\sum_{i=1}^n
+  K\!\left(\frac{x-X_i}{h}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Pointwise bias and variance.</span> Suppose \(K\) is symmetric,
+  \[
+  \mu_2(K)=\int u^2K(u)\,\mathrm{d}u<\infty,
+  \qquad
+  R(K)=\int K(u)^2\,\mathrm{d}u<\infty,
+  \]
+  and \(f\) has two continuous derivatives near \(x\). Then, as \(h\to0\) and \(nh\to\infty\),
+  \[
+  \operatorname{Bias}\{\hat f_h(x)\}
+  =\frac{h^2\mu_2(K)}2f''(x)+o(h^2),
+  \]
+  \[
+  \operatorname{Var}\{\hat f_h(x)\}
+  =\frac{f(x)R(K)}{nh}
+  +o((nh)^{-1}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A change of variables gives
+  \[
+  \mathbb E\hat f_h(x)
+  =\int K(u)f(x-hu)\,\mathrm{d}u.
+  \]
+  Taylor-expand \(f(x-hu)\). Symmetry makes \(\int uK(u)\,\mathrm{d}u=0\), yielding the bias. For variance,
+  \[
+  \operatorname{Var}(\hat f_h(x))
+  =\frac1n\operatorname{Var}\!\left[
+  h^{-1}K\!\left(\frac{x-X}{h}\right)\right].
+  \]
+  Its second moment is
+  \[
+  h^{-1}\int K(u)^2f(x-hu)\,\mathrm{d}u
+  =h^{-1}f(x)R(K)+o(h^{-1}),
+  \]
+  while the squared mean is \(O(1)\), negligible relative to \(h^{-1}\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Bandwidth rate.</span> The leading pointwise mean squared error is
+  \[
+  \frac{h^4\mu_2(K)^2}{4}f''(x)^2
+  +\frac{f(x)R(K)}{nh}.
+  \]
+  Balancing the terms gives \(h\asymp n^{-1/5}\) and MSE of order \(n^{-4/5}\).</p>
+</div>
+
+<p>The optimal bandwidth depends on unknown curvature. Cross-validation, plug-in rules, and Lepski-type selection estimate this tradeoff. Inference additionally requires controlling or removing smoothing bias; a bandwidth optimized for estimation MSE need not give valid confidence intervals.</p>
+
+<h3>Local polynomial regression</h3>
+
+<p>For \(m(x)=\mathbb E(Y\mid X=x)\), local polynomial regression of degree \(p\) chooses \(\hat\beta\) minimizing
+\[
+\sum_{i=1}^n
+K\!\left(\frac{X_i-x}{h}\right)
+\left[
+Y_i-\sum_{j=0}^p\beta_j(X_i-x)^j
+\right]^2,
+\]
+and sets \(\hat m(x)=\hat\beta_0\). Local linear regression (\(p=1\)) automatically corrects first-order design bias and has better boundary behavior than the Nadaraya-Watson ratio.</p>
+
+<h3>Series estimation</h3>
+
+<p>Let \(\{\phi_j\}\) be a basis and approximate
+\[
+m(x)\approx\sum_{j=1}^J\beta_j\phi_j(x).
+\]
+Least squares estimates the \(J\) coefficients. Under orthonormal design and homoskedastic noise, integrated variance is of order \(J/n\), while approximation of an \(s\)-smooth function typically contributes squared bias \(J^{-2s}\) in one dimension. Balancing gives
+\[
+J\asymp n^{1/(2s+1)},
+\qquad
+\mathbb E\|\hat m-m\|_2^2
+\asymp n^{-2s/(2s+1)}.
+\]</p>
+
+<h3>Minimax rates</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a function class \(\mathcal F\), loss \(d^2\), and experiment \(P_f^{(n)}\), the minimax risk is
+  \[
+  R_n^\star(\mathcal F)
+  =\inf_{\hat f}\sup_{f\in\mathcal F}
+  \mathbb E_f d(\hat f,f)^2.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Canonical smoothness rate.</span> For estimating an \(s\)-smooth function on \([0,1]^d\) under squared \(L^2\) loss in standard Gaussian regression or white noise,
+  \[
+  R_n^\star\asymp n^{-2s/(2s+d)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> An estimator with resolution \(J\) per coordinate has approximately \(J^d\) coefficients, producing variance \(J^d/n\); smoothness gives squared approximation bias \(J^{-2s}\). Balancing yields \(J\asymp n^{1/(2s+d)}\) and the upper rate. For the lower bound, construct a packing of localized bumps at this resolution whose pairwise \(L^2\) separation has the target order while their Kullback-Leibler divergences remain bounded by a constant times the logarithm of the packing size. Fano's lemma then gives the matching rate.</p>
+</div>
+
+<p>The dimension \(d\) in the denominator is the curse of dimensionality. Additivity, sparsity, manifold structure, or compositional assumptions improve rates by reducing the effective model size, not by defeating the unrestricted lower bound.</p>
+
+<h3>Pointwise and uniform inference</h3>
+
+<p>A pointwise interval controls \(m(x_0)\) at one fixed \(x_0\). A simultaneous confidence band \([L_n(x),U_n(x)]\) requires
+\[
+P_f\{L_n(x)\le f(x)\le U_n(x)
+\text{ for every }x\in\mathcal X\}
+\ge1-\alpha.
+\]
+Its critical value depends on a supremum of a stochastic process and is larger than a pointwise normal quantile. Evaluating many pointwise intervals does not create a simultaneous band.</p>
+
+<h3>Bias-aware confidence sets</h3>
+
+<p>If
+\[
+\hat f_h(x)-f(x)
+=\{\hat f_h(x)-\mathbb E\hat f_h(x)\}
++\operatorname{Bias}_h(x),
+\]
+studentizing only the stochastic term gives valid coverage only when
+\[
+\operatorname{Bias}_h(x)
+=o\{\operatorname{se}(\hat f_h(x))\}.
+\]
+This can be achieved by undersmoothing, explicit bias correction with an adjusted variance, or honest upper bounds on smoothness bias. Ignoring a same-order bias shifts the limiting pivot.</p>
+
+<h3>Adaptation limits</h3>
+
+<p>Estimators can often adapt to unknown smoothness up to logarithmic factors. Honest confidence bands cannot generally adapt over a union of nested smoothness classes at each class's optimal width without additional separation or self-similarity assumptions. The obstacle is testing: functions in a rougher class can lie statistically indistinguishably close to a smoother subclass while requiring wider bands.</p>
+
+<h3>Inverse problems and regularization</h3>
+
+<p>If data identify \(Kf\) for a compact operator \(K\), recovering \(f\) amplifies noise along singular vectors with small singular values. Spectral cutoff, Tikhonov regularization, and Bayesian priors trade inverse amplification against bias. Rates depend jointly on smoothness of \(f\) and decay of the singular values of \(K\); the direct nonparametric rate above no longer applies.</p>
+
+<p>Empirical-process tools for uniform stochastic control are developed in <a href="{{ '/notes/empirical-processes/' | relative_url }}">empirical processes</a>, while prediction-oriented complexity and regularization are developed in <a href="{{ '/notes/statistical-learning/' | relative_url }}">statistical learning</a>.</p>

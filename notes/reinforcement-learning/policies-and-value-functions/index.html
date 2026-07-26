@@ -83,3 +83,101 @@ The state-action occupancy is \(d_{\mu,\pi}(\mathrm{d}s,\mathrm{d}a)=d_{\mu,\pi}
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A value function is not a model of the environment. It is a prediction of return. Dynamic programming is possible because that prediction recursively supplies the continuation value after one transition.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>State, action, and advantage values</h3>
+
+<p>For a stationary policy \(\pi\),
+\[
+V^\pi(s)=E_s^\pi\sum_{t\ge0}\gamma^t r(S_t,A_t),
+\]
+\[
+Q^\pi(s,a)=r(s,a)+\gamma\int V^\pi(s')P(\mathrm{d}s'\mid s,a),
+\qquad
+A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s).
+\]
+Since \(V^\pi(s)=\int Q^\pi(s,a)\pi(\mathrm{d}a\mid s)\),
+\[
+\int A^\pi(s,a)\pi(\mathrm{d}a\mid s)=0.
+\]
+Advantage therefore measures a one-step action deviation relative to the
+policy's own conditional mean.</p>
+
+<h3>Occupancy measures and a linear program</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (finite occupancy polytope).</span>
+For a finite discounted MDP, a nonnegative array \(d(s,a)\) is the normalized
+occupancy measure of some stationary randomized policy if and only if
+\[
+\sum_a d(s,a)
+=(1-\gamma)\rho(s)
++\gamma\sum_{x,a}P(s\mid x,a)d(x,a)
+\quad(s\in\mathsf S).
+\]
+When \(d_S(s)>0\), a realizing policy is
+\(\pi(a\mid s)=d(s,a)/d_S(s)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Necessity is the discounted flow
+equation. Conversely, define \(\pi\) by the displayed ratio, arbitrarily on
+zero-mass states. The flow equation says \(d_S\) is a fixed point of
+\((1-\gamma)\rho+\gamma d_SP_\pi\). This affine map is a contraction in total
+variation, so the fixed point is the discounted state occupancy of \(\pi\);
+then \(d=d_S\pi\).</p>
+</div>
+
+<p>Optimal control is therefore the linear program
+\[
+\max_{d\ge0}\ \frac1{1-\gamma}\sum_{s,a}d(s,a)r(s,a)
+\quad\text{subject to the flow equations}.
+\]
+Its dual is
+\[
+\min_V\ \sum_s\rho(s)V(s)
+\quad\text{subject to}\quad
+V(s)\ge r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V(s').
+\]
+Bellman inequalities are dual feasibility conditions, and complementary
+slackness says an optimal occupancy places mass only on greedy actions.</p>
+
+<h3>The performance-difference identity</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For stationary policies
+\(\pi,\pi'\),
+\[
+J_\rho(\pi')-J_\rho(\pi)
+=\frac1{1-\gamma}
+E_{(S,A)\sim d_\rho^{\pi'}}A^\pi(S,A).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Along a trajectory from
+\(\pi'\),
+\[
+A^\pi(S_t,A_t)
+=r_t+\gamma E\{V^\pi(S_{t+1})\mid S_t,A_t\}-V^\pi(S_t).
+\]
+Multiply by \(\gamma^t\), take expectations, and sum. The value terms telescope
+to \(-E_\rho V^\pi\), while rewards sum to \(J_\rho(\pi')\). Normalize the
+discounted sum to obtain the identity.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> If
+\(\int A^\pi(s,a)\pi'(\mathrm{d}a\mid s)\ge0\) for every state, then
+\(V^{\pi'}\ge V^\pi\). Strict improvement at a state visited with positive
+discounted probability yields strict performance improvement.</p>
+</div>
+
+<h3>Deterministic optimal policies</h3>
+
+<p>In finite discounted MDPs, the occupancy polytope has an optimal extreme
+point, and extreme occupancies can be realized by stationary deterministic
+policies on states with positive mass. Equivalently, selecting one maximizer
+of \(Q^*(s,\cdot)\) in every state gives a deterministic optimal policy.
+Randomization is still useful under constraints, entropy regularization,
+partial observability, and game-theoretic objectives.</p>

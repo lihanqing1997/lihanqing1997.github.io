@@ -34,3 +34,174 @@ R(\hat f)\le C\inf_{m\in\mathcal M}\{R(f_m)+\operatorname{pen}(m)\}+r_n.
     </div><div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Estimating \(\beta\) would identify the packing index up to small error. Fano's inequality lower-bounds the probability of misidentifying that index when the KL information is smaller than the logarithmic packing size. Loss separation converts identification error into estimation risk.</p>
     </div>
+
+<h3>Minimax decision criteria</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For experiments
+  \(\{P_\theta^{(n)}:\theta\in\Theta\}\), estimators
+  \(\widehat\theta\), and loss \(L\), the minimax risk is
+  \[
+  \mathcal R_n^*(\Theta,L)
+  =\inf_{\widehat\theta}
+  \sup_{\theta\in\Theta}
+  \mathbb E_\theta L(\widehat\theta,\theta).
+  \]
+  A sequence \(r_n\) is a minimax rate if
+  \(0<\liminf\mathcal R_n^*/r_n\le
+  \limsup\mathcal R_n^*/r_n<\infty\).</p>
+</div>
+
+<p>An upper bound exhibits an estimator. A lower bound quantifies over every measurable estimator. Matching them under the same loss, parameter class, and asymptotic regime establishes optimality.</p>
+
+<h3>Le Cam's two-point method</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \(d(\theta_0,\theta_1)\ge2\delta\), then for every estimator
+  \[
+  \max_{j=0,1}
+  P_{\theta_j}\{d(\widehat\theta,\theta_j)\ge\delta\}
+  \ge\frac{1-\|P_{\theta_0}-P_{\theta_1}\|_{\mathrm{TV}}}{2}.
+  \]
+  Hence squared-distance risk is at least
+  \[
+  \frac{\delta^2}{2}
+  \{1-\|P_{\theta_0}-P_{\theta_1}\|_{\mathrm{TV}}\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The radius-\(\delta\) balls about
+  \(\theta_0,\theta_1\) are disjoint. Use \(\widehat\theta\) to test which ball it enters. The sum of errors of every test is at least
+  \(1-\|P_{\theta_0}-P_{\theta_1}\|_{\mathrm{TV}}\). At least one error probability is half that sum. On an error event the estimator distance is at least \(\delta\), giving the risk statement.</p>
+</div>
+
+<h3>Assouad's hypercube lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\theta_\omega\), \(\omega\in\{-1,1\}^m\), satisfy
+  \[
+  L(\theta_\omega,\theta_{\omega'})
+  \ge a\,d_H(\omega,\omega').
+  \]
+  If experiments associated with neighboring vertices have total variation at most \(\alpha<1\), then
+  \[
+  \inf_{\widehat\theta}\sup_\omega
+  \mathbb E_\omega L(\widehat\theta,\theta_\omega)
+  \ge\frac{am}{2}(1-\alpha)
+  \]
+  up to the coordinate-decoding convention.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Decode each bit of
+  \(\omega\) from \(\widehat\theta\). The loss lower bound converts estimation loss into \(a\) times the number of incorrect bits. Average over the uniform hypercube prior. For each coordinate, condition on the others and apply Le Cam's bound to the two neighboring mixture distributions. Sum the coordinate errors.</p>
+</div>
+
+<h3>Fano's inequality in metric form</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\theta_1,\ldots,\theta_M\) be \(2\delta\)-separated under \(d\), and let
+  \(\overline P=M^{-1}\sum_jP_{\theta_j}\). Then
+  \[
+  \inf_{\widehat\theta}\sup_j
+  P_{\theta_j}\{d(\widehat\theta,\theta_j)\ge\delta\}
+  \ge1-\frac{M^{-1}\sum_j
+  \operatorname{KL}(P_{\theta_j}\|\overline P)+\log2}{\log M}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Map any estimator to the nearest packing point. If its distance from the truth is below \(\delta\), separation guarantees correct decoding. Under a uniform random packing index \(J\), Fano's information inequality gives
+  \(P(\widehat J\ne J)\ge1-\{I(J;X)+\log2\}/\log M\).
+  Mutual information is the average KL divergence to \(\overline P\), and worst-case error dominates average error.</p>
+</div>
+
+<h3>Sparse Gaussian sequence lower bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In
+  \[
+  Y=\theta+\frac{\sigma}{\sqrt n}Z,\qquad Z\sim N_p(0,I_p),
+  \]
+  over \(\Theta_s=\{\theta:\|\theta\|_0\le s\}\), \(1\le s\le p/2\),
+  \[
+  \inf_{\widehat\theta}\sup_{\theta\in\Theta_s}
+  \mathbb E_\theta\|\widehat\theta-\theta\|_2^2
+  \asymp\frac{\sigma^2s\log(ep/s)}{n}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For the lower bound, the
+  Varshamov-Gilbert lemma supplies \(M\ge\exp\{cs\log(ep/s)\}\) binary
+  \(s\)-sparse vectors with Hamming separation \(cs\). Multiply them by
+  \(a\), where \(a^2\asymp\sigma^2\log(ep/s)/n\) with a small constant. Pairwise squared separation is of order \(sa^2\), while KL divergence from zero is
+  \(nsa^2/(2\sigma^2)\lesssim\log M\). Fano yields the lower rate.
+  For the upper bound, hard-threshold each \(Y_j\) at
+  \(t\asymp\sigma\sqrt{\log(ep/s)/n}\). Gaussian tail integration bounds false positives, missed signals, and retained-coordinate variance by \(O(st^2)\).</p>
+</div>
+
+<h3>Sparse linear-regression minimax rate</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose the fixed design satisfies
+  \[
+  \kappa_-^2\|\Delta\|_2^2
+  \le\frac1n\|X\Delta\|_2^2
+  \le\kappa_+^2\|\Delta\|_2^2
+  \]
+  for every \(2s\)-sparse \(\Delta\). Then prediction risk over \(s\)-sparse coefficients has minimax order
+  \[
+  \frac{\sigma^2s\log(ep/s)}{n},
+  \]
+  up to constants depending on \(\kappa_\pm\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Penalized least squares or Lasso under restricted curvature gives the upper bound. For the lower bound, embed the sparse sequence packing. Sparse eigenvalues convert coefficient separation into prediction separation, while Gaussian-regression KL is
+  \(\|X(\beta-\beta')\|^2/(2\sigma^2)\); the upper sparse eigenvalue keeps it within Fano's information budget.</p>
+</div>
+
+<h3>Exact and weak oracle inequalities</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An exact oracle inequality has leading constant one:
+  \[
+  R(\widehat f)\le
+  \inf_{f\in\mathcal F}\{R(f)+\operatorname{pen}(f)\}+r_n.
+  \]
+  A weak oracle inequality allows a constant \(C>1\) before comparator risk. A sharp inequality has \(C=1+o(1)\).</p>
+</div>
+
+<p>The distinction matters under misspecification. Multiplying approximation error by a fixed \(C>1\) can dominate the stochastic rate, even when both inequalities look similar in a correctly specified sparse model.</p>
+
+<h3>An aggregation oracle inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For bounded exp-concave loss and finite candidates \(f_1,\ldots,f_M\), exponential aggregation with prior \(\pi\) satisfies
+  \[
+  \mathbb ER(\widehat f)
+  \le\inf_{1\le j\le M}
+  \left\{R(f_j)+\frac{\log(1/\pi_j)}{\eta n}\right\}
+  \]
+  for an admissible exp-concavity parameter \(\eta\), under the standard online-to-batch construction.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Exponential weights has regret
+  \(\log(1/\pi_j)/\eta\) against every expert. Exp-concavity makes the loss of the weighted prediction no greater than the mix loss used in the potential argument. Average online predictions and use exchangeability to convert cumulative expected loss to population risk; divide by \(n\).</p>
+</div>
+
+<h3>Adaptation costs</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> An adaptive procedure competes over many smoothness levels, sparsity values, or model dimensions. Sometimes the oracle penalty already pays the necessary search cost and adaptation is rate-free; sometimes a logarithmic loss is unavoidable; for honest confidence sets adaptation may be impossible without self-similarity or separation. Estimation, selection, and uncertainty are distinct decision problems.</p>
+</div>
+
+<h3>Coordinates of a rate theorem</h3>
+
+<p>A complete minimax claim records the parameter class, observation experiment, loss, normalization, asymptotic regime, upper-bound estimator, and lower-bound reduction. A displayed rate without these coordinates is not a theorem: \(s\log p/n\), for example, may denote prediction loss, coefficient loss under restricted eigenvalues, or merely a complexity penalty, and those statements require different assumptions.</p>

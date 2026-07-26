@@ -8,24 +8,98 @@ note_prev_url: "/notes/number-theory/congruences-and-modular-arithmetic/"
 note_next_url: "/notes/number-theory/quadratic-residues-and-reciprocity/"
 ---
 
-<p>Chinese remainder theorem records the objects, main results, proof mechanisms, and boundary cases needed for the number theory note.</p>
+<p>The Chinese remainder theorem reconstructs a global residue class from
+compatible local residues. Algebraically, it decomposes a quotient by a
+product of coprime ideals into a product of simpler quotient rings.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Chinese remainder theorem solves simultaneous congruences with coprime moduli by identifying one quotient ring with a product of quotient rings.</p>
-    </div>
+<h3>Two moduli</h3>
 
-    <h3>Chinese remainder theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(n_1,ldots,n_r\) are pairwise coprime, then \(\mathbb Z/(n_1\cdots n_r)\mathbb Z\cong\prod_i \mathbb Z/n_i\mathbb Z\).</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(\gcd(m,n)=1\), the map
+\[
+\Phi:\mathbb Z/mn\mathbb Z\to
+\mathbb Z/m\mathbb Z\times\mathbb Z/n\mathbb Z,\qquad
+[x]_{mn}\mapsto([x]_m,[x]_n),
+\]
+is a ring isomorphism.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Construct the natural reduction map. Coprimality gives surjectivity by Bezout combinations, and equal cardinalities or kernel computation gives injectivity.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Choose \(r,s\in\mathbb Z\) with
+\(rm+sn=1\). For prescribed residues \(a\bmod m\), \(b\bmod n\), set
+\[
+x=bsn+arm.
+\]
+Then \(x\equiv a\pmod m\) and \(x\equiv b\pmod n\), proving surjectivity.
+If \(x\) maps to zero, both \(m,n\mid x\); coprimality implies \(mn\mid x\),
+so the kernel is zero.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> CRT is a decomposition theorem: arithmetic modulo a composite splits into arithmetic modulo coprime factors.</p>
-    </div>
+<h3>Several moduli and explicit idempotents</h3>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> For pairwise coprime
+\(n_1,\ldots,n_r\), every system
+\[
+x\equiv a_i\pmod{n_i},\qquad1\le i\le r,
+\]
+has a unique solution modulo \(N=n_1\cdots n_r\).</p>
+</div>
+
+<p>Let \(N_i=N/n_i\) and choose \(u_iN_i\equiv1\pmod{n_i}\). Then
+\[
+e_i=u_iN_i
+\]
+satisfies \(e_i\equiv1\pmod{n_i}\) and \(e_i\equiv0\pmod{n_j}\) for
+\(j\ne i\). The solution is
+\[
+x\equiv\sum_{i=1}^ra_ie_i\pmod N.
+\]
+The elements \(e_i\) are orthogonal idempotents:
+\(e_i^2=e_i\), \(e_ie_j=0\), and \(\sum_ie_i=1\) modulo \(N\).</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Solve
+\[
+x\equiv2\pmod3,\quad x\equiv3\pmod5,\quad x\equiv2\pmod7.
+\]
+Here \(N=105\). One may take
+\[
+e_1=70,\qquad e_2=21,\qquad e_3=15.
+\]
+Thus \(x\equiv2(70)+3(21)+2(15)=233\equiv23\pmod{105}\).</p>
+</div>
+
+<h3>Noncoprime moduli</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The pair
+\[
+x\equiv a\pmod m,\qquad x\equiv b\pmod n
+\]
+is solvable if and only if
+\[
+a\equiv b\pmod{\gcd(m,n)}.
+\]
+When solvable, the solution is unique modulo
+\(\operatorname{lcm}(m,n)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Subtracting the congruences
+makes the compatibility condition necessary. If it holds, write
+\(d=\gcd(m,n)\), \(b-a=dc\), and solve
+\((m/d)t\equiv c\pmod{n/d}\); the coefficient is invertible. Any two
+solutions differ by a common multiple of \(m,n\), hence by their lcm.</p>
+</div>
+
+<h3>Prime-power reduction</h3>
+
+<p>Writing \(n=\prod_pp^{v_p(n)}\) gives
+\[
+\mathbb Z/n\mathbb Z\cong
+\prod_{p\mid n}\mathbb Z/p^{v_p(n)}\mathbb Z.
+\]
+Consequently a congruence modulo \(n\) can be solved independently at each
+prime power and then recombined. This local-to-global pattern reappears in
+\(p\)-adic analysis, algebraic number fields, and adelic methods.</p>

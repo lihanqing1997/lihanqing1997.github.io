@@ -1,0 +1,116 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "26. Average reward and ergodic control"
+breadcrumb_child_label_fr: "26. Récompense moyenne et contrôle ergodique"
+breadcrumb_child_label_zh: "26. 平均奖励与遍历控制"
+note_back_url: "/notes/reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control/"
+note_next_url: "/notes/reinforcement-learning/stochastic-games-multi-agent-learning/"
+---
+
+<p>Average-reward control describes continuing systems without geometric
+discounting. The loss of a discount contraction makes recurrence, invariant
+measures, and Poisson equations central. It is a genuinely different regime,
+not a notational limit obtained by putting \(\gamma=1\).</p>
+
+<h3>Gain and bias</h3>
+
+<p>For a stationary policy \(\pi\), define its gain
+\[
+g^\pi(s)
+=\liminf_{T\to\infty}\frac1T
+E_s^\pi\sum_{t=0}^{T-1}r(S_t,A_t).
+\]
+If the policy chain is irreducible positive recurrent with invariant law
+\(d_\pi\), then the ergodic theorem gives a state-independent gain
+\[
+g^\pi=\sum_sd_\pi(s)r_\pi(s).
+\]
+The bias or differential value is
+\[
+h^\pi(s)
+=E_s^\pi\sum_{t=0}^{\tau-1}\{r_\pi(S_t)-g^\pi\},
+\]
+for a return time \(\tau\) to a reference state, when integrable.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Poisson equation).</span> In a finite
+irreducible Markov chain,
+\[
+g^\pi\mathbf1+h^\pi=r_\pi+P_\pi h^\pi.
+\]
+The gain is unique and \(h^\pi\) is unique up to an additive constant.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> First-step analysis of the
+centered reward until the reference return gives the equation. If
+\((g,h)\) and \((\tilde g,\tilde h)\) solve it, multiply by the invariant row
+vector \(d_\pi^\top\) to get \(g=\tilde g=d_\pi^\top r_\pi\). Their difference
+satisfies \(u=P_\pi u\); irreducibility makes every harmonic function constant.</p>
+</div>
+
+<h3>Average-cost optimality equation</h3>
+
+<p>Under finite unichain assumptions, an optimal gain \(g^*\) and bias \(h^*\)
+satisfy
+\[
+g^*+h^*(s)
+=\max_a\left\{r(s,a)+\sum_{s'}P(s'\mid s,a)h^*(s')\right\}.
+\]
+A stationary policy selecting maximizing actions is gain optimal. Unlike
+discounted Bellman equations, adding a constant to \(h^*\) changes nothing, and
+the optimality operator is nonexpansive only in span seminorm.</p>
+
+<h3>Relative value iteration</h3>
+
+<p>Fix a reference state \(s_0\) and iterate
+\[
+\widetilde h_{k+1}=Th_k,\qquad
+h_{k+1}=\widetilde h_{k+1}
+-\widetilde h_{k+1}(s_0)\mathbf1.
+\]
+Under suitable communicating or aperiodicity conditions, \(h_k\) converges
+modulo constants and the subtracted scalar converges to \(g^*\). Periodicity can
+cause oscillation, requiring damping or modified iterations.</p>
+
+<h3>Vanishing-discount connection</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (vanishing discount, finite
+unichain form).</span> Along \(\gamma\uparrow1\),
+\[
+(1-\gamma)V_\gamma^*(s)\to g^*,
+\]
+and, after normalization at \(s_0\),
+\[
+V_\gamma^*(s)-V_\gamma^*(s_0)\to h^*(s)
+\]
+along convergent subsequences; under stronger assumptions the limit is unique.</p>
+</div>
+
+<p>The divergent component \(g^*/(1-\gamma)\) is common across states, while
+relative values retain transient differences. This decomposition explains both
+the connection and the numerical ill-conditioning of highly discounted
+problems.</p>
+
+<h3>Learning the average reward</h3>
+
+<p>Differential TD estimates both gain and bias:
+\[
+\delta_t=R_{t+1}-\widehat g_t+h_w(S_{t+1})-h_w(S_t),
+\]
+\[
+\widehat g_{t+1}=\widehat g_t+\beta_t\delta_t,\qquad
+w_{t+1}=w_t+\alpha_t\delta_t\nabla_wh_w(S_t).
+\]
+Valid convergence requires ergodicity and an identifiability normalization for
+the bias. Mixing time or diameter replaces \((1-\gamma)^{-1}\) as the
+effective horizon in concentration and regret bounds.</p>
+
+<h3>Multichain complications</h3>
+
+<p>If a policy has multiple recurrent classes, gain may depend on the initial
+state and a single scalar average-cost equation may fail. Transient choices can
+select which recurrent class is reached. Unichain assumptions are therefore
+structural, not technical shorthand.</p>

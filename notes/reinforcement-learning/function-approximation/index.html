@@ -63,3 +63,84 @@ note_next_url: "/notes/reinforcement-learning/approximate-dynamic-programming/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> This shortcut is computationally convenient but changes the optimization geometry. Gradient-TD methods were designed to optimize well-defined projected Bellman-error objectives.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Projection geometry</h3>
+
+<p>Let \(\mathcal V=\{\Phi w:w\in\mathbb R^d\}\) and let
+\(\Pi_D\) be orthogonal projection in a state distribution \(D\). Three
+distinct targets are often confused:</p>
+<ol>
+<li>best value approximation \(\Pi_DV^\pi\);</li>
+<li>projected Bellman fixed point
+\(\widehat V=\Pi_DT^\pi\widehat V\);</li>
+<li>Bellman-residual minimizer
+\(\arg\min_{V\in\mathcal V}\|T^\pi V-V\|_D^2\).</li>
+</ol>
+
+<p>They generally differ because \(\Pi_D\) and \(T^\pi\) do not commute.</p>
+
+<h3>On-policy stability</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(D\) is stationary for
+\(P_\pi\), then \(P_\pi\) is nonexpansive in \(L_2(D)\), so
+\(\Pi_DT^\pi\) is a \(\gamma\)-contraction. The projected Bellman equation has
+a unique solution, and linear TD converges under standard stochastic
+approximation assumptions.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional Jensen gives
+\[
+\|P_\pi f\|_D^2
+=E\{E[f(S_{t+1})\mid S_t]^2\}
+\le E f(S_{t+1})^2=\|f\|_D^2.
+\]
+Orthogonal projection is nonexpansive, hence
+\[
+\|\Pi_DT^\pi V-\Pi_DT^\pi W\|_D
+\le\gamma\|V-W\|_D.
+\]</p>
+</div>
+
+<h3>The deadly triad</h3>
+
+<p>Off-policy sampling replaces \(D\) by a behavior distribution not stationary
+for \(P_\pi\). The nonexpansiveness proof breaks, and the matrix
+\[
+A=\Phi^\top D_\mu(I-\gamma P_\pi)\Phi
+\]
+may have eigenvalues with negative real part. Semi-gradient TD then follows an
+unstable mean ODE. Baird's counterexample constructs a seven-state linear
+system where bounded features, deterministic dynamics, and zero rewards still
+produce divergence under off-policy bootstrapping.</p>
+
+<h3>Gradient temporal-difference methods</h3>
+
+<p>The mean-squared projected Bellman error is
+\[
+\operatorname{MSPBE}(w)
+=(b-Aw)^\top C^{-1}(b-Aw),
+\quad C=\Phi^\top D_\mu\Phi.
+\]
+Introducing \(h\approx C^{-1}(b-Aw)\) yields two-time-scale stochastic gradients
+without double sampling:
+\[
+h_{t+1}=h_t+\beta_t\{\delta_t-\phi_t^\top h_t\}\phi_t,
+\]
+\[
+w_{t+1}=w_t+\alpha_t
+\{\phi_t-\gamma\rho_t\phi_{t+1}\}(\phi_t^\top h_t).
+\]
+Exact forms vary between GTD2 and TDC, but their purpose is to optimize a true
+stable objective off-policy.</p>
+
+<h3>Nonlinear approximation</h3>
+
+<p>For neural \(V_w\) or \(Q_w\), projection is onto a nonconvex manifold and
+the target changes with \(w\). Target networks freeze the bootstrap target for
+several steps; replay changes correlation and coverage; double estimators
+reduce maximization bias. These devices can stabilize training but offer no
+general replacement for the linear contraction theorem. Approximation,
+optimization, and statistical errors must be analyzed separately.</p>

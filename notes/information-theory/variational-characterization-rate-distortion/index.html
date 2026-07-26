@@ -35,3 +35,134 @@ P_{\widehat X\mid X}(\hat x\mid x)=\frac{P_{\widehat X}(\hat x)\exp(s d(x,\hat x
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Alternating between the tilted conditional law and its induced reproduction marginal yields the Blahut-Arimoto iteration. The algorithm is secondary here; the important fact is the convex variational structure.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Lagrangian form</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For \(\lambda\ge0\), define
+  \[
+  F(\lambda)=
+  \inf_{P_{\widehat X\mid X}}
+  \{I(X;\widehat X)+\lambda\mathbb Ed(X,\widehat X)\}.
+  \]
+  Then
+  \[
+  R(D)=\sup_{\lambda\ge0}\{F(\lambda)-\lambda D\}
+  \]
+  at continuity points under standard convex duality conditions.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> \(R(D)\) is a closed convex decreasing function. The constrained optimization Lagrangian is
+  \(I+\lambda(\mathbb Ed-D)\). Slater's condition gives strong duality for interior distortions, yielding the Legendre-Fenchel representation.</p>
+</div>
+
+<h3>Optimal test-channel equations</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For finite alphabets and multiplier
+  \(\lambda\ge0\), an optimal test channel satisfies
+  \[
+  P_{\widehat X\mid X}^*(\widehat x\mid x)
+  =
+  \frac{P_{\widehat X}^*(\widehat x)
+  e^{-\lambda d(x,\widehat x)}}
+  {\sum_{\widetilde x}P_{\widehat X}^*(\widetilde x)
+  e^{-\lambda d(x,\widetilde x)}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For fixed reproduction marginal \(Q\),
+  minimize
+  \[
+  \sum_xP(x)\sum_{\widehat x}
+  W(\widehat x\mid x)
+  \left[
+  \log\frac{W(\widehat x\mid x)}{Q(\widehat x)}
+  +\lambda d(x,\widehat x)\right]
+  \]
+  subject to each row summing to one. Rowwise Lagrange multipliers give the Gibbs form. At a joint optimum, \(Q\) must equal the marginal induced by \(P W\).</p>
+</div>
+
+<h3>Blahut-Arimoto algorithm</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Initialize
+  \(Q^{(0)}(\widehat x)>0\). Iterate
+  \[
+  W^{(t+1)}(\widehat x\mid x)
+  \propto Q^{(t)}(\widehat x)
+  e^{-\lambda d(x,\widehat x)},
+  \]
+  \[
+  Q^{(t+1)}(\widehat x)
+  =\sum_xP(x)W^{(t+1)}(\widehat x\mid x).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For finite alphabets and positive initialization, these alternating minimizations converge in objective value to
+  \[
+  \inf_W\{I(P,W)+\lambda P Wd\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Introduce auxiliary marginal \(Q\) and objective
+  \[
+  J(W,Q)=
+  \sum_xP(x)D\{W(\cdot\mid x)\|Q\}
+  +\lambda PWd.
+  \]
+  For fixed \(Q\), the Gibbs update exactly minimizes \(J\) over \(W\). For fixed \(W\), its induced marginal minimizes the average KL over \(Q\). Thus the objective decreases. Compactness gives limit points, and strict convexity on the relevant support makes every stationary limit globally optimal.</p>
+</div>
+
+<h3>Dual lower bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> A dual representation is
+  \[
+  R(D)=
+  \sup_{\lambda\ge0,\;g}
+  \left\{-\lambda D+\mathbb Eg(X)\right\}
+  \]
+  subject to
+  \[
+  \mathbb E_X
+  \exp\{g(X)-\lambda d(X,\widehat x)\}\le1
+  \quad\text{for every }\widehat x.
+  \]</p>
+</div>
+
+<p>Feasible dual pairs certify lower bounds on \(R(D)\); primal test channels certify upper bounds. Matching them gives a numerical optimality certificate.</p>
+
+<h3>Slope and distortion</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> At differentiability points,
+  \[
+  R'(D)=-\lambda^*,
+  \]
+  where \(\lambda^*\) is the optimal distortion multiplier.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The supporting affine function from the dual is
+  \(F(\lambda^*)-\lambda^*D\). For a differentiable convex function, the unique supporting slope equals its derivative.</p>
+</div>
+
+<h3>Information bottleneck relation</h3>
+
+<p>The information bottleneck problem
+\[
+\min_{P_{T\mid X}}
+I(X;T)-\beta I(T;Y)
+\]
+is a rate-distortion problem with a distribution-dependent distortion related to
+\(D(P_{Y\mid X}\|P_{Y\mid T})\). Its fixed-point equations have the same Gibbs form, explaining the algorithmic kinship with Blahut-Arimoto.</p>
+
+<h3>Support transitions</h3>
+
+<p>As \(D\) changes, the optimal reproduction marginal can gain or lose support. At these points \(R(D)\) may fail to be twice differentiable, and naive gradient-based numerical continuation can jump. Monitoring KKT residuals and dual gaps is more reliable than inspecting objective decrease alone.</p>

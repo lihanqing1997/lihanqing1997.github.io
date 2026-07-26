@@ -1,0 +1,253 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "9. Cox diagnostics and model assessment"
+breadcrumb_child_label_fr: "9. Diagnostics de Cox et évaluation du modèle"
+breadcrumb_child_label_zh: "9. Cox 诊断与模型评估"
+note_back_url: "/notes/survival-analysis/"
+note_prev_url: "/notes/survival-analysis/time-dependent-covariates-risk-sets/"
+note_next_url: "/notes/survival-analysis/accelerated-failure-time-transformation-models/"
+---
+
+<p>A fitted Cox model makes several distinct claims: proportional relative hazards, a specified linear predictor, correctly formed risk sets, noninformative censoring, and adequate absolute-risk calibration. No single residual can test all of them. Diagnostics should be tied to the martingale or conditional-moment identity implied by the particular claim.</p>
+
+<h3>Martingale and Cox-Snell residuals</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For subject \(i\), the fitted cumulative hazard and martingale residual are
+\[
+\widehat H_i(t)
+=\int_0^tY_i(u)e^{\widehat\beta^\top Z_i(u)}
+\,\mathrm{d}\widehat\Lambda_0(u),
+\qquad
+\widehat M_i(t)=N_i(t)-\widehat H_i(t).
+\]
+At the end of follow-up,
+\[
+\widehat M_i=\Delta_i-\widehat H_i(X_i).
+\]
+The Cox-Snell residual is
+\[
+\widehat R_i=\widehat H_i(X_i).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (exponential transform).</span> If \(T\) has continuous conditional cumulative hazard \(H(t\mid Z)\), then
+\[
+R=H(T\mid Z)\mid Z\sim\operatorname{Exp}(1).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For \(r\ge0\), let
+\(H^{-1}(r\mid Z)=\inf\{t:H(t\mid Z)\ge r\}\). Then
+\[
+P\{H(T\mid Z)>r\mid Z\}
+=P\{T>H^{-1}(r\mid Z)\mid Z\}
+=e^{-r}.
+\]
+Thus the transformed event time is standard exponential.</p>
+</div>
+
+<p>With censoring, \(R_i\) is itself right-censored, so a Nelson-Aalen plot of cumulative hazard versus \(r\) should approximate the line \(r\mapsto r\) under global fit. This omnibus plot does not localize whether a deviation comes from covariate form, proportionality, or baseline prediction.</p>
+
+<h3>Deviance residuals and functional form</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The martingale residual lies in
+\((-\infty,1]\) and is strongly skewed. The deviance residual is
+\[
+D_i=\operatorname{sign}(\widehat M_i)
+\left[
+-2\{\widehat M_i+
+\Delta_i\log(\Delta_i-\widehat M_i)\}
+\right]^{1/2},
+\]
+with \(0\log0=0\).</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The quantity inside the square root is twice the difference between the saturated one-observation counting-process log-likelihood and the fitted log-likelihood contribution.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For observed count \(\Delta_i\in\{0,1\}\) and fitted cumulative mean \(\widehat H_i\), the Poisson-type log-likelihood is
+\(\Delta_i\log\widehat H_i-\widehat H_i\). The saturated mean is \(\Delta_i\), giving difference
+\[
+\Delta_i\log\frac{\Delta_i}{\widehat H_i}
+-(\Delta_i-\widehat H_i)
+=-\{\widehat M_i+\Delta_i\log(\Delta_i-\widehat M_i)\},
+\]
+because \(\widehat H_i=\Delta_i-\widehat M_i\). Multiply by two and attach the residual sign.</p>
+</div>
+
+<p>Plotting \(\widehat M_i\) or \(D_i\) against an omitted continuous covariate \(X_i\) can reveal nonlinear mean structure. A smoother near zero supports the fitted form; curvature suggests adding a spline or transformation. The points are neither independent nor homoscedastic, so the plot is exploratory unless embedded in a formal score test.</p>
+
+<h3>Schoenfeld residuals</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> If subject \(i_k\) fails at \(t_k\), the Schoenfeld residual is
+\[
+r_k=Z_{i_k}(t_k)-\bar Z_n(\widehat\beta,t_k).
+\]
+The score is their sum:
+\[
+U_n(\widehat\beta)=\sum_{k=1}^{D}r_k=0
+\]
+for an interior maximum. A scaled Schoenfeld residual is commonly
+\[
+r_k^\star=I_n(\widehat\beta)^{-1}r_k
+\]
+or a time-local covariance-scaled version.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (time-varying local alternative).</span> Suppose
+\[
+\beta(t)=\beta_0+\theta g(t)
+\]
+for a scalar function \(g\). The score for \(\theta\) at \(\theta=0\) and \(\beta=\beta_0\) is
+\[
+U_\theta
+=\sum_k g(t_k)^\top
+\{Z_{i_k}(t_k)-\bar Z_n(\beta_0,t_k)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The expanded linear predictor is
+\(\beta_0^\top Z+\theta^\top\{g(t)Z\}\). Applying the ordinary Cox score formula to the added time-dependent covariate \(g(t)Z\) gives the result.</p>
+</div>
+
+<p>Regressing scaled Schoenfeld residuals on a chosen function of time is therefore a score test for a specified nonproportional alternative. A visible slope suggests how the coefficient changes; failure to reject does not prove proportionality against every possible temporal pattern.</p>
+
+<h3>Cumulative score processes</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a predictable diagnostic covariate \(h_i(t)\), define
+\[
+\mathbb U_n(t)
+=\frac1{\sqrt n}\sum_i\int_0^t
+\{h_i(u)-\bar h_n(u)\}\,\mathrm{d}\widehat M_i(u),
+\]
+where \(\bar h_n\) is the fitted risk-set weighted mean. Under the fitted model, \(\mathbb U_n\) is approximately a mean-zero Gaussian process after accounting for parameter estimation.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (multiplier calibration).</span> Let
+\(\widehat\phi_i(t)\) be estimated subject-level influence processes for
+\(\mathbb U_n(t)\), including the effect of estimating \(\beta\) and
+\(\Lambda_0\). If the relevant class is Donsker or satisfies an appropriate martingale tightness condition, then conditionally on the data,
+\[
+\mathbb U_n^\xi(t)
+=\frac1{\sqrt n}\sum_i\xi_i\widehat\phi_i(t)
+\]
+converges to the same Gaussian limit as \(\mathbb U_n\), for independent multipliers with mean zero and variance one.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Asymptotic linearization reduces the process to a sum of independent mean-zero influence functions. Conditional multiplier central limit theory gives the same covariance kernel because
+\[
+E_\xi\{\mathbb U_n^\xi(s)\mathbb U_n^\xi(t)\}
+=\frac1n\sum_i\widehat\phi_i(s)\widehat\phi_i(t).
+\]
+Stochastic equicontinuity transfers convergence from finite-dimensional distributions to the supremum norm. Parameter-estimation corrections are necessary to reproduce the projected covariance.</p>
+</div>
+
+<p>Supremum statistics such as
+\(\sup_t\|\mathbb U_n(t)\|\) detect broad departures, while directional integrals are more powerful against prespecified alternatives.</p>
+
+<h3>Influence and leverage</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A one-step approximation to the change in \(\widehat\beta\) after deleting subject \(i\) is
+\[
+\operatorname{DFBETA}_i
+\approx I_n(\widehat\beta)^{-1}U_i(\widehat\beta),
+\]
+where
+\[
+U_i(\widehat\beta)
+=\int\{Z_i(t)-\bar Z_n(\widehat\beta,t)\}
+\,\mathrm{d}\widehat M_i(t)
+\]
+is a subject-level score residual.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Derivation.</span> Let \(U_{-i}\) be the score without subject \(i\). Expanding
+\(0=U_{-i}(\widehat\beta_{-i})\) at \(\widehat\beta\) gives
+\[
+0\approx-U_i(\widehat\beta)
+-I_n(\widehat\beta)(\widehat\beta_{-i}-\widehat\beta),
+\]
+which yields the approximation up to the sign convention used for the displayed deletion contrast.</p>
+</div>
+
+<p>Large influence may arise from an unusual covariate, a rare risk-set comparison, an early event, or data error. It should trigger subject-level inspection and sensitivity analysis, not automatic deletion.</p>
+
+<h3>Calibration and discrimination</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> At horizon \(t\), the inverse-censoring-weighted Brier score for prediction \(\widehat S(t\mid Z_i)\) is
+\[
+\widehat{\operatorname{BS}}(t)
+=\frac1n\sum_{i=1}^n
+\left[
+\frac{1\{X_i\le t,\Delta_i=1\}}
+{\widehat G(X_i-\mid Z_i)}
+\widehat S(t\mid Z_i)^2
++
+\frac{1\{X_i>t\}}
+{\widehat G(t\mid Z_i)}
+\{1-\widehat S(t\mid Z_i)\}^2
+\right],
+\]
+where \(G(t\mid Z)=P(C\ge t\mid Z)\).</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If censoring is conditionally independent given \(Z\) and \(G\) is correctly estimated, the weighted Brier score is unbiased, up to estimation error, for
+\[
+E\left[
+\{1(T>t)-\widehat S(t\mid Z)\}^2
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For the event term,
+\[
+E\left[
+\frac{1\{T\le t,T\le C\}}{G(T-\mid Z)}
+h(T,Z)
+\middle|T,Z
+\right]
+=1\{T\le t\}h(T,Z).
+\]
+For the survival term,
+\[
+E\left[
+\frac{1\{T>t,C>t\}}{G(t\mid Z)}
+\middle|T,Z
+\right]=1\{T>t\}.
+\]
+Choose the corresponding squared-error functions and add.</p>
+</div>
+
+<p>Concordance evaluates ordering among comparable pairs; it is insensitive to a common distortion of absolute risk. Calibration plots compare observed and predicted risk within prediction strata, while calibration-in-the-large and slope quantify systematic level and spread errors. Validation data should be independent, or optimism must be corrected by resampling the entire modeling pipeline.</p>
+
+<h3>Competing explanations for a bad diagnostic</h3>
+
+<p>A residual pattern can be caused by:</p>
+<ul>
+<li>nonlinearity in a covariate effect;</li>
+<li>nonproportional hazards;</li>
+<li>omitted interactions or time-dependent confounding;</li>
+<li>incorrect entry, censoring, or event coding;</li>
+<li>cluster dependence or frailty;</li>
+<li>an inappropriate time scale;</li>
+<li>a wrong event type in the presence of competing risks.</li>
+</ul>
+
+<p>Diagnosis is therefore iterative: derive the moment restriction, inspect a process targeted to it, fit a scientifically plausible alternative, and reassess prediction and interpretation. Passing a battery of plots does not establish the censoring or causal assumptions, which are not fully testable from observed data.</p>

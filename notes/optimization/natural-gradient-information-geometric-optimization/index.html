@@ -8,24 +8,132 @@ note_prev_url: "/notes/optimization/empirical-risk-m-estimation-objectives/"
 note_next_url: "/notes/optimization/variational-inference-as-optimization/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Natural gradient and information-geometric optimization.</p>
+<p>A differential is coordinate-independent, but its Euclidean gradient is
+not: identifying covectors with vectors requires a metric. Natural gradient
+uses the Fisher information metric, so the update reflects local statistical
+distinguishability rather than arbitrary parameter units.</p>
 
-    <h3>Riemannian gradient</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given a metric \(g_\theta\), the natural gradient \(\widetilde\nabla L\) is defined by \(g_\theta(\widetilde\nabla L,v)=\mathrm{d}L_\theta(v)\) for every tangent vector \(v\).</p>
-    </div>
+<h3>Raising the differential with a metric</h3>
 
-    <h3>Fisher metric</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> On a statistical model, using Fisher information as \(g\) makes the gradient direction invariant under smooth reparametrization and measures step size by local statistical distinguishability.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Let \(G(\theta)\) be a
+    positive-definite Riemannian metric matrix. The Riemannian gradient
+    \(\operatorname{grad}_G L(\theta)\) is defined by
+    \[
+    v^\top G(\theta)\operatorname{grad}_G L(\theta)
+    =\mathrm{d}L_\theta(v)
+    =v^\top\nabla_\theta L(\theta)
+    \quad\text{for every }v.
+    \]
+    Hence
+    \[
+    \operatorname{grad}_G L(\theta)
+    =G(\theta)^{-1}\nabla_\theta L(\theta).
+    \]</p>
+</div>
 
-    <h3>Constrained KL step</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The infinitesimal solution of maximizing linearized improvement subject to a small KL or Fisher-distance constraint is the natural-gradient direction.</p>
-    </div>
+<p>The ordinary gradient is the special case \(G=I\). The inverse metric does
+not merely rescale a vector after optimization; it is the mathematical map
+that turns the differential into a tangent direction.</p>
 
-    <h3>Connection to mirror descent</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In dually flat models, natural-gradient and mirror-descent updates are two coordinate views of the same geometry, linked by Legendre dual potentials.</p>
-    </div>
+<h3>Reparametrization covariance</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Coordinate invariance.</span> Let
+    \(\theta=\phi(\eta)\) be a smooth invertible reparametrization with
+    Jacobian \(J=D\phi(\eta)\). If
+    \[
+    G_\eta(\eta)=J^\top G_\theta(\theta)J,
+    \]
+    then the two coordinate representations of the Riemannian gradient satisfy
+    \[
+    J\,\operatorname{grad}_{G_\eta}L(\eta)
+    =\operatorname{grad}_{G_\theta}L(\theta).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The chain rule gives
+    \(\nabla_\eta L=J^\top\nabla_\theta L\). Therefore
+    \[
+    JG_\eta^{-1}\nabla_\eta L
+    =J(J^\top G_\theta J)^{-1}J^\top\nabla_\theta L
+    =G_\theta^{-1}\nabla_\theta L,
+    \]
+    using invertibility of \(J\). This is the desired transformation law.</p>
+</div>
+
+<h3>Fisher information from local KL divergence</h3>
+
+<p>For a regular statistical model \(p_\theta\), the Fisher information is
+\[
+I(\theta)
+=\mathbb E_\theta[
+  \nabla_\theta\log p_\theta(X)
+  \nabla_\theta\log p_\theta(X)^\top].
+\]
+A second-order expansion gives
+\[
+\operatorname{KL}(p_\theta\|p_{\theta+\delta})
+=\frac12\delta^\top I(\theta)\delta+o(\|\delta\|^2).
+\]
+The linear term vanishes because the score has mean zero. Thus the Fisher
+quadratic form is the local distinguishability cost of changing the model.</p>
+
+<h3>The KL trust-region calculation</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Natural steepest-ascent direction.</span>
+    The solution of the local problem
+    \[
+    \max_\delta\ \nabla L(\theta)^\top\delta
+    \quad\text{subject to}\quad
+    \frac12\delta^\top I(\theta)\delta\le\varepsilon
+    \]
+    is
+    \[
+    \delta^\star
+    =
+    \sqrt{\frac{2\varepsilon}
+      {\nabla L^\top I^{-1}\nabla L}}\,
+      I(\theta)^{-1}\nabla L(\theta).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The constraint is active
+    unless \(\nabla L=0\). The Lagrangian stationarity equation is
+    \(\nabla L-\lambda I\delta=0\), so
+    \(\delta=\lambda^{-1}I^{-1}\nabla L\). Substitute into the quadratic
+    constraint to determine \(\lambda\) and obtain the formula.</p>
+</div>
+
+<p>Natural-gradient ascent uses a chosen step length in this direction:
+\[
+\theta_{k+1}
+=\theta_k+\eta_kI(\theta_k)^{-1}\nabla L(\theta_k).
+\]
+When information is singular, the model is locally nonidentifiable; damping
+or a pseudoinverse is then needed, and invariance must be interpreted on the
+identifiable tangent space.</p>
+
+<h3>Exponential-family dual coordinates</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> In an exponential family
+    \(p_\theta(x)=\exp\{\theta^\top T(x)-A(\theta)\}h(x)\),
+    \[
+    I(\theta)=\nabla^2A(\theta),\qquad
+    \mu=\nabla A(\theta)=\mathbb E_\theta T(X).
+    \]
+    Since \(\mathrm{d}\mu=I(\theta)\,\mathrm{d}\theta\), a natural-gradient step
+    in \(\theta\) is an ordinary gradient step in the expectation coordinate
+    \(\mu\), to first order. The Legendre pair \(A,A^*\) makes this the same
+    dual-coordinate mechanism as mirror descent.</p>
+</div>
+
+<p>The intrinsic geometry and its regularity assumptions are developed in
+<a href="{{ '/notes/information-geometry/natural-gradient/' | relative_url }}">natural gradient</a>
+and
+<a href="{{ '/notes/information-geometry/fisher-information-metric/' | relative_url }}">the Fisher information metric</a>.
+This page supplies the optimization derivation.</p>

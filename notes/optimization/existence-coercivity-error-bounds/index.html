@@ -8,24 +8,157 @@ note_prev_url: "/notes/optimization/smoothness-strong-convexity-condition-number
 note_next_url: "/notes/optimization/lagrange-multipliers/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Existence, coercivity, and error bounds.</p>
+<p>Optimality conditions are useful only after a solution is known to exist.
+The direct method proves existence by trapping a minimizing sequence in a
+compact set and passing to a lower-semicontinuous limit. Error bounds then turn
+objective accuracy into distance from the solution set.</p>
 
-    <h3>Weierstrass principle</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(C\) is compact and \(f:C\to\mathbb R\) is continuous, then \(f\) attains its minimum on \(C\). Compactness is often replaced by coercivity of \(f\).</p>
-    </div>
+<h3>Lower semicontinuity and compact sublevel sets</h3>
 
-    <h3>Coercivity</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A function \(f\) on \(\mathbb R^d\) is coercive if \(f(x)\to\infty\) whenever \(\|x\|\to\infty\). A lower semicontinuous coercive function has compact sublevel sets and hence minimizers when proper.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A function
+    \(f:\mathbb R^d\to(-\infty,+\infty]\) is lower semicontinuous at \(x\) if
+    \[
+    f(x)\le\liminf_{n\to\infty}f(x_n)
+    \quad\text{whenever }x_n\to x.
+    \]
+    Equivalently, every sublevel set
+    \(L_\alpha=\{x:f(x)\le\alpha\}\) is closed.</p>
+</div>
 
-    <h3>Quadratic growth</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An objective has a quadratic growth error bound around \(X^\star\) if \(f(x)-f^\star\ge c\,\operatorname{dist}(x,X^\star)^2\). This controls parameter error by objective error.</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Direct method in finite dimensions.</span>
+    Let \(f:\mathbb R^d\to(-\infty,+\infty]\) be proper, lower semicontinuous,
+    and bounded below. If one nonempty sublevel set containing a minimizing
+    sequence is bounded, then \(f\) attains its infimum.</p>
+</div>
 
-    <h3>Statistical relevance</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Consistency proofs often combine stochastic uniform convergence with deterministic separation: outside every neighborhood of the target, the limiting objective is strictly worse.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Choose \(x_n\) with
+    \(f(x_n)\downarrow f^\star\). Discarding finitely many terms places the
+    sequence in a bounded sublevel set. Bolzano-Weierstrass gives a subsequence
+    \(x_{n_k}\to x^\star\). Closedness of the sublevel set keeps the limit in
+    \(\operatorname{dom}f\), and lower semicontinuity yields
+    \[
+    f(x^\star)\le\liminf_k f(x_{n_k})=f^\star.
+    \]
+    The reverse inequality follows from the definition of the infimum, hence
+    \(f(x^\star)=f^\star\).</p>
+</div>
+
+<h3>Coercivity prevents escape to infinity</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A function \(f\) is
+    coercive if \(f(x_n)\to+\infty\) for every sequence with
+    \(\|x_n\|\to\infty\). In finite dimensions this is equivalent to boundedness
+    of every sublevel set.</p>
+</div>
+
+<div class="math-statement corollary">
+    <p><span class="statement-title">Coercive existence theorem.</span> Every
+    proper, lower-semicontinuous, coercive function on \(\mathbb R^d\) has a
+    global minimizer. More generally, if \(C\) is nonempty and closed and
+    \(f+\iota_C\) is coercive, then \(f\) attains its minimum on \(C\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Properness gives a finite
+    point \(x_0\). The sublevel set
+    \(\{x:f(x)\le f(x_0)\}\) is nonempty, closed by lower semicontinuity, and
+    bounded by coercivity, hence compact. Apply the direct method. The
+    constrained claim is the same argument applied to \(f+\iota_C\).</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Why the hypotheses differ.</span>
+    The continuous function \(e^x\) is bounded below but not coercive and does
+    not attain its infimum. The coercive function
+    \(f(x)=x^2+\mathbf 1_{\{0\}}(x)\), interpreted with value \(1\) at zero and
+    \(x^2\) elsewhere, is not lower semicontinuous and has infimum zero without
+    attaining it. Coercivity controls infinity; lower semicontinuity controls
+    passage to a finite limit.</p>
+</div>
+
+<h3>Quadratic growth and parameter error</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Let
+    \(X^\star=\operatorname*{arg\,min}f\ne\varnothing\). The objective has
+    quadratic growth with constant \(\alpha>0\) on a set \(D\) if
+    \[
+    f(x)-f^\star\ge
+    \frac\alpha2\operatorname{dist}(x,X^\star)^2
+    \qquad(x\in D).
+    \]</p>
+</div>
+
+<p>Quadratic growth is weaker than strong convexity because the minimizer set
+may contain several points and the inequality is required only relative to that
+set. Nevertheless, any approximate solution satisfying
+\(f(x)-f^\star\le\varepsilon\) obeys
+\[
+\operatorname{dist}(x,X^\star)\le\sqrt{\frac{2\varepsilon}{\alpha}}.
+\]</p>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Gradient error under strong
+    convexity.</span> If \(f\) is differentiable and \(\mu\)-strongly convex
+    with minimizer \(x^\star\), then
+    \[
+    \|x-x^\star\|\le\frac1\mu\|\nabla f(x)\|,
+    \qquad
+    f(x)-f^\star\le\frac1{2\mu}\|\nabla f(x)\|^2.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Strong monotonicity with
+    \(\nabla f(x^\star)=0\) gives
+    \[
+    \mu\|x-x^\star\|^2
+    \le\langle\nabla f(x),x-x^\star\rangle
+    \le\|\nabla f(x)\|\,\|x-x^\star\|,
+    \]
+    proving the first inequality. Strong convexity, now written with base point
+    \(x\) and comparison point \(x^\star\), gives
+    \[
+    f^\star\ge f(x)+\langle\nabla f(x),x^\star-x\rangle
+      +\frac\mu2\|x-x^\star\|^2.
+    \]
+    Maximizing the right-hand error bound over
+    \(\|x-x^\star\|\) yields the second inequality.</p>
+</div>
+
+<h3>Deterministic separation behind consistency</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Argmin stability on a compact set.</span>
+    Let \(C\) be compact, let \(M:C\to\mathbb R\) be continuous with unique
+    minimizer \(x^\star\), and suppose
+    \(\sup_{x\in C}|M_n(x)-M(x)|\to0\). If
+    \(x_n\in C\) satisfies
+    \(M_n(x_n)\le\inf_C M_n+o(1)\), then \(x_n\to x^\star\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For each \(\varepsilon>0\),
+    compactness and uniqueness imply the positive separation
+    \[
+    \eta_\varepsilon
+    =\inf_{\|x-x^\star\|\ge\varepsilon}
+      \{M(x)-M(x^\star)\}>0.
+    \]
+    Uniform convergence gives, for all large \(n\),
+    \(\sup_C|M_n-M|<\eta_\varepsilon/3\), while approximate optimality has
+    error below \(\eta_\varepsilon/3\). If
+    \(\|x_n-x^\star\|\ge\varepsilon\), then
+    \(M_n(x_n)>M_n(x^\star)+\eta_\varepsilon/3\), contradicting approximate
+    optimality. Thus \(x_n\) eventually lies in every neighborhood of
+    \(x^\star\).</p>
+</div>
+
+<p>Replacing deterministic uniform convergence by convergence in probability
+gives the standard consistency theorem for \(M\)-estimators. Quantitative
+versions combine a local growth condition with a stochastic uniform bound to
+obtain an estimation rate.</p>

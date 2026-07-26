@@ -8,14 +8,180 @@ note_prev_url: "/notes/statistical-inference/missing-data-em/"
 note_next_url: "/notes/statistical-inference/local-asymptotic-normality-contiguity/"
 ---
 
-<p>Censoring and truncation are not ordinary missingness: the observation mechanism changes which likelihood contribution is appropriate.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> If event time \(T\) is right-censored by \(C\), one observes \(Y=\min(T,C)\) and \(\Delta=1_{\{T\le C\}}\). Under independent censoring, the likelihood contribution for \(T\) is
-    \[
-    f_\theta(Y)^\Delta S_\theta(Y)^{1-\Delta}.
-    \]</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">Kaplan-Meier form.</span> With ordered event times \(t_j\), deaths \(d_j\), and risk sets \(r_j\), the nonparametric MLE of the survival function is
-    \[
-    \hat S(t)=\prod_{t_j\le t}\left(1-\frac{d_j}{r_j}\right).
-    \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Put mass only at observed event times. Conditional on surviving to \(t_j\), the likelihood for the hazard jump \(q_j\) is \(q_j^{d_j}(1-q_j)^{r_j-d_j}\). Maximizing gives \(\hat q_j=d_j/r_j\). Survival is the product of conditional survival factors \(1-\hat q_j\).</p></div>
-    <h3>Truncation</h3><p>Truncation means some units are unobservable unless they fall in a sampling window. The likelihood must condition on being observable; otherwise estimates are biased toward observable regions.</p>
+<p>Censoring records that an event lies beyond or within an observed bound; truncation removes units outside an observation window entirely. They therefore induce different likelihoods. Independent observation mechanisms permit factorization, but independence must be conditional on the covariates included in the analysis when censoring depends on prognosis.</p>
+
+<h3>Survival and hazard parametrizations</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a nonnegative event time \(T\),
+  \[
+  F(t)=P(T\le t),\qquad
+  S(t)=P(T>t)=1-F(t).
+  \]
+  If \(T\) has density \(f\), its hazard and cumulative hazard are
+  \[
+  \lambda(t)=\frac{f(t)}{S(t)},\qquad
+  \Lambda(t)=\int_0^t\lambda(u)\,\mathrm{d}u,
+  \]
+  and \(S(t)=e^{-\Lambda(t)}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of the survival-hazard identity.</span> Since \(S'(t)=-f(t)\),
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}t}\log S(t)
+  =-\frac{f(t)}{S(t)}=-\lambda(t).
+  \]
+  Integrate from \(0\) to \(t\), using \(S(0)=1\) when there is no mass at zero.</p>
+</div>
+
+<h3>Right censoring likelihood</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(C\) be a censoring time and observe
+  \[
+  Y=\min(T,C),\qquad
+  \Delta=1_{\{T\le C\}}.
+  \]
+  Under independent continuous \(T\) and \(C\), the joint density of \((Y,\Delta)\) is
+  \[
+  \{f_T(y)S_C(y)\}^{\Delta}
+  \{f_C(y)S_T(y)\}^{1-\Delta}.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Ignorable censoring factorization.</span> If the parameters of \(T\) and \(C\) are distinct, the likelihood contribution involving the event-time parameter is
+  \[
+  L_T(\theta;y,\delta)
+  =f_\theta(y)^\delta
+  S_\theta(y)^{1-\delta}
+  =\lambda_\theta(y)^\delta
+  e^{-\Lambda_\theta(y)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> In the joint density above, factors involving \(T\) and \(C\) separate:
+  \[
+  f_T(y)^\delta S_T(y)^{1-\delta}
+  \times
+  S_C(y)^\delta f_C(y)^{1-\delta}.
+  \]
+  The second factor contains no event-time parameter. Finally \(f=\lambda S\) and \(S=e^{-\Lambda}\).</p>
+</div>
+
+<p>If \(T\perp C\mid X\) but not marginally, conditioning on \(X\) is necessary. Informative censoring that remains dependent after conditioning requires joint modeling, inverse-censoring weights, or sensitivity analysis.</p>
+
+<h3>Other censoring schemes</h3>
+
+<p>Left censoring at \(L\) contributes \(F_\theta(L)\); right censoring at \(R\) contributes \(S_\theta(R)\); interval censoring \(T\in(L,R]\) contributes
+\[
+F_\theta(R)-F_\theta(L).
+\]
+Current-status data observe only \(1_{\{T\le C\}}\) at one inspection time. Its nonparametric estimator has cube-root rather than root-\(n\) local behavior, illustrating that all censoring schemes are not asymptotically equivalent.</p>
+
+<h3>Kaplan-Meier nonparametric likelihood</h3>
+
+<p>Let \(t_1<\cdots<t_J\) be distinct observed event times, \(d_j\) the number of events at \(t_j\), and \(r_j\) the number at risk just before \(t_j\). Parametrize the conditional hazard jump by
+\[
+q_j=P(T=t_j\mid T\ge t_j).
+\]</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Kaplan-Meier estimator.</span> Under independent right censoring, the nonparametric likelihood is maximized at
+  \[
+  \hat q_j=\frac{d_j}{r_j},
+  \qquad
+  \hat S(t)
+  =\prod_{t_j\le t}\left(1-\frac{d_j}{r_j}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> At time \(t_j\), each of the \(r_j\) at-risk subjects either fails there or survives past it. Up to factors involving censoring, the likelihood in the hazard jumps is
+  \[
+  L(q_1,\ldots,q_J)
+  =\prod_{j=1}^J
+  q_j^{d_j}(1-q_j)^{r_j-d_j}.
+  \]
+  The factors separate. The binomial log-likelihood for \(q_j\) is maximized at \(d_j/r_j\). Survival through \(t\) is the product of conditional survival probabilities \(1-q_j\) over event times no later than \(t\).</p>
+</div>
+
+<h3>Greenwood variance</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Greenwood formula.</span> A large-sample variance estimator is
+  \[
+  \widehat{\operatorname{Var}}\{\hat S(t)\}
+  =\hat S(t)^2
+  \sum_{t_j\le t}
+  \frac{d_j}{r_j(r_j-d_j)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Derivation.</span> Treat the hazard increments locally as binomial proportions:
+  \[
+  \operatorname{Var}(\hat q_j)
+  \approx\frac{q_j(1-q_j)}{r_j}.
+  \]
+  Since
+  \[
+  \log\hat S(t)=\sum_{t_j\le t}\log(1-\hat q_j),
+  \]
+  the delta method gives
+  \[
+  \operatorname{Var}\{\log\hat S(t)\}
+  \approx\sum_{t_j\le t}
+  \frac{q_j}{r_j(1-q_j)}.
+  \]
+  Substitution \(\hat q_j=d_j/r_j\) gives
+  \(\sum_jd_j/[r_j(r_j-d_j)]\); a second delta method for the exponential multiplies by \(\hat S(t)^2\).</p>
+</div>
+
+<p>Log-log transformed intervals preserve the range \([0,1]\) and often behave better near the boundaries than symmetric Wald intervals.</p>
+
+<h3>Left truncation</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Under left truncation, a subject with entry time \(L\) is observed only if \(T\ge L\). Conditional on inclusion, an uncensored event-time density is
+  \[
+  f_\theta(t\mid T\ge L)
+  =\frac{f_\theta(t)}{S_\theta(L)},
+  \qquad t\ge L.
+  \]</p>
+</div>
+
+<p>With additional right censoring, the contribution becomes
+\[
+\frac{
+f_\theta(Y)^\Delta S_\theta(Y)^{1-\Delta}
+}{S_\theta(L)},
+\qquad Y\ge L.
+\]
+Risk sets for product-limit and Cox procedures include a subject only after entry \(L\). Ignoring delayed entry overrepresents long survivors because short event times could never enter the sample.</p>
+
+<h3>Double truncation and selection</h3>
+
+<p>If a unit is observed only when \(L\le T\le R\), its conditional density is
+\[
+\frac{f_\theta(t)}
+{F_\theta(R)-F_\theta(L)}
+1_{\{L\le t\le R\}}.
+\]
+The denominator depends on \(\theta\) and cannot be dropped. More generally, every truncated likelihood must condition on the inclusion event under the model used for inference.</p>
+
+<h3>Counting-process representation</h3>
+
+<p>Define
+\[
+N_i(t)=1_{\{Y_i\le t,\Delta_i=1\}},
+\qquad
+Y_i(t)=1_{\{L_i\le t\le Y_i\}}.
+\]
+Under a multiplicative intensity model,
+\[
+M_i(t)=N_i(t)-\int_0^tY_i(u)\lambda_i(u)\,\mathrm{d}u
+\]
+is a martingale. This representation yields Nelson-Aalen, Cox partial likelihood, martingale residuals, and rigorous variance formulas. Their detailed development is in <a href="{{ '/notes/survival-analysis/' | relative_url }}">survival analysis</a>.</p>

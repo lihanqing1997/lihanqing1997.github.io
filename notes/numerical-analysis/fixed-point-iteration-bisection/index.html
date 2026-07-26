@@ -34,3 +34,74 @@ note_next_url: "/notes/numerical-analysis/newtons-method-equations/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> When a scalar fixed-point iteration converges linearly, sequence acceleration can estimate and remove the leading geometric error. Acceleration is useful only when the underlying iteration is already in its asymptotic regime.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Bisection as a certified method</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(f\) is continuous on
+\([a_0,b_0]\) and \(f(a_0)f(b_0)\le0\), bisection produces nested intervals
+containing a root with
+\[
+b_k-a_k=2^{-k}(b_0-a_0).
+\]
+The midpoint error is at most
+\[
+|x_k-x^*|\le2^{-k-1}(b_0-a_0).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The intermediate value theorem
+puts a root in the initial bracket. At each step, one half retains a sign
+change, so induction preserves a root and halves length. Any point in the
+interval is within its length of the midpoint; the sharper half-length bound
+follows.</p>
+</div>
+
+<p>Bisection is linearly convergent but globally reliable. It handles
+nondifferentiability and multiple roots as long as a sign change exists; an
+even-multiplicity root may not bracket.</p>
+
+<h3>Contraction iteration</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(g:[a,b]\to[a,b]\) and
+\[
+|g(x)-g(y)|\le q|x-y|,
+\qquad q<1,
+\]
+then \(x_{k+1}=g(x_k)\) converges to the unique fixed point, with
+\[
+|x_k-x^*|\le q^k|x_0-x^*|
+\le\frac{q^k}{1-q}|x_1-x_0|.
+\]</p>
+</div>
+
+<p>Local differentiability with \(|g'(x^*)|<1\) gives local linear convergence.
+If \(g'(x^*)=0\) and the first nonzero derivative is order \(p\), convergence
+can be order \(p\). Algebraically equivalent rearrangements \(f(x)=0\iff
+x=g(x)\) can have entirely different fixed-point behavior.</p>
+
+<h3>A posteriori stopping</h3>
+
+<p>For a contraction,
+\[
+|x_k-x^*|
+\le\frac{q}{1-q}|x_k-x_{k-1}|.
+\]
+This is a certified a posteriori bound when \(q\) is known. Stopping only when
+\(|f(x_k)|\) is small requires a lower bound on \(|f'|\) or inverse
+conditioning:
+\[
+|x_k-x^*|\le\frac{|f(x_k)|}{m}
+\quad\text{if }|f'|\ge m>0
+\]
+between \(x_k\) and the root.</p>
+
+<h3>Safeguarded hybrids</h3>
+
+<p>Brent-type methods maintain a bracket while attempting secant or inverse-
+quadratic steps. A proposed fast step is accepted only when it stays safely
+inside the bracket and gives sufficient progress; otherwise bisection is used.
+This combines global certification with superlinear local speed.</p>

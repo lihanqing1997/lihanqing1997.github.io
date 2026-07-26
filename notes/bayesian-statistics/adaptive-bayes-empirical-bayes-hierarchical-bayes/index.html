@@ -64,3 +64,175 @@ where \(\hat\lambda(X)\) is often chosen by marginal likelihood or a moment esti
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Credible sets may need inflation or self-similarity restrictions. Otherwise, functions with deceptive coefficient patterns can make the posterior radius too small for honest frequentist coverage.</p>
     </div>
+
+<h3>Oracle hyperparameters</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\(\{\Pi_\lambda:\lambda\in\Lambda\}\) be a family of priors. An oracle hyperparameter \(\lambda_n^\star\) minimizes a concentration criterion such as
+\[
+\varepsilon_n(\lambda)
+=\inf\left\{
+\varepsilon:
+-\log\Pi_\lambda
+\big(B_{\mathrm{KL}}(f_0,\varepsilon)\big)
+\le n\varepsilon^2
+\right\}.
+\]
+Adaptation asks whether a data-driven or hierarchical posterior contracts near
+\(\inf_\lambda\varepsilon_n(\lambda)\) without knowing the truth's regularity.</p>
+</div>
+
+<h3>Hierarchical Bayes mixture</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Put a hyperprior
+\(\widetilde\pi(\mathrm{d}\lambda)\) and define
+\[
+\Pi(\mathrm{d}f)
+=\int\Pi_\lambda(\mathrm{d}f)
+\widetilde\pi(\mathrm{d}\lambda).
+\]
+The hyperposterior is
+\[
+\widetilde\pi(\mathrm{d}\lambda\mid X)
+\propto m_\lambda(X)
+\widetilde\pi(\mathrm{d}\lambda),
+\]
+where
+\[
+m_\lambda(X)=\int p_f(X)\Pi_\lambda(\mathrm{d}f).
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (hierarchical adaptation template).</span> Suppose a set
+\[
+\Lambda_n^\star
+=\{\lambda:
+\varepsilon_n(\lambda)
+\le M\varepsilon_{n,\star}\}
+\]
+has hyperprior mass at least
+\[
+e^{-Cn\varepsilon_{n,\star}^2},
+\]
+and the union of relevant \(\lambda\)-sieves has entropy and prior-tail bounds at scale \(\varepsilon_{n,\star}\). Then the hierarchical posterior contracts at rate
+\(\varepsilon_{n,\star}\), up to constants and any entropy cost of searching over \(\lambda\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The mixture prior assigns enough KL mass by integrating over \(\Lambda_n^\star\). Cover the union sieve jointly in \(f\) and hyperparameter; hyperparameter discretization adds its search entropy. Apply the general contraction theorem to the marginal mixture prior. Posterior concentration of \(\lambda\) itself is unnecessary if all retained hyperparameters yield near-oracle \(f\)-contraction.</p>
+</div>
+
+<h3>Empirical Bayes marginal likelihood</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Type-II maximum likelihood chooses
+\[
+\widehat\lambda_n
+\in\arg\max_{\lambda\in\Lambda}
+m_\lambda(X^{(n)})
+\]
+and reports
+\[
+\Pi_{\widehat\lambda_n}(\cdot\mid X^{(n)}).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If, with high probability,
+\(\widehat\lambda_n\) lies in a set
+\[
+\Lambda_n^{\mathrm{good}}
+\]
+on which prior concentration, sieve entropy, testing, and remainder bounds hold uniformly at rate \(\varepsilon_n\), then the empirical Bayes posterior contracts at \(\varepsilon_n\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The contraction proof for fixed \(\lambda\) can be made uniform over the good set. On the event
+\(\widehat\lambda_n\in\Lambda_n^{\mathrm{good}}\), substitute the random hyperparameter into that bound. The complementary event has vanishing probability.</p>
+</div>
+
+<p>The substantive work is proving that marginal likelihood avoids bad scales and establishing uniformity. Treating \(\widehat\lambda_n\) as fixed without this step understates uncertainty and can invalidate rate claims.</p>
+
+<h3>Gaussian sequence empirical Bayes</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Let
+\[
+Y_j=\theta_{0j}+n^{-1/2}\varepsilon_j,
+\qquad
+\theta_j\mid\alpha
+\sim N(0,j^{-1-2\alpha}).
+\]
+The marginal law is
+\[
+Y_j\mid\alpha
+\sim N\left(
+0,\,
+j^{-1-2\alpha}+n^{-1}
+\right),
+\]
+so
+\[
+\ell_n(\alpha)
+=-\frac12\sum_j
+\left[
+\log(j^{-1-2\alpha}+n^{-1})
++\frac{Y_j^2}
+{j^{-1-2\alpha}+n^{-1}}
+\right]+C.
+\]
+Maximizing this criterion estimates a regularity index. Its behavior depends on how signal energy is distributed across frequencies, not merely membership in a Sobolev ball.</p>
+</div>
+
+<h3>Self-similarity and polished tails</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A schematic self-similarity condition requires constants \(c,C>0\) and \(\beta>0\) such that for all large \(J\),
+\[
+cJ^{-2\beta}
+\le\sum_{j=J}^{2J}\theta_{0j}^2
+\le CJ^{-2\beta}.
+\]
+A polished-tail condition instead controls the entire tail by a nearby block:
+\[
+\sum_{j>N}\theta_{0j}^2
+\le L\sum_{j=N}^{\rho N}\theta_{0j}^2.
+\]</p>
+</div>
+
+<p>These conditions prevent long stretches of nearly zero coefficients followed by hidden high-frequency energy. Such deceptive signals can make a hyperparameter selector infer excessive smoothness, producing a posterior radius smaller than regularization bias.</p>
+
+<h3>Adaptive credible balls</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (schematic coverage result).</span> In conjugate Gaussian sequence models, under self-similarity or polished tails, an empirical or hierarchical Bayes credible ball
+\[
+C_n
+=\{f:\|f-\widehat f\|_2\le Lr_{n,\alpha}\},
+\]
+where \(r_{n,\alpha}\) is the posterior \(1-\alpha\) radius and \(L>1\) is a fixed inflation constant, can satisfy
+\[
+\inf_{f_0\in\mathcal F_{\mathrm{ss}}}
+P_{f_0}(f_0\in C_n)\to1
+\]
+while its radius adapts at the minimax order over smoothness classes in
+\(\mathcal F_{\mathrm{ss}}\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Decompose
+\[
+\|f_0-\widehat f\|
+\le
+\|\widehat f-E_{f_0}\widehat f\|
++\|E_{f_0}\widehat f-f_0\|.
+\]
+The posterior radius and stochastic term are of the same oracle order. Self-similarity bounds bias by a constant multiple of that radius. Inflation absorbs both terms uniformly. Without the lower energy condition, bias can dominate while the radius remains small.</p>
+</div>
+
+<h3>Empirical versus hierarchical uncertainty</h3>
+
+<p>Hierarchical Bayes averages over hyperparameter uncertainty; empirical Bayes plugs in one estimate. In large regular problems their first-order behavior may agree, but near weak identification or multimodal hyperposteriors the difference can be substantial. A hyperposterior credible interval is not automatically calibrated merely because it is wider; the same bias and topology issues remain.</p>

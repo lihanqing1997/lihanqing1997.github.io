@@ -8,51 +8,241 @@ note_prev_url: "/notes/probability-theory/ergodic-theorems/"
 note_next_url: "/notes/probability-theory/gaussian-vectors-processes/"
 ---
 
-<p>Renewal processes and random walks are the basic additive processes of probability. They model repeated waiting times and accumulated increments.</p>
+<p>Random walks accumulate i.i.d. spatial increments; renewal processes invert partial sums of positive waiting times. The same regenerative structure yields laws of large numbers, renewal equations, occupation formulas, and limiting age distributions. These ideas reappear whenever a stochastic process restarts at random cycle boundaries.</p>
 
-    <h3>Random walks and renewals</h3>
+<h3>Random walks and passage times</h3>
 
-    <p>Both objects are built from partial sums.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For i.i.d. increments
+  \(\xi_1,\xi_2,\ldots\),
+  \[
+  S_0=0,\qquad S_n=\sum_{k=1}^n\xi_k
+  \]
+  is a random walk. For \(a\in\mathbb R\), its first passage time is
+  \[
+  \tau_a=\inf\{n\ge0:S_n\ge a\}.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For i.i.d. increments \(\xi_i\), the random walk is \(S_n=\sum_{i=1}^n\xi_i\). For positive i.i.d. waiting times \(\tau_i\), renewal times are \(T_n=\sum_{i=1}^n\tau_i\), and the renewal counting process is \(N(t)=\max\{n:T_n\le t\}\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (drift classification).</span> If
+  \(\mathbb E|\xi_1|<\infty\) and
+  \(m=\mathbb E\xi_1\ne0\), then
+  \[
+  \frac{S_n}{n}\to m\quad\text{almost surely}.
+  \]
+  Hence \(S_n\to+\infty\) when \(m>0\) and
+  \(S_n\to-\infty\) when \(m<0\); every bounded set is then visited only finitely often.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> This is the strong law of large numbers. If \(m>0\), eventually \(S_n\ge mn/2\), and similarly for negative drift.</p>
+</div>
 
-    <h3>Elementary renewal theorem</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (simple symmetric walk).</span> The simple symmetric random walk is recurrent on
+  \(\mathbb Z\). In contrast, the simple symmetric walk on
+  \(\mathbb Z^d\) is transient for \(d\ge3\).</p>
+</div>
 
-    <p>The renewal count grows at reciprocal mean rate.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> In one dimension,
+  \[
+  P(S_{2n}=0)=2^{-2n}\binom{2n}{n}
+  \sim\frac1{\sqrt{\pi n}},
+  \]
+  so \(\sum_nP(S_n=0)=\infty\), and the Green-function criterion gives recurrence. In \(d\) dimensions, Fourier inversion writes
+  \[
+  P(S_n=0)
+  =(2\pi)^{-d}\int_{[-\pi,\pi]^d}\varphi(t)^n\,\mathrm{d} t.
+  \]
+  Near zero,
+  \(1-\varphi(t)\asymp\|t\|^2\), giving
+  \(P(S_n=0)\asymp n^{-d/2}\). The series diverges for
+  \(d=1,2\) and converges for \(d\ge3\).</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\tau_i\gt0\) are i.i.d. with \(\mathbb E\tau_1=\mu\lt\infty\), then
-\[
-\frac{N(t)}{t}\to\frac1\mu
-\]
-almost surely as \(t\to\infty\).</p>
-    </div>
+<h3>Renewal processes</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The inequalities \(T_{N(t)}\le t\lt T_{N(t)+1}\) imply
-\[
-\frac{T_{N(t)}}{N(t)}\frac{N(t)}t\le1\le
-\frac{T_{N(t)+1}}{N(t)+1}\frac{N(t)+1}{t}.
-\]
-Since \(N(t)\to\infty\) almost surely and the strong law gives \(T_n/n\to\mu\), both bounds force \(N(t)/t\to1/\mu\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \(Y_1,Y_2,\ldots\) be i.i.d. positive waiting times with distribution \(F\). Define renewal epochs and the counting process by
+  \[
+  T_0=0,\qquad T_n=\sum_{k=1}^nY_k,
+  \qquad
+  N(t)=\max\{n:T_n\le t\}.
+  \]
+  The renewal function and renewal measure are
+  \[
+  m(t)=\mathbb EN(t),\qquad
+  U(B)=\sum_{n=0}^{\infty}P(T_n\in B).
+  \]</p>
+</div>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (renewal strong law).</span> If
+  \(0<\mu=\mathbb EY_1<\infty\), then
+  \[
+  \frac{N(t)}t\to\frac1\mu
+  \qquad\text{almost surely}.
+  \]</p>
+</div>
 
-    <h3>Random-walk recurrence in one dimension</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(Y_k>0\),
+  \(N(t)\to\infty\) almost surely. The inverse inequalities
+  \[
+  T_{N(t)}\le t<T_{N(t)+1}
+  \]
+  imply
+  \[
+  \frac{T_{N(t)}}{N(t)}
+  \le\frac t{N(t)}
+  <
+  \frac{T_{N(t)+1}}{N(t)+1}
+  \frac{N(t)+1}{N(t)}.
+  \]
+  The strong law gives both random-subsequence ratios of \(T_n/n\) converging to \(\mu\), while
+  \((N(t)+1)/N(t)\to1\). Squeezing gives \(t/N(t)\to\mu\).</p>
+</div>
 
-    <p>Return behavior depends on drift and dimension.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (elementary renewal theorem).</span> Under the same assumptions,
+  \[
+  \frac{m(t)}t=\frac{\mathbb EN(t)}t\longrightarrow\frac1\mu.
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a one-dimensional centered random walk with suitable nondegenerate increments, recurrence means the walk returns arbitrarily close to its starting region infinitely often; with nonzero drift it is transient in the drift direction.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The almost-sure limit alone does not justify taking expectations. For the upper bound, truncate waiting times below by a positive constant and compare \(N(t)\) to a geometric-block count with exponential tails, yielding uniform integrability of \(N(t)/t\). Alternatively, apply Wald's identity to \(T_{N(t)+1}\):
+  \[
+  \mu\,\mathbb E[N(t)+1]=\mathbb ET_{N(t)+1},
+  \]
+  control the overshoot, and use truncation when the second moment is unavailable. The lower bound follows from
+  \(T_{N(t)}\le t\) and a stopped-sum argument. Together they yield the limit \(1/\mu\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(\mathbb E\xi_1=m\ne0\), the strong law gives \(S_n/n\to m\), so \(S_n\to\operatorname{sign}(m)\infty\) linearly and visits bounded sets only finitely often. In the centered lattice case with finite variance, characteristic-function estimates show \(\sum_nP(S_n=0)=\infty\), and the Markov renewal argument gives recurrence.</p>
-    </div>
+<h3>The renewal equation</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Renewal decompositions often convert path questions into sums over independent cycles.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The renewal function satisfies
+  \[
+  m(t)=F(t)+\int_{[0,t]}m(t-x)F(\mathrm{d} x).
+  \]
+  More generally, the solution of
+  \[
+  z(t)=g(t)+\int_{[0,t]}z(t-x)F(\mathrm{d} x)
+  \]
+  is
+  \[
+  z(t)=\int_{[0,t]}g(t-x)U(\mathrm{d} x)
+  =\sum_{n=0}^{\infty}\int_{[0,t]}g(t-x)F^{*n}(\mathrm{d} x),
+  \]
+  whenever the series is well defined.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \[
+  m(t)=\sum_{n=1}^{\infty}P(T_n\le t)
+  =\sum_{n=1}^{\infty}F^{*n}(t),
+  \]
+  separate the \(n=1\) term and use
+  \(F^{*(n+1)}=F^{*n}*F\) to obtain the equation. Iterating the general equation produces the convolution series; nonnegativity or dominated convergence justifies passage to the limit.</p>
+</div>
+
+<h3>The key renewal theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(F\) is nonarithmetic,
+  \(\mu<\infty\), and \(g\) is directly Riemann integrable on
+  \([0,\infty)\). Then
+  \[
+  \int_{[0,t]}g(t-x)U(\mathrm{d} x)
+  \longrightarrow
+  \frac1\mu\int_0^\infty g(x)\,\mathrm{d} x.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> First prove the claim for interval indicators using the renewal theorem for increments,
+  \[
+  U((t,t+h])\to\frac h\mu.
+  \]
+  Step functions follow by linearity. Upper and lower Darboux sums approximate a directly Riemann integrable \(g\), while its summable tail controls distant renewal epochs uniformly. The nonarithmetic assumption prevents persistent periodic oscillations; in the arithmetic case there is a lattice analogue.</p>
+</div>
+
+<h3>Age, residual life, and length bias</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> At time \(t\), define the age and residual life
+  \[
+  A(t)=t-T_{N(t)},\qquad
+  R(t)=T_{N(t)+1}-t.
+  \]</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (equilibrium excess life).</span> If \(F\) is nonarithmetic and \(\mu<\infty\), then
+  \[
+  P(R(t)>x)\longrightarrow
+  \frac1\mu\int_x^\infty P(Y_1>u)\,\mathrm{d} u.
+  \]
+  If \(\mathbb EY_1^2<\infty\), the limiting mean residual life is
+  \[
+  \frac{\mathbb EY_1^2}{2\mathbb EY_1}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A renewal at time \(s\le t\) contributes to
+  \(\{R(t)>x\}\) exactly when its following waiting time exceeds
+  \(t+x-s\). Thus
+  \[
+  P(R(t)>x)
+  =\int_{[0,t]}\overline F(t+x-s)U(\mathrm{d} s).
+  \]
+  Apply the key renewal theorem to
+  \(g(u)=\overline F(u+x)\). Integrating the limiting tail over \(x\) and using Tonelli gives
+  \[
+  \int_0^\infty
+  \frac1\mu\int_x^\infty\overline F(u)\,\mathrm{d} u\,\mathrm{d} x
+  =
+  \frac1\mu\int_0^\infty u\overline F(u)\,\mathrm{d} u
+  =
+  \frac{\mathbb EY_1^2}{2\mu}.
+  \]</p>
+</div>
+
+<p>The larger second moment in the numerator is the inspection paradox: observing at a typical time preferentially selects long renewal intervals.</p>
+
+<h3>Renewal rewards</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (renewal-reward law).</span> Let
+  \((Y_k,R_k)\) be i.i.d. cycle lengths and rewards with
+  \(Y_k>0\),
+  \(\mathbb EY_1=\mu<\infty\), and
+  \(\mathbb E|R_1|<\infty\). Then
+  \[
+  \frac1t\sum_{k=1}^{N(t)}R_k
+  \longrightarrow
+  \frac{\mathbb ER_1}{\mathbb EY_1}
+  \qquad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Factor the ratio:
+  \[
+  \frac1t\sum_{k=1}^{N(t)}R_k
+  =
+  \left(\frac1{N(t)}\sum_{k=1}^{N(t)}R_k\right)
+  \frac{N(t)}t.
+  \]
+  The strong law along the random subsequence gives the first factor converging to
+  \(\mathbb ER_1\); the renewal strong law gives the second converging to
+  \(1/\mu\).</p>
+</div>
+
+<p>Regenerative Markov chains, queueing systems, reliability models, and occupation-time calculations all reduce long-run averages to this expected reward per expected cycle length.</p>

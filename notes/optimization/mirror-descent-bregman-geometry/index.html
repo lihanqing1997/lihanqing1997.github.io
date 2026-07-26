@@ -8,24 +8,170 @@ note_prev_url: "/notes/optimization/stochastic-gradient-methods/"
 note_next_url: "/notes/optimization/newtons-method/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Mirror descent and Bregman geometry.</p>
+<p>Euclidean distance is often the wrong geometry for a simplex, a positive
+cone, or a space with highly anisotropic coordinates. Mirror descent replaces
+the squared Euclidean distance in the gradient step by a divergence generated
+by a strongly convex potential.</p>
 
-    <h3>Bregman divergence</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a differentiable strictly convex potential \(\psi\), the Bregman divergence is \(D_\psi(x:y)=\psi(x)-\psi(y)-\langle\nabla\psi(y),x-y\rangle\).</p>
-    </div>
+<h3>Bregman divergence and its three-point identity</h3>
 
-    <h3>Mirror descent step</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Mirror descent updates by \(x_{k+1}=\arg\min_{x\in C}\{\eta_k\langle g_k,x\rangle+D_\psi(x:x_k)\}\). In dual coordinates this is a gradient step: \(\nabla\psi(x_{k+1})=\nabla\psi(x_k)-\eta_kg_k\), before projection.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Let \(C\) be convex and
+    let \(\psi\) be differentiable on \(\operatorname{int}C\). Its Bregman
+    divergence is
+    \[
+    D_\psi(x,y)
+    =\psi(x)-\psi(y)-\langle\nabla\psi(y),x-y\rangle.
+    \]
+    If \(\psi\) is \(1\)-strongly convex with respect to a norm
+    \(\|\cdot\|\), then
+    \(D_\psi(x,y)\ge\frac12\|x-y\|^2\).</p>
+</div>
 
-    <h3>Regret bound</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For convex Lipschitz losses and strongly convex \(\psi\), mirror descent satisfies the usual \(O(\sqrt n)\) online regret bound with constants measured by the Bregman geometry rather than Euclidean diameter.</p>
-    </div>
+<p>A Bregman divergence is nonnegative but generally asymmetric and does not
+satisfy the triangle inequality. Its orientation matters in both the algorithm
+and the proof.</p>
 
-    <h3>Information geometry</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> On the simplex, entropy mirror descent gives multiplicative weights. In exponential families, mirror descent is naturally expressed through dual affine coordinates.</p>
-    </div>
+<div class="math-statement lemma">
+    <p><span class="statement-title">Three-point identity.</span> For points
+    where the gradients exist,
+    \[
+    \langle\nabla\psi(y)-\nabla\psi(z),x-y\rangle
+    =
+    D_\psi(x,z)-D_\psi(x,y)-D_\psi(y,z).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Expand the three
+    divergences on the right. The values \(\psi(x),\psi(y),\psi(z)\) cancel,
+    leaving
+    \(\langle\nabla\psi(z),x-z\rangle
+      -\langle\nabla\psi(y),x-y\rangle
+      +\langle\nabla\psi(z),y-z\rangle\),
+    which simplifies to the left side.</p>
+</div>
+
+<h3>The mirror step in primal and dual coordinates</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Given a subgradient
+    \(g_k\in\partial f_k(x_k)\), mirror descent sets
+    \[
+    x_{k+1}
+    \in\operatorname*{arg\,min}_{x\in C}
+    \left\{\eta_k\langle g_k,x\rangle+D_\psi(x,x_k)\right\}.
+    \]</p>
+</div>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Mirror optimality equation.</span> The
+    update satisfies
+    \[
+    \left\langle
+      \eta_kg_k+\nabla\psi(x_{k+1})-\nabla\psi(x_k),
+      x-x_{k+1}
+    \right\rangle\ge0
+    \quad(x\in C).
+    \]
+    If \(C\) imposes no active constraint, this reduces to
+    \[
+    \nabla\psi(x_{k+1})
+    =\nabla\psi(x_k)-\eta_kg_k.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Differentiate the convex
+    update objective and apply the variational inequality for minimization over
+    \(C\). In the unconstrained interior, the normal cone is zero, so its
+    gradient must vanish.</p>
+</div>
+
+<p>The map \(x\mapsto\nabla\psi(x)\) produces dual coordinates. Mirror descent
+takes an ordinary additive step there and maps back through
+\((\nabla\psi)^{-1}\).</p>
+
+<h3>The one-step inequality and regret</h3>
+
+<div class="math-statement lemma">
+    <p><span class="statement-title">Mirror descent inequality.</span> If
+    \(\psi\) is \(1\)-strongly convex with respect to \(\|\cdot\|\), then for
+    every \(x\in C\),
+    \[
+    \eta_k\langle g_k,x_k-x\rangle
+    \le D_\psi(x,x_k)-D_\psi(x,x_{k+1})
+       +\frac{\eta_k^2}{2}\|g_k\|_*^2.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Insert \(x\) into the mirror
+    optimality equation and use the three-point identity:
+    \[
+    \eta_k\langle g_k,x_{k+1}-x\rangle
+    \le D_\psi(x,x_k)-D_\psi(x,x_{k+1})
+       -D_\psi(x_{k+1},x_k).
+    \]
+    Add \(\eta_k\langle g_k,x_k-x_{k+1}\rangle\). Strong convexity and
+    Young's inequality give
+    \[
+    \eta_k\langle g_k,x_k-x_{k+1}\rangle
+      -D_\psi(x_{k+1},x_k)
+    \le\eta_k\|g_k\|_*\|x_k-x_{k+1}\|
+      -\frac12\|x_k-x_{k+1}\|^2
+    \le\frac{\eta_k^2}{2}\|g_k\|_*^2.
+    \]</p>
+</div>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Online regret bound.</span> Suppose the
+    convex losses \(f_k\) have subgradients satisfying
+    \(\|g_k\|_*\le G\), and suppose
+    \(D_\psi(x,x_1)\le R^2\) for every comparator \(x\in C\). With constant
+    step \(\eta=R/(G\sqrt n)\),
+    \[
+    \sum_{k=1}^n[f_k(x_k)-f_k(x)]
+    \le\frac32RG\sqrt n
+    \qquad(x\in C).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Convexity gives
+    \(f_k(x_k)-f_k(x)\le\langle g_k,x_k-x\rangle\). Sum the one-step
+    inequality. The Bregman terms telescope and the final one is nonnegative:
+    \[
+    \sum_{k=1}^n[f_k(x_k)-f_k(x)]
+    \le\frac{R^2}{\eta}+\frac{\eta nG^2}{2}.
+    \]
+    The stated step gives \(\frac32RG\sqrt n\). Optimizing the bound instead
+    gives \(\eta=\sqrt2R/(G\sqrt n)\) and the slightly smaller constant
+    \(\sqrt2RG\sqrt n\).</p>
+</div>
+
+<h3>Entropy geometry on the probability simplex</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Exponentiated-gradient update.</span> On
+    \(\Delta_d=\{x_i\ge0,\sum_i x_i=1\}\), take
+    \(\psi(x)=\sum_i x_i\log x_i\). Then
+    \[
+    D_\psi(x,y)=\sum_i x_i\log\frac{x_i}{y_i}
+    \]
+    is relative entropy. Solving the mirror step with a multiplier for
+    \(\sum_i x_i=1\) gives
+    \[
+    x_{k+1,i}
+    =\frac{x_{k,i}e^{-\eta_kg_{k,i}}}
+      {\sum_jx_{k,j}e^{-\eta_kg_{k,j}}}.
+    \]
+    Positivity and normalization are preserved automatically, unlike an
+    unconstrained Euclidean step.</p>
+</div>
+
+<p>The Hessian \(\nabla^2\psi\) defines a local Riemannian metric, while the
+Bregman divergence retains global affine information. This connects mirror
+descent to
+<a href="{{ '/notes/information-geometry/dually-flat-manifolds/' | relative_url }}">dually flat information geometry</a>
+and to entropic variational inference.</p>

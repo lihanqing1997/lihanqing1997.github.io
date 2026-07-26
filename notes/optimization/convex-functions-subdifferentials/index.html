@@ -8,24 +8,159 @@ note_prev_url: "/notes/optimization/convex-sets-separation/"
 note_next_url: "/notes/optimization/smoothness-strong-convexity-condition-numbers/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Convex functions and subdifferentials.</p>
+<p>A convex function may be nonsmooth, may encode constraints by taking the
+value \(+\infty\), and may have many minimizers. Subgradients replace the
+gradient without sacrificing global first-order optimality.</p>
 
-    <h3>Convex function</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A function \(f:C\to\overline{\mathbb R}\) is convex if \(f(tx+(1-t)y)\le tf(x)+(1-t)f(y)\). Its epigraph \(\{(x,r):f(x)\le r\}\) is then a convex set.</p>
-    </div>
+<h3>Epigraphs and extended-real convexity</h3>
 
-    <h3>Subgradient</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a convex \(f\), a vector \(g\) is a subgradient at \(x\) if \(f(y)\ge f(x)+\langle g,y-x\rangle\) for all \(y\). The set of all such vectors is \(\partial f(x)\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A function
+    \(f:\mathbb R^d\to(-\infty,+\infty]\) is proper if
+    \(\operatorname{dom}f\ne\varnothing\) and it never equals \(-\infty\). It
+    is convex if
+    \[
+    f(\lambda x+(1-\lambda)y)
+    \le\lambda f(x)+(1-\lambda)f(y)
+    \quad(0\le\lambda\le1).
+    \]
+    Its epigraph is
+    \(\operatorname{epi}f=\{(x,r):r\ge f(x)\}\).</p>
+</div>
 
-    <h3>Global optimality</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For proper convex \(f\), a point \(x^\star\) minimizes \(f\) if and only if \(0\in\partial f(x^\star)\). If \(f\) is differentiable this reduces to \(\nabla f(x^\star)=0\).</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Epigraph characterization.</span> A
+    function \(f\) is convex if and only if \(\operatorname{epi}f\) is a convex
+    subset of \(\mathbb R^{d+1}\). It is lower semicontinuous if and only if
+    its epigraph is closed.</p>
+</div>
 
-    <h3>Nonsmooth calculus</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Subdifferentials let absolute values, maxima, norms, indicators, and penalties enter the same optimality language as smooth functions.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> If
+    \((x,r),(y,s)\in\operatorname{epi}f\), convexity gives
+    \[
+    f(\lambda x+(1-\lambda)y)
+    \le\lambda f(x)+(1-\lambda)f(y)
+    \le\lambda r+(1-\lambda)s,
+    \]
+    so the convex combination remains in the epigraph. Conversely, apply
+    epigraph convexity to \((x,f(x))\) and \((y,f(y))\). The closed-epigraph
+    equivalence follows from
+    \(\{x:f(x)\le a\}=\{x:(x,a)\in\operatorname{epi}f\}\) together with the
+    sequential characterization of lower semicontinuity in Euclidean space.</p>
+</div>
+
+<p>The extended-real formulation is structural: the indicator \(\iota_C\) is
+proper, lower semicontinuous, and convex exactly when \(C\) is nonempty, closed,
+and convex. Constraints can therefore enter the same calculus as penalties.</p>
+
+<h3>Supporting affine functions</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> For a proper convex
+    function and \(x\in\operatorname{dom}f\), a vector \(g\in\mathbb R^d\) is a
+    subgradient at \(x\) if
+    \[
+    f(y)\ge f(x)+\langle g,y-x\rangle
+    \qquad(y\in\mathbb R^d).
+    \]
+    The set of subgradients is the subdifferential \(\partial f(x)\).</p>
+</div>
+
+<p>Thus \(g\) is the slope of an affine function supporting the epigraph at
+\((x,f(x))\). If \(f\) is differentiable at an interior point of its domain,
+then \(\partial f(x)=\{\nabla f(x)\}\). The converse need not hold at boundary
+points of the domain.</p>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Absolute value.</span> For
+    \(f(t)=|t|\),
+    \[
+    \partial f(t)=
+    \begin{cases}
+    \{1\},&t>0,\\
+    [-1,1],&t=0,\\
+    \{-1\},&t<0.
+    \end{cases}
+    \]
+    Indeed, \(g\in\partial f(0)\) precisely when \(|y|\ge gy\) for every
+    \(y\), which is equivalent to \(|g|\le1\).</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Norm and maximum.</span> For the Euclidean
+    norm,
+    \[
+    \partial\|x\|=
+    \begin{cases}
+    \{x/\|x\|\},&x\ne0,\\
+    \{g:\|g\|\le1\},&x=0.
+    \end{cases}
+    \]
+    If \(f(x)=\max_{1\le i\le m}f_i(x)\) with differentiable convex \(f_i\),
+    then
+    \[
+    \partial f(x)=
+    \operatorname{conv}\{\nabla f_i(x):f_i(x)=f(x)\}.
+    \]
+    Only the active functions contribute.</p>
+</div>
+
+<h3>Global optimality from a local inequality</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Fermat rule for convex functions.</span>
+    Let \(f\) be proper and convex. A point \(x^\star\in\operatorname{dom}f\)
+    minimizes \(f\) if and only if
+    \[
+    0\in\partial f(x^\star).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> If
+    \(0\in\partial f(x^\star)\), the subgradient inequality gives
+    \(f(y)\ge f(x^\star)\) for every \(y\). Conversely, if \(x^\star\)
+    minimizes \(f\), then the same inequality holds with \(g=0\), so
+    \(0\in\partial f(x^\star)\).</p>
+</div>
+
+<p>For minimizing \(f\) over a closed convex set \(C\), apply the rule to
+\(f+\iota_C\). This yields
+\[
+0\in\partial f(x^\star)+N_C(x^\star),
+\]
+under a standard qualification condition, where the normal cone
+\(N_C(x^\star)=\{v:\langle v,y-x^\star\rangle\le0\ \forall y\in C\}\).
+This is the common ancestor of projected optimality and the KKT equations.</p>
+
+<h3>Sum and affine-composition rules</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Subdifferential calculus.</span> Let
+    \(f,g\) be proper convex functions and suppose
+    \(\operatorname{ri}(\operatorname{dom}f)\cap
+    \operatorname{ri}(\operatorname{dom}g)\ne\varnothing\). Then
+    \[
+    \partial(f+g)(x)=\partial f(x)+\partial g(x).
+    \]
+    If \(A:\mathbb R^d\to\mathbb R^m\) is linear and \(h\) is proper convex
+    and continuous at some point of \(A(\mathbb R^d)\), then
+    \[
+    \partial(h\circ A)(x)=A^\top\partial h(Ax).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> The inclusions from
+    right to left follow immediately by adding or composing subgradient
+    inequalities. For the reverse inclusions, separate the epigraph of the
+    relevant perturbation function from a point strictly below it. The relative
+    interior or continuity assumption prevents an abnormal separating
+    hyperplane with zero vertical component. Normalizing the vertical
+    component produces the required decomposition of the supporting slope.</p>
+</div>
+
+<p>The qualification is substantive. Without it, the right side can be
+strictly smaller than the subdifferential of the sum. Later duality and KKT
+results use the same interiority principle in a more recognizable form.</p>

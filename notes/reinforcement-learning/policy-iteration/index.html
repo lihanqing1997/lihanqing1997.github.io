@@ -61,3 +61,77 @@ The iterates converge to the fixed point \(v_{\pi'}\) by contraction, so \(v_{\p
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Consistent tie-breaking prevents cycling among equivalent optimal policies in exact finite policy iteration. The value sequence remains monotone even when policies are not unique.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Evaluation and greedy improvement</h3>
+
+<p>Exact policy iteration alternates
+\[
+V_k=V^{\pi_k},
+\qquad
+\pi_{k+1}(s)\in\arg\max_a
+\{r(s,a)+\gamma P_aV_k(s)\}.
+\]
+Its key fact is global policy improvement from a one-step local comparison.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (policy improvement).</span> If
+\(T^{\pi'}V^\pi\ge V^\pi\), then
+\[
+V^{\pi'}\ge V^\pi.
+\]
+If the inequality is strict at a state reachable under \(\pi'\), improvement
+is strict there.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> By monotonicity,
+\[
+V^\pi\le T^{\pi'}V^\pi
+\le(T^{\pi'})^2V^\pi\le\cdots.
+\]
+Contraction sends the right side to \(V^{\pi'}\). Strictness propagates through
+states reached with positive discounted probability.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (finite termination).</span> In a
+finite discounted MDP, exact policy iteration with a deterministic tie-breaking
+rule terminates after finitely many strict policy improvements at an optimal
+policy.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> There are finitely many
+deterministic stationary policies. Policy improvement never decreases value.
+If the selected policy changes and tie-breaking avoids cycling among equal
+greedy policies, at least one reachable state's value improves. Hence no policy
+can recur. Termination means the current policy is greedy with respect to its
+own value, so \(T^\pi V^\pi=TV^\pi\); uniqueness of the optimal fixed point
+gives \(V^\pi=V^*\).</p>
+</div>
+
+<h3>Modified policy iteration</h3>
+
+<p>Exact evaluation may be expensive. Modified policy iteration applies
+\(m_k\) evaluation sweeps after improvement:
+\[
+V_{k+1}=(T^{\pi_{k+1}})^{m_k}V_k.
+\]
+\(m_k=1\) resembles value iteration; \(m_k=\infty\) is policy iteration.
+Under bounded evaluation errors, performance follows from contraction and
+approximate-greedy bounds. This continuum separates the computational cost of
+solving a linear system from the number of policy improvements.</p>
+
+<h3>Newton interpretation</h3>
+
+<p>The optimality equation is \(F(V)=V-TV=0\), a piecewise affine nonsmooth
+system. When the greedy action is locally unique, selecting that action fixes
+one affine piece:
+\[
+F_{\pi}(V)=(I-\gamma P_\pi)V-r_\pi.
+\]
+Solving the policy-evaluation equation is the Newton step on that piece.
+Policy iteration is therefore a semismooth Newton method for Bellman's equation,
+which helps explain its often much faster local convergence than value
+iteration.</p>

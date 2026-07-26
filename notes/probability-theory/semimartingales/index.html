@@ -8,46 +8,119 @@ note_prev_url: "/notes/probability-theory/quadratic-variation-covariation/"
 note_next_url: "/notes/probability-theory/stochastic-integration-brownian-motion/"
 ---
 
-<p>Semimartingales are the largest robust class of integrators for stochastic calculus. They decompose into local martingale noise plus finite-variation drift.</p>
+<p>Semimartingales combine local-martingale noise with finite-variation motion. They include diffusions, counting processes, jump processes, and deterministic finite-variation signals, and they form the maximal natural class stable under predictable stochastic integration.</p>
 
-    <h3>Definition by decomposition</h3>
+<h3>Decomposition and special semimartingales</h3>
 
-    <p>The decomposition isolates martingale and finite-variation components.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An adapted cadlag process \(X\) is a semimartingale if locally in time it admits a decomposition
+  \[
+  X_t=X_0+M_t+A_t,
+  \]
+  where \(M\) is a local martingale starting at zero and \(A\) is adapted with finite variation on compact intervals.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A càdlàg adapted process \(X\) is a semimartingale if it can be written
-\[
-X_t=X_0+M_t+A_t,
-\]
-where \(M\) is a local martingale and \(A\) is an adapted finite-variation process.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A semimartingale is special if the finite-variation term can be chosen predictable. Its canonical decomposition
+  \[
+  X=X_0+M+A
+  \]
+  with \(A_0=0\), \(A\) predictable, is unique.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of uniqueness.</span> If
+  \(M+A=M'+A'\), then
+  \(N=M-M'=A'-A\) is both a local martingale and predictable finite variation. After localization, its total variation is integrable. A finite-variation martingale has zero conditional expected signed increments and zero expected total variation only when its increments vanish; hence \(N\) is indistinguishable from zero.</p>
+</div>
 
-    <h3>Stability under smooth maps</h3>
+<h3>Canonical examples</h3>
 
-    <p>Itô's formula shows that smooth functions of semimartingales are semimartingales.</p>
+<div class="math-statement example">
+  <p><span class="statement-title">Examples.</span>
+  <ul>
+    <li>If \(B\) is Brownian motion and
+    \(b,\sigma\) are adapted with suitable integrability, then
+    \[
+    X_t=X_0+\int_0^tb_s\,\mathrm{d} s
+    +\int_0^t\sigma_s\,\mathrm{d}B_s
+    \]
+    is a continuous semimartingale.</li>
+    <li>If \(N_t\) is a Poisson process of rate \(\lambda\), then
+    \[
+    N_t=(N_t-\lambda t)+\lambda t
+    \]
+    is its martingale-plus-compensator decomposition.</li>
+    <li>Every adapted finite-variation process is a semimartingale with zero local-martingale part.</li>
+  </ul></p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X\) is a continuous semimartingale and \(f\in C^2\), then \(f(X)\) is a semimartingale with decomposition given by Itô's formula.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(X=M+A\) is a cadlag semimartingale, then
+  \[
+  [X]_t=[M]^c_t+\sum_{0<s\le t}(\Delta X_s)^2,
+  \]
+  where \([M]^c\) is the continuous part of the local-martingale quadratic variation.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(X=M+A\). Taylor expand \(f(X_{t_{i+1}})-f(X_{t_i})\) over partitions. First-order terms against \(A\) converge to a pathwise Lebesgue-Stieltjes integral, first-order terms against \(M\) converge to the stochastic integral, and second-order martingale terms converge to \(\frac12\int f''(X_s)\,\mathrm{d}[M]_s\). Higher-order terms vanish by continuity and finite quadratic variation.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The continuous finite-variation part has zero quadratic variation and zero covariation with continuous local martingales. At a jump time, the partition square converges to the full squared jump
+  \((\Delta M+\Delta A)^2=(\Delta X)^2\). Isolating finitely many large jumps and controlling the remaining small jumps yields the formula.</p>
+</div>
 
+<h3>Stability properties</h3>
 
-    <h3>Why semimartingales are maximal</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The class of semimartingales is closed under:
+  <ul>
+    <li>addition and scalar multiplication;</li>
+    <li>stopping at stopping times;</li>
+    <li>equivalent changes of probability measure;</li>
+    <li>stochastic integration by predictable integrands;</li>
+    <li>\(C^2\) transformations, through Ito's formula.</li>
+  </ul></p>
+</div>
 
-    <p>Good stochastic integration requires stability under bounded predictable integrands.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The first two claims follow by applying the operation separately to the local-martingale and finite-variation parts. Equivalent measure changes preserve the semimartingale class by the density-process decomposition. Integration maps \(M+A\) to
+  \(H\mathbin{\cdot}M+H\mathbin{\cdot}A\), again a local martingale plus finite variation. Ito's formula explicitly decomposes \(f(X)\) into stochastic-integral, finite-variation, and jump-correction terms.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The Bichteler-Dellacherie theorem characterizes semimartingales as exactly those càdlàg adapted processes for which stochastic integrals of bounded predictable simple integrands have good continuity properties.</p>
-    </div>
+<h3>Good integrators</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> One direction follows from decomposing the integral into a martingale integral plus a finite-variation integral and applying martingale inequalities and variation bounds. The converse is deep: if all bounded predictable simple integrals are controlled, the process must admit a local martingale plus finite-variation decomposition.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For bounded predictable simple
+  \[
+  H_t=\sum_{k=0}^{m-1}H_k1_{(t_k,t_{k+1}]}(t),
+  \qquad H_k\in\mathcal F_{t_k},
+  \]
+  define
+  \[
+  (H\mathbin{\cdot}X)_T
+  =\sum_kH_k(X_{t_{k+1}}-X_{t_k}).
+  \]
+  A cadlag adapted \(X\) is a good integrator if
+  \(H^n\mathbin{\cdot}X\to0\) in probability whenever
+  \(\|H^n\|_\infty\to0\).</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This theorem explains why stochastic calculus is built on semimartingales rather than arbitrary adapted processes.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Bichteler-Dellacherie).</span> A cadlag adapted process is a good integrator if and only if it is a semimartingale.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> If \(X=M+A\), localization and martingale inequalities give
+  \(H^n\mathbin{\cdot}M\to0\) in probability, while
+  \[
+  |H^n\mathbin{\cdot}A|_T
+  \le\|H^n\|_\infty\operatorname{Var}_T(A)\to0.
+  \]
+  Conversely, the good-integrator property bounds all predictable trading gains. A separation argument in the space of adapted processes constructs a finite-variation compensator whose subtraction leaves a local martingale. This direction is deep and is the structural reason semimartingales, rather than arbitrary adapted paths, support a stable stochastic calculus.</p>
+</div>
+
+<h3>Processes outside the class</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Fractional Brownian motion with Hurst parameter \(H\ne1/2\) is generally not a semimartingale. For \(H>1/2\), paths are regular enough for Young or rough-path integration but do not have martingale quadratic variation; for \(H<1/2\), rougher integration theories are needed. The integrator determines the calculus.</p>
+</div>

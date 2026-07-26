@@ -71,3 +71,170 @@ The last term does not depend on \(h\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> LAN is probabilistic and centered around the true parameter; Laplace approximation is analytic and centered around the mode. Under regularity, the two pictures agree to first order.</p>
     </div>
+
+<h3>Differentiability in quadratic mean</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A dominated model is differentiable in quadratic mean at \(\theta_0\) if there is
+\(\dot\ell_{\theta_0}\in L_0^2(P_{\theta_0})^d\) such that
+\[
+\int
+\left[
+\sqrt{p_{\theta_0+h}}
+-\sqrt{p_{\theta_0}}
+-\frac12h^\top\dot\ell_{\theta_0}
+\sqrt{p_{\theta_0}}
+\right]^2
+\mathrm{d}\mu
+=o(\|h\|^2).
+\]
+The Fisher information is
+\[
+I_{\theta_0}
+=P_{\theta_0}
+\dot\ell_{\theta_0}\dot\ell_{\theta_0}^\top.
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (DQM implies LAN).</span> For iid observations from a DQM model and fixed \(h\in\mathbb R^d\),
+\[
+\log\frac{
+p_{\theta_0+h/\sqrt n}^{(n)}(X^{(n)})
+}{
+p_{\theta_0}^{(n)}(X^{(n)})
+}
+=h^\top\Delta_n
+-\frac12h^\top I_{\theta_0}h
++o_{P_{\theta_0}}(1),
+\]
+where
+\[
+\Delta_n
+=\frac1{\sqrt n}\sum_{i=1}^n
+\dot\ell_{\theta_0}(X_i)
+\Rightarrow N(0,I_{\theta_0}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> DQM expands the square-root likelihood ratio as
+\[
+\sqrt{\frac{p_{\theta_0+h/\sqrt n}}{p_{\theta_0}}}
+=1+\frac{h^\top\dot\ell_{\theta_0}}{2\sqrt n}
++r_{n,h},
+\qquad P_{\theta_0}r_{n,h}^2=o(n^{-1}).
+\]
+Expand \(2\log(1+u)\) and sum over observations. The linear terms produce \(h^\top\Delta_n\); centering and the quadratic terms produce
+\(-h^\top I_{\theta_0}h/2\); remainder control follows from quadratic mean bounds and truncation. The multivariate CLT gives the score limit.</p>
+</div>
+
+<h3>Local posterior coordinates</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Let
+\[
+h=\sqrt n(\theta-\theta_0)
+\]
+and suppose the prior density is continuous and positive at \(\theta_0\). On every fixed compact set of \(h\),
+\[
+\pi_n(h\mid X^{(n)})
+\propto
+\exp\left\{
+h^\top\Delta_n-\frac12h^\top I_{\theta_0}h
++o_P(1)
+\right\}.
+\]
+Completing the square gives the Gaussian kernel
+\[
+N\left(I_{\theta_0}^{-1}\Delta_n,
+I_{\theta_0}^{-1}\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The change of variables contributes a constant Jacobian \(n^{-d/2}\), irrelevant after normalization. LAN gives the likelihood term, while
+\[
+\frac{\pi(\theta_0+h/\sqrt n)}{\pi(\theta_0)}
+\to1
+\]
+uniformly on compact \(h\)-sets. Finally,
+\[
+h^\top\Delta_n-\frac12h^\top Ih
+=-\frac12(h-I^{-1}\Delta_n)^\top
+I(h-I^{-1}\Delta_n)
++\frac12\Delta_n^\top I^{-1}\Delta_n.
+\]</p>
+</div>
+
+<h3>Efficient centering</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If the MLE is regular,
+\[
+\sqrt n(\widehat\theta_n-\theta_0)
+=I_{\theta_0}^{-1}\Delta_n+o_P(1).
+\]
+Therefore the local Gaussian posterior may be centered at
+\(\widehat\theta_n\) instead of
+\(\theta_0+n^{-1/2}I^{-1}\Delta_n\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Taylor-expand the score:
+\[
+0=\dot\ell_n(\widehat\theta_n)
+=\dot\ell_n(\theta_0)
++\ddot\ell_n(\widetilde\theta_n)
+(\widehat\theta_n-\theta_0).
+\]
+Divide by \(n\), use
+\(n^{-1}\ddot\ell_n(\widetilde\theta_n)\to-I_{\theta_0}\), and solve.</p>
+</div>
+
+<h3>Contiguous local alternatives</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under
+\(\theta_n=\theta_0+h/\sqrt n\),
+\[
+\Delta_n\Rightarrow
+N(I_{\theta_0}h,I_{\theta_0}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> LAN gives a joint Gaussian limit under \(P_{\theta_0}\) for the score and log likelihood ratio. Le Cam's third lemma tilts the score limit by covariance
+\(\operatorname{Cov}(\Delta,h^\top\Delta)=I_{\theta_0}h\).</p>
+</div>
+
+<h3>Uniform LAN and dimension growth</h3>
+
+<p>Pointwise LAN for each fixed \(h\) is not enough to approximate a posterior whose mass ranges over growing sets. A BvM proof needs uniform control such as
+\[
+\sup_{\|h\|\le M_n}
+\left|
+\ell_n(\theta_0+h/\sqrt n)-\ell_n(\theta_0)
+-h^\top\Delta_n+\frac12h^\top Ih
+\right|
+=o_P(1),
+\]
+for \(M_n\to\infty\) slowly, together with posterior localization inside that set. If dimension \(d=d_n\) grows, third-order likelihood remainders often impose conditions resembling
+\[
+\frac{d_n^3}{n}\to0,
+\]
+though the exact power depends on model geometry and norm. Consistency alone gives no such uniform quadratic approximation.</p>
+
+<h3>Boundary contrast</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For
+\[
+X_i\sim N(\theta,1),\qquad\theta\ge0,
+\]
+with true \(\theta_0=0\), local parameter \(h=\sqrt n\,\theta\) is constrained to \(h\ge0\). The local posterior is a normal kernel
+\[
+\exp\{h\Delta_n-h^2/2\}1\{h\ge0\},
+\]
+normalized as a truncated normal. Ordinary unconstrained BvM and symmetric credible intervals fail at the boundary.</p>
+</div>

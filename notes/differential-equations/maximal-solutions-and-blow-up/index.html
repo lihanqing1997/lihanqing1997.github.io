@@ -8,24 +8,110 @@ note_prev_url: "/notes/differential-equations/picard-iteration-and-contraction/"
 note_next_url: "/notes/differential-equations/gronwall-inequalities/"
 ---
 
-<p>Maximal solutions and blow-up records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>A local solution can be extended as long as its graph remains inside a
+region where the vector field is regular. A maximal solution records the
+largest interval on which this continuation is possible.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A maximal solution is one that cannot be extended to a larger time interval while still solving the equation. Blow-up means the solution leaves every compact subset in finite time.</p>
-    </div>
+<h3>Gluing and maximal intervals</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For locally Lipschitz vector fields, a finite maximal endpoint can occur only if the solution exits every compact subset of the domain.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(f\) be locally Lipschitz
+in \(x\) on an open set \(D\subset\mathbb R\times\mathbb R^d\). Through every
+\((t_0,x_0)\in D\) there is a unique maximal solution
+\[
+x:(\alpha,\beta)\to\mathbb R^d.
+\]
+Every other solution through the same point is its restriction.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If the solution remains in a compact subset, local existence with uniform time radius extends it beyond the supposed endpoint, contradicting maximality.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Take the union of all local
+solution intervals through \((t_0,x_0)\). Uniqueness makes solutions agree on
+overlaps, so they glue to one solution on the union, which is an interval. Any
+proper extension would belong to the union, contradicting maximality.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Blow-up is not always literal divergence to infinity; on restricted domains it may mean approaching the boundary.</p>
-    </div>
+<h3>Continuation criterion</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(\beta<\infty\) is the
+right endpoint of a maximal solution, then its graph leaves every compact
+subset of \(D\) as \(t\uparrow\beta\). In particular, if
+\([t_0,\beta]\times\mathbb R^d\subset D\), then
+\[
+\|x(t)\|\to\infty
+\]
+along some sequence \(t\uparrow\beta\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If a sequence
+\((t_n,x(t_n))\), \(t_n\uparrow\beta\), remained in a compact
+\(K\Subset D\), boundedness of \(f\) there would make \(x\) uniformly
+Lipschitz near \(\beta\). It would have a limit \(x_\beta\), and local
+existence from \((\beta,x_\beta)\) would extend the solution, a contradiction.</p>
+</div>
+
+<h3>Linear-growth global existence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+\|f(t,x)\|\le a(t)+b(t)\|x\|
+\]
+with \(a,b\) locally integrable and \(f\) locally Lipschitz in \(x\), then every
+solution is global on the time interval where \(a,b\) are integrable.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The integral equation and
+Gronwall give, for \(t\ge t_0\),
+\[
+\|x(t)\|
+\le
+\left(\|x_0\|+\int_{t_0}^ta(s)\,\mathrm{d}s\right)
+\exp\left(\int_{t_0}^tb(s)\,\mathrm{d}s\right).
+\]
+Thus the solution remains bounded on every finite subinterval. The continuation
+criterion rules out finite-time blow-up.</p>
+</div>
+
+<h3>Finite-time blow-up</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For
+\[
+\dot x=x^p,\qquad x(0)=x_0>0,\quad p>1,
+\]
+separation gives
+\[
+x(t)=
+\left(x_0^{1-p}-(p-1)t\right)^{-1/(p-1)}.
+\]
+The maximal right endpoint is
+\[
+\beta=\frac{x_0^{1-p}}{p-1},
+\]
+and \(x(t)\to\infty\) as \(t\uparrow\beta\).</p>
+</div>
+
+<h3>Differential inequalities for blow-up</h3>
+
+<p>If a nonnegative quantity \(y(t)\) satisfies
+\[
+y'(t)\ge c y(t)^p,\qquad p>1,
+\]
+then comparison with the explicit scalar solution forces blow-up no later than
+\(y(0)^{1-p}/\{c(p-1)\}\). Conversely, dissipative estimates such as
+\[
+y'(t)\le C(1+y(t))
+\]
+preclude finite-time blow-up. For PDEs, energy or norm inequalities play the
+same continuation role.</p>
+
+<h3>Escape to the boundary</h3>
+
+<p>Failure of continuation need not mean norm blow-up if the vector field's
+domain has a boundary. For \(\dot x=1\) on \(D=(0,1)\), the solution exits at
+\(x=1\) in finite time while remaining bounded. The correct criterion is
+compact escape from \(D\), not divergence in a chosen coordinate.</p>

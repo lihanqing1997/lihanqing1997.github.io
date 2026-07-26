@@ -36,3 +36,120 @@ Conversely, every integer length sequence satisfying this inequality can be real
 \]
 where \(H_2\) is entropy in bits. The proof compares \(P(x)\) to the distribution proportional to \(2^{-\ell(x)}\) and uses nonnegativity of relative entropy.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Uniquely decodable and prefix codes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A \(D\)-ary code maps each source symbol \(x\) to a finite string over an alphabet of size \(D\). It is prefix-free if no codeword is a prefix of another. It is uniquely decodable if every concatenation of codewords has a unique parsing.</p>
+</div>
+
+<p>Every prefix code is instantaneously decodable and hence uniquely decodable. The converse is false, but both classes obey the same length constraint.</p>
+
+<h3>Kraft inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If codeword lengths
+  \(\ell_1,\ldots,\ell_m\) come from a \(D\)-ary prefix code, then
+  \[
+  \sum_{i=1}^mD^{-\ell_i}\le1.
+  \]
+  Conversely, every finite integer length sequence satisfying this inequality is realized by a prefix code.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Represent strings as nodes in a full
+  \(D\)-ary tree. A codeword at depth \(\ell_i\) owns a subtree containing
+  \(D^{L-\ell_i}\) leaves at common depth \(L\ge\max_i\ell_i\). Prefix-freeness makes these leaf sets disjoint, so
+  \(\sum_iD^{L-\ell_i}\le D^L\), proving necessity.
+  For sufficiency, order lengths increasingly and assign each codeword the lexicographically first available tree node at its depth. The Kraft sum guarantees that earlier subtrees never exhaust all nodes at the next required depth.</p>
+</div>
+
+<h3>McMillan inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The same Kraft inequality holds for every uniquely decodable \(D\)-ary code.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(K=\sum_iD^{-\ell_i}\). For concatenations of \(n\) codewords,
+  \[
+  K^n=\sum_{i_1,\ldots,i_n}D^{-(\ell_{i_1}+\cdots+\ell_{i_n})}.
+  \]
+  Unique decodability implies that at any total length \(r\), at most \(D^r\) concatenations occur. Since total lengths range from \(n\ell_{\min}\) to \(n\ell_{\max}\),
+  \[
+  K^n\le n(\ell_{\max}-\ell_{\min})+1.
+  \]
+  Taking \(n\)th roots and letting \(n\to\infty\) yields \(K\le1\).</p>
+</div>
+
+<h3>Shannon lengths</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For source law \(P\), choose
+  \[
+  \ell(x)=\left\lceil-\log_D P(x)\right\rceil.
+  \]
+  These lengths satisfy Kraft and have expected length
+  \[
+  H_D(X)\le\mathbb E\ell(X)<H_D(X)+1,
+  \]
+  where \(H_D\) uses logarithm base \(D\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \(D^{-\ell(x)}\le P(x)\), so Kraft holds. Also
+  \(-\log_DP(x)\le\ell(x)<-\log_DP(x)+1\); average.</p>
+</div>
+
+<h3>Entropy lower bound on expected length</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every uniquely decodable \(D\)-ary code satisfies
+  \[
+  \mathbb E\ell(X)\ge H_D(X).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(K=\sum_xD^{-\ell(x)}\le1\) and define
+  \(q(x)=D^{-\ell(x)}/K\). Then
+  \[
+  D(P\|q)=
+  -H_D(P)+\mathbb E\ell(X)+\log_DK\ge0.
+  \]
+  Hence
+  \(\mathbb E\ell\ge H_D(P)-\log_DK\ge H_D(P)\).</p>
+</div>
+
+<h3>Huffman coding</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Huffman's algorithm repeatedly merges the two least probable symbols and produces a binary prefix code with minimum expected length among all binary prefix codes.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> In an optimal full binary tree, the two least probable symbols can be placed as siblings at maximum depth by an exchange argument: swapping a less probable symbol downward cannot increase expected length. Merge these siblings into one meta-symbol with their combined probability. Any optimal code for the reduced alphabet, expanded by one bit for the siblings, is optimal for the original alphabet. Induct.</p>
+</div>
+
+<h3>Dyadic distributions and exact equality</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Expected length equals entropy exactly when
+  \(P(x)=D^{-\ell(x)}\) for integer lengths satisfying Kraft with equality. Such distributions are \(D\)-adic.</p>
+</div>
+
+<h3>Block coding reduces integer overhead</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Applying Shannon coding to iid blocks \(X^n\) gives
+  \[
+  H_D(X)\le\frac1n\mathbb E\ell(X^n)
+  <H_D(X)+\frac1n.
+  \]</p>
+</div>
+
+<p>Integer code lengths impose less than one symbol of overhead per block, so their per-source-symbol cost vanishes as block length grows.</p>

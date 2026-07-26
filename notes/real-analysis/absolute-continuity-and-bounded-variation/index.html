@@ -24,6 +24,18 @@ note_next_url: "/notes/real-analysis/fundamental-theorem-of-calculus-and-change-
         <p><span class="statement-title">Proof.</span> If \(f\) has bounded variation, set \(g(x)=V_a^x(f)\) and \(h(x)=g(x)-f(x)\). Both are increasing because variation over a larger interval increases and dominates increments of \(f\). Conversely, the variation of \(g-h\) is at most the variation of \(g\) plus the variation of \(h\), finite on \([a,b]\).</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> If \(f\in BV([a,b])\), then \(f\) is bounded, has one-sided limits at every interior point, and has at most countably many discontinuities. Moreover,
+\[
+|f(y)-f(x)|\le V_x^y(f),\qquad
+V_a^b(f+g)\le V_a^b(f)+V_a^b(g).
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> The inequalities follow directly from the supremum over partitions. The Jordan decomposition \(f=g-h\) expresses \(f\) as a difference of two increasing functions. Each increasing function is bounded on a compact interval, has one-sided limits, and has only countably many jump discontinuities; the same properties pass to their difference.</p>
+    </div>
+
     <h3>Absolute continuity</h3>
     <p>Absolute continuity is uniform smallness of image variation over collections of short intervals.</p>
     <div class="math-statement definition">
@@ -35,7 +47,11 @@ note_next_url: "/notes/real-analysis/fundamental-theorem-of-calculus-and-change-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Uniform continuity follows by applying the definition to one interval. For bounded variation, choose \(\delta\) for \(\varepsilon=1\), split any partition into groups whose total interval length is below \(\delta\), and sum the corresponding variation bounds over finitely many groups controlled by \(b-a\).</p>
+        <p><span class="statement-title">Proof.</span> Uniform continuity follows by applying the definition to one interval. For bounded variation, choose \(\delta>0\) corresponding to \(\varepsilon=1\), and let \(P\) be any partition. Group its consecutive subintervals into at most
+\[
+N\le 1+\left\lceil\frac{2(b-a)}{\delta}\right\rceil
+\]
+families, each having total length below \(\delta\). Absolute continuity bounds the sum of increments in each family by \(1\), so \(\sum_i|f(x_i)-f(x_{i-1})|\le N\), independently of \(P\). Taking the supremum gives bounded variation.</p>
     </div>
 
     <h3>Fundamental characterization</h3>
@@ -45,17 +61,44 @@ note_next_url: "/notes/real-analysis/fundamental-theorem-of-calculus-and-change-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(f(x)=f(a)+\int_a^x g\), absolute continuity follows from absolute continuity of the Lebesgue integral. Conversely, an absolutely continuous function has bounded variation, hence is differentiable almost everywhere, and the signed measure induced by its increments is absolutely continuous with respect to Lebesgue measure. The Radon-Nikodym derivative is \(f'\), giving the integral representation.</p>
+        <p><span class="statement-title">Proof.</span> Suppose first that \(f(x)=f(a)+\int_a^xg\). Absolute continuity of the Lebesgue integral says that for every \(\varepsilon>0\) there is \(\delta>0\) such that \(m(E)<\delta\) implies \(\int_E|g|<\varepsilon\). For disjoint intervals with union \(E\),
+\[
+\sum_k|f(b_k)-f(a_k)|
+\le\sum_k\int_{a_k}^{b_k}|g|
+=\int_E|g|<\varepsilon.
+\]
+Thus \(f\) is absolutely continuous, and the Lebesgue differentiation theorem gives \(f'=g\) almost everywhere.</p>
+        <p>Conversely, absolute continuity implies bounded variation, so increments define a finite signed measure
+\[
+\nu((s,t])=f(t)-f(s).
+\]
+If \(m(E)=0\), cover \(E\) by intervals of arbitrarily small total length; absolute continuity makes the total variation \(|\nu|(E)\) vanish. Hence \(\nu\ll m\). Radon-Nikodym gives \(g\in L^1\) with \(\nu(E)=\int_Eg\,\mathrm{d}m\), so
+\[
+f(x)-f(a)=\nu((a,x])=\int_a^xg(t)\,\mathrm{d}t.
+\]
+Differentiation of indefinite integrals identifies \(g=f'\) almost everywhere.</p>
     </div>
 
     <h3>Singular bounded variation</h3>
     <p>Bounded variation allows movement on sets of Lebesgue measure zero.</p>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> The Cantor function is continuous, increasing, and of bounded variation, with derivative \(0\) almost everywhere, but it is not constant. Hence it is not absolutely continuous.</p>
+        <p><span class="statement-title">Example (Cantor singular function).</span> The Cantor function \(C:[0,1]\to[0,1]\) is continuous and increasing, maps the Cantor set onto \([0,1]\), and is constant on every complementary middle-third interval. Consequently \(C'=0\) almost everywhere, because the complement of the Cantor set has full measure. Yet \(C(1)-C(0)=1\), so
+\[
+C(1)-C(0)\ne\int_0^1C'(x)\,\mathrm{d}x.
+\]
+It has bounded variation \(1\) but is not absolutely continuous.</p>
     </div>
 
     <h3>Variation measures</h3>
     <p>Bounded-variation functions are distribution functions of signed measures.</p>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The decomposition of a bounded-variation function into absolutely continuous, jump, and singular continuous parts is the one-dimensional version of Lebesgue decomposition for measures.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Lebesgue decomposition of a \(BV\) function).</span> After choosing a right-continuous representative, every \(f\in BV([a,b])\) decomposes, up to an additive constant, as
+\[
+f=f_{\mathrm{ac}}+f_{\mathrm{jump}}+f_{\mathrm{sc}},
+\]
+where \(f_{\mathrm{ac}}\) is absolutely continuous, \(f_{\mathrm{jump}}\) is a sum of jumps, and \(f_{\mathrm{sc}}\) is continuous singular: its derivative is zero almost everywhere but it may be nonconstant.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof outline.</span> Associate to \(f\) its finite signed Stieltjes measure \(\nu_f\). Lebesgue decomposition splits it as \(g\,m+\nu_s\), and the singular part splits uniquely into its atomic and nonatomic parts. Integrating these three measures from \(a\) to \(x\) produces \(f_{\mathrm{ac}}\), \(f_{\mathrm{jump}}\), and \(f_{\mathrm{sc}}\). Uniqueness follows from uniqueness of the measure decompositions.</p>
     </div>

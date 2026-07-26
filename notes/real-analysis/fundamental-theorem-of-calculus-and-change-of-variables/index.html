@@ -17,7 +17,17 @@ note_next_url: "/notes/real-analysis/power-series-on-the-real-line/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Absolute continuity follows because \(\int_E |g|\,\mathrm{d}t\) is small when \(m(E)\) is small. For the derivative, the difference quotient is the average of \(g\) over shrinking intervals; the Lebesgue differentiation theorem says these averages converge to \(g(x)\) for almost every \(x\).</p>
+        <p><span class="statement-title">Proof.</span> Given \(\varepsilon>0\), absolute continuity of the Lebesgue integral supplies \(\delta>0\) such that \(m(E)<\delta\) implies \(\int_E|g|<\varepsilon\). For disjoint intervals with total length below \(\delta\),
+\[
+\sum_k|F(b_k)-F(a_k)|
+\le\int_{\cup_k(a_k,b_k)}|g|<\varepsilon.
+\]
+Thus \(F\) is absolutely continuous. At a Lebesgue point \(x\) of \(g\),
+\[
+\frac{F(x+h)-F(x)}h
+=\frac1h\int_x^{x+h}g(t)\,\mathrm{d}t\longrightarrow g(x)
+\]
+as \(h\to0\), with the oriented interpretation for \(h<0\). Almost every point is a Lebesgue point.</p>
     </div>
 
     <h3>Recovering the function from its derivative</h3>
@@ -30,7 +40,27 @@ F(x)-F(a)=\int_a^x F'(t)\,\mathrm{d}t.
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Absolute continuity gives a signed measure \(\nu((s,t])=F(t)-F(s)\) absolutely continuous with respect to Lebesgue measure. By Radon-Nikodym, \(\nu(E)=\int_E h\,\mathrm{d}t\) for some \(h\in L^1\). Differentiating interval averages shows \(h=F'\) almost everywhere.</p>
+        <p><span class="statement-title">Proof.</span> Absolute continuity gives a finite signed measure \(\nu((s,t])=F(t)-F(s)\) satisfying \(\nu\ll m\). By Radon-Nikodym,
+\[
+\nu(E)=\int_Eh\,\mathrm{d}t
+\]
+for some \(h\in L^1\). In particular,
+\[
+F(x)-F(a)=\nu((a,x])=\int_a^xh(t)\,\mathrm{d}t.
+\]
+The first part of the theorem gives \(F'=h\) almost everywhere, proving both integrability of \(F'\) and the reconstruction formula.</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> An absolutely continuous \(F\) is constant if and only if \(F'=0\) almost everywhere. If \(F'\ge0\) almost everywhere, then \(F\) is increasing.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(x<y\),
+\[
+F(y)-F(x)=\int_x^yF'(t)\,\mathrm{d}t.
+\]
+The two conclusions follow from vanishing or nonnegativity of the integrand.</p>
     </div>
 
     <h3>Classical substitution</h3>
@@ -47,18 +77,43 @@ when \(\phi\) is monotone, with orientation included.</p>
         <p><span class="statement-title">Proof.</span> Let \(F(x)=\int_{\phi(\alpha)}^x f(u)\,\mathrm{d}u\). Then \(F'=f\), and by the chain rule \((F\circ\phi)'=f(\phi(t))\phi'(t)\). Integrating from \(\alpha\) to \(\beta\) gives the identity.</p>
     </div>
 
-    <h3>Lebesgue change of variables in one dimension</h3>
-    <p>Monotone absolutely continuous maps have a measure-theoretic substitution formula.</p>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\phi\) is increasing and absolutely continuous, then for nonnegative measurable \(f\),
+    <h3>Monotone absolutely continuous substitutions</h3>
+    <p>For a monotone map, the derivative accounts for local stretching even when the inverse is not differentiable.</p>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> If \(\phi:[a,b]\to\mathbb R\) is increasing and absolutely continuous, then for every nonnegative measurable \(f\),
 \[
-\int_{\phi(a)}^{\phi(b)} f(y)N(y)\,\mathrm{d}y=\int_a^b f(\phi(x))\phi'(x)\,\mathrm{d}x,
+\int_a^b f(\phi(x))\phi'(x)\,\mathrm{d}x
+=\int_{\phi(a)}^{\phi(b)}f(y)\,\mathrm{d}y.
 \]
-where \(N(y)\) counts preimages when needed; for strictly increasing \(\phi\), \(N=1\) on the image.</p>
+The identity also holds for signed \(f\) whenever one side is absolutely integrable.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> First prove the identity for indicators of intervals using absolute continuity of \(\phi\). Extend to simple functions by linearity, then to nonnegative measurable functions by monotone convergence.</p>
+        <p><span class="statement-title">Proof.</span> For \(f=\mathbf1_{(u,v]}\), the preimage under increasing \(\phi\) is an interval, up to endpoints and flat pieces. Applying the fundamental theorem to \(\phi\) on that interval gives
+\[
+\int_{\{\phi\in(u,v]\}}\phi'(x)\,\mathrm{d}x
+=m\bigl((u,v]\cap(\phi(a),\phi(b)]\bigr).
+\]
+Linearity proves the formula for nonnegative simple functions. Choose simple \(f_n\uparrow f\) and apply monotone convergence to both sides. Finally decompose an integrable signed function into positive and negative parts.</p>
+    </div>
+
+    <h3>Multiplicity in the nonmonotone area formula</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (one-dimensional area formula).</span> If \(\phi\) is Lipschitz on \([a,b]\) and \(g\ge0\) is measurable, then
+\[
+\int_a^b g(x)|\phi'(x)|\,\mathrm{d}x
+=\int_{\mathbb R}\sum_{x\in\phi^{-1}(y)}g(x)\,\mathrm{d}y.
+\]
+In particular, with \(g(x)=f(\phi(x))\),
+\[
+\int_a^b f(\phi(x))|\phi'(x)|\,\mathrm{d}x
+=\int_{\mathbb R}f(y)N(\phi,y)\,\mathrm{d}y,
+\]
+where \(N(\phi,y)\) counts preimages.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof outline.</span> Decompose the interval, up to a null set, into countably many measurable pieces on which \(\phi\) is one-to-one and monotone. Apply the monotone substitution formula on each piece and sum by Tonelli's theorem. Each value \(y\) appears once for every inverse branch, producing the multiplicity \(N(\phi,y)\).</p>
     </div>
 
     <h3>Where formulas fail</h3>

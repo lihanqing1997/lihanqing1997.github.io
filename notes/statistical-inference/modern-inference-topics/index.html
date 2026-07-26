@@ -7,16 +7,193 @@ note_back_url: "/notes/statistical-inference/"
 note_prev_url: "/notes/statistical-inference/nonparametric-inference-interface/"
 ---
 
-<p>This page collects modern topics that extend classical inference while keeping the same central concern: valid uncertainty statements after modeling, selection, or prediction.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> A multiple-testing procedure controls the false discovery rate at level \(q\) if
-    \[
-    \operatorname{FDR}=E\left[\frac{V}{R\vee1}\right]\le q,
-    \]
-    where \(V\) is the number of false rejections and \(R\) the total number of rejections.</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">Benjamini-Hochberg procedure.</span> For independent valid p-values, ordering \(p_{(1)}\le\cdots\le p_{(m)}\) and rejecting all \(p_{(i)}\le iq/m\) up to the largest such \(i\) controls FDR at level \(q\) under the standard independent-null setting.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(\mathcal H_0\) be the true nulls and \(m_0=|\mathcal H_0|\). For a true null \(j\), independence and validity give
-    \[
-    E\left[\frac{1_{\{p_j\le qR/m\}}}{R\vee1}\right]\le \frac q m,
-    \]
-    because conditioning on the other p-values fixes the step-up threshold through \(R\), and the super-uniformity of \(p_j\) bounds the conditional rejection probability. Summing this inequality over \(j\in\mathcal H_0\) yields \(\operatorname{FDR}\le m_0q/m\le q\).</p></div>
-    <h3>Other directions</h3><p>Selective inference adjusts for choosing a model before inference. Debiased estimators target low-dimensional parameters after high-dimensional regularization. Conformal prediction gives distribution-free predictive coverage under exchangeability. These topics connect to <a href="{{ '/notes/statistical-learning/' | relative_url }}">statistical learning</a> but remain inferential because the final object is uncertainty quantification.</p>
+<p>Modern inference often follows adaptive modeling, high-dimensional regularization, or prediction. The classical principles remain: define the target under a probability law, state the conditioning and uniformity class, isolate a leading pivot or exchangeability argument, and account for every data-dependent choice that affects its law.</p>
+
+<h3>Familywise error and false discovery rate</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(m\) hypotheses, let \(V\) be the number of rejected true nulls and \(R\) the total number rejected. The familywise error rate and false discovery rate are
+  \[
+  \operatorname{FWER}=P(V\ge1),
+  \qquad
+  \operatorname{FDR}
+  =\mathbb E\left(\frac{V}{R\vee1}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Bonferroni control.</span> If every true-null p-value is valid, rejecting \(H_j\) when \(p_j\le\alpha/m\) gives
+  \[
+  \operatorname{FWER}\le\alpha
+  \]
+  under arbitrary dependence.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(\mathcal H_0\) is the true-null set, the union bound and validity give
+  \[
+  P(V\ge1)
+  \le\sum_{j\in\mathcal H_0}
+  P(p_j\le\alpha/m)
+  \le|\mathcal H_0|\alpha/m\le\alpha.
+  \]</p>
+</div>
+
+<h3>Benjamini-Hochberg procedure</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">FDR control under independence.</span> Order the p-values
+  \[
+  p_{(1)}\le\cdots\le p_{(m)}
+  \]
+  and let
+  \[
+  \hat k=\max\{k:p_{(k)}\le qk/m\},
+  \]
+  with \(\hat k=0\) if the set is empty. Reject \(p_j\le p_{(\hat k)}\). If true-null p-values are independent uniform variables and independent of false-null p-values, then
+  \[
+  \operatorname{FDR}=\frac{m_0}{m}q\le q.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a true null \(j\), let \(R^{(-j)}\) be the number of BH rejections after replacing \(p_j\) by zero. On the event that \(j\) is rejected, the step-up property gives \(R=R^{(-j)}\), and rejection is equivalent to
+  \[
+  p_j\le qR^{(-j)}/m.
+  \]
+  Since \(R^{(-j)}\) depends only on the other p-values,
+  \[
+  \begin{aligned}
+  \mathbb E\frac{1_{\{j\text{ rejected}\}}}{R\vee1}
+  &=
+  \mathbb E\left[
+  \frac{1_{\{p_j\le qR^{(-j)}/m\}}}
+  {R^{(-j)}}\right]\\
+  &=\mathbb E\left[
+  \frac{qR^{(-j)}/m}{R^{(-j)}}\right]
+  =\frac qm,
+  \end{aligned}
+  \]
+  with zero contribution when \(R^{(-j)}=0\). Summing over the \(m_0\) true nulls gives \(m_0q/m\).</p>
+</div>
+
+<p>Positive dependence permits related proofs; arbitrary dependence requires more conservative thresholds, such as the Benjamini-Yekutieli harmonic correction. Data-dependent filtering must be independent or incorporated into the validity argument.</p>
+
+<h3>Sample splitting and selective targets</h3>
+
+<p>If one subsample selects a model and an independent subsample performs classical inference conditional on the selected model, the second-stage pivot retains its nominal law for the random selected target. This avoids selection bias at the cost of information. Repeated splitting can stabilize results but creates another aggregation problem.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Conditional validity by independent splitting.</span> Let \(\widehat M\) be measurable with respect to training data \(\mathcal D_1\), and let \(C_{\widehat M}(\mathcal D_2)\) have conditional coverage
+  \[
+  P\{\theta_{\widehat M}\in
+  C_{\widehat M}(\mathcal D_2)
+  \mid\mathcal D_1\}\ge1-\alpha
+  \]
+  for independent \(\mathcal D_2\). Then its unconditional coverage is at least \(1-\alpha\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Take expectations of the conditional coverage inequality with respect to \(\mathcal D_1\).</p>
+</div>
+
+<p>Selective inference instead conditions on a selection event, such as a polyhedron produced by the lasso, and derives the truncated conditional law of a statistic. The target is then conditional on or indexed by selection. Ignoring this target change can make a mathematically valid selective interval answer a different scientific question.</p>
+
+<h3>Debiased high-dimensional estimation</h3>
+
+<p>In the linear model \(Y=X\beta_0+\varepsilon\) with \(p\gg n\), the lasso is biased by its \(\ell^1\) penalty. Let \(\hat\beta\) be a lasso estimate and \(\hat\Theta\) approximate the inverse Gram matrix. The debiased estimator is
+\[
+\tilde\beta
+=\hat\beta+
+\hat\Theta\frac{X^\top(Y-X\hat\beta)}n.
+\]
+Substitution of \(Y=X\beta_0+\varepsilon\) gives the exact decomposition
+\[
+\tilde\beta-\beta_0
+=\hat\Theta\frac{X^\top\varepsilon}n
++(I-\hat\Theta\hat\Sigma)
+(\hat\beta-\beta_0),
+\qquad
+\hat\Sigma=\frac{X^\top X}{n}.
+\]</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Remainder bound.</span>
+  \[
+  \|(I-\hat\Theta\hat\Sigma)
+  (\hat\beta-\beta_0)\|_\infty
+  \le
+  \|I-\hat\Theta\hat\Sigma\|_{\max}
+  \|\hat\beta-\beta_0\|_1.
+  \]
+  Thus asymptotic normality of a coordinate follows when the product is \(o_p(n^{-1/2})\) and the leading weighted score satisfies a central limit theorem.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For each row \(j\),
+  \[
+  |e_j^\top(I-\hat\Theta\hat\Sigma)
+  (\hat\beta-\beta_0)|
+  \le
+  \max_k|(I-\hat\Theta\hat\Sigma)_{jk}|
+  \sum_k|\hat\beta_k-\beta_{0k}|.
+  \]
+  Take the maximum over \(j\).</p>
+</div>
+
+<p>Sparsity, restricted eigenvalues, precision-matrix approximation, and tail conditions make this product small. Debiasing is not automatic after fitting any high-dimensional predictor.</p>
+
+<h3>Orthogonal machine-learning scores</h3>
+
+<p>For a low-dimensional parameter \(\theta_0\) identified by
+\[
+P\psi(W;\theta_0,\eta_0)=0,
+\]
+Neyman orthogonality makes the derivative with respect to \(\eta\) vanish at the truth. With cross-fitting,
+\[
+\sqrt n(\hat\theta-\theta_0)
+=-A^{-1}\frac1{\sqrt n}\sum_{i=1}^n
+\psi(W_i;\theta_0,\eta_0)+o_p(1)
+\]
+provided nuisance-product remainders are \(o_p(n^{-1/2})\). Flexible prediction algorithms enter only through verifiable convergence and positivity conditions.</p>
+
+<h3>Conformal prediction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Split-conformal coverage.</span> Fit a prediction rule on training data. On an independent calibration sample of size \(n\), compute exchangeable nonconformity scores \(R_1,\ldots,R_n\). Let
+  \[
+  \hat q=R_{(k)},\qquad
+  k=\lceil(n+1)(1-\alpha)\rceil,
+  \]
+  with \(\hat q=\infty\) if \(k=n+1\). For a new covariate \(X_{n+1}\), include responses \(y\) whose score \(R(X_{n+1},y)\le\hat q\). If the calibration and test observations are exchangeable, then
+  \[
+  P\{Y_{n+1}\in C(X_{n+1})\}
+  \ge1-\alpha.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on the fitted training rule, the \(n+1\) scores \(R_1,\ldots,R_n,R_{n+1}\) are exchangeable. With randomized ties, the rank of \(R_{n+1}\) is uniform on \(\{1,\ldots,n+1\}\); conservatively, its probability of exceeding the \(k\)-th calibration order statistic is at most
+  \[
+  \frac{n+1-k}{n+1}\le\alpha.
+  \]</p>
+</div>
+
+<p>This is marginal coverage over a fresh exchangeable observation. Exact conditional coverage given \(X=x\) for every distribution is generally impossible with finite-width sets without structural assumptions. Covariate shift, time dependence, or adaptive feedback require weighted or sequential conformal arguments with new assumptions.</p>
+
+<h3>Randomization and knockoffs</h3>
+
+<p>Model-X knockoffs construct synthetic covariates \(\tilde X\) satisfying pairwise exchangeability with \(X\) while being conditionally independent of \(Y\) given \(X\). Antisymmetric feature statistics then give signs that are fair coins for null variables, enabling an FDR threshold. Validity depends on the covariate distribution or a correct estimate of it; ordinary variable importance scores do not automatically inherit knockoff guarantees.</p>
+
+<h3>What modern validity must state</h3>
+
+<p>Every adaptive procedure should identify:</p>
+<ul>
+  <li>the estimand or predictive target after selection;</li>
+  <li>the probability statement, including conditioning and whether it is pointwise or uniform;</li>
+  <li>the independence, exchangeability, sparsity, nuisance-rate, or design assumptions;</li>
+  <li>the leading stochastic expansion and the remainder that must be controlled;</li>
+  <li>the effect of tuning, splitting, and repeated use of the data.</li>
+</ul>
+
+<p>Multiple testing, debiasing, orthogonal scores, selective inference, and conformal prediction are developed further from prediction and complexity viewpoints in <a href="{{ '/notes/statistical-learning/' | relative_url }}">statistical learning</a>.</p>

@@ -8,46 +8,174 @@ note_prev_url: "/notes/probability-theory/filtrations-stopping-times/"
 note_next_url: "/notes/probability-theory/doob-inequalities-martingale-convergence/"
 ---
 
-<p>Martingales formalize fair games relative to a filtration. Their power comes from combining conditional expectation with time.</p>
+<p>A martingale is a process whose conditional drift vanishes relative to the available information. The definition is simple, but it unifies partial sums, conditional expectations, likelihood ratios, sequential estimators, and stochastic integrals. Submartingales and supermartingales allow one-sided drift and are the natural objects for convexity and maximal inequalities.</p>
 
-    <h3>Martingales and submartingales</h3>
+<h3>Martingales, submartingales, and differences</h3>
 
-    <p>The defining condition says the best future prediction is the current value.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An adapted process
+  \(M=(M_n,\mathcal F_n)_{n\ge0}\) is a martingale if
+  \(M_n\in L^1\) and
+  \[
+  \mathbb E[M_{n+1}\mid\mathcal F_n]=M_n
+  \quad\text{almost surely}.
+  \]
+  Replacing equality by \(\ge\) defines a submartingale, and replacing it by \(\le\) defines a supermartingale. A sequence \(D_n\) is a martingale-difference sequence if
+  \(D_n\in L^1\), \(D_n\in\mathcal F_n\), and
+  \(\mathbb E[D_n\mid\mathcal F_{n-1}]=0\).</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An adapted integrable process \((M_n,\mathcal F_n)\) is a martingale if \(\mathbb E[M_{n+1}\mid\mathcal F_n]=M_n\). It is a submartingale if the conditional expectation is at least \(M_n\), and a supermartingale if it is at most \(M_n\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For an integrable adapted process \(M\), the following are equivalent:
+  \[
+  M\text{ is a martingale};
+  \qquad
+  \mathbb E[M_m\mid\mathcal F_n]=M_n
+  \quad(0\le n\le m);
+  \]
+  \[
+  M_n=M_0+\sum_{k=1}^nD_k
+  \quad\text{for a martingale-difference sequence }D_k.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Iterating the one-step condition with the tower property gives
+  \[
+  \mathbb E[M_m\mid\mathcal F_n]
+  =\mathbb E[\mathbb E[M_m\mid\mathcal F_{m-1}]
+  \mid\mathcal F_n]=\cdots=M_n.
+  \]
+  Conversely take \(m=n+1\). For the increment representation, set
+  \(D_k=M_k-M_{k-1}\). Then
+  \(\mathbb E[D_k\mid\mathcal F_{k-1}]=0\). The reverse implication follows by conditioning the telescoping sum.</p>
+</div>
 
-    <h3>Martingale transforms</h3>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> A martingale has constant mean:
+  \(\mathbb EM_n=\mathbb EM_0\). A submartingale has nondecreasing means, and a supermartingale has nonincreasing means.</p>
+</div>
 
-    <p>Predictable betting strategies preserve fairness.</p>
+<h3>Canonical constructions</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(M_n\) is a martingale and \(H_n\) is bounded and \(\mathcal F_{n-1}\)-measurable, then
-\[
-(H\cdot M)_n=\sum_{k=1}^nH_k(M_k-M_{k-1})
-\]
-is a martingale.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (centered sums).</span> If \(X_n\) are independent and integrable, then
+  \[
+  M_n=\sum_{k=1}^n(X_k-\mathbb EX_k)
+  \]
+  is a martingale for
+  \(\mathcal F_n=\sigma(X_1,\ldots,X_n)\). Independence can be weakened to
+  \(\mathbb E[X_n\mid\mathcal F_{n-1}]=\mathbb EX_n\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The increment \(H_k(M_k-M_{k-1})\) is integrable and adapted. Its conditional expectation given \(\mathcal F_{k-1}\) is \(H_k\mathbb E[M_k-M_{k-1}\mid\mathcal F_{k-1}]=0\), using predictability of \(H_k\). Summing zero-mean conditional increments gives the martingale property.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Doob martingale).</span> If
+  \(Y\in L^1\), then
+  \[
+  M_n=\mathbb E[Y\mid\mathcal F_n]
+  \]
+  is a martingale by the tower property. It is the successive optimal
+  \(L^1\)-compatible prediction of a fixed terminal quantity as information accumulates.</p>
+</div>
 
+<div class="math-statement example">
+  <p><span class="statement-title">Example (likelihood-ratio martingale).</span> Suppose \(Q\ll P\) on
+  \(\mathcal F_\infty\), with density \(L=\mathrm{d}Q/\mathrm{d}P\), and define
+  \[
+  L_n=\mathbb E_P[L\mid\mathcal F_n].
+  \]
+  Then \(L_n\) is a nonnegative \(P\)-martingale and, for
+  \(A\in\mathcal F_n\),
+  \[
+  Q(A)=\mathbb E_P[L_n1_A].
+  \]
+  In dominated sequential models, \(L_n\) is the likelihood ratio based on the first \(n\) observations. This construction underlies change of measure, Bayesian marginal likelihoods, and contiguity of statistical experiments.</p>
+</div>
 
-    <h3>Doob decomposition</h3>
+<h3>Convex functions of martingales</h3>
 
-    <p>Every submartingale decomposes into a martingale plus predictable increasing drift.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(M_n\) is a martingale and
+  \(\phi:\mathbb R\to\mathbb R\) is convex with
+  \(\phi(M_n)\in L^1\), then \(\phi(M_n)\) is a submartingale. In particular,
+  \(|M_n|\), \(M_n^+\), and \(|M_n|^p\) for \(p\ge1\) are submartingales when integrable.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In discrete time, an integrable submartingale \(X_n\) has a unique decomposition \(X_n=M_n+A_n\), where \(M_n\) is a martingale, \(A_0=0\), and \(A_n\) is predictable increasing.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional Jensen gives
+  \[
+  \mathbb E[\phi(M_{n+1})\mid\mathcal F_n]
+  \ge
+  \phi(\mathbb E[M_{n+1}\mid\mathcal F_n])
+  =\phi(M_n).
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Define \(A_n=\sum_{k=1}^n \mathbb E[X_k-X_{k-1}\mid\mathcal F_{k-1}]\). Submartingality makes the summands nonnegative, and predictability is immediate. Then \(M_n=X_n-A_n\) has conditional mean \(M_{n-1}\). Uniqueness follows because the difference of two such decompositions is both a predictable finite-variation martingale and must have zero increments.</p>
-    </div>
+<h3>Predictable transforms</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Submartingales are martingales with compensators; this idea becomes central in continuous time.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (martingale transform).</span> Let
+  \(M\) be a martingale and let \(H_k\) be predictable. If every
+  \(H_k\Delta M_k\) is integrable, then
+  \[
+  (H\mathbin{\cdot}M)_n
+  :=\sum_{k=1}^nH_k\Delta M_k,
+  \qquad \Delta M_k=M_k-M_{k-1},
+  \]
+  is a martingale starting from zero.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Predictability makes \(H_k\)
+  \(\mathcal F_{k-1}\)-measurable, so
+  \[
+  \mathbb E[H_k\Delta M_k\mid\mathcal F_{k-1}]
+  =H_k\mathbb E[\Delta M_k\mid\mathcal F_{k-1}]
+  =0.
+  \]
+  Therefore the transform has integrable, adapted, conditionally centered increments.</p>
+</div>
+
+<p>The timing is essential. Choosing \(H_k\) after seeing \(\Delta M_k\), for example \(H_k=\operatorname{sgn}(\Delta M_k)\), would turn the increment into
+\(|\Delta M_k|\) and create positive drift. Predictability is the mathematical form of “no foresight.”</p>
+
+<h3>Doob decomposition</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (discrete Doob decomposition).</span> Every integrable submartingale \(X_n\) has a unique representation
+  \[
+  X_n=M_n+A_n,
+  \]
+  where \(M\) is a martingale, \(A_0=0\), and \(A_n\) is predictable and increasing.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define
+  \[
+  \Delta A_n
+  =\mathbb E[X_n-X_{n-1}\mid\mathcal F_{n-1}],
+  \qquad
+  A_n=\sum_{k=1}^n\Delta A_k.
+  \]
+  Submartingality gives \(\Delta A_n\ge0\), and
+  \(\Delta A_n\in\mathcal F_{n-1}\), so \(A\) is predictable and increasing. Put \(M_n=X_n-A_n\). Then
+  \[
+  \mathbb E[\Delta M_n\mid\mathcal F_{n-1}]
+  =
+  \mathbb E[\Delta X_n\mid\mathcal F_{n-1}]
+  -\Delta A_n=0.
+  \]
+  For uniqueness, if \(X=M+A=M'+A'\), then
+  \(B=M-M'=A'-A\) is both a martingale and predictable with \(B_0=0\). Its increment \(\Delta B_n\) is
+  \(\mathcal F_{n-1}\)-measurable and has conditional mean zero, hence
+  \(\Delta B_n=0\) almost surely.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For a square-integrable martingale \(M\), \(M_n^2\) is a submartingale. Its Doob compensator is
+  \[
+  A_n=\sum_{k=1}^n
+  \mathbb E[(\Delta M_k)^2\mid\mathcal F_{k-1}],
+  \]
+  the predictable quadratic variation developed below. Thus the abstract decomposition directly identifies accumulated conditional variance.</p>
+</div>

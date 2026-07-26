@@ -36,3 +36,113 @@ Thus relative entropy is the exact ideal excess length.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Coding redundancy is the information-theoretic face of likelihood regret. Choosing a model class asks for short codes uniformly over possible sources, which leads naturally to universal coding and MDL principles.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Redundancy under a coding distribution</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If a code uses ideal lengths
+  \(\ell_Q(x)=-\log Q(x)\) while data follow \(P\), its expected length is
+  \[
+  \mathbb E_P\ell_Q(X)=H(P)+D(P\|Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> This is the cross-entropy identity:
+  \[
+  -\sum_xP(x)\log Q(x)
+  =-\sum_xP(x)\log P(x)+
+  \sum_xP(x)\log\frac{P(x)}{Q(x)}.
+  \]</p>
+</div>
+
+<h3>Pointwise regret and expected redundancy</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a model class
+  \(\{P_\theta:\theta\in\Theta\}\) and universal coding law \(Q\), pointwise regret is
+  \[
+  \operatorname{reg}_Q(x^n)
+  =\log\frac{\sup_\theta P_\theta(x^n)}{Q(x^n)}.
+  \]
+  Expected redundancy at \(P_\theta\) is
+  \[
+  D(P_\theta^n\|Q).
+  \]</p>
+</div>
+
+<p>Regret compares with the best model chosen after seeing the sequence. Redundancy compares with the true model in expectation. Minimax regret and minimax redundancy are related but not identical finite-sample criteria.</p>
+
+<h3>Mismatch in a memoryless channel decoder</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A mismatched decoder chooses the codeword maximizing a metric
+  \(q^n(x^n,y^n)\) that need not equal the true likelihood
+  \(W^n(y^n\mid x^n)\).</p>
+</div>
+
+<p>Its achievable rate is governed by a generalized mutual information, one form of which is
+\[
+I_{\mathrm{GMI}}(P_X,q)
+=\sup_{s\ge0}
+\mathbb E\log
+\frac{q(X,Y)^s}
+{\mathbb E_{\bar X\sim P_X}q(\bar X,Y)^s}.
+\]
+When \(q=W\) and \(s=1\), this reduces to ordinary mutual information. A seemingly small model mismatch can alter codeword rankings and lower capacity.</p>
+
+<h3>Universal prediction under log loss</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If a sequential predictor assigns
+  \[
+  Q(x^n)=\prod_{t=1}^nQ(x_t\mid x^{t-1}),
+  \]
+  cumulative log-loss regret against \(P\) is
+  \[
+  \mathbb E_P\log\frac{P(X^n)}{Q(X^n)}
+  =D(P^n\|Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The chain product turns cumulative log-loss difference into the log likelihood ratio. Expectation under \(P\) is KL divergence.</p>
+</div>
+
+<h3>Plug-in coding and parameter cost</h3>
+
+<p>Estimating a \(d\)-dimensional regular parameter and then coding as if it were known typically incurs roughly
+\((d/2)\log n\) cumulative redundancy. Intuitively, the estimator localizes the parameter to \(n^{-1/2}\) precision in \(d\) dimensions, leaving about \(n^{d/2}\) distinguishable parameter cells. More precise formulas involve Fisher-information volume and the prior or normalized maximum-likelihood normalization.</p>
+
+<h3>Two-part codes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A two-part code first describes a quantized model index \(\widetilde\theta\), then encodes data with \(P_{\widetilde\theta}\):
+  \[
+  L(x^n)=L(\widetilde\theta)-
+  \log P_{\widetilde\theta}(x^n).
+  \]</p>
+</div>
+
+<p>Fine parameter quantization improves fit but costs model-description bits. Balancing quantization error against parameter code length yields the same \(d\log n/2\) order and motivates minimum description length.</p>
+
+<h3>Robust coding under uncertainty sets</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Given a set of possible sources
+  \(\mathcal P\), the minimax expected redundancy is
+  \[
+  \inf_Q\sup_{P\in\mathcal P}D(P\|Q).
+  \]
+  Its optimizer is an information center of \(\mathcal P\); under compact convex conditions it equals the capacity of the virtual channel \(P\mapsto X\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Treat the source index as a channel input and the sample as output. For any prior \(\pi\),
+  average redundancy decomposes into mutual information plus divergence between the output mixture and \(Q\). Minimizing in \(Q\) chooses the mixture and leaves mutual information. Minimax duality then equates worst-case redundancy with supremum over priors of this information.</p>
+</div>
+
+<h3>Support mismatch</h3>
+
+<p>If \(Q(x)=0\) where \(P(x)>0\), expected code length and KL redundancy are infinite. Smoothing is therefore not merely numerical: assigning positive probability to unseen symbols is required for robustness. Bayesian mixtures, Krichevsky-Trofimov prediction, and escape mechanisms in practical compressors address this support problem.</p>

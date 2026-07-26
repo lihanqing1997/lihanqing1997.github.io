@@ -34,3 +34,94 @@ note_next_url: "/notes/numerical-analysis/numerical-analysis-and-statistics/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Many inverse problems are also statistical estimation problems. Numerical regularization, Bayesian priors, penalized likelihood, and minimax rates often describe the same stabilization phenomenon in different languages.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Compact operators and ill-posedness</h3>
+
+<p>Let \(K:X\to Y\) be compact between Hilbert spaces, with singular system
+\[
+Kv_j=\sigma_ju_j,\qquad
+K^*u_j=\sigma_jv_j,\qquad
+\sigma_j\downarrow0.
+\]
+The formal inverse
+\[
+x=\sum_j\frac{\langle y,u_j\rangle}{\sigma_j}v_j
+\]
+amplifies high-index noise. The range of an infinite-rank compact operator is
+not closed, so inversion is discontinuous.</p>
+
+<h3>Tikhonov regularization</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The minimizer of
+\[
+\|Kx-y^\delta\|^2+\alpha\|x\|^2
+\]
+is
+\[
+x_\alpha^\delta
+=(K^*K+\alpha I)^{-1}K^*y^\delta
+=\sum_j
+\frac{\sigma_j}{\sigma_j^2+\alpha}
+\langle y^\delta,u_j\rangle v_j.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The strictly convex objective has
+normal equation
+\((K^*K+\alpha I)x=K^*y^\delta\). Expanding in the singular basis gives the
+filter factors.</p>
+</div>
+
+<p>The factor
+\(\sigma/(\sigma^2+\alpha)\) behaves like \(1/\sigma\) for well-resolved modes
+and suppresses modes with \(\sigma^2\ll\alpha\).</p>
+
+<h3>Bias--noise balance</h3>
+
+<p>If \(\|y^\delta-y\|\le\delta\), then
+\[
+\|x_\alpha^\delta-x^\dagger\|
+\le
+\underbrace{\|x_\alpha-x^\dagger\|}_{\text{regularization bias}}
++
+\underbrace{\frac{\delta}{2\sqrt\alpha}}_{\text{noise amplification}}.
+\]
+The noise bound follows from
+\(\sup_{\sigma\ge0}\sigma/(\sigma^2+\alpha)=1/(2\sqrt\alpha)\).
+Convergence requires \(\alpha\downarrow0\) and
+\(\delta/\sqrt\alpha\to0\).</p>
+
+<h3>Source conditions and rates</h3>
+
+<p>If
+\[
+x^\dagger=(K^*K)^\nu w,
+\]
+then the bias is controlled by a power of \(\alpha\). Balancing it with the
+noise term yields an algebraic convergence rate determined by smoothness
+\(\nu\). These source conditions link recoverability to alignment with
+singular vectors, not merely ordinary differentiability.</p>
+
+<h3>Parameter choice</h3>
+
+<p>The discrepancy principle chooses \(\alpha\) so
+\[
+\|Kx_\alpha^\delta-y^\delta\|\approx\tau\delta,\qquad\tau>1.
+\]
+Cross-validation, generalized cross-validation, L-curves, and empirical Bayes
+are alternatives with different assumptions. A regularized solution without a
+parameter-selection rule is not a complete numerical procedure.</p>
+
+<h3>Iterative regularization</h3>
+
+<p>Landweber iteration
+\[
+x_{k+1}=x_k+\omega K^*(y^\delta-Kx_k),
+\qquad 0<\omega<2/\|K\|^2,
+\]
+acts as a spectral filter whose effective cutoff moves outward with \(k\).
+Early stopping is the regularization parameter. Iterating to full convergence
+fits noise and recovers the unstable least-squares inverse.</p>

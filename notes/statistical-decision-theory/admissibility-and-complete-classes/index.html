@@ -8,22 +8,129 @@ note_prev_url: "/notes/statistical-decision-theory/risk-bayes-and-minimax/"
 note_next_url: "/notes/statistical-decision-theory/sufficiency-and-reduction/"
 ---
 
-<p>Admissibility is the weakest decision-theoretic optimality notion: it only excludes rules that are uniformly improvable.</p>
+<p>Admissibility excludes uniform improvement but does not select one procedure among crossing risk functions. Complete-class theory turns this weak order into a useful reduction: under regularity, every admissible procedure is Bayes, generalized Bayes, or a limit of Bayes procedures.</p>
 
-    <h3>Domination order</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(\delta_1\) dominates \(\delta_0\) if \(R(\theta,\delta_1)\le R(\theta,\delta_0)\) for every \(\theta\), with strict inequality for at least one \(\theta\). A rule is admissible if no rule dominates it.</p>
-    </div>
+<h3>Domination and essential completeness</h3>
 
-    <h3>Bayes rules and admissibility</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\delta_\Pi\) is a unique Bayes rule for a prior with full support and the risks are continuous, then \(\delta_\Pi\) is admissible.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A rule \(\delta_1\) dominates \(\delta_0\) if
+  \[
+  R(\theta,\delta_1)\leq R(\theta,\delta_0)
+  \quad\text{for all }\theta,
+  \]
+  with strict inequality for some \(\theta\). A rule is admissible if no rule dominates it.</p>
+  <p>A class \(\mathcal C\) is <em>complete</em> if every rule outside \(\mathcal C\) is dominated by a rule in \(\mathcal C\). It is <em>essentially complete</em> if every rule outside \(\mathcal C\) is weakly dominated:
+  \[
+  R(\theta,\delta_C)\leq R(\theta,\delta)
+  \quad\text{for every }\theta
+  \]
+  for some \(\delta_C\in\mathcal C\), without requiring strict inequality.</p>
+</div>
 
-    <h3>Contradiction through integrated risk</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> A dominating rule would reduce risk everywhere and strictly at some parameter. Full support and continuity make the integrated risk strictly smaller, contradicting uniqueness of the Bayes rule.</p>
-    </div>
+<p>Every complete class contains all admissible rules up to risk equivalence. Essential completeness is often the natural conclusion when distinct rules have identical risk functions.</p>
 
-    <h3>Complete-class reduction</h3>
-    <p>A class \(\mathcal C\) is complete if every rule outside it is dominated by a rule in \(\mathcal C\). Complete-class theorems justify restricting attention to Bayes, generalized Bayes, or limit-of-Bayes procedures.</p>
+<h3>Proper Bayes rules are admissible under full support</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\Theta\) be a topological space, let \(\Pi\) assign positive mass to every nonempty open set, and suppose \(R(\theta,\delta)\) is continuous in \(\theta\) for every rule under comparison. Then every Bayes rule \(\delta_\Pi\) with finite Bayes risk is admissible.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Suppose \(\delta\) dominates \(\delta_\Pi\). Then
+  \[
+  D(\theta)=R(\theta,\delta_\Pi)-R(\theta,\delta)
+  \]
+  is continuous, nonnegative everywhere, and positive at some \(\theta_0\). Hence \(D\geq c>0\) on a nonempty neighborhood \(U\) of \(\theta_0\). Full support gives \(\Pi(U)>0\), so
+  \[
+  r(\Pi,\delta_\Pi)-r(\Pi,\delta)
+  =\int D(\theta)\Pi(\mathrm{d}\theta)
+  \geq c\Pi(U)>0.
+  \]
+  This contradicts Bayes optimality of \(\delta_\Pi\). \(\square\)</p>
+</div>
+
+<p>Full support and continuity convert strict improvement at one parameter into positive prior-average improvement. Without either condition, a Bayes rule can be inadmissible at parameter values ignored by the prior.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If a prior is concentrated at one point \(\theta_0\), any rule minimizing risk at \(\theta_0\) is Bayes, regardless of its behavior elsewhere. Bayes optimality for a thin prior therefore carries no general admissibility guarantee.</p>
+</div>
+
+<h3>Finite complete-class theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\Theta\) be finite and assume the closed upper risk set
+  \[
+  \mathcal S
+  =
+  \overline{\{r(\delta):\delta\in\mathcal D\}+\mathbb R_+^{|\Theta|}}
+  \]
+  is closed. Then the class of Bayes rules is essentially complete. Every admissible risk vector is Bayes for at least one prior.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For an admissible risk vector \(r_0\), the separation argument of the preceding chapter produces a nonzero
+  \(\pi\geq0\) such that
+  \[
+  \pi^\top r_0=\inf_{r\in\mathcal S}\pi^\top r.
+  \]
+  Normalize \(\pi\) to a prior. Thus \(r_0\) is Bayes. For an arbitrary rule, either its risk is minimal and therefore Bayes, or a minimal vector in the lower section of the closed upper set weakly dominates it. This proves essential completeness. \(\square\)</p>
+</div>
+
+<h3>Generalized Bayes rules</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\nu\) be a \(\sigma\)-finite, possibly improper measure on \(\Theta\). If the formal posterior expected loss
+  \[
+  a\mapsto
+  \int_\Theta L(\theta,a)p_\theta(x)\nu(\mathrm{d}\theta)
+  \]
+  is well defined and minimized by \(\delta_\nu(x)\), then \(\delta_\nu\) is a generalized Bayes rule.</p>
+</div>
+
+<p>An improper prior does not define a Bayes risk, so the proper-prior admissibility proof cannot be used. A generalized Bayes rule may be admissible or inadmissible. Admissibility must be established by approximation or a recurrence argument.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (location).</span> For
+  \(X\sim N(\theta,\sigma^2)\), \(\theta\in\mathbb R\), squared loss, the Lebesgue prior gives the generalized Bayes estimator \(\delta(X)=X\). Diffuse normal priors approximate it and prove minimaxity. Its admissibility in one dimension requires an additional argument; diffuse-prior minimaxity alone does not prove admissibility.</p>
+</div>
+
+<h3>Blyth's method</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Blyth criterion).</span> Let \(\delta_0\) have continuous finite risk. Suppose there are finite prior measures \(\nu_n\) and Bayes rules \(\delta_n\) such that for every nonempty open \(U\subset\Theta\),
+  \[
+  \liminf_n\nu_n(U)>0,
+  \]
+  and
+  \[
+  r(\nu_n,\delta_0)-r(\nu_n,\delta_n)\longrightarrow0.
+  \]
+  Then \(\delta_0\) is admissible.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(\delta\) dominated \(\delta_0\), continuity would yield an open \(U\), \(c>0\), with
+  \[
+  R(\theta,\delta_0)-R(\theta,\delta)\geq c
+  \quad(\theta\in U).
+  \]
+  Hence
+  \[
+  r(\nu_n,\delta_0)-r(\nu_n,\delta)
+  \geq c\nu_n(U),
+  \]
+  whose liminf is positive. But Bayes optimality of \(\delta_n\) gives
+  \[
+  r(\nu_n,\delta_0)-r(\nu_n,\delta)
+  \leq r(\nu_n,\delta_0)-r(\nu_n,\delta_n)\to0,
+  \]
+  a contradiction. \(\square\)</p>
+</div>
+
+<h3>Why limits of Bayes rules appear</h3>
+
+<p>On noncompact parameter spaces a least favorable or supporting prior may escape to infinity. On infinite action spaces the risk set may fail to be closed before compactification. Complete-class theorems therefore often identify admissible procedures with limits of proper Bayes rules rather than proper Bayes rules themselves. The topology is chosen on risks or kernels so that lower semicontinuity of loss survives passage to the limit.</p>
+
+<h3>Admissibility is dimension sensitive</h3>
+
+<p>In multivariate normal mean estimation under squared loss, the usual estimator \(X\) remains minimax in every dimension because its risk is constant, but it becomes inadmissible for dimension at least three: James–Stein shrinkage improves it everywhere. This shows why minimaxity, Bayes optimality, and admissibility must be kept logically separate. The invariance and shrinkage chapter proves the risk comparison.</p>

@@ -75,3 +75,96 @@ with the appropriate alternative distribution in the denominator.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> If a suboptimal arm is sampled too rarely, the data cannot statistically distinguish the true instance from an alternative in which that arm is optimal. A change-of-measure argument relates the probability of correct behavior under the two instances to the accumulated KL information, forcing at least logarithmically many samples.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Stochastic bandit model</h3>
+
+<p>Arm \(a\in\{1,\ldots,K\}\) produces iid rewards with law \(\nu_a\), mean
+\(\mu_a\), and sub-Gaussian scale \(\sigma\). Let
+\(\mu^*=\max_a\mu_a\), \(\Delta_a=\mu^*-\mu_a\), and let \(A_t\) be chosen from
+past observations. Pseudo-regret is
+\[
+\bar R_T
+=T\mu^*-\sum_{t=1}^TE\mu_{A_t}
+=\sum_{a=1}^K\Delta_aE N_a(T).
+\]
+This decomposition turns regret analysis into control of suboptimal pull
+counts.</p>
+
+<h3>UCB and a gap-dependent proof</h3>
+
+<p>For \(\sigma\)-sub-Gaussian rewards, UCB selects
+\[
+A_t\in\arg\max_a
+\left\{\widehat\mu_a(t-1)
++\sqrt{\frac{2\sigma^2c\log t}{N_a(t-1)}}\right\},
+\]
+after pulling every arm once.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For \(c>1\), each suboptimal
+arm satisfies
+\[
+E N_a(T)
+\le \frac{8c\sigma^2\log T}{\Delta_a^2}+C_c,
+\]
+and hence
+\[
+\bar R_T
+\le\sum_{a:\Delta_a>0}
+\frac{8c\sigma^2\log T}{\Delta_a}
++\sum_a C_c\Delta_a.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Once
+\(N_a\ge8c\sigma^2\log T/\Delta_a^2\), arm \(a\)'s confidence radius is at most
+\(\Delta_a/2\). If it is nevertheless selected, either its empirical mean
+exceeds \(\mu_a\) by its radius or the optimal arm's empirical mean falls below
+\(\mu^*\) by its radius. Sub-Gaussian concentration makes either event at time
+\(t\) have probability at most \(2t^{-c}\). Summing over \(t\) gives the
+constant \(C_c\).</p>
+</div>
+
+<h3>Distribution-dependent lower bounds</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Lai--Robbins form).</span> For a
+uniformly efficient policy in an identifiable parametric bandit,
+\[
+\liminf_{T\to\infty}
+\frac{E N_a(T)}{\log T}
+\ge\frac1{\inf_{\nu:\,E_\nu X>\mu^*}
+D_{\mathrm{KL}}(\nu_a\|\nu)}
+\]
+for every suboptimal arm \(a\).</p>
+</div>
+
+<p>The proof changes arm \(a\)'s law to an alternative under which it is
+optimal. The trajectory KL divergence equals
+\(EN_a(T)D_{\mathrm{KL}}(\nu_a\|\nu)\). If this information were smaller than
+\(\log T\), no test could reliably distinguish the environments while
+maintaining low regret in both. KL-UCB is designed to match this information
+constraint.</p>
+
+<h3>Minimax regret and Thompson sampling</h3>
+
+<p>Gap-dependent bounds become large when gaps vanish. Minimax regret over
+\(\sigma\)-sub-Gaussian \(K\)-armed instances is of order
+\(\sigma\sqrt{KT}\). MOSS attains this rate without an extra \(\sqrt{\log T}\)
+factor. Thompson sampling draws a parameter from the posterior and acts
+optimally for that draw; its probability-matching interpretation is Bayesian,
+while frequentist regret bounds require prior support and concentration
+arguments.</p>
+
+<h3>Best-arm identification</h3>
+
+<p>Pure exploration changes the objective. With confidence \(1-\delta\), one
+seeks the best arm using as few samples as possible. Instance complexity is
+roughly
+\[
+\sum_{a\ne a^*}\Delta_a^{-2}\log(1/\delta),
+\]
+but optimal allocations solve a KL information game. Low regret and rapid
+identification are related but not equivalent goals.</p>

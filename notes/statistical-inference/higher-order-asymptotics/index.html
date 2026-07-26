@@ -8,12 +8,173 @@ note_prev_url: "/notes/statistical-inference/bootstrap-jackknife/"
 note_next_url: "/notes/statistical-inference/monte-carlo-for-inference/"
 ---
 
-<p>First-order asymptotics describe the main Gaussian limit. Higher-order asymptotics study the error of that approximation and how to improve it.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> An Edgeworth expansion approximates a distribution function by
-    \[
-    P\{Z_n\le x\}=\Phi(x)+n^{-1/2}p_1(x)\phi(x)+n^{-1}p_2(x)\phi(x)+\cdots+o(n^{-1}),
-    \]
-    where the polynomials \(p_j\) depend on cumulants of the summands or statistic.</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">Cornish-Fisher idea.</span> If an Edgeworth expansion is available, approximate quantiles can be corrected by solving the expansion for \(x\). This gives Cornish-Fisher corrections to normal critical values.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write the desired quantile as \(x=z_\alpha+n^{-1/2}a+n^{-1}b+\cdots\). Substitute into the Edgeworth expansion and match coefficients of powers of \(n^{-1/2}\). The first coefficient \(a\) cancels the \(n^{-1/2}\) distributional error at \(z_\alpha\); later coefficients cancel higher-order errors.</p></div>
-    <h3>Bartlett correction</h3><p>Likelihood ratio statistics often have expectation \(r+c/n+o(n^{-1})\) instead of \(r\). Multiplying by \(1-c/(rn)\) can improve chi-square approximation from first-order to second-order accuracy.</p>
+<p>First-order asymptotics identify a limit law while discarding the approximation error. Higher-order theory expands that error in powers of \(n^{-1/2}\), revealing skewness, bias, studentization effects, and corrections that can improve coverage. Such expansions require stronger moments, smoothness, and usually a nonlattice condition.</p>
+
+<h3>Cumulant scaling</h3>
+
+<p>Let \(X_1,\ldots,X_n\) be i.i.d. with mean zero, variance one, and cumulants \(\kappa_r\). For
+\[
+Z_n=\frac1{\sqrt n}\sum_{i=1}^nX_i,
+\]
+the \(r\)-th cumulant is
+\[
+\kappa_r(Z_n)=n^{1-r/2}\kappa_r.
+\]
+Thus skewness enters at order \(n^{-1/2}\), excess kurtosis at order \(n^{-1}\), and the Gaussian law is the zeroth-order term.</p>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Verification.</span> Cumulants add over independent sums and satisfy \(\kappa_r(aX)=a^r\kappa_r(X)\). Hence
+  \[
+  \kappa_r(Z_n)
+  =n\,n^{-r/2}\kappa_r
+  =n^{1-r/2}\kappa_r.
+  \]</p>
+</div>
+
+<h3>First Edgeworth correction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">One-term Edgeworth expansion.</span> Suppose \(\mathbb E|X|^{3+\delta}\lt\infty\) for some \(\delta>0\) and a Cramer nonlattice condition holds:
+  \[
+  \limsup_{|t|\to\infty}|\mathbb Ee^{itX}|\lt1.
+  \]
+  Then, uniformly in \(x\),
+  \[
+  P(Z_n\le x)
+  =\Phi(x)
+  +\frac{\kappa_3}{6\sqrt n}(1-x^2)\phi(x)
+  +o(n^{-1/2}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Expand the log characteristic function near zero:
+  \[
+  \log\mathbb Ee^{itX/\sqrt n}
+  =-\frac{t^2}{2n}
+  +\frac{\kappa_3(it)^3}{6n^{3/2}}
+  +O(n^{-2}|t|^4).
+  \]
+  Multiplication by \(n\) and exponentiation give
+  \[
+  \varphi_{Z_n}(t)
+  =e^{-t^2/2}
+  \left\{1+\frac{\kappa_3(it)^3}{6\sqrt n}\right\}
+  +O(n^{-1})
+  \]
+  on an expanding central frequency range. Fourier inversion identifies the correction because derivatives of the Gaussian density produce Hermite polynomials. The Cramer condition controls the outer-frequency integral, and smoothing yields uniformity in \(x\).</p>
+</div>
+
+<p>For lattice variables, an additional oscillating continuity-correction term appears. A smooth polynomial correction alone is therefore not uniformly valid for a Bernoulli sum.</p>
+
+<h3>Cornish-Fisher quantiles</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">First corrected quantile.</span> If \(z_\alpha=\Phi^{-1}(\alpha)\), then the \(\alpha\)-quantile of \(Z_n\) is
+  \[
+  q_{\alpha,n}
+  =z_\alpha+
+  \frac{\kappa_3}{6\sqrt n}(z_\alpha^2-1)
+  +o(n^{-1/2}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write \(q_{\alpha,n}=z_\alpha+a/\sqrt n+o(n^{-1/2})\). Taylor-expand
+  \[
+  \Phi(q_{\alpha,n})
+  =\alpha+\frac{a}{\sqrt n}\phi(z_\alpha)+o(n^{-1/2})
+  \]
+  and evaluate the Edgeworth correction at \(z_\alpha\). Setting the sum equal to \(\alpha\) gives
+  \[
+  a+\frac{\kappa_3}{6}(1-z_\alpha^2)=0.
+  \]</p>
+</div>
+
+<h3>Studentization</h3>
+
+<p>For
+\[
+T_n=\frac{\sqrt n\,\bar X}{S_n},
+\]
+the randomness of \(S_n\) changes the correction polynomial. Under standardized mean zero and variance one,
+\[
+P(T_n\le x)
+=\Phi(x)
++\frac{\kappa_3}{6\sqrt n}(2x^2+1)\phi(x)
++o(n^{-1/2})
+\]
+under suitable conditions and convention for \(S_n\). Studentization does not merely replace an unknown scale: it changes higher-order skewness and often makes bootstrap calibration second-order accurate.</p>
+
+<h3>Coverage error</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A confidence procedure has coverage error \(O(n^{-a})\) if
+  \[
+  \sup_{\theta\in\Theta_0}
+  \left|
+  P_\theta\{\theta\in C_n\}-(1-\alpha)
+  \right|=O(n^{-a})
+  \]
+  over the stated parameter class.</p>
+</div>
+
+<p>A first-order normal interval commonly has one-sided error \(O(n^{-1/2})\). Symmetric two-sided errors can cancel their first skewness term and achieve \(O(n^{-1})\) in regular problems. A properly studentized bootstrap can often reduce error by another order, but the claim depends on smoothness, moments, and uniformity.</p>
+
+<h3>Bartlett correction</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Correction principle.</span> Suppose a likelihood-ratio statistic \(W_n\) for \(q\) restrictions satisfies
+  \[
+  \mathbb E_0W_n=q+\frac b n+O(n^{-2}),
+  \]
+  and its Edgeworth expansion has the corresponding Bartlett form. Then
+  \[
+  W_n^{\mathrm{B}}
+  =\frac{W_n}{1+b/(qn)}
+  \]
+  has expectation \(q+O(n^{-2})\) and can improve the chi-square distributional error from order \(n^{-1}\) to \(n^{-2}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Expectation calculation.</span> Since
+  \[
+  \{1+b/(qn)\}^{-1}
+  =1-\frac b{qn}+O(n^{-2}),
+  \]
+  multiplication gives
+  \[
+  \mathbb EW_n^{\mathrm B}
+  =\left(q+\frac bn+O(n^{-2})\right)
+  \left(1-\frac b{qn}+O(n^{-2})\right)
+  =q+O(n^{-2}).
+  \]
+  Improvement of the full distribution requires the stronger Bartlett expansion, not the mean calculation alone.</p>
+</div>
+
+<h3>Signed likelihood roots</h3>
+
+<p>For a scalar target \(\psi\), the signed likelihood root is
+\[
+r=\operatorname{sign}(\hat\psi-\psi_0)
+\sqrt{2\{\ell(\hat\theta)-\ell(\tilde\theta)\}}.
+\]
+It is asymptotically standard normal. Modified roots of the form
+\[
+r^\star=r+\frac1r\log\frac{u}{r}
+\]
+incorporate nuisance-parameter and sample-space curvature and can attain third-order tail accuracy in regular models. The quantity \(u\) depends on ancillary or tangent-exponential constructions; it is not determined by the ordinary observed information alone.</p>
+
+<h3>Saddlepoint approximation</h3>
+
+<p>If \(K(t)=\log\mathbb Ee^{tX}\) and \(\hat t\) solves \(K'(\hat t)=x\), the saddlepoint density approximation for the sample mean has the form
+\[
+\hat f_{\bar X}(x)
+=\left\{\frac{n}{2\pi K''(\hat t)}\right\}^{1/2}
+\exp[-n\{\hat t x-K(\hat t)\}].
+\]
+The exponent is the Legendre transform governing large deviations, while the prefactor accounts for local curvature. Saddlepoint methods can remain accurate in tails where a finite Edgeworth polynomial deteriorates.</p>
+
+<h3>Limits of higher-order claims</h3>
+
+<p>Near parameter boundaries, under weak identification, with growing dimension, or for nonsmooth estimators, the expansion parameter may not be \(n^{-1/2}\) and regular corrections can be misleading. Higher-order accuracy is meaningful only after the first-order local experiment and its uniformity class have been established.</p>

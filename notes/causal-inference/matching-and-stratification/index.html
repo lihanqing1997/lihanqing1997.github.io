@@ -8,24 +8,132 @@ note_prev_url: "/notes/causal-inference/propensity-scores/"
 note_next_url: "/notes/causal-inference/directed-acyclic-graphs/"
 ---
 
-<p>Matching and stratification records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Matching and stratification use the design stage to construct treated and control groups with comparable measured covariates. Their causal validity comes from exchangeability and overlap; their statistical behavior also depends on the geometry of the matching variables and on how uncertainty from reuse and imperfect matches is handled.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Matching and stratification compare treated and control units with similar covariates or propensity scores. They aim to approximate randomized comparisons within balanced groups.</p>
-    </div>
+<h3>Exact matching and subclassification</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If strata are sufficiently fine and identification assumptions hold within strata, stratified differences estimate weighted averages of conditional treatment effects.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Exact matching compares treated and control units only within identical covariate strata. If \(S(X)\) indexes strata, a standardized stratified estimator is
+  \[
+  \widehat\tau=
+  \sum_s\widehat P(S=s)
+  \{\overline Y_{1s}-\overline Y_{0s}\}.
+  \]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on stratum membership, apply the adjustment formula inside each stratum, and average with the target population's stratum weights.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If treatment is exchangeable within \(S\), consistency holds, and both treatment arms occur in every target stratum, then the population analogue
+  \[
+  \sum_sP(S=s)
+  \{\mathbb E(Y\mid A=1,S=s)-
+  \mathbb E(Y\mid A=0,S=s)\}
+  \]
+  equals the ATE.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Design-based causal inference emphasizes balance diagnostics before outcome modeling. Matching changes the effective target population.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional exchangeability and consistency identify each stratum's potential-outcome means. Average the stratum-specific effect over the target stratum distribution.</p>
+</div>
+
+<h3>Nearest-neighbor matching</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given a distance \(d\), one-to-one nearest-neighbor matching assigns to treated unit \(i\)
+  \[
+  j(i)\in\operatorname*{argmin}_{j:A_j=0}d(X_i,X_j).
+  \]
+  The matching estimator for the ATT is
+  \[
+  \widehat\tau_{\mathrm{M}}=
+  \frac1{n_1}\sum_{i:A_i=1}\{Y_i-Y_{j(i)}\}.
+  \]</p>
+</div>
+
+<p>Matching with replacement can reuse a close control and reduce bias, but creates dependence and concentrates weight. Matching without replacement spreads weight but can force poor late matches; greedy order then matters.</p>
+
+<h3>The dimensionality of matching bias</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose \(X\in[0,1]^d\) has a density bounded away from zero and infinity. The distance from a point to its nearest neighbor among \(m\) independent controls is typically of order \(m^{-1/d}\). If \(m_0(x)=\mathbb E(Y(0)\mid X=x)\) is Lipschitz, nearest-neighbor matching bias is therefore of order \(m^{-1/d}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> A ball of radius \(r\) has probability of order \(r^d\). The probability that none of \(m\) controls lies in it is approximately
+  \((1-cr^d)^m\approx e^{-cmr^d}\), which changes scale at
+  \(r\asymp m^{-1/d}\). Lipschitz continuity converts covariate distance to outcome-regression difference.</p>
+</div>
+
+<p>This curse of dimensionality motivates matching on a scalar balancing score or low-dimensional prognostic representation. Such compression reduces geometric bias only if its balancing assumptions are credible.</p>
+
+<h3>Calipers and common support</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A caliper \(\delta\) permits a match only if
+  \(d(X_i,X_j)\le\delta\). Units without admissible matches are discarded.</p>
+</div>
+
+<p>A caliper bounds local extrapolation but changes the target population when units are discarded. The report should describe who was excluded and define whether the resulting effect targets matched treated units, an overlap population, or a trimmed ATE.</p>
+
+<h3>Mahalanobis and propensity distances</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Mahalanobis distance is
+  \[
+  d_M(x,x')=
+  \{(x-x')^\top\widehat\Sigma^{-1}(x-x')\}^{1/2}.
+  \]
+  Propensity-score matching often uses
+  \(|\operatorname{logit}\widehat e(x)-
+  \operatorname{logit}\widehat e(x')|\).</p>
+</div>
+
+<p>Mahalanobis matching balances the specified covariate geometry, while propensity matching targets treatment-assignment balance. A common hybrid imposes a propensity caliper and minimizes Mahalanobis distance within it.</p>
+
+<h3>Bias correction after matching</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For ATT matching, let
+  \(\widehat m_0(x)\) estimate the control outcome regression. The bias-corrected contrast
+  \[
+  \widehat\tau_{\mathrm{BC}}=
+  \frac1{n_1}\sum_{i:A_i=1}
+  \left[
+  Y_i-Y_{j(i)}-
+  \{\widehat m_0(X_i)-\widehat m_0(X_{j(i)})\}
+  \right]
+  \]
+  removes the first-order mismatch bias when \(\widehat m_0\) is sufficiently accurate.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on covariates, the expected untreated-outcome difference between a treated unit and its matched control is
+  \(m_0(X_i)-m_0(X_{j(i)})\). Subtracting a consistent estimate of this term centers the matched control contrast at the desired counterfactual mean.</p>
+</div>
+
+<h3>Full matching as weighting</h3>
+
+<p>Full matching partitions observations into matched sets containing at least one unit from each arm. A treated unit in a set with \(n_{1s}\) treated and \(n_{0s}\) controls receives a different analysis weight from a control. In this way, matching induces balancing weights; it is useful to inspect those weights, their effective sample size, and the covariate balance they achieve rather than treating the matching algorithm as a black box.</p>
+
+<h3>Balance diagnostics</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The standardized mean difference for covariate \(X_j\) is
+  \[
+  \operatorname{SMD}_j=
+  \frac{\overline X_{1j}-\overline X_{0j}}
+  {\{(s_{1j}^2+s_{0j}^2)/2\}^{1/2}},
+  \]
+  computed with the analysis weights after matching.</p>
+</div>
+
+<p>Balance assessment should include nonlinear terms and interactions that matter for treatment or outcome, not only raw means. A nonsignificant two-sample test is not evidence of balance: its \(p\)-value depends strongly on sample size, whereas standardized imbalance measures the design discrepancy directly.</p>
+
+<h3>Why ordinary bootstrap can fail for nearest-neighbor matching</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Fixed-neighbor matching is a nonsmooth functional of the empirical distribution: tiny perturbations can change match identities discretely. The ordinary nonparametric bootstrap can therefore fail to reproduce its first-order law. Analytic variance formulas, subsampling, or smooth matching/weighting estimators may be preferable, depending on the precise design.</p>
+</div>
+
+<h3>Design before outcomes</h3>
+
+<p>Matching specifications should be chosen without using post-treatment outcomes whenever possible. This mirrors randomized-experiment design and prevents outcome-guided choices from silently selecting a favorable estimate. Outcome modeling can then improve precision within the fixed matched design.</p>

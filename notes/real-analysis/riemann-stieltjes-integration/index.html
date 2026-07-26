@@ -13,7 +13,15 @@ note_next_url: "/notes/real-analysis/absolute-continuity-and-bounded-variation/"
     <h3>Stieltjes sums</h3>
     <p>The integrator decides how much weight each subinterval receives.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given \(f,\alpha:[a,b]\to\mathbb R\), a Riemann-Stieltjes sum is \(\sum_i f(t_i)(\alpha(x_i)-\alpha(x_{i-1}))\). If these sums converge to a common limit over refining partitions, write \(\int_a^b f\,\mathrm{d}\alpha\).</p>
+        <p><span class="statement-title">Definition.</span> For a tagged partition
+\[
+P:a=x_0<\cdots<x_n=b,\qquad t_i\in[x_{i-1},x_i],
+\]
+the Riemann-Stieltjes sum is
+\[
+S(f,\alpha;P,t)=\sum_{i=1}^n f(t_i)\bigl(\alpha(x_i)-\alpha(x_{i-1})\bigr).
+\]
+We say \(\int_a^b f\,\mathrm{d}\alpha=I\) if for every \(\varepsilon>0\) there is \(\delta>0\) such that \(\|P\|<\delta\) implies \(|S(f,\alpha;P,t)-I|<\varepsilon\) for every choice of tags.</p>
     </div>
 
     <div class="math-statement remark">
@@ -27,7 +35,12 @@ note_next_url: "/notes/real-analysis/absolute-continuity-and-bounded-variation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Define the premeasure on half-open intervals by the displayed formula and extend it to finite disjoint unions. Countable additivity on the interval algebra follows from monotone continuity of \(\alpha\). Caratheodory extension gives a Borel measure, and uniqueness follows because half-open intervals generate the Borel sigma-algebra.</p>
+        <p><span class="statement-title">Proof.</span> After fixing the harmless normalization \(\alpha(a)=0\), define
+\[
+\mu_0((s,t])=\alpha(t)-\alpha(s),\qquad
+\mu_0(\{a\})=0,
+\]
+and extend additively to the algebra of finite disjoint unions of such intervals. Right-continuity gives continuity from above, which is the key step in proving countable additivity of \(\mu_0\) on this algebra. The Caratheodory extension theorem produces a finite Borel measure \(\mu_\alpha\). Two finite measures agreeing on the generating \(\pi\)-system of half-open intervals agree on all Borel sets by the \(\pi\)-\(\lambda\) theorem.</p>
     </div>
 
     <h3>Existence for continuous integrands</h3>
@@ -37,7 +50,16 @@ note_next_url: "/notes/real-analysis/absolute-continuity-and-bounded-variation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(\alpha=\alpha_1-\alpha_2\) as the difference of increasing functions by Jordan decomposition. For increasing \(\alpha_i\), the Stieltjes integral agrees with the Lebesgue integral of \(f\) against \(\mu_{\alpha_i}\), which exists because \(f\) is bounded. Subtract the two integrals.</p>
+        <p><span class="statement-title">Proof.</span> First suppose \(\alpha\) is increasing. Uniform continuity of \(f\) gives, for two choices of tags in the same partition,
+\[
+|S(f,\alpha;P,t)-S(f,\alpha;P,s)|
+\le \omega_f(\|P\|)\bigl(\alpha(b)-\alpha(a)\bigr)\longrightarrow0.
+\]
+Step-function approximations then show that these sums converge to \(\int f\,\mathrm{d}\mu_\alpha\). For general bounded-variation \(\alpha\), its variation function \(v(x)=V_a^x(\alpha)\) is increasing and
+\[
+\alpha=\frac{v+\alpha}{2}-\frac{v-\alpha}{2}
+\]
+is a difference of increasing functions. Define the integral by subtracting the two corresponding integrals; the same sum estimate proves consistency with the tagged definition.</p>
     </div>
 
     <h3>Integration by parts</h3>
@@ -50,11 +72,29 @@ note_next_url: "/notes/real-analysis/absolute-continuity-and-bounded-variation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For a partition, expand \(f(x_i)g(x_i)-f(x_{i-1})g(x_{i-1})\) as \(f(t_i)\Delta g_i+g(s_i)\Delta f_i\) plus errors controlled by oscillations. Bounded variation bounds the accumulated error, and absence of common discontinuities makes those errors vanish as the mesh is refined.</p>
+        <p><span class="statement-title">Proof.</span> On each partition interval,
+\[
+f(x_i)g(x_i)-f(x_{i-1})g(x_{i-1})
+=f(x_{i-1})\Delta g_i+g(x_i)\Delta f_i.
+\]
+Summing telescopes. As the mesh tends to zero, the first sum converges to \(\int f\,\mathrm{d}g\) and the second to \(\int g\,\mathrm{d}f\); replacing right by left endpoint values creates only products of simultaneous jumps. The assumption of no common discontinuity makes their total limit zero, yielding the formula.</p>
+    </div>
+
+    <div class="math-statement remark">
+        <p><span class="statement-title">Remark (common jumps).</span> With a fixed càdlàg convention, the general formula contains a correction:
+\[
+\int_{(a,b]} f_-\,\mathrm{d}g+\int_{(a,b]}g\,\mathrm{d}f
+=f(b)g(b)-f(a)g(a)-\sum_{a<t\le b}\Delta f(t)\Delta g(t).
+\]
+The simple symmetric identity therefore requires either continuity of one integrator or an explicit jump convention.</p>
     </div>
 
     <h3>Distribution functions</h3>
     <p>Stieltjes integration is the natural notation for expectations of functions of a real random variable.</p>
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> If \(F\) is a distribution function and \(X\sim F\), then \(\mathbb E\varphi(X)=\int\varphi\,\mathrm{d}F\) whenever the expectation exists. At an atom \(x\), the jump \(F(x)-F(x-)\) contributes \(\varphi(x)\) times the atom mass.</p>
+        <p><span class="statement-title">Example.</span> If \(F\) is a distribution function and \(X\sim F\), then
+\[
+\mathbb E\varphi(X)=\int_{\mathbb R}\varphi\,\mathrm{d}F
+\]
+whenever either side is defined. At an atom \(x\), the jump \(\Delta F(x)=F(x)-F(x-)\) contributes \(\varphi(x)\Delta F(x)\). If \(F\) is absolutely continuous with density \(p\), the same integral becomes \(\int\varphi(x)p(x)\,\mathrm{d}x\); discrete, continuous, and mixed laws are thus handled by one notation.</p>
     </div>

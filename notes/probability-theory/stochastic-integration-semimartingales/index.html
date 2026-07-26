@@ -8,52 +8,144 @@ note_prev_url: "/notes/probability-theory/stochastic-integration-brownian-motion
 note_next_url: "/notes/probability-theory/ito-formula/"
 ---
 
-<p>Integration with respect to semimartingales extends Brownian integration to the natural general class of stochastic integrators.</p>
+<p>Semimartingale integration combines two constructions: martingale integration for unpredictable noise and pathwise Lebesgue-Stieltjes integration for finite-variation drift. The resulting integral preserves jumps, brackets, stopping, and iterated integration in exactly the forms needed for stochastic differential equations.</p>
 
-    <h3>Predictable simple integration</h3>
+<h3>Simple predictable integrands</h3>
 
-    <p>The definition begins with left-continuous information and increments of the integrator.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For
+  \[
+  H_t=H_01_{\{0\}}(t)+
+  \sum_{k=0}^{n-1}H_k1_{(t_k,t_{k+1}]}(t),
+  \qquad H_k\in\mathcal F_{t_k},
+  \]
+  and a cadlag adapted process \(X\), define
+  \[
+  (H\mathbin{\cdot}X)_t
+  =
+  \sum_{k=0}^{n-1}
+  H_k\{X_{t_{k+1}\wedge t}-X_{t_k\wedge t}\}.
+  \]
+  The left endpoint is essential: \(H_k\) is chosen before the increment occurs.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a semimartingale \(X\) and predictable simple \(H_t=\sum_kH_k1_{(t_k,t_{k+1}]}\), define
-\[
-(H\cdot X)_t=\sum_kH_k(X_{t_{k+1}\wedge t}-X_{t_k\wedge t}).
-\]</p>
-    </div>
+<h3>Integrability against the decomposition</h3>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(X=X_0+M+A\) be a special semimartingale. A predictable \(H\) is integrable with respect to \(X\) if it is locally integrable with respect to both components:
+  \[
+  \int_0^tH_s^2\,\mathrm{d}\langle M^c\rangle_s
+  +\sum_{s\le t}H_s^2(\Delta M_s)^2<\infty
+  \quad\text{locally},
+  \]
+  in the martingale sense, and
+  \[
+  \int_0^t|H_s|\,\mathrm{d}\operatorname{Var}(A)_s<\infty
+  \quad\text{almost surely}.
+  \]
+  Then
+  \[
+  H\mathbin{\cdot}X
+  =
+  H\mathbin{\cdot}M+H\mathbin{\cdot}A,
+  \]
+  a semimartingale.</p>
+</div>
 
-    <h3>Decomposition of the integral</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For bounded stopped martingales, complete simple predictable integrands under the bracket norm, exactly as for Brownian motion. Localization defines
+  \(H\mathbin{\cdot}M\) in general. The \(A\)-integral is the pathwise Lebesgue-Stieltjes integral, controlled by
+  \[
+  \left|\int_0^tH_s\,\mathrm{d}A_s\right|
+  \le\int_0^t|H_s|\,\mathrm{d}\operatorname{Var}(A)_s.
+  \]
+  Simple-process approximations converge uniformly on compacts in probability, and the limits agree with the original sum definition.</p>
+</div>
 
-    <p>The semimartingale decomposition defines the integral by combining martingale and finite-variation integration.</p>
+<h3>Jumps and brackets of integrals</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X=M+A\), where \(M\) is a local martingale and \(A\) has finite variation, then
-\[
-H\cdot X=H\cdot M+H\cdot A
-\]
-for predictable integrands in the appropriate integrability class.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(H\) is \(X\)-integrable, then
+  \[
+  \Delta(H\mathbin{\cdot}X)_t=H_t\Delta X_t.
+  \]
+  If \(M,N\) are local martingales, then
+  \[
+  [H\mathbin{\cdot}M,N]_t
+  =\int_0^tH_s\,\mathrm{d}[M,N]_s,
+  \]
+  and in particular
+  \[
+  [H\mathbin{\cdot}M]_t
+  =\int_0^tH_s^2\,\mathrm{d}[M]_s.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For simple \(H\), the identity is immediate from increments. For finite-variation \(A\), the integral is the pathwise Lebesgue-Stieltjes integral. For \(M\), localize and construct the martingale integral by \(L^2\) approximation on bounded pieces. Compatibility on overlaps ensures the localized definitions patch together.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For simple \(H\), a jump of the sum is exactly \(H_t\Delta X_t\). Partition products give
+  \[
+  \sum\Delta(H\mathbin{\cdot}M)\Delta N
+  =\sum H\,\Delta M\,\Delta N,
+  \]
+  which converges to the stated covariation integral. Approximation and localization extend both identities.</p>
+</div>
 
+<h3>Associativity</h3>
 
-    <h3>Associativity</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(H\) is integrable with respect to \(X\), \(Y=H\mathbin{\cdot}X\), and \(K\) is integrable with respect to \(Y\), then \(KH\) is integrable with respect to \(X\) and
+  \[
+  K\mathbin{\cdot}Y=(KH)\mathbin{\cdot}X.
+  \]</p>
+</div>
 
-    <p>Integrating in stages gives the same result as multiplying integrands.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For simple integrands, refine both time partitions. Each increment of \(Y\) is \(H\) times the corresponding increment of \(X\), so summation gives the identity exactly. For general integrands, choose simple predictable approximations. Continuity of semimartingale integration in the ucp topology passes the identity to the limit.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(Y=H\cdot X\) and \(K\) is predictable with suitable integrability, then
-\[
-K\cdot Y=(KH)\cdot X.
-\]</p>
-    </div>
+<h3>Integration by parts and stochastic exponentials</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For simple integrands the identity follows by expanding sums over common refinements of the partitions. The general case follows by approximation in the semimartingale topology, using continuity of the stochastic integral with respect to predictable integrands.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For semimartingales \(X,Y\),
+  \[
+  X_tY_t-X_0Y_0
+  =
+  X_{-}\mathbin{\cdot}Y_t
+  +Y_{-}\mathbin{\cdot}X_t
+  +[X,Y]_t.
+  \]
+  If \(X\) is continuous, the unique solution of
+  \[
+  Z_t=1+\int_0^tZ_s\,\mathrm{d}X_s
+  \]
+  is the stochastic exponential
+  \[
+  \mathcal E(X)_t
+  =\exp\{X_t-\tfrac12[X]_t\}.
+  \]</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This associativity is what makes stochastic differential notation algebraically useful.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The product formula was obtained from the exact increment identity. For the exponential, apply Ito's formula to
+  \(e^{X_t-[X]_t/2}\). The first derivative gives
+  \(Z_t\,\mathrm{d}X_t-\frac12Z_t\,\mathrm{d}[X]_t\), while the quadratic correction contributes
+  \(\frac12Z_t\,\mathrm{d}[X]_t\); they cancel, leaving
+  \(\mathrm{d}Z_t=Z_t\,\mathrm{d}X_t\). Linear SDE uniqueness identifies the solution.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (compensated Poisson integral).</span> Let \(N_t\) be Poisson with rate \(\lambda\), and
+  \(\widetilde N_t=N_t-\lambda t\). For bounded predictable \(H\),
+  \[
+  \int_0^tH_s\,\mathrm{d}\widetilde N_s
+  =
+  \sum_{0<s\le t}H_s\Delta N_s
+  -\lambda\int_0^tH_s\,\mathrm{d} s
+  \]
+  is a local martingale with jumps \(H_s\) at arrival times and predictable bracket
+  \[
+  \left\langle H\mathbin{\cdot}\widetilde N\right\rangle_t
+  =\lambda\int_0^tH_s^2\,\mathrm{d} s.
+  \]</p>
+</div>

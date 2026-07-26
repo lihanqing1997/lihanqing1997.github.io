@@ -8,14 +8,164 @@ note_prev_url: "/notes/statistical-inference/higher-order-asymptotics/"
 note_next_url: "/notes/statistical-inference/missing-data-em/"
 ---
 
-<p>Monte Carlo methods approximate sampling distributions, power, coverage, and numerical expectations. They are inferential tools only when their own simulation error is measured.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> If \(Y_1,\ldots,Y_B\) are simulation outputs estimating \(m=EY\), the Monte Carlo estimator is \(\bar Y_B=B^{-1}\sum_bY_b\), with Monte Carlo standard error
-    \[
-    \widehat{\operatorname{mcse}}(\bar Y_B)=s_Y/\sqrt B.
-    \]</p></div>
-    <div class="math-statement proposition"><p><span class="statement-title">Simulation CLT.</span> If \(Y_b\) are i.i.d. with variance \(\tau^2\lt\infty\), then
-    \[
-    \sqrt B(\bar Y_B-m)\rightsquigarrow N(0,\tau^2).
-    \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> This is the ordinary CLT applied to the simulation draws. The point is that \(B\), not the data sample size \(n\), controls Monte Carlo error.</p></div>
-    <h3>Power and coverage studies</h3><p>For a rejection indicator \(Y_b\), \(\bar Y_B\) estimates power or size and has standard error \(\sqrt{\hat p(1-\hat p)/B}\). Simulation reports should include this error, otherwise numerical noise can be mistaken for statistical behavior.</p>
+<p>Monte Carlo computation introduces a second source of randomness beyond the data. Its error is controlled by the simulation size \(B\), dependence between draws, and variance of the chosen estimator. Numerical output should separate Monte Carlo uncertainty from sampling uncertainty in the statistical problem.</p>
+
+<h3>Independent Monte Carlo averages</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Monte Carlo central limit theorem.</span> If \(Y_1,\ldots,Y_B\) are i.i.d. with mean \(m\) and variance \(0\lt\tau^2\lt\infty\), then
+  \[
+  \sqrt B(\bar Y_B-m)\rightsquigarrow N(0,\tau^2),
+  \qquad
+  \bar Y_B=\frac1B\sum_{b=1}^BY_b.
+  \]
+  With
+  \[
+  s_B^2=\frac1{B-1}\sum_{b=1}^B(Y_b-\bar Y_B)^2,
+  \]
+  the estimated Monte Carlo standard error is \(s_B/\sqrt B\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The ordinary central limit theorem gives the first convergence. The law of large numbers gives \(s_B^2\to_p\tau^2\), so studentization follows by Slutsky.</p>
+</div>
+
+<p>To halve Monte Carlo standard error while leaving the algorithm unchanged requires four times as many independent replicates. Reporting more printed digits does not change this rate.</p>
+
+<h3>Estimated rejection probabilities and coverage</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Binomial simulation error.</span> If \(Y_b=1_{\{\text{procedure rejects in replicate }b\}}\), then
+  \[
+  B\hat p\sim\operatorname{Binomial}(B,p),
+  \qquad
+  \operatorname{se}_{\mathrm{MC}}(\hat p)
+  =\sqrt{\frac{p(1-p)}B}.
+  \]
+  The plug-in standard error is
+  \[
+  \sqrt{\frac{\hat p(1-\hat p)}B}.
+  \]</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> To estimate a nominal size near \(0.05\) with Monte Carlo standard error at most \(0.001\), one needs approximately
+  \[
+  B\ge\frac{0.05(0.95)}{0.001^2}=47{,}500
+  \]
+  independent replicates. With \(B=1{,}000\), the standard error is about \(0.0069\), too large to distinguish size \(0.05\) from \(0.06\) reliably.</p>
+</div>
+
+<p>For very small probabilities, normal intervals can be poor or degenerate. Exact binomial or Wilson intervals quantify Monte Carlo uncertainty more reliably.</p>
+
+<h3>Comparing two procedures</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Common-random-number comparison.</span> Suppose procedures \(A\) and \(B\) are evaluated on the same simulated datasets, producing losses \(L_b^A,L_b^B\). Estimate the risk difference by
+  \[
+  \bar D_B=\frac1B\sum_{b=1}^B(L_b^A-L_b^B).
+  \]
+  Its variance is
+  \[
+  \frac1B\left\{
+  \operatorname{Var}(L^A)+\operatorname{Var}(L^B)
+  -2\operatorname{Cov}(L^A,L^B)
+  \right\}.
+  \]
+  Positive covariance can make paired simulation substantially more precise than two independent studies.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the variance identity to \(D=L^A-L^B\), then divide by \(B\) for an average of independent replicate differences.</p>
+</div>
+
+<h3>Control variates</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Optimal linear control variate.</span> Suppose \(\mathbb EY=m\), \(\mathbb EC=\mu_C\) is known, and \(0\lt\operatorname{Var}(C)\lt\infty\). For
+  \[
+  Y^{(a)}=Y-a(C-\mu_C),
+  \]
+  the variance-minimizing coefficient is
+  \[
+  a^\star=\frac{\operatorname{Cov}(Y,C)}
+  {\operatorname{Var}(C)},
+  \]
+  and
+  \[
+  \operatorname{Var}(Y^{(a^\star)})
+  =\operatorname{Var}(Y)(1-\rho_{YC}^2).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand
+  \[
+  \operatorname{Var}(Y^{(a)})
+  =\operatorname{Var}(Y)-2a\operatorname{Cov}(Y,C)
+  +a^2\operatorname{Var}(C).
+  \]
+  This convex quadratic is minimized at \(a^\star\). Substitution gives the correlation formula.</p>
+</div>
+
+<h3>Importance sampling</h3>
+
+<p>To estimate \(m=\int h(x)p(x)\,\mathrm{d}x\), draw \(X_b\sim q\), where \(q>0\) wherever \(hp\ne0\), and use
+\[
+\hat m_{\mathrm{IS}}
+=\frac1B\sum_{b=1}^B
+h(X_b)\frac{p(X_b)}{q(X_b)}.
+\]
+It is unbiased, with variance
+\[
+\frac1B\left[
+\int h(x)^2\frac{p(x)^2}{q(x)}\,\mathrm{d}x-m^2
+\right].
+\]</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Zero-variance ideal.</span> If \(h\ge0\) and \(m>0\), the formal choice
+  \[
+  q^\star(x)=\frac{h(x)p(x)}m
+  \]
+  makes every weighted observation equal to \(m\), giving zero variance.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under \(q^\star\),
+  \[
+  h(X)\frac{p(X)}{q^\star(X)}=m
+  \]
+  wherever \(h(X)>0\). The ideal is unusable because it contains the unknown \(m\), but it shows that a good proposal mimics \(|h|p\).</p>
+</div>
+
+<p>Rare-event importance sampling fails catastrophically when a few weights dominate. Weight diagnostics and repeated independent runs are more informative than the heuristic effective sample size alone.</p>
+
+<h3>Markov chain Monte Carlo error</h3>
+
+<p>For a stationary Markov chain \(Y_b\) with invariant law \(\pi\), a Markov chain CLT has
+\[
+\sqrt B(\bar Y_B-\pi Y)
+\rightsquigarrow N(0,\tau_{\mathrm{LR}}^2),
+\]
+where
+\[
+\tau_{\mathrm{LR}}^2
+=\gamma_0+2\sum_{k=1}^{\infty}\gamma_k,
+\qquad
+\gamma_k=\operatorname{Cov}_\pi(Y_0,Y_k).
+\]
+The standard error is not \(s/\sqrt B\) unless autocorrelations vanish. Batch means or spectral variance estimators estimate \(\tau_{\mathrm{LR}}^2\). Effective sample size
+\[
+B_{\mathrm{eff}}
+=B\gamma_0/\tau_{\mathrm{LR}}^2
+\]
+summarizes mean-estimation efficiency but does not diagnose nonconvergence or poor exploration.</p>
+
+<h3>Sequential stopping for simulation</h3>
+
+<p>A principled simulation can continue until a confidence interval for the Monte Carlo target has half-width below a predeclared tolerance. Optional stopping is harmless only when the interval or bound is valid under that stopping rule; repeatedly inspecting an ordinary fixed-\(B\) interval can distort coverage. Confidence sequences or conservative staged designs provide valid alternatives.</p>
+
+<h3>Reproducibility and numerical design</h3>
+
+<p>A simulation report should specify the data-generating law, estimand, procedure, number of independent replicates, random-number generator and seed policy, failure handling, and Monte Carlo standard errors. In parallel computation, independent streams or reproducible substreams are needed; reusing the same seed in every worker silently duplicates draws.</p>

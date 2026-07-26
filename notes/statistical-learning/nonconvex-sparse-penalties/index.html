@@ -36,3 +36,148 @@ SCAD and MCP choose \(p_\lambda\) concave on \([0,\infty)\), with derivative nea
     </div><div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The KKT equation on a nonzero coordinate is score plus \(p'_\lambda(|\beta_j|)\operatorname{sign}(\beta_j)=0\). If \(p'_\lambda\) vanishes for large signals, the large-coordinate equation matches the unpenalized score equation.</p>
     </div>
+
+<h3>Integrated SCAD and MCP penalties</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(a>2\), SCAD is
+  \[
+  p_{\lambda,a}^{\mathrm{SCAD}}(t)=
+  \begin{cases}
+  \lambda t,&0\le t\le\lambda,\\
+  \dfrac{-t^2+2a\lambda t-\lambda^2}{2(a-1)},
+  &\lambda<t\le a\lambda,\\
+  \dfrac{(a+1)\lambda^2}{2},&t>a\lambda.
+  \end{cases}
+  \]
+  For \(a>1\), MCP is
+  \[
+  p_{\lambda,a}^{\mathrm{MCP}}(t)=
+  \begin{cases}
+  \lambda t-\dfrac{t^2}{2a},&0\le t\le a\lambda,\\
+  \dfrac{a\lambda^2}{2},&t>a\lambda.
+  \end{cases}
+  \]</p>
+</div>
+
+<p>Both penalties have slope \(\lambda\) at zero, creating thresholding, and zero slope beyond \(a\lambda\), removing shrinkage from sufficiently large signals.</p>
+
+<h3>Coordinatewise MCP thresholding</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For
+  \[
+  \min_\beta\frac12(z-\beta)^2+
+  p_{\lambda,a}^{\mathrm{MCP}}(|\beta|),
+  \]
+  the global minimizer is
+  \[
+  T_{\mathrm{MCP}}(z)=
+  \begin{cases}
+  0,&|z|\le\lambda,\\
+  \dfrac{\operatorname{sign}(z)(|z|-\lambda)}
+  {1-1/a},&\lambda<|z|\le a\lambda,\\
+  z,&|z|>a\lambda.
+  \end{cases}
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> By symmetry take \(z\ge0\).
+  On \(0<\beta<a\lambda\), stationarity gives
+  \(\beta-z+\lambda-\beta/a=0\), hence
+  \(\beta=(z-\lambda)/(1-1/a)\), valid exactly for
+  \(\lambda<z<a\lambda\). Below \(\lambda\), the right derivative at zero is nonnegative and zero is optimal. Beyond \(a\lambda\), the penalty is constant and the minimizer is \(\beta=z\). Boundary comparison shows the pieces join continuously.</p>
+</div>
+
+<h3>Difference-of-convex decomposition</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Every folded-concave penalty with
+  \(p_\lambda'(0+)=\lambda\) can be written
+  \[
+  p_\lambda(|t|)=\lambda|t|-q_\lambda(t),
+  \]
+  where \(q_\lambda\) is convex.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define
+  \(q_\lambda(t)=\lambda|t|-p_\lambda(|t|)\). For \(t>0\),
+  \(q_\lambda'(t)=\lambda-p_\lambda'(t)\), which is nondecreasing because
+  \(p_\lambda'\) is nonincreasing. Symmetry handles \(t<0\), and the one-sided derivatives satisfy convexity at zero.</p>
+</div>
+
+<h3>Local linear approximation</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Concavity gives
+  \[
+  p_\lambda(|\beta_j|)
+  \le p_\lambda(|\beta_j^{(k)}|)
+  +p_\lambda'(|\beta_j^{(k)}|)
+  \{|\beta_j|-|\beta_j^{(k)}|\}.
+  \]
+  Minimizing this majorizer gives a weighted Lasso update with weight
+  \(p_\lambda'(|\beta_j^{(k)}|)\), and the original objective decreases after every exact update.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A tangent line upper-bounds a concave function and touches it at the current iterate. The new surrogate value is no larger than the old one, and the true objective is bounded above by the surrogate at the new point.</p>
+</div>
+
+<h3>Restricted curvature versus penalty concavity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The maximum concavity is
+  \[
+  \mu_p=\sup_{t_1<t_2}
+  -\frac{p_\lambda'(t_2)-p_\lambda'(t_1)}{t_2-t_1}.
+  \]
+  For MCP, \(\mu_p=1/a\); for SCAD, \(\mu_p=1/(a-1)\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If the empirical loss has restricted curvature
+  \(\kappa>\mu_p\) on the relevant sparse cone, then the full objective retains restricted curvature \(\kappa-\mu_p\). Any stationary point in that region is locally unique and obeys oracle-style estimation bounds.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Along an admissible direction
+  \(\Delta\), the loss contributes at least
+  \(\kappa\|\Delta\|_2^2/2\) beyond its linearization. Penalty concavity can subtract at most
+  \(\mu_p\|\Delta\|_2^2/2\). Their sum has quadratic growth
+  \((\kappa-\mu_p)\|\Delta\|_2^2/2\).</p>
+</div>
+
+<h3>The oracle estimator as a strict local minimum</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(\widehat\beta^{\,O}\) minimize least squares on the true support \(S\) and be zero on \(S^c\). Suppose
+  \[
+  \min_{j\in S}|\widehat\beta_j^{\,O}|>a\lambda,\qquad
+  \left\|\frac{X_{S^c}^\top(Y-X\widehat\beta^{\,O})}{n}\right\|_\infty<\lambda,
+  \]
+  and the active Hessian is positive definite. Then
+  \(\widehat\beta^{\,O}\) is a strict local minimum of SCAD- or MCP-penalized least squares.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On active coordinates the penalty derivative is zero because the coefficients exceed \(a\lambda\), so the oracle least-squares score vanishes. On inactive coordinates the score lies strictly inside the subgradient interval \([-\lambda,\lambda]\), preventing sufficiently small coordinate activation from decreasing the objective. Positive active curvature gives strict growth for perturbations within \(S\). Combining active and inactive directions proves strict local minimality.</p>
+</div>
+
+<h3>Statistical and computational guarantees</h3>
+
+<p>A complete nonconvex theorem must identify which point an algorithm reaches. “There exists a local minimizer with the oracle property” does not imply that coordinate descent from zero finds it. Typical routes are:</p>
+
+<ul>
+  <li>a convex initializer already lies in the attraction basin;</li>
+  <li>restricted strong convexity dominates penalty concavity;</li>
+  <li>a path-following algorithm starts at a large \(\lambda\) and decreases it gradually;</li>
+  <li>every approximate stationary point in a controlled sparse region has the same statistical rate.</li>
+</ul>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Reduced bias is not free. Folded concavity trades global convexity for weaker shrinkage. Larger \(a\) approaches the Lasso and improves convexity; smaller \(a\) removes bias sooner but makes the objective more nonconvex.</p>
+</div>

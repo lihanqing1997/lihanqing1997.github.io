@@ -34,3 +34,84 @@ note_next_url: "/notes/numerical-analysis/splines-piecewise-approximation/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A good approximation space is not enough; the basis must also be numerically usable. Orthogonal or nearly orthogonal bases usually behave better than monomial bases because coefficient perturbations are less amplified.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Orthogonal projection</h3>
+
+<p>Let \(w(x)>0\) on \([a,b]\) and
+\[
+\langle f,g\rangle_w=\int_a^bf(x)g(x)w(x)\,\mathrm{d}x.
+\]
+Gram--Schmidt produces orthogonal polynomials
+\(\phi_0,\phi_1,\ldots\), with \(\deg\phi_n=n\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (best \(L_2\) approximation).</span>
+The polynomial
+\[
+P_nf=\sum_{k=0}^n
+\frac{\langle f,\phi_k\rangle_w}{\|\phi_k\|_w^2}\phi_k
+\]
+uniquely minimizes \(\|f-p\|_w\) over \(p\in\mathcal P_n\), and
+\[
+\|f-P_nf\|_w^2
+=\|f\|_w^2-
+\sum_{k=0}^n
+\frac{|\langle f,\phi_k\rangle_w|^2}{\|\phi_k\|_w^2}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> \(f-P_nf\) is orthogonal to
+\(\mathcal P_n\). For any \(p\in\mathcal P_n\),
+\[
+\|f-p\|_w^2
+=\|f-P_nf\|_w^2+\|P_nf-p\|_w^2.
+\]
+This proves minimality, uniqueness, and the coefficient identity.</p>
+</div>
+
+<h3>Three-term recurrence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Monic orthogonal polynomials
+satisfy
+\[
+\phi_{n+1}(x)=(x-\alpha_n)\phi_n(x)-\beta_n\phi_{n-1}(x),
+\qquad \beta_n>0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Expand \(x\phi_n\) in the
+orthogonal basis through degree \(n+1\). For \(k\le n-2\),
+\(\langle x\phi_n,\phi_k\rangle
+=\langle\phi_n,x\phi_k\rangle=0\), since \(x\phi_k\) has degree at most
+\(n-1\). Only three coefficients remain. Comparing leading terms and norms
+gives the form and \(\beta_n>0\).</p>
+</div>
+
+<p>The recurrence gives stable \(O(n)\) evaluation through the Clenshaw
+algorithm and converts Gaussian quadrature nodes into eigenvalues of a
+symmetric tridiagonal Jacobi matrix.</p>
+
+<h3>Chebyshev approximation</h3>
+
+<p>For \(w(x)=(1-x^2)^{-1/2}\), the orthogonal polynomials are
+\(T_k(x)=\cos(k\arccos x)\). If \(f\) extends analytically to the Bernstein
+ellipse \(E_\rho\), \(\rho>1\), and \(|f|\le M\) there, then Chebyshev
+coefficients satisfy
+\[
+|a_k|\le2M\rho^{-k},
+\]
+so truncation converges geometrically. Finite smoothness instead yields
+algebraic coefficient decay determined by derivatives.</p>
+
+<h3>Uniform best approximation</h3>
+
+<p>The minimax polynomial in sup norm is characterized by the alternation
+theorem: \(p^*\in\mathcal P_n\) is best if and only if
+\(f-p^*\) attains alternating extrema of equal magnitude at at least
+\(n+2\) ordered points. The Remez algorithm exploits this characterization.
+Orthogonal projection and minimax approximation solve different normed
+problems.</p>

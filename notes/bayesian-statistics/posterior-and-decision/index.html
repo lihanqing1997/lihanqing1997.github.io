@@ -74,3 +74,149 @@ with \(\bar\theta=\mathbb E(\theta\mid X)\). For absolute loss, a subgradient of
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Condition on the data and on the posterior draw of \(\theta\). Jensen's inequality gives \(L(\theta,\mathbb E A)\le \mathbb E\{L(\theta,A)\}\). Integrating over the posterior proves the claim.</p>
     </div>
+
+<h3>Existence of Bayes actions</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let the action space \(\mathcal A\) be compact, and suppose \(a\mapsto L(\theta,a)\) is lower semicontinuous for every \(\theta\) and bounded below by an integrable function. Then the posterior risk
+\[
+\rho_x(a)=\int L(\theta,a)\Pi(\mathrm{d}\theta\mid x)
+\]
+is lower semicontinuous and attains its minimum on \(\mathcal A\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(a_n\to a\), Fatou's lemma gives
+\[
+\rho_x(a)
+\le\liminf_n\rho_x(a_n),
+\]
+after subtracting the integrable lower bound. Thus \(\rho_x\) is lower semicontinuous. A lower semicontinuous function on a compact space attains its minimum.</p>
+</div>
+
+<h3>Posterior quantiles under asymmetric loss</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For \(0<\tau<1\), define check loss
+\[
+L_\tau(\theta,a)
+=(\theta-a)\{\tau-1(\theta<a)\}.
+\]
+Every posterior \(\tau\)-quantile minimizes posterior expected loss.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The subdifferential of the posterior risk is
+\[
+\partial\rho_x(a)
+=\big[
+\Pi(\theta<a\mid x)-\tau,\,
+\Pi(\theta\le a\mid x)-\tau
+\big].
+\]
+Zero belongs to this interval exactly when
+\[
+\Pi(\theta<a\mid x)\le\tau\le
+\Pi(\theta\le a\mid x),
+\]
+the defining condition for a posterior \(\tau\)-quantile.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (inventory asymmetry).</span> If underestimation costs \(c_u\) per unit and overestimation costs \(c_o\), then
+\[
+L(\theta,a)
+=c_u(\theta-a)_+
++c_o(a-\theta)_+.
+\]
+The optimal action is the posterior quantile
+\[
+\tau=\frac{c_u}{c_u+c_o}.
+\]
+The posterior median is optimal only when the two costs are equal.</p>
+</div>
+
+<h3>Testing as a Bayesian action</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For hypotheses
+\(H_0:\theta\in\Theta_0\) and
+\(H_1:\theta\in\Theta_1\), suppose rejecting \(H_0\) when it is true costs \(c_{10}\), while accepting \(H_0\) under \(H_1\) costs \(c_{01}\). The Bayes rule rejects exactly when
+\[
+\frac{\Pi(\Theta_1\mid x)}
+{\Pi(\Theta_0\mid x)}
+>\frac{c_{10}}{c_{01}}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The posterior risk of rejecting is
+\(c_{10}\Pi(\Theta_0\mid x)\); that of accepting is
+\(c_{01}\Pi(\Theta_1\mid x)\). Choose the smaller and rearrange.</p>
+</div>
+
+<p>Posterior probability is therefore not itself a decision threshold. The threshold encodes losses. Reporting a posterior probability while concealing the implied cost ratio leaves the action rule incomplete.</p>
+
+<h3>Bayes risk and frequentist risk</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For a decision rule \(\delta(X)\),
+\[
+R(\theta,\delta)
+=E_\theta L\{\theta,\delta(X)\}
+\]
+is its frequentist risk, and
+\[
+r(\Pi,\delta)
+=\int R(\theta,\delta)\Pi(\mathrm{d}\theta)
+\]
+is its Bayes risk.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> A rule minimizing posterior risk for almost every \(x\) minimizes Bayes risk.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Fubini's theorem gives
+\[
+r(\Pi,\delta)
+=\int
+\left[
+\int L\{\theta,\delta(x)\}
+\Pi(\mathrm{d}\theta\mid x)
+\right]m(\mathrm{d}x).
+\]
+Pointwise minimization of the bracket minimizes its integral.</p>
+</div>
+
+<h3>Posterior regret</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> If
+\(a_x^\star\) is a Bayes action, the posterior regret of \(a\) is
+\[
+\operatorname{Reg}_x(a)
+=\rho_x(a)-\rho_x(a_x^\star)\ge0.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Under squared loss,
+\[
+\operatorname{Reg}_x(a)
+=\{a-E(\theta\mid x)\}^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The bias-variance identity gives
+\[
+E\{(\theta-a)^2\mid x\}
+=\operatorname{Var}(\theta\mid x)
++\{a-E(\theta\mid x)\}^2.
+\]
+Subtract the minimum posterior risk, which is the posterior variance.</p>
+</div>
+
+<p>Decision-theoretic comparisons, minimaxity, admissibility, and least favorable priors are developed in <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">statistical decision theory</a>.</p>

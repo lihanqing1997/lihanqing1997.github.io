@@ -7,22 +7,141 @@ note_back_url: "/notes/statistical-decision-theory/"
 note_next_url: "/notes/statistical-decision-theory/decision-problems-rules-risks/"
 ---
 
-<p>Statistical decision theory studies procedures through their full risk functions. Le Cam's asymptotic theory adds one more layer: a sequence of statistical problems is understood by the simpler experiment to which it converges.</p>
+<p>Statistical decision theory asks what can be achieved from an observation, not merely how one chosen estimator behaves. An experiment specifies the available information. A decision problem specifies the action and its consequences. A procedure is evaluated through its entire risk function, so Bayesian averaging, minimax protection, admissibility, testing, estimation, and confidence construction become different operations on the same object.</p>
 
-    <h3>Experiments as decision objects</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An experiment is a family \(\mathcal E=\{P_\theta:\theta\in\Theta\}\) together with the observation space on which the measures live. A decision problem adds actions \(\mathcal A\), losses \(L(\theta,a)\), and decision rules \(\delta\).</p>
-    </div>
+<h3>Experiments and procedures</h3>
 
-    <h3>Asymptotic comparison of experiments</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The guiding problem is not only whether an estimator converges, but whether \(\mathcal E_n\) can be replaced by a tractable limit \(\mathcal E\) without changing risks by more than a small amount. This is the role of transitions, deficiencies, and Le Cam distance.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A statistical experiment is
+  \[
+  \mathcal E=(\mathcal X,\mathcal A_{\mathcal X},
+  \{P_\theta:\theta\in\Theta\}),
+  \]
+  where \(P_\theta\) is the distribution of the observation \(X\) when the parameter is \(\theta\). A decision problem adds an action space \((\mathbb A,\mathcal A_{\mathbb A})\) and a measurable loss
+  \[
+  L:\Theta\times\mathbb A\to[0,\infty].
+  \]
+  A randomized decision rule is a Markov kernel
+  \(\delta:\mathcal X\rightsquigarrow\mathbb A\).</p>
+</div>
 
-    <h3>Proof architecture</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Most arguments follow four steps: compare experiments by kernels, prove likelihood-ratio convergence, solve the decision problem in the limit experiment, and transfer the resulting risk statement back to the original sequence.</p>
-    </div>
+<p>After observing \(X=x\), the rule draws an action from \(\delta(x,\cdot)\). Nonrandomized rules are the special kernels
+\(\delta(x,\cdot)=\delta_{\!a(x)}\). Randomization is mathematically important because it makes the set of attainable risks convex and allows exact boundary calibration in discrete testing problems.</p>
 
-    <h3>Interfaces with probability and empirical processes</h3>
-    <p>The probability notes supply weak convergence, contiguity, martingales, and Gaussian limits. The empirical-process notes supply uniform laws needed when the experiment is indexed by rich function classes.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The risk and Bayes risk are
+  \[
+  R(\theta,\delta)
+  =
+  \int_{\mathcal X}\int_{\mathbb A}
+  L(\theta,a)\,\delta(x,\mathrm{d}a)\,P_\theta(\mathrm{d}x),
+  \]
+  \[
+  r(\Pi,\delta)
+  =
+  \int_\Theta R(\theta,\delta)\,\Pi(\mathrm{d}\theta),
+  \]
+  for a prior probability measure \(\Pi\).</p>
+</div>
+
+<p>The risk function \(R(\cdot,\delta)\) is the procedure's decision-theoretic signature. Pointwise ordering gives domination and admissibility; integration against a prior gives Bayes optimality; taking a supremum gives minimax optimality.</p>
+
+<h3>Information is an ordering of experiments</h3>
+
+<p>Suppose \(\mathcal E=\{P_\theta\}\) and \(\mathcal F=\{Q_\theta\}\) share the same parameter set. If a Markov kernel \(K\) transforms \(P_\theta\) exactly into \(Q_\theta\) for every \(\theta\), then any rule available in \(\mathcal F\) can be simulated after observing \(\mathcal E\). Thus \(\mathcal E\) is at least as informative as \(\mathcal F\) for every loss and action space. This is the Blackwell order.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(Q_\theta=P_\theta K\) for every \(\theta\), then for every decision rule \(\rho\) in \(\mathcal F\), the composed rule
+  \[
+  K\rho(x,C)
+  =
+  \int K(x,\mathrm{d}y)\rho(y,C)
+  \]
+  in \(\mathcal E\) has exactly the same risk:
+  \[
+  R_{\mathcal E}(\theta,K\rho)
+  =R_{\mathcal F}(\theta,\rho).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Tonelli's theorem and the kernel identity give
+  \[
+  \begin{aligned}
+  R_{\mathcal E}(\theta,K\rho)
+  &=
+  \int P_\theta(\mathrm{d}x)
+  \int K(x,\mathrm{d}y)
+  \int L(\theta,a)\rho(y,\mathrm{d}a)\\
+  &=
+  \int Q_\theta(\mathrm{d}y)
+  \int L(\theta,a)\rho(y,\mathrm{d}a)
+  =R_{\mathcal F}(\theta,\rho).
+  \end{aligned}
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Approximate information and asymptotic experiments</h3>
+
+<p>Exact simulation is often too rigid. Le Cam's deficiency permits an error:
+\[
+\delta(\mathcal E,\mathcal F)
+=\inf_K\sup_{\theta\in\Theta}
+\|P_\theta K-Q_\theta\|_{\mathrm{TV}}.
+\]
+For losses bounded by one, a simulation error \(\varepsilon\) changes every risk by at most \(\varepsilon\). The symmetric distance
+\[
+\Delta(\mathcal E,\mathcal F)
+=\max\{\delta(\mathcal E,\mathcal F),
+\delta(\mathcal F,\mathcal E)\}
+\]
+therefore measures the largest decision-theoretic discrepancy between two experiments.</p>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence of experiments \(\mathcal E_n\) is asymptotically equivalent to \(\mathcal F_n\) if
+  \[
+  \Delta(\mathcal E_n,\mathcal F_n)\to0.
+  \]
+  It converges weakly to a limit experiment \(\mathcal E\) when its finite collections of likelihood ratios converge in distribution in the sense developed later in this note.</p>
+</div>
+
+<p>Asymptotic equivalence transfers all bounded-loss procedures in both directions. Weak convergence of experiments is less uniform but is sufficient for local lower bounds and the transfer of finite decision problems under regularity.</p>
+
+<h3>The Gaussian shift as local canonical form</h3>
+
+<p>For a regular \(p\)-dimensional i.i.d. model near \(\theta_0\), local parameters
+\[
+\theta=\theta_0+\frac h{\sqrt n}
+\]
+produce the likelihood expansion
+\[
+\log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{\,n}}
+              {\mathrm{d}P_{\theta_0}^{\,n}}
+=h^\top\Delta_n-\frac12h^\top I_{\theta_0}h+o_{P_{\theta_0}}(1),
+\qquad
+\Delta_n\rightsquigarrow N_p(0,I_{\theta_0}).
+\]
+The limit experiment observes
+\[
+Z=I_{\theta_0}h+W,
+\qquad W\sim N_p(0,I_{\theta_0}),
+\]
+or, after whitening, \(I_{\theta_0}^{1/2}h+N_p(0,I_p)\). Fisher information is therefore the local geometry of the experiment, not merely a variance appearing in one estimator.</p>
+
+<h3>From limit experiments to statistical conclusions</h3>
+
+<p>A typical Le Cam argument has five mathematical steps:</p>
+<ol>
+  <li>choose the parameter scale and local parameter set;</li>
+  <li>prove contiguity and joint likelihood-ratio convergence;</li>
+  <li>identify the limit experiment, often Gaussian or Poisson;</li>
+  <li>solve the corresponding limit decision problem;</li>
+  <li>transfer its lower bound or construct a procedure attaining it in the original experiments.</li>
+</ol>
+
+<p>The early chapters develop finite-sample risk geometry and experiment comparison. The middle chapters build contiguity, weak convergence, LAN, Gaussian shifts, convolution, and local asymptotic minimax theory. The final chapters treat non-Gaussian limits, product experiments, empirical-process interfaces, estimators, stopping rules, and a unified transfer scheme.</p>
+
+<h3>Prerequisites and neighboring notes</h3>
+
+<p>Measure-theoretic probability, weak convergence, Radon–Nikodym derivatives, conditional expectation, and Gaussian measures are used throughout. The likelihood and estimator expansions are developed from another angle in <a href="{{ '/notes/statistical-inference/' | relative_url }}">Statistical inference</a>. Uniform stochastic arguments are supplied by <a href="{{ '/notes/empirical-processes/' | relative_url }}">Empirical processes</a>, while posterior decisions and Bayesian asymptotics are treated in <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a>.</p>

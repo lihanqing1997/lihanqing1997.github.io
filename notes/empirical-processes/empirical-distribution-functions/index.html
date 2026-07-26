@@ -8,31 +8,203 @@ note_prev_url: "/notes/empirical-processes/empirical-measures-and-processes/"
 note_next_url: "/notes/empirical-processes/empirical-measures-and-gc/"
 ---
 
-<p>The one-dimensional empirical distribution function is the historical prototype. It shows how a simple indexed process leads to the Brownian bridge.</p>
+<p>The one-dimensional empirical distribution function is the complete prototype of empirical-process theory. Monotonicity yields an elementary uniform law; indicator covariances yield a Brownian bridge; continuous functionals of that bridge produce classical goodness-of-fit limits.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(F_n(t)=P_n1_{(-\infty,t]}\), \(F(t)=P1_{(-\infty,t]}\), and \(\alpha_n(t)=\sqrt n\{F_n(t)-F(t)\}\). If \(F\) is continuous, \(\alpha_n\) converges to a Brownian bridge indexed by \(F(t)\).</p>
-    </div>
+<h3>Distribution functions and their empirical versions</h3>
 
-    <h3>Brownian bridge limit</h3>
-    <ul>
-        <li>Glivenko-Cantelli gives \(\sup_t|F_n(t)-F(t)|\to0\).</li>
-        <li>Donsker's theorem gives the process limit of \(\sqrt n(F_n-F)\).</li>
-        <li>Kolmogorov-Smirnov and Cramér-von Mises statistics are continuous or nearly continuous functionals of this process.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For real i.i.d. observations with distribution function \(F\),
+  \[
+  F_n(t)=\frac1n\sum_{i=1}^n1_{\{X_i\le t\}},
+  \qquad
+  \alpha_n(t)=\sqrt n\{F_n(t)-F(t)\}.
+  \]
+  Thus \(\alpha_n=\mathbb G_n\) on the indicator class
+  \[
+  \mathcal F_0=\{1_{(-\infty,t]}:t\in\mathbb R\}.
+  \]</p>
+</div>
 
-    <h3>Distribution-free transformation</h3>
-    <p>Keep this example in mind: most later theorems are high-dimensional versions of the same story, with richer function classes replacing intervals.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Finite-sample moments.</span> For \(s,t\in\mathbb R\),
+  \[
+  \mathbb E\alpha_n(t)=0,
+  \]
+  \[
+  \operatorname{Cov}\{\alpha_n(s),\alpha_n(t)\}
+  =F(s\wedge t)-F(s)F(t).
+  \]</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Brownian bridge covariance</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For continuous \(F\), the limiting Brownian bridge \(B_F(t)=B(F(t))\) has covariance
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the empirical-process covariance formula to
+  \[
+  f_s=1_{(-\infty,s]},\qquad f_t=1_{(-\infty,t]}.
+  \]
+  Their product is \(f_{s\wedge t}\), so
+  \[
+  P(f_sf_t)-Pf_sPf_t
+  =F(s\wedge t)-F(s)F(t).
+  \]</p>
+</div>
+
+<h3>Glivenko-Cantelli theorem for the EDF</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Glivenko-Cantelli theorem.</span> For every distribution function \(F\),
+  \[
+  \|F_n-F\|_\infty
+  =\sup_{t\in\mathbb R}|F_n(t)-F(t)|
+  \to0
+  \quad\text{almost surely}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(m\ge1\). Choose points
+  \[
+  -\infty=t_0\le t_1\le\cdots\le t_m=\infty
+  \]
+  so that each increment \(F(t_j-)-F(t_{j-1})\le1/m\); generalized quantiles provide such a grid even when \(F\) has atoms, with atom endpoints included separately. For \(t_{j-1}\le t<t_j\), monotonicity gives
+  \[
+  F_n(t_{j-1})-F(t_j-)
+  \le F_n(t)-F(t)
+  \le F_n(t_j-)-F(t_{j-1}).
+  \]
+  Therefore
+  \[
+  \|F_n-F\|_\infty
+  \le
+  \max_j|F_n(t_j)-F(t_j)|
+  +\max_j|F_n(t_j-)-F(t_j-)|
+  +\frac1m.
+  \]
+  For fixed \(m\), the finitely many empirical probabilities converge almost surely by the strong law. Hence the limsup is at most \(1/m\); let \(m\to\infty\).</p>
+</div>
+
+<h3>Distribution-free exponential bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Dvoretzky-Kiefer-Wolfowitz inequality.</span> For every \(n\), every distribution function \(F\), and every \(\varepsilon>0\),
+  \[
+  P\{\|F_n-F\|_\infty>\varepsilon\}
+  \le2e^{-2n\varepsilon^2}.
+  \]</p>
+</div>
+
+<p>The constant two is sharp. The inequality yields the finite-sample confidence band
 \[
-\operatorname{Cov}\{B_F(s),B_F(t)\}=F(s\wedge t)-F(s)F(t).
+F_n(t)\pm
+\sqrt{\frac{\log(2/\alpha)}{2n}},
 \]
-This covariance is exactly the covariance of the indicators \(1_{(-\infty,s]}\) and \(1_{(-\infty,t]}\).</p>
-    </div>
+clipped to \([0,1]\), with simultaneous coverage at least \(1-\alpha\). Its proof uses the ordering structure of half-lines and is stronger than a naive union bound over all \(t\).</p>
 
-    <h3>Probability integral transform</h3>
-    <p>The probability integral transform reduces the continuous case to \(F(t)=t\) on \([0,1]\). This is why distribution-free limits appear for Kolmogorov-Smirnov statistics under a fully specified continuous null.</p>
+<h3>Brownian bridge</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> If \(W\) is standard Brownian motion on \([0,1]\), then
+  \[
+  B(u)=W(u)-uW(1)
+  \]
+  is a standard Brownian bridge.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Bridge covariance and pinning.</span>
+  \[
+  B(0)=B(1)=0
+  \]
+  and
+  \[
+  \operatorname{Cov}\{B(u),B(v)\}
+  =u\wedge v-uv.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The endpoint identities are immediate. Using \(\operatorname{Cov}\{W(u),W(v)\}=u\wedge v\),
+  \[
+  \begin{aligned}
+  \operatorname{Cov}\{B(u),B(v)\}
+  &=u\wedge v-vu-u v+uv\\
+  &=u\wedge v-uv.
+  \end{aligned}
+  \]</p>
+</div>
+
+<h3>Donsker theorem for the EDF</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Classical Donsker theorem.</span> In \(\ell^\infty(\mathbb R)\),
+  \[
+  \alpha_n\rightsquigarrow B_F,
+  \qquad
+  B_F(t)=B\{F(t)\}.
+  \]
+  The limit is centered Gaussian with covariance
+  \[
+  F(s\wedge t)-F(s)F(t).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The multivariate central limit theorem gives finite-dimensional convergence with the displayed covariance. For tightness, reduce to the uniform empirical process by the generalized probability transform, then partition \([0,1]\) into small intervals. Binomial maximal bounds control oscillations of the empirical counts within each interval, while the bridge metric
+  \[
+  \rho(s,t)^2=|s-t|-(s-t)^2
+  \]
+  is small on short intervals. This proves asymptotic equicontinuity and hence process convergence.</p>
+</div>
+
+<h3>Probability integral transform</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Continuous case.</span> If \(F\) is continuous and \(X\sim F\), then \(U=F(X)\sim U[0,1]\). Moreover,
+  \[
+  \sup_t|\alpha_n(t)|
+  =\sup_{0\le u\le1}
+  \left|\sqrt n\{G_n(u)-u\}\right|,
+  \]
+  where \(G_n\) is the empirical distribution of \(U_1,\ldots,U_n\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a generalized inverse \(F^{-1}\),
+  \[
+  P\{F(X)\le u\}=u
+  \]
+  under continuity, and threshold events correspond through \(t=F^{-1}(u)\). Flat portions do not change either supremum because no observations or probability mass lie inside them.</p>
+</div>
+
+<p>When \(F\) has atoms, \(F(X)\) is not uniform and \(B\circ F\) has jumps in its index representation. A randomized transform
+\[
+U=F(X-)+V\{F(X)-F(X-)\},
+\qquad V\sim U[0,1],
+\]
+restores uniformity.</p>
+
+<h3>Kolmogorov-Smirnov and Cramer-von Mises limits</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under a fully specified continuous \(F\),
+  \[
+  \sqrt n\sup_t|F_n(t)-F(t)|
+  \rightsquigarrow\sup_{0\le u\le1}|B(u)|,
+  \]
+  and
+  \[
+  n\int\{F_n(t)-F(t)\}^2\,\mathrm{d}F(t)
+  \rightsquigarrow\int_0^1B(u)^2\,\mathrm{d}u.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The supremum map is Lipschitz on \(\ell^\infty\). The integral-square map is continuous on uniformly bounded sets under uniform convergence:
+  \[
+  \left|\int z_n^2-\int z^2\right|
+  \le\|z_n-z\|_\infty
+  (\|z_n\|_\infty+\|z\|_\infty).
+  \]
+  Apply continuous mapping to the Donsker theorem.</p>
+</div>
+
+<p>If parameters of \(F_\theta\) are estimated, the limit is the bridge minus a score projection and is no longer distribution-free. That composite-null correction is treated with goodness-of-fit and bootstrap processes later in the note.</p>

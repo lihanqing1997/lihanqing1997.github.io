@@ -8,42 +8,146 @@ note_prev_url: "/notes/probability-theory/martingale-clt/"
 note_next_url: "/notes/probability-theory/path-spaces-finite-dimensional-distributions/"
 ---
 
-<p>Kolmogorov's extension theorem constructs stochastic processes from consistent finite-dimensional distributions. It is the foundational existence theorem behind random sequences and processes.</p>
+<p>A stochastic process is an infinite collection of jointly distributed random variables. Kolmogorov's extension theorem makes this statement constructive: a consistent family of finite-dimensional laws determines a probability measure on the coordinate product space. Existence of the process and regularity of its sample paths are deliberately separate questions.</p>
 
-    <h3>Finite-dimensional distributions</h3>
+<h3>Projective families of distributions</h3>
 
-    <p>A process law is specified by all finite coordinate projections.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(T\) be an arbitrary index set and \((S,\mathcal S)\) a measurable state space. For each finite ordered tuple
+  \(\mathbf t=(t_1,\ldots,t_n)\) of distinct indices, let
+  \(\mu_{\mathbf t}\) be a probability measure on
+  \((S^n,\mathcal S^{\otimes n})\). The family is <em>consistent</em> if:
+  <ol>
+    <li>permuting the indices permutes the coordinates of the measure;</li>
+    <li>for \(\{t_1,\ldots,t_m\}\subseteq\{t_1,\ldots,t_n\}\), the corresponding marginal of
+    \(\mu_{t_1,\ldots,t_n}\) equals \(\mu_{t_1,\ldots,t_m}\).</li>
+  </ol></p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For an index set \(T\) and state space \(S\), finite-dimensional distributions are probability measures \(\mu_{t_1,\dots,t_n}\) on \(S^n\) for finite tuples \((t_1,\dots,t_n)\). They are consistent if they are invariant under permutation and marginalization of coordinates.</p>
-    </div>
+<p>These conditions are necessary for any process: reordering a vector does not change its joint law except by the same reordering, and forgetting coordinates must recover the lower-dimensional distribution.</p>
 
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> On
+  \(\Omega=S^T\), define coordinate maps
+  \(X_t(\omega)=\omega(t)\). The product sigma-field is
+  \[
+  \mathcal S^T=\sigma(X_t:t\in T).
+  \]
+  A cylinder set is an event of the form
+  \[
+  \{\omega:(X_{t_1}(\omega),\ldots,X_{t_n}(\omega))\in B\},
+  \qquad B\in\mathcal S^{\otimes n}.
+  \]</p>
+</div>
 
-    <h3>Extension theorem</h3>
+<h3>The extension theorem</h3>
 
-    <p>Consistency is exactly the condition needed for a measure on the product path space.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Daniell-Kolmogorov).</span> Let
+  \(S\) be a standard Borel space. Every consistent family
+  \(\{\mu_{\mathbf t}\}\) is the family of finite-dimensional distributions of a probability measure \(P\) on
+  \((S^T,\mathcal S^T)\). This measure is unique on the product sigma-field.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(S\) is a standard Borel space and the finite-dimensional distributions are consistent, then there exists a probability measure \(P\) on \(S^T\) with coordinate process \(X_t(\omega)=\omega(t)\) having those finite-dimensional distributions.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Define a set function on cylinders by
+  \[
+  P\{(X_{t_1},\ldots,X_{t_n})\in B\}
+  :=\mu_{t_1,\ldots,t_n}(B).
+  \]
+  Consistency makes the definition independent of redundant coordinates and establishes finite additivity on the cylinder algebra.
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Cylinder sets form an algebra. Define a premeasure on cylinders by the prescribed finite-dimensional distributions. Consistency makes this well-defined when the same cylinder has several coordinate descriptions. Countable additivity on the cylinder algebra follows from standard Borel regularity and tightness on finite products. Caratheodory extension then gives a probability measure on the product \(\sigma\)-field.</p>
-    </div>
+  The only substantial point is countable additivity. Any countable collection of cylinders involves at most a countable set
+  \(T_0=\{s_1,s_2,\ldots\}\subset T\). On \(S^{T_0}\), finite-dimensional tightness and standard-Borel regularity yield a probability measure with the prescribed marginals: first extend along
+  \(S,S^2,\ldots\), then use continuity from above on compact approximations. Consequently the cylinder premeasure is countably additive whenever a countable union remains a cylinder. Caratheodory's theorem extends it to
+  \(\mathcal S^T\).
 
+  If two extensions agree on all cylinders, the pi-lambda theorem makes them agree on
+  \(\sigma\)-generated product events, proving uniqueness.</p>
+</div>
 
-    <h3>Path regularity is separate</h3>
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> When \(T\) is uncountable, the product sigma-field can be strictly smaller than the Borel sigma-field of some chosen topology on all functions \(S^T\). The theorem asserts uniqueness on the coordinate-generated sigma-field. A regular path space such as \(C[0,1]\) introduces additional topological structure.</p>
+</div>
 
-    <p>The extension theorem gives coordinate processes, not continuous or càdlàg paths.</p>
+<h3>Gaussian process construction</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Additional regularity criteria, such as Kolmogorov-Chentsov continuity, are needed to obtain a modification with continuous paths.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(m:T\to\mathbb R\) and let
+  \(K:T\times T\to\mathbb R\) be symmetric and positive semidefinite:
+  \[
+  \sum_{i,j=1}^na_ia_jK(t_i,t_j)\ge0
+  \]
+  for every finite choice of \(t_i\) and \(a_i\). Then there exists a Gaussian process \(X_t\) with
+  \[
+  \mathbb EX_t=m(t),\qquad
+  \operatorname{Cov}(X_s,X_t)=K(s,t).
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The product-space process has the desired finite-dimensional laws but may live on all functions \(T\to S\). If a modification with regular paths exists, one pushes the law to a smaller path space such as \(C[0,1]\) or \(D[0,1]\). Finite-dimensional laws alone usually do not force path regularity.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every finite tuple
+  \(\mathbf t=(t_1,\ldots,t_n)\), assign the possibly singular Gaussian law
+  \[
+  N_n(m_{\mathbf t},K_{\mathbf t}),
+  \quad
+  m_{\mathbf t}=(m(t_i))_i,\quad
+  K_{\mathbf t}=(K(t_i,t_j))_{ij}.
+  \]
+  Positive semidefiniteness makes each covariance matrix valid. Gaussian marginals and coordinate permutations remain Gaussian with the corresponding subvector and submatrix, so the family is consistent. Apply Kolmogorov extension.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This distinction is essential for Brownian motion: Gaussian finite-dimensional laws come first, continuous Wiener paths come after a regularity theorem.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Brownian finite-dimensional laws).</span> Taking
+  \[
+  m(t)=0,\qquad K(s,t)=s\wedge t,\qquad s,t\ge0,
+  \]
+  gives consistent Gaussian laws because
+  \[
+  \sum_{i,j}a_ia_j(s_i\wedge s_j)
+  =\int_0^\infty
+  \left(\sum_i a_i1_{\{u\le s_i\}}\right)^2\mathrm{d} u\ge0.
+  \]
+  The extension theorem constructs a coordinate process with the desired Gaussian increments. It does not yet say that its paths are continuous.</p>
+</div>
+
+<h3>Versions and modifications</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Processes \(X\) and \(Y\) are modifications if
+  \(P(X_t=Y_t)=1\) for each fixed \(t\). They are indistinguishable if
+  \[
+  P(X_t=Y_t\text{ for every }t)=1.
+  \]
+  Indistinguishability implies modification, but the converse can fail for an uncountable time set.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> On \([0,1]\), let \(U\) be uniform and set
+  \(X_t=1_{\{U=t\}}\), \(Y_t=0\). For each fixed \(t\),
+  \(P(X_t=Y_t)=1\), so \(X\) and \(Y\) are modifications. Yet every sample path of \(X\) equals one at \(t=U\), so
+  \(P(X_t=Y_t\text{ for all }t)=0\).</p>
+</div>
+
+<h3>Kolmogorov-Chentsov regularity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(X_t\), \(t\in[0,T]^d\), take values in \(\mathbb R^m\). If for some
+  \(\alpha,\beta,C>0\),
+  \[
+  \mathbb E\|X_t-X_s\|^\alpha
+  \le C\|t-s\|^{d+\beta},
+  \]
+  then \(X\) has a modification whose paths are locally Holder continuous of every order
+  \(\gamma<\beta/\alpha\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> On dyadic grids of mesh \(2^{-n}\), Markov's inequality and the moment bound show that the probability of any neighboring increment exceeding
+  \(2^{-n\gamma}\) is at most
+  \(C2^{nd}2^{-n(d+\beta)}2^{n\alpha\gamma}
+  =C2^{-n(\beta-\alpha\gamma)}\).
+  This is summable when \(\gamma<\beta/\alpha\). Borel-Cantelli bounds all sufficiently fine neighboring increments. Chaining along dyadic paths gives a uniform Holder estimate on the dense dyadic set, whose continuous extension defines the desired modification. Equality with the original process at each fixed time follows from convergence in probability along dyadic approximations.</p>
+</div>
+
+<p>Thus process construction has two layers: finite-dimensional consistency produces a law on raw coordinates; moment or tightness estimates select a regular version on a useful path space.</p>

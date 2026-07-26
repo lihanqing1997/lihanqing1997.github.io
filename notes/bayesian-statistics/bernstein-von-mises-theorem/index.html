@@ -58,3 +58,157 @@ in \(P_{\theta_0}\)-probability.</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Boundary parameters, weak identifiability, growing dimension, nonparametric models, and irregular functionals can preserve prior influence or produce non-Gaussian limits.</p>
     </div>
+
+<h3>Regular finite-dimensional theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Bernstein-von Mises).</span> Let
+\(\theta\in\Theta\subset\mathbb R^d\), with true interior point
+\(\theta_0\). Suppose:</p>
+<ol>
+<li>the model is identifiable and differentiable in quadratic mean at \(\theta_0\);</li>
+<li>\(I_{\theta_0}\) is nonsingular;</li>
+<li>the prior has a density continuous and positive at \(\theta_0\);</li>
+<li>the posterior is consistent and localizes at \(n^{-1/2}\) rate;</li>
+<li>the LAN remainder is uniform on posterior-relevant local sets.</li>
+</ol>
+<p>Then
+\[
+\left\|
+\Pi\left(
+\sqrt n(\theta-\widehat\theta_n)\in\cdot
+\mid X^{(n)}
+\right)
+-N_d(0,I_{\theta_0}^{-1})
+\right\|_{\mathrm{TV}}
+\xrightarrow{P_{\theta_0}}0,
+\]
+for any efficient estimator satisfying
+\[
+\sqrt n(\widehat\theta_n-\theta_0)
+=I_{\theta_0}^{-1}\Delta_n+o_P(1).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Change variables to
+\(h=\sqrt n(\theta-\theta_0)\). On a fixed compact set, LAN and prior continuity make the unnormalized posterior density converge in probability to
+\[
+\exp\left\{
+-\frac12(h-I^{-1}\Delta_n)^\top
+I(h-I^{-1}\Delta_n)
+\right\}.
+\]
+Posterior localization makes the mass outside a growing compact set negligible. Uniform LAN controls the intermediate annulus, while Gaussian tails control the limiting kernel. Scheffé's lemma converts \(L^1\) convergence of normalized densities to total variation. Recenter using the efficient expansion of \(\widehat\theta_n\).</p>
+</div>
+
+<h3>Consequences for posterior moments</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Total-variation BvM guarantees convergence of posterior expectations only for uniformly bounded functions. To conclude
+\[
+E(\theta\mid X^{(n)})
+=\widehat\theta_n+o_P(n^{-1/2})
+\]
+and
+\[
+n\operatorname{Var}(\theta\mid X^{(n)})
+\xrightarrow{P}I_{\theta_0}^{-1},
+\]
+one additionally needs uniform integrability of the local posterior first and second moments.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Total variation controls bounded truncations of \(h\) and \(hh^\top\). Uniform integrability makes the truncated-tail expectations vanish uniformly, permitting removal of the truncation. Transform back from \(h=\sqrt n(\theta-\widehat\theta_n)\).</p>
+</div>
+
+<h3>Smooth functional delta method</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\(\psi:\mathbb R^d\to\mathbb R^k\) be differentiable at \(\theta_0\), with derivative matrix \(\dot\psi_{\theta_0}\). Under BvM,
+\[
+\sqrt n\{\psi(\theta)-\psi(\widehat\theta_n)\}
+\mid X^{(n)}
+\]
+converges in total variation, under suitable localization, to
+\[
+N_k\left(
+0,\,
+\dot\psi_{\theta_0}
+I_{\theta_0}^{-1}
+\dot\psi_{\theta_0}^\top
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Uniformly on bounded local \(h\),
+\[
+\sqrt n\{
+\psi(\theta_0+h/\sqrt n)-\psi(\theta_0)
+\}
+=\dot\psi_{\theta_0}h+o(1).
+\]
+Push the local Gaussian posterior through this asymptotically linear map and use posterior localization.</p>
+</div>
+
+<h3>Prior disappearance is first order</h3>
+
+<p>BvM says that any fixed prior density positive and continuous at truth disappears from the first-order local shape. It does not say priors are irrelevant:</p>
+<ul>
+<li>they determine support and can exclude truth;</li>
+<li>they affect \(O(n^{-1})\) bias and finite-sample tails;</li>
+<li>they influence marginal likelihood at \(O(1)\);</li>
+<li>they can dominate weakly identified or nonregular directions;</li>
+<li>they remain central in prediction outside observed support.</li>
+</ul>
+
+<h3>Explicit normal-location example</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> If
+\[
+X_i\sim N(\theta,\sigma^2),
+\qquad
+\theta\sim N(m_0,\tau_0^2),
+\]
+then
+\[
+\theta\mid X
+\sim N(m_n,v_n),
+\]
+\[
+v_n=\left(\frac n{\sigma^2}+\frac1{\tau_0^2}\right)^{-1},
+\qquad
+m_n=v_n\left(\frac{n\bar X}{\sigma^2}
++\frac{m_0}{\tau_0^2}\right).
+\]
+As \(n\to\infty\),
+\[
+nv_n\to\sigma^2,\qquad
+\sqrt n(m_n-\bar X)\to0.
+\]
+Thus the posterior centered at the MLE \(\bar X\) has exact asymptotic variance \(\sigma^2/n\), independent of the fixed prior.</p>
+</div>
+
+<h3>Concrete failure mechanisms</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (uniform endpoint).</span> If
+\[
+X_i\sim\operatorname{Uniform}(0,\theta),
+\]
+the MLE is \(X_{(n)}\), and
+\[
+n\frac{\theta_0-X_{(n)}}{\theta_0}
+\Rightarrow\operatorname{Exp}(1).
+\]
+The local rate is \(n^{-1}\), not \(n^{-1/2}\), and the likelihood has a moving support boundary. The posterior local limit is one-sided exponential-like rather than Gaussian.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (weak mixture identification).</span> In an overfitted finite mixture, component labels are nonidentified and extra component weights may converge at nonstandard rates. The posterior can remain multimodal or concentrate on singular strata, so nonsingular Fisher information and ordinary LAN fail.</p>
+</div>
+
+<p>In high-dimensional and nonparametric problems, BvM must be restated for a specified low-dimensional functional and topology. A global Gaussian approximation to the whole posterior is usually false.</p>

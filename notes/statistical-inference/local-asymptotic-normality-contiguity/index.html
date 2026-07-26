@@ -2,24 +2,218 @@
 layout: note-detail
 breadcrumb_child_label_en: "25. Local asymptotic normality and contiguity"
 breadcrumb_child_label_fr: "25. Normalité locale asymptotique et contiguïté"
-breadcrumb_child_label_zh: "25. 局部渐近正态性与 contiguity"
+breadcrumb_child_label_zh: "25. 局部渐近正态性与相邻性"
 note_back_url: "/notes/statistical-inference/"
 note_prev_url: "/notes/statistical-inference/censored-truncated-data/"
 note_next_url: "/notes/statistical-inference/efficiency-theory/"
 ---
 
-<p>LAN describes the local geometry of a statistical experiment near a fixed parameter. It is the bridge between likelihood expansions and Gaussian limit experiments.</p>
-    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> The experiments \(P_\theta^{(n)}\) are LAN at \(\theta_0\) with information \(I\) if, for each fixed \(h\),
-    \[
-    \log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{(n)}}{\mathrm{d}P_{\theta_0}^{(n)}}
-    =h^\top\Delta_n-\frac12h^\top Ih+o_{P_{\theta_0}}(1),
-    \qquad \Delta_n\rightsquigarrow N(0,I).
-    \]</p></div>
-    <div class="math-statement theorem"><p><span class="statement-title">Le Cam first lemma.</span> If likelihood ratios \(\mathrm{d}Q_n/\mathrm{d}P_n\) converge in distribution under \(P_n\) to a positive random variable with mean \(1\), then \(Q_n\) is contiguous with respect to \(P_n\).</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> If \(P_n(A_n)\to0\), then for any \(M\),
-    \[
-    Q_n(A_n)=E_{P_n}\left[1_{A_n}\frac{\mathrm{d}Q_n}{\mathrm{d}P_n}\right]
-    \le M P_n(A_n)+E_{P_n}\left[\frac{\mathrm{d}Q_n}{\mathrm{d}P_n}1_{\{\mathrm{d}Q_n/\mathrm{d}P_n\gt M\}}\right].
-    \]
-    The first term vanishes. Tightness plus convergence to a mean-one limit makes the tail term small for large \(M\).</p></div>
-    <h3>Meaning</h3><p>Under LAN, local alternatives \(\theta_0+h/\sqrt n\) cannot be separated perfectly from \(\theta_0\); they shift the Gaussian central sequence by \(Ih\). This is the basis for local power and efficiency calculations.</p>
+<p>Local asymptotic normality says that, within \(n^{-1/2}\) neighborhoods, a regular statistical experiment has the same log-likelihood geometry as observing a Gaussian shift. Contiguity identifies sequences of laws that share asymptotically negligible events, allowing stochastic expansions proved under the null to remain usable under local alternatives.</p>
+
+<h3>Local likelihood expansion</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (LAN).</span> A sequence of experiments
+  \[
+  \mathcal E_n=(\mathcal X_n,\mathcal A_n,
+  \{P_{\theta}^{(n)}:\theta\in\Theta\})
+  \]
+  is locally asymptotically normal at an interior point \(\theta_0\in\mathbb R^d\) if there are random vectors \(\Delta_n\) and a positive definite matrix \(I_{\theta_0}\) such that, for every fixed \(h\in\mathbb R^d\),
+  \[
+  \log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{(n)}}
+  {\mathrm{d}P_{\theta_0}^{(n)}}
+  =h^\top\Delta_n-\frac12h^\top I_{\theta_0}h
+  +o_{P_{\theta_0}^{(n)}}(1),
+  \]
+  and
+  \[
+  \Delta_n\rightsquigarrow
+  N(0,I_{\theta_0})
+  \quad\text{under }P_{\theta_0}^{(n)}.
+  \]</p>
+</div>
+
+<p>Uniform LAN strengthens the remainder to be uniform over \(h\) in compact sets. This is needed when maximizing over a local parameter set rather than evaluating one fixed \(h\).</p>
+
+<h3>Quadratic-mean differentiability implies LAN</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\{P_\theta:\theta\in\Theta\}\) be an i.i.d. model differentiable in quadratic mean at \(\theta_0\), with score \(\dot\ell_{\theta_0}\) and information
+  \[
+  I_{\theta_0}
+  =P_{\theta_0}
+  \dot\ell_{\theta_0}\dot\ell_{\theta_0}^\top.
+  \]
+  Then the product experiments are LAN with
+  \[
+  \Delta_n=\frac1{\sqrt n}\sum_{i=1}^n
+  \dot\ell_{\theta_0}(X_i).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Put \(h_n=h/\sqrt n\) and define the square-root likelihood increment
+  \[
+  r_{n}(x)
+  =2\left\{
+  \sqrt{\frac{p_{\theta_0+h_n}(x)}
+  {p_{\theta_0}(x)}}-1
+  \right\}.
+  \]
+  Quadratic-mean differentiability gives
+  \[
+  r_n=h_n^\top\dot\ell_{\theta_0}
+  +o_{L^2(P_{\theta_0})}(n^{-1/2}),
+  \]
+  together with
+  \[
+  P_{\theta_0}r_n
+  =-\frac14h_n^\top I_{\theta_0}h_n+o(n^{-1}).
+  \]
+  Expand
+  \[
+  2\log(1+r_n/2)
+  =r_n-\frac14r_n^2+\text{remainder}
+  \]
+  and sum over observations. Truncation controls the remainder, the linear terms produce \(h^\top\Delta_n\), and the quadratic terms converge to \(\frac12h^\top I_{\theta_0}h\). The multivariate central limit theorem gives the limit of \(\Delta_n\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (normal location).</span> If \(X_i\sim N(\theta,\sigma^2)\), then exactly
+  \[
+  \log\frac{\mathrm{d}P_{\theta_0+h/\sqrt n}^{(n)}}
+  {\mathrm{d}P_{\theta_0}^{(n)}}
+  =\frac h{\sigma^2}
+  \frac1{\sqrt n}\sum_{i=1}^n(X_i-\theta_0)
+  -\frac{h^2}{2\sigma^2}.
+  \]
+  Thus \(\Delta_n=\sigma^{-2}n^{-1/2}\sum_i(X_i-\theta_0)\) and \(I=\sigma^{-2}\), with no remainder.</p>
+</div>
+
+<h3>Contiguity</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence \(Q_n\) is contiguous with respect to \(P_n\), written \(Q_n\triangleleft P_n\), if
+  \[
+  P_n(A_n)\to0
+  \quad\Longrightarrow\quad
+  Q_n(A_n)\to0
+  \]
+  for every sequence of measurable events \(A_n\). The sequences are mutually contiguous if both \(Q_n\triangleleft P_n\) and \(P_n\triangleleft Q_n\).</p>
+</div>
+
+<p>If \(Z_n=o_{P_n}(1)\) and \(Q_n\triangleleft P_n\), then \(Z_n=o_{Q_n}(1)\), because each event \(\{|Z_n|>\varepsilon\}\) is \(P_n\)-negligible. This transfer property is the practical reason contiguity accompanies local likelihood theory.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Le Cam's first lemma.</span> Let \(Q_n\ll P_n\) with likelihood ratio \(L_n=\mathrm{d}Q_n/\mathrm{d}P_n\). If
+  \[
+  L_n\rightsquigarrow L
+  \quad\text{under }P_n,
+  \qquad
+  L>0\ \text{almost surely},\qquad
+  \mathbb EL=1,
+  \]
+  then \(P_n\) and \(Q_n\) are mutually contiguous.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since \(L_n\ge0\), \(\mathbb E_{P_n}L_n=1\), and the limiting expectation is also one, convergence in distribution implies uniform integrability. If \(P_n(A_n)\to0\), then for \(M>0\),
+  \[
+  Q_n(A_n)
+  =\mathbb E_{P_n}(L_n1_{A_n})
+  \le MP_n(A_n)
+  +\mathbb E_{P_n}\{L_n1_{L_n>M}\}.
+  \]
+  Let \(n\to\infty\), then \(M\to\infty\), to obtain \(Q_n(A_n)\to0\). For the reverse direction, if \(Q_n(A_n)\to0\), then for \(\eta>0\),
+  \[
+  P_n(A_n)
+  \le P_n(L_n\le\eta)
+  +\eta^{-1}Q_n(A_n).
+  \]
+  The first term converges to \(P(L\le\eta)\), which tends to zero as \(\eta\downarrow0\) because \(L>0\) almost surely.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Local alternatives are contiguous.</span> Under LAN, for every fixed \(h\),
+  \[
+  P_{\theta_0+h/\sqrt n}^{(n)}
+  \quad\text{and}\quad
+  P_{\theta_0}^{(n)}
+  \]
+  are mutually contiguous.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the null, the log-likelihood ratio converges to
+  \[
+  h^\top Z-\frac12h^\top Ih,
+  \qquad Z\sim N(0,I).
+  \]
+  Its exponential is strictly positive and has expectation one by the Gaussian moment-generating formula. Apply the first lemma.</p>
+</div>
+
+<h3>Le Cam's third lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Third lemma.</span> Suppose under \(P_n\),
+  \[
+  \left(T_n,\log\frac{\mathrm{d}Q_n}{\mathrm{d}P_n}\right)
+  \rightsquigarrow
+  (T,V),
+  \]
+  with \(\mathbb Ee^V=1\). Then under \(Q_n\), \(T_n\) converges to the exponentially tilted law
+  \[
+  \mathbb E_Qf(T)=\mathbb E\{f(T)e^V\}
+  \]
+  for every bounded continuous \(f\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For bounded continuous \(f\),
+  \[
+  \mathbb E_{Q_n}f(T_n)
+  =\mathbb E_{P_n}\!\left[
+  f(T_n)\exp\!\left\{
+  \log\frac{\mathrm{d}Q_n}{\mathrm{d}P_n}
+  \right\}\right].
+  \]
+  Truncate the exponential at a fixed level, apply joint weak convergence, and then remove the truncation using uniform integrability of likelihood ratios. The limit is \(\mathbb E\{f(T)e^V\}\).</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Gaussian shift under LAN.</span> If jointly under \(P_{\theta_0}^{(n)}\),
+  \[
+  \begin{pmatrix}T_n\\ \Delta_n\end{pmatrix}
+  \rightsquigarrow
+  N\!\left[
+  \begin{pmatrix}\mu\\0\end{pmatrix},
+  \begin{pmatrix}
+  \Sigma&C\\ C^\top&I
+  \end{pmatrix}
+  \right],
+  \]
+  then under \(P_{\theta_0+h/\sqrt n}^{(n)}\),
+  \[
+  T_n\rightsquigarrow N(\mu+Ch,\Sigma).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Exponential tilting of a joint Gaussian by
+  \[
+  e^{h^\top\Delta-\frac12h^\top Ih}
+  \]
+  shifts its mean by its covariance with \(h^\top\Delta\). The \(T\)-component therefore shifts by \(Ch\), while covariance remains unchanged.</p>
+</div>
+
+<h3>Local tests and Gaussian limit experiment</h3>
+
+<p>The LAN limit is equivalent to observing
+\[
+Y=I_{\theta_0}h+Z,\qquad Z\sim N(0,I_{\theta_0}),
+\]
+or, after whitening, \(I_{\theta_0}^{1/2}h+N(0,I_d)\). The likelihood-ratio test, efficient estimator, and local minimax risk of the original experiment converge to their Gaussian-shift counterparts under suitable convergence-of-experiments conditions. Local alternatives at scales larger than \(n^{-1/2}\) are often consistently distinguishable; smaller scales are asymptotically invisible in regular directions.</p>
+
+<h3>When LAN fails</h3>
+
+<p>Moving supports, change-points, mixture singularities, weak identification, cusp models, and boundaries can produce different local rates and nonquadratic likelihood processes. In such problems, forcing a Fisher-information expansion suppresses the very feature that determines the limit experiment.</p>

@@ -68,3 +68,94 @@ Equality holds when \(v\) is a positive multiple of \(\widetilde\nabla L\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> When Fisher geometry is Hessian, the metric potential defines a mirror map. Natural-gradient steps in primal coordinates correspond to ordinary gradient-like steps in dual coordinates up to discretization choices.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Metric steepest descent</h3>
+
+<p>Let \(L:\mathcal M\to\mathbb R\). The Riemannian gradient is the unique
+vector satisfying
+\[
+g_\theta(\operatorname{grad}_gL,v)=\mathrm{d}L_\theta(v)
+\quad\text{for every }v.
+\]
+In coordinates, \(\operatorname{grad}_gL=I(\theta)^{-1}\nabla_\theta L\).
+For minimization, the natural-gradient flow is
+\(\dot\theta=-I(\theta)^{-1}\nabla L(\theta)\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (intrinsic steepest direction).</span>
+For \(\varepsilon>0\),
+\[
+\min_{v:g_\theta(v,v)\le\varepsilon^2}\mathrm{d}L_\theta(v)
+=-\varepsilon\|\operatorname{grad}_gL\|_g,
+\]
+attained at
+\[
+v=-\varepsilon\,
+\frac{\operatorname{grad}_gL}{\|\operatorname{grad}_gL\|_g}
+\]
+when the gradient is nonzero.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Metric Cauchy--Schwarz gives
+\[
+\mathrm{d}L(v)=g(\operatorname{grad}_gL,v)
+\ge-\|\operatorname{grad}_gL\|_g\|v\|_g.
+\]
+The displayed vector attains equality.</p>
+</div>
+
+<h3>KL trust regions</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The small-step problem
+\[
+\min_\delta \nabla L(\theta)^\top\delta
+\quad\text{subject to}\quad
+D(P_\theta\|P_{\theta+\delta})\le\rho
+\]
+has leading solution
+\[
+\delta
+=-\sqrt{\frac{2\rho}
+{\nabla L^\top I^{-1}\nabla L}}\,
+I^{-1}\nabla L.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Replace KL by
+\(\tfrac12\delta^\top I\delta+o(\|\delta\|^2)\). The Lagrange equation is
+\(\nabla L+\lambda I\delta=0\); imposing the active quadratic constraint
+determines \(\lambda\).</p>
+</div>
+
+<h3>Relation to mirror descent</h3>
+
+<p>If \(I(\theta)=\nabla^2\psi(\theta)\), mirror descent with step \(\alpha\)
+updates dual coordinates by
+\[
+\eta_{t+1}=\eta_t-\alpha\nabla L(\theta_t),
+\qquad
+\eta_t=\nabla\psi(\theta_t).
+\]
+Taylor expansion of \(\nabla\psi^{-1}\) gives
+\[
+\theta_{t+1}
+=\theta_t-\alpha I(\theta_t)^{-1}\nabla L(\theta_t)+O(\alpha^2).
+\]
+Thus the flows agree infinitesimally, while finite steps differ because mirror
+descent follows dual-affine geometry and a naive natural-gradient Euler step
+uses coordinate addition.</p>
+
+<h3>Singular and stochastic information matrices</h3>
+
+<p>In overparameterized models, \(I\) may be singular. The Moore--Penrose
+direction \(I^\dagger\nabla L\) is intrinsic only after restricting the
+differential to identifiable tangent directions; damping
+\((I+\lambda I_d)^{-1}\) introduces coordinate-dependent Euclidean geometry.
+For stochastic gradients, estimates of Fisher or its block/diagonal
+approximations trade invariance for computation. The empirical outer product of
+sample gradients equals Fisher only under correct likelihood specification and
+the appropriate expectation.</p>

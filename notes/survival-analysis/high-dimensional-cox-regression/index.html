@@ -1,55 +1,233 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "11. High-dimensional Cox regression"
-breadcrumb_child_label_fr: "11. Régression de Cox en grande dimension"
-breadcrumb_child_label_zh: "11. 高维 Cox 回归"
+breadcrumb_child_label_en: "16. High-dimensional Cox regression"
+breadcrumb_child_label_fr: "16. Régression de Cox en grande dimension"
+breadcrumb_child_label_zh: "16. 高维 Cox 回归"
 note_back_url: "/notes/survival-analysis/"
 note_prev_url: "/notes/survival-analysis/semiparametric-efficiency-cox/"
 note_next_url: "/notes/survival-analysis/bayesian-cox-bvm/"
 ---
 
+<p>When \(p\) is comparable to or larger than the number of observed events, the partial likelihood is no longer stabilized by classical information inversion. Sparsity and restricted risk-set geometry replace ordinary fixed-dimensional identifiability.</p>
+
 <h3>Penalized partial likelihood</h3>
 
-    <p>High-dimensional Cox regression replaces fixed-dimensional likelihood maximization by a sparse convex program. The geometry is analogous to Lasso, but the loss is the negative partial log likelihood.</p>
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The Lasso Cox estimator solves
+<p><span class="statement-title">Definition.</span> Let
 \[
-\hat\beta\in\arg\min_{\beta\in\mathbb R^p}\{-n^{-1}\ell_p(\beta)+\lambda\|\beta\|_1\}.
-\]</p>
-    </div><div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Cox restricted eigenvalue condition requires the Hessian of the normalized negative partial log likelihood to have curvature on sparse cones:
-\[
-\delta^\top\nabla^2\{-n^{-1}\ell_p(\beta_0)\}\delta\ge \kappa\|\delta_S\|_2^2
+\mathcal L_n(\beta)=-\frac1n\ell_p(\beta).
 \]
-for all \(\delta\) satisfying \(\|\delta_{S^c}\|_1\le c\|\delta_S\|_1\).</p>
-    </div><div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> On the score event \(\|n^{-1}U(\beta_0)\|_\infty\le\lambda/2\), and under restricted eigenvalue curvature \(\kappa\), an \(s\)-sparse truth satisfies the typical bounds
+The Cox lasso is
 \[
-\|\hat\beta-\beta_0\|_1\lesssim {s\lambda\over\kappa},\qquad
-(\hat\beta-\beta_0)^\top\nabla^2 L(\beta_0)(\hat\beta-\beta_0)\lesssim {s\lambda^2\over\kappa}.
-\]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The optimality inequality gives the basic inequality. The score event controls the stochastic linear term by \(\lambda\|\Delta\|_1/2\), forcing the cone condition. Restricted eigenvalue curvature converts prediction curvature into \(\ell_2\) control on the active coordinates, and the cone converts that into \(\ell_1\) control.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> For support recovery one also needs beta-min and an incoherence or irrepresentability-type condition. Prediction consistency alone does not identify the active set.</p>
-    </div>
-    <h3>Score concentration</h3>
-<div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> If covariates are uniformly bounded and martingale Bernstein inequalities apply, then with high probability
-\[
-\|n^{-1}U(\beta_0)\|_\infty\lesssim \sqrt{\log p\over n}.
+\widehat\beta
+\in\arg\min_{\beta\in\mathbb R^p}
+\left\{\mathcal L_n(\beta)+\lambda\|\beta\|_1\right\}.
 \]
-Thus the Lasso tuning parameter is typically chosen of this order.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Each score coordinate is a martingale integral with bounded jumps and predictable variation of order \(n\). Bernstein's inequality gives a coordinate tail bound, and a union bound over \(p\) coordinates gives the logarithmic factor.</p>
-    </div>
-    <h3>Debiased Cox estimator</h3>
+An elastic-net version adds \(\gamma\|\beta\|_2^2/2\); group penalties replace \(\|\beta\|_1\) when variables enter in structured blocks.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (KKT conditions).</span> A vector \(\widehat\beta\) solves the Cox lasso if and only if
+\[
+\nabla\mathcal L_n(\widehat\beta)+\lambda\widehat z=0,
+\]
+where
+\[
+\widehat z_j=
+\begin{cases}
+\operatorname{sign}(\widehat\beta_j),&\widehat\beta_j\ne0,\\
+\text{an element of }[-1,1],&\widehat\beta_j=0.
+\end{cases}
+\]
+Hence every excluded coordinate satisfies
+\(|\nabla_j\mathcal L_n(\widehat\beta)|\le\lambda\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The objective is convex. Fermat's rule gives
+\(0\in\nabla\mathcal L_n(\widehat\beta)+\lambda\partial\|\widehat\beta\|_1\). The coordinatewise subdifferential of the absolute value gives the displayed conditions.</p>
+</div>
+
+<h3>Score concentration</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose covariates are uniformly bounded by \(K\), the true Cox model holds, and risk-set denominators stay uniformly positive. Then for constants \(c_1,c_2>0\),
+\[
+P\left(
+\|\nabla\mathcal L_n(\beta_0)\|_\infty
+>c_1K\sqrt{\frac{\log(p/\delta)}{n}}
+\right)\le\delta
+\]
+whenever \(\log(p/\delta)\le c_2n\). Thus
+\(\lambda\asymp\sqrt{\log p/n}\) dominates the stochastic score.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Each score coordinate is a normalized martingale integral
+\[
+-\nabla_j\mathcal L_n(\beta_0)
+=\frac1n\sum_i\int
+\{Z_{ij}(t)-\bar Z_j(\beta_0,t)\}\,\mathrm{d}M_i(t).
+\]
+Its jumps are bounded by \(2K/n\), and its predictable variation is \(O(K^2/n)\). Freedman's martingale inequality gives an exponential tail for one coordinate. A union bound over \(p\) coordinates yields the result. Unbounded covariates require sub-Gaussian or truncation arguments.</p>
+</div>
+
+<h3>Restricted curvature</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A debiased Cox estimator for coordinate \(j\) has the form
+<p><span class="statement-title">Definition.</span> Let
+\(S=\operatorname{supp}(\beta_0)\), \(|S|=s\), and
 \[
-\tilde\beta_j=\hat\beta_j+\hat\Theta_j^\top n^{-1}U(\hat\beta),
+\mathcal C(S,3)
+=\{\delta:\|\delta_{S^c}\|_1\le3\|\delta_S\|_1\}.
 \]
-where \(\hat\Theta_j\) estimates the \(j\)-th row of the inverse sparse information matrix.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Debiasing requires both an accurate initial sparse estimator and an accurate inverse-information direction. The second requirement is often the harder one.</p>
-    </div>
+A compatibility constant \(\kappa>0\) satisfies
+\[
+\delta^\top\nabla^2\mathcal L_n(\widetilde\beta)\delta
+\ge\frac{\kappa^2}{s}\|\delta_S\|_1^2
+\]
+for \(\delta\in\mathcal C(S,3)\) and \(\widetilde\beta\) on a neighborhood of \(\beta_0\).</p>
+</div>
+
+<p>The Hessian is an event-weighted risk-set covariance. Compatibility therefore means that sparse linear combinations of covariates retain variation among subjects who are compared at event times. Ordinary covariance of baseline covariates is not the relevant geometry.</p>
+
+<h3>Oracle inequalities</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> On the event
+\[
+\|\nabla\mathcal L_n(\beta_0)\|_\infty\le\lambda/2,
+\]
+and under the compatibility condition,
+\[
+\|\widehat\beta-\beta_0\|_1
+\le C\frac{s\lambda}{\kappa^2},
+\qquad
+(\widehat\beta-\beta_0)^\top
+\nabla^2\mathcal L_n(\widetilde\beta)
+(\widehat\beta-\beta_0)
+\le C\frac{s\lambda^2}{\kappa^2}
+\]
+for a universal constant \(C\). Under a restricted eigenvalue condition,
+\[
+\|\widehat\beta-\beta_0\|_2
+\lesssim\frac{\sqrt s\,\lambda}{\kappa}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put
+\(\delta=\widehat\beta-\beta_0\). Optimality gives the basic inequality
+\[
+\mathcal L_n(\beta_0+\delta)-\mathcal L_n(\beta_0)
++\lambda\|\beta_0+\delta\|_1
+\le\lambda\|\beta_0\|_1.
+\]
+Convexity and the score event imply
+\[
+\text{curvature}
++\frac{\lambda}{2}\|\delta_{S^c}\|_1
+\le\frac{3\lambda}{2}\|\delta_S\|_1,
+\]
+so \(\delta\in\mathcal C(S,3)\). Apply compatibility and
+\(\|\delta_S\|_1\le\sqrt s\|\delta_S\|_2\), then solve the resulting quadratic inequality. The restricted eigenvalue version directly controls \(\|\delta\|_2\).</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> If
+\(\lambda\asymp\sqrt{\log p/n}\) and
+\(s\log p/n\to0\), then the prediction curvature tends to zero and
+\[
+\|\widehat\beta-\beta_0\|_1
+=O_P\left(s\sqrt{\frac{\log p}{n}}\right).
+\]</p>
+</div>
+
+<h3>Support recovery</h3>
+
+<p>Estimation consistency does not imply exact variable selection. Sign recovery additionally requires:</p>
+<ul>
+<li>a beta-min condition
+\[
+\min_{j\in S}|\beta_{0j}|\gg\lambda;
+\]</li>
+<li>an irrepresentability condition controlling how inactive covariates are represented by active ones in the risk-set information matrix;</li>
+<li>accurate model specification and stable censoring support.</li>
+</ul>
+
+<p>These conditions can fail in highly correlated scientific designs even when prediction remains accurate. Selected-variable \(p\)-values computed as though the selected model were fixed are then invalid.</p>
+
+<h3>Debiased Cox inference</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+\widehat\Sigma=\nabla^2\mathcal L_n(\widehat\beta)
+\]
+and let \(\widehat\Theta_j\) estimate the \(j\)-th row of
+\(\Sigma^{-1}\), for example by nodewise lasso or the Dantzig constraint
+\[
+\|\widehat\Sigma\theta-e_j\|_\infty\le\mu.
+\]
+The debiased coordinate estimator is
+\[
+\widetilde\beta_j
+=\widehat\beta_j
+-\widehat\Theta_j^\top
+\nabla\mathcal L_n(\widehat\beta).
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose the target row of the inverse information is sparse, lasso and inverse-information estimation errors satisfy the required product-rate conditions, and typically
+\[
+s\frac{\log p}{\sqrt n}\to0.
+\]
+Then
+\[
+\sqrt n(\widetilde\beta_j-\beta_{0j})
+=-\widehat\Theta_j^\top
+\sqrt n\,\nabla\mathcal L_n(\beta_0)+o_P(1)
+\Rightarrow N(0,\sigma_j^2).
+\]
+Under correct specification,
+\(\sigma_j^2=\Theta_j^\top\Sigma\Theta_j\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Taylor expansion gives
+\[
+\nabla\mathcal L_n(\widehat\beta)
+=\nabla\mathcal L_n(\beta_0)
++\widehat\Sigma^\star(\widehat\beta-\beta_0).
+\]
+Substitute this into \(\widetilde\beta_j\). The leading estimation bias is
+\[
+\{e_j^\top-\widehat\Theta_j^\top\widehat\Sigma^\star\}
+(\widehat\beta-\beta_0),
+\]
+bounded by an inverse-information approximation error times the lasso
+\(\ell_1\)-error; the product-rate conditions make it \(o_P(n^{-1/2})\).
+The remaining score term is a martingale integral, so its standardized version is asymptotically Gaussian.</p>
+</div>
+
+<h3>High-dimensional baseline prediction</h3>
+
+<p>For
+\[
+\widehat\Lambda_0(t)
+=\int_0^t
+\frac{\mathrm{d}N(u)}
+{\sum_iY_i(u)e^{\widehat\beta^\top Z_i(u)}},
+\]
+the plug-in error contains
+\[
+B(t)^\top(\widehat\beta-\beta_0).
+\]
+An \(\ell_1\)-consistent lasso may be adequate for risk prediction but not for root-\(n\) inference on absolute survival. Orthogonalized or debiased functionals are needed, often with sample splitting when flexible nuisance learners are used. The key requirement is that first-order sensitivity to nuisance-estimation error be removed before applying a central limit theorem.</p>
+
+<h3>Tuning and validation under censoring</h3>
+
+<p>Cross-validation loss must respect risk sets; splitting rows from one subject across folds leaks information. Possible criteria include held-out partial deviance, inverse-censoring-weighted Brier score, and time-dependent log score. The concordance index measures ranking and cannot by itself tune calibrated absolute-risk predictions. Clustered or recurrent-event data should be split by subject or cluster.</p>
+
+<p>The underlying oracle-inequality, compatibility, and debiasing tools are developed more generally in <a href="{{ '/notes/statistical-learning/' | relative_url }}">statistical learning</a>.</p>

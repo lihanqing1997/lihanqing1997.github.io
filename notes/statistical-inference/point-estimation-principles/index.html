@@ -8,28 +8,194 @@ note_prev_url: "/notes/statistical-inference/sufficiency-ancillarity-exponential
 note_next_url: "/notes/statistical-inference/maximum-likelihood-estimation/"
 ---
 
-<p>A point estimator compresses the data into a proposed value of the target parameter. Its quality can be studied exactly, asymptotically, or by robustness to modeling perturbations.</p>
+<p>A point estimator replaces an unknown functional of the data-generating law by a measurable function of the sample. No estimator is intrinsically “best”: its quality is indexed by a model, a target, a loss, and either a finite-sample or asymptotic comparison.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An estimator of \(\theta(P)\) is a statistic \(T_n=T(X_1,\ldots,X_n)\). Its bias is \(E_P T_n-\theta(P)\), its variance is \(\operatorname{Var}_P(T_n)\), and its mean squared error is
-        \[
-        \operatorname{MSE}_P(T_n)=E_P\{T_n-\theta(P)\}^2.
-        \]</p>
-    </div>
+<h3>Loss, risk, bias, and dispersion</h3>
 
-    <h3>Consistency and rates</h3>
-    <p>The estimator is consistent if \(T_n\to\theta(P)\) in probability. It is \(r_n\)-consistent if \(r_n\{T_n-\theta(P)\}=O_p(1)\). Parametric regular problems usually have \(r_n=\sqrt n\), while nonparametric problems can have slower rates.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\psi:\Theta\to\mathcal A\) be the target and \(\delta:\mathcal X\to\mathcal A\) an estimator. For a loss \(L:\Theta\times\mathcal A\to[0,\infty]\), its risk is
+  \[
+  R(\theta,\delta)=\mathbb E_\theta L(\theta,\delta(X)).
+  \]
+  For a scalar target and squared-error loss,
+  \[
+  \operatorname{Bias}_\theta(\delta)
+  =\mathbb E_\theta\delta-\psi(\theta),\qquad
+  \operatorname{MSE}_\theta(\delta)
+  =\mathbb E_\theta\{\delta-\psi(\theta)\}^2.
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Bias-variance decomposition.</span> For scalar \(T_n\),
-        \[
-        \operatorname{MSE}_P(T_n)=\operatorname{Var}_P(T_n)+\{E_PT_n-\theta(P)\}^2.
-        \]</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Bias-variance decomposition.</span> If \(\delta\in L^2(P_\theta)\), then
+  \[
+  \operatorname{MSE}_\theta(\delta)
+  =\operatorname{Var}_\theta(\delta)
+  +\operatorname{Bias}_\theta(\delta)^2.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(T_n-\theta=(T_n-E_PT_n)+(E_PT_n-\theta)\). Squaring and taking expectation gives the variance term, the squared bias term, and a cross term equal to \(2(E_PT_n-\theta)E_P(T_n-E_PT_n)=0\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write
+  \[
+  \delta-\psi=(\delta-\mathbb E_\theta\delta)
+  +(\mathbb E_\theta\delta-\psi).
+  \]
+  The cross term has expectation zero because \(\mathbb E_\theta(\delta-\mathbb E_\theta\delta)=0\). Taking expectations after squaring gives the identity.</p>
+</div>
 
-    <h3>Method of moments and plug-in</h3>
-    <p>The method of moments solves equations \(P_nm_j=P_\theta m_j\). Plug-in estimators replace \(P\) by \(P_n\) in a functional \(\theta(P)\). The serious inferential task is not only to compute \(T_n\), but to obtain a linear expansion for \(T_n-\theta\) so uncertainty can be quantified.</p>
+<p>Unbiasedness controls one summand but may increase the other. Shrinkage estimators deliberately introduce bias when the variance reduction is larger. Exact admissibility, Bayes risk, and minimaxity are developed in <a href="{{ '/notes/statistical-decision-theory/risk-bayes-and-minimax/' | relative_url }}">statistical decision theory</a>.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (a bias-variance tradeoff).</span> If \(X\sim N(\theta,\sigma^2)\) and \(\delta_a=aX\), then
+  \[
+  R(\theta,\delta_a)
+  =a^2\sigma^2+(1-a)^2\theta^2.
+  \]
+  For a fixed bounded parameter set \(|\theta|\le M\), choosing \(a=M^2/(M^2+\sigma^2)\) minimizes the worst-case upper envelope \(a^2\sigma^2+(1-a)^2M^2\), and improves on \(X\) near zero.</p>
+</div>
+
+<h3>Consistency and rates</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An estimator \(T_n\) is weakly consistent for \(\psi(\theta)\) if
+  \[
+  T_n\longrightarrow\psi(\theta)\quad\text{in }P_\theta\text{-probability}
+  \]
+  for every fixed \(\theta\); it is strongly consistent if convergence is almost sure. It has rate \(r_n\to\infty\) if
+  \[
+  r_n\{T_n-\psi(\theta)\}=O_{P_\theta}(1).
+  \]
+  A uniform rate over \(\Theta_0\) requires
+  \[
+  \lim_{M\to\infty}\limsup_{n\to\infty}
+  \sup_{\theta\in\Theta_0}
+  P_\theta\!\left(r_n\|T_n-\psi(\theta)\|>M\right)=0.
+  \]</p>
+</div>
+
+<p>Pointwise and uniform statements answer different questions. Pointwise consistency permits the sample size needed for accuracy to depend arbitrarily on \(\theta\); honest confidence procedures usually require uniform control over a stated class.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Mean-square consistency criterion.</span> If
+  \[
+  \operatorname{Bias}_\theta(T_n)\to0
+  \quad\text{and}\quad
+  \operatorname{Var}_\theta(T_n)\to0,
+  \]
+  then \(T_n\to\psi(\theta)\) in probability.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The bias-variance decomposition gives \(\mathbb E_\theta(T_n-\psi)^2\to0\). Markov's inequality then yields
+  \[
+  P_\theta(|T_n-\psi|>\varepsilon)
+  \le\varepsilon^{-2}\mathbb E_\theta(T_n-\psi)^2\to0.
+  \]</p>
+</div>
+
+<h3>Method of moments</h3>
+
+<p>Suppose \(m(\theta)=\mathbb E_\theta h(X)\in\mathbb R^d\) is one-to-one. The method-of-moments estimator solves
+\[
+m(\hat\theta_n)=P_nh,\qquad
+P_nh=\frac1n\sum_{i=1}^nh(X_i).
+\]
+When \(m^{-1}\) is continuous at \(m(\theta_0)\), the law of large numbers and continuous mapping theorem give consistency.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Asymptotic distribution of a just-identified moment estimator.</span> Suppose \(D m(\theta_0)\) is nonsingular and \(\operatorname{Var}_{\theta_0}h(X)=\Sigma\lt\infty\). Then
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  \rightsquigarrow
+  N\!\left(0,\,
+  Dm(\theta_0)^{-1}\Sigma Dm(\theta_0)^{-\top}\right).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The multivariate central limit theorem gives
+  \[
+  \sqrt n\{P_nh-m(\theta_0)\}\rightsquigarrow N(0,\Sigma).
+  \]
+  Since \(m(\hat\theta_n)=P_nh\), differentiability of \(m^{-1}\) and the inverse-function theorem give
+  \[
+  \sqrt n(\hat\theta_n-\theta_0)
+  =Dm(\theta_0)^{-1}\sqrt n\{P_nh-m(\theta_0)\}+o_p(1).
+  \]
+  Slutsky's theorem completes the proof.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Gamma moments).</span> For \(X\sim\operatorname{Gamma}(\alpha,\beta)\) in shape-rate parametrization,
+  \[
+  \mathbb EX=\frac{\alpha}{\beta},\qquad
+  \operatorname{Var}(X)=\frac{\alpha}{\beta^2}.
+  \]
+  Equating these to \(\bar X\) and the empirical second central moment gives
+  \[
+  \hat\alpha=\frac{\bar X^2}{S_n^2},\qquad
+  \hat\beta=\frac{\bar X}{S_n^2}.
+  \]
+  Their joint asymptotic law follows by applying the delta method to the empirical first two raw moments.</p>
+</div>
+
+<h3>Plug-in estimation and statistical functionals</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(T:\mathcal P\to\mathbb R^k\) be a functional of a probability law. The empirical plug-in estimator is \(T(P_n)\), where
+  \[
+  P_n=\frac1n\sum_{i=1}^n\delta_{X_i}.
+  \]
+  Examples include \(P_nf\) for a mean, \(F_n^{-1}(p)\) for a quantile, and smooth functions of empirical moments.</p>
+</div>
+
+<p>Continuity of \(T\) under a topology in which \(P_n\to P\) gives consistency. Differentiability of \(T\) gives a first-order expansion. If
+\[
+T(P_n)-T(P)=P_n\phi_P+o_p(n^{-1/2}),
+\qquad P\phi_P=0,
+\]
+then \(\phi_P\) is an influence function and the central limit theorem supplies uncertainty quantification.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (variance functional).</span> For
+  \[
+  T(P)=P x^2-(Px)^2,
+  \]
+  direct algebra gives
+  \[
+  T(P_n)-T(P)
+  =(P_n-P)\{(x-\mu)^2\}
+  -\{(P_n-P)x\}^2,
+  \]
+  where \(\mu=Px\). Thus
+  \[
+  \phi_P(x)=(x-\mu)^2-\operatorname{Var}_P(X)
+  \]
+  and the squared empirical-mean remainder is \(O_p(n^{-1})\) when \(PX^2\lt\infty\).</p>
+</div>
+
+<h3>Equivariance</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Suppose a group \(G\) acts on the sample space and parameter space so that \(P_{g\theta}\) is the image of \(P_\theta\) under \(x\mapsto gx\). An estimator \(\delta\) is equivariant if
+  \[
+  \delta(gx)=g\delta(x).
+  \]</p>
+</div>
+
+<p>For a location family, translation equivariance means \(\delta(x_1+a,\ldots,x_n+a)=\delta(x_1,\ldots,x_n)+a\). For a scale family, scale equivariance means \(\delta(cx)=c\delta(x)\). Equivariance reduces arbitrary coordinate dependence, but it does not by itself imply low risk or robustness.</p>
+
+<h3>Asymptotic comparison</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (asymptotic relative efficiency).</span> If
+  \[
+  \sqrt n(T_n-\theta)\rightsquigarrow N(0,V_T),
+  \qquad
+  \sqrt n(S_n-\theta)\rightsquigarrow N(0,V_S)
+  \]
+  for scalar estimators, the asymptotic relative efficiency of \(T\) to \(S\) is \(V_S/V_T\). In several dimensions no single ordering exists unless one covariance dominates the other in Loewner order or a scalar loss is specified.</p>
+</div>
+
+<p>Rates and limit variances describe local large-sample behavior. They do not replace finite-sample risk, robustness under contamination, or uniformity near boundaries and singular points.</p>

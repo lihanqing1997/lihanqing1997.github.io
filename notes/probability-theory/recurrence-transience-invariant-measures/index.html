@@ -8,49 +8,187 @@ note_prev_url: "/notes/probability-theory/markov-processes-semigroups/"
 note_next_url: "/notes/probability-theory/ergodic-theorems/"
 ---
 
-<p>Recurrence, transience, and invariant measures describe long-run behavior of Markov chains and processes. They distinguish states that are repeatedly revisited from states that eventually disappear.</p>
+<p>Recurrence classifies whether a chain repeatedly returns to a state; positive recurrence asks whether the mean return time is finite; invariant probabilities describe equilibrium. For irreducible countable chains these ideas fit exactly: an invariant probability exists precisely in the positive recurrent case, and its mass at a state is the reciprocal mean return time.</p>
 
-    <h3>Return probabilities</h3>
+<h3>Communication classes and periods</h3>
 
-    <p>Recurrence is a statement about eventual returns.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a countable-state Markov chain with transition matrix \(P\), write
+  \(i\to j\) if \(P^n(i,j)>0\) for some \(n\ge0\), and
+  \(i\leftrightarrow j\) if both \(i\to j\) and \(j\to i\). Communication is an equivalence relation. The chain is irreducible if all states communicate.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a Markov chain on a countable state space, let \(T_i^+=\inf\{n\ge1:X_n=i\}\). State \(i\) is recurrent if \(P_i(T_i^+\lt\infty)=1\), and transient otherwise.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The period of a state is
+  \[
+  d(i)=\gcd\{n\ge1:P^n(i,i)>0\}.
+  \]
+  Communicating states have the same period. An irreducible chain is aperiodic if this common period is one.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of class invariance.</span> If
+  \(i\to j\) in \(r\) steps and \(j\to i\) in \(s\) steps, every return to \(i\) in \(n\) steps produces a return to \(j\) in \(s+n+r\) steps. Comparing differences of such return times in both directions shows the two gcds coincide.</p>
+</div>
 
-    <h3>Green function criterion</h3>
+<h3>Returns and Green functions</h3>
 
-    <p>Expected visit counts determine recurrence.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \[
+  T_j=\inf\{n\ge0:X_n=j\},\qquad
+  T_i^+=\inf\{n\ge1:X_n=i\}.
+  \]
+  State \(i\) is recurrent if
+  \(P_i(T_i^+<\infty)=1\), and transient otherwise. A recurrent state is positive recurrent if
+  \(\mathbb E_iT_i^+<\infty\), and null recurrent if this expectation is infinite.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For an irreducible countable Markov chain,
-\[
-i\ \text{is recurrent}\quad\Longleftrightarrow\quad \sum_{n=0}^\infty P_i(X_n=i)=\infty.
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Green-function criterion).</span> For any state \(i\),
+  \[
+  i\text{ is recurrent}
+  \quad\Longleftrightarrow\quad
+  G(i,i):=\sum_{n=0}^{\infty}P^n(i,i)=\infty.
+  \]
+  If \(f_i=P_i(T_i^+<\infty)<1\), then
+  \[
+  G(i,i)=\frac1{1-f_i}.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Each return to \(i\) restarts the chain by the strong Markov property. The number of visits to \(i\) is therefore geometric in the number of returns. If the return probability is \(f_i\lt1\), the expected number of visits is \(1/(1-f_i)\lt\infty\). If \(f_i=1\), repeated returns occur almost surely and the expected number of visits is infinite.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(N_i=\sum_{n\ge0}1_{\{X_n=i\}}\) be the total number of visits when
+  \(X_0=i\). Tonelli gives
+  \[
+  \mathbb E_iN_i=\sum_{n\ge0}P^n(i,i)=G(i,i).
+  \]
+  By the strong Markov property at each return, after every visit the probability of another return is \(f_i\), independently of the pre-return history in the renewal sense. Hence
+  \[
+  P_i(N_i\ge k)=f_i^{k-1},
+  \qquad k\ge1,
+  \]
+  and
+  \[
+  \mathbb E_iN_i=\sum_{k\ge1}f_i^{k-1}.
+  \]
+  This equals \(1/(1-f_i)\) if \(f_i<1\) and diverges if \(f_i=1\).</p>
+</div>
 
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Recurrence and transience are class properties: if \(i\leftrightarrow j\), then \(i\) is recurrent if and only if \(j\) is recurrent.</p>
+</div>
 
-    <h3>Invariant measures</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose \(r,s\) with
+  \(P^r(i,j)>0\) and \(P^s(j,i)>0\). Chapman-Kolmogorov gives
+  \[
+  P^{r+n+s}(i,i)\ge P^r(i,j)P^n(j,j)P^s(j,i).
+  \]
+  Summing over \(n\) shows that \(G(j,j)=\infty\) implies
+  \(G(i,i)=\infty\). Reverse \(i,j\) for the converse.</p>
+</div>
 
-    <p>Invariant measures are fixed points of the transition kernel.</p>
+<h3>Invariant and reversible measures</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A measure \(\pi\) is invariant for a kernel \(K\) if
-\[
-\pi(A)=\int K(x,A)\,\pi(\mathrm{d}x)
-\]
-for every measurable \(A\), equivalently \(\pi K=\pi\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A measure \(\pi\) is invariant for a kernel \(P\) if
+  \[
+  \pi P(A)=\int P(x,A)\pi(\mathrm{d} x)=\pi(A).
+  \]
+  On a countable space this is
+  \[
+  \pi_j=\sum_i\pi_iP(i,j).
+  \]
+  It is reversible if the detailed-balance identities hold:
+  \[
+  \pi_iP(i,j)=\pi_jP(j,i)\qquad\text{for all }i,j.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(X_0\sim\pi\), then \(P(X_1\in A)=\int K(x,A)\pi(\mathrm{d}x)=\pi(A)\). Inductively \(X_n\sim\pi\) for all \(n\). Conversely, if the one-step distribution remains \(\pi\) whenever \(X_0\sim\pi\), then the displayed identity follows.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Detailed balance implies invariance. Under the stationary law \(\pi\), reversibility means
+  \[
+  (X_0,\ldots,X_n)\stackrel d=(X_n,\ldots,X_0).
+  \]</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Positive recurrent irreducible chains have invariant probability measures; null recurrent chains have recurrent behavior without finite invariant mass.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Summing detailed balance over \(i\) gives
+  \[
+  \sum_i\pi_iP(i,j)=\pi_j\sum_iP(j,i)=\pi_j.
+  \]
+  For path reversal,
+  \[
+  \pi_{i_0}P(i_0,i_1)\cdots P(i_{n-1},i_n)
+  \]
+  can be reversed one factor at a time using detailed balance, producing
+  \(\pi_{i_n}P(i_n,i_{n-1})\cdots P(i_1,i_0)\).</p>
+</div>
+
+<h3>Positive recurrence and stationary probabilities</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> An irreducible countable-state chain admits an invariant probability \(\pi\) if and only if it is positive recurrent. In that case \(\pi\) is unique and
+  \[
+  \pi_i=\frac1{\mathbb E_iT_i^+}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Suppose \(i\) is positive recurrent. During one regeneration cycle from \(i\) to the next return to \(i\), define
+  \[
+  \nu_j
+  =\mathbb E_i\sum_{n=0}^{T_i^+-1}1_{\{X_n=j\}}.
+  \]
+  A one-step accounting argument gives \(\nu P=\nu\), and
+  \(\sum_j\nu_j=\mathbb E_iT_i^+<\infty\). Thus
+  \(\pi_j=\nu_j/\mathbb E_iT_i^+\) is invariant. Since exactly one visit to \(i\) occurs at the start of each cycle,
+  \(\nu_i=1\), yielding the formula.
+
+  Conversely, start the chain in an invariant probability \(\pi\). Kac's recurrence argument applies stationarity to visits to \(i\) and gives
+  \(\mathbb E_iT_i^+=1/\pi_i<\infty\) for every state with \(\pi_i>0\). Irreducibility makes all \(\pi_i\) positive. Uniqueness follows by the same regenerative occupation formula.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (birth-death chain).</span> On
+  \(\mathbb N_0\), suppose \(P(i,i+1)=p_i\),
+  \(P(i,i-1)=q_i\) for \(i\ge1\), with a reflecting rule at zero. Detailed balance recursively requires
+  \[
+  \pi_{i+1}=\pi_i\frac{p_i}{q_{i+1}},
+  \]
+  hence
+  \[
+  \pi_i\propto
+  \prod_{k=0}^{i-1}\frac{p_k}{q_{k+1}}.
+  \]
+  A stationary probability exists exactly when this sequence is summable.</p>
+</div>
+
+<h3>Convergence to equilibrium</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (finite-state ergodic convergence).</span> If a finite-state chain is irreducible and aperiodic, then it has a unique invariant probability \(\pi\) and
+  \[
+  P^n(i,j)\to\pi_j
+  \]
+  for every \(i,j\). Equivalently,
+  \(\|P^n(i,\cdot)-\pi\|_{\mathrm{TV}}\to0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Irreducibility and aperiodicity imply that some power \(P^m\) has all entries positive. Let
+  \(\varepsilon=\sum_j\min_iP^m(i,j)>0\), and write
+  \(P^m(i,\cdot)=\varepsilon\nu+(1-\varepsilon)R_i\).
+  This common-part decomposition couples two \(m\)-step transitions with probability at least \(\varepsilon\), yielding the contraction
+  \[
+  \|\mu P^m-\eta P^m\|_{\mathrm{TV}}
+  \le(1-\varepsilon)\|\mu-\eta\|_{\mathrm{TV}}.
+  \]
+  Iteration gives a unique fixed probability and convergence to it. Periodicity is exactly the obstruction to full-time convergence.</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> A null recurrent chain returns almost surely but has no finite invariant mass. The simple symmetric walk on \(\mathbb Z\) is the standard example: counting measure is invariant, but cannot be normalized to a probability.</p>
+</div>

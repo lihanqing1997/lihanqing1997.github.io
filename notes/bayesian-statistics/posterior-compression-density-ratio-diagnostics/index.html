@@ -33,3 +33,176 @@ note_next_url: "/notes/bayesian-statistics/literature-map-current-research/"
     </div><div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The likelihood ratio between weighted and full posterior kernels lies between \(e^{-\varepsilon}\) and \(e^\varepsilon\). Normalize both measures and apply the same multiplicative bound to integrals of bounded test functions.</p>
     </div>
+
+<h3>Posterior perturbation from log-kernel error</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+\pi(\theta)=\frac{e^{\ell(\theta)}p(\theta)}{Z},
+\qquad
+\widetilde\pi(\theta)
+=\frac{e^{\widetilde\ell(\theta)}p(\theta)}
+{\widetilde Z},
+\]
+and suppose
+\[
+\sup_\theta|\widetilde\ell(\theta)-\ell(\theta)|
+\le\varepsilon.
+\]
+Then
+\[
+e^{-2\varepsilon}
+\le\frac{\widetilde\pi(\theta)}{\pi(\theta)}
+\le e^{2\varepsilon},
+\]
+\[
+\|\widetilde\Pi-\Pi\|_{\mathrm{TV}}
+\le\frac12(e^{2\varepsilon}-1),
+\]
+and
+\[
+\operatorname{KL}(\widetilde\Pi\|\Pi)
+\le2\varepsilon.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Kernel bounds imply
+\[
+e^{-\varepsilon}Z
+\le\widetilde Z\le e^\varepsilon Z.
+\]
+Combining numerator and normalizer bounds gives the density-ratio bounds. Integrate
+\(|\widetilde\pi/\pi-1|\) for TV. For KL, the log density ratio is at most \(2\varepsilon\) pointwise.</p>
+</div>
+
+<p>Uniform log-likelihood approximation is strong and often unrealistic over an unbounded parameter space. Local posterior-weighted norms can yield sharper results if one separately proves that both posteriors remain in the controlled region.</p>
+
+<h3>Coreset construction in a Hilbert geometry</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Center log-likelihood contributions
+\[
+\widetilde\ell_i(\theta)
+=\ell_i(\theta)-E_\nu\ell_i(\theta)
+\]
+in a reference Hilbert space \(L^2(\nu)\). A coreset chooses nonnegative sparse weights \(w\) to minimize
+\[
+\left\|
+\sum_{i=1}^n\widetilde\ell_i
+-\sum_{i=1}^nw_i\widetilde\ell_i
+\right\|_{L^2(\nu)}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If the residual log-likelihood function has \(L^2(\nu)\)-norm \(\delta\), then its mean-squared error under \(\nu\) is \(\delta^2\), but no uniform posterior bound follows without relating \(\nu\) to posterior mass and controlling residual tails.</p>
+</div>
+
+<p>Greedy Hilbert-coreset methods select contributions aligned with the current residual; sparse nonnegative least squares then refines weights. The reference distribution should cover posterior-relevant regions. A poor pilot can certify approximation in the wrong geometry.</p>
+
+<h3>Local asymptotic preservation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (LAN preservation).</span> Suppose the full and compressed log likelihoods satisfy, uniformly for bounded \(h\),
+\[
+\ell_w(\theta_0+h/\sqrt n)
+-\ell_w(\theta_0)
+\]
+\[
+=
+\ell_n(\theta_0+h/\sqrt n)
+-\ell_n(\theta_0)
++o_P(1).
+\]
+If the full posterior satisfies regular BvM and the compressed posterior also localizes at root-\(n\) rate, then both have the same first-order Gaussian limit.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The uniform difference makes the compressed likelihood share the same LAN score and information. Prior continuity is unchanged. Apply the BvM normalization proof to the compressed posterior; localization controls the region outside the shared expansion.</p>
+</div>
+
+<p>Matching the total log likelihood up to \(o(n)\) is insufficient for BvM; the local difference must be \(o(1)\) on root-\(n\) neighborhoods.</p>
+
+<h3>Density-ratio estimation by classification</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let samples come from \(P\) with class label \(Y=1\) and from \(Q\) with \(Y=0\), using equal class probabilities. The Bayes classifier satisfies
+\[
+\eta(x)=P(Y=1\mid X=x)
+=\frac{p(x)}{p(x)+q(x)},
+\]
+so
+\[
+\frac{p(x)}{q(x)}
+=\frac{\eta(x)}{1-\eta(x)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply Bayes' formula with equal class priors and rearrange.</p>
+</div>
+
+<p>Training a calibrated probabilistic classifier to distinguish exact-posterior reference draws from approximate draws estimates a density ratio. Near-perfect classification indicates strong discrepancy; chance-level classification is only evidence relative to the classifier class and sample size.</p>
+
+<h3>Importance correction of an approximate posterior</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> If
+\(\theta_s\sim Q\) and the exact unnormalized posterior is
+\(\widetilde\pi\), use
+\[
+w_s=\frac{\widetilde\pi(\theta_s)}{q(\theta_s)}
+\]
+to estimate exact posterior expectations by normalized weighting.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The chi-square divergence controls asymptotic weight efficiency:
+\[
+E_Q\left(
+\frac{\pi(\theta)}{q(\theta)}
+\right)^2
+=1+\chi^2(\Pi\|Q).
+\]
+Thus an idealized effective-sample fraction is approximately
+\[
+\frac1{1+\chi^2(\Pi\|Q)}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> By definition,
+\[
+\chi^2(\Pi\|Q)
+=\int\left(\frac{\pi}{q}-1\right)^2q
+=\int\frac{\pi^2}{q}-1,
+\]
+because \(\int\pi=\int q=1\).</p>
+</div>
+
+<p>Reverse-KL variational approximations can omit target tails, producing infinite \(\chi^2(\Pi\|Q)\) even when ELBO is good. Importance correction then fails rather than automatically repairing the approximation.</p>
+
+<h3>Compression targets</h3>
+
+<p>Different compressions preserve different objects:</p>
+<ul>
+<li>coresets approximate the likelihood or posterior;</li>
+<li>posterior distillation approximates draws or predictive distributions;</li>
+<li>projection predictive methods compress predictor sets;</li>
+<li>low-rank Gaussian approximations compress covariance;</li>
+<li>summary networks compress data for simulation-based inference.</li>
+</ul>
+
+<p>A guarantee should name the retained metric: local likelihood ratio, KL, Wasserstein, bounded decisions, predictive score, or selected functional. “Posterior compression” alone is not a mathematical target.</p>
+
+<h3>Diagnostics at three levels</h3>
+
+<ol>
+<li><em>Kernel level:</em> compare log likelihoods, scores, and Hessians on posterior-relevant draws.</li>
+<li><em>Distribution level:</em> use density-ratio classification, KSD, moments, tails, and importance-weight diagnostics.</li>
+<li><em>Decision level:</em> compare predictions, credible limits, and posterior expected losses for the actual task.</li>
+</ol>
+
+<p>Agreement at one level need not imply agreement at another. Local score matching can preserve BvM while missing remote modes; predictive agreement can coexist with different parameter posteriors under nonidentifiability.</p>

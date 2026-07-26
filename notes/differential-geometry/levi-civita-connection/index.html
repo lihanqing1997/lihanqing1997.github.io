@@ -8,24 +8,112 @@ note_prev_url: "/notes/differential-geometry/riemannian-metrics/"
 note_next_url: "/notes/differential-geometry/geodesics-and-exponential-map/"
 ---
 
-<p>Levi-Civita connection records the objects, main results, proof mechanisms, and boundary cases needed for the differential geometry note.</p>
+<p>Tangent vectors at different points live in different vector spaces, so
+ordinary subtraction cannot differentiate vector fields. A connection
+specifies how to compare them. The metric selects one canonical connection:
+the unique torsion-free connection preserving inner products.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A connection differentiates vector fields along vector fields. The Levi-Civita connection is the unique connection that is torsion-free and compatible with a Riemannian metric.</p>
-    </div>
+<h3>Affine connections</h3>
 
-    <h3>Fundamental theorem of Riemannian geometry</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For every Riemannian metric \(g\), there exists a unique connection \(\nabla\) satisfying \(\nabla g=0\) and \(\nabla_XY-\nabla_YX=[X,Y]\).</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> An affine connection is
+a map
+\[
+\nabla:\mathfrak X(M)\times\mathfrak X(M)\to\mathfrak X(M),
+\quad (X,Y)\mapsto\nabla_XY,
+\]
+\(C^\infty(M)\)-linear in \(X\), \(\mathbb R\)-linear in \(Y\), and satisfying
+\[
+\nabla_X(fY)=X(f)Y+f\nabla_XY.
+\]
+In coordinates,
+\[
+\nabla_{\partial_i}\partial_j=\Gamma^k_{ij}\partial_k.
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The Koszul formula expresses \(2g(\nabla_XY,Z)\) in terms of derivatives of \(g\) and Lie brackets. It proves uniqueness and defines the connection.</p>
-    </div>
+<p>The Christoffel symbols are not tensor components; their inhomogeneous
+coordinate transformation precisely cancels the non-tensorial part of
+ordinary component derivatives.</p>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The Levi-Civita connection is the device that makes acceleration, geodesics, and curvature intrinsic.</p>
-    </div>
+<h3>Torsion and metric compatibility</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The torsion is
+\[
+T(X,Y)=\nabla_XY-\nabla_YX-[X,Y].
+\]
+The connection is metric compatible if
+\[
+Xg(Y,Z)=g(\nabla_XY,Z)+g(Y,\nabla_XZ).
+\]</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (fundamental theorem of Riemannian
+geometry).</span> Every Riemannian metric has a unique torsion-free,
+metric-compatible connection.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Metric compatibility written
+for the cyclic permutations of \(X,Y,Z\), combined using
+\(\nabla_XY-\nabla_YX=[X,Y]\), gives the Koszul formula
+\[
+\begin{aligned}
+2g(\nabla_XY,Z)
+={}&Xg(Y,Z)+Yg(Z,X)-Zg(X,Y)\\
+&-g(X,[Y,Z])+g(Y,[Z,X])+g(Z,[X,Y]).
+\end{aligned}
+\]
+Nondegeneracy of \(g\) determines \(\nabla_XY\), proving uniqueness. Taking
+the right side as a definition and checking the connection axioms,
+torsion-freeness, and metric compatibility proves existence.</p>
+</div>
+
+<p>In coordinates,
+\[
+\Gamma^k_{ij}
+=\frac12g^{k\ell}
+\left(\partial_ig_{j\ell}+\partial_jg_{i\ell}-\partial_\ell g_{ij}\right).
+\]</p>
+
+<h3>Covariant differentiation along curves</h3>
+
+<p>For a vector field \(V(t)=V^k(t)\partial_k\) along \(\gamma\),
+\[
+\frac{DV}{\mathrm{d}t}
+=\left(\frac{\mathrm{d}V^k}{\mathrm{d}t}
++\Gamma^k_{ij}(\gamma)\dot\gamma^iV^j\right)\partial_k.
+\]
+A field is parallel if \(DV/\mathrm{d}t=0\). Linear ODE theory gives a unique
+parallel field for each initial vector, defining the parallel-transport
+isometry \(P_\gamma:T_{\gamma(a)}M\to T_{\gamma(b)}M\).</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Levi-Civita parallel
+transport preserves inner products.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For parallel \(V,W\),
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}g(V,W)
+=g(DV/\mathrm{d}t,W)+g(V,DW/\mathrm{d}t)=0
+\]
+by metric compatibility.</p>
+</div>
+
+<h3>Connections on tensors</h3>
+
+<p>The connection extends uniquely by the Leibniz rule, compatibility with
+contraction, and
+\[
+(\nabla_X\alpha)(Y)=X(\alpha(Y))-\alpha(\nabla_XY).
+\]
+The Hessian of a function is
+\[
+\operatorname{Hess}f(X,Y)=g(\nabla_X\operatorname{grad}f,Y)
+=X(Yf)-(\nabla_XY)f.
+\]
+Torsion-freeness makes it symmetric.</p>

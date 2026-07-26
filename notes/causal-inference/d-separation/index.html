@@ -8,24 +8,97 @@ note_prev_url: "/notes/causal-inference/directed-acyclic-graphs/"
 note_next_url: "/notes/causal-inference/back-door-adjustment/"
 ---
 
-<p>d-separation records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>D-separation is the graphical criterion that translates paths in a DAG into conditional-independence consequences. It handles the asymmetric behavior of colliders and is the combinatorial engine behind adjustment criteria and do-calculus.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> d-separation is the graphical criterion for reading conditional independences in DAGs. Paths are blocked by conditioning on noncolliders or by failing to condition on colliders or their descendants.</p>
-    </div>
+<h3>Active paths</h3>
 
-    <h3>Global Markov property</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In a Markovian DAG, d-separation of sets \(A\) and \(B\) by \(C\) implies \(A\perp B\mid C\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A path is active given
+  \(Z\subseteq V\) if:
+  <ol>
+    <li>every noncollider on the path is outside \(Z\);</li>
+    <li>every collider on the path has itself or a descendant in \(Z\).</li>
+  </ol>
+  Sets \(X\) and \(Y\) are d-separated by \(Z\), written
+  \(X\perp_dY\mid Z\), if no path from \(X\) to \(Y\) is active given \(Z\).</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Reduce dependence flow to path structures in the factorized distribution. Moralization or ancestral graph arguments convert d-separation into ordinary graph separation.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Examples.</span>
+  In \(X\to M\to Y\), the path is active marginally and blocked by \(M\).
+  In \(X\leftarrow C\to Y\), adjustment for \(C\) blocks confounding.
+  In \(X\to S\leftarrow Y\), the path is blocked marginally and opened by conditioning on \(S\) or a descendant of \(S\).</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Collider bias is the most common conceptual trap: conditioning can open paths that were previously blocked.</p>
-    </div>
+<h3>Global Markov theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If a distribution factorizes according to a DAG \(G\), then
+  \[
+  X\perp_dY\mid Z\quad\Longrightarrow\quad
+  X\perp\!\!\!\perp Y\mid Z.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Restrict to the ancestral graph of \(X\cup Y\cup Z\), because nonancestors integrate out. Moralize this ancestral graph by connecting co-parents and dropping arrowheads. In this moral graph, d-separation is equivalent to ordinary graph separation. The DAG factorization induces a clique factorization of the ancestral moral graph; summing products over components separated by \(Z\) yields conditional factorization of \(X\) and \(Y\).</p>
+</div>
+
+<h3>The ancestral moralization algorithm</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> To test
+  \(X\perp_dY\mid Z\):
+  <ol>
+    <li>retain the ancestors of \(X\cup Y\cup Z\);</li>
+    <li>join every pair of nodes with a common child;</li>
+    <li>replace directed edges by undirected edges;</li>
+    <li>remove \(Z\) and check whether \(X\) and \(Y\) remain connected.</li>
+  </ol></p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Retaining ancestors ensures that every collider activated by \(Z\) is represented. Moral edges connect the two sides of each activated collider. Noncollider conditioning removes vertices from otherwise traversable paths. This gives a bijective correspondence between active trails in the DAG and paths avoiding \(Z\) in the moral ancestral graph.</p>
+</div>
+
+<h3>Bayes-ball propagation</h3>
+
+<p>Bayes-ball is a linear-time message-passing algorithm for d-separation. A message arriving from a parent or child propagates according to whether the current node is observed and whether it has an observed descendant. Its rules are simply the chain/fork/collider activation conditions encoded locally. It is preferable to manual path enumeration in large graphs.</p>
+
+<h3>Conditioning on a collider descendant</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In
+  \(X\to C\leftarrow Y\) and \(C\to D\), conditioning on \(D\) opens the path between \(X\) and \(Y\). The value of \(D\) supplies information about \(C\); once \(C\) is partially learned, observing \(X\) changes what is inferred about \(Y\), even though \(X\) and \(Y\) were marginally independent.</p>
+</div>
+
+<h3>Minimal separators and adjustment</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A d-separator \(Z\) is minimal for \(X,Y\) if no proper subset of \(Z\) d-separates them.</p>
+</div>
+
+<p>Minimality does not imply causal admissibility. A set can d-separate treatment and outcome only after conditioning on a descendant of treatment, thereby blocking part of the effect. Adjustment criteria first modify the graph to isolate back-door paths and then prohibit descendants or forbidden nodes.</p>
+
+<h3>D-separation versus statistical independence</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Unfaithful cancellation.</span> Let
+  \(X\sim N(0,1)\),
+  \(M=X+\varepsilon_M\), and
+  \(Y=M-X+\varepsilon_Y\), with independent centered Gaussian noises.
+  The DAG has \(X\to M\to Y\) and \(X\to Y\), so \(X\) and \(Y\) are not d-separated. Yet
+  \(Y=\varepsilon_M+\varepsilon_Y\) is independent of \(X\). D-separation lists independences guaranteed for every Markov distribution, not every accidental independence of one parameter value.</p>
+</div>
+
+<h3>Latent projections and m-separation</h3>
+
+<p>In acyclic directed mixed graphs, bidirected edges represent latent common causes. The corresponding criterion is m-separation: a path is active under the same collider/noncollider logic, but arrowheads from bidirected edges matter when deciding collider status. Back-door and instrumental-variable questions with hidden variables often require this extended graph rather than an observed-variable DAG.</p>
+
+<h3>Selection diagrams</h3>
+
+<p>Conditioning on inclusion in a dataset can be represented by a selection node \(S\). If both treatment and outcome affect \(S\), analyzing only \(S=1\) opens a collider path. D-separation makes this selection bias visible and clarifies which auxiliary population information would be needed to transport back to the target population.</p>
+
+<h3>A path-analysis checklist</h3>
+
+<p>For each treatment-outcome path, mark arrowheads at every interior node, classify colliders before looking at the conditioning set, remove paths blocked by unconditioned colliders, and then check whether conditioning opens any collider or blocks any noncollider. Separating causal and noncausal paths at the outset prevents adjustment from inadvertently removing the effect of interest.</p>

@@ -8,29 +8,141 @@ note_prev_url: "/notes/statistical-inference/empirical-likelihood-estimating-equ
 note_next_url: "/notes/statistical-inference/likelihood-based-tests/"
 ---
 
-<p>A test is a rule that rejects or does not reject a null hypothesis. Mathematical testing separates two questions: how often the test rejects under the null, and how often it detects alternatives.</p>
+<p>A test is a measurable decision rule between sets of probability laws. Its null calibration and alternative performance are different mathematical requirements. A reported \(p\)-value is valid only when an entire nested family of tests is calibrated, not merely because the observed number is small.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(H_0\subset\mathcal P\) and \(H_1\subset\mathcal P\), a possibly randomized test is a measurable function \(\varphi:\mathcal X\to[0,1]\). Its size is
-        \[
-        \sup_{P\in H_0}E_P\varphi,
-        \]
-        and its power at \(P\in H_1\) is \(E_P\varphi\).</p>
-    </div>
+<h3>Tests, size, and power</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Neyman-Pearson lemma.</span> For testing simple \(H_0:P=P_0\) against simple \(H_1:P=P_1\), the most powerful level-\(\alpha\) test rejects for large likelihood ratio \(\mathrm{d}P_1/\mathrm{d}P_0\), with randomization at the boundary if necessary.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\mathcal P_0\) and \(\mathcal P_1\) be disjoint sets of laws. A randomized test is an \(\mathcal A\)-measurable function
+  \[
+  \phi:\mathcal X\to[0,1].
+  \]
+  Given \(X=x\), it rejects with conditional probability \(\phi(x)\). Its power function is \(\beta_\phi(P)=P\phi\), its size is
+  \[
+  \|\phi\|_{\mathcal P_0}
+  =\sup_{P\in\mathcal P_0}P\phi,
+  \]
+  and it has level \(\alpha\) if this supremum is at most \(\alpha\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\varphi^*\) reject where \(\mathrm{d}P_1/\mathrm{d}P_0\gt c\). For any other test \(\varphi\) with \(E_{P_0}\varphi\le E_{P_0}\varphi^*\), the sign of \(\varphi^*-\varphi\) matches whether \(\mathrm{d}P_1/\mathrm{d}P_0-c\) is positive or negative. Therefore
-        \[
-        E_{P_1}(\varphi^*-\varphi)
-        =E_{P_0}\left[(\varphi^*-\varphi)\frac{\mathrm{d}P_1}{\mathrm{d}P_0}\right]
-        \ge cE_{P_0}(\varphi^*-\varphi)\ge0.
-        \]
-        Thus \(\varphi^*\) has at least as much power.</p>
-    </div>
+<p>For a simple null \(P_0\) and alternative \(P_1\), type I and type II error probabilities are \(P_0\phi\) and \(P_1(1-\phi)\). For composite hypotheses, a single type I number is replaced by the supremum over all null laws, while power remains a function over alternatives.</p>
 
-    <h3>p-values</h3>
-    <p>A p-value \(p(X)\) is valid if \(P_0(p(X)\le u)\le u\) for all \(u\in[0,1]\) and all \(P_0\in H_0\). Small p-values are evidence against the null because they are unlikely under every null distribution.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (consistency and unbiasedness).</span> A sequence \(\phi_n\) is pointwise consistent against \(\mathcal P_1\) if \(P^n\phi_n\to1\) for each fixed \(P\in\mathcal P_1\). A level-\(\alpha\) test is unbiased if
+  \[
+  \inf_{P\in\mathcal P_1}P\phi
+  \ge\sup_{P\in\mathcal P_0}P\phi.
+  \]
+  Uniform consistency over \(\mathcal Q_n\subseteq\mathcal P_1\) requires
+  \[
+  \inf_{P\in\mathcal Q_n}P^n\phi_n\to1.
+  \]</p>
+</div>
+
+<h3>Neyman-Pearson optimality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Neyman-Pearson lemma.</span> Let \(P_0,P_1\) be dominated by \(\mu\), with densities \(p_0,p_1\). Choose \(c\ge0\) and \(\gamma\in[0,1]\) so that
+  \[
+  \phi^\star
+  =1_{\{p_1>cp_0\}}+\gamma1_{\{p_1=cp_0\}}
+  \]
+  has \(P_0\phi^\star=\alpha\), whenever exact equality can be achieved. Then \(\phi^\star\) is most powerful among all tests \(\phi\) with \(P_0\phi\le\alpha\). Conversely, every most powerful test has this form up to null sets, apart from regions on which both densities vanish.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Pointwise,
+  \[
+  (\phi^\star-\phi)(p_1-cp_0)\ge0,
+  \]
+  because \(\phi^\star=1\) where the second factor is positive and \(\phi^\star=0\) where it is negative. Integrating,
+  \[
+  P_1(\phi^\star-\phi)
+  \ge cP_0(\phi^\star-\phi)\ge0.
+  \]
+  Hence \(\phi^\star\) has no smaller power. For the converse, if a most powerful test differs from the likelihood-ratio rule on a set where \(p_1-cp_0\ne0\), the first inequality is strict after exchanging rejection probability between lower- and higher-ratio regions while preserving size, contradicting optimality.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (normal mean).</span> For one observation \(X\sim N(\mu,\sigma^2)\), testing \(\mu=\mu_0\) against \(\mu=\mu_1>\mu_0\) gives
+  \[
+  \log\frac{p_{\mu_1}(X)}{p_{\mu_0}(X)}
+  =\frac{\mu_1-\mu_0}{\sigma^2}X
+  -\frac{\mu_1^2-\mu_0^2}{2\sigma^2}.
+  \]
+  The likelihood ratio is increasing in \(X\), so the most powerful level-\(\alpha\) test rejects when \(X>\mu_0+\sigma z_{1-\alpha}\).</p>
+</div>
+
+<h3>Critical functions and randomization</h3>
+
+<p>Randomization is required for exact size in discrete models. If \(T\) has a discrete null law and \(c\) satisfies
+\[
+P_0(T>c)\le\alpha\le P_0(T\ge c),
+\]
+then
+\[
+\phi=1_{\{T>c\}}+\gamma1_{\{T=c\}},
+\qquad
+\gamma=\frac{\alpha-P_0(T>c)}{P_0(T=c)}
+\]
+has exact level \(\alpha\). Without randomization, the attainable size is usually below \(\alpha\), producing a conservative test.</p>
+
+<h3>Valid p-values</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A measurable \(p:\mathcal X\to[0,1]\) is a valid \(p\)-value for \(\mathcal P_0\) if
+  \[
+  \sup_{P\in\mathcal P_0}P\{p(X)\le u\}\le u
+  \qquad\text{for every }u\in[0,1].
+  \]
+  It is exact under \(P\) if \(p(X)\sim U[0,1]\) under \(P\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Equivalence of p-values and nested tests.</span> If \(p\) is valid, then
+  \[
+  \phi_\alpha=1_{\{p\le\alpha\}}
+  \]
+  is level \(\alpha\) and the rejection regions are nested. Conversely, if \(\{R_\alpha\}_{\alpha\in[0,1]}\) is increasing in \(\alpha\), measurable, right-continuous, and satisfies \(\sup_{P\in\mathcal P_0}P(R_\alpha)\le\alpha\), then
+  \[
+  p(x)=\inf\{\alpha:x\in R_\alpha\}
+  \]
+  is valid.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The forward direction is the defining inequality at \(u=\alpha\). For the converse, right-continuity gives \(\{p\le u\}=R_u\) up to boundary conventions. Therefore
+  \[
+  \sup_{P\in\mathcal P_0}P(p\le u)
+  =\sup_{P\in\mathcal P_0}P(R_u)\le u.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Tail-probability construction.</span> If large values of \(T\) are unfavorable to the null and \(F_P(t)=P(T\le t)\), then
+  \[
+  p(X)=\sup_{P\in\mathcal P_0}P\{T\ge T(X)\}
+  \]
+  is valid when the tail is computed with the appropriate discrete randomization or conservatively with \(\ge\).</p>
+</div>
+
+<p>A \(p\)-value is not \(P(H_0\mid X)\), is not the probability that the result arose “by chance,” and does not quantify effect size. It records how extreme the chosen statistic is under a specified null calibration.</p>
+
+<h3>Local alternatives and detection</h3>
+
+<p>Fixed alternatives often make consistent tests have power tending to one, so first-order comparisons become trivial. Local alternatives \(\theta_n=\theta_0+h/\sqrt n\) retain nondegenerate power. If a standardized statistic satisfies
+\[
+T_n\rightsquigarrow N(0,1)\quad\text{under }\theta_0,
+\qquad
+T_n\rightsquigarrow N(\delta(h),1)
+\quad\text{under }\theta_n,
+\]
+then the one-sided level-\(\alpha\) test has limiting power
+\[
+1-\Phi\{z_{1-\alpha}-\delta(h)\}.
+\]
+The shift \(\delta(h)\) exposes which directions are detectable at the parametric rate.</p>
+
+<h3>Tests as dual objects</h3>
+
+<p>Because \(0\le\phi\le1\), tests lie in \(L^\infty\), while probability laws or signed differences of laws act on them by the pairing \(P\phi\). This functional-analytic viewpoint makes randomization convex and turns comparison of experiments into comparison of attainable risk sets; it is developed in <a href="{{ '/notes/statistical-decision-theory/tests-decision-functions-dual-pairings/' | relative_url }}">tests, decision functions, and dual pairings</a>.</p>

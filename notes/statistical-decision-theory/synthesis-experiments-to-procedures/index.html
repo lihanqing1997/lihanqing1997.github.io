@@ -7,29 +7,128 @@ note_back_url: "/notes/statistical-decision-theory/"
 note_prev_url: "/notes/statistical-decision-theory/random-sample-sizes-and-stopping-rules/"
 ---
 
-<p>The whole note can be read as a pipeline: compare experiments, identify a limit, solve the limit decision problem, and transfer the answer back.</p>
+<p>The organizing object is the experiment. Estimators, tests, confidence sets, posterior actions, and stopping rules are procedures that act on it. Once experiments can be compared or shown to converge, decision results can be transferred without rederiving every procedure from first principles.</p>
 
-    <h3>Experiment comparison pipeline</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The decision-theoretic pipeline is</p>
-        <p>\[
-\mathcal E_n \approx \mathcal E
-\quad\Longrightarrow\quad
-\text{optimal rule in }\mathcal E
-\quad\Longrightarrow\quad
-\text{asymptotic rule in }\mathcal E_n.
-\]</p>
-    </div>
+<h3>Exact simulation</h3>
 
-    <h3>Limit experiment principle</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If the deficiency distance between \(\mathcal E_n\) and \(\mathcal E\) is small on the relevant local parameter set, bounded-loss risks in \(\mathcal E_n\) are close to risks in \(\mathcal E\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \[
+  Q_\theta=P_\theta K
+  \quad\text{for all }\theta,
+  \]
+  then every rule \(\rho\) in \(\mathcal F=\{Q_\theta\}\) has a rule
+  \(K\rho\) in \(\mathcal E=\{P_\theta\}\) with identical risk function. If kernels exist in both directions, the experiments have identical attainable risk sets for every decision problem.</p>
+</div>
 
-    <h3>Transfer proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> A transition from \(\mathcal E_n\) to \(\mathcal E\) transports procedures forward; a transition back transports approximately optimal limit procedures to the original experiment. Total variation controls the risk error.</p>
-    </div>
+<p>Sufficient statistics, deterministic coarsenings, noisy channels, and randomized transformations are all instances of this theorem.</p>
 
-    <h3>Le Cam's organizing idea</h3>
-    <p>Asymptotic statistics becomes simpler when procedures are not studied in isolation. The primary object is the experiment, and estimators, tests, confidence sets, and posteriors are its decision-theoretic shadows.</p>
+<h3>Approximate simulation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \[
+  \delta(\mathcal E_n,\mathcal F_n)\leq\varepsilon_n,
+  \]
+  then every rule in \(\mathcal F_n\) under loss \(0\leq L\leq C\) can be simulated in \(\mathcal E_n\) with risk error at most
+  \(C\varepsilon_n\), uniformly in the parameter. If
+  \[
+  \Delta(\mathcal E_n,\mathcal F_n)\to0,
+  \]
+  all bounded-loss decision values and procedures transfer asymptotically in both directions.</p>
+</div>
+
+<p>This is the strongest reusable conclusion in the note. It applies to procedures not specified when asymptotic equivalence was proved.</p>
+
+<h3>Weak convergence and lower bounds</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If every finite local subexperiment of \(\mathcal E_n\) converges weakly to a limit experiment \(\mathcal E\), then for every finite prior and bounded loss,
+  \[
+  \liminf_n
+  \inf_{\delta_n}r_{\mathcal E_n}(\pi,\delta_n)
+  \geq
+  \inf_\delta r_{\mathcal E}(\pi,\delta).
+  \]
+  Maximizing these Bayes lower bounds over increasingly rich finite priors yields local minimax lower bounds.</p>
+</div>
+
+<p>Weak convergence is enough for lower bounds because a finite prior sees only a finite subexperiment. Constructive upper bounds generally require an explicit estimator, test, or reverse simulation.</p>
+
+<h3>The regular LAN route</h3>
+
+<p>For a smooth finite-dimensional model, the complete argument is:</p>
+<ol>
+  <li>verify DQM and identify the score \(\dot\ell_{\theta_0}\);</li>
+  <li>derive LAN with
+  \[
+  \Delta_n=n^{-1/2}\sum_i\dot\ell_{\theta_0}(X_i),
+  \qquad I=P\dot\ell\dot\ell^\top;
+  \]</li>
+  <li>use Le Cam's first lemma for mutual contiguity;</li>
+  <li>use the third lemma to obtain local mean shifts;</li>
+  <li>solve the Gaussian shift decision problem;</li>
+  <li>derive minimax and convolution lower bounds;</li>
+  <li>construct an efficient one-step, likelihood, or influence-function procedure;</li>
+  <li>verify uniform integrability so distributional limits become risk limits.</li>
+</ol>
+
+<h3>The nonregular route</h3>
+
+<p>When DQM fails, first determine the correct local scale and likelihood-ratio limit. Boundary counts may give Poisson experiments; change points may give compound-Poisson processes; random information gives LAMN; inequality constraints give Gaussian cone experiments. Applying a Gaussian root-\(n\) recipe before identifying the experiment leads to incorrect rates and reference laws.</p>
+
+<h3>From lower bound to attained procedure</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (attainment template).</span> Suppose a limit experiment has optimal rule \(\delta^*\) with bounded continuous risk, and kernels
+  \(K_n:\mathcal E_n\rightsquigarrow\mathcal E\) satisfy
+  \[
+  \sup_{\theta\in\Theta_n}
+  \|P_{n,\theta}K_n-Q_\theta\|_{\mathrm{TV}}\to0.
+  \]
+  Then the composed rules
+  \[
+  \delta_n=K_n\delta^*
+  \]
+  attain the limit risk uniformly on \(\Theta_n\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under \(P_{n,\theta}\), the simulated limit observation has law within \(o(1)\) total variation of \(Q_\theta\). The expected bounded loss after applying \(\delta^*\) therefore differs by \(o(1)\), uniformly in \(\theta\). \(\square\)</p>
+</div>
+
+<p>In practice one often cannot write \(K_n\) explicitly. An asymptotically sufficient central sequence, one-step estimator, multiplier process, or transformed point process acts as a constructive surrogate.</p>
+
+<h3>Four distinct claims</h3>
+
+<p>The following should not be conflated:</p>
+<ol>
+  <li><strong>statistic convergence:</strong> one chosen statistic has a limit law;</li>
+  <li><strong>weak experiment convergence:</strong> all finite likelihood-ratio coordinates converge;</li>
+  <li><strong>asymptotic equivalence:</strong> Le Cam distance tends to zero;</li>
+  <li><strong>procedure optimality:</strong> a rule attains a specified Bayes, minimax, admissibility, or constrained criterion.</li>
+</ol>
+
+<p>Each successive claim contains more decision-theoretic information and needs stronger proof.</p>
+
+<h3>Risk diagnostics</h3>
+
+<p>Before declaring a procedure optimal, specify:</p>
+<ol>
+  <li>the parameter set and local scaling;</li>
+  <li>the action space and loss;</li>
+  <li>whether risk is pointwise, Bayes, minimax, or constrained;</li>
+  <li>whether convergence is pointwise or uniform in local parameters;</li>
+  <li>whether the loss is bounded or requires moment convergence;</li>
+  <li>whether competitors are all rules, regular rules, equivariant rules, or a smaller class.</li>
+</ol>
+
+<p>Efficiency among regular estimators, unrestricted minimaxity, and admissibility are genuinely different conclusions, as the Hodges and James–Stein examples demonstrate.</p>
+
+<h3>Interfaces across the notes</h3>
+
+<p><a href="{{ '/notes/probability-theory/' | relative_url }}">Probability theory</a> supplies Radon–Nikodym derivatives, weak convergence, martingales, Gaussian and Poisson limits. <a href="{{ '/notes/statistical-inference/' | relative_url }}">Statistical inference</a> develops estimators, tests, confidence sets, robustness, and semiparametric efficiency. <a href="{{ '/notes/empirical-processes/' | relative_url }}">Empirical processes</a> proves the uniform laws and random-index controls needed for rich models. <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a> develops posterior contraction and decision procedures beyond the local parametric setting.</p>
+
+<h3>Primary sources</h3>
+
+<p>The experiment-comparison and asymptotic-decision framework follows Le Cam's <em>Asymptotic Methods in Statistical Decision Theory</em>. For modern finite-dimensional LAN, convolution, and minimax formulations, van der Vaart's <em>Asymptotic Statistics</em> is a complementary route. Complete-class, invariance, and shrinkage arguments belong to the classical decision-theory literature initiated by Wald, Blackwell, Hunt, Stein, and their successors.</p>

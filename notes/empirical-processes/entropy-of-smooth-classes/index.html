@@ -8,27 +8,144 @@ note_prev_url: "/notes/empirical-processes/vc-classes/"
 note_next_url: "/notes/empirical-processes/chaining-and-gaussian-comparison/"
 ---
 
-<p>Analytic regularity also controls entropy. Hölder, Sobolev, monotone, convex, and parametric classes each have characteristic entropy rates.</p>
+<p>VC dimension measures combinatorial regularity. Smoothness, compactness, and shape restrictions provide a different source of small entropy: nearby domain points constrain nearby function values. The exponent in the entropy rate records how many local degrees of freedom remain after those analytic constraints are imposed.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A typical entropy rate has the form \(\log N(\varepsilon,\mathcal F,L_p(Q))\lesssim \varepsilon^{-\alpha}\) or \(\log N(\varepsilon,\mathcal F,L_p(Q))\lesssim d\log(A/\varepsilon)\).</p>
-    </div>
+<h3>Parametric Lipschitz families</h3>
 
-    <h3>Entropy rates</h3>
-    <ul>
-        <li>Parametric Lipschitz classes usually have logarithmic entropy in dimension \(d\).</li>
-        <li>Smoothness classes have polynomial entropy whose exponent reflects dimension and regularity.</li>
-        <li>Shape constraints such as monotonicity or convexity give entropy bounds that are neither purely parametric nor arbitrary.</li>
-    </ul>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(\Theta\subset\mathbb R^q\) have diameter at most \(D\), and suppose
+  \[
+  |f_\theta(x)-f_\eta(x)|
+  \leq L(x)\|\theta-\eta\|_2.
+  \]
+  Then, for every \(Q\) with \(\|L\|_{Q,2}<\infty\),
+  \[
+  N\!\left(
+    \varepsilon\|L\|_{Q,2},
+    \{f_\theta:\theta\in\Theta\},L_2(Q)
+  \right)
+  \leq\left(1+\frac{2D}{\varepsilon}\right)^q.
+  \]</p>
+</div>
 
-    <h3>Choosing a rate</h3>
-    <p>This page is the lookup layer: after identifying analytic structure, plug the corresponding entropy rate into GC, Donsker, maximal, or rate theorems.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> An \(\varepsilon\)-net \(\theta_1,\ldots,\theta_N\) of \(\Theta\) induces a net \(f_{\theta_1},\ldots,f_{\theta_N}\), because
+  \[
+  \|f_\theta-f_{\theta_j}\|_{Q,2}
+  \leq\|L\|_{Q,2}\|\theta-\theta_j\|_2.
+  \]
+  Apply the Euclidean volume bound from the preceding page. \(\square\)</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Smoothness entropy heuristic</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> For many \(s\)-smooth functions on a \(d\)-dimensional domain, entropy behaves like \(\varepsilon^{-d/s}\). Thus smoothness lowers complexity, while dimension increases it. Parametric \(d\)-dimensional Lipschitz classes instead usually have entropy \(d\log(1/\varepsilon)\).</p>
-    </div>
+<p>Thus a \(q\)-parameter model has logarithmic entropy
+\[
+\log N(\varepsilon)\lesssim q\log(1/\varepsilon).
+\]
+This is qualitatively smaller than the polynomial entropy of an infinite-dimensional smoothness ball.</p>
 
-    <h3>Geometry lookup</h3>
-    <p>Use this page by matching the class to a known geometry. A monotone class, a convex class, and a Sobolev ball may all be infinite-dimensional, but their entropy rates are different, so they lead to different stochastic rates.</p>
+<h3>Hölder balls</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Write \(s=m+\alpha\), where \(m\in\mathbb N_0\) and \(0<\alpha\leq1\). The Hölder norm on \([0,1]^d\) is
+  \[
+  \|f\|_{C^s}
+  =
+  \max_{|\beta|\leq m}\|D^\beta f\|_\infty
+  +
+  \max_{|\beta|=m}
+  \sup_{x\ne y}
+  \frac{|D^\beta f(x)-D^\beta f(y)|}{\|x-y\|_2^\alpha}.
+  \]
+  Let \(C_M^s([0,1]^d)=\{f:\|f\|_{C^s}\leq M\}\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Kolmogorov–Tikhomirov entropy).</span> For fixed \(d,s,M\), constants \(0<c<C<\infty\) exist such that, for sufficiently small \(\varepsilon\),
+  \[
+  c\varepsilon^{-d/s}
+  \leq
+  \log N(\varepsilon,C_M^s([0,1]^d),\|\cdot\|_\infty)
+  \leq
+  C\varepsilon^{-d/s}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline of the upper bound.</span> Partition the cube into cells of side length
+  \(h\asymp\varepsilon^{1/s}\). On each cell, Taylor's theorem approximates \(f\) by its degree-\(m\) jet at one grid point with error \(O(h^s)=O(\varepsilon)\). Quantize the finitely many derivative values in increments matched to their Taylor coefficients. Hölder compatibility means that, after fixing one cell, only a bounded number of quantized choices is possible across each neighboring face. The logarithm of the total number of compatible codes is therefore proportional to the number of cells, \(h^{-d}\asymp\varepsilon^{-d/s}\), rather than that number times \(\log(1/\varepsilon)\). For the lower bound, place disjoint \(s\)-smooth bumps of height \(\varepsilon\) on a grid of spacing \(h\), and use binary choices of their signs. The resulting \(2^{c h^{-d}}\) functions remain pairwise separated in sup norm. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Donsker threshold).</span> Since \(L_2(P)\)-distance is bounded by sup-norm distance,
+  \[
+  \int_0^1
+  \sqrt{\log N(\varepsilon,C_M^s,L_2(P))}
+  \,\mathrm{d}\varepsilon
+  \lesssim
+  \int_0^1\varepsilon^{-d/(2s)}\,\mathrm{d}\varepsilon.
+  \]
+  The integral is finite exactly when \(s>d/2\). Subject to measurability, a uniformly bounded Hölder ball is therefore universally Donsker when \(s>d/2\).</p>
+</div>
+
+<p>The threshold is not merely decorative. Below it, the class contains too many small-scale oscillations for a supremum-norm Gaussian limit under arbitrary \(P\). It is the same smoothness-versus-dimension balance that appears in nonparametric rates.</p>
+
+<h3>Sobolev balls and compact embeddings</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> On a bounded regular domain \(\Omega\subset\mathbb R^d\), the unit ball of \(W^{s,2}(\Omega)\) satisfies
+  \[
+  \log N(\varepsilon,B_{W^{s,2}},L_2(\Omega))
+  \asymp\varepsilon^{-d/s}.
+  \]
+  In particular, the embedding \(W^{s,2}(\Omega)\hookrightarrow L_2(\Omega)\) is compact for \(s>0\).</p>
+</div>
+
+<p>One way to see the rate is spectral. Expanding in eigenfunctions of an elliptic operator turns the Sobolev ball into an ellipsoid with semiaxes \(a_j\asymp j^{-s/d}\). Covering the first \(m\asymp\varepsilon^{-d/s}\) coordinates and bounding the remaining tail yields the upper rate; packing sign vectors in the first \(m\) suitably scaled coordinates yields the lower rate.</p>
+
+<h3>Shape-constrained classes</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (monotone functions).</span> For the class \(\mathcal M\) of nondecreasing functions \([0,1]\to[0,1]\),
+  \[
+  \log N_{[]}(\varepsilon,\mathcal M,L_2(P))
+  \lesssim\varepsilon^{-1}
+  \]
+  uniformly over probability laws \(P\). Hence \(\mathcal M\) is \(P\)-Donsker for every \(P\).</p>
+</div>
+
+<p>A monotone function may jump and need not be smooth, but it can spend its total variation only once. The entropy exponent \(1\) records this order restriction. Convexity likewise restricts how slopes may change. For uniformly bounded convex functions on a compact convex subset of \(\mathbb R^d\), the characteristic interior sup-norm entropy rate is
+\[
+\log N(\varepsilon)\asymp\varepsilon^{-d/2},
+\]
+with boundary behavior requiring care when no Lipschitz bound is imposed.</p>
+
+<h3>Sequence ellipsoids</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> In \(\ell^2\), let
+  \[
+  \mathcal E(a)=
+  \left\{\theta:\sum_{j\geq1}\frac{\theta_j^2}{a_j^2}\leq1\right\},
+  \qquad a_1\geq a_2\geq\cdots\downarrow0.
+  \]
+  Coordinates with \(a_j\ll\varepsilon\) are invisible at resolution \(\varepsilon\). A useful entropy approximation is
+  \[
+  \log N(\varepsilon,\mathcal E(a),\ell^2)
+  \asymp
+  \sum_{j:a_j\gtrsim\varepsilon}
+  \log\!\left(\frac{a_j}{\varepsilon}\right).
+  \]
+  If \(a_j\asymp j^{-s/d}\), this sum has order \(\varepsilon^{-d/s}\), recovering the Sobolev rate.</p>
+</div>
+
+<h3>Entropy exponents and statistical regimes</h3>
+
+<p>If a local class satisfies
+\[
+\log N(\varepsilon)\asymp\varepsilon^{-\alpha},
+\]
+then its Dudley integral near zero behaves as
+\[
+\int_0^\delta\varepsilon^{-\alpha/2}\,\mathrm{d}\varepsilon.
+\]
+It is finite at zero when \(\alpha<2\), logarithmically critical at \(\alpha=2\), and divergent when \(\alpha>2\). Divergence of this particular integral does not prove that no useful limit or rate exists; it says that global Donsker control by this entropy route is too coarse. Localization, a weaker topology, or problem-specific cancellation may still succeed.</p>

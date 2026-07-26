@@ -8,29 +8,188 @@ note_prev_url: "/notes/statistical-inference/m-estimators-z-estimators/"
 note_next_url: "/notes/statistical-inference/hypothesis-testing-foundations/"
 ---
 
-<p>Empirical likelihood builds likelihood-type inference from moment equations without choosing a parametric distribution.</p>
+<p>Empirical likelihood assigns probabilities directly to the observed sample points and chooses them by entropy maximization subject to estimating equations. It produces likelihood-ratio-shaped confidence regions without specifying a full parametric density, but its feasibility and chi-square calibration depend on the geometry and rank of the moment restrictions.</p>
 
-    <h3>Estimating equations</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Let \(g(x,\theta)\in\mathbb R^r\) satisfy \(P g(X,\theta_0)=0\). The parameter \(\theta_0\) is identified by the moment condition when no other \(\theta\) satisfies it in the relevant model.</p>
-    </div>
+<h3>Moment restrictions and identification</h3>
 
-    <h3>Empirical likelihood</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For fixed \(\theta\), empirical likelihood maximizes \(\prod_{i=1}^n p_i\) over weights \(p_i\ge0\), \(\sum_i p_i=1\), and \(\sum_i p_i g(X_i,\theta)=0\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \[
+  g(x,\theta)\in\mathbb R^r,\qquad \theta\in\Theta\subseteq\mathbb R^p,
+  \]
+  satisfy
+  \[
+  \mathbb E g(X,\theta_0)=0.
+  \]
+  The parameter is locally identified if the Jacobian
+  \[
+  G=\left.\frac{\partial}{\partial\theta^\top}
+  \mathbb E g(X,\theta)\right|_{\theta=\theta_0}
+  \]
+  has column rank \(p\). The model is just identified when \(r=p\) and overidentified when \(r>p\).</p>
+</div>
 
-    <h3>Lagrange multiplier representation</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> When the constrained optimum exists, the weights have the form \(p_i(\theta)=\{n[1+\lambda(\theta)^\top g(X_i,\theta)]\}^{-1}\), where \(\lambda(\theta)\) solves \(\sum_i g(X_i,\theta)/(1+\lambda^\top g(X_i,\theta))=0\).</p>
-    </div>
+<p>Examples include a mean restriction \(g(x,\mu)=x-\mu\), instrumental-variable moments \(g((y,x,z),\beta)=z(y-x^\top\beta)\), and score equations. The moment model contains every law \(P\) satisfying \(Pg_{\theta_0}=0\); it does not otherwise prescribe the distribution.</p>
 
-    <h3>Wilks theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under regularity and correct specification, the empirical likelihood ratio satisfies \(-2\log R(\theta_0)\rightsquigarrow\chi_r^2\) for a fixed \(r\)-dimensional moment restriction. With parameters estimated under constraints, the degrees of freedom match the number of tested restrictions.</p>
-    </div>
+<h3>Empirical likelihood and feasibility</h3>
 
-    <h3>Relation to GMM and bootstrap</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Empirical likelihood is a likelihood-shaped alternative to GMM. Its automatic studentization explains the chi-square limit, while bootstrap calibration is useful for small samples, overidentification, and boundary cases.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For fixed \(\theta\), write \(g_i(\theta)=g(X_i,\theta)\). The empirical likelihood is
+  \[
+  L_n(\theta)
+  =\max\left\{
+  \prod_{i=1}^np_i:
+  p_i\ge0,\ \sum_{i=1}^np_i=1,\
+  \sum_{i=1}^np_ig_i(\theta)=0
+  \right\}.
+  \]
+  Relative to the unconstrained maximum \(n^{-n}\), define
+  \[
+  R_n(\theta)=n^nL_n(\theta)\in[0,1].
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Convex-hull criterion.</span> Feasible weights exist if and only if
+  \[
+  0\in\operatorname{conv}\{g_1(\theta),\ldots,g_n(\theta)\}.
+  \]
+  Strictly positive weights exist if zero lies in the relative interior of this convex hull.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The constraint \(\sum_i p_i g_i=0\) with \(p_i\ge0\) and \(\sum_i p_i=1\) is exactly a representation of zero as a convex combination. All coefficients can be positive precisely for relative-interior points of the finite convex hull.</p>
+</div>
+
+<p>This geometric condition is a genuine finite-sample limitation. If all observed moment vectors lie on one side of a separating hyperplane, empirical likelihood at that \(\theta\) is zero even when the population moment condition is valid.</p>
+
+<h3>Lagrange multiplier representation</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose zero lies in the interior of the convex hull and the vectors \(g_i(\theta)\) span \(\mathbb R^r\). The unique maximizing weights are
+  \[
+  p_i(\theta)
+  =\frac1{n\{1+\lambda(\theta)^\top g_i(\theta)\}},
+  \]
+  where \(\lambda(\theta)\) is the unique solution in
+  \[
+  \Lambda_\theta
+  =\{\lambda:1+\lambda^\top g_i(\theta)>0,\ i=1,\ldots,n\}
+  \]
+  of
+  \[
+  \sum_{i=1}^n
+  \frac{g_i(\theta)}
+  {1+\lambda^\top g_i(\theta)}=0.
+  \]
+  Consequently,
+  \[
+  -2\log R_n(\theta)
+  =2\sum_{i=1}^n
+  \log\{1+\lambda(\theta)^\top g_i(\theta)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Maximize \(\sum_i\log p_i\) under the equality constraints. With multipliers \(\alpha\in\mathbb R\) and \(\gamma\in\mathbb R^r\), stationarity gives
+  \[
+  p_i^{-1}-\alpha-\gamma^\top g_i=0.
+  \]
+  Multiply by \(p_i\), sum over \(i\), and use both constraints to obtain \(\alpha=n\). Put \(\lambda=\gamma/n\), which gives the stated weights; the moment constraint gives the equation for \(\lambda\). Strict concavity of \(\sum_i\log p_i\) gives uniqueness. Substitution into \(R_n=n^n\prod_i p_i\) gives the ratio formula.</p>
+</div>
+
+<h3>Wilks expansion for a fixed moment restriction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Empirical Wilks theorem.</span> Suppose \(\mathbb Eg(X,\theta_0)=0\),
+  \[
+  \Omega=\mathbb E[g(X,\theta_0)g(X,\theta_0)^\top]
+  \]
+  is positive definite, and \(\mathbb E\|g(X,\theta_0)\|^{2+\delta}\lt\infty\) for some \(\delta>0\). Then
+  \[
+  -2\log R_n(\theta_0)\rightsquigarrow\chi_r^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Write \(g_i=g(X_i,\theta_0)\), \(\bar g=P_ng\), and \(\hat\Omega=P_n(gg^\top)\). The moment condition for \(\lambda\) and the expansion \((1+u)^{-1}=1-u+O(u^2)\) give
+  \[
+  0=\bar g-\hat\Omega\lambda
+  +P_n\!\left[
+  g_i\frac{(\lambda^\top g_i)^2}{1+\lambda^\top g_i}
+  \right].
+  \]
+  The moment assumption implies \(\max_i\|g_i\|=o_p(\sqrt n)\), \(\bar g=O_p(n^{-1/2})\), and \(\hat\Omega\to_p\Omega\). Convexity of the dual criterion then yields
+  \[
+  \lambda=\hat\Omega^{-1}\bar g+o_p(n^{-1/2}),
+  \qquad
+  \max_i|\lambda^\top g_i|=o_p(1).
+  \]
+  Expanding \(\log(1+u)=u-u^2/2+O(|u|^3)\),
+  \[
+  -2\log R_n(\theta_0)
+  =2n\lambda^\top\bar g
+  -n\lambda^\top\hat\Omega\lambda+o_p(1)
+  =n\bar g^\top\hat\Omega^{-1}\bar g+o_p(1).
+  \]
+  Finally, \(\sqrt n\,\bar g\rightsquigarrow N(0,\Omega)\) and \(\hat\Omega\to_p\Omega\), so the quadratic form converges to \(\chi_r^2\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (the population mean).</span> For \(g_i(\mu)=X_i-\mu\), the profile empirical likelihood for \(\mu\) uses weights
+  \[
+  p_i(\mu)=\frac1{n\{1+\lambda(X_i-\mu)\}}.
+  \]
+  It is feasible exactly when \(\mu\) lies between the sample minimum and maximum. At the true mean, the empirical likelihood ratio converges to \(\chi_1^2\) without separately inserting a variance estimator.</p>
+</div>
+
+<h3>Profiling over the parameter</h3>
+
+<p>When \(r\ge p\), define
+\[
+\hat\theta_{\mathrm{EL}}\in\arg\max_{\theta\in\Theta}R_n(\theta).
+\]
+Under smooth identification,
+\[
+\sqrt n(\hat\theta_{\mathrm{EL}}-\theta_0)
+\rightsquigarrow
+N\!\left(0,(G^\top\Omega^{-1}G)^{-1}\right).
+\]
+For testing \(q\) smooth restrictions \(a(\theta)=0\), the difference between constrained and unconstrained empirical log-likelihood ratios converges to \(\chi_q^2\). Testing the overidentifying restrictions themselves produces \(r-p\) degrees of freedom.</p>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Uniformly for \(\theta=\theta_0+h/\sqrt n\),
+  \[
+  \sqrt n\,P_ng_\theta
+  =\sqrt n\,P_ng_{\theta_0}+Gh+o_p(1).
+  \]
+  The fixed-\(\theta\) expansion makes the empirical log-likelihood locally equivalent to
+  \[
+  (\sqrt n\,P_ng_{\theta_0}+Gh)^\top
+  \Omega^{-1}
+  (\sqrt n\,P_ng_{\theta_0}+Gh).
+  \]
+  Minimizing this quadratic form yields
+  \[
+  \sqrt n(\hat\theta_{\mathrm{EL}}-\theta_0)
+  =-(G^\top\Omega^{-1}G)^{-1}
+  G^\top\Omega^{-1}\sqrt n\,P_ng_{\theta_0}+o_p(1).
+  \]
+  Orthogonal projection in the \(\Omega^{-1}\) inner product gives the chi-square degrees of freedom for constrained differences.</p>
+</div>
+
+<h3>Relation to GMM and exponential tilting</h3>
+
+<p>The local empirical-likelihood criterion
+\[
+n(P_ng_\theta)^\top\hat\Omega_\theta^{-1}(P_ng_\theta)
+\]
+is the optimally weighted generalized method-of-moments criterion. Empirical likelihood differs globally by choosing weights through reverse Kullback-Leibler divergence from the uniform empirical weights. Exponential tilting instead uses
+\[
+p_i(\theta)\propto e^{\lambda^\top g_i(\theta)},
+\]
+corresponding to the opposite entropy orientation. These generalized empirical likelihood methods share first-order efficiency but differ in higher-order bias and feasibility behavior.</p>
+
+<h3>Misspecification, boundaries, and growing moments</h3>
+
+<p>If no \(\theta\) satisfies \(Pg_\theta=0\), the Lagrange multiplier need not be \(O_p(n^{-1/2})\), and the central chi-square expansion fails. Boundary points can make the convex-hull event nonuniform. If \(r=r_n\) grows with \(n\), remainder control requires dimension-dependent rates, and a fixed-\(r\) Wilks theorem is not valid. Bootstrap or adjusted empirical likelihood can improve calibration, but only after the corresponding high-dimensional or misspecified limit has been established.</p>

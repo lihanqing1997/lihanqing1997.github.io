@@ -71,3 +71,125 @@ When rewards are bounded by \(M\), \(|G_t|\le M/(1-\gamma)\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The distinction is algorithmic, not mathematical: both approaches are approximating consequences of the same MDP law.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Canonical path-space construction</h3>
+
+<p>A discounted Markov decision process is a tuple
+\[
+(\mathsf S,\mathcal S,\mathsf A,\mathcal A,
+P,r,\rho,\gamma),
+\]
+where \(P(\mathrm{d}s'\mid s,a)\) is a Markov kernel,
+\(\rho\) is the initial law, \(r:\mathsf S\times\mathsf A\to\mathbb R\) is
+measurable, and \(0\le\gamma<1\). A history-dependent randomized policy is a
+sequence of kernels
+\[
+\pi_t(\mathrm{d}a_t\mid s_0,a_0,\ldots,s_t).
+\]
+The Ionescu--Tulcea theorem then determines a unique law on trajectories by
+\[
+\rho(\mathrm{d}s_0)
+\prod_{t\ge0}\pi_t(\mathrm{d}a_t\mid h_t)
+P(\mathrm{d}s_{t+1}\mid s_t,a_t).
+\]</p>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> If rewards are bounded by
+\(|r|\le R_{\max}\), the discounted return and performance are
+\[
+G=\sum_{t=0}^{\infty}\gamma^t r(S_t,A_t),
+\qquad
+J_\rho(\pi)=E_\rho^\pi G.
+\]
+They are well defined and
+\(|J_\rho(\pi)|\le R_{\max}/(1-\gamma)\).</p>
+</div>
+
+<h3>Markovization</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Markovization).</span> For any
+history-dependent policy \(\pi\), define, whenever regular conditional laws
+exist,
+\[
+\bar\pi_t(\mathrm{d}a\mid s)
+=\mathbb P^\pi(A_t\in\mathrm{d}a\mid S_t=s).
+\]
+The time-inhomogeneous Markov policy \(\bar\pi\) has the same marginal law of
+\((S_t,A_t)\) at every \(t\), and hence the same expected additive return.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Induct on \(t\). The state law at
+\(t=0\) is \(\rho\). If the state laws agree at \(t\), then the definition of
+\(\bar\pi_t\) makes the joint state-action laws agree. Integrating the common
+joint law against \(P(\mathrm{d}s'\mid s,a)\) gives equal next-state laws. The
+expected reward at each time is therefore equal, and bounded convergence
+justifies summing discounted expectations.</p>
+</div>
+
+<h3>Discounted occupancy measures</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The normalized discounted
+state-action occupancy measure is
+\[
+d_\rho^\pi(B)
+=(1-\gamma)\sum_{t=0}^{\infty}\gamma^t
+\mathbb P_\rho^\pi\{(S_t,A_t)\in B\}.
+\]
+It is a probability measure, and
+\[
+J_\rho(\pi)
+=\frac1{1-\gamma}\int r(s,a)\,d_\rho^\pi(\mathrm{d}s,\mathrm{d}a).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (flow equation).</span> Its state
+marginal \(d_{\rho,S}^\pi\) satisfies
+\[
+d_{\rho,S}^\pi(\mathrm{d}s)
+=(1-\gamma)\rho(\mathrm{d}s)
++\gamma\int P(\mathrm{d}s\mid x,a)
+d_\rho^\pi(\mathrm{d}x,\mathrm{d}a),
+\]
+and, for a stationary Markov policy,
+\(d_\rho^\pi(\mathrm{d}s,\mathrm{d}a)
+=d_{\rho,S}^\pi(\mathrm{d}s)\pi(\mathrm{d}a\mid s)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Separate the \(t=0\) term in the
+discounted state marginal and shift the remaining sum by one. The Markov
+transition formula gives the integral term. The factorization follows from the
+conditional action law under a stationary policy.</p>
+</div>
+
+<h3>Finite, continuous, and average-reward models</h3>
+
+<p>For finite \(\mathsf S,\mathsf A\), bounded rewards and discounting ensure
+existence of an optimal stationary deterministic policy. On Borel spaces, one
+typically assumes compact action sets, upper semicontinuous rewards, and weakly
+continuous transition kernels to obtain measurable maximizers. Without such
+selection hypotheses, Bellman suprema need not be attained.</p>
+
+<p>The average-reward objective
+\[
+\liminf_{T\to\infty}\frac1T
+E^\pi\sum_{t=0}^{T-1}r(S_t,A_t)
+\]
+is not obtained by simply setting \(\gamma=1\): contraction disappears and
+results require recurrence or unichain conditions. Finite-horizon problems
+instead augment the state by time and use backward, time-dependent Bellman
+recursions.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (inventory control).</span> With stock
+\(S_t\), order \(A_t\ge0\), demand \(D_{t+1}\), and
+\(S_{t+1}=S_t+A_t-D_{t+1}\), a reward combining sales, order cost, and holding
+cost yields an MDP. The transition kernel is induced by the demand law. State
+constraints, action-dependent support, and convex costs make this a useful
+continuous-state example where measurable-selection assumptions matter.</p>
+</div>

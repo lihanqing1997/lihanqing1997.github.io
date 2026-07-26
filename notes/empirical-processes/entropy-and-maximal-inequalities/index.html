@@ -8,32 +8,180 @@ note_prev_url: "/notes/empirical-processes/chaining-and-gaussian-comparison/"
 note_next_url: "/notes/empirical-processes/concentration-inequalities/"
 ---
 
-<p>Maximal inequalities turn entropy bounds into bounds on empirical suprema. They are the workhorse estimates behind equicontinuity and rates.</p>
+<p>Entropy describes a class; maximal inequalities convert that description into a numerical bound for its empirical fluctuations. The most useful inequalities are local: an estimator only explores functions close to its target, and their variance can be much smaller than that of the global envelope.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> With envelope \(F\), a representative bound controls \(E^*\|\mathbb G_n\|_{\mathcal F}\) by an entropy integral and norms of \(F\), typically using \(L_2(P)\), \(L_2(P_n)\), or Orlicz norms.</p>
-    </div>
+<h3>Uniform entropy inequality</h3>
 
-    <h3>Entropy maximal bounds</h3>
-    <ul>
-        <li>Uniform entropy inequalities are distribution-robust but often require an envelope.</li>
-        <li>Bracketing inequalities are distribution-specific and useful for delicate smoothness classes.</li>
-        <li>Tail versions convert expectation bounds into high-probability controls.</li>
-    </ul>
-
-    <h3>Local rate calculations</h3>
-    <p>When a proof needs \(o_p(1)\), \(O_p(1)\), or a local rate for a supremum, this is usually the page to use.</p>
-
-    <!-- expanded-learning -->
-    <h3>Localized maximal inequality</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> A typical localized maximal inequality has the schematic form
+<p>Let \(F\) be an envelope and define
 \[
-E^*\sup_{f\in\mathcal F:\,Pf^2\le\delta^2}|\mathbb G_nf|
-\lesssim J(\delta,\mathcal F)\|F\|_{P,2},
-\]
-where \(J\) is an entropy integral. Local versions are often much sharper than global ones.</p>
-    </div>
+J(\delta,\mathcal F,F)
+=
+\sup_Q\int_0^\delta
+\sqrt{1+\log N\!\left(
+  \varepsilon\|F\|_{Q,2},
+  \mathcal F,L_2(Q)
+\right)}
+\,\mathrm{d}\varepsilon.
+\]</p>
 
-    <h3>Localizing before bounding</h3>
-    <p>In rate proofs, do not immediately bound the whole class. First localize around the estimator or target, estimate the entropy of the localized class, and then solve the balance with deterministic curvature.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(0\in\mathcal F\), the class is suitably measurable, \(PF^2<\infty\), and \(J(1,\mathcal F,F)<\infty\). Then
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F}
+  \leq C J(1,\mathcal F,F)\|F\|_{P,2}
+  \]
+  for a universal constant \(C\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Symmetrization gives
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F}
+  \leq2E^*E_\varepsilon
+  \left\|\frac1{\sqrt n}\sum_{i=1}^n\varepsilon_if(X_i)\right\|_{\mathcal F}.
+  \]
+  Conditional on the data, the sign process is sub-Gaussian under \(L_2(P_n)\), has diameter at most \(2\|F\|_{P_n,2}\), and its normalized covering numbers are bounded by the uniform entropy. Dudley's theorem therefore gives
+  \[
+  E_\varepsilon\|\mathbb G_n^\varepsilon\|_{\mathcal F}
+  \leq C J(1,\mathcal F,F)\|F\|_{P_n,2}.
+  \]
+  Jensen's inequality yields
+  \(E\|F\|_{P_n,2}\leq(PF^2)^{1/2}\). Combine the three displays. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (VC-type class).</span> If
+  \[
+  \sup_QN\!\left(
+    \varepsilon\|F\|_{Q,2},
+    \mathcal F,L_2(Q)
+  \right)
+  \leq(A/\varepsilon)^v,
+  \qquad 0<\varepsilon\leq1,
+  \]
+  then
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F}
+  \lesssim\sqrt v\,\|F\|_{P,2}
+  \]
+  when \(A\) is regarded as a fixed constant.</p>
+</div>
+
+<h3>Localized VC-type bounds</h3>
+
+<p>Suppose now that every \(f\in\mathcal F\) satisfies \(Pf^2\leq\delta^2\), while \(\|F\|_\infty\leq b\). A global bound pays \(\|F\|_{P,2}\), which may be much larger than \(\delta\). Bernstein rather than purely sub-Gaussian chaining captures the smaller variance.</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (localized maximal inequality).</span> Under the VC-type covering bound
+  \[
+  \sup_QN(\varepsilon\|F\|_{Q,2},\mathcal F,L_2(Q))
+  \leq(A/\varepsilon)^v,
+  \]
+  with \(|f|\leq b\) and \(\sup_fPf^2\leq\delta^2\), one has
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F}
+  \leq C\left[
+    \delta\sqrt{v\log\!\left(\frac{A b}{\delta}\right)}
+    +
+    \frac{vb}{\sqrt n}
+    \log\!\left(\frac{A b}{\delta}\right)
+  \right],
+  \]
+  whenever \(0<\delta\leq b\), with a universal \(C\).</p>
+</div>
+
+<p>The first term is the Gaussian fluctuation at variance scale \(\delta^2\). The second is the finite-sample price for bounded but non-Gaussian increments. It becomes negligible when
+\[
+\sqrt n\,\delta
+\gg\sqrt{v\log(Ab/\delta)}.
+\]</p>
+
+<h3>Bracketing maximal inequality</h3>
+
+<p>For distribution-specific classes define
+\[
+J_{[]}(\delta,\mathcal F,L_2(P))
+=\int_0^\delta
+\sqrt{1+\log N_{[]}(\varepsilon,\mathcal F,L_2(P))}
+\,\mathrm{d}\varepsilon.
+\]</p>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose \(\mathcal F\) is measurable, \(Pf^2\leq\delta^2\) for every \(f\in\mathcal F\), and \(|f|\leq b\). A standard bracketing bound is
+  \[
+  E^*\|\mathbb G_n\|_{\mathcal F}
+  \leq
+  C J_{[]}(\delta,\mathcal F,L_2(P))
+  \left[
+    1+
+    \frac{b\,J_{[]}(\delta,\mathcal F,L_2(P))}
+         {\delta^2\sqrt n}
+  \right].
+  \]</p>
+</div>
+
+<p>The first factor accumulates bracket increments. The correction appears because a bracket controls \(L_2(P)\)-width but its empirical width is random; truncation and Bernstein's inequality compare the two.</p>
+
+<h3>Peeling</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma (peeling principle).</span> Let \(r(f)\geq0\) be a size functional and define shells
+  \[
+  \mathcal F_j
+  =\{f:2^{j-1}r_0<r(f)\leq2^jr_0\},
+  \qquad j\geq1.
+  \]
+  For any nonnegative threshold \(a(r)\),
+  \[
+  P^*\!\left\{\sup_{r(f)>r_0}\frac{|Z_n(f)|}{a(r(f))}>1\right\}
+  \leq
+  \sum_{j\geq1}
+  P^*\!\left\{
+    \sup_{f\in\mathcal F_j}|Z_n(f)|
+    >
+    \inf_{2^{j-1}r_0<r\leq2^jr_0}a(r)
+  \right\}.
+  \]</p>
+</div>
+
+<p>Peeling turns a family of local bounds into one uniform statement. It is used in estimator-rate proofs because the random estimator may lie in any shell, while deterministic curvature grows with distance from the target.</p>
+
+<h3>Balancing fluctuation and curvature</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (rate template).</span> Let \(\hat\theta_n\) nearly maximize \(M_n(\theta)\), and suppose for \(d(\theta,\theta_0)\leq r_0\),
+  \[
+  M(\theta)-M(\theta_0)\leq-c\,d(\theta,\theta_0)^\alpha,
+  \qquad \alpha>1.
+  \]
+  If
+  \[
+  E^*\sup_{d(\theta,\theta_0)\leq r}
+  |\mathbb G_n(m_\theta-m_{\theta_0})|
+  \lesssim\phi(r),
+  \]
+  where \(\phi(r)/r^\alpha\) is nonincreasing, then a candidate rate \(r_n\) is determined by
+  \[
+  \phi(r_n)\asymp\sqrt n\,r_n^\alpha.
+  \]
+  Under consistency and suitable tail bounds, \(d(\hat\theta_n,\theta_0)=O_p(r_n)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> On the shell \(2^{j-1}r_n<d(\theta,\theta_0)\leq2^jr_n\), deterministic loss is at least order \(2^{j\alpha}r_n^\alpha\). The stochastic oscillation is of order
+  \(n^{-1/2}\phi(2^jr_n)\), which is at most a constant times
+  \(2^{j\alpha}r_n^\alpha\) by the monotonicity assumption and the balancing equation. A maximal inequality followed by Markov or concentration makes the probability that fluctuation defeats curvature summable over sufficiently large shells. \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> If local entropy produces
+  \(\phi(r)\asymp r^{1-\alpha_0/2}\) with entropy exponent \(0<\alpha_0<2\), and the criterion has quadratic curvature \(\alpha=2\), then
+  \[
+  r_n^{1-\alpha_0/2}\asymp\sqrt n\,r_n^2,
+  \qquad
+  r_n\asymp n^{-1/(2+\alpha_0)}.
+  \]
+  This is the familiar nonparametric rate generated by a complexity exponent \(\alpha_0\).</p>
+</div>
+
+<p>The next page adds deviation inequalities. Expectation bounds identify the scale; concentration states how reliably the process remains near that scale.</p>

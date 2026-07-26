@@ -64,3 +64,83 @@ b^*=\frac{\mathbb E(G\|Z\|_2^2)}{\mathbb E\|Z\|_2^2}.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> A critic, generalized advantage estimation, and learned value baselines all try to approximate the conditional expectation structure that removes avoidable return noise while preserving the policy-gradient mean.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Why state baselines are unbiased</h3>
+
+<div class="math-statement lemma">
+<p><span class="statement-title">Lemma.</span> For any integrable \(b(S)\),
+\[
+E_{d^\pi}\{b(S)\nabla_\theta\log\pi_\theta(A\mid S)\}=0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on \(S=s\),
+\[
+E_\pi\nabla_\theta\log\pi_\theta(A\mid s)
+=\int\nabla_\theta\pi_\theta(a\mid s)\,\mathrm{d}a
+=\nabla_\theta1=0.
+\]
+Multiply by \(b(s)\) and average over states.</p>
+</div>
+
+<p>An action-dependent baseline is generally biased unless its expected score
+product vanishes or an analytic correction is added. This distinction matters
+for learned control variates.</p>
+
+<h3>The variance-minimizing scalar baseline</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Conditional on state \(s\),
+let \(Z=\nabla\log\pi(A\mid s)\) and let \(Y\) be an unbiased action-value
+target. Among scalar baselines \(b(s)\), the one minimizing
+\(E[\|Z\|^2(Y-b)^2\mid s]\) is
+\[
+b^*(s)
+=\frac{E[\|Z\|^2Y\mid s]}{E[\|Z\|^2\mid s]}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate the conditional
+quadratic in \(b\):
+\[
+-2E[\|Z\|^2(Y-b)\mid s]=0.
+\]
+Strict convexity holds when \(E(\|Z\|^2\mid s)>0\).</p>
+</div>
+
+<p>The value baseline \(V^\pi(s)=E(Q^\pi\mid s)\) is optimal only when
+\(\|Z\|^2\) is conditionally constant or uncorrelated with \(Q^\pi\). It is
+nevertheless natural, stable, and often close to optimal.</p>
+
+<h3>Reward-to-go as Rao--Blackwellization</h3>
+
+<p>In a trajectory score estimator, multiplying the score at time \(t\) by
+rewards received before \(t\) adds zero mean noise because those rewards are
+measurable before action \(A_t\). Replacing total return by reward-to-go removes
+these causally irrelevant terms. This is a conditional-expectation
+variance reduction: it preserves the gradient while reducing second moment.</p>
+
+<h3>Generalized advantage estimation</h3>
+
+<p>For an approximate value \(V_\phi\), define
+\[
+\delta_t^\phi=R_{t+1}+\gamma V_\phi(S_{t+1})-V_\phi(S_t),
+\qquad
+\widehat A_t^{\mathrm{GAE}(\lambda)}
+=\sum_{l\ge0}(\gamma\lambda)^l\delta_{t+l}^\phi.
+\]
+With exact \(V^\pi\), this is an unbiased conditional advantage estimator for
+\(\lambda=1\); smaller \(\lambda\) introduces bias when \(V_\phi\ne V^\pi\)
+but shortens the noise horizon. GAE is the policy-gradient analogue of
+TD(lambda), not a universally unbiased advantage estimate.</p>
+
+<h3>Further control variates</h3>
+
+<p>Action-dependent control variates can use reparameterization gradients,
+quadratic critics, or known conditional expectations. In off-policy settings,
+doubly robust scores combine a value model with importance weighting. The
+design principle is always the same: subtract a correlated mean-zero term whose
+expectation is known under the law that defines the gradient.</p>

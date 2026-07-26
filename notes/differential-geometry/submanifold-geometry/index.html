@@ -8,24 +8,119 @@ note_prev_url: "/notes/differential-geometry/curvature-tensors/"
 note_next_url: "/notes/differential-geometry/lie-groups-and-lie-algebras/"
 ---
 
-<p>Submanifold geometry records the objects, main results, proof mechanisms, and boundary cases needed for the differential geometry note.</p>
+<p>An embedded submanifold inherits an intrinsic metric, but its bending in
+the ambient manifold is captured by the second fundamental form. The Gauss,
+Codazzi, and Ricci equations relate intrinsic curvature to this extrinsic
+data.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a submanifold of a Riemannian manifold, ambient derivatives split into tangential and normal parts. The normal part is the second fundamental form.</p>
-    </div>
+<h3>Tangential and normal decomposition</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The Gauss equation relates intrinsic curvature of a submanifold to ambient curvature and the second fundamental form.</p>
-    </div>
+<p>Let \(i:M^m\hookrightarrow(\overline M^{m+k},\overline g)\) be an isometric
+immersion. Along \(M\),
+\[
+T\overline M|_M=TM\oplus NM.
+\]
+For tangent fields \(X,Y\), decompose the ambient derivative:
+\[
+\overline\nabla_XY=\nabla_XY+\mathrm{II}(X,Y),
+\]
+where \(\nabla_XY\) is tangential and
+\(\mathrm{II}(X,Y)\in NM\) is the second fundamental form.</p>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Decompose the ambient Levi-Civita connection into tangent and normal components, then compare curvature expressions before and after projection.</p>
-    </div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The tangential component
+is the Levi-Civita connection of the induced metric, and
+\(\mathrm{II}\) is a symmetric \(NM\)-valued bilinear form.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Submanifold geometry separates what is intrinsic from what depends on the embedding. This distinction is central in classical surface theory.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Orthogonal projection preserves
+the connection rules. Ambient metric compatibility descends to the
+tangential component. Ambient torsion-freeness gives
+\[
+0=\overline\nabla_XY-\overline\nabla_YX-[X,Y].
+\]
+Separating tangential and normal components proves both that \(\nabla\) is
+torsion free and that \(\mathrm{II}(X,Y)=\mathrm{II}(Y,X)\).</p>
+</div>
+
+<h3>Shape operator and mean curvature</h3>
+
+<p>For a normal field \(\nu\), the Weingarten equation is
+\[
+\overline\nabla_X\nu=-A_\nu X+\nabla_X^\perp\nu,
+\]
+and
+\[
+g(A_\nu X,Y)=\overline g(\mathrm{II}(X,Y),\nu).
+\]
+For a hypersurface with unit normal \(\nu\), eigenvalues of \(A=A_\nu\) are
+the principal curvatures. The mean-curvature vector is
+\[
+H=\frac1m\operatorname{tr}_g\mathrm{II}.
+\]
+The immersion is minimal exactly when \(H=0\).</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (round sphere).</span> For
+\(S^m(r)\subset\mathbb R^{m+1}\) with outward normal \(\nu=x/r\),
+\[
+\overline\nabla_X\nu=\frac1rX.
+\]
+With the convention above, \(A=-r^{-1}I\) and
+\(\mathrm{II}(X,Y)=-r^{-1}g(X,Y)\nu\). Reversing the normal reverses these
+signs but not the intrinsic curvature.</p>
+</div>
+
+<h3>Gauss and Codazzi equations</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Gauss equation).</span>
+\[
+\begin{aligned}
+g(R(X,Y)Z,W)
+={}&\overline g(\overline R(X,Y)Z,W)\\
+&+\overline g(\mathrm{II}(X,W),\mathrm{II}(Y,Z))
+-\overline g(\mathrm{II}(X,Z),\mathrm{II}(Y,W)).
+\end{aligned}
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Expand
+\(\overline R(X,Y)Z\) using
+\(\overline\nabla_XY=\nabla_XY+\mathrm{II}(X,Y)\), then take its tangential
+component and pair with \(W\). Derivatives of \(\mathrm{II}\) contribute only
+normal components; the tangential parts of differentiating a normal field are
+converted to shape operators by the Weingarten equation.</p>
+</div>
+
+<p>For a surface in \(\mathbb R^3\), the ambient curvature vanishes and the
+Gauss equation gives
+\[
+K=\det A=k_1k_2.
+\]
+Thus Gaussian curvature, apparently defined through bending in space, is
+intrinsic. This is Gauss's <em>Theorema Egregium</em>.</p>
+
+<p>The Codazzi equation controls covariant derivatives of \(\mathrm{II}\):
+\[
+(\nabla_X\mathrm{II})(Y,Z)-(\nabla_Y\mathrm{II})(X,Z)
+=(\overline R(X,Y)Z)^\perp.
+\]
+Together with the normal Ricci equation, these are the compatibility
+conditions for reconstructing an immersion from first and second fundamental
+forms.</p>
+
+<h3>First variation of volume</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For a compactly supported
+normal variation with field \(V\),
+\[
+\left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_0
+\operatorname{Vol}(M_t)
+=-m\int_M\overline g(H,V)\,\mathrm{d}V_g.
+\]
+Hence minimal submanifolds are precisely critical points of volume.</p>
+</div>

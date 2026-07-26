@@ -8,24 +8,121 @@ note_prev_url: "/notes/differential-equations/heat-equation/"
 note_next_url: "/notes/differential-equations/conservation-laws/"
 ---
 
-<p>Wave equation records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>The wave equation transports energy rather than dissipating it. Its finite
+propagation speed sharply contrasts with the instantaneous influence of heat
+flow and provides the model for hyperbolic equations.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The wave equation \(\partial_t^2u-c^2\Delta u=0\) models propagation with finite speed. Initial displacement and velocity determine the solution.</p>
-    </div>
+<h3>D'Alembert's formula</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Energy for the wave equation is conserved under suitable boundary conditions: \(E(t)=\frac12\int(|\partial_tu|^2+c^2|\nabla u|^2)\,\mathrm{d}x\) is constant.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> The solution of
+\[
+u_{tt}-c^2u_{xx}=0,\qquad u(x,0)=f(x),\quad u_t(x,0)=g(x),
+\]
+on \(\mathbb R\) is
+\[
+u(x,t)=\frac{f(x-ct)+f(x+ct)}2
++\frac1{2c}\int_{x-ct}^{x+ct}g(y)\,\mathrm{d}y.
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Multiply the equation by \(\partial_tu\), integrate in space, and integrate by parts. Boundary terms vanish under decay, periodic, or compatible boundary conditions.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Introduce characteristic
+coordinates \(\xi=x+ct\), \(\eta=x-ct\). Since
+\[
+\partial_t^2-c^2\partial_x^2=-4c^2\partial_\xi\partial_\eta,
+\]
+every \(C^2\)-solution has the form \(F(\xi)+G(\eta)\). The two initial
+conditions give
+\[
+F(x)+G(x)=f(x),\qquad cF'(x)-cG'(x)=g(x).
+\]
+Integrating the second identity and combining it with the first yields the
+stated formula.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Hyperbolic equations preserve and transport information rather than immediately smoothing it.</p>
-    </div>
+<p>The value at \((x,t)\) depends only on data in
+\([x-ct,x+ct]\). Disturbances therefore travel no faster than \(c\).</p>
+
+<h3>Energy conservation and uniqueness</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (energy identity).</span> For a
+smooth solution on \(\mathbb R^n\) that decays sufficiently rapidly,
+\[
+E(t)=\frac12\int_{\mathbb R^n}
+\bigl(|u_t(x,t)|^2+c^2|\nabla u(x,t)|^2\bigr)\,\mathrm{d}x
+\]
+is constant.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Multiply
+\(u_{tt}-c^2\Delta u=0\) by \(u_t\), integrate by parts, and obtain
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}E(t)
+=\int u_tu_{tt}+c^2\nabla u\cdot\nabla u_t\,\mathrm{d}x
+=\int u_t(u_{tt}-c^2\Delta u)\,\mathrm{d}x=0.
+\]
+Applied to the difference of two solutions, conservation of zero initial
+energy proves uniqueness.</p>
+</div>
+
+<h3>Finite propagation in several dimensions</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (domain of dependence).</span>
+If the initial displacement and velocity vanish in the ball
+\(B(x_0,cT)\), then \(u(x_0,T)=0\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrate the local energy
+density
+\[
+e=\tfrac12(u_t^2+c^2|\nabla u|^2)
+\]
+over the shrinking ball \(B(x_0,c(T-t))\). The local conservation law
+\[
+\partial_t e-\nabla\!\cdot(c^2u_t\nabla u)=0
+\]
+and Reynolds' transport formula show that the cone energy is nonincreasing;
+the boundary flux is nonpositive by
+\(2|u_t\partial_\nu u|\le c^{-1}u_t^2+c|\partial_\nu u|^2\).
+It starts at zero, hence remains zero up to the cone vertex.</p>
+</div>
+
+<h3>Higher-dimensional formulas</h3>
+
+<p>In three dimensions, Kirchhoff's formula reads
+\[
+u(x,t)=\partial_t\!\left[
+\frac{t}{4\pi}\int_{S^2}f(x+ct\omega)\,\mathrm{d}\omega
+\right]
++\frac{t}{4\pi}\int_{S^2}g(x+ct\omega)\,\mathrm{d}\omega ,
+\]
+after the customary scaling by \(c\). Only data on the sphere
+\(|y-x|=ct\) enter; this is Huygens' principle. In two dimensions, the
+formula averages over the whole disk, so a trailing tail remains inside the
+light cone.</p>
+
+<h3>Weak solutions and forcing</h3>
+
+<p>For \(f\in H_0^1(\Omega)\) and \(g\in L^2(\Omega)\), a finite-energy weak
+solution satisfies
+\[
+u\in C([0,T];H_0^1(\Omega)),\qquad
+u_t\in C([0,T];L^2(\Omega))
+\]
+and
+\[
+\langle u_{tt},v\rangle+c^2\int_\Omega\nabla u\cdot\nabla v\,\mathrm{d}x
+=\langle F,v\rangle
+\]
+for every \(v\in H_0^1(\Omega)\). Galerkin approximation in Laplacian
+eigenfunctions, uniform energy estimates, weak compactness, and uniqueness
+give existence. For an abstract positive self-adjoint operator \(A\),
+\[
+u(t)=\cos(tA^{1/2})f+A^{-1/2}\sin(tA^{1/2})g
++\int_0^t A^{-1/2}\sin((t-s)A^{1/2})F(s)\,\mathrm{d}s.
+\]</p>

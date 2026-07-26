@@ -69,3 +69,139 @@ With normalized weights, this equals \(e^{-\alpha}(1-e_t)+e^\alpha e_t\). Differ
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The empirical margin distribution can explain why more rounds need not immediately overfit. Generalization, however, still depends on weak learner complexity, shrinkage, sample size, and noise.</p>
     </div>
+
+<h3>The weight recursion</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let
+  \[
+  D_t(i)=\frac{\exp\{-y_iF_{t-1}(x_i)\}}
+  {\sum_j\exp\{-y_jF_{t-1}(x_j)\}}.
+  \]
+  After choosing \(h_t\) and
+  \(\alpha_t=\frac12\log\{(1-e_t)/e_t\}\), AdaBoost updates
+  \[
+  D_{t+1}(i)=
+  \frac{D_t(i)e^{-\alpha_ty_ih_t(x_i)}}{Z_t},
+  \qquad
+  Z_t=2\sqrt{e_t(1-e_t)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Since
+  \(F_t=F_{t-1}+\alpha_th_t\), substitution into the exponential weights gives the recursion. The normalization is
+  \(Z_t=(1-e_t)e^{-\alpha_t}+e_te^{\alpha_t}\), which at the optimal step equals \(2\sqrt{e_t(1-e_t)}\).</p>
+</div>
+
+<p>Misclassified observations are multiplied by \(e^{\alpha_t}\), while correctly classified observations are multiplied by \(e^{-\alpha_t}\). The next weak learner is therefore fitted against the current margin failures.</p>
+
+<h3>Weak learnability and separability</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A weak learner class
+  \(\mathcal H\) has edge \(\gamma>0\) on a sample if, for every distribution
+  \(D\) on the observations, there exists \(h\in\mathcal H\) with
+  \[
+  \sum_iD(i)y_ih(x_i)\ge2\gamma.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If every AdaBoost round obtains edge at least \(\gamma\), then
+  \[
+  P_n\{YF_T(X)\le0\}\le e^{-2T\gamma^2}.
+  \]
+  Thus \(T\ge\log(1/\varepsilon)/(2\gamma^2)\) rounds suffice for empirical error at most \(\varepsilon\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> This is the training-error product bound with every \(\gamma_t\ge\gamma\):
+  \(\prod_tZ_t\le\prod_te^{-2\gamma_t^2}\le e^{-2T\gamma^2}\).</p>
+</div>
+
+<h3>Functional gradient descent</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For an additive model \(F\) and differentiable loss
+  \[
+  \mathcal L(F)=\frac1n\sum_{i=1}^n\ell(Y_i,F(X_i)),
+  \]
+  the negative functional gradient evaluated at the data is the pseudo-response
+  \[
+  r_i=-\frac{\partial}{\partial u}\ell(Y_i,u)
+  \bigg|_{u=F(X_i)}.
+  \]
+  Gradient boosting selects \(h_t\in\mathcal H\) that approximates
+  \(r=(r_1,\ldots,r_n)\) and updates
+  \(F_t=F_{t-1}+\nu\alpha_th_t\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For a direction \(h\),
+  \[
+  \left.\frac{\mathrm{d}}{\mathrm{d}\alpha}
+  \mathcal L(F+\alpha h)\right|_{\alpha=0}
+  =\frac1n\sum_i
+  \partial_2\ell(Y_i,F(X_i))h(X_i)
+  =-\frac1n\sum_ir_ih(X_i).
+  \]
+  Maximizing correlation with \(r\) therefore chooses the steepest available descent direction in the span of weak learners.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For squared loss,
+  \(r_i=Y_i-F(X_i)\), so each tree or weak learner fits current residuals.
+  For logistic deviance with \(Y\in\{0,1\}\) and probability
+  \(p_F=(1+e^{-F})^{-1}\), \(r_i=Y_i-p_F(X_i)\), the usual likelihood score residual.</p>
+</div>
+
+<h3>Stagewise paths and \(\ell^1\) geometry</h3>
+
+<p>When \(\mathcal H=\{\pm h_1,\ldots,\pm h_M\}\), an additive model is
+\(F=\sum_j\beta_jh_j\). Infinitesimal forward stagewise updates change one coefficient at a time in its descent direction. Under positive-cone conditions, this path coincides with the Lasso path; more generally it is a monotone \(\ell^1\)-regularized path. The number of rounds and shrinkage \(\nu\) control the path length \(\sum_j|\beta_j|\).</p>
+
+<h3>Maximum margin as an implicit limit</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> On separable data, minimizing exponential loss over the linear span of weak learners drives coefficient norm to infinity, but under suitable nondegeneracy the normalized direction converges toward the solution of
+  \[
+  \max_{\|\beta\|_1\le1}\min_i
+  y_i\sum_j\beta_jh_j(x_i).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Along a ray \(c\beta\), exponential loss is dominated as \(c\to\infty\) by the smallest margin:
+  \[
+  \log\sum_i e^{-c y_iF_\beta(x_i)}
+  =-c\min_i y_iF_\beta(x_i)+O(1).
+  \]
+  Thus directions with larger minimum normalized margin eventually have exponentially smaller loss. Coordinate-descent dynamics must be controlled to turn this variational observation into convergence, but the limiting optimization problem follows from the log-sum-exp asymptotics.</p>
+</div>
+
+<h3>Margin-distribution generalization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose
+  \(h(x)\in[-1,1]\) for \(h\in\mathcal H\), and let
+  \(F\) lie in the \(\ell^1\)-convex hull of \(\mathcal H\).
+  With high probability, for every \(\theta>0\),
+  \[
+  P(YF(X)\le0)
+  \lesssim P_n(YF(X)\le\theta)
+  +\frac1\theta
+  \sqrt{\frac{d\log^2(n/d)+\log(1/\delta)}{n}},
+  \]
+  when \(\mathcal H\) has VC dimension \(d\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Approximate a convex combination by an average of finitely many independently sampled base classifiers. Hoeffding controls the approximation of margins, while Sauer-Shelah controls the number of label patterns of each sampled base learner. Apply a union bound to the resulting finite approximating class and optimize the number of sampled learners.</p>
+</div>
+
+<h3>Noise sensitivity and robust alternatives</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Exponential loss assigns unbounded weight to large negative margins, so a persistently mislabeled point can dominate late rounds. Logistic loss grows only linearly in the negative tail, and truncated or robust boosting losses limit this leverage. Shrinkage, tree-depth control, subsampling, and early stopping are therefore not merely computational conveniences; they alter statistical robustness.</p>
+</div>

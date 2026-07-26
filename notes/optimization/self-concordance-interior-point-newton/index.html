@@ -8,24 +8,160 @@ note_prev_url: "/notes/optimization/line-search-trust-regions/"
 note_next_url: "/notes/optimization/proximal-maps-moreau-envelopes/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Self-concordance and interior-point Newton methods.</p>
+<p>Ordinary Lipschitz-Hessian analysis uses a fixed Euclidean scale and is not
+well adapted to logarithmic barriers, whose curvature diverges near the
+boundary. Self-concordance controls the third derivative relative to the local
+Hessian metric and makes Newton's method quantitatively invariant to this
+changing scale.</p>
 
-    <h3>Barrier method</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For constraints \(g_i(x)<0\), a barrier method minimizes \(f(x)+t^{-1}\Phi(x)\), often with \(\Phi(x)=-\sum_i\log(-g_i(x))\), and follows the central path as \(t\to\infty\).</p>
-    </div>
+<h3>Self-concordance in the local Hessian norm</h3>
 
-    <h3>Self-concordance</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A convex function is self-concordant if its third derivative is controlled by its second derivative. This condition makes Newton decrements quantitatively reliable.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A \(C^3\) convex
+    function \(F\) on an open convex domain is self-concordant if
+    \[
+    |D^3F(x)[h,h,h]|
+    \le2\bigl(D^2F(x)[h,h]\bigr)^{3/2}
+    \qquad(x,h).
+    \]
+    When \(H_x=\nabla^2F(x)\succ0\), define
+    \[
+    \|h\|_x=(h^\top H_xh)^{1/2},\qquad
+    \|u\|_{x,*}=(u^\top H_x^{-1}u)^{1/2}.
+    \]</p>
+</div>
 
-    <h3>Newton decrement</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For self-concordant barriers, the Newton decrement controls both distance to the local minimizer and the decrease obtained by a damped Newton step. This yields polynomial iteration complexity for interior-point methods.</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Hessian variation.</span> If \(F\) is
+    self-concordant and \(\|h\|_x<1\), then
+    \[
+    (1-\|h\|_x)^2H_x
+    \preceq H_{x+h}
+    \preceq(1-\|h\|_x)^{-2}H_x.
+    \]</p>
+</div>
 
-    <h3>Geometry</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Interior-point methods replace hard constraints by a curved metric that becomes singular at the boundary, steering iterates through the feasible interior.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For a fixed direction \(v\),
+    let \(\phi(t)=v^\top H_{x+th}v\). Polarization of the self-concordance
+    inequality yields
+    \[
+    |\phi'(t)|\le2\|h\|_{x+th}\phi(t).
+    \]
+    Applying the defining inequality first to
+    \(h^\top H_{x+th}h\) shows
+    \(\|h\|_{x+th}\le\|h\|_x/(1-t\|h\|_x)\).
+    Integrating the differential inequality for
+    \(\log\phi(t)\) from \(0\) to \(1\) gives the two matrix bounds.</p>
+</div>
+
+<h3>Newton decrement and damped steps</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> The Newton direction
+    and decrement are
+    \[
+    p_N(x)=-H_x^{-1}\nabla F(x),\qquad
+    \lambda(x)=\|p_N(x)\|_x
+      =\|\nabla F(x)\|_{x,*}.
+    \]</p>
+</div>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Self-concordant Newton estimates.</span>
+    Let \(F\) be closed, strictly convex, and self-concordant, with minimizer
+    \(x^\star\). If \(\lambda(x)<1\), then
+    \[
+    F(x)-F(x^\star)
+    \le-\lambda(x)-\log(1-\lambda(x)).
+    \]
+    The damped step
+    \[
+    x^+=x+\frac1{1+\lambda(x)}p_N(x)
+    \]
+    satisfies
+    \[
+    F(x)-F(x^+)
+    \ge\lambda(x)-\log(1+\lambda(x)).
+    \]
+    Once \(\lambda(x)\) is sufficiently small, the full Newton step is
+    feasible and its next decrement is of order \(\lambda(x)^2\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Restrict \(F\) to
+    the Newton ray and integrate the Hessian-variation bounds. They produce the
+    one-dimensional inequalities
+    \[
+    F(x+h)\le F(x)+\nabla F(x)^\top h+
+      [-\|h\|_x-\log(1-\|h\|_x)]
+    \]
+    for \(\|h\|_x<1\), together with the corresponding lower bound. Substitute
+    \(h=tp_N\) and minimize the upper bound in
+    \(t\in[0,1/\lambda)\), obtaining \(t=(1+\lambda)^{-1}\) and the damped
+    decrease. Comparing with the unknown minimizer gives the gap bound.
+    Applying Hessian variation after a full step controls the new gradient and
+    yields the quadratic decrement recursion.</p>
+</div>
+
+<h3>Logarithmic barriers and the central path</h3>
+
+<p>For a convex problem
+\[
+\min_x f(x)\quad\text{subject to}\quad g_i(x)\le0,
+\]
+the logarithmic barrier is
+\[
+\Phi(x)=-\sum_{i=1}^m\log(-g_i(x))
+\]
+on the strict interior. For \(t>0\), the central point \(x(t)\) minimizes
+\[
+tf(x)+\Phi(x).
+\]
+Its first-order equation is
+\[
+t\nabla f(x(t))
++\sum_{i=1}^m\frac{-1}{g_i(x(t))}\nabla g_i(x(t))=0.
+\]
+Defining \(\lambda_i(t)=-1/(t g_i(x(t)))>0\) turns this into dual
+stationarity, with
+\[
+\lambda_i(t)(-g_i(x(t)))=\frac1t.
+\]
+Thus the aggregate complementarity gap is \(m/t\).</p>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Barrier suboptimality.</span> For a convex
+    problem satisfying Slater's condition, a central point satisfies
+    \[
+    0\le f(x(t))-f^\star\le\frac mt.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The multipliers
+    \(\lambda_i(t)\) are dual feasible and stationarity makes \(x(t)\) minimize
+    the Lagrangian. Weak duality gives
+    \[
+    f^\star\ge
+    \inf_x\mathcal L(x,\lambda(t))
+    =\mathcal L(x(t),\lambda(t))
+    =f(x(t))+\sum_i\lambda_i(t)g_i(x(t))
+    =f(x(t))-\frac mt.
+    \]
+    Primal feasibility gives the other inequality.</p>
+</div>
+
+<h3>Polynomial complexity of path following</h3>
+
+<p>A \(\nu\)-self-concordant barrier permits a short-step path-following
+method to increase the central-path parameter by a factor
+\(1+O(\nu^{-1/2})\) while restoring centrality with a bounded number of Newton
+steps. Reaching duality gap \(\varepsilon\) therefore requires
+\[
+O\!\left(\sqrt\nu\log\frac{\nu}{\varepsilon}\right)
+\]
+Newton iterations. For the standard logarithmic barrier of \(m\) scalar
+inequalities, \(\nu\) is of order \(m\). The Hessian metric becomes singular at
+the boundary, so the local unit ball remains inside the feasible domain and
+guides iterates through its interior.</p>

@@ -34,3 +34,82 @@ note_next_url: "/notes/numerical-analysis/matrix-factorizations/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> For sparse matrices, the symbolic pattern of elimination matters as much as arithmetic. Fill-in control, ordering, and exploiting symmetry are numerical-analysis questions, not merely programming details.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Gaussian elimination and LU factorization</h3>
+
+<p>Elimination factors a matrix as
+\[
+PA=LU,
+\]
+where \(P\) records row pivoting, \(L\) is unit lower triangular, and \(U\) is
+upper triangular. The factorization costs \(2n^3/3+O(n^2)\) flops; triangular
+solution costs \(2n^2+O(n)\). Reusing \(LU\) makes multiple right-hand sides
+cheap.</p>
+
+<h3>Why pivoting is needed</h3>
+
+<p>Without pivoting, a tiny pivot causes large multipliers and magnifies
+roundoff. Partial pivoting chooses the largest available magnitude in the
+current column, ensuring \(|l_{ij}|\le1\). It is backward stable in practice,
+though its worst-case growth factor can be \(2^{n-1}\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (backward error, schematic).</span>
+Floating-point Gaussian elimination with partial pivoting computes factors
+\(\widehat L,\widehat U\) satisfying
+\[
+PA+\Delta A=\widehat L\widehat U,
+\qquad
+|\Delta A|
+\le\gamma_{cn}|\widehat L||\widehat U|.
+\]
+Consequently,
+\[
+\|\Delta A\|_\infty
+\lesssim nu\,\rho\,\|A\|_\infty,
+\qquad
+\rho=\frac{\|\widehat U\|_\infty}{\|A\|_\infty},
+\]
+up to modest factors.</p>
+</div>
+
+<p>The proof accumulates local dot-product errors in each Schur-complement
+update and reinterprets them as perturbations to the original entries. Growth
+\(\rho\), not only multiplier size, controls the final backward error.</p>
+
+<h3>Forward error and iterative refinement</h3>
+
+<p>If the solve is backward stable,
+\[
+\frac{\|\widehat x-x\|}{\|x\|}
+\lesssim\kappa(A)u
+\]
+when \(\kappa(A)u\ll1\). Iterative refinement computes a residual
+\(r=b-A\widehat x\), solves \(Ad=r\) with the existing factors, and updates
+\(\widehat x\leftarrow\widehat x+d\). Computing the residual in higher
+precision can recover near-working-precision accuracy even when the factors are
+lower precision, provided conditioning is not too severe.</p>
+
+<h3>Special matrices</h3>
+
+<ul>
+<li>Symmetric positive definite \(A\) admits Cholesky
+\(A=LL^\top\), at half the LU cost and without pivoting.</li>
+<li>Symmetric indefinite matrices need symmetric pivoting, such as
+\(P^\top AP=LDL^\top\) with \(1\times1\) and \(2\times2\) blocks.</li>
+<li>Banded matrices preserve bandwidth under suitable elimination and reduce
+cost to \(O(nb^2)\).</li>
+<li>Sparse elimination creates fill; graph orderings such as nested dissection
+control memory and work.</li>
+</ul>
+
+<h3>Determinants and inverses</h3>
+
+<p>After factorization,
+\[
+\det A=\operatorname{sgn}(P)\prod_i u_{ii}.
+\]
+For magnitude stability, sum logarithms of pivots. One should almost never form
+\(A^{-1}\) to solve a system: triangular solves are cheaper and have a direct
+backward-error interpretation.</p>

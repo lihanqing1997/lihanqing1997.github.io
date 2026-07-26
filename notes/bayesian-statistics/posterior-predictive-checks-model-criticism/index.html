@@ -56,3 +56,107 @@ p_{\mathrm{ppc}}=\mathbb P\{T(Y^{\mathrm{rep}},\theta)\ge T(Y,\theta)\mid Y\}.
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Posterior predictive checking should be read alongside prior predictive checking: the first asks whether the fitted model can reproduce the observed data; the second asks whether the model was plausible before seeing the data.</p>
     </div>
+
+<h3>Posterior predictive \(p\)-values</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For discrepancy
+\(T(y,\theta)\), the posterior predictive \(p\)-value is
+\[
+p_{\mathrm{ppc}}
+=P\{T(Y^{\mathrm{rep}},\theta)
+\ge T(y,\theta)\mid y\},
+\]
+where
+\[
+\theta\sim\Pi(\cdot\mid y),\qquad
+Y^{\mathrm{rep}}\sim P_\theta.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Posterior predictive \(p\)-values are generally not uniform under the model and tend to be conservative because the observed data are used both to construct the posterior and to evaluate the discrepancy.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Explanation.</span> Conditional on a fixed \(\theta\), the tail probability comparing iid \(Y^{\mathrm{rep}}\) and \(Y\) can be uniform for a continuous pivotal statistic. Posterior checking replaces the fixed \(\theta\) by a distribution learned from \(Y\), coupling the fitted reference distribution to the observed discrepancy. This dependence shrinks tail probabilities toward the center. Uniform calibration is therefore not the defining goal; detecting scientifically meaningful mismatch is.</p>
+</div>
+
+<h3>Ancillary and conditional checks</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If a statistic \(A(Y)\) is ancillary for \(\theta\), so its law does not depend on \(\theta\), then its posterior predictive distribution equals its sampling distribution:
+\[
+P\{A(Y^{\mathrm{rep}})\in B\mid y\}
+=P_\theta\{A(Y)\in B\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The integrand
+\(P_\theta\{A(Y)\in B\}\) is constant in \(\theta\). Integrating it against the posterior leaves the same constant.</p>
+</div>
+
+<p>Conditioning on sufficient statistics or using ancillary discrepancies can reduce double use of data, but exact ancillary structure is rare in complex hierarchical models. Leave-one-out predictive checks provide another route: observation \(i\) is compared with a predictive law fitted without \(y_i\).</p>
+
+<h3>Graphical checks by model component</h3>
+
+<p>A useful discrepancy isolates one model claim:</p>
+<ul>
+<li>tail counts, maxima, and robust scale for observation tails;</li>
+<li>group means and between-group variance for hierarchical pooling;</li>
+<li>autocorrelation and run lengths for time dependence;</li>
+<li>zero counts and upper quantiles for count dispersion;</li>
+<li>residual-versus-fitted smoothers for mean form;</li>
+<li>calibration curves for probabilistic prediction.</li>
+</ul>
+
+<p>Plot replicated distributions, not only a scalar \(p\)-value. The direction and magnitude of mismatch often suggest the next model, whereas a thresholded number does not.</p>
+
+<h3>Simulation-based calibration</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (rank uniformity).</span> Draw
+\[
+\theta^{(s)}\sim\pi,\qquad
+y^{(s)}\sim p_{\theta^{(s)}},
+\]
+and then obtain \(L\) exact iid posterior draws
+\(\theta_1^{(s)},\ldots,\theta_L^{(s)}\).
+For a continuous scalar functional \(g\), the rank
+\[
+R^{(s)}
+=\sum_{\ell=1}^L
+1\{g(\theta_\ell^{(s)})<g(\theta^{(s)})\}
+\]
+is uniform on \(\{0,\ldots,L\}\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Under the joint prior predictive law,
+\[
+\theta^{(s)}\mid y^{(s)}
+\sim\Pi(\cdot\mid y^{(s)}).
+\]
+Conditional on \(y^{(s)}\), the generating parameter and the \(L\) posterior draws are therefore exchangeable. With no ties, every one of their \(L+1\) order positions has probability \(1/(L+1)\).</p>
+</div>
+
+<p>Simulation-based calibration checks an inference algorithm against a model: U-shaped rank histograms suggest underdispersed computation, hump-shaped histograms suggest overdispersion, and slopes suggest bias. It does not check whether the model describes real data.</p>
+
+<h3>Leave-one-out probability integral transforms</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For continuous observations, define
+\[
+u_i=F_{-i}(y_i),
+\qquad
+F_{-i}(y)=P(Y_i^{\mathrm{rep}}\le y\mid y_{-i}).
+\]
+Under conditional exchangeability and a calibrated model, the \(u_i\)'s are marginally uniform, though generally dependent.</p>
+</div>
+
+<p>Histograms reveal global miscalibration; plotting transformed residuals against covariates or time localizes structure. For discrete outcomes, randomized or interval probability transforms avoid artificial spikes.</p>
+
+<h3>Model expansion after failure</h3>
+
+<p>A failed check should lead to a controlled expansion: heavier tails, nonlinear predictors, group-specific variation, dependence, or an explicit observation process. Recheck both the targeted discrepancy and previously adequate features. An ever more flexible model can reproduce the sample while degrading prediction, so expansion should be evaluated by held-out scoring and scientific interpretability as well as in-sample replication.</p>

@@ -35,3 +35,135 @@ C(P,Q)=-\inf_{0\le s\le1}\log\sum_x P(x)^sQ(x)^{1-s}.
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Neyman-Pearson tests threshold the likelihood ratio. Under iid sampling, normalized log-likelihood ratios obey laws of large numbers and large-deviation bounds. Their means under \(P\) and \(Q\) are relative entropies, which determine the exponents.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Binary testing and likelihood ratios</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A randomized test
+  \(\varphi:\mathcal X\to[0,1]\) rejects \(P\) in favor of \(Q\). Type-I and type-II errors are
+  \[
+  \alpha(\varphi)=P\varphi,\qquad
+  \beta(\varphi)=Q(1-\varphi),
+  \]
+  under this rejection convention.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Neyman-Pearson lemma.</span> Among tests with
+  \(\alpha\le\alpha_0\), a threshold test of the likelihood ratio
+  \(\mathrm{d}Q/\mathrm{d}P\), randomized at the threshold if needed, minimizes \(\beta\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\varphi^*\) reject where
+  \(q>cp\). For any feasible \(\varphi\),
+  \[
+  \int(\varphi-\varphi^*)(q-cp)\,\mathrm{d}\mu\le0
+  \]
+  pointwise by the threshold rule. Therefore
+  \(Q\varphi-Q\varphi^*\le
+  c(P\varphi-P\varphi^*)\le0\), so \(\varphi^*\) maximizes power and minimizes type-II error.</p>
+</div>
+
+<h3>Hypothesis-testing divergence</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  \[
+  \beta_{1-\epsilon}(P,Q)=
+  \inf_{\varphi:P\varphi\ge1-\epsilon}Q\varphi,
+  \qquad
+  D_h^\epsilon(P\|Q)=
+  -\log\frac{\beta_{1-\epsilon}(P,Q)}{1-\epsilon},
+  \]
+  under the acceptance-test convention.</p>
+</div>
+
+<p>This one-shot divergence directly controls finite-blocklength coding, privacy, and testing. Its iid first-order limit is KL divergence.</p>
+
+<h3>Chernoff-Stein lemma</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For iid testing
+  \(P^n\) against \(Q^n\), for every fixed \(0<\epsilon<1\),
+  \[
+  \lim_{n\to\infty}
+  -\frac1n\log\beta_{1-\epsilon}(P^n,Q^n)
+  =D(P\|Q).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Accept \(P\) when
+  \[
+  \frac1n\log\frac{\mathrm{d}P^n}{\mathrm{d}Q^n}
+  \ge D(P\|Q)-\delta.
+  \]
+  Under \(P\), the log likelihood ratio average converges to \(D(P\|Q)\), so type-I error vanishes. On the acceptance set,
+  \(Q^n\le e^{-n(D-\delta)}P^n\), giving the achievable type-II exponent.
+  Conversely, intersect any acceptance set of \(P\)-probability at least
+  \(1-\epsilon\) with the event that log likelihood ratio is at most
+  \(n(D+\delta)\), whose \(P\)-probability tends to one. On this intersection,
+  \(Q^n\ge e^{-n(D+\delta)}P^n\), preventing a larger exponent.</p>
+</div>
+
+<h3>Chernoff information</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Under equal priors, the optimal Bayesian probability of error in testing \(P^n\) versus \(Q^n\) has exponent
+  \[
+  C(P,Q)=
+  -\min_{0\le s\le1}
+  \log\int p^s q^{1-s}\,\mathrm{d}\mu.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Neyman-Pearson makes Bayes error
+  \(\tfrac12\int\min(p^n,q^n)\). The inequality
+  \(\min(a,b)\le a^sb^{1-s}\) gives the upper exponent. A tilted distribution proportional to \(p^sq^{1-s}\), with \(s\) chosen to balance likelihood-ratio drift, gives the matching lower exponent by change of measure.</p>
+</div>
+
+<h3>Hoeffding tradeoff</h3>
+
+<p>If type-I error must decay exponentially at rate at least \(r\), the optimal type-II exponent is a Legendre-type transform of Rényi divergences. This refines Stein's fixed-type-I regime and Chernoff's symmetric Bayes regime into a full error-exponent frontier.</p>
+
+<h3>Total variation and minimum error</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> With equal priors,
+  \[
+  P_e^*=
+  \frac12\{1-\|P-Q\|_{\mathrm{TV}}\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The likelihood-ratio test assigns each point to the larger density. Its correct probability is
+  \[
+  \frac12\int\max(p,q)\,\mathrm{d}\mu
+  =\frac12\{1+\|P-Q\|_{\mathrm{TV}}\}.
+  \]
+  Subtract from one.</p>
+</div>
+
+<h3>Bretagnolle-Huber bound</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  1-\|P-Q\|_{\mathrm{TV}}
+  \ge\frac12e^{-D(P\|Q)}.
+  \]
+  Hence every test satisfies
+  \[
+  \alpha+\beta\ge\frac12e^{-D(P\|Q)}.
+  \]</p>
+</div>
+
+<p>This converts KL control into a testing lower bound and is often sharper than Pinsker when KL is large and an exponential form is needed.</p>
+
+<h3>Composite testing and minimax priors</h3>
+
+<p>For composite hypotheses, least-favorable mixtures turn estimation or testing into a difficult simple-versus-simple problem. A prior is a lower-bound device: Bayes risk under any prior is no larger than minimax risk, and mutual information or mixture KL can then quantify indistinguishability.</p>

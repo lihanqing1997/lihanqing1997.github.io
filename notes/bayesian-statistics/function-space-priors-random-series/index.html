@@ -61,3 +61,180 @@ whenever the series converges in the chosen function norm.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The posterior cannot contract faster than the prior can approximate the truth, and the likelihood cannot estimate more than the effective finite-dimensional complexity allowed by the sample size. Equating the two terms gives the usual bias-variance rate heuristic.</p>
     </div>
+
+<h3>Sequence representations of smoothness</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\((\phi_j)_{j\ge1}\) be an orthonormal basis of \(L^2[0,1]\), and write
+\[
+f=\sum_{j\ge1}\theta_j\phi_j.
+\]
+A Sobolev ellipsoid of regularity \(\beta>0\) and radius \(R\) is
+\[
+\mathcal H^\beta(R)
+=\left\{
+f:\sum_{j\ge1}j^{2\beta}\theta_j^2\le R^2
+\right\}.
+\]
+The tail satisfies
+\[
+\sum_{j>J}\theta_j^2
+\le J^{-2\beta}R^2.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For \(j>J\),
+\(j^{-2\beta}\le J^{-2\beta}\), so
+\[
+\sum_{j>J}\theta_j^2
+=\sum_{j>J}j^{-2\beta}
+(j^{2\beta}\theta_j^2)
+\le J^{-2\beta}R^2.
+\]</p>
+</div>
+
+<h3>Gaussian series priors and sample regularity</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A Gaussian series prior is
+\[
+f=\sum_{j\ge1}\tau_jZ_j\phi_j,
+\qquad Z_j\stackrel{\mathrm{iid}}{\sim}N(0,1).
+\]
+A common polynomial scale is
+\[
+\tau_j^2\asymp j^{-1-2\alpha}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\(\tau_j^2\asymp j^{-1-2\alpha}\), then
+\[
+f\in H^s
+\quad\text{almost surely for every }s<\alpha,
+\]
+while
+\[
+P(f\in H^\alpha)=0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\[
+E\|f\|_{H^s}^2
+=\sum_jj^{2s}\tau_j^2
+\asymp\sum_jj^{2s-1-2\alpha},
+\]
+which is finite exactly when \(s<\alpha\); finite expectation implies almost-sure finiteness. At \(s=\alpha\), the norm is comparable to
+\(\sum_jj^{-1}Z_j^2\), which diverges almost surely by independence and the strong law on dyadic blocks.</p>
+</div>
+
+<p>The prior's reproducing kernel Hilbert space is smoother than a typical draw: it consists of coefficient sequences \(h_j\) satisfying
+\[
+\sum_j\frac{h_j^2}{\tau_j^2}<\infty.
+\]
+Prior support, approximation, and sample regularity are therefore three distinct notions.</p>
+
+<h3>Truncated random-series prior</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+J\sim\pi_J,\qquad
+f=\sum_{j=1}^J\theta_j\phi_j,
+\qquad
+\theta_j\mid J\sim g_j.
+\]
+The prior adapts through the random effective dimension \(J\).</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Gaussian sequence contraction).</span> Observe
+\[
+Y_j=\theta_{0j}+n^{-1/2}\varepsilon_j,
+\qquad
+\varepsilon_j\stackrel{\mathrm{iid}}{\sim}N(0,1),
+\]
+and suppose \(\theta_0\in\mathcal H^\beta(R)\). If a random truncation prior assigns at least
+\[
+\exp\{-C J\log n\}
+\]
+mass to \(J\) near
+\[
+J_n\asymp(n/\log n)^{1/(2\beta+1)}
+\]
+and coefficient densities are positive near the truth, then a typical contraction rate is
+\[
+\varepsilon_n
+\asymp
+\left(\frac n{\log n}\right)^{-\beta/(2\beta+1)}
+\]
+in \(\ell^2\), up to prior-dependent logarithmic factors.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Truncation bias is
+\[
+\|\theta_0-\theta_{0,1:J}\|_2
+\lesssim J^{-\beta}.
+\]
+A \(J\)-dimensional coefficient ball of radius \(\varepsilon\) has prior concentration cost of order
+\(J\log(1/\varepsilon)\), while likelihood testing allows cost
+\(n\varepsilon^2\). Balance
+\[
+J^{-2\beta}\asymp\frac{J\log n}{n},
+\]
+giving \(J_n\) and \(\varepsilon_n\). Sieve entropy and the tail of \(\pi_J\) verify the general contraction theorem.</p>
+</div>
+
+<h3>Conjugate white-noise posterior</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> In the Gaussian sequence model, assign independent
+\[
+\theta_j\sim N(0,\tau_j^2).
+\]
+Then independently over \(j\),
+\[
+\theta_j\mid Y_j
+\sim
+N\left(
+\frac{n\tau_j^2}{1+n\tau_j^2}Y_j,\,
+\frac{\tau_j^2}{1+n\tau_j^2}
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Combine prior precision
+\(\tau_j^{-2}\) with likelihood precision \(n\). The posterior precision is
+\(n+\tau_j^{-2}\), and the precision-weighted mean is
+\[
+\frac{nY_j}{n+\tau_j^{-2}}
+=\frac{n\tau_j^2}{1+n\tau_j^2}Y_j.
+\]</p>
+</div>
+
+<p>The shrinkage factor is near one when
+\(n\tau_j^2\gg1\) and near zero when
+\(n\tau_j^2\ll1\). The transition index acts as an effective dimension. Posterior variance describes stochastic uncertainty around the shrunk center; frequentist coverage additionally depends on the omitted high-frequency bias.</p>
+
+<h3>Prior support through coefficient support</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose finite linear combinations of \((\phi_j)\) are dense in a Banach space \(\mathbb B\), every finite-dimensional coefficient prior has positive density everywhere, and the series converges in \(\mathbb B\) almost surely. Then the prior has full support in the closure of all convergent coefficient sequences:
+\[
+\Pi(\|f-f_0\|_{\mathbb B}<\varepsilon)>0
+\]
+for every supported \(f_0\) and \(\varepsilon>0\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Approximate \(f_0\) by a finite expansion within \(\varepsilon/3\). Positive finite-dimensional density gives positive probability that the first \(J\) coefficients approximate its coefficients closely enough for another \(\varepsilon/3\). Almost-sure tail convergence implies that, for some deterministic tail bound with positive probability, the remaining series contributes less than \(\varepsilon/3\). Intersect the events.</p>
+</div>
+
+<p>Full support is qualitative. Contraction rates depend on how much, not merely whether, prior mass enters a shrinking neighborhood.</p>

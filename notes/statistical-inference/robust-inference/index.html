@@ -8,26 +8,221 @@ note_prev_url: "/notes/statistical-inference/misspecification-robust-covariance/
 note_next_url: "/notes/statistical-inference/rank-sign-permutation-inference/"
 ---
 
-<p>Robust inference studies procedures that remain stable under outliers, heavy tails, or small deviations from the ideal model.</p>
+<p>Robust statistics studies stability under departures from an ideal law. Three notions should be separated: local sensitivity to an infinitesimal contaminating mass, resistance to a finite fraction of arbitrary replacements, and uniform performance over an explicit neighborhood of distributions.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a statistical functional \(T(P)\), the influence function at \(P\) is
-        \[
-        \operatorname{IF}(x;T,P)=\left.\frac{\mathrm{d}}{\mathrm{d}\varepsilon}T\{(1-\varepsilon)P+\varepsilon\delta_x\}\right|_{\varepsilon=0},
-        \]
-        when the derivative exists.</p>
-    </div>
+<h3>Contamination neighborhoods</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Asymptotic variance.</span> If \(T\) is sufficiently smooth and \(T(P_n)-T(P)=P_n\operatorname{IF}(\cdot;T,P)+o_p(n^{-1/2})\), then
-        \[
-        \sqrt n\{T(P_n)-T(P)\}\rightsquigarrow N(0,P\operatorname{IF}^2).
-        \]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (gross-error neighborhood).</span> Around an ideal distribution \(P\), the \(\varepsilon\)-contamination neighborhood is
+  \[
+  \mathcal U_\varepsilon(P)
+  =\{(1-\varepsilon)P+\varepsilon Q:
+  Q\text{ any probability law}\}.
+  \]
+  A procedure is locally robust if its target and sampling law change slowly as \(\varepsilon\downarrow0\), uniformly over contaminating \(Q\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> This is the asymptotic linearity theorem applied to \(\phi=\operatorname{IF}\). Smoothness gives the linear expansion; the CLT gives the normal limit.</p>
-    </div>
+<p>Heavy-tail robustness and contamination robustness are related but not identical. A procedure can tolerate a specified heavy-tailed family yet have unbounded response to a single arbitrarily placed point.</p>
 
-    <h3>Bounded influence</h3>
-    <p>The mean has \(\operatorname{IF}(x)=x-\mu\), unbounded under large outliers. Median and Huber M-estimators have bounded or controlled influence under suitable models. Robust inference trades a little efficiency at the ideal model for much better stability nearby.</p>
+<h3>Influence functions</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a functional \(T\), the influence function at \(P\) is
+  \[
+  \operatorname{IF}(x;T,P)
+  =\left.\frac{\mathrm{d}}{\mathrm{d}\varepsilon}
+  T\{(1-\varepsilon)P+\varepsilon\delta_x\}
+  \right|_{\varepsilon=0+},
+  \]
+  when the directional derivative exists.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Centering.</span> If \(T\) is differentiable along signed perturbations of total mass zero and its derivative is represented by \(\operatorname{IF}(\cdot;T,P)\), then
+  \[
+  P\operatorname{IF}(\cdot;T,P)=0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Integrating the point-mass direction \(\delta_x-P\) over \(x\sim P\) gives the zero signed measure. Linearity of the derivative therefore gives
+  \[
+  0=\int \dot T_P(\delta_x-P)\,P(\mathrm{d}x)
+  =P\operatorname{IF}(\cdot;T,P).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Asymptotic law of a smooth plug-in functional.</span> If
+  \[
+  T(P_n)-T(P)
+  =(P_n-P)\operatorname{IF}(\cdot;T,P)
+  +o_p(n^{-1/2})
+  \]
+  and \(P\operatorname{IF}^2\lt\infty\), then
+  \[
+  \sqrt n\{T(P_n)-T(P)\}
+  \rightsquigarrow
+  N\{0,P\operatorname{IF}^2\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Centering makes the leading term
+  \[
+  \frac1{\sqrt n}\sum_{i=1}^n
+  \operatorname{IF}(X_i;T,P).
+  \]
+  Apply the central limit theorem and Slutsky's theorem.</p>
+</div>
+
+<h3>Mean and median</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (mean).</span> For \(T(P)=Px\),
+  \[
+  T\{(1-\varepsilon)P+\varepsilon\delta_x\}
+  =(1-\varepsilon)Px+\varepsilon x,
+  \]
+  so
+  \[
+  \operatorname{IF}(x;T,P)=x-\mu.
+  \]
+  It is unbounded, and one distant observation can move the empirical mean arbitrarily far.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Influence function of a quantile.</span> Let \(q_p=F^{-1}(p)\), and suppose \(F\) has a continuous positive density \(f(q_p)\). Then
+  \[
+  \operatorname{IF}(x;q_p,F)
+  =\frac{p-1_{\{x\le q_p\}}}{f(q_p)}.
+  \]
+  In particular, the median has bounded influence
+  \[
+  \operatorname{IF}(x;q_{1/2},F)
+  =\frac{\operatorname{sign}(x-q_{1/2})}{2f(q_{1/2})}
+  \]
+  away from the immaterial equality point.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(F_\varepsilon=(1-\varepsilon)F+\varepsilon1_{\{x\le\cdot\}}\) and \(q_\varepsilon=q_p+\varepsilon a+o(\varepsilon)\). The equation \(F_\varepsilon(q_\varepsilon)=p\) gives
+  \[
+  p+\varepsilon\{a f(q_p)-p+1_{\{x\le q_p\}}\}
+  +o(\varepsilon)=p.
+  \]
+  Solving for \(a\) gives the formula.</p>
+</div>
+
+<h3>M-functionals</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A location M-functional \(T(P)\) solves
+  \[
+  P\psi(X-T(P))=0,
+  \]
+  where \(\psi=\rho'\) is typically odd and nondecreasing. The empirical estimator minimizes
+  \[
+  \sum_{i=1}^n\rho(X_i-\theta)
+  \]
+  or solves \(\sum_i\psi(X_i-\theta)=0\).</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Influence function of a location M-functional.</span> Suppose \(P\psi(X-\theta_0)=0\) and
+  \[
+  A=P\psi'(X-\theta_0)>0.
+  \]
+  Then
+  \[
+  \operatorname{IF}(x;T,P)
+  =\frac{\psi(x-\theta_0)}{A}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put \(P_\varepsilon=(1-\varepsilon)P+\varepsilon\delta_x\) and \(T(P_\varepsilon)=\theta_0+\varepsilon a+o(\varepsilon)\). Expanding
+  \[
+  0=P_\varepsilon\psi\{X-T(P_\varepsilon)\}
+  \]
+  to first order gives
+  \[
+  0=-aP\psi'(X-\theta_0)+\psi(x-\theta_0),
+  \]
+  because \(P\psi(X-\theta_0)=0\). Hence \(a=\psi(x-\theta_0)/A\).</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Huber score).</span> For \(c>0\),
+  \[
+  \psi_c(u)=
+  \begin{cases}
+  -c,&u\lt-c,\\
+  u,&|u|\le c,\\
+  c,&u>c.
+  \end{cases}
+  \]
+  Its bounded influence limits the effect of extreme residuals. As \(c\to\infty\), it approaches the mean score \(u\); as \(c\downarrow0\) after scaling, it approaches the median sign score.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Asymptotic variance.</span> Under the preceding conditions,
+  \[
+  \sqrt n(\hat\theta-\theta_0)
+  \rightsquigarrow
+  N\!\left(
+  0,\frac{P\psi(X-\theta_0)^2}
+  {\{P\psi'(X-\theta_0)\}^2}
+  \right).
+  \]</p>
+</div>
+
+<h3>Gross-error sensitivity and rejection</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The gross-error sensitivity is
+  \[
+  \gamma^\star(T,P)
+  =\sup_x|\operatorname{IF}(x;T,P)|.
+  \]
+  It is finite exactly when the influence function is bounded. A redescending score additionally satisfies \(\psi(u)\to0\) as \(|u|\to\infty\), so extremely remote observations receive vanishing first-order weight.</p>
+</div>
+
+<p>Redescending objectives are nonconvex and can have multiple local minima. Bounded influence therefore addresses statistical sensitivity but introduces an optimization problem that must be handled explicitly.</p>
+
+<h3>Finite-sample breakdown</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For data \(x=(x_1,\ldots,x_n)\), the replacement breakdown fraction of an estimator \(T_n\) is
+  \[
+  \varepsilon_n^\star(T_n;x)
+  =\frac1n\min\left\{
+  m:\sup_{x':\,d_H(x,x')\le m}
+  |T_n(x')|=\infty
+  \right\},
+  \]
+  where \(d_H\) counts replaced coordinates.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Mean and median breakdown.</span> The sample mean has replacement breakdown \(1/n\). The sample median has breakdown
+  \[
+  \frac{\lfloor(n+1)/2\rfloor}{n},
+  \]
+  approaching \(1/2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Replacing one observation by an arbitrarily large value sends the mean to infinity, proving \(1/n\). Fewer than half of the observations cannot move the central order statistic beyond the range of the unreplaced majority. Once at least half are replaced, they can be placed arbitrarily far on one side and force the median there.</p>
+</div>
+
+<p>Breakdown and influence answer different scales of perturbation. The median has both bounded influence and high breakdown; some high-breakdown estimators can nevertheless have rough local behavior, while a bounded-influence estimator need not attain maximal breakdown in regression.</p>
+
+<h3>Robust standard errors</h3>
+
+<p>For a regression M-estimator solving
+\[
+\sum_{i=1}^nX_i\psi\!\left(
+\frac{Y_i-X_i^\top\beta}{s}\right)=0,
+\]
+the asymptotic covariance is a sandwich built from the derivative of the estimating equation and the variance of \(X_i\psi(\varepsilon_i/s)\). A robust point estimate paired with model-based Gaussian standard errors is only half a robust procedure. Scale estimation, leverage, clustering, and dependence must also be reflected in the covariance.</p>

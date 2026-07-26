@@ -28,3 +28,107 @@ note_next_url: "/notes/information-theory/entropy-power-inequality/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Separation is a theorem with assumptions, not a universal design law. Dependence, delay constraints, multi-terminal settings, or semantic constraints can break the clean source/channel split.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Separated architecture</h3>
+
+<p>A separated system first compresses the source to a bitstream near its rate-distortion limit, then protects those bits with a channel code near channel capacity. The theorem says that, for memoryless point-to-point asymptotics and compatible criteria, this modular architecture loses no first-order performance.</p>
+
+<h3>Separation theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let a memoryless source produce \(k\) symbols and a DMC be used \(n\) times. Put
+  \(\rho=k/n\) source symbols per channel use. Distortion \(D\) is achievable if
+  \[
+  \rho R(D)<C.
+  \]
+  Conversely, every achievable \(D\) must satisfy
+  \[
+  \rho R(D)\le C.
+  \]</p>
+</div>
+
+<h3>Achievability</h3>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Choose rates
+  \[
+  R(D)<R_s<R_c/\rho<C/\rho.
+  \]
+  A rate-distortion code compresses \(k\) source symbols into about
+  \(e^{kR_s}\) indices with distortion at most \(D+\varepsilon\). This index set requires channel rate
+  \(kR_s/n=\rho R_s<C\), so a channel code transmits it with vanishing error. On successful channel decoding, source distortion is controlled by the source code; the rare channel error contributes negligibly for bounded distortion or under suitable moment control.</p>
+</div>
+
+<h3>Converse</h3>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\widehat S^k\) be the final reconstruction. Rate-distortion converse gives
+  \[
+  kR(D)\le I(S^k;\widehat S^k).
+  \]
+  The communication chain
+  \(S^k\to X^n\to Y^n\to\widehat S^k\) and data processing give
+  \[
+  I(S^k;\widehat S^k)\le I(X^n;Y^n)\le nC.
+  \]
+  Divide by \(n\) to obtain \(\rho R(D)\le C\).</p>
+</div>
+
+<h3>Lossless separation</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> For lossless transmission,
+  \(R(0)=H(S)\), so reliable communication is possible exactly when
+  \[
+  \rho H(S)<C
+  \]
+  at first order.</p>
+</div>
+
+<h3>Bandwidth mismatch</h3>
+
+<p>If there are \(\kappa\) channel uses per source symbol, then
+\(\rho=1/\kappa\) and the condition becomes
+\[
+R(D)<\kappa C.
+\]
+For a Gaussian source and AWGN channel this yields
+\[
+D\ge\sigma_S^2
+\left(1+\frac PN\right)^{-\kappa}.
+\]</p>
+
+<h3>Why interfaces matter</h3>
+
+<p>Separation permits independently designed source and channel modules because the compressed bits are asymptotically almost uniform and the channel code only needs their rate. The theorem does not say finite-blocklength latency, complexity, or error propagation are unaffected by modular design.</p>
+
+<h3>Second-order mismatch</h3>
+
+<p>At finite blocklength, source dispersion and channel dispersion combine through error allocation. Separately optimizing each module at an arbitrary split of total error can be suboptimal relative to joint source-channel coding, even though first-order thresholds agree.</p>
+
+<h3>When separation can fail</h3>
+
+<ul>
+  <li>multiuser networks with correlated sources and interference;</li>
+  <li>strict delay or zero-delay constraints;</li>
+  <li>channels with unknown states where source side information interacts with state;</li>
+  <li>semantic or task losses not represented by a separable single-letter distortion;</li>
+  <li>finite-blocklength systems where modular overhead is substantial;</li>
+  <li>networks requiring coordination rather than point-to-point reproduction.</li>
+</ul>
+
+<h3>Uncoded Gaussian transmission</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> With one channel use per sample, send
+  \(X_c=\sqrt{P/\sigma_S^2}\,S\) over AWGN and estimate linearly. The resulting distortion is
+  \[
+  D=\frac{\sigma_S^2}{1+P/N},
+  \]
+  exactly the separation limit for \(\kappa=1\). This exceptional equality reflects matching Gaussian and quadratic structures; uncoded transmission is not generally optimal.</p>
+</div>
+
+<h3>Joint source-channel error exponents</h3>
+
+<p>Below the separation threshold, the best end-to-end excess-distortion exponent need not equal the minimum of independently optimized source and channel exponents. Joint codes can balance atypical source blocks against channel noise more efficiently. First-order separation and exponent-level separation are different theorems.</p>

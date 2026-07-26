@@ -1,0 +1,195 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "13. Recurrent-event models"
+breadcrumb_child_label_fr: "13. Modèles d'événements récurrents"
+breadcrumb_child_label_zh: "13. 复发事件模型"
+note_back_url: "/notes/survival-analysis/"
+note_prev_url: "/notes/survival-analysis/competing-risks-multistate-models/"
+note_next_url: "/notes/survival-analysis/frailty-random-effects/"
+---
+
+<p>Recurrent-event data record a sequence
+\[
+0<T_{i1}<T_{i2}<\cdots
+\]
+rather than one terminal time. The primary target may be an event intensity, a marginal mean count, an event-number-specific hazard, or a gap-time distribution. These are not interchangeable, especially when a terminal event stops recurrence.</p>
+
+<h3>Counting-process targets</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+N_i(t)=\sum_{k\ge1}1\{T_{ik}\le t\}
+\]
+be the recurrent-event count and \(Y_i(t)\) the observation indicator. Its conditional intensity is
+\[
+\lambda_i(t\mid\mathcal F_{t-})
+=\lim_{h\downarrow0}
+\frac{E\{N_i(t+h)-N_i(t)\mid\mathcal F_{t-}\}}{h}.
+\]
+The marginal mean function is
+\[
+\mu(t)=E\{N_i(t)\}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If observation is complete and
+\(E\int_0^t\lambda_i(u)\,\mathrm{d}u<\infty\), then
+\[
+\mu(t)=E\int_0^t\lambda_i(u\mid\mathcal F_{u-})\,\mathrm{d}u.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The Doob-Meyer decomposition gives
+\[
+N_i(t)=M_i(t)+\int_0^t\lambda_i(u)\,\mathrm{d}u.
+\]
+Taking expectations and using \(EM_i(t)=0\) yields the identity.</p>
+</div>
+
+<h3>Mean cumulative function</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Under independent observation censoring, the Nelson-type mean cumulative function estimator is
+\[
+\widehat\mu(t)
+=\int_0^t\frac{\mathrm{d}N(u)}{Y(u)},
+\qquad
+N=\sum_iN_i,\quad Y=\sum_iY_i.
+\]
+Unlike a survival cumulative hazard, \(\widehat\mu(t)\) may exceed one.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If subjects are independent, censoring is noninformative, and the limiting observation probability \(y(t)\) is bounded away from zero, then
+\[
+\widehat\mu(t)-\mu(t)
+=\frac1n\sum_{i=1}^n\phi_i(t)+o_P(n^{-1/2})
+\]
+uniformly on compact intervals for a subject-level influence process \(\phi_i\). Consequently,
+\[
+\sqrt n(\widehat\mu-\mu)
+\rightsquigarrow G
+\]
+for a centered Gaussian process whose covariance is estimated by empirical cluster influence products.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Write aggregate event increments as conditional mean plus subject martingales. Expand the inverse random risk proportion \(1/\{Y(t)/n\}\) around \(1/y(t)\). The leading term is a sum of independent subject-level martingale and risk-process contributions. A functional central limit theorem gives the Gaussian limit; within-subject event dependence remains inside each \(\phi_i\), which is why variance is clustered by subject.</p>
+</div>
+
+<h3>Andersen-Gill intensity model</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The Andersen-Gill model is
+\[
+\lambda_i(t\mid\mathcal F_{t-})
+=Y_i(t)\lambda_0(t)e^{\beta^\top Z_i(t)}.
+\]
+After each event the subject may return immediately to the risk set. The Cox partial likelihood uses every recurrent event and calendar or total time as its clock.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If the conditional intensity model is correct, the partial-likelihood score is a martingale and
+\[
+\sqrt n(\widehat\beta-\beta_0)
+\Rightarrow N(0,A^{-1}BA^{-\top}),
+\]
+where \(A\) is limiting partial-likelihood curvature and \(B\) is the variance of the subject-level score. If the model also supplies the correct conditional covariance structure, \(A=B\); otherwise the subject-cluster sandwich remains valid under suitable moment conditions.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Each subject contributes
+\[
+U_i(\beta_0)
+=\int\{Z_i(t)-e(t)\}\,\mathrm{d}M_i(t).
+\]
+Subjects are independent, but events within one subject need not be. Taylor expansion of the aggregate score gives
+\[
+\sqrt n(\widehat\beta-\beta_0)
+=A^{-1}n^{-1/2}\sum_iU_i(\beta_0)+o_P(1).
+\]
+The ordinary independent-subject CLT gives covariance \(A^{-1}BA^{-\top}\). Estimating \(B\) by \(n^{-1}\sum_i\widehat U_i\widehat U_i^\top\) retains all within-subject dependence.</p>
+</div>
+
+<h3>Event-number-specific risk sets</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition (PWP models).</span> For the \(k\)-th event, define
+\[
+Y_{ik}(t)
+=1\{N_i(t-)=k-1,\text{ subject observed at }t\}.
+\]
+A Prentice-Williams-Peterson total-time model is
+\[
+\lambda_{ik}(t)
+=Y_{ik}(t)\lambda_{0k}(t)
+e^{\beta^\top Z_i(t)}.
+\]
+The gap-time version resets the clock after event \(k-1\).</p>
+</div>
+
+<p>Only subjects who have experienced event \(k-1\) enter the \(k\)-th event risk set. This conditions on event history and estimates an event-order-specific effect. By contrast, a Wei-Lin-Weissfeld marginal model treats each event number as a separate process whose risk set may include everyone from baseline; robust covariance accounts for dependence across event types. The two approaches target different populations.</p>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> In recurrent hospital admission, an intervention may strongly delay the first readmission but have little effect after several admissions. A common Andersen-Gill coefficient averages across event orders. A stratified PWP model can estimate \(\beta_1,\beta_2,\ldots\), but later-event risk sets are selected survivors with prior events and may be small.</p>
+</div>
+
+<h3>Gap-time models</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The \(k\)-th gap time is
+\[
+G_{ik}=T_{ik}-T_{i,k-1},\qquad T_{i0}=0.
+\]
+A renewal model assumes the \(G_{ik}\)'s are identically distributed and conditionally independent given covariates or frailty. A semi-Markov model allows the next-event hazard to depend on elapsed time since the preceding event.</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Censoring of gaps.</span> If follow-up ends at calendar time \(C_i\), later gap times are censored by
+\(C_i-T_{i,k-1}\), a quantity depending on prior event history. Treating observed gaps as an ordinary independent survival sample induces selection. Calendar-time counting-process methods or explicit renewal likelihoods handle this dependence more transparently.</p>
+</div>
+
+<h3>Terminal events</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let \(D_i\) be a terminal time, such as death, after which recurrence is impossible. The observed count is
+\[
+N_i(t\wedge D_i).
+\]
+Death is not independent censoring for recurrence: it is part of the outcome process.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The marginal mean count
+\[
+\mu(t)=E\{N(t\wedge D)\}
+\]
+decomposes as
+\[
+\mu(t)
+=\int_0^t
+P(D\ge u)
+E\{\lambda_N(u\mid\mathcal F_{u-})\mid D\ge u\}
+\,\mathrm{d}u.
+\]
+Thus it depends jointly on recurrence intensity and terminal-event survival.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The at-risk indicator for recurrence contains \(1\{D\ge u\}\). Taking expectation of its compensator gives
+\[
+E\{1(D\ge u)\lambda_N(u\mid\mathcal F_{u-})\}
+=P(D\ge u)
+E\{\lambda_N(u\mid\mathcal F_{u-})\mid D\ge u\}.
+\]
+Integrate over time.</p>
+</div>
+
+<p>Possible targets include the composite burden \(\mu(t)\), a while-alive rate, joint recurrence-death probabilities, or a causal estimand under treatment. Joint frailty models specify correlated recurrence and death intensities; multistate models treat death as an absorbing transition; inverse-probability methods require a hypothetical estimand in which death is treated as censoring. The scientific question must choose among them.</p>
+
+<h3>Robustness and frailty</h3>
+
+<p>A sandwich covariance protects standard errors against some misspecified within-subject correlation while retaining the fitted mean or score target. A frailty model instead specifies a latent dependence mechanism and changes both likelihood and marginal interpretation. Robust covariance, frailty, and event-number stratification are therefore complementary modeling choices, not interchangeable variance options.</p>

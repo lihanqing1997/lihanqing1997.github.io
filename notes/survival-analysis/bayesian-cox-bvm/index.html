@@ -1,41 +1,228 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "12. Bayesian Cox models and BvM questions"
-breadcrumb_child_label_fr: "12. Modèles bayésiens de Cox et questions BvM"
-breadcrumb_child_label_zh: "12. 贝叶斯 Cox 模型与 BvM 问题"
+breadcrumb_child_label_en: "17. Bayesian Cox models and BvM questions"
+breadcrumb_child_label_fr: "17. Modèles bayésiens de Cox et questions BvM"
+breadcrumb_child_label_zh: "17. 贝叶斯 Cox 模型与 BvM 问题"
 note_back_url: "/notes/survival-analysis/"
 note_prev_url: "/notes/survival-analysis/high-dimensional-cox-regression/"
+note_next_url: "/notes/survival-analysis/dependent-censoring-causal-survival/"
 ---
 
-<h3>Bayesian semiparametric structure</h3>
+<p>A Bayesian Cox analysis must place a prior on both regression coefficients and the baseline cumulative hazard. A prior on \(\beta\) combined only with partial likelihood is a generalized Bayesian procedure; a full posterior requires an event-time likelihood and a baseline-hazard prior.</p>
 
-    <p>A Bayesian Cox model must put prior mass on both \(\beta\) and the baseline hazard or cumulative hazard. For BvM questions, the main issue is whether uncertainty in the nuisance baseline distorts the first-order posterior for \(\beta\).</p>
+<h3>Full semiparametric posterior</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A Bayesian Cox prior may take \(\Pi=\Pi_\beta\otimes\Pi_{\Lambda_0}\), where \(\Pi_\beta\) is a prior on \(\mathbb R^p\) or sparse subsets and \(\Pi_{\Lambda_0}\) is a prior on monotone cumulative hazards.</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A semiparametric BvM statement for \(\beta\) has the form
+<p><span class="statement-title">Definition.</span> Let
 \[
-\left\|\Pi\left(\sqrt n(\beta-\hat\beta)\in\cdot\mid X^{(n)}\right)-N(0,\mathcal I_{\mathrm{eff}}^{-1})\right\|_{\mathrm{TV}}\to0,
+\Pi=\Pi_\beta\otimes\Pi_{\Lambda}
 \]
-where \(\hat\beta\) is an efficient centering estimator and \(\mathcal I_{\mathrm{eff}}\) is the Cox efficient information.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In sparse Cox BvM, three forces must be controlled simultaneously: posterior concentration on sparse neighborhoods, local quadratic expansion of the partial likelihood, and negligible nuisance-baseline remainder.</p>
-    </div>
-    <h3>Why Cox is harder than GLM</h3>
-<div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Compared with GLMs, Cox models add a random denominator, a time-indexed nuisance parameter, and martingale rather than independent summand score structure.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The GLM log likelihood is a sum over observations with fixed covariates. The Cox partial likelihood contains risk-set sums \(S^{(k)}(t,\beta)\), and the baseline hazard enters through the compensator. Thus Taylor expansions require uniform control over time-indexed risk-set processes, not only independent scalar likelihood terms.</p>
-    </div>
-    <h3>Priors for the baseline hazard</h3>
+be a prior on
+\(\beta\in\mathbb R^p\) and nondecreasing cumulative hazards \(\Lambda\). Under independent censoring, the posterior is
+\[
+\Pi(\mathrm{d}\beta,\mathrm{d}\Lambda\mid O^{(n)})
+\propto
+\prod_{i=1}^n
+\left[
+\{e^{\beta^\top Z_i}\mathrm{d}\Lambda(X_i)\}^{\Delta_i}
+e^{-e^{\beta^\top Z_i}\Lambda(X_i)}
+\right]
+\Pi_\beta(\mathrm{d}\beta)\Pi_\Lambda(\mathrm{d}\Lambda).
+\]</p>
+</div>
+
+<p>If censoring parameters are variation-independent and the prior factors, censoring-law terms cancel from this posterior. Dependent censoring requires a joint model or an identified weighted likelihood; it cannot be repaired by merely changing the prior on \(\Lambda\).</p>
+
+<h3>Piecewise exponential conjugacy</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Partition time into intervals
+\(I_k=(a_{k-1},a_k]\), let
+\(\lambda_0(t)=\alpha_k\) on \(I_k\), and assign independent priors
+\[
+\alpha_k\sim\operatorname{Gamma}(a_k,b_k)
+\]
+in shape-rate form. Conditional on \(\beta\), define
+\[
+D_k=\sum_i\int_{I_k}\mathrm{d}N_i(t),\qquad
+E_k(\beta)=\sum_i\int_{I_k}
+Y_i(t)e^{\beta^\top Z_i(t)}\,\mathrm{d}t.
+\]
+Then
+\[
+\alpha_k\mid\beta,O^{(n)}
+\sim\operatorname{Gamma}
+\{a_k+D_k,\ b_k+E_k(\beta)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The likelihood kernel for \(\alpha_k\) is
+\[
+\alpha_k^{D_k}e^{-\alpha_kE_k(\beta)}.
+\]
+Multiplication by the gamma prior kernel
+\(\alpha_k^{a_k-1}e^{-b_k\alpha_k}\) gives the stated posterior parameters.</p>
+</div>
+
+<p>This representation supports Gibbs or Metropolis-within-Gibbs computation and makes prior regularization of sparse-event intervals visible. Letting the partition become too fine without scaling the gamma parameters can create a prior that changes with arbitrary discretization.</p>
+
+<h3>Process priors for cumulative hazards</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Common baseline priors include gamma-process priors for \(\Lambda_0\), neutral-to-the-right priors, monotone spline priors, and piecewise-constant hazards with random or fixed partitions.</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For first-order inference on \(\beta\), the baseline prior must put enough mass near the true cumulative hazard and must not introduce a bias in the least favorable direction for \(\beta\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Semiparametric BvM proofs expand the likelihood along paths that perturb \(\beta\) and \(\Lambda_0\) jointly. If the prior is thick near the least favorable path, the nuisance integration preserves the efficient quadratic expansion; if not, a prior-induced bias can remain.</p>
-    </div>
-    <h3>Sparse Cox BvM</h3>
+<p><span class="statement-title">Definition.</span> A gamma-process prior has independent increments satisfying
+\[
+\Lambda(B)\sim\operatorname{Gamma}\{\alpha(B),c\}
+\]
+for measurable time sets \(B\), where \(\alpha\) is a finite base measure on bounded intervals. More generally, a neutral-to-the-right prior makes multiplicative survival decrements over disjoint intervals independent.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> A gamma process is almost surely nondecreasing and purely atomic, while its expectation is
+\[
+E\{\Lambda(B)\}=\frac{\alpha(B)}{c}.
+\]
+It nevertheless has full weak support around many continuous cumulative hazards when the base measure charges every interval.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Independent gamma increments are nonnegative, so cumulative sums are nondecreasing. The Lévy measure of the gamma process has infinitely many positive jumps, giving pure atomicity. The expectation follows from the gamma mean. Approximation of a continuous increasing function by step functions, together with positive gamma density for every finite collection of positive increments, gives positive mass to finite-dimensional neighborhoods; tightness extends this to weak neighborhoods.</p>
+</div>
+
+<h3>Posterior consistency and contraction</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (testing-and-prior-mass template).</span> Let \(d\) be a metric on conditional event-time laws. Suppose for a sequence \(\varepsilon_n\downarrow0\):</p>
+<ol>
+<li>the prior assigns at least \(e^{-Cn\varepsilon_n^2}\) mass to a Kullback-Leibler neighborhood of \((\beta_0,\Lambda_0)\);</li>
+<li>outside a sieve of prior complement at most \(e^{-(C+4)n\varepsilon_n^2}\), the model has entropy
+\[
+\log N(\varepsilon_n,\mathcal P_n,d)
+\le Cn\varepsilon_n^2;
+\]</li>
+<li>independent censoring retains positive observation probability on \([0,\tau]\).</li>
+</ol>
+<p>Then for sufficiently large \(M\),
+\[
+\Pi\{d(P_{\beta,\Lambda},P_{\beta_0,\Lambda_0})
+>M\varepsilon_n\mid O^{(n)}\}
+\xrightarrow{P_0}0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> The entropy bound constructs exponentially powerful tests for annuli outside the target ball. The Kullback-Leibler prior mass lower-bounds the posterior denominator with high probability. The sieve-tail bound controls prior mass not covered by tests. Summing tested annuli yields a vanishing posterior numerator relative to the denominator. The argument is the censored-data version of the general theorem developed in <a href="{{ '/notes/bayesian-statistics/testing-entropy-general-contraction-theorems/' | relative_url }}">testing, entropy, and posterior contraction</a>.</p>
+</div>
+
+<h3>Fixed-dimensional Bernstein-von Mises limit</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (semiparametric BvM for \(\beta\), schematic).</span> Suppose \(p\) is fixed, the true Cox model satisfies the regularity conditions of pages 6 and 10, the prior density for \(\beta\) is continuous and positive at \(\beta_0\), and the baseline prior contracts sufficiently fast while remaining stable under least-favorable local perturbations. Then
+\[
+\sup_B\left|
+\Pi\left\{
+\sqrt n(\beta-\widehat\beta)\in B
+\mid O^{(n)}
+\right\}
+-N_p(0,\widetilde I^{-1})(B)
+\right|
+\xrightarrow{P_0}0.
+\]
+Consequently, regular posterior credible ellipsoids for \(\beta\) have asymptotically correct frequentist coverage.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Expand the likelihood along the least-favorable direction that changes \(\beta\) while adjusting \(\Lambda\) to remove nuisance-score correlation:
+\[
+\ell_n(\beta_0+h/\sqrt n,\Lambda_h)
+-\ell_n(\beta_0,\Lambda_0)
+=h^\top\widetilde\Delta_n
+-\frac12h^\top\widetilde I h+o_{P_0}(1).
+\]
+Posterior contraction localizes \((\beta,\Lambda)\) to a set where the expansion is uniform. Prior stability permits the nuisance change of variables without a first-order prior distortion. Integrating the Gaussian kernel and controlling tails gives total-variation convergence centered at the efficient estimator.</p>
+</div>
+
 <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Sparse Cox BvM combines model selection, martingale LAN, and nuisance-baseline integration. The posterior must localize on sparse supports quickly enough that risk-set empirical-process remainders are still negligible.</p>
-    </div>
+<p><span class="statement-title">Why contraction alone is insufficient.</span> A nuisance posterior can be consistent and still induce first-order bias in \(\beta\). BvM requires the nuisance contraction rate and likelihood remainder to satisfy a no-bias condition, often resembling
+\[
+\sqrt n\,\varepsilon_n^2\to0,
+\]
+plus stability in a least-favorable direction. Credible-set validity is therefore stronger than posterior consistency.</p>
+</div>
+
+<h3>Survival-function BvM</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If a joint BvM theorem holds for the efficient coordinates of
+\((\beta,\Lambda_0)\), then for fixed \(z\) and \(t\),
+\[
+\sqrt n\{S(t\mid z)-\widehat S(t\mid z)\}
+\mid O^{(n)}
+\]
+converges to a centered normal law with variance
+\[
+\operatorname{Var}_{P_0}
+\left[
+-S_0(t\mid z)e^{\beta_0^\top z}
+\{\widetilde\phi_{\Lambda,t}
++\Lambda_0(t)z^\top\widetilde\phi_\beta\}
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The map
+\[
+(\beta,\Lambda)\mapsto
+\exp\{-e^{\beta^\top z}\Lambda(t)\}
+\]
+is differentiable, with derivative represented by the influence expression in brackets. Apply the posterior delta method to the joint Gaussian limit.</p>
+</div>
+
+<h3>Sparse high-dimensional Bayes</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A spike-and-slab prior may be written
+\[
+\pi(s)\,\frac{1}{\binom ps}
+\sum_{|S|=s}
+\left\{\prod_{j\in S}g(\beta_j)\right\}
+\left\{\prod_{j\notin S}\delta_0(\mathrm{d}\beta_j)\right\},
+\]
+with a dimension prior satisfying approximately
+\(\pi(s)\lesssim e^{-c s\log p}\). Continuous shrinkage alternatives include global-local priors, but exact support statements then require thresholding or decision rules.</p>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (sparse contraction template).</span> If \(\beta_0\) has support size \(s_0\), the risk-set information satisfies a sparse compatibility condition, the prior gives sufficient mass near \(\beta_0\), and
+\[
+s_0\log p=o(n),
+\]
+then a well-calibrated sparse prior can contract at
+\[
+\|\beta-\beta_0\|_2
+=O_{P_0}\left(\sqrt{\frac{s_0\log p}{n}}\right)
+\]
+up to model-specific constants, jointly with baseline-hazard contraction.</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">BvM boundary.</span> Full \(p\)-dimensional Gaussian BvM is impossible when \(p\gg n\). One may seek a BvM theorem for a fixed low-dimensional functional
+\(a^\top\beta\), requiring posterior sparsity, an approximately sparse inverse-information direction, and a bias condition often stronger than contraction, such as
+\[
+s_0\log p=o(\sqrt n).
+\]
+Model-selection priors can also create nonuniform behavior near zero coefficients. The inferential claim must specify the functional and sparsity regime.</p>
+</div>
+
+<h3>Computation and posterior checking</h3>
+
+<p>Useful algorithms include:</p>
+<ul>
+<li>Gibbs updates for piecewise exponential baseline hazards;</li>
+<li>Hamiltonian Monte Carlo for smooth finite-dimensional hazard bases;</li>
+<li>reversible-jump or birth-death methods for random partitions and sparse models;</li>
+<li>Laplace and variational approximations for large \(p\), followed by calibration checks because covariance is often underestimated.</li>
+</ul>
+
+<p>Posterior predictive checking should compare event counts over time, risk-set residuals, survival calibration, and patterns of censoring. A good fit to partial likelihood alone does not validate the baseline hazard or absolute-risk predictions. The broader posterior, contraction, sparse-prior, and variational theory is developed in <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a>.</p>

@@ -48,3 +48,198 @@ Thus optimizing the ELBO is exactly reverse-KL projection when optimization is e
 <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Mean-field factorization can be accurate for posterior means and poor for uncertainty. For theoretical work, the object to bound is not only the ELBO gap but the loss relevant to the statistical question.</p>
     </div>
+
+<h3>Statistical variational objective</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For loss
+\(\ell_n(\theta;X)\) and prior \(\Pi\), a generalized variational posterior solves
+\[
+\widehat Q
+\in\arg\min_{Q\in\mathcal Q}
+\left[
+E_Q\ell_n(\theta;X)
++\frac1\eta\operatorname{KL}(Q\|\Pi)
+\right].
+\]
+For negative log likelihood and \(\eta=1\), this is equivalent to reverse-KL projection of the exact posterior.</p>
+</div>
+
+<h3>Donsker-Varadhan variational identity</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For measurable \(f\) with
+\(\int e^f\,\mathrm{d}\Pi<\infty\),
+\[
+\log\int e^f\,\mathrm{d}\Pi
+=\sup_{Q\ll\Pi}
+\left\{
+E_Qf-\operatorname{KL}(Q\|\Pi)
+\right\}.
+\]
+The optimizer has density
+\[
+\frac{\mathrm{d}Q^\star}{\mathrm{d}\Pi}
+=\frac{e^f}{\int e^f\,\mathrm{d}\Pi}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(Q^\star\) be the exponential tilt. For any \(Q\ll\Pi\),
+\[
+\operatorname{KL}(Q\|Q^\star)
+=\operatorname{KL}(Q\|\Pi)
+-E_Qf+\log\int e^f\,\mathrm{d}\Pi
+\ge0.
+\]
+Rearrange, with equality at \(Q=Q^\star\).</p>
+</div>
+
+<p>Restricting the supremum to \(\mathcal Q\) creates the variational approximation. The identity also underlies PAC-Bayes bounds and entropic mirror descent.</p>
+
+<h3>Alpha divergences</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For \(0<\alpha<1\), one alpha divergence is
+\[
+D_\alpha(P\|Q)
+=\frac1{\alpha(1-\alpha)}
+\left[
+1-\int p^\alpha q^{1-\alpha}
+\right].
+\]
+Its limits recover KL directions:
+\[
+\alpha\downarrow0:
+D_\alpha(P\|Q)\to\operatorname{KL}(Q\|P),
+\]
+\[
+\alpha\uparrow1:
+D_\alpha(P\|Q)\to\operatorname{KL}(P\|Q).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Expand
+\[
+p^\alpha q^{1-\alpha}
+=q\exp\{\alpha\log(p/q)\}
+\]
+near \(\alpha=0\), and analogously expand around \(\alpha=1\). The first derivative yields the corresponding expected log ratio.</p>
+</div>
+
+<p>Changing divergence changes which support mismatch is expensive. It also changes stochastic objectives and does not automatically improve calibrated uncertainty.</p>
+
+<h3>Amortized inference</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> An inference network
+\[
+q_\phi(z\mid x)
+\]
+shares parameters \(\phi\) across observations. The amortization gap for datum \(x\) is
+\[
+\inf_\phi
+\operatorname{KL}\{q_\phi(\cdot\mid x)\|\pi(\cdot\mid x)\}
+-\inf_{q\in\mathcal Q_x}
+\operatorname{KL}\{q\|\pi(\cdot\mid x)\},
+\]
+where \(\mathcal Q_x\) allows separately optimized local parameters.</p>
+</div>
+
+<p>Total error now includes family restriction, amortization, finite-training optimization, and statistical error. A powerful decoder can also produce posterior collapse, where
+\[
+q_\phi(z\mid x)\approx\pi(z)
+\]
+because the likelihood ignores latent variables.</p>
+
+<h3>Importance-weighted objectives</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For iid
+\(z_1,\ldots,z_K\sim q(z\mid x)\), define weights
+\[
+w_k=\frac{p(x,z_k)}{q(z_k\mid x)}
+\]
+and
+\[
+\mathcal L_K
+=E\log\left(\frac1K\sum_{k=1}^Kw_k\right).
+\]
+Then
+\[
+\mathcal L_1\le\mathcal L_K\le\log p(x),
+\]
+and \(\mathcal L_K\uparrow\log p(x)\) under integrability as \(K\to\infty\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Jensen gives the upper bound because the average weight is unbiased for \(p(x)\). The lower bound and monotonicity follow by representing the \(K\)-sample average as the conditional expectation of a larger randomly subsampled average and applying conditional Jensen. The strong law and uniform integrability give convergence.</p>
+</div>
+
+<p>A tighter evidence bound need not make the finite-\(K\) inference network gradient better; normalized weights can degenerate and reduce effective signal for \(\phi\).</p>
+
+<h3>Linear-response covariance</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Perturb the target by
+\[
+\pi_t(\theta)
+\propto e^{t^\top g(\theta)}\pi(\theta),
+\]
+and let \(m(t)=E_{q_t}g(\theta)\) under the optimized variational approximation. Linear-response variational Bayes estimates covariance by
+\[
+\widehat{\operatorname{Cov}}_{\mathrm{LR}}
+=\left.\frac{\partial m(t)}{\partial t^\top}
+\right|_{t=0}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For the exact posterior,
+\[
+\left.
+\frac{\partial}{\partial t}
+E_{\pi_t}g(\theta)
+\right|_{t=0}
+=\operatorname{Cov}_\pi\{g(\theta)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate the exponentially tilted expectation; the quotient rule gives covariance, as in prior sensitivity.</p>
+</div>
+
+<p>LRVB differentiates through the variational optimum and can restore some missing dependence. It remains a local correction around that optimum and cannot recover omitted modes.</p>
+
+<h3>Variational BvM</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (regular mean-field limit).</span> Suppose the exact local posterior for
+\[
+h=\sqrt n(\theta-\theta_0)
+\]
+converges to
+\[
+N(I^{-1}\Delta,I^{-1}),
+\]
+and the rescaled variational family converges to a closed family
+\(\mathcal Q_\infty\). Under epi-convergence and uniqueness,
+\[
+q_n^\star(h)
+\Longrightarrow
+\arg\min_{q\in\mathcal Q_\infty}
+\operatorname{KL}\{q\|
+N(I^{-1}\Delta,I^{-1})\}.
+\]</p>
+</div>
+
+<p>For diagonal Gaussian \(\mathcal Q_\infty\), the limit mean is efficient but covariance uses inverse diagonal precision, not the full inverse information. Variational normality is therefore not the same as exact BvM.</p>
+
+<h3>Decision-focused approximation</h3>
+
+<p>If the final action minimizes posterior expected loss, an approximation should control regret
+\[
+\rho_\Pi(a_Q)-\inf_a\rho_\Pi(a),
+\]
+not necessarily a global divergence between distributions. For Lipschitz losses, Wasserstein error can be more relevant; for bounded losses, total variation suffices; for tail-risk decisions, neither a small mean error nor ELBO gap may suffice. Approximation quality is target-dependent.</p>

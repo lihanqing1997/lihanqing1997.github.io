@@ -31,6 +31,30 @@ note_next_url: "/notes/probability-theory/pushforward-measures-densities/"
         <p><span class="statement-title">Proof.</span> Holder follows from Young's inequality \(ab\le a^p/p+b^q/q\) after normalizing by \(\|X\|_p\) and \(\|Y\|_q\). Minkowski follows by applying Holder to \(|X+Y|^p\le |X||X+Y|^{p-1}+|Y||X+Y|^{p-1}\). Jensen follows first for finite convex combinations and then by approximation or supporting-line arguments.</p>
     </div>
 
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> On a probability space, if \(0<p<q\le\infty\), then
+\[
+\|X\|_p\le\|X\|_q.
+\]
+For \(X,Y\in L^2\),
+\[
+|\operatorname{Cov}(X,Y)|
+\le\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> Jensen applied to the concave map \(u\mapsto u^{p/q}\) gives the norm comparison. Cauchy-Schwarz applied to \(X-\mathbb EX\) and \(Y-\mathbb EY\) gives the covariance inequality.</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (equality in the covariance bound).</span> Equality holds precisely when the centered variables are linearly dependent in \(L^2\):
+\[
+Y-\mathbb EY=c(X-\mathbb EX)\quad\text{a.s.}
+\]
+Thus correlation \(\pm1\) is an almost-sure affine relation, not merely a strong informal association.</p>
+    </div>
+
 
     <h3>Uniform integrability</h3>
 
@@ -45,9 +69,49 @@ If \(X_n\to X\) in probability and \(\{X_n\}\) is uniformly integrable, then \(X
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Truncate \(X_n\) and \(X\) at level \(K\). Bounded convergence in probability implies convergence of the truncated variables in \(L^1\) along the full sequence. The tails are uniformly small for \(X_n\), and Fatou's lemma gives the corresponding tail control for \(X\). Let \(n\to\infty\) for fixed \(K\), then send \(K\to\infty\).</p>
+        <p><span class="statement-title">Proof.</span> The family is uniformly bounded in \(L^1\). Every subsequence has an a.s.-convergent further subsequence; Fatou then gives \(X\in L^1\). Uniform integrability is equivalent, on a probability space, to uniform absolute continuity:
+\[
+P(A)<\delta\quad\Longrightarrow\quad
+\sup_n\mathbb E[|X_n|\mathbf1_A]<\varepsilon.
+\]
+The family \(\{X_n-X\}\) inherits this property. Choose \(\eta>0\) with \(\eta<\varepsilon/2\). Since \(X_n\to X\) in probability, the event \(A_n=\{|X_n-X|>\eta\}\) has probability below the corresponding \(\delta\), eventually. Hence
+\[
+\mathbb E|X_n-X|
+\le\eta+\mathbb E[|X_n-X|\mathbf1_{A_n}]
+<\varepsilon.
+\]</p>
     </div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A useful sufficient condition is an \(L^{1+\delta}\) bound: if \(\sup_X\mathbb E|X|^{1+\delta}\lt\infty\), then \(\mathcal X\) is uniformly integrable.</p>
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition (moment criterion).</span> If
+\[
+\sup_{X\in\mathcal X}\mathbb E|X|^{1+\delta}<\infty
+\]
+for some \(\delta>0\), then \(\mathcal X\) is uniformly integrable.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> On \(\{|X|>K\}\),
+\[
+|X|\le K^{-\delta}|X|^{1+\delta}.
+\]
+Therefore
+\[
+\sup_{X\in\mathcal X}\mathbb E[|X|\mathbf1_{\{|X|>K\}}]
+\le K^{-\delta}
+\sup_{X\in\mathcal X}\mathbb E|X|^{1+\delta}
+\longrightarrow0.
+\]</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (bounded means are not enough).</span> Let
+\[
+X_n=n\mathbf1_{A_n},\qquad P(A_n)=1/n.
+\]
+Then \(\mathbb EX_n=1\) for every \(n\), but
+\[
+\mathbb E[X_n\mathbf1_{\{X_n>K\}}]=1
+\]
+whenever \(n>K\). Thus \(\{X_n\}\) is \(L^1\)-bounded but not uniformly integrable. Rare events can carry a fixed amount of expectation.</p>
     </div>

@@ -2,35 +2,193 @@
 layout: note-detail
 breadcrumb_child_label_en: "20. Bootstrap and jackknife"
 breadcrumb_child_label_fr: "20. Bootstrap et jackknife"
-breadcrumb_child_label_zh: "20. 自助法与 刀切法"
+breadcrumb_child_label_zh: "20. 自助法与刀切法"
 note_back_url: "/notes/statistical-inference/"
 note_prev_url: "/notes/statistical-inference/goodness-of-fit-chi-square/"
 note_next_url: "/notes/statistical-inference/higher-order-asymptotics/"
 ---
 
-<p>Resampling estimates uncertainty by recomputing a statistic under data-based approximations to its sampling distribution.</p>
+<p>Resampling replaces an unknown sampling law by a data-dependent law and recomputes the statistic. The central mathematical question is conditional consistency: does the resampled distribution approximate the original distribution in probability? Repeating a procedure many times does not by itself answer that question.</p>
 
-    <h3>Nonparametric bootstrap</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The nonparametric bootstrap draws \(X_1^*,\ldots,X_n^*\) i.i.d. from the empirical distribution \(P_n\). The bootstrap statistic \(T_n^*=T(X_1^*,\ldots,X_n^*)\) is studied conditionally on the observed data.</p>
-    </div>
+<h3>Nonparametric bootstrap law</h3>
 
-    <h3>Bootstrap consistency</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a smooth functional \(T(P)\), if \(\sqrt n(P_n-P)\rightsquigarrow G\) and \(T\) is Hadamard differentiable at \(P\), then conditionally in probability \(\sqrt n\{T(P_n^*)-T(P_n)\}\rightsquigarrow \dot T_PG\), the same limit as \(\sqrt n\{T(P_n)-T(P)\}\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Given \(X_1,\ldots,X_n\), let
+  \[
+  P_n=\frac1n\sum_{i=1}^n\delta_{X_i}.
+  \]
+  Conditionally on the data, draw \(X_1^\star,\ldots,X_n^\star\) i.i.d. from \(P_n\), and define
+  \[
+  P_n^\star=\frac1n\sum_{i=1}^n\delta_{X_i^\star}.
+  \]
+  Conditional probability and expectation are denoted \(P^\star(\cdot)=P(\cdot\mid X_1,\ldots,X_n)\) and \(\mathbb E^\star\).</p>
+</div>
 
-    <h3>Bootstrap intervals</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Percentile, basic, bootstrap-\(t\), BC, and BCa intervals differ in how they approximate the distribution of the estimation error and correct bias, skewness, or acceleration. Studentization is often essential for reliable coverage.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (bootstrap consistency).</span> For a statistic \(T_n\) centered at \(\theta(P)\) with scale \(r_n\), the bootstrap is consistent if, for a metric \(d\) that metrizes weak convergence,
+  \[
+  d\!\left(
+  \mathcal L^\star\{r_n(T_n^\star-T_n)\},
+  \mathcal L_P\{r_n(T_n-\theta(P))\}
+  \right)\to_p0.
+  \]</p>
+</div>
 
-    <h3>Jackknife</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The jackknife recomputes leave-one-out estimates \(T_{(-i)}\). Pseudovalues and their empirical variance estimate bias and standard error, especially when \(T\) has an influence-function expansion.</p>
-    </div>
+<h3>Bootstrap central limit theorem for the mean</h3>
 
-    <h3>Failure modes</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Ordinary bootstrap can fail for nonsmooth functionals, boundary parameters, cube-root asymptotics, model selection, and some dependent data. Parametric, wild, multiplier, subsampling, or problem-specific bootstrap schemes may then be needed.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(PX^2\lt\infty\) and \(\sigma^2=\operatorname{Var}_P(X)>0\), then
+  \[
+  \sup_t\left|
+  P^\star\!\left\{
+  \frac{\sqrt n(\bar X^\star-\bar X)}{S_n}\le t
+  \right\}-\Phi(t)\right|\to_p0,
+  \]
+  where \(S_n^2=P_n(X-\bar X)^2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditionally on the data, \(X_i^\star-\bar X\) are i.i.d. with mean zero and variance \(S_n^2\). The conditional Lindeberg condition is
+  \[
+  \frac1{nS_n^2}\sum_{i=1}^n
+  (X_i-\bar X)^2
+  1_{\{|X_i-\bar X|>\varepsilon\sqrt nS_n\}}
+  \to_p0.
+  \]
+  Since \(S_n^2\to_p\sigma^2\), truncation plus \(PX^2\lt\infty\) proves this condition. The conditional Lindeberg-Feller theorem gives asymptotic normality in probability. Continuity of \(\Phi\) upgrades pointwise convergence to the displayed uniform convergence.</p>
+</div>
+
+<h3>Functional bootstrap delta method</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Bootstrap delta theorem.</span> Suppose
+  \[
+  \sqrt n(P_n-P)\rightsquigarrow\mathbb G_P
+  \]
+  in a normed function space and, conditionally in probability,
+  \[
+  \sqrt n(P_n^\star-P_n)\rightsquigarrow_P\mathbb G_P.
+  \]
+  If \(T\) is Hadamard differentiable at \(P\), tangentially to the support of \(\mathbb G_P\), then
+  \[
+  \sqrt n\{T(P_n^\star)-T(P_n)\}
+  \rightsquigarrow_P T_P'\mathbb G_P,
+  \]
+  the same limit as \(\sqrt n\{T(P_n)-T(P)\}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The ordinary functional delta method expands
+  \[
+  \sqrt n\{T(P+n^{-1/2}h_n)-T(P)\}
+  =T_P'h_n+o(1)
+  \]
+  uniformly along convergent tangential sequences. Apply this expansion conditionally to \(P_n^\star-P_n\), while using consistency \(P_n\to P\) to replace the derivative at \(P_n\) by that at \(P\). The conditional continuous-mapping theorem then transfers the bootstrap empirical-process limit through \(T_P'\).</p>
+</div>
+
+<h3>Bootstrap confidence intervals</h3>
+
+<p>Let \(\hat\theta=T_n\), and let \(q_\gamma^\star\) denote the conditional \(\gamma\)-quantile of \(\hat\theta^\star-\hat\theta\). The basic interval is
+\[
+\left[
+\hat\theta-q_{1-\alpha/2}^\star,\,
+\hat\theta-q_{\alpha/2}^\star
+\right].
+\]
+If \(a_\gamma^\star\) is the conditional quantile of \(\hat\theta^\star\) itself, the percentile interval is
+\[
+[a_{\alpha/2}^\star,a_{1-\alpha/2}^\star].
+\]
+They coincide only under special symmetry or transformation structures.</p>
+
+<p>For a studentized statistic
+\[
+Z_n=\frac{\hat\theta-\theta}{\hat s},
+\qquad
+Z_n^\star=\frac{\hat\theta^\star-\hat\theta}{\hat s^\star},
+\]
+the bootstrap-\(t\) interval is
+\[
+\left[
+\hat\theta-q_{1-\alpha/2}^{Z,\star}\hat s,\,
+\hat\theta-q_{\alpha/2}^{Z,\star}\hat s
+\right].
+\]
+Studentization can make the limiting law pivotal and often improves coverage order. Bias-corrected and accelerated intervals alter percentile levels using a median-bias constant and a jackknife acceleration estimate; they require smoothness assumptions beyond first-order bootstrap consistency.</p>
+
+<h3>Parametric and model-based bootstraps</h3>
+
+<p>In a parametric bootstrap, draw \(X_i^\star\sim P_{\hat\theta}\) and refit the procedure. This can be more accurate under a correct parametric model, but inherits its misspecification. In regression, a residual bootstrap presumes an appropriate residual invariance structure; a wild bootstrap multiplies residuals by mean-zero unit-variance weights and is designed to preserve heteroskedastic conditional variance. Cluster and block bootstraps resample independent clusters or contiguous blocks rather than individual rows.</p>
+
+<h3>Jackknife pseudovalues</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(\hat\theta=T_n(X_1,\ldots,X_n)\) and \(\hat\theta_{(-i)}\) be the estimate after deleting observation \(i\). Put
+  \[
+  \bar\theta_{(-\cdot)}=\frac1n\sum_{i=1}^n\hat\theta_{(-i)},
+  \qquad
+  J_i=n\hat\theta-(n-1)\hat\theta_{(-i)}.
+  \]
+  The \(J_i\) are jackknife pseudovalues.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Jackknife bias and variance estimates.</span> Define
+  \[
+  \widehat{\operatorname{bias}}_{\mathrm{jack}}
+  =(n-1)(\bar\theta_{(-\cdot)}-\hat\theta)
+  \]
+  and
+  \[
+  \widehat{\operatorname{Var}}_{\mathrm{jack}}(\hat\theta)
+  =\frac{n-1}{n}\sum_{i=1}^n
+  (\hat\theta_{(-i)}-\bar\theta_{(-\cdot)})^2
+  =\frac1{n(n-1)}\sum_{i=1}^n(J_i-\bar J)^2.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Jackknife consistency for asymptotically linear estimators.</span> If
+  \[
+  \hat\theta-\theta
+  =\frac1n\sum_{i=1}^n\phi(X_i)+r_n,
+  \qquad
+  r_n=o_p(n^{-1/2}),
+  \]
+  and the expansion remains uniformly valid after one deletion, then
+  \[
+  J_i=\theta+\phi(X_i)+o_p(1)
+  \]
+  in average squared error, and
+  \[
+  n\,\widehat{\operatorname{Var}}_{\mathrm{jack}}(\hat\theta)
+  \to_pP\phi^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The leave-one-out expansion is
+  \[
+  \hat\theta_{(-i)}-\theta
+  =\frac1{n-1}\sum_{j\ne i}\phi(X_j)+r_{n,-i}.
+  \]
+  Substitution into \(J_i=n\hat\theta-(n-1)\hat\theta_{(-i)}\) cancels every \(\phi(X_j)\) except \(\phi(X_i)\), leaving \(\theta+\phi(X_i)\) plus the uniform remainder. The sample variance of the pseudovalues therefore converges to \(P\phi^2\).</p>
+</div>
+
+<h3>When the ordinary bootstrap fails</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (sample maximum).</span> If \(X_i\sim U[0,1]\), then
+  \[
+  n(1-X_{n:n})\rightsquigarrow\operatorname{Exp}(1).
+  \]
+  Conditionally, every bootstrap observation is at most \(X_{n:n}\), and
+  \[
+  P^\star(X_{n:n}^\star=X_{n:n})
+  =1-(1-1/n)^n\to1-e^{-1}.
+  \]
+  Thus the bootstrap distribution has an asymptotic atom at zero for
+  \(n(X_{n:n}-X_{n:n}^\star)\), unlike the target exponential law. The ordinary \(n\)-out-of-\(n\) bootstrap is inconsistent.</p>
+</div>
+
+<p>Other failures occur for some boundary parameters, cube-root estimators, post-model-selection laws, infinite-variance means, and degenerate U-statistics under an alternative centering. Remedies are problem-specific: \(m\)-out-of-\(n\) bootstrap, subsampling, multiplier or wild bootstrap, null-imposed resampling, block bootstrap, or analytic nonregular limits. The resampling scheme must reproduce the mechanism that generates the leading stochastic term.</p>

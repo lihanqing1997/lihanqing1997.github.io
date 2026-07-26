@@ -24,20 +24,34 @@ note_next_url: "/notes/real-analysis/fourier-transform-on-euclidean-space/"
         <p><span class="statement-title">Proof.</span> \(\langle e_n,e_m\rangle=(2\pi)^{-1}\int_{-\pi}^{\pi}e^{i(n-m)x}\,\mathrm{d}x\). The integral is \(1\) if \(n=m\) and \(0\) otherwise.</p>
     </div>
 
-    <h3>Bessel and Parseval</h3>
+    <h3>Bessel inequality</h3>
     <p>Orthogonal projection controls the size of coefficients.</p>
     <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For \(f\in L^2\), \(\sum_{n\in\mathbb Z}|\widehat f(n)|^2\le\|f\|_2^2\). If the trigonometric system is complete, equality holds.</p>
+        <p><span class="statement-title">Theorem.</span> For \(f\in L^2([-\pi,\pi])\),
+\[
+\sum_{n\in\mathbb Z}|\widehat f(n)|^2\le\|f\|_2^2.
+\]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For a finite set \(F\), the projection \(P_Ff=\sum_{n\in F}\widehat f(n)e_n\) satisfies \(\|f\|_2^2=\|P_Ff\|_2^2+\|f-P_Ff\|_2^2\). Thus \(\sum_{n\in F}|\widehat f(n)|^2\le\|f\|_2^2\). Let \(F\uparrow\mathbb Z\). Completeness makes \(P_Ff\to f\), giving equality.</p>
+        <p><span class="statement-title">Proof.</span> For a finite set \(F\), orthogonality gives
+\[
+\left\|f-\sum_{n\in F}\widehat f(n)e_n\right\|_2^2
+=\|f\|_2^2-\sum_{n\in F}|\widehat f(n)|^2\ge0.
+\]
+Take an increasing sequence of finite sets exhausting \(\mathbb Z\).</p>
     </div>
 
     <h3>Dirichlet kernels</h3>
     <p>Partial sums are convolutions with oscillatory kernels.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The \(N\)-th symmetric partial sum is \(S_Nf=f*D_N\), where \(D_N(x)=\sum_{|n|\le N}e^{inx}\) up to normalization.</p>
+        <p><span class="statement-title">Definition.</span> The Dirichlet kernel and symmetric partial sum are
+\[
+D_N(x)=\sum_{n=-N}^Ne^{inx}
+=\frac{\sin((N+\tfrac12)x)}{\sin(x/2)},
+\qquad
+S_Nf(x)=\frac1{2\pi}\int_{-\pi}^{\pi}f(x-y)D_N(y)\,\mathrm{d}y.
+\]</p>
     </div>
 
     <div class="math-statement remark">
@@ -51,10 +65,64 @@ note_next_url: "/notes/real-analysis/fourier-transform-on-euclidean-space/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Fejer means are convolutions with the Fejer kernel \(K_N\), which is nonnegative, has integral one, and concentrates near zero. Thus \(K_N\) is an approximate identity. Uniform continuity gives uniform convergence for continuous \(f\), and translation continuity in \(L^p\) gives \(L^p\) convergence.</p>
+        <p><span class="statement-title">Proof.</span> Averaging the partial sums gives
+\[
+\sigma_Nf=\frac1{N+1}\sum_{k=0}^NS_kf
+=\frac1{2\pi}f*K_N,
+\]
+where
+\[
+K_N(x)=\frac1{N+1}\left(\frac{\sin((N+1)x/2)}{\sin(x/2)}\right)^2.
+\]
+Thus \(K_N\ge0\), \((2\pi)^{-1}\int K_N=1\), and for every \(\delta>0\),
+\[
+\sup_{\delta\le|x|\le\pi}K_N(x)\le\frac{1}{(N+1)\sin^2(\delta/2)}\longrightarrow0.
+\]
+For continuous \(f\),
+\[
+|\sigma_Nf(x)-f(x)|
+\le\frac1{2\pi}\int K_N(y)|f(x-y)-f(x)|\,\mathrm{d}y.
+\]
+Uniform continuity controls \(|y|<\delta\), and concentration controls the complement, uniformly in \(x\). For \(L^p\), Minkowski gives the same estimate with \(\|f(\cdot-y)-f\|_p\), and translation continuity completes the proof.</p>
     </div>
 
-    <h3>Orthogonal projection viewpoint</h3>
+    <h3>Completeness and Parseval identity</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem.</span> The trigonometric system \(\{e_n:n\in\mathbb Z\}\) is a complete orthonormal basis of \(L^2([-\pi,\pi])\). Consequently,
+\[
+\|f\|_2^2=\sum_{n\in\mathbb Z}|\widehat f(n)|^2,
+\qquad
+S_Nf\longrightarrow f\text{ in }L^2.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(f\in L^2\) is orthogonal to every \(e_n\), then every Fourier coefficient vanishes. Since \(\mu(\mathbb T)<\infty\), \(f\in L^1\), and every Fejer mean is identically zero. But Fejer's theorem gives \(\sigma_Nf\to f\) in \(L^2\), so \(f=0\). Hence the orthogonal complement of the closed span of the trigonometric system is trivial, proving completeness.</p>
+        <p>The orthogonal projection \(S_Nf\) onto \(\operatorname{span}\{e_n:|n|\le N\}\) therefore converges in \(L^2\) to \(f\). Pythagoras gives
+\[
+\|S_Nf\|_2^2=\sum_{|n|\le N}|\widehat f(n)|^2,
+\]
+and passage to the limit yields Parseval.</p>
+    </div>
+
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Dirichlet-Jordan pointwise criterion).</span> If a \(2\pi\)-periodic function has bounded variation near \(x\), then
+\[
+S_Nf(x)\longrightarrow\frac{f(x+)+f(x-)}2.
+\]
+In particular, convergence is to \(f(x)\) at every continuity point.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof outline.</span> Symmetrize the convolution formula to write the error as an oscillatory integral involving
+\[
+\frac{f(x+t)+f(x-t)-f(x+)-f(x-)}{2\sin(t/2)}
+\sin((N+\tfrac12)t).
+\]
+Bounded variation makes the amplitude integrable in the Riemann-Stieltjes sense near zero. The Dirichlet test then makes the oscillatory integral vanish. The midpoint value appears because the symmetric kernel samples the two one-sided limits equally.</p>
+    </div>
+
+    <h3>Least-squares projection onto frequencies</h3>
     <p>Fourier series are least-squares approximations in \(L^2\).</p>
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The \(N\)-term Fourier partial sum is the orthogonal projection onto the span of frequencies \(|n|\le N\). This is the same Hilbert-space geometry behind regression projections and conditional expectation.</p>

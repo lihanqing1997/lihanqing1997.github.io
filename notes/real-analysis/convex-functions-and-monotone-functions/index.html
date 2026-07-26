@@ -37,6 +37,30 @@ note_next_url: "/notes/real-analysis/riemann-integration/"
         <p><span class="statement-title">Proof.</span> The monotonicity of secant slopes shows that the limits of \((f(x+h)-f(x))/h\) as \(h\downarrow0\) and \(h\uparrow0\) exist as monotone limits bounded by nearby secant slopes. Comparing secant slopes at different base points gives monotonicity of the one-sided derivatives.</p>
     </div>
 
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (interior regularity).</span> A finite convex function on an open interval is locally Lipschitz and therefore continuous. More precisely, if
+\[
+a<u<v<b,\qquad [a,b]\subset I,
+\]
+then for all \(x,y\in[u,v]\),
+\[
+|f(x)-f(y)|
+\le L|x-y|,\qquad
+L=\max\left\{\left|\frac{f(u)-f(a)}{u-a}\right|,
+\left|\frac{f(b)-f(v)}{b-v}\right|\right\}.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(u\le x<y\le v\), monotonicity of secant slopes gives
+\[
+\frac{f(u)-f(a)}{u-a}
+\le\frac{f(y)-f(x)}{y-x}
+\le\frac{f(b)-f(v)}{b-v}.
+\]
+Taking absolute values yields the estimate. Hence one Lipschitz constant works on every compact subinterval of \(I\).</p>
+    </div>
+
     <h3>Jensen inequality</h3>
     <p>Convexity converts averages of inputs into bounds on averages of outputs.</p>
     <div class="math-statement theorem">
@@ -48,6 +72,23 @@ f\left(\sum_i\lambda_i x_i\right)\le \sum_i\lambda_i f(x_i).
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The case of two points is the definition. The finite case follows by induction: combine the first \(n-1\) points into their weighted average, then apply the two-point inequality to that average and \(x_n\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary (integral Jensen inequality).</span> Let \((\Omega,\mathcal A,\mu)\) be a probability space, let \(X\) and \(f(X)\) be integrable, and let \(f\) be convex on an interval containing the range of \(X\). Then
+\[
+f\!\left(\int_\Omega X\,\mathrm{d}\mu\right)
+\le\int_\Omega f(X)\,\mathrm{d}\mu.
+\]</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> At \(m=\int X\,\mathrm{d}\mu\), choose a supporting slope \(p\in[f'_-(m),f'_+(m)]\). Then \(f(x)\ge f(m)+p(x-m)\) for every \(x\). Integrating gives
+\[
+\int f(X)\,\mathrm{d}\mu
+\ge f(m)+p\int(X-m)\,\mathrm{d}\mu=f(m).
+\]
+This argument also shows why existence of a supporting line is the geometric heart of Jensen's inequality.</p>
     </div>
 
     <h3>Monotone functions</h3>
@@ -66,6 +107,22 @@ f\left(\sum_i\lambda_i x_i\right)\le \sum_i\lambda_i f(x_i).
         <p><span class="statement-title">Definition.</span> A number \(p\) is a subgradient of a convex \(f\) at \(x\) if \(f(y)\ge f(x)+p(y-x)\) for all \(y\).</p>
     </div>
 
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Proposition.</span> At an interior point \(x\),
+\[
+\partial f(x)=[f'_-(x),f'_+(x)].
+\]
+Consequently, \(x\) minimizes \(f\) if and only if \(0\in\partial f(x)\).</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> If \(p\in\partial f(x)\), division of
+\[
+f(y)-f(x)\ge p(y-x)
+\]
+by \(y-x\), separately for \(y<x\) and \(y>x\), gives \(f'_-(x)\le p\le f'_+(x)\). Conversely, any \(p\) in this interval lies below every right secant slope and above every left secant slope by monotonicity of slopes, so the supporting inequality holds for all \(y\). Finally, \(0\in\partial f(x)\) is exactly \(f(y)\ge f(x)\) for all \(y\).</p>
+    </div>
+
     <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> At differentiability points, the only subgradient is \(f'(x)\). At nondifferentiable points, the subdifferential is the interval between the left and right derivatives.</p>
+        <p><span class="statement-title">Remark.</span> These one-dimensional facts are the prototypes for subdifferentials, supporting hyperplanes, and optimality conditions in <a href="{{ '/notes/optimization/convex-functions-subdifferentials/' | relative_url }}">Optimization</a>.</p>
     </div>

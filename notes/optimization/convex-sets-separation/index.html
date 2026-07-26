@@ -8,24 +8,141 @@ note_prev_url: "/notes/optimization/optimization-problems-local-minima/"
 note_next_url: "/notes/optimization/convex-functions-subdifferentials/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Convex sets and separation.</p>
+<p>Convexity is geometry closed under averaging. Its decisive consequence is
+that nearest points, supporting hyperplanes, and dual certificates can be
+obtained from one elementary inequality in the Euclidean inner product.</p>
 
-    <h3>Convex set</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A set \(C\subset\mathbb R^d\) is convex if \(tx+(1-t)y\in C\) for all \(x,y\in C\) and \(t\in[0,1]\). Convexity means that line segments do not leave the feasible region.</p>
-    </div>
+<h3>Convex combinations, hulls, and cones</h3>
 
-    <h3>Projection theorem</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(C\) is nonempty, closed, and convex, then for every \(x\) there is a unique projection \(P_Cx\in C\) minimizing \(\|x-y\|\). It is characterized by \(\langle x-P_Cx,y-P_Cx\rangle\le0\) for all \(y\in C\).</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A set
+    \(C\subset\mathbb R^d\) is convex if
+    \[
+    \lambda x+(1-\lambda)y\in C
+    \quad(x,y\in C,\ 0\le\lambda\le1).
+    \]
+    Equivalently, every finite convex combination
+    \(\sum_{i=1}^m\lambda_i x_i\), with
+    \(\lambda_i\ge0\) and \(\sum_i\lambda_i=1\), remains in \(C\). The convex
+    hull \(\operatorname{conv}A\) is the set of all such combinations of
+    points of \(A\).</p>
+</div>
 
-    <h3>Separating hyperplane</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(C\) is closed and convex and \(x\notin C\), then there exists a nonzero vector \(a\) and a scalar \(b\) such that \(\langle a,x\rangle>b\ge\langle a,y\rangle\) for all \(y\in C\).</p>
-    </div>
+<p>Affine subspaces, half-spaces, Euclidean balls, norm balls, simplices, and
+positive-semidefinite matrices form convex sets. A sphere and the set
+\(\{x:x_1x_2\ge1\}\) do not. Intersections of arbitrary families of convex sets
+are convex, while unions generally are not.</p>
 
-    <h3>Role in optimality</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Separation is the geometric source of multipliers and dual variables. Optimality often says that a descent direction cannot be separated from the feasible cone in the wrong direction.</p>
-    </div>
+<div class="math-statement theorem">
+    <p><span class="statement-title">Caratheodory's theorem.</span> If
+    \(x\in\operatorname{conv}A\subset\mathbb R^d\), then \(x\) is a convex
+    combination of at most \(d+1\) points of \(A\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Write
+    \(x=\sum_{i=1}^m\lambda_i x_i\) with all \(\lambda_i>0\). If \(m>d+1\),
+    the vectors \((x_i,1)\in\mathbb R^{d+1}\) are linearly dependent, so choose
+    \(a\ne0\) with \(\sum_i a_ix_i=0\) and \(\sum_i a_i=0\). Both signs occur
+    among the \(a_i\). Put
+    \(t=\min_{a_i>0}\lambda_i/a_i\) and
+    \(\lambda_i'=\lambda_i-ta_i\). Then \(\lambda_i'\ge0\),
+    \(\sum_i\lambda_i'=1\), and \(\sum_i\lambda_i'x_i=x\), while at least one
+    coefficient has become zero. Repeating removes points until at most
+    \(d+1\) remain.</p>
+</div>
+
+<h3>Nearest points in closed convex sets</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Projection theorem.</span> Let
+    \(C\subset\mathbb R^d\) be nonempty, closed, and convex. For every
+    \(x\in\mathbb R^d\), there is a unique point \(p=P_Cx\in C\) satisfying
+    \(\|x-p\|=\operatorname{dist}(x,C)\). It is characterized by
+    \[
+    \langle x-p,y-p\rangle\le0\qquad(y\in C).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Choose \(y_n\in C\) with
+    \(\|x-y_n\|\downarrow r=\operatorname{dist}(x,C)\). The sequence is
+    bounded, hence has a convergent subsequence; closedness places its limit
+    \(p\) in \(C\), and continuity gives \(\|x-p\|=r\). If \(p,q\) both
+    minimize, their midpoint lies in \(C\), and the parallelogram identity
+    gives
+    \[
+    \left\|x-\frac{p+q}{2}\right\|^2
+    =\frac12\|x-p\|^2+\frac12\|x-q\|^2-\frac14\|p-q\|^2.
+    \]
+    Minimality forces \(p=q\).</p>
+    <p>For \(y\in C\), the segment \(p+t(y-p)\) is feasible. The quadratic
+    \(q(t)=\|x-p-t(y-p)\|^2\) has a minimum at \(t=0\) over \([0,1]\), so
+    \(q'(0)=-2\langle x-p,y-p\rangle\ge0\). Conversely, the displayed
+    inequality implies
+    \[
+    \|x-y\|^2=\|x-p\|^2+\|y-p\|^2
+      -2\langle x-p,y-p\rangle\ge\|x-p\|^2,
+    \]
+    proving that \(p\) is the projection.</p>
+</div>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Firm nonexpansiveness.</span> For all
+    \(x,z\in\mathbb R^d\),
+    \[
+    \|P_Cx-P_Cz\|^2
+    \le\langle P_Cx-P_Cz,x-z\rangle
+    \le\|P_Cx-P_Cz\|\,\|x-z\|.
+    \]
+    In particular, \(P_C\) is \(1\)-Lipschitz.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Apply the projection
+    characterization first with \(p=P_Cx,y=P_Cz\), and then with
+    \(p=P_Cz,y=P_Cx\). Adding the two inequalities yields the first claim;
+    Cauchy-Schwarz gives the second.</p>
+</div>
+
+<figure class="research-figure">
+    <svg viewBox="0 0 620 250" role="img" aria-label="A point projected orthogonally onto a convex set, with a separating supporting line.">
+        <path d="M95 185 C125 90 260 58 360 115 C400 138 390 195 315 213 C220 236 125 224 95 185 Z"
+              fill="#f3f6f4" stroke="#6f8f80" stroke-width="3"/>
+        <line x1="355" y1="42" x2="465" y2="225" stroke="#b36b63" stroke-width="3"/>
+        <line x1="455" y1="70" x2="351" y2="133" stroke="#59798f" stroke-width="3" stroke-dasharray="7 6"/>
+        <circle cx="455" cy="70" r="6" fill="#26343d"/>
+        <circle cx="351" cy="133" r="6" fill="#59798f"/>
+        <text x="468" y="68">x</text>
+        <text x="311" y="126">P_Cx</text>
+        <text x="475" y="211">supporting hyperplane</text>
+        <text x="183" y="181">C</text>
+    </svg>
+    <figcaption>The residual \(x-P_Cx\) is normal to a supporting hyperplane and separates \(x\) from \(C\).</figcaption>
+</figure>
+
+<h3>Separation obtained from projection</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Strict separation of a point.</span> If
+    \(C\subset\mathbb R^d\) is nonempty, closed, and convex and \(x\notin C\),
+    then there are \(a\ne0\) and \(b\in\mathbb R\) such that
+    \[
+    \langle a,x\rangle>b\ge\langle a,y\rangle
+    \qquad(y\in C).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Let \(p=P_Cx\) and
+    \(a=x-p\ne0\). The projection inequality gives
+    \(\langle a,y-p\rangle\le0\), hence
+    \(\langle a,y\rangle\le\langle a,p\rangle\) for every \(y\in C\).
+    Meanwhile
+    \(\langle a,x\rangle=\langle a,p\rangle+\|a\|^2\). Take
+    \(b=\langle a,p\rangle\).</p>
+</div>
+
+<p>Separation is the geometric origin of Lagrange multipliers, dual variables,
+and impossibility certificates. Later, normal cones package all supporting
+directions at a feasible point into one set-valued object.</p>

@@ -8,22 +8,145 @@ note_prev_url: "/notes/statistical-decision-theory/admissibility-and-complete-cl
 note_next_url: "/notes/statistical-decision-theory/blackwell-comparison-and-transitions/"
 ---
 
-<p>Sufficiency says that an experiment can be compressed without changing any decision problem. In Le Cam language, sufficiency is exact equivalence by transitions.</p>
+<p>A sufficient statistic is a lossless compression of an experiment. The ordinary definition through conditional distributions, the factorization theorem, and the decision-theoretic statement that no risk is lost are all expressions of one kernel equivalence.</p>
 
-    <h3>Statistic as a transition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A statistic \(T:\mathcal X\to\mathcal Y\) sends \(\mathcal E=\{P_\theta\}\) to \(T\mathcal E=\{P_\theta T^{-1}\}\). This map is a Markov transition from observations to statistic values.</p>
-    </div>
+<h3>A statistic as deterministic post-processing</h3>
 
-    <h3>Sufficiency as lossless reduction</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A statistic \(T\) is sufficient when there exists a transition \(K\) from \(\mathcal Y\) back to \(\mathcal X\) such that \(K(P_\theta T^{-1})=P_\theta\) for every \(\theta\). Then \(T\mathcal E\) and \(\mathcal E\) have the same attainable risks.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A measurable statistic
+  \(T:\mathcal X\to\mathcal Y\) induces the reduced experiment
+  \[
+  T\mathcal E
+  =
+  (\mathcal Y,\mathcal A_{\mathcal Y},
+  \{Q_\theta=P_\theta T^{-1}:\theta\in\Theta\}).
+  \]
+  The deterministic kernel
+  \[
+  K_T(x,B)=1\{T(x)\in B\}
+  \]
+  maps \(\mathcal E\) to \(T\mathcal E\).</p>
+</div>
 
-    <h3>Reconstruction kernel argument</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Any rule using \(X\) can be simulated from \(T(X)\) by first drawing \(X'\) from the conditional kernel \(K(\cdot\mid T)\), then applying the original rule. The risk is unchanged for every \(\theta\).</p>
-    </div>
+<p>Thus the full observation is always at least as informative as its statistic. Sufficiency asks whether a parameter-free kernel can reconstruct an observation with the correct law from the statistic.</p>
 
-    <h3>Conditional distributions</h3>
-    <p>In dominated models this is the familiar factorization or conditional-distribution criterion: the conditional law of \(X\) given \(T\) does not depend on \(\theta\).</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (kernel characterization).</span> Suppose the spaces are standard Borel. The statistic \(T\) is sufficient for \(\{P_\theta\}\) if and only if a Markov kernel
+  \(K:\mathcal Y\rightsquigarrow\mathcal X\), independent of \(\theta\), exists such that
+  \[
+  Q_\theta K=P_\theta
+  \quad\text{for every }\theta.
+  \]
+  Consequently,
+  \[
+  \Delta(\mathcal E,T\mathcal E)=0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(T\) is sufficient, a version of the conditional law
+  \[
+  K(t,A)=P_\theta(X\in A\mid T=t)
+  \]
+  can be chosen independently of \(\theta\). Disintegration gives
+  \[
+  P_\theta(A)=\int K(t,A)Q_\theta(\mathrm{d}t).
+  \]
+  Conversely, such a reconstruction kernel supplies a parameter-free conditional simulation of \(X\) from \(T\), which is the conditional-distribution definition of sufficiency. The deterministic statistic kernel sends \(\mathcal E\) to \(T\mathcal E\), and \(K\) sends it back, so both deficiencies are zero. \(\square\)</p>
+</div>
+
+<h3>Equality of attainable risks</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(T\) is sufficient, then for every action space and loss, every rule \(\delta\) based on \(X\) has a rule \(\rho\) based on \(T\) with
+  \[
+  R(\theta,\rho)=R(\theta,\delta)
+  \quad\text{for all }\theta.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Given \(T=t\), draw
+  \(X'\sim K(t,\cdot)\), then apply \(\delta(X',\cdot)\). The composed rule is
+  \[
+  \rho(t,C)=\int_{\mathcal X}\delta(x,C)K(t,\mathrm{d}x).
+  \]
+  Under \(Q_\theta\), the simulated \(X'\) has law \(Q_\theta K=P_\theta\), so all action distributions and risks match. \(\square\)</p>
+</div>
+
+<h3>The Fisher–Neyman factorization theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose
+  \(P_\theta\ll\mu\) with densities \(p_\theta\). If
+  \[
+  p_\theta(x)=g_\theta(T(x))h(x)
+  \]
+  for nonnegative measurable \(g_\theta\) and \(h\), then \(T\) is sufficient. Under standard regularity and a common dominating measure, sufficiency also implies such a factorization up to \(\mu\)-null sets.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof of sufficiency.</span> Define the measure
+  \(\nu(\mathrm{d}x)=h(x)\mu(\mathrm{d}x)\). Conditional on \(T=t\), the factor \(g_\theta(t)\) is constant and cancels from normalized conditional probabilities. Hence the conditional law of \(X\) given \(T=t\) under \(P_\theta\) equals a version of the conditional law under \(\nu\), independent of \(\theta\). The kernel characterization applies. \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (exponential family).</span> For
+  \[
+  p_\eta(x_1,\ldots,x_n)
+  =
+  \exp\left\{
+    \eta^\top\sum_{i=1}^nT(x_i)-nA(\eta)
+  \right\}
+  \prod_{i=1}^nh(x_i),
+  \]
+  the sum \(\sum_iT(X_i)\) is sufficient. The original \(n\)-sample experiment and the distribution of this finite-dimensional statistic are exactly equivalent.</p>
+</div>
+
+<h3>Rao–Blackwellization as decision reduction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Rao–Blackwell).</span> Let \(T\) be sufficient, let the action space be convex in a vector space, and suppose \(a\mapsto L(\theta,a)\) is convex. For any nonrandomized estimator \(\delta(X)\) with integrable action, define
+  \[
+  \delta_T(T)=E\{\delta(X)\mid T\}.
+  \]
+  Then
+  \[
+  R(\theta,\delta_T)\leq R(\theta,\delta)
+  \quad\text{for every }\theta.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Sufficiency makes the conditional distribution of \(X\) given \(T\), and hence \(\delta_T\), independent of the unknown parameter. Conditional Jensen inequality gives
+  \[
+  L\{\theta,E_\theta(\delta\mid T)\}
+  \leq E_\theta\{L(\theta,\delta)\mid T\}.
+  \]
+  Take \(P_\theta\)-expectations. \(\square\)</p>
+</div>
+
+<p>For strictly convex loss, equality requires the original estimator to be essentially a function of \(T\). Thus a sufficient statistic not only retains all randomized risks; it often identifies a canonical improved nonrandomized estimator.</p>
+
+<h3>Minimal sufficiency</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sufficient statistic \(T\) is minimal sufficient if, for every sufficient statistic \(S\), there is a measurable map \(f\) such that
+  \[
+  T=f(S)
+  \quad P_\theta\text{-almost surely for every }\theta.
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (likelihood-ratio criterion).</span> In a dominated model, if a statistic \(T\) satisfies
+  \[
+  T(x)=T(y)
+  \quad\Longleftrightarrow\quad
+  \frac{p_\theta(x)}{p_\theta(y)}
+  \text{ is independent of }\theta
+  \]
+  whenever the ratios are defined, then \(T\) is minimal sufficient.</p>
+</div>
+
+<p>Minimal sufficiency concerns exact compression within one experiment. Le Cam equivalence extends the same idea to approximate compression between different sample spaces and asymptotic models.</p>

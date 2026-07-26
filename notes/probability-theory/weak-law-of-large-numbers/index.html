@@ -8,45 +8,140 @@ note_prev_url: "/notes/probability-theory/characteristic-functions/"
 note_next_url: "/notes/probability-theory/borel-cantelli-lemma/"
 ---
 
-<p>The weak law of large numbers says sample averages stabilize in probability. It is the first expression of the idea that independent noise cancels at scale \(n^{-1}\).</p>
+<p>The weak law of large numbers identifies the deterministic first-order scale of a sum. For independent observations, random fluctuations are smaller than \(n\), so division by \(n\) exposes the mean. The finite-variance proof is a one-line concentration argument; the integrable case shows why truncation is one of the central techniques of probability.</p>
 
-    <h3>Sample averages</h3>
+<h3>Sample averages and empirical frequencies</h3>
 
-    <p>The object is the empirical mean of many independent observations.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For random variables \(X_1,\ldots,X_n\), put
+  \[
+  S_n=\sum_{i=1}^nX_i,\qquad \overline X_n=\frac{S_n}{n}.
+  \]
+  A weak law of large numbers with center \(a\in\mathbb R\) is the assertion \(\overline X_n\to a\) in probability; equivalently, for every \(\varepsilon>0\),
+  \[
+  P(|S_n-na|>\varepsilon n)\longrightarrow0.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For random variables \(X_1,\dots,X_n\), write \(\overline X_n=n^{-1}\sum_{i=1}^nX_i\). The weak law asks when \(\overline X_n-\mathbb E X_1\to0\) in probability.</p>
-    </div>
+<p>Taking \(X_i=1_{\{Z_i\in A\}}\) turns an average into the empirical frequency \(P_n(A)=n^{-1}\sum_i1_{\{Z_i\in A\}}\). Thus even the scalar weak law already says that repeated relative frequencies estimate probabilities.</p>
 
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Bernoulli frequencies).</span> If \(X_i\) are independent Bernoulli\((p)\) variables, then
+  \[
+  P(|\overline X_n-p|>\varepsilon)
+  \le \frac{p(1-p)}{n\varepsilon^2}.
+  \]
+  The estimate gives both convergence and a finite-sample error bound. Hoeffding's inequality later improves the polynomial bound to \(2e^{-2n\varepsilon^2}\), but no exponential inequality is needed for the law itself.</p>
+</div>
 
-    <h3>Chebyshev weak law</h3>
+<h3>The variance criterion</h3>
 
-    <p>Finite variance gives the simplest proof.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(X_1,X_2,\ldots\) have finite means, and set \(S_n=\sum_{i\le n}X_i\). If
+  \[
+  \frac{\mathbb ES_n}{n}\longrightarrow a,
+  \qquad
+  \frac{\operatorname{Var}(S_n)}{n^2}\longrightarrow0,
+  \]
+  then \(S_n/n\to a\) in probability.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X_i\) are pairwise independent, identically distributed, \(\mathbb E X_1=\mu\), and \(\operatorname{Var}(X_1)=\sigma^2\lt\infty\), then \(\overline X_n\to\mu\) in probability.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For fixed \(\varepsilon>0\), eventually \(|\mathbb ES_n/n-a|<\varepsilon/2\). Chebyshev's inequality then gives
+  \[
+  P\!\left(\left|\frac{S_n}{n}-a\right|>\varepsilon\right)
+  \le
+  P\!\left(|S_n-\mathbb ES_n|>\frac{\varepsilon n}{2}\right)
+  \le \frac{4\operatorname{Var}(S_n)}{\varepsilon^2n^2}\longrightarrow0.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Pairwise independence gives \(\operatorname{Var}(\overline X_n)=n^{-2}\sum_i\operatorname{Var}(X_i)=\sigma^2/n\). Chebyshev's inequality yields
-\[
-P(|\overline X_n-\mu|\gt\varepsilon)\le \frac{\sigma^2}{n\varepsilon^2}\to0.
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Chebyshev weak law).</span> If \(X_i\) are pairwise independent and identically distributed with
+  \(\mathbb EX_1=\mu\) and \(\operatorname{Var}(X_1)=\sigma^2<\infty\), then
+  \[
+  \overline X_n\longrightarrow\mu\qquad\text{in probability}.
+  \]</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Pairwise independence is enough because it makes every covariance \(\operatorname{Cov}(X_i,X_j)\), \(i\ne j\), vanish. Consequently,
+  \[
+  \mathbb ES_n=n\mu,\qquad
+  \operatorname{Var}(S_n)=\sum_{i=1}^n\operatorname{Var}(X_i)=n\sigma^2.
+  \]
+  The preceding proposition applies since \(\operatorname{Var}(S_n)/n^2=\sigma^2/n\to0\).</p>
+</div>
 
-    <h3>Truncation without variance</h3>
+<p>Independence cannot simply be omitted. If \(X_i=Y\) for every \(i\), where \(Y\) is nondegenerate and integrable, then every variable has the same mean and variance but \(\overline X_n=Y\) for all \(n\). What matters is not the marginal distribution alone, but suppression of accumulated covariance.</p>
 
-    <p>The finite first moment law is deeper because large observations must be controlled.</p>
+<h3>Khinchin's integrable weak law</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(X_i\) are i.i.d. with \(\mathbb E|X_1|\lt\infty\), then \(\overline X_n\to\mathbb E X_1\) in probability.</p>
-    </div>
+<p>Finite variance is convenient but not necessary. The decisive estimate is obtained by cutting observations at the same order as the sum.</p>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(Y_{n,i}=X_i1_{\{|X_i|\le n\}}\). The contribution of \(X_i-Y_{n,i}\) has expectation controlled by \(\mathbb E[|X_1|1_{\{|X_1|\gt n\}}]\to0\). The truncated variables have variances small enough after averaging because \(n^{-2}\sum_i\mathbb E[Y_{n,i}^2]\le n^{-1}\mathbb E[X_1^2 1_{\{|X_1|\le n\}}]\to0\) after the standard tail decomposition. Chebyshev then handles the truncated average.</p>
-    </div>
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma.</span> If \(\mathbb E|X|<\infty\), then
+  \[
+  tP(|X|>t)\longrightarrow0,
+  \qquad
+  \frac1t\mathbb E\!\left[X^2 1_{\{|X|\le t\}}\right]\longrightarrow0.
+  \]</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The weak law is about convergence in probability; the strong law requires almost-sure control over all large \(n\) simultaneously.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On \(\{|X|>t\}\), \(t\le |X|\), hence
+  \[
+  0\le tP(|X|>t)\le \mathbb E[|X|1_{\{|X|>t\}}]\to0
+  \]
+  by dominated convergence. For the second assertion, the integrand
+  \[
+  \frac{X^2}{t}1_{\{|X|\le t\}}
+  \]
+  converges pointwise to zero and is bounded by \(|X|\). Dominated convergence applies again.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Khinchin weak law).</span> If \(X_1,X_2,\ldots\) are i.i.d. and \(\mathbb E|X_1|<\infty\), then
+  \[
+  \frac1n\sum_{i=1}^nX_i\longrightarrow\mathbb EX_1
+  \qquad\text{in probability}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For each row \(n\), truncate all observations at level \(n\):
+  \[
+  Y_{n,i}=X_i1_{\{|X_i|\le n\}},\qquad 1\le i\le n.
+  \]
+  The union bound and the first part of the lemma yield
+  \[
+  P\bigl((X_1,\ldots,X_n)\ne(Y_{n,1},\ldots,Y_{n,n})\bigr)
+  \le nP(|X_1|>n)\to0. \tag{1}
+  \]
+  Since the \(Y_{n,i}\) are independent within each row,
+  \[
+  \operatorname{Var}\!\left(\frac1n\sum_{i=1}^nY_{n,i}\right)
+  =\frac{\operatorname{Var}(Y_{n,1})}{n}
+  \le\frac{\mathbb E[X_1^2 1_{\{|X_1|\le n\}}]}{n}\to0. \tag{2}
+  \]
+  Chebyshev's inequality therefore gives
+  \[
+  \frac1n\sum_{i=1}^n\bigl(Y_{n,i}-\mathbb EY_{n,i}\bigr)\to0
+  \quad\text{in probability}.
+  \]
+  Moreover, \(\mathbb EY_{n,1}\to\mathbb EX_1\) by dominated convergence. Combining this convergence with (1) and (2) proves the result.</p>
+</div>
+
+<h3>What the weak law does and does not control</h3>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Convergence in probability controls each sufficiently late average separately:
+  \[
+  P(|\overline X_n-\mu|>\varepsilon)\to0.
+  \]
+  It does not by itself control the random event that deviations occur infinitely often. That stronger, pathwise question requires summable error probabilities or maximal inequalities and leads to the <a href="{{ '/notes/probability-theory/strong-law-of-large-numbers/' | relative_url }}">strong law</a>.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (finite mean without finite variance).</span> Suppose \(P(X>x)=x^{-\alpha}\) for \(x\ge1\), with \(1<\alpha<2\). Then \(\mathbb EX<\infty\) but \(\mathbb EX^2=\infty\). The Chebyshev proof is unavailable, while Khinchin's truncation proof still gives \(\overline X_n\to\mathbb EX\) in probability. The fluctuations, however, are generally of order \(n^{1/\alpha}\), not \(\sqrt n\), and their limits belong to stable-law theory.</p>
+</div>

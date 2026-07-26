@@ -34,3 +34,91 @@ note_next_url: "/notes/numerical-analysis/perturbation-theory/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> When a computation fails, the first question is whether the problem is ill conditioned or the algorithm is unstable. These require different fixes: reformulate or regularize the problem in the first case, change the algorithm in the second.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Problem sensitivity versus algorithm behavior</h3>
+
+<p>Conditioning belongs to the mathematical problem \(F\); stability belongs
+to an algorithm. A backward-stable algorithm returns
+\[
+\widehat y=F(x+\delta x),
+\qquad
+\frac{\|\delta x\|}{\|x\|}\le C u+O(u^2),
+\]
+where \(C\) grows moderately with dimension. Combining backward stability with
+conditioning yields a forward-error bound of size
+\(C\kappa_{\mathrm{rel}}(x)u\) to first order.</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (backward-to-forward transfer).</span>
+If \(F\) is differentiable at \(x\), \(\widehat y=F(x+\delta x)\), and
+\(\|\delta x\|/\|x\|\le\eta\), then
+\[
+\frac{\|\widehat y-F(x)\|}{\|F(x)\|}
+\le\kappa_{\mathrm{rel}}(x)\eta+o(\eta).
+\]</p>
+</div>
+
+<p>A large forward error from a backward-stable algorithm diagnoses an
+ill-conditioned problem, not an unstable implementation.</p>
+
+<h3>Componentwise and normwise analysis</h3>
+
+<p>Normwise backward error permits a perturbation bounded in one global norm.
+Componentwise error requires
+\[
+|\delta x_i|\le\eta|x_i|
+\]
+and is more informative for badly scaled data. For linear systems, the
+componentwise condition number can differ drastically from
+\(\kappa_2(A)\). Scaling rows and columns can improve normwise conditioning
+without changing the underlying componentwise problem.</p>
+
+<h3>Mixed stability</h3>
+
+<p>Some algorithms admit a mixed statement: the computed answer is close to
+the exact answer for nearby data, rather than exactly equal to it. This is still
+useful if the extra output perturbation is small relative to the problem's
+scale. The precise theorem should name which quantities are perturbed and in
+which norm.</p>
+
+<h3>Composition of stable stages</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Backward stability is not
+automatically preserved by composing two stable algorithms. It is preserved to
+first order when the intermediate map is well conditioned and the second
+stage's backward perturbation can be pulled back through a locally stable
+inverse of the first map.</p>
+</div>
+
+<p>For example, explicitly forming \(A^{-1}\) stably and then multiplying by
+\(b\) is not as stable as solving \(Ax=b\): perturbations in the inverse may
+not correspond to a small perturbation of \(A\). Stability is attached to a
+problem formulation, not to isolated subroutines.</p>
+
+<h3>Residual-based backward error for linear systems</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For
+\(r=b-A\widehat x\), the smallest normwise perturbation in \(b\) alone making
+\(\widehat x\) exact is \(\|r\|/\|b\|\). Allowing perturbations in both \(A\)
+and \(b\), a common relative backward error is
+\[
+\eta(\widehat x)
+=\frac{\|r\|}
+{\|A\|\|\widehat x\|+\|b\|}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Any admissible perturbations
+satisfy
+\[
+r=\Delta A\,\widehat x-\Delta b,
+\]
+so
+\(\|r\|\le\eta(\|A\|\|\widehat x\|+\|b\|)\). Equality can be attained in
+subordinate norms by rank-one perturbations aligned with the residual, giving
+the formula.</p>
+</div>

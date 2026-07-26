@@ -8,24 +8,112 @@ note_prev_url: "/notes/differential-equations/sobolev-spaces-and-traces/"
 note_next_url: "/notes/differential-equations/elliptic-equations/"
 ---
 
-<p>Weak formulations records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>A weak formulation moves derivatives from an unknown solution onto test
+functions. It lowers regularity requirements, incorporates natural boundary
+conditions, and exposes coercivity or monotonicity needed for existence.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A weak formulation multiplies a differential equation by test functions and moves derivatives by integration by parts, lowering the differentiability required of the solution.</p>
-    </div>
+<h3>Poisson equation</h3>
 
-    <h3>Lax-Milgram framework</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For elliptic equations, weak solutions are often characterized by a bilinear form \(a(u,v)=\ell(v)\) on a Sobolev space. Coercivity and boundedness give existence and uniqueness.</p>
-    </div>
+<p>For
+\[
+-\Delta u=f\quad\text{in }\Omega,\qquad
+u=0\quad\text{on }\partial\Omega,
+\]
+multiply by \(v\in C_c^\infty(\Omega)\) and integrate by parts:
+\[
+\int_\Omega\nabla u\cdot\nabla v\,\mathrm{d}x
+=\int_\Omega fv\,\mathrm{d}x.
+\]</p>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Integration by parts produces the variational identity. Lax-Milgram theorem gives a unique weak solution when the bilinear form is coercive and continuous.</p>
-    </div>
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A weak solution is
+\(u\in H_0^1(\Omega)\) satisfying
+\[
+a(u,v)=F(v)\quad\text{for every }v\in H_0^1(\Omega),
+\]
+where
+\[
+a(u,v)=\int_\Omega\nabla u\cdot\nabla v,\qquad
+F(v)=\int_\Omega fv.
+\]</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Weak formulations are not approximations to PDE; they are the correct formulation when classical derivatives are too restrictive.</p>
-    </div>
+<h3>Lax--Milgram well-posedness</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Lax--Milgram).</span> Let \(V\) be a
+Hilbert space, \(a:V\times V\to\mathbb R\) bounded and coercive:
+\[
+|a(u,v)|\le M\|u\|_V\|v\|_V,\qquad
+a(v,v)\ge\alpha\|v\|_V^2.
+\]
+For every \(F\in V^*\), there is a unique \(u\in V\) with
+\[
+a(u,v)=F(v)\quad(v\in V),
+\]
+and
+\[
+\|u\|_V\le\alpha^{-1}\|F\|_{V^*}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Riesz representation gives a
+bounded operator \(A:V\to V\) and vector \(f\in V\) such that
+\[
+a(u,v)=\langle Au,v\rangle,\qquad
+F(v)=\langle f,v\rangle.
+\]
+Coercivity implies
+\(\|Au\|\|u\|\ge\langle Au,u\rangle\ge\alpha\|u\|^2\), so \(A\) is injective
+and bounded below. Its range is closed. If \(w\perp\operatorname{Ran}A\), then
+\(\langle Aw,w\rangle=0\), forcing \(w=0\); the range is dense and hence all
+of \(V\). Thus \(Au=f\) has a unique solution and the estimate follows.</p>
+</div>
+
+<h3>Neumann boundary conditions</h3>
+
+<p>For
+\[
+-\Delta u=f,\qquad \partial_nu=g\text{ on }\partial\Omega,
+\]
+the weak form on \(H^1(\Omega)\) is
+\[
+\int_\Omega\nabla u\cdot\nabla v
+=\int_\Omega fv+\int_{\partial\Omega}gv.
+\]
+Constants lie in the kernel, so compatibility
+\[
+\int_\Omega f+\int_{\partial\Omega}g=0
+\]
+is necessary. Restricting to zero-mean functions restores coercivity and
+uniqueness modulo constants.</p>
+
+<h3>Energy minimization</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(a\) is symmetric and
+coercive, the weak solution uniquely minimizes
+\[
+J(v)=\frac12a(v,v)-F(v)
+\]
+over \(V\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(u\) solves the weak
+equation,
+\[
+J(u+w)-J(u)=\frac12a(w,w)\ge\frac\alpha2\|w\|^2.
+\]
+Conversely, first variation of a minimizer in every direction gives the weak
+equation.</p>
+</div>
+
+<h3>Distributional and weak solutions</h3>
+
+<p>Every \(H_0^1\) weak solution is a distributional solution because the
+identity holds for compactly supported smooth tests. The converse requires
+enough integrability to make \(u\) belong to the energy space. Boundary
+conditions are encoded through traces or boundary terms, not visible in a
+purely interior distributional equation.</p>

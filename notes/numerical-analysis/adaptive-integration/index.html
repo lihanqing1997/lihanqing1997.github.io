@@ -34,3 +34,78 @@ note_next_url: "/notes/numerical-analysis/direct-methods-linear-systems/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Adaptive deterministic integration scales poorly with dimension. High-dimensional integration often shifts toward sparse grids, quasi-Monte Carlo, or probabilistic methods, which belong partly to numerical analysis and partly to statistics.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Local error estimation</h3>
+
+<p>Adaptive quadrature compares nested rules on an interval \(I\), such as
+Simpson estimates \(S_I\) and the sum \(S_{I_L}+S_{I_R}\). If the leading
+error is \(Ch^p\), halving gives
+\[
+\int_I f-(S_{I_L}+S_{I_R})
+\approx\frac{(S_{I_L}+S_{I_R})-S_I}{2^p-1}.
+\]
+This is an asymptotic estimator; it can fail when the leading coefficient
+vanishes accidentally or the integrand is unresolved.</p>
+
+<h3>Recursive tolerance allocation</h3>
+
+<p>A standard strategy accepts \(I\) when the local estimate is below
+\(\tau_I\), otherwise bisects and assigns \(\tau_I/2\) to each child. Then the
+sum of accepted local tolerances is at most the global tolerance. Absolute and
+relative criteria are often combined:
+\[
+\eta_I\le \tau_{\mathrm{abs},I}
++\tau_{\mathrm{rel}}|Q_I|.
+\]
+Pure relative tolerance is meaningless when the true integral is near zero.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (complexity under local
+smoothness).</span> Suppose a local rule has
+\[
+|E_I|\le C|I|^{p+1}\sup_I|f^{(p)}|.
+\]
+If \(f^{(p)}\) is bounded and intervals are refined until
+\(|E_I|\lesssim\tau|I|/(b-a)\), a uniform worst-case mesh needs
+\[
+N=O(\tau^{-1/p})
+\]
+subintervals.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> On width \(h\), the global sum
+of \(N=(b-a)/h\) local errors is
+\[
+O(Nh^{p+1})=O(h^p).
+\]
+Setting this to \(\tau\) yields \(h=O(\tau^{1/p})\) and the claimed count.
+Adaptivity improves the constant and local allocation when derivatives are
+inhomogeneous, not this worst-case smoothness exponent.</p>
+</div>
+
+<h3>Singularities and transformations</h3>
+
+<p>Endpoint algebraic singularities are better handled by a change of
+variables than by blind bisection. If \(f(x)\sim x^{-\alpha}\),
+\(0<\alpha<1\), set \(x=t^q\) with \(q(1-\alpha)\) large enough to smooth the
+transformed integrand. Infinite intervals can use rational maps; double-
+exponential transformations are effective when endpoint derivatives blow up.</p>
+
+<h3>Oscillatory integrals</h3>
+
+<p>For
+\(\int_a^bf(x)e^{i\omega g(x)}\,\mathrm{d}x\), resolving every oscillation costs
+proportional to \(\omega\). Filon-type rules interpolate the slow amplitude and
+integrate against the oscillatory factor analytically. Steepest descent and
+stationary phase identify where asymptotic contribution is concentrated.
+Ordinary local-error estimators can mistake cancellation for accuracy.</p>
+
+<h3>Reliability failures</h3>
+
+<p>A narrow spike between sampled nodes, discontinuity, NaN, or highly
+oscillatory alias can make two nested rules agree while both are wrong. Robust
+software limits recursion depth, checks nonfinite values, samples endpoint and
+interior structure, and reports a diagnostic when the requested tolerance is
+not certified. An error estimate is data, not an oracle.</p>

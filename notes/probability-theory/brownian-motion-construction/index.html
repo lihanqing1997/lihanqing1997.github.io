@@ -8,42 +8,161 @@ note_prev_url: "/notes/probability-theory/gaussian-vectors-processes/"
 note_next_url: "/notes/probability-theory/brownian-path-properties/"
 ---
 
-<p>Brownian motion is the canonical continuous Gaussian process with independent stationary increments. Its construction separates finite-dimensional Gaussian laws from path continuity.</p>
+<p>Brownian motion is the continuous process whose increments are independent Gaussian fluctuations with variance equal to elapsed time. Its construction illustrates the two-stage method for processes: first prescribe consistent finite-dimensional laws, then prove that a regular modification exists.</p>
 
-    <h3>Definition of Brownian motion</h3>
+<h3>Equivalent defining data</h3>
 
-    <p>The definition combines Gaussian increments, independence, stationarity, and continuity.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A standard Brownian motion is a real process
+  \(B=(B_t)_{t\ge0}\) satisfying:
+  <ol>
+    <li>\(B_0=0\) almost surely;</li>
+    <li>increments over pairwise disjoint time intervals are independent;</li>
+    <li>\(B_t-B_s\sim N(0,t-s)\) for \(0\le s<t\);</li>
+    <li>sample paths are continuous almost surely.</li>
+  </ol></p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A standard Brownian motion is a process \(B_t\), \(t\ge0\), such that \(B_0=0\) a.s., paths are continuous, increments over disjoint intervals are independent, and \(B_t-B_s\sim N(0,t-s)\) for \(0\le s\le t\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> A centered continuous Gaussian process with covariance
+  \[
+  \mathbb E[B_sB_t]=s\wedge t
+  \]
+  is Brownian motion.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The increment variance is
+  \[
+  \mathbb E(B_t-B_s)^2=t+s-2s=t-s.
+  \]
+  For disjoint intervals \([s,t]\) and \([u,v]\) with \(t\le u\),
+  \[
+  \operatorname{Cov}(B_t-B_s,B_v-B_u)
+  =(t\wedge v-t\wedge u)-(s\wedge v-s\wedge u)=0.
+  \]
+  Any finite collection of increments is jointly Gaussian. Zero cross-covariances therefore imply independence.</p>
+</div>
 
-    <h3>Wiener measure</h3>
+<h3>Existence of Wiener measure</h3>
 
-    <p>The canonical law lives on the space of continuous paths.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> There is a unique probability measure \(W\) on
+  \[
+  C_0([0,\infty))
+  =\{\omega\in C([0,\infty)):\omega(0)=0\}
+  \]
+  such that the coordinate process \(B_t(\omega)=\omega(t)\) is Brownian motion. This probability is Wiener measure.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> There exists a probability measure \(W\) on \(C([0,\infty),\mathbb R)\) such that the coordinate process \(B_t(\omega)=\omega(t)\) is Brownian motion. This law is Wiener measure.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On the raw product space
+  \(\mathbb R^{[0,\infty)}\), prescribe centered Gaussian finite-dimensional laws with covariance
+  \(K(s,t)=s\wedge t\). The kernel is positive semidefinite because
+  \[
+  \sum_{i,j}a_ia_j(t_i\wedge t_j)
+  =
+  \int_0^\infty
+  \left(\sum_ia_i1_{[0,t_i]}(u)\right)^2\mathrm{d} u\ge0.
+  \]
+  Kolmogorov extension gives a coordinate process. The preceding proposition gives independent stationary Gaussian increments.
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Specify centered Gaussian finite-dimensional distributions with covariance \(\mathbb E[B_sB_t]=s\wedge t\). They are consistent, so Kolmogorov extension gives a process on \(\mathbb R^{[0,\infty)}\). The covariance implies independent increments because disjoint Gaussian increments are uncorrelated. Gaussian moments satisfy \(\mathbb E|B_t-B_s|^p=C_p|t-s|^{p/2}\); Kolmogorov-Chentsov gives a continuous modification. The law of this modification on \(C([0,\infty))\) is Wiener measure.</p>
-    </div>
+  For \(p\ge2\),
+  \[
+  \mathbb E|B_t-B_s|^p
+  =\mathbb E|Z|^p\,|t-s|^{p/2},
+  \qquad Z\sim N(0,1).
+  \]
+  Taking \(p>2\), Kolmogorov-Chentsov produces a continuous modification. Its law is supported on \(C_0([0,\infty))\), with that space equipped by uniform convergence on compact intervals. Uniqueness follows because coordinate evaluations generate the Borel sigma-field and the finite-dimensional laws agree.</p>
+</div>
 
+<h3>Independent increment factorization</h3>
 
-    <h3>Scaling and stationarity</h3>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For
+  \(0=t_0<t_1<\cdots<t_n\), the joint density of
+  \((B_{t_1},\ldots,B_{t_n})\) can be written through increments as
+  \[
+  \prod_{k=1}^n
+  p_{t_k-t_{k-1}}(x_k-x_{k-1}),
+  \qquad
+  p_t(x)=\frac1{\sqrt{2\pi t}}e^{-x^2/(2t)},
+  \quad x_0=0.
+  \]</p>
+</div>
 
-    <p>Brownian motion is invariant under its natural parabolic scaling.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The linear map from positions
+  \((x_1,\ldots,x_n)\) to increments
+  \((x_1,x_2-x_1,\ldots,x_n-x_{n-1})\) has determinant one. The increments are independent with the displayed Gaussian densities.</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(c\gt0\), the process \((c^{-1/2}B_{ct})_{t\ge0}\) is again standard Brownian motion.</p>
-    </div>
+<h3>Symmetries</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The rescaled process has continuous paths and starts at zero. Its increments over disjoint intervals are independent because Brownian increments over disjoint rescaled intervals are independent. The increment variance is \(c^{-1}(c(t-s))=t-s\), so the Gaussian increment law is correct.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Brownian symmetries).</span> If \(B\) is Brownian motion, then:
+  <ol>
+    <li>for \(c>0\),
+    \[
+    \widetilde B_t=c^{-1/2}B_{ct}
+    \]
+    is Brownian motion;</li>
+    <li>for fixed \(s\ge0\),
+    \[
+    \widetilde B_t=B_{s+t}-B_s
+    \]
+    is Brownian motion independent of \(\mathcal F_s\);</li>
+    <li>for fixed \(T>0\),
+    \[
+    \widetilde B_t=B_T-B_{T-t},\qquad0\le t\le T,
+    \]
+    has the law of Brownian motion on \([0,T]\);</li>
+    <li>the time-inverted process
+    \[
+    \widetilde B_t=tB_{1/t},\quad t>0,\qquad \widetilde B_0=0,
+    \]
+    is Brownian motion.</li>
+  </ol></p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The canonical viewpoint makes randomness a measure on path space; individual Brownian paths are ordinary continuous functions with exceptional roughness.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Each process is centered Gaussian. It therefore suffices to compute covariance and continuity. For scaling,
+  \[
+  \mathbb E[\widetilde B_s\widetilde B_t]
+  =c^{-1}(cs\wedge ct)=s\wedge t.
+  \]
+  The shift statement follows directly from independent stationary increments. Reversal rearranges increments without changing their independent Gaussian laws. For inversion, when \(0<s\le t\),
+  \[
+  \mathbb E[sB_{1/s}\,tB_{1/t}]
+  =st(1/s\wedge1/t)=s.
+  \]
+  Continuity at zero for the inverted process follows from the Gaussian tail bound and Borel-Cantelli along dyadic times, then continuity between them.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Brownian fluctuations at time scale \(h\) have spatial scale \(\sqrt h\). This parabolic relation is the common scaling of the heat equation, diffusion limits, and stochastic integration.</p>
+</div>
+
+<h3>A series construction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Levy-Ciesielski representation).</span> On \([0,1]\), Brownian motion admits an almost surely uniformly convergent expansion
+  \[
+  B_t=Z_0t+\sum_{j=0}^{\infty}
+  \sum_{k=0}^{2^j-1}
+  Z_{j,k}\,2^{-(j+2)/2}\,
+  \psi_{j,k}(t),
+  \]
+  where the \(Z_0,Z_{j,k}\) are i.i.d. \(N(0,1)\) and
+  \(\psi_{j,k}\) are appropriately normalized tent functions obtained by integrating the Haar basis.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Expand white noise in the orthonormal Haar basis and integrate term by term. Orthogonality gives the covariance
+  \[
+  \mathbb E[B_sB_t]
+  =\langle1_{[0,s]},1_{[0,t]}\rangle_{L^2}
+  =s\wedge t.
+  \]
+  Gaussian maxima at level \(j\) grow only like \(\sqrt j\), while the integrated Haar coefficients decay like \(2^{-j/2}\). Borel-Cantelli therefore gives uniform convergence. The representation makes Brownian motion an explicit random continuous function rather than only an abstract extension.</p>
+</div>

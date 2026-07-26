@@ -8,27 +8,145 @@ note_prev_url: "/notes/empirical-processes/weak-convergence-in-metric-spaces/"
 note_next_url: "/notes/empirical-processes/empirical-measures-and-processes/"
 ---
 
-<p>The canonical state space for a process indexed by \(\mathcal F\) is \(\ell^\infty(\mathcal F)\), the space of all bounded real functions on \(\mathcal F\).</p>
+<p>The natural state space for a process indexed by an arbitrary set \(T\) is \(\ell^\infty(T)\). Its uniform norm matches simultaneous inference, but the space is nonseparable whenever \(T\) contains an uncountable uniformly separated subset. Tight limits therefore live on smaller separable sets of uniformly continuous paths.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(\ell^\infty(T)=\{z:T\to\mathbb R:\|z\|_T=\sup_{t\in T}|z(t)|<\infty\}\), equipped with the uniform norm \(\|\cdot\|_T\).</p>
-    </div>
+<h3>The Banach space \(\ell^\infty(T)\)</h3>
 
-    <h3>Uniform norm</h3>
-    <ul>
-        <li>A sample path \(f\mapsto \mathbb G_n f\) is bounded when the indexed supremum is finite.</li>
-        <li>Weak convergence in \(\ell^\infty(\mathcal F)\) is stronger than convergence of every finite vector \((\mathbb G_n f_1,\ldots,\mathbb G_n f_k)\).</li>
-        <li>Nonseparability is common, which is why outer probability and asymptotic equicontinuity are part of the basic toolkit.</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span>
+  \[
+  \ell^\infty(T)
+  =\left\{z:T\to\mathbb R:
+  \|z\|_T=\sup_{t\in T}|z(t)|\lt\infty\right\}.
+  \]
+  It is equipped with the norm \(\|\cdot\|_T\).</p>
+</div>
 
-    <h3>Separation and tightness</h3>
-    <p>Whenever later pages write \(\mathbb G_n\rightsquigarrow\mathbb G\), the default meaning is convergence as bounded functions on the relevant index class.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Completeness.</span> The normed space \(\ell^\infty(T)\) is complete.</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Uniform convergence in ell-infinity</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Proposition.</span> The uniform norm is strong: convergence in \(\ell^\infty(\mathcal F)\) controls all coordinates simultaneously. This is why it is suitable for confidence bands and sup-norm test statistics, not merely for a fixed finite list of functions.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(z_n\) be uniformly Cauchy. For each \(t\), the scalar sequence \(z_n(t)\) is Cauchy, so define \(z(t)=\lim_nz_n(t)\). Given \(\varepsilon>0\), choose \(N\) with
+  \[
+  \sup_t|z_n(t)-z_m(t)|<\varepsilon
+  \quad(n,m\ge N).
+  \]
+  Letting \(m\to\infty\) gives \(\|z_n-z\|_T\le\varepsilon\). Also \(z\) is bounded because \(z_N\) is bounded and \(\|z-z_N\|_T\lt\infty\). Hence \(z_n\to z\) in \(\ell^\infty(T)\).</p>
+</div>
 
-    <h3>Finite coordinates versus full process</h3>
-    <p>Think of an element of \(\ell^\infty(\mathcal F)\) as a table with one entry for each \(f\). Finite-dimensional convergence checks finitely many entries; tightness says the whole table is not hiding wild oscillations between nearby columns.</p>
+<h3>Evaluation and supremum maps</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Lipschitz functionals.</span> For every \(t\in T\), coordinate evaluation
+  \[
+  \pi_t(z)=z(t)
+  \]
+  has operator norm one. Moreover,
+  \[
+  |\|z\|_T-\|w\|_T|\le\|z-w\|_T,
+  \]
+  \[
+  \left|\sup_tz(t)-\sup_tw(t)\right|
+  \le\|z-w\|_T.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The coordinate bound
+  \[
+  |z(t)-w(t)|\le\|z-w\|_T
+  \]
+  gives continuity and norm one. For the supremum,
+  \[
+  z(t)\le w(t)+\|z-w\|_T
+  \]
+  for every \(t\); take suprema and repeat with \(z,w\) interchanged. Apply the same argument to absolute values for the norm.</p>
+</div>
+
+<p>Thus process convergence in \(\ell^\infty(T)\) immediately yields convergence of supremum statistics. Integral and argmax maps need their own continuity conditions.</p>
+
+<h3>Nonseparability</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Nonseparability for uncountable \(T\).</span> If \(T\) is uncountable, then \(\ell^\infty(T)\) is nonseparable.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For each subset \(A\subseteq T\), let \(1_A\in\ell^\infty(T)\). If \(A\ne B\), then
+  \[
+  \|1_A-1_B\|_T=1.
+  \]
+  There are uncountably many such indicators. A separable metric space cannot contain an uncountable set whose pairwise distances are bounded below by one: disjoint open balls of radius \(1/3\) would each need a distinct point from a countable dense set.</p>
+</div>
+
+<p>Nonseparability explains why a coordinatewise measurable process need not be a Borel random element. A tight Borel probability measure on a metric space is concentrated on a separable subset, so any legitimate tight limit effectively occupies a smaller path space.</p>
+
+<h3>Uniformly continuous path spaces</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a semimetric \(\rho\) on \(T\), let
+  \[
+  UC(T,\rho)
+  =\left\{z\in\ell^\infty(T):
+  \lim_{\delta\downarrow0}
+  \sup_{\rho(s,t)<\delta}
+  |z(s)-z(t)|=0\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Separability under total boundedness.</span> If \((T,\rho)\) is totally bounded, then \(UC(T,\rho)\), with the uniform norm, is separable.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> For each \(m\), choose a finite \(2^{-m}\)-net \(T_m\). Approximate a uniformly continuous function by its values on \(T_m\), quantized to rational multiples of \(2^{-m}\), and extend by a fixed nearest-net rule. The union over \(m\) of these finite rational descriptions is countable. Uniform continuity makes the approximations converge in sup norm.</p>
+</div>
+
+<h3>Arzelà-Ascoli geometry</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Arzelà-Ascoli criterion.</span> Suppose \((T,\rho)\) is totally bounded. A set \(K\subseteq UC(T,\rho)\) is relatively compact in the uniform norm if and only if it is uniformly bounded and uniformly equicontinuous:
+  \[
+  \sup_{z\in K}\|z\|_T\lt\infty
+  \]
+  and
+  \[
+  \lim_{\delta\downarrow0}
+  \sup_{z\in K}\sup_{\rho(s,t)<\delta}
+  |z(s)-z(t)|=0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For sufficiency, choose a finite \(\delta\)-net \(t_1,\ldots,t_N\) so the common oscillation is below \(\varepsilon\). Uniform boundedness makes the vectors \((z(t_1),\ldots,z(t_N))\) totally bounded in \(\mathbb R^N\); finitely many representative vectors, together with equicontinuity, form a finite \(3\varepsilon\)-net for \(K\) in sup norm. Completeness then makes the closure compact. Necessity follows because compact sets are bounded, and a finite \(\varepsilon\)-net of uniformly continuous functions has a common continuity modulus.</p>
+</div>
+
+<p>This theorem is the deterministic model of empirical-process tightness: control finitely many net coordinates and a common modulus of continuity.</p>
+
+<h3>Asymptotic tightness in \(\ell^\infty(T)\)</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Equicontinuity criterion.</span> Suppose a semimetric \(\rho\) makes \(T\) totally bounded. If \(Z_n(t_0)=O_{P^\star}(1)\) for some \(t_0\in T\) and
+  \[
+  \lim_{\delta\downarrow0}\limsup_n
+  P^\star\left\{
+  \sup_{\rho(s,t)<\delta}
+  |Z_n(s)-Z_n(t)|>\varepsilon
+  \right\}=0
+  \]
+  for every \(\varepsilon>0\), then \(Z_n\) is asymptotically tight in \(\ell^\infty(T)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Choose successively smaller scales \(\delta_m\) so the probability that the oscillation exceeds prescribed \(\eta_m\downarrow0\) is summably small in the limsup. Together with a high-probability bound at \(t_0\), these constraints define a uniformly bounded, uniformly equicontinuous set \(K\). Arzelà-Ascoli makes its closure compact. Slight enlargements of \(K\) contain \(Z_n\) with arbitrarily high lower probability, which is asymptotic tightness.</p>
+</div>
+
+<h3>Gaussian limits</h3>
+
+<p>A centered Gaussian process \(G=\{G(t):t\in T\}\) has intrinsic semimetric
+\[
+\rho_G(s,t)
+=\{\mathbb E(G(s)-G(t))^2\}^{1/2}.
+\]
+If \(G\) is tight in \(\ell^\infty(T)\), then \((T,\rho_G)\) is totally bounded after identifying zero-distance points, and \(G\) has a version with bounded uniformly \(\rho_G\)-continuous sample paths. Entropy and majorizing-measure conditions provide usable sufficient criteria for this bounded continuity.</p>

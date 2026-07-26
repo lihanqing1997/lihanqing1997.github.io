@@ -8,42 +8,172 @@ note_prev_url: "/notes/survival-analysis/counting-processes-martingales/"
 note_next_url: "/notes/survival-analysis/partial-likelihood-score-information/"
 ---
 
-<h3>Model</h3>
+<p>The Cox model is semiparametric: regression effects are finite-dimensional, while the baseline hazard remains an unrestricted increasing-function parameter. Its usefulness comes from a cancellation inside risk sets, not from pretending the baseline hazard is absent.</p>
 
-    <p>The Cox model separates regression effects from the unknown baseline hazard. This is why it is semiparametric: the parameter of interest is finite-dimensional, but the nuisance parameter is a function.</p>
+<h3>Conditional proportional hazards</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given covariates \(Z_i\in\mathbb R^p\), the Cox proportional hazards model assumes
+<p><span class="statement-title">Definition.</span> For covariate vector \(Z\in\mathbb R^p\), the Cox proportional hazards model is
 \[
-\lambda_i(t\mid Z_i)=Y_i(t)\lambda_0(t)\exp(Z_i^\top\beta),
+\lambda(t\mid Z)=\lambda_0(t)e^{\beta^\top Z},
+\qquad \beta\in\mathbb R^p,
 \]
-where \(\lambda_0\) is an unspecified baseline hazard and \(\beta\in\mathbb R^p\).</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For two subjects with covariates \(z_1,z_2\), the hazard ratio is
+where \(\lambda_0\) is an unknown nonnegative baseline hazard. More generally, for a predictable process \(Z(t)\),
 \[
-{\lambda(t\mid z_1)\over\lambda(t\mid z_2)}=\exp\{(z_1-z_2)^\top\beta\},
+\lambda_i(t\mid\mathcal F_{t-})
+=Y_i(t)\lambda_0(t)e^{\beta^\top Z_i(t)}.
 \]
-independent of \(t\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The baseline hazard cancels in the ratio. The proportional hazards interpretation is exactly this cancellation.</p>
-    </div>
-    <h3>Why Cox is not a GLM</h3>
+The cumulative baseline hazard is
+\(\Lambda_0(t)=\int_0^t\lambda_0(u)\,\mathrm{d}u\).</p>
+</div>
 
-    <p>Cox regression resembles logistic regression through convex log-likelihood geometry, but the denominator of the partial likelihood uses the random risk set. Hence observations do not decouple into independent fixed-design likelihood terms.</p>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The unknown \(\lambda_0\) is not estimated before \(\beta\). The partial likelihood removes it by conditioning on which member of the risk set failed at each event time.</p>
-    </div>
-    <h3>Identifiability and normalization</h3>
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If the risk-set distribution of \(Z\) is not concentrated on an affine hyperplane over a time set with positive event intensity, then \(\beta\) is identifiable from the conditional failure probabilities inside risk sets.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The conditional probability that subject \(i\) fails at time \(t\) given one failure in the risk set is proportional to \(\exp(Z_i^\top\beta)\). If two parameter values give the same probabilities for all risk sets, then \((\beta-\beta')^\top Z\) must be constant on those risk sets. Nondegenerate risk-set variation forces \(\beta=\beta'\).</p>
-    </div>
-    <h3>Stratification and nonproportionality</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A stratified Cox model permits different baseline hazards \(\lambda_{0g}\) across strata \(g\) while keeping a common coefficient \(\beta\):
+<p><span class="statement-title">Proposition.</span> With fixed \(Z=z\),
 \[
-\lambda_i(t\mid Z_i,g_i)=Y_i(t)\lambda_{0g_i}(t)\exp(Z_i^\top\beta).
+\Lambda(t\mid z)=e^{\beta^\top z}\Lambda_0(t),
+\qquad
+S(t\mid z)=S_0(t)^{e^{\beta^\top z}},
+\quad S_0(t)=e^{-\Lambda_0(t)}.
+\]
+For two covariate values \(z_1,z_0\),
+\[
+\frac{\lambda(t\mid z_1)}{\lambda(t\mid z_0)}
+=e^{\beta^\top(z_1-z_0)},
+\]
+which is constant in time.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrate the conditional hazard:
+\[
+\Lambda(t\mid z)=\int_0^t\lambda_0(u)e^{\beta^\top z}\,\mathrm{d}u
+=e^{\beta^\top z}\Lambda_0(t).
+\]
+Exponentiating its negative gives the survival relation. Cancellation of \(\lambda_0(t)\) gives the hazard ratio.</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Interpretation.</span> A coefficient \(\beta_j\) is a conditional log hazard ratio holding the other modeled covariates fixed. It is not a ratio of event probabilities, a ratio of mean survival times, or generally a marginal causal effect. Hazard ratios are noncollapsible: integrating over a prognostic covariate can change the hazard ratio even without confounding.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (binary exposure).</span> If \(Z\in\{0,1\}\), then
+\[
+\lambda(t\mid Z=1)=e^\beta\lambda(t\mid Z=0),\qquad
+S(t\mid Z=1)=S(t\mid Z=0)^{e^\beta}.
+\]
+When \(\beta=\log2\), the instantaneous hazard doubles at every time, but the difference
+\(S(t\mid1)-S(t\mid0)=S_0(t)^2-S_0(t)\) varies with \(t\). A constant hazard ratio therefore does not imply a constant survival-probability difference.</p>
+</div>
+
+<h3>Full likelihood and the nuisance baseline</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Under independent right censoring, the event-law likelihood for time-independent covariates is
+\[
+L(\beta,\Lambda_0)
+=\prod_{i=1}^n
+\left\{e^{\beta^\top Z_i}\,\mathrm{d}\Lambda_0(X_i)\right\}^{\Delta_i}
+\exp\{-e^{\beta^\top Z_i}\Lambda_0(X_i)\}.
+\]
+In counting-process notation,
+\[
+\ell(\beta,\Lambda_0)
+=\sum_{i=1}^n\int_0^\tau
+\{\log\mathrm{d}\Lambda_0(t)+\beta^\top Z_i(t)\}\,\mathrm{d}N_i(t)
+-\sum_{i=1}^n\int_0^\tau
+Y_i(t)e^{\beta^\top Z_i(t)}\,\mathrm{d}\Lambda_0(t).
 \]</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Stratification protects the regression coefficient against baseline heterogeneity. It does not repair time-varying regression effects; those require interactions such as \(Z(t)^\top\beta(t)\) or explicit time-dependent covariates.</p>
-    </div>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Substitute
+\(\lambda(t\mid Z)=\lambda_0(t)e^{\beta^\top Z}\) and
+\(\Lambda(t\mid Z)=e^{\beta^\top Z}\Lambda_0(t)\) into the censored-data likelihood from page 1. The stochastic-integral expression records a log-hazard contribution at each observed event and subtracts integrated exposure.</p>
+</div>
+
+<p>The baseline hazard is not estimable at ordinary pointwise density rates without smoothness assumptions. The cumulative baseline hazard, however, is estimable at root-\(n\) rate on intervals with positive risk; this is why the model is naturally parameterized by \((\beta,\Lambda_0)\).</p>
+
+<h3>Identifiability and coding</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> An intercept in \(\beta^\top Z\) is not identifiable separately from \(\lambda_0\). If \(Z=(1,W^\top)^\top\), then for every \(c\),
+\[
+\lambda_0(t)e^{\beta_0+\beta_W^\top W}
+=\{\lambda_0(t)e^c\}
+e^{(\beta_0-c)+\beta_W^\top W}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The displayed reparameterization leaves every conditional hazard unchanged. Hence the observation law cannot distinguish the two parameter values.</p>
+</div>
+
+<p>Software therefore omits an intercept from the Cox linear predictor. Identifiability of the remaining coefficients requires risk-set variation: no nonzero vector \(a\) may make \(a^\top Z_i(t)\) identical for all subjects at risk throughout all informative event times.</p>
+
+<h3>Time scale and baseline meaning</h3>
+
+<p>The baseline hazard absorbs arbitrary evolution in the chosen analysis time. Age, time since treatment, and calendar time define different risk sets and different conditional questions. Changing time scale is not a harmless relabeling when entry and covariates depend on that scale.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (monotone time transformation).</span> Let \(u=g(t)\) be strictly increasing and continuously differentiable. If \(T^\star=g(T)\), then
+\[
+\lambda^\star(u\mid Z)
+=\lambda(g^{-1}(u)\mid Z)\frac{\mathrm{d}g^{-1}(u)}{\mathrm{d}u}.
+\]
+Thus a Cox model remains proportional after a common monotone time transformation, with the same \(\beta\) and a transformed baseline hazard.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The transformed survival function is
+\(S^\star(u\mid Z)=S(g^{-1}(u)\mid Z)\). Differentiating
+\(-\log S^\star\) gives the formula; the Jacobian factor is common to all covariate values and enters only the baseline.</p>
+</div>
+
+<h3>Stratification and time-varying effects</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition (stratified Cox model).</span> For stratum \(K=k\),
+\[
+\lambda(t\mid Z,K=k)=\lambda_{0k}(t)e^{\beta^\top Z}.
+\]
+Each stratum has its own baseline hazard, while \(\beta\) is shared. Risk-set comparisons occur only within strata.</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition (nonproportional effect).</span> A time-varying coefficient model has
+\[
+\lambda(t\mid Z)=\lambda_0(t)\exp\{\beta(t)^\top Z\}.
+\]
+A finite-dimensional version uses
+\(\beta(t)=\sum_{k=1}^K\theta_kb_k(t)\). This is distinct from a time-dependent covariate \(Z(t)\): the former changes the effect of a covariate, while the latter changes the covariate history itself.</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Model boundary.</span> Stratification controls a categorical variable without estimating its hazard ratio. Interaction with time estimates nonproportional effects. Neither device repairs omitted confounding or informative censoring. Those are assumptions about the observation and causal structures, not about baseline flexibility.</p>
+</div>
+
+<h3>Connection with piecewise exponential models</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Partition time into intervals \(I_k\) and assume
+\(\lambda_0(t)=\alpha_k\) on \(I_k\). Conditional on total exposure
+\[
+E_{ik}=\int_{I_k}Y_i(t)\,\mathrm{d}t,
+\]
+the event count \(D_{ik}=\int_{I_k}\mathrm{d}N_i(t)\) has log-likelihood
+\[
+\sum_{i,k}\left[
+D_{ik}\{\log\alpha_k+\beta^\top Z_i\}
+-\alpha_kE_{ik}e^{\beta^\top Z_i}
+\right],
+\]
+the kernel of a Poisson log-linear model with offset \(\log E_{ik}\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Insert the piecewise constant intensity
+\(Y_i(t)\alpha_ke^{\beta^\top Z_i}\) into the counting-process likelihood. The event integral counts \(D_{ik}\), and the compensator integral equals \(\alpha_kE_{ik}e^{\beta^\top Z_i}\).</p>
+</div>
+
+<p>As the partition is refined to the distinct event times and the \(\alpha_k\)'s are profiled out, the resulting likelihood for \(\beta\) approaches Cox partial likelihood. This supplies one concrete route from an ordinary full likelihood to the semiparametric construction.</p>

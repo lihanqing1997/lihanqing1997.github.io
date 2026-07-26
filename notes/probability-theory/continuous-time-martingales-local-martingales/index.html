@@ -8,42 +8,145 @@ note_prev_url: "/notes/probability-theory/brownian-motion-pdes/"
 note_next_url: "/notes/probability-theory/quadratic-variation-covariation/"
 ---
 
-<p>Continuous-time martingales require path regularity and localization. Local martingales behave like martingales up to an increasing sequence of stopping times.</p>
+<p>Continuous-time martingale theory adds two issues absent from a finite discrete grid: one must choose path-regular versions, and many natural stochastic integrals are martingales only after stopping. Localization permits bounded arguments to be reused without pretending that local and true martingales have the same expectation behavior.</p>
 
-    <h3>Continuous-time martingales</h3>
+<h3>Martingales and regular versions</h3>
 
-    <p>The martingale identity is imposed at all ordered times.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An adapted process
+  \(M=(M_t)_{t\ge0}\) is a martingale if \(M_t\in L^1\) and
+  \[
+  \mathbb E[M_t\mid\mathcal F_s]=M_s
+  \qquad(0\le s\le t).
+  \]
+  Conditional inequalities define submartingales and supermartingales.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An adapted integrable process \(M_t\) is a martingale if \(\mathbb E[M_t\mid\mathcal F_s]=M_s\) for all \(s\le t\). It is usually assumed to have càdlàg paths.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Doob regularization).</span> Under the usual conditions on the filtration, every martingale whose mean function
+  \(t\mapsto\mathbb EM_t\) is right-continuous has a cadlag modification. In particular, martingales are normally identified with their cadlag versions.</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Restrict the process to dyadic rational times. The discrete upcrossing inequality shows that, simultaneously for every rational interval \([a,b]\), only finitely many upcrossings occur near each time. Therefore left and right limits exist along dyadic rationals outside one null set. Define the right-limit process there. Right continuity of the filtration makes the limit adapted, while conditional Fatou and right continuity of expectations identify it with the original variables and preserve the martingale property.</p>
+</div>
 
-    <h3>Localization</h3>
+<h3>Localization</h3>
 
-    <p>Local martingales are martingales before suitable stopping times.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An adapted cadlag process \(M\) is a local martingale if there are stopping times
+  \(\tau_n\uparrow\infty\) almost surely such that
+  \[
+  M_t^{\tau_n}:=M_{t\wedge\tau_n}
+  \]
+  is a martingale for every \(n\). The sequence \((\tau_n)\) is a localizing sequence.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> A process \(M_t\) is a local martingale if there exist stopping times \(\tau_n\uparrow\infty\) such that \(M^{\tau_n}_t=M_{t\wedge\tau_n}\) is a martingale for every \(n\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(M\) is a continuous local martingale, then
+  \[
+  \tau_n=\inf\{t\ge0:|M_t|\ge n\}\wedge n
+  \]
+  localizes \(M\) after intersecting with any original localizing sequence. The stopped processes are bounded on compact time intervals.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Localization permits one to prove martingale identities under boundedness, then remove boundedness by stopping. If \(M^{\tau_n}\) is a martingale for each \(n\), then for bounded stopping times \(\sigma\le\tau\), optional sampling applies to \(M^{\tau_n}\); letting \(n\to\infty\) gives local versions of martingale identities whenever uniform integrability or bounded convergence is available.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The hitting times are stopping times by continuity. If \(\sigma_n\) is an original localizing sequence, then
+  \(\rho_n=\sigma_n\wedge\tau_n\) still increases to infinity. A stopped martingale stopped again remains a martingale, and
+  \(|M_{t\wedge\rho_n}|\le n\) up to the harmless terminal continuity value.</p>
+</div>
 
+<p>A local martingale identity may be used safely after first inserting
+\(\tau_n\). Removing the stopping requires a separate convergence argument; this is exactly where strict local martingales arise.</p>
 
-    <h3>Class D and true martingales</h3>
+<h3>Nonnegative local martingales</h3>
 
-    <p>A local martingale becomes a true martingale under uniform integrability across stopping times.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Every nonnegative local martingale is a supermartingale. Hence
+  \[
+  \mathbb EM_t\le\mathbb EM_s
+  \qquad(s\le t).
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If a càdlàg local martingale \(M\) has the family \(\{M_\tau:\tau\le T\}\) uniformly integrable for every fixed \(T\), then \(M\) is a martingale on \([0,T]\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\tau_n\) localize \(M\). Conditional Fatou gives
+  \[
+  \mathbb E[M_t\mid\mathcal F_s]
+  =
+  \mathbb E[\liminf_nM_{t\wedge\tau_n}\mid\mathcal F_s]
+  \le\liminf_n
+  \mathbb E[M_{t\wedge\tau_n}\mid\mathcal F_s].
+  \]
+  Optional sampling for the stopped martingale gives the last conditional expectation as
+  \(M_{s\wedge\tau_n}\), whose limit is \(M_s\). Thus
+  \(\mathbb E[M_t\mid\mathcal F_s]\le M_s\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose a localizing sequence \(\tau_n\). For \(s\le t\le T\), optional sampling gives \(\mathbb E[M_{t\wedge\tau_n}\mid\mathcal F_s]=M_{s\wedge\tau_n}\). Uniform integrability lets \(n\to\infty\) in \(L^1\), yielding \(\mathbb E[M_t\mid\mathcal F_s]=M_s\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A local martingale that is not a martingale is a strict local martingale. For a nonnegative local martingale, strictness is visible through loss of mean:
+  \[
+  \mathbb EM_t<\mathbb EM_0
+  \]
+  at some time.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Positive local martingales are supermartingales, but may fail to be true martingales.</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (inverse Bessel process).</span> Let \(R_t\) be a three-dimensional Bessel process started from \(r>0\). Ito's formula shows that
+  \[
+  M_t=\frac1{R_t}
+  \]
+  is a positive local martingale. Three-dimensional transience implies
+  \(R_t\to\infty\) in probability, and the transition density calculation gives
+  \(\mathbb E(1/R_t)<1/r\) for \(t>0\). Thus \(M\) is strict. The example warns that zero local drift does not alone preserve expectation.</p>
+</div>
+
+<h3>Class \(D\) and closed martingales</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> An adapted process \(X\) is of class \(D\) on \([0,T]\) if
+  \[
+  \{X_\tau:\tau\le T\text{ is a stopping time}\}
+  \]
+  is uniformly integrable.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> A cadlag local martingale of class \(D\) on \([0,T]\) is a uniformly integrable martingale there. Moreover, the following are equivalent for a cadlag martingale:
+  <ol>
+    <li>\(M\) is of class \(D\);</li>
+    <li>there is \(M_T\in L^1\) such that
+    \[
+    M_t=\mathbb E[M_T\mid\mathcal F_t],\qquad0\le t\le T.
+    \]</li>
+  </ol></p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(\tau_n\) localize \(M\). For \(s<t\le T\),
+  \[
+  \mathbb E[M_{t\wedge\tau_n}\mid\mathcal F_s]
+  =M_{s\wedge\tau_n}.
+  \]
+  Both stopped variables belong to the class-\(D\) family, so uniform integrability and almost-sure convergence give \(L^1\)-convergence as \(n\to\infty\). Passing to the limit proves the true martingale identity. Optional sampling then gives
+  \(M_t=\mathbb E[M_T\mid\mathcal F_t]\). Conversely, conditional expectations of one \(L^1\) variable over arbitrary stopping-time sigma-fields are uniformly integrable, so the representation implies class \(D\).</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (useful sufficient conditions).</span> A local martingale \(M\) is a true martingale on \([0,T]\) if either:
+  <ul>
+    <li>\(\sup_{t\le T}\mathbb E|M_t|^p<\infty\) for some \(p>1\); or</li>
+    <li>\(M\) is square-integrable after localization and
+    \(\mathbb E\langle M\rangle_T<\infty\).</li>
+  </ul></p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The first condition gives uniform integrability by the \(L^p\) criterion. Under the second, the martingale isometry gives
+  \[
+  \mathbb E|M_{t\wedge\tau_n}-M_0|^2
+  =\mathbb E\langle M\rangle_{t\wedge\tau_n}
+  \le\mathbb E\langle M\rangle_T,
+  \]
+  uniformly in \(n,t\). Thus the localized family is uniformly integrable, and the preceding theorem removes localization.</p>
+</div>

@@ -69,3 +69,138 @@ which is proper for \(n\ge1\).</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The prior predictive is the distribution of data under the assumed joint Bayesian model. Events with large prior predictive probability are therefore events the model declares plausible before observation.</p>
     </div>
+
+<h3>Jeffreys prior from information volume</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For a regular \(d\)-dimensional model with Fisher information \(I_\theta(\theta)\), Jeffreys prior
+\[
+\pi_J(\theta)\propto|I_\theta(\theta)|^{1/2}
+\]
+is invariant under smooth one-to-one reparameterization
+\(\phi=g(\theta)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let
+\(J=\partial\theta/\partial\phi^\top\). Scores transform as
+\(\dot\ell_\phi=J^\top\dot\ell_\theta\), so
+\[
+I_\phi(\phi)=J^\top I_\theta(\theta)J.
+\]
+Therefore
+\[
+|I_\phi(\phi)|^{1/2}
+=|\det J|\,|I_\theta(\theta)|^{1/2},
+\]
+which is exactly the density change-of-variables rule.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span></p>
+<ul>
+<li>For \(X\sim\operatorname{Bernoulli}(p)\),
+\[
+I(p)=\frac1{p(1-p)},\qquad
+\pi_J(p)\propto p^{-1/2}(1-p)^{-1/2},
+\]
+the proper \(\operatorname{Beta}(1/2,1/2)\) prior.</li>
+<li>For \(X\sim N(\mu,\sigma^2)\) with \(\mu\) known,
+\[
+I(\sigma)=\frac2{\sigma^2},
+\qquad \pi_J(\sigma)\propto\frac1\sigma.
+\]</li>
+<li>For both \(\mu\) and \(\sigma\) unknown, the joint Jeffreys-rule prior is proportional to \(\sigma^{-2}\), while the independence-Jeffreys prior is proportional to \(\sigma^{-1}\). “Noninformative” is therefore not unique in multiparameter models.</li>
+</ul>
+</div>
+
+<h3>Posterior propriety with improper priors</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For
+\[
+X_i\mid\mu,\sigma^2\stackrel{\mathrm{iid}}{\sim}N(\mu,\sigma^2),
+\qquad
+\pi(\mu,\sigma)\propto\frac1\sigma,
+\]
+the posterior is proper if \(n\ge2\) and the observations are not all equal.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrating over \(\mu\),
+\[
+\int_{\mathbb R}
+\exp\left\{-\frac{\sum_i(X_i-\mu)^2}{2\sigma^2}\right\}
+\mathrm{d}\mu
+=\sqrt{\frac{2\pi\sigma^2}{n}}
+\exp\left\{-\frac{S}{2\sigma^2}\right\},
+\]
+where \(S=\sum_i(X_i-\bar X)^2>0\). Including the likelihood factor
+\(\sigma^{-n}\) and prior \(\sigma^{-1}\) leaves an integral proportional to
+\[
+\int_0^\infty
+\sigma^{-n}e^{-S/(2\sigma^2)}\,\mathrm{d}\sigma.
+\]
+It is finite near zero because \(S>0\), and finite at infinity exactly when \(n>1\).</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Improper-prior limitation.</span> An improper prior has no prior predictive distribution and its arbitrary multiplicative constant does not cancel across models. Ordinary Bayes factors are therefore undefined unless compatible constants are supplied by a proper-prior construction, intrinsic Bayes factor, or fractional method.</p>
+</div>
+
+<h3>Weakly informative scale priors</h3>
+
+<p>A weakly informative prior is calibrated on an interpretable data or effect scale. For a logistic coefficient, for example, a centered normal or Student prior should be judged through plausible odds ratios
+\[
+e^\beta
+\]
+after covariates have meaningful scaling. For a standard deviation \(\tau\), half-normal and half-Student priors make behavior near zero and in the upper tail explicit.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\(\tau\sim\operatorname{half\text{-}Cauchy}(s)\), then
+\[
+P(\tau>M)=1-\frac2\pi\arctan(M/s)
+\sim\frac{2s}{\pi M}.
+\]
+Thus the prior permits very large scales with polynomial tail probability and may yield unstable posterior moments when likelihood information is weak.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The half-Cauchy distribution function is
+\[
+F(M)=\frac2\pi\arctan(M/s).
+\]
+Use
+\(\arctan x=\pi/2-x^{-1}+o(x^{-1})\).</p>
+</div>
+
+<h3>Local and global sensitivity</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (prior perturbation identity).</span> Let
+\[
+\pi_\varepsilon(\theta)
+\propto e^{\varepsilon h(\theta)}\pi_0(\theta).
+\]
+For an integrable posterior functional \(g\),
+\[
+\left.
+\frac{\mathrm{d}}{\mathrm{d}\varepsilon}
+E_{\pi_\varepsilon}\{g(\theta)\mid x\}
+\right|_{\varepsilon=0}
+=\operatorname{Cov}_{\pi_0}
+\{g(\theta),h(\theta)\mid x\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Differentiate the ratio
+\[
+\frac{E_{\pi_0}\{g(\theta)e^{\varepsilon h(\theta)}L(\theta;x)\}}
+{E_{\pi_0}\{e^{\varepsilon h(\theta)}L(\theta;x)\}}
+\]
+at zero. The quotient rule gives posterior covariance.</p>
+</div>
+
+<p>This identity identifies directions of prior sensitivity, while refitting a scientifically plausible family of priors reveals global changes. Sensitivity analysis is most useful for decisions, tail probabilities, and weakly identified components, not merely posterior means that are already data-dominated.</p>

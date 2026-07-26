@@ -40,3 +40,144 @@ with equality exactly when \(a_i/b_i\) is constant on the active indices.</p>
 \]
 by Jensen's inequality with weights \(b_i/b\). The equality condition is the equality condition in Jensen's inequality.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>The log-sum inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For nonnegative
+  \(a_i,b_i\),
+  \[
+  \sum_i a_i\log\frac{a_i}{b_i}
+  \ge
+  \left(\sum_i a_i\right)
+  \log\frac{\sum_i a_i}{\sum_i b_i},
+  \]
+  with the usual extended-value conventions. Equality holds when
+  \(a_i/b_i\) is constant over indices with \(a_i>0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put
+  \(A=\sum_i a_i\), \(B=\sum_i b_i\),
+  \(p_i=a_i/A\), and \(q_i=b_i/B\). The difference between the two sides is
+  \[
+  A\sum_ip_i\log\frac{p_i}{q_i}=A D(p\|q)\ge0.
+  \]
+  Alternatively, Jensen applied to the convex function \(t\log t\) proves the same statement. Equality is the equality condition for Jensen.</p>
+</div>
+
+<h3>Gibbs inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span>
+  \[
+  D(P\|Q)=\sum_xP(x)\log\frac{P(x)}{Q(x)}\ge0,
+  \]
+  with equality exactly when \(P=Q\). If \(P\not\ll Q\), then
+  \(D(P\|Q)=+\infty\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply log-sum with
+  \(a_x=P(x)\), \(b_x=Q(x)\); both sums equal one. Equality requires a constant ratio, which normalization forces to one.</p>
+</div>
+
+<h3>Cross-entropy and mismatch</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The cross-entropy of \(P\) relative to \(Q\) is
+  \[
+  H(P,Q)=-\sum_xP(x)\log Q(x)=H(P)+D(P\|Q).
+  \]
+  Thus coding or predicting \(P\)-data with \(Q\) incurs an excess expected log loss of exactly \(D(P\|Q)\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Add and subtract
+  \(-\sum_xP(x)\log P(x)\) and collect the log ratio.</p>
+</div>
+
+<h3>Coarse-graining decreases divergence</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For a partition
+  \(\{B_j\}\),
+  \[
+  D(P\|Q)\ge
+  \sum_jP(B_j)\log\frac{P(B_j)}{Q(B_j)}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the log-sum inequality separately within each cell \(B_j\) and then sum over cells. This is data processing for a deterministic quantizer.</p>
+</div>
+
+<h3>Chain rule for relative entropy</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For joint laws \(P_{XY},Q_{XY}\),
+  \[
+  D(P_{XY}\|Q_{XY})
+  =
+  D(P_X\|Q_X)+
+  \mathbb E_{P_X}D(P_{Y\mid X}\|Q_{Y\mid X}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Factor the likelihood ratio:
+  \[
+  \log\frac{p(x,y)}{q(x,y)}
+  =\log\frac{p_X(x)}{q_X(x)}
+  +\log\frac{p(y\mid x)}{q(y\mid x)}.
+  \]
+  Integrate under \(P_{XY}\).</p>
+</div>
+
+<h3>Convexity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> KL divergence is jointly convex:
+  \[
+  D\{\lambda P_1+(1-\lambda)P_2\|
+  \lambda Q_1+(1-\lambda)Q_2\}
+  \le
+  \lambda D(P_1\|Q_1)+(1-\lambda)D(P_2\|Q_2).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply log-sum at each alphabet point to
+  \(a_1=\lambda p_1(x)\), \(a_2=(1-\lambda)p_2(x)\) and corresponding \(b\)-values, then sum over \(x\).</p>
+</div>
+
+<h3>Pinsker's inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> With
+  \(\|P-Q\|_{\mathrm{TV}}=\sup_A|P(A)-Q(A)|\),
+  \[
+  D(P\|Q)\ge2\|P-Q\|_{\mathrm{TV}}^2
+  \]
+  in nats.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Let
+  \(A=\{p\ge q\}\), for which
+  \(P(A)-Q(A)=\|P-Q\|_{\mathrm{TV}}\).
+  Data processing under the binary map \(\mathbf1_A\) reduces KL to Bernoulli divergence. A calculus argument shows
+  \(\operatorname{kl}(u\|v)\ge2(u-v)^2\). Combine the two inequalities.</p>
+</div>
+
+<h3>KL is not a metric</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> KL is asymmetric and can be infinite in one direction but finite in the other. For
+  \(P=(1,0)\) and \(Q=(1/2,1/2)\),
+  \[
+  D(P\|Q)=\log2,\qquad D(Q\|P)=+\infty.
+  \]
+  It also fails the triangle inequality. Its strength is not metric geometry but its roles as expected likelihood ratio, coding redundancy, and large-deviation rate.</p>
+</div>

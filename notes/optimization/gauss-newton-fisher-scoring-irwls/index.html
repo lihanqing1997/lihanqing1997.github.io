@@ -8,24 +8,143 @@ note_prev_url: "/notes/optimization/quasi-newton-secant-methods/"
 note_next_url: "/notes/optimization/line-search-trust-regions/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Gauss-Newton, Fisher scoring, and iteratively reweighted least squares.</p>
+<p>Gauss-Newton and Fisher scoring are structured Newton methods. They discard
+a curvature term whose expectation or residual-weighted contribution is often
+small, leaving a positive-semidefinite matrix with a direct statistical
+interpretation.</p>
 
-    <h3>Gauss-Newton approximation</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For nonlinear least squares \(\frac12\|r(\theta)\|^2\), Gauss-Newton replaces the Hessian by \(J(\theta)^\top J(\theta)\), where \(J\) is the Jacobian of residuals.</p>
-    </div>
+<h3>Nonlinear least squares and residual curvature</h3>
 
-    <h3>Fisher scoring</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For likelihood maximization, Fisher scoring replaces the observed negative Hessian by expected information: \(\theta_{k+1}=\theta_k+I(\theta_k)^{-1}S(\theta_k)\).</p>
-    </div>
+<p>Let \(r=(r_1,\ldots,r_m):\mathbb R^d\to\mathbb R^m\) and
+\[
+F(\theta)=\frac12\|r(\theta)\|^2.
+\]
+Writing \(J(\theta)=Dr(\theta)\), differentiation gives
+\[
+\nabla F(\theta)=J(\theta)^\top r(\theta),
+\qquad
+\nabla^2F(\theta)
+=J(\theta)^\top J(\theta)
+ +\sum_{i=1}^m r_i(\theta)\nabla^2r_i(\theta).
+\]</p>
 
-    <h3>IRWLS for generalized linear models</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In regular generalized linear models, Fisher scoring can be written as iteratively reweighted least squares, with working responses and weights determined by the mean-variance relation and link derivative.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> The Gauss-Newton
+    direction solves
+    \[
+    J_k^\top J_kp_k=-J_k^\top r_k.
+    \]
+    Equivalently, it minimizes the linearized residual model
+    \[
+    \min_p\frac12\|r_k+J_kp\|^2.
+    \]</p>
+</div>
 
-    <h3>Statistical meaning</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> These methods are Newton-like but replace unstable curvature by a positive semidefinite approximation tied to local prediction or information geometry.</p>
-    </div>
+<p>The omitted term is weighted by the residuals. Near an exact fit
+\(r(\theta^\star)=0\), Gauss-Newton and Newton have the same limiting Hessian.
+If \(J(\theta^\star)\) has full column rank, the local model is strictly convex.</p>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Local convergence at a zero-residual
+    solution.</span> Suppose \(r\) is twice continuously differentiable,
+    \(r(\theta^\star)=0\), and \(J(\theta^\star)\) has full column rank. Then
+    undamped Gauss-Newton iterates started sufficiently near \(\theta^\star\)
+    converge quadratically.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Taylor expansion gives
+    \(r(\theta)=J_\star e+O(\|e\|^2)\) and
+    \(J(\theta)=J_\star+O(\|e\|)\), where \(e=\theta-\theta^\star\). Hence
+    \[
+    J(\theta)^\top r(\theta)
+    =J_\star^\top J_\star e+O(\|e\|^2),
+    \quad
+    J(\theta)^\top J(\theta)
+    =J_\star^\top J_\star+O(\|e\|).
+    \]
+    Since \(J_\star^\top J_\star\) is invertible, substituting into the
+    Gauss-Newton update cancels \(e\) and leaves
+    \(e^+=O(\|e\|^2)\).</p>
+</div>
+
+<p>At a nonzero-residual minimizer, the omitted Hessian term need not vanish;
+the typical local rate is linear unless that term is small relative to
+\(J^\top J\).</p>
+
+<h3>Observed curvature and Fisher information</h3>
+
+<p>For log-likelihood \(\ell(\theta)\), write the score and information as
+\[
+S(\theta)=\nabla\ell(\theta),\qquad
+J_{\mathrm{obs}}(\theta)=-\nabla^2\ell(\theta),\qquad
+I(\theta)=\mathbb E_\theta[J_{\mathrm{obs}}(\theta)].
+\]
+Newton maximization uses \(J_{\mathrm{obs}}^{-1}S\), whereas Fisher scoring
+uses
+\[
+\theta_{k+1}=\theta_k+I(\theta_k)^{-1}S(\theta_k).
+\]</p>
+
+<p>Under the regularity conditions that permit differentiating under the
+integral,
+\[
+I(\theta)
+=\mathbb E_\theta[S_\theta(X)S_\theta(X)^\top]
+=-\mathbb E_\theta[\nabla^2\ell_\theta(X)].
+\]
+Expected information is positive semidefinite and averages away
+sample-specific curvature fluctuations. The identities are developed from the
+statistical side in
+<a href="{{ '/notes/statistical-inference/likelihood-score-information/' | relative_url }}">likelihood, score, and information</a>.</p>
+
+<h3>IRWLS for generalized linear models</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Weighted least-squares form.</span> Let
+    independent responses satisfy
+    \(\mathbb E(Y_i)=\mu_i\),
+    \(\operatorname{Var}(Y_i)=\phi V(\mu_i)\), and
+    \(g(\mu_i)=\eta_i=x_i^\top\beta\). Define
+    \[
+    z_i=\eta_i+(Y_i-\mu_i)\frac{\mathrm{d}\eta_i}{\mathrm{d}\mu_i},
+    \qquad
+    w_i=\frac1{\phi V(\mu_i)}
+      \left(\frac{\mathrm{d}\mu_i}{\mathrm{d}\eta_i}\right)^2.
+    \]
+    A Fisher-scoring step solves
+    \[
+    (X^\top W X)\beta^+=X^\top Wz.
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> The chain rule expresses the
+    score as
+    \[
+    S(\beta)
+    =X^\top D(Y-\mu),\qquad
+    D_{ii}=\frac1{\phi V(\mu_i)}
+       \frac{\mathrm{d}\mu_i}{\mathrm{d}\eta_i}.
+    \]
+    Expected negative curvature is \(X^\top WX\). Fisher scoring therefore
+    gives
+    \(\beta^+=\beta+(X^\top WX)^{-1}X^\top D(Y-\mu)\).
+    Since
+    \(W(z-X\beta)=D(Y-\mu)\), rearrangement yields the weighted
+    least-squares normal equations.</p>
+</div>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Logistic regression.</span> With
+    \(\mu_i=(1+e^{-x_i^\top\beta})^{-1}\),
+    \(w_i=\mu_i(1-\mu_i)\) and
+    \[
+    z_i=x_i^\top\beta+
+    \frac{Y_i-\mu_i}{\mu_i(1-\mu_i)}.
+    \]
+    IRWLS repeatedly fits \(z\) to \(X\) with weights \(w_i\). Near separation,
+    some weights approach zero and the unregularized coefficients can diverge,
+    so numerical convergence alone does not guarantee existence of a finite
+    maximum-likelihood estimate.</p>
+</div>

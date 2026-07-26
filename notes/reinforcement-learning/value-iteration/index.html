@@ -77,3 +77,77 @@ by adding and subtracting \(T_*v\) and \(T_\pi v\). The two approximation terms 
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Asynchronous value iteration updates selected coordinates using Bellman backups. Under discounted contraction and sufficient repeated updates of every state, the tabular iterates still converge to \(v_*\).</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Geometric convergence</h3>
+
+<p>Value iteration uses \(V_{k+1}=TV_k\). For bounded rewards,
+\[
+\|V_k-V^*\|_\infty
+\le\gamma^k\|V_0-V^*\|_\infty
+\le\frac{\gamma^k}{1-\gamma}
+\|TV_0-V_0\|_\infty.
+\]
+The Bellman residual is observable when the model is known and provides a
+stopping certificate independent of \(V^*\).</p>
+
+<h3>Loss of a greedy policy</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(\pi_V\) be greedy with
+respect to \(V\). Then
+\[
+\|V^*-V^{\pi_V}\|_\infty
+\le\frac{2\gamma}{1-\gamma}\|V-V^*\|_\infty.
+\]
+Also,
+\[
+\|V^*-V^{\pi_V}\|_\infty
+\le\frac{2\gamma}{(1-\gamma)^2}\|TV-V\|_\infty.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Since
+\(T^{\pi_V}V=TV\),
+\[
+V^*-V^{\pi_V}
+=TV^*-T^{\pi_V}V^{\pi_V}.
+\]
+Insert and subtract \(TV=T^{\pi_V}V\), take sup norms, and obtain
+\[
+\|V^*-V^{\pi_V}\|_\infty
+\le\gamma\|V^*-V\|_\infty
++\gamma\|V-V^{\pi_V}\|_\infty.
+\]
+Bound the second term by
+\(\|V-V^*\|+\|V^*-V^{\pi_V}\|\) and rearrange. The residual form follows from
+\(\|V-V^*\|\le\|TV-V\|/(1-\gamma)\).</p>
+</div>
+
+<h3>Asynchronous and Gauss--Seidel updates</h3>
+
+<p>One need not update every state simultaneously. If each state is updated
+infinitely often and delays are uniformly bounded, asynchronous contractions
+still converge to \(V^*\). Using newly updated coordinates immediately gives
+Gauss--Seidel value iteration, often faster in practice. Fair visitation is
+essential: a state never updated can retain arbitrary error.</p>
+
+<h3>Relative value iteration</h3>
+
+<p>In average-reward problems, values are defined only up to an additive
+constant. Relative value iteration subtracts a reference component:
+\[
+h_{k+1}=Th_k-(Th_k)(s_0)\mathbf1.
+\]
+Under unichain or communicating conditions, this can converge in span
+seminorm to the bias function. Discounted convergence proofs cannot simply be
+reused because the contraction modulus becomes one.</p>
+
+<h3>Numerical stability</h3>
+
+<p>When \(\gamma\) is near one, the iteration count scales like
+\((1-\gamma)^{-1}\log(1/\varepsilon)\), and residual-to-value conversion
+amplifies errors by the same effective horizon. Multistep lookahead, policy
+iteration, acceleration, and preconditioning target this poor conditioning,
+but each must preserve monotonicity or control extrapolation errors.</p>

@@ -8,31 +8,161 @@ note_prev_url: "/notes/empirical-processes/entropy-and-maximal-inequalities/"
 note_next_url: "/notes/empirical-processes/changing-classes/"
 ---
 
-<p>Concentration inequalities control deviations of empirical suprema around their expectations. They sharpen qualitative convergence into finite-sample probability bounds.</p>
+<p>Maximal inequalities locate the expected size of an empirical supremum. Concentration inequalities control its random displacement around that expectation. The distinction matters: complexity determines the center, while boundedness, variance, or tail norms determine the deviation.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A bounded-differences bound has the form \(P(Z-EZ\ge t)\le \exp\{-2t^2/\sum_i c_i^2\}\) when changing \(X_i\) can alter \(Z\) by at most \(c_i\).</p>
-    </div>
+<h3>Fixed functions</h3>
 
-    <h3>Deviation bounds</h3>
-    <ul>
-        <li>Talagrand-type inequalities are tailored to suprema of empirical processes.</li>
-        <li>Concentration separates expected complexity from random fluctuation around that complexity.</li>
-        <li>Finite-sample learning bounds often combine symmetrization, entropy, and concentration.</li>
-    </ul>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Bernstein).</span> Let \(Y_1,\ldots,Y_n\) be independent, centered, \(|Y_i|\leq b\), and
+  \(\sum_iEY_i^2\leq v\). Then, for every \(t>0\),
+  \[
+  P\!\left\{\sum_{i=1}^nY_i
+  \geq\sqrt{2vt}+\frac{bt}{3}\right\}
+  \leq e^{-t}.
+  \]</p>
+</div>
 
-    <h3>Oracle-inequality workflow</h3>
-    <p>Use concentration when expectation bounds are not enough, especially for oracle inequalities, model selection, and learning-theory guarantees.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(0<\lambda<3/b\), the power series and \(|Y_i|\leq b\) give
+  \[
+  E e^{\lambda Y_i}
+  \leq
+  \exp\!\left\{
+    \frac{\lambda^2EY_i^2}{2(1-\lambda b/3)}
+  \right\}.
+  \]
+  Multiplying moment generating functions and applying Chernoff's method yields
+  \[
+  P\left\{\sum_iY_i\geq x\right\}
+  \leq
+  \exp\!\left\{-\frac{x^2}{2(v+bx/3)}\right\}.
+  \]
+  Substitution of \(x=\sqrt{2vt}+bt/3\) gives the displayed bound. \(\square\)</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Concentration around expected suprema</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Concentration often has the form
+<p>For \(Y_i=f(X_i)-Pf\), the normalized form is
 \[
-P\{Z\ge EZ+t\}\le \exp\{-\psi(t;\sigma,M)\},
+|(P_n-P)f|
+\lesssim
+\sqrt{\frac{Pf^2\,t}{n}}+\frac{\|f-Pf\|_\infty t}{n}
 \]
-where \(Z=\sup_{f\in\mathcal F}|\sum_i(f(X_i)-Pf)|\), \(\sigma^2\) controls variance, and \(M\) controls envelope size.</p>
-    </div>
+with probability at least \(1-2e^{-t}\). The first term governs moderate deviations and the second large deviations.</p>
 
-    <h3>Expectation plus deviation</h3>
-    <p>The usual workflow is: first bound \(EZ\) by symmetrization and entropy, then add a concentration inequality to control \(Z\) with high probability. This is the backbone of many oracle inequalities.</p>
+<h3>Bounded differences</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (McDiarmid).</span> Let \(Z=h(X_1,\ldots,X_n)\), with independent arguments. If replacing \(X_i\) by any \(X_i'\) changes \(h\) by at most \(c_i\), then
+  \[
+  P\{Z-EZ\geq t\}
+  \leq
+  \exp\!\left\{-\frac{2t^2}{\sum_{i=1}^nc_i^2}\right\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Reveal the observations one at a time and form the Doob martingale
+  \(M_i=E(Z\mid X_1,\ldots,X_i)\). Its differences lie in intervals of length at most \(c_i\). Hoeffding's conditional moment-generating-function lemma gives
+  \[
+  E\exp\{\lambda(M_i-M_{i-1})\mid X_1,\ldots,X_{i-1}\}
+  \leq e^{\lambda^2c_i^2/8}.
+  \]
+  Iteration and Chernoff optimization at
+  \(\lambda=4t/\sum_i c_i^2\) prove the result. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(|f|\leq b\) for every \(f\in\mathcal F\), then
+  \[
+  Z=\sup_{f\in\mathcal F}|(P_n-P)f|
+  \]
+  satisfies
+  \[
+  P\{Z-EZ\geq t\}
+  \leq\exp\!\left\{-\frac{nt^2}{2b^2}\right\}.
+  \]</p>
+</div>
+
+<p>Changing one observation changes every empirical average by at most \(2b/n\), and therefore changes their supremum by at most the same amount. This bound is simple but ignores the possibly much smaller variance of the class.</p>
+
+<h3>Talagrand–Bousquet concentration</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(\mathcal F\) be countable, \(Pf=0\), \(|f|\leq b\), and
+  \[
+  \sigma^2=\sup_{f\in\mathcal F}Pf^2,
+  \qquad
+  Z=\sup_{f\in\mathcal F}\sum_{i=1}^nf(X_i).
+  \]
+  Then, for every \(t>0\),
+  \[
+  P\!\left\{
+    Z\geq EZ+
+    \sqrt{2\{n\sigma^2+2bEZ\}t}
+    +\frac{bt}{3}
+  \right\}
+  \leq e^{-t}.
+  \]
+  The analogous bound holds for \(\sup_f|\sum_i f(X_i)|\) after replacing \(\mathcal F\) by \(\mathcal F\cup(-\mathcal F)\).</p>
+</div>
+
+<p>Unlike bounded differences, this inequality adapts to both the maximal variance \(n\sigma^2\) and the expected complexity \(EZ\). Dividing by \(\sqrt n\) shows that \(\|\mathbb G_n\|_{\mathcal F}\) lies near its expected value up to a Gaussian term of order \(\sigma\sqrt t\) and a bounded-envelope term of order \(bt/\sqrt n\).</p>
+
+<h3>A high-probability VC bound</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Suppose \(|f|\leq b\), \(\sup_fPf^2\leq\delta^2\), and \(\mathcal F\) obeys the VC-type entropy bound with parameters \((A,v)\). There is a universal \(C\) such that, with probability at least \(1-e^{-t}\),
+  \[
+  \begin{aligned}
+  \|\mathbb G_n\|_{\mathcal F}
+  \leq C\bigg[
+  &\delta\sqrt{v\log(Ab/\delta)}
+  +\frac{vb}{\sqrt n}\log(Ab/\delta)\\
+  &+\delta\sqrt t+\frac{bt}{\sqrt n}
+  \bigg].
+  \end{aligned}
+  \]</p>
+</div>
+
+<p>The first line is the expected complexity from the preceding page. The second line is the confidence price. This separation makes the result easy to reuse in oracle inequalities and uniform confidence arguments.</p>
+
+<h3>Sub-Gaussian and sub-exponential envelopes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(\alpha\geq1\), the Orlicz norm
+  \[
+  \|Y\|_{\psi_\alpha}
+  =
+  \inf\{c>0:E\exp(|Y|^\alpha/c^\alpha)\leq2\}
+  \]
+  measures exponential tails. Finite \(\psi_2\)-norm means sub-Gaussian tails; finite \(\psi_1\)-norm means sub-exponential tails.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If independent centered \(Y_i\) satisfy
+  \(\|Y_i\|_{\psi_1}\leq K\), then
+  \[
+  P\!\left\{\left|\frac1n\sum_{i=1}^nY_i\right|>t\right\}
+  \leq
+  2\exp\left[
+    -c n\min\left(\frac{t^2}{K^2},\frac{t}{K}\right)
+  \right]
+  \]
+  for a universal constant \(c>0\).</p>
+</div>
+
+<p>For an unbounded empirical-process envelope, one commonly truncates at a level \(b_n\), applies bounded concentration to the truncated class, and controls the tail class by an \(L_2\) or Orlicz estimate. The truncation level balances the exponential concentration of the main part against the probability and magnitude of large observations.</p>
+
+<h3>Expectation, deviation, and union bounds</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (finite class).</span> Let \(|f|\leq b\), \(Pf=0\), and \(|\mathcal F|=N\). Bernstein's inequality and a union bound give, with probability at least \(1-\eta\),
+  \[
+  \max_{f\in\mathcal F}|P_nf|
+  \lesssim
+  \sqrt{\frac{\sigma^2\log(2N/\eta)}{n}}
+  +\frac{b\log(2N/\eta)}{n}.
+  \]
+  Symmetrization plus the finite-class lemma gives the same \(\sqrt{\log N}\) complexity in expectation. Talagrand's inequality extends this finite calculation to infinite classes after entropy or chaining has bounded their expected supremum.</p>
+</div>
+
+<p>Concentration does not replace complexity analysis: an empirical supremum can concentrate sharply around a very large mean. The complete workflow is to localize the class, bound its expected supremum by symmetrization and entropy, and only then add a deviation term at the desired confidence level.</p>

@@ -7,57 +7,189 @@ note_back_url: "/notes/probability-theory/"
 note_prev_url: "/notes/probability-theory/local-time-tanaka-formula/"
 ---
 
-<p>White noise and the stochastic heat equation are entry points to infinite-dimensional stochastic analysis. The central issue is that noise is a distribution, not an ordinary function.</p>
+<p>Space-time white noise is too irregular to be evaluated pointwise: it is a Gaussian random distribution indexed by square-integrable test functions. The stochastic heat equation becomes meaningful after the heat semigroup smooths this noise. Whether the smoothing is sufficient is an explicit integrability question, and for spatially white noise it singles out one spatial dimension for function-valued random-field solutions.</p>
 
-    <h3>Space-time white noise</h3>
+<h3>White noise as an isonormal process</h3>
 
-    <p>White noise is defined by its action on test functions.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let
+  \[
+  H=L^2(\mathbb R_+\times\mathbb R^d).
+  \]
+  Space-time white noise is an isonormal Gaussian process
+  \[
+  W=\{W(\phi):\phi\in H\}
+  \]
+  such that \(W(\phi)\) is centered Gaussian and
+  \[
+  \mathbb E[W(\phi)W(\psi)]
+  =
+  \langle\phi,\psi\rangle_H
+  =
+  \int_0^\infty\int_{\mathbb R^d}
+  \phi(t,x)\psi(t,x)\,\mathrm{d} x\,\mathrm{d} t.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Space-time white noise \(W\) on \(\mathbb R_+\times\mathbb R^d\) is a centered Gaussian random distribution such that
-\[
-\mathbb E[W(\phi)W(\psi)]=\int_0^\infty\int_{\mathbb R^d}\phi(t,x)\psi(t,x)\,\mathrm{d}x\,\mathrm{d}t.
-\]</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(A_1,\ldots,A_n\) are pairwise disjoint measurable space-time sets of finite Lebesgue measure, then
+  \[
+  W(A_j):=W(1_{A_j})
+  \]
+  are independent and
+  \(W(A_j)\sim N(0,|A_j|)\).</p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The vector is jointly Gaussian, and
+  \[
+  \operatorname{Cov}(W(A_i),W(A_j))
+  =|A_i\cap A_j|=0
+  \]
+  for \(i\ne j\). Orthogonality implies independence for Gaussian vectors.</p>
+</div>
 
-    <h3>Mild stochastic heat equation</h3>
+<p>The formal symbol \(\dot W(t,x)\) denotes the distributional derivative of this random measure. There is no random function with independent finite-variance values at every space-time point.</p>
 
-    <p>Solutions are written by convolution with the heat kernel.</p>
+<h3>Walsh stochastic integration</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For
-\[
-\partial_tu=\frac12\Delta u+\sigma(u)\dot W,
-\]
-the mild form is
-\[
-u(t,x)=\int p_t(x-y)u_0(y)\,\mathrm{d}y+
-\int_0^t\int p_{t-s}(x-y)\sigma(u(s,y))\,W(\mathrm{d}s,\mathrm{d}y).
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Walsh isometry).</span> For predictable simple space-time processes \(H\), define the integral by summing coefficients times white-noise increments over predictable rectangles. The definition extends uniquely to predictable \(H\) satisfying
+  \[
+  \mathbb E\int_0^t\int_{\mathbb R^d}
+  |H(s,y)|^2\,\mathrm{d} y\,\mathrm{d} s<\infty,
+  \]
+  and
+  \[
+  \mathbb E\left|
+  \int_0^t\int_{\mathbb R^d}
+  H(s,y)W(\mathrm{d} s,\mathrm{d} y)
+  \right|^2
+  =
+  \mathbb E\int_0^t\int_{\mathbb R^d}
+  |H(s,y)|^2\,\mathrm{d} y\,\mathrm{d} s.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The deterministic heat semigroup solves the homogeneous equation. Duhamel's principle suggests convolution of the forcing term with the heat kernel. Since the forcing is white noise, the second term is interpreted as a Walsh stochastic integral, defined by an \(L^2\) isometry for predictable integrands.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For simple integrands, expand the square. Cross terms from disjoint future rectangles vanish by conditional centering and independent white-noise increments; diagonal terms equal coefficient squares times rectangle volume. This is an isometry from simple predictable functions into \(L^2(\Omega)\). Density and Hilbert-space completion define the general integral exactly as in Brownian stochastic integration.</p>
+</div>
 
+<h3>The linear stochastic convolution</h3>
 
-    <h3>Walsh isometry</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For
+  \[
+  \partial_tu=\frac12\Delta u+\dot W,\qquad u(0,\cdot)=u_0,
+  \]
+  the mild candidate is
+  \[
+  u(t,x)
+  =
+  (P_tu_0)(x)
+  +\int_0^t\int_{\mathbb R^d}
+  p_{t-s}(x-y)W(\mathrm{d} s,\mathrm{d} y).
+  \]
+  The stochastic integral is a finite-variance random variable at each
+  \((t,x)\) if and only if \(d=1\).</p>
+</div>
 
-    <p>The stochastic integral is controlled by a space-time \(L^2\) norm.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The Walsh isometry requires
+  \[
+  \int_0^t\int_{\mathbb R^d}
+  p_{t-s}(x-y)^2\,\mathrm{d} y\,\mathrm{d} s<\infty.
+  \]
+  Translation invariance and a Gaussian integral give
+  \[
+  \|p_r\|_{L^2(\mathbb R^d)}^2=(4\pi r)^{-d/2}.
+  \]
+  Therefore the variance is
+  \[
+  \int_0^t(4\pi r)^{-d/2}\,\mathrm{d} r,
+  \]
+  finite near zero exactly when \(d<2\), hence for integer dimensions only when \(d=1\).</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For predictable \(H\),
-\[
-\mathbb E\left(\int_0^t\int H(s,y)\,W(\mathrm{d}s,\mathrm{d}y)\right)^2
-=\mathbb E\int_0^t\int H(s,y)^2\,\mathrm{d}y\,\mathrm{d}s.
-\]</p>
-    </div>
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> In \(d\ge2\), the equation can still have distribution-valued solutions. What fails is a pointwise random-field solution with finite second moment. This distinction is analogous to white noise itself being a distribution rather than a function.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For simple predictable rectangles, independence and covariance of white-noise increments give the identity. Completion under the displayed norm defines the integral for general predictable \(H\). Fixed-point arguments for the mild equation use this isometry plus heat-kernel bounds.</p>
-    </div>
+<h3>The semilinear stochastic heat equation</h3>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In high spatial dimensions the heat kernel may not regularize white noise enough; existence depends on dimension and on the noise covariance.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In \(d=1\), consider
+  \[
+  \partial_tu=\frac12\Delta u+b(u)+\sigma(u)\dot W
+  \]
+  with bounded continuous initial data and globally Lipschitz
+  \(b,\sigma\). Then there is a unique predictable mild solution
+  \[
+  \begin{aligned}
+  u(t,x)=&(P_tu_0)(x)
+  +\int_0^tP_{t-s}\{b(u(s,\cdot))\}(x)\,\mathrm{d} s\\
+  &+\int_0^t\int_{\mathbb R}
+  p_{t-s}(x-y)\sigma(u(s,y))
+  W(\mathrm{d} s,\mathrm{d} y),
+  \end{aligned}
+  \]
+  with bounded second moments on compact time intervals.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Define Picard iterates by inserting the preceding iterate into the drift and noise terms. Lipschitz continuity, Jensen, and the Walsh isometry give
+  \[
+  \sup_x\mathbb E|u^{n+1}(t,x)-u^n(t,x)|^2
+  \le C\int_0^t
+  \{1+(t-s)^{-1/2}\}
+  \sup_y\mathbb E|u^n(s,y)-u^{n-1}(s,y)|^2\,\mathrm{d} s.
+  \]
+  The kernel is locally integrable. Iterated convolution or an exponentially weighted norm makes the map contractive, giving existence. The same estimate for two solutions gives uniqueness. Linear-growth estimates provide uniform second-moment bounds.</p>
+</div>
+
+<h3>Spatial and temporal regularity</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> For the one-dimensional additive equation with regular initial data, the stochastic convolution has a modification locally Holder continuous in space of every order
+  \(\alpha<1/2\) and in time of every order
+  \(\gamma<1/4\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The Walsh isometry and heat-kernel Fourier transform give
+  \[
+  \mathbb E|u(t,x)-u(t,y)|^2\le C|x-y|,
+  \]
+  and
+  \[
+  \mathbb E|u(t,x)-u(s,x)|^2\le C|t-s|^{1/2}.
+  \]
+  Gaussian higher moments are powers of the second moment. Kolmogorov-Chentsov then yields every spatial exponent below \(1/2\) and temporal exponent below \(1/4\).</p>
+</div>
+
+<h3>Spatially colored noise</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Dalang condition).</span> Suppose the noise is white in time and has spatial spectral measure \(\mu\). A function-valued stochastic heat convolution exists under the condition
+  \[
+  \int_{\mathbb R^d}
+  \frac{\mu(\mathrm{d}\xi)}{1+\|\xi\|^2}<\infty.
+  \]
+  For spatial white noise, \(\mu\) is Lebesgue measure, and the condition again reduces to \(d=1\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Plancherel and
+  \(\widehat p_t(\xi)=e^{-t\|\xi\|^2/2}\) turn the stochastic-convolution variance into
+  \[
+  \int_{\mathbb R^d}
+  \int_0^t e^{-s\|\xi\|^2}\,\mathrm{d} s\,\mu(\mathrm{d}\xi)
+  =
+  \int_{\mathbb R^d}
+  \frac{1-e^{-t\|\xi\|^2}}{\|\xi\|^2}\,\mu(\mathrm{d}\xi),
+  \]
+  with the value \(t\) at \(\xi=0\). This is finite exactly under the displayed integrability condition up to equivalent behavior at zero and infinity.</p>
+</div>
+
+<p>The stochastic heat equation is thus not merely a deterministic PDE with a random right side. Its meaning depends on a stochastic integral, and existence is governed by a quantitative balance between noise roughness and semigroup smoothing.</p>

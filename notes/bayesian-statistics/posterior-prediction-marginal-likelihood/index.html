@@ -78,3 +78,138 @@ where the factor is the posterior predictive density based on the previous obser
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> The marginal likelihood rewards models that put high prior predictive mass near the observed data. Concentrated likelihood at a small prior volume can produce an Occam penalty, which is why Bayes factors differ from likelihood-ratio tests based only on maximized likelihoods.</p>
     </div>
+
+<h3>Predictive factorization of evidence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For conditionally independent observations,
+\[
+m(x_{1:n})
+=\prod_{i=1}^n
+p(x_i\mid x_{1:i-1}),
+\]
+where
+\[
+p(x_i\mid x_{1:i-1})
+=\int p_\theta(x_i)
+\Pi(\mathrm{d}\theta\mid x_{1:i-1}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The ordinary chain rule gives
+\[
+m(x_{1:n})
+=\prod_i m(x_i\mid x_{1:i-1}).
+\]
+Conditional independence and posterior disintegration yield
+\[
+m(x_i\mid x_{1:i-1})
+=\int p_\theta(x_i)\Pi(\mathrm{d}\theta\mid x_{1:i-1}).
+\]</p>
+</div>
+
+<p>Marginal likelihood is therefore cumulative prequential performance under logarithmic score. Unlike leave-one-out prediction, each factor predicts a later observation from an earlier posterior and remains sensitive to the initial prior.</p>
+
+<h3>Beta-binomial prediction</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> Under the beta-binomial model,
+\[
+P(X_{n+1}=1\mid X_{1:n})
+=E(\theta\mid X_{1:n})
+=\frac{a+\sum_iX_i}{a+b+n}.
+\]
+For \(m\) future Bernoulli observations and future success count \(Y\),
+\[
+P(Y=y\mid X_{1:n})
+=\binom my
+\frac{B(a+x+y,b+n-x+m-y)}
+{B(a+x,b+n-x)}.
+\]
+This distribution is wider than a binomial with success probability equal to the posterior mean because it includes both future sampling variation and uncertainty about \(\theta\).</p>
+</div>
+
+<h3>Posterior predictive variance decomposition</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For a scalar future observation \(\widetilde X\),
+\[
+\operatorname{Var}(\widetilde X\mid x)
+=E\{\operatorname{Var}(\widetilde X\mid\theta)\mid x\}
++\operatorname{Var}\{E(\widetilde X\mid\theta)\mid x\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Apply the conditional law of total variance with the posterior distribution of \(\theta\) as the mixing law.</p>
+</div>
+
+<p>The first term is irreducible future noise; the second is parameter uncertainty. Plug-in prediction at \(\widehat\theta\) omits the second term and is typically too concentrated.</p>
+
+<h3>Laplace expansion of the marginal likelihood</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (regular Laplace approximation).</span> Let \(\theta\in\mathbb R^d\), let \(\widehat\theta\) be an interior likelihood maximizer, and assume the observed information
+\[
+J_n(\widehat\theta)
+=-\nabla^2\ell_n(\widehat\theta)
+\]
+is positive definite and of order \(n\). If the prior density \(\pi\) is continuous and positive near \(\widehat\theta\), then
+\[
+m(x^{(n)})
+=e^{\ell_n(\widehat\theta)}
+\pi(\widehat\theta)
+(2\pi)^{d/2}
+|J_n(\widehat\theta)|^{-1/2}
+\{1+o_P(1)\}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Taylor-expand
+\[
+\ell_n(\theta)
+=\ell_n(\widehat\theta)
+-\frac12(\theta-\widehat\theta)^\top
+J_n(\widehat\theta)(\theta-\widehat\theta)
++r_n(\theta).
+\]
+Localization makes the integral outside an \(n^{-1/2}\)-neighborhood negligible, and the remainder is uniform inside it. Replace \(\pi(\theta)\) by \(\pi(\widehat\theta)\) and integrate the Gaussian kernel.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> If
+\(J_n(\widehat\theta)=nI(\theta_0)+o_P(n)\), then
+\[
+\log m(x^{(n)})
+=\ell_n(\widehat\theta)
+-\frac d2\log n
++\log\pi(\widehat\theta)
++\frac d2\log(2\pi)
+-\frac12\log|I(\theta_0)|
++o_P(1).
+\]
+The term \(-(d/2)\log n\) is the regular Occam penalty underlying BIC.</p>
+</div>
+
+<h3>Prediction under logarithmic score</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If the true predictive density is \(q\), the expected logarithmic score
+\[
+E_q\{\log p(X)\}
+\]
+is uniquely maximized at \(p=q\), up to \(q\)-null sets.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+\[
+E_q\log q(X)-E_q\log p(X)
+=\operatorname{KL}(q\|p)\ge0,
+\]
+with equality exactly when \(p=q\) almost everywhere.</p>
+</div>
+
+<p>This strict propriety explains why posterior predictive distributions should be assessed as distributions, not only through point predictions. It also clarifies the difference between evidence, which scores sequential prior prediction, and cross-validation, which estimates prediction after fitting to nearly all the observed data.</p>

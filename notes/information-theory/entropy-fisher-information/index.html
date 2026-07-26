@@ -38,3 +38,169 @@ in the scalar form, with suitable matrix versions in higher dimension. This is t
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Fisher information controls local parametric sensitivity, while entropy controls global spread. Gaussian convolution reveals a differential relation between these two notions, giving a clean bridge to Cramér-Rao and asymptotic normality themes in the statistics notes.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Scores and Fisher information for location</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a smooth density \(f\) on
+  \(\mathbb R^d\), its score is
+  \[
+  \rho_X(x)=\nabla\log f(x),
+  \]
+  and its translation Fisher information is
+  \[
+  J(X)=\mathbb E\|\rho_X(X)\|_2^2.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Under boundary regularity,
+  \[
+  \mathbb E\rho_X(X)=0.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span>
+  \[
+  \mathbb E\rho_X(X)=
+  \int\nabla\log f(x)f(x)\,\mathrm{d}x
+  =\int\nabla f(x)\,\mathrm{d}x=0
+  \]
+  when boundary terms vanish.</p>
+</div>
+
+<h3>de Bruijn's identity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(Z\sim N_d(0,I)\) be independent and \(X_t=X+\sqrt t\,Z\). Then
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}t}h(X_t)
+  =\frac12J(X_t),\qquad t>0,
+  \]
+  under standard integrability conditions.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The density \(f_t\) solves the heat equation
+  \(\partial_tf_t=\tfrac12\Delta f_t\). Differentiate entropy:
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}t}h(f_t)
+  =-\int(1+\log f_t)\partial_tf_t\,\mathrm{d}x
+  =-\frac12\int\log f_t\,\Delta f_t\,\mathrm{d}x.
+  \]
+  Integration by parts gives
+  \[
+  \frac12\int\frac{\|\nabla f_t\|^2}{f_t}\,\mathrm{d}x
+  =\frac12J(X_t).
+  \]</p>
+</div>
+
+<h3>Entropy increases under Gaussian smoothing</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \(t\mapsto h(X+\sqrt tZ)\) is nondecreasing, strictly unless the score vanishes in the relevant sense.</p>
+</div>
+
+<p>Gaussian convolution destroys fine-scale structure and increases uncertainty. Fisher information is the instantaneous rate of entropy increase along this heat flow.</p>
+
+<h3>Fisher-information inequality</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For independent scalar variables,
+  \[
+  J(X+Y)\le
+  \frac{J(X)J(Y)}{J(X)+J(Y)}.
+  \]</p>
+</div>
+
+<p>This is equivalent to Stam's reciprocal inequality. It says convolution decreases location information, paralleling data processing.</p>
+
+<h3>Cramér-Rao from score geometry</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \(X\) is centered with variance
+  \(\sigma^2\), then
+  \[
+  J(X)\ge\frac1{\sigma^2},
+  \]
+  with equality exactly for a Gaussian law under regularity.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Integration by parts gives
+  \[
+  \mathbb E[X\rho_X(X)]=-1.
+  \]
+  Cauchy-Schwarz yields
+  \(1\le\mathbb EX^2\,\mathbb E\rho_X(X)^2
+  =\sigma^2J(X)\).
+  Equality requires \(\rho_X(X)=-X/\sigma^2\), whose differential equation gives the Gaussian density.</p>
+</div>
+
+<h3>Relative Fisher information and Gaussian convergence</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Relative Fisher information of \(X\) to a smooth reference \(G\) is
+  \[
+  J(X\|G)=
+  \mathbb E\|\nabla\log f_X(X)-
+  \nabla\log f_G(X)\|^2.
+  \]</p>
+</div>
+
+<p>For standard Gaussian \(G\), the relative score is
+\(\rho_X(X)+X\). Along Ornstein-Uhlenbeck flow, relative entropy to Gaussian decreases, and its derivative is minus relative Fisher information. Log-Sobolev inequalities integrate this derivative to control KL by Fisher information.</p>
+
+<h3>I-MMSE identity</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(Y_\gamma=\sqrt\gamma X+Z\), \(Z\sim N(0,1)\) independent, and
+  \(\mathbb EX^2<\infty\). Then
+  \[
+  \frac{\mathrm{d}}{\mathrm{d}\gamma}I(X;Y_\gamma)
+  =\frac12\operatorname{mmse}(X\mid Y_\gamma),
+  \]
+  where
+  \[
+  \operatorname{mmse}(X\mid Y)=
+  \mathbb E\{X-\mathbb E(X\mid Y)\}^2.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Write
+  \(I(X;Y_\gamma)=h(Y_\gamma)-h(Z)\). Rescale
+  \(Y_\gamma=\sqrt\gamma(X+\gamma^{-1/2}Z)\) and apply de Bruijn's identity. The output score satisfies Tweedie's identity
+  \[
+  \rho_{Y_\gamma}(y)=
+  \sqrt\gamma\,\mathbb E(X\mid Y_\gamma=y)-y.
+  \]
+  Substitution and variance decomposition reduce the derivative to half the posterior mean-squared error.</p>
+</div>
+
+<h3>Mutual information as integrated estimation error</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \[
+  I(X;\sqrt\gamma X+Z)
+  =\frac12\int_0^\gamma
+  \operatorname{mmse}(X\mid\sqrt sX+Z)\,\mathrm{d}s.
+  \]</p>
+</div>
+
+<p>This gives a precise interface between information and Bayesian estimation: mutual information accumulated along signal-to-noise ratio equals integrated posterior uncertainty.</p>
+
+<h3>Bayesian Fisher identities</h3>
+
+<p>For \(Y=X+\sigma Z\), the score of the marginal density is
+\[
+\nabla\log p_Y(y)=
+\frac{\mathbb E(X\mid Y=y)-y}{\sigma^2}.
+\]
+Thus posterior mean denoising and score estimation are equivalent. This identity underlies empirical Bayes, score matching, and diffusion-model denoisers.</p>

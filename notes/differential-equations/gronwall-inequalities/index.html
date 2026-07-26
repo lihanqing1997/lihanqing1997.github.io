@@ -8,24 +8,107 @@ note_prev_url: "/notes/differential-equations/maximal-solutions-and-blow-up/"
 note_next_url: "/notes/differential-equations/flows-and-phase-portraits/"
 ---
 
-<p>Gronwall inequalities records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>Gronwall inequalities turn integral or differential error estimates into
+explicit bounds. They are the basic mechanism for uniqueness, continuous
+dependence, global existence, and numerical convergence.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Gronwall inequalities bound a nonnegative function that is controlled by its own integral. They are the basic estimates for uniqueness and continuous dependence.</p>
-    </div>
+<h3>Integral Gronwall inequality</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(u(t)\le a+\int_{t_0}^t b(s)u(s)\,\mathrm{d}s\), then \(u(t)\le a\exp(\int_{t_0}^t b(s)\,\mathrm{d}s)\).</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let \(u\ge0\) be continuous on
+\([t_0,T]\), let \(a\ge0\), and let \(b\ge0\) be integrable. If
+\[
+u(t)\le a+\int_{t_0}^tb(s)u(s)\,\mathrm{d}s,
+\]
+then
+\[
+u(t)\le a\exp\left(\int_{t_0}^tb(s)\,\mathrm{d}s\right).
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Set \(v(t)=a+\int_{t_0}^t b(s)u(s)\,\mathrm{d}s\) so that \(u\le v\) and \(v'\le bv\). Multiply by the integrating factor \(\exp(-\int_{t_0}^t b(s)\,\mathrm{d}s)\) and integrate.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put
+\[
+v(t)=a+\int_{t_0}^tb(s)u(s)\,\mathrm{d}s.
+\]
+Then \(u\le v\) and
+\[
+v'(t)=b(t)u(t)\le b(t)v(t).
+\]
+Where \(v>0\),
+\((\log v)'\le b\). Integrate and use \(v(t_0)=a\). The case \(a=0\)
+follows by replacing \(a\) with \(\varepsilon\) and letting
+\(\varepsilon\downarrow0\).</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Gronwall is the estimate that turns local Lipschitz control into uniqueness, stability, and parameter dependence.</p>
-    </div>
+<h3>Inhomogeneous form</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+u(t)\le a(t)+\int_{t_0}^tb(s)u(s)\,\mathrm{d}s,
+\]
+where \(a\) is nonnegative and nondecreasing, then
+\[
+u(t)\le a(t)
+\exp\left(\int_{t_0}^tb(s)\,\mathrm{d}s\right).
+\]
+More generally, variation of constants gives
+\[
+u(t)\le a(t)+
+\int_{t_0}^t
+a(s)b(s)
+\exp\left(\int_s^tb(r)\,\mathrm{d}r\right)\mathrm{d}s
+\]
+under suitable regularity.</p>
+</div>
+
+<h3>Bellman--Gronwall kernel form</h3>
+
+<p>If
+\[
+u(t)\le a(t)+\int_{t_0}^tk(t,s)u(s)\,\mathrm{d}s
+\]
+with a nonnegative Volterra kernel, repeated substitution produces a resolvent
+series. Fractional kernels
+\((t-s)^{\alpha-1}\) lead to Mittag--Leffler rather than exponential bounds.
+The ordinary exponential is special to a constant first-order accumulation
+rate.</p>
+
+<h3>Discrete Gronwall</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If
+\[
+u_n\le a+\sum_{j=0}^{n-1}h_jb_ju_j,
+\qquad u_n,a,b_j,h_j\ge0,
+\]
+then
+\[
+u_n\le a\prod_{j=0}^{n-1}(1+h_jb_j)
+\le a\exp\left(\sum_{j=0}^{n-1}h_jb_j\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Define
+\(v_n=a+\sum_{j<n}h_jb_ju_j\). Then
+\[
+v_{n+1}\le(1+h_nb_n)v_n.
+\]
+Iterate and use \(1+x\le e^x\).</p>
+</div>
+
+<h3>ODE stability estimate</h3>
+
+<p>If \(f\) is \(L\)-Lipschitz and \(x,y\) solve the same ODE with different
+initial conditions, then
+\[
+\|x(t)-y(t)\|\le e^{L|t-t_0|}\|x_0-y_0\|.
+\]
+The bound can be sharpened using a one-sided Lipschitz constant
+\[
+\langle f(x)-f(y),x-y\rangle
+\le\mu\|x-y\|^2,
+\]
+which yields \(e^{\mu t}\) and can reveal contraction even when \(L\) is large.</p>

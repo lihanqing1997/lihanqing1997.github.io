@@ -8,51 +8,191 @@ note_prev_url: "/notes/probability-theory/ito-formula/"
 note_next_url: "/notes/probability-theory/girsanov-theorem-change-of-measure/"
 ---
 
-<p>Itô's formula turns stochastic calculus into a method for producing martingales, solving SDEs, and representing PDE solutions.</p>
+<p>Ito's formula is most useful when the right transformation reveals a linear equation, a martingale, or a deterministic drift. The examples below are reusable calculations rather than isolated tricks.</p>
 
-    <h3>Exponential martingales</h3>
+<h3>Stochastic exponentials</h3>
 
-    <p>Applying Itô to exponentials gives the basic likelihood process for Brownian drift changes.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If
+  \[
+  X_t=\int_0^t\theta_s\,\mathrm{d}B_s,
+  \qquad
+  \int_0^t\theta_s^2\,\mathrm{d} s<\infty,
+  \]
+  then
+  \[
+  Z_t
+  =
+  \exp\!\left\{
+  X_t-\frac12\int_0^t\theta_s^2\,\mathrm{d} s
+  \right\}
+  \]
+  satisfies
+  \[
+  \mathrm{d}Z_t=Z_t\theta_t\,\mathrm{d}B_t,\qquad Z_0=1.
+  \]
+  It is always a positive local martingale and is a true martingale under conditions such as Novikov's criterion.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For constant \(\theta\), \(M_t=\exp(\theta B_t-\theta^2t/2)\) is a martingale.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let
+  \(Y_t=X_t-\frac12[X]_t\). Then
+  \[
+  \mathrm{d}Y_t=\theta_t\,\mathrm{d}B_t-\frac12\theta_t^2\,\mathrm{d} t,
+  \qquad
+  \mathrm{d}[Y]_t=\theta_t^2\,\mathrm{d} t.
+  \]
+  Ito's formula for \(e^{Y_t}\) gives
+  \[
+  \mathrm{d}Z_t
+  =
+  Z_t\,\mathrm{d}Y_t+\frac12Z_t\,\mathrm{d}[Y]_t
+  =Z_t\theta_t\,\mathrm{d}B_t.
+  \]</p>
+</div>
 
+<h3>Geometric Brownian motion</h3>
 
-    <h3>Itô proof</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The SDE
+  \[
+  \mathrm{d}X_t=\mu X_t\,\mathrm{d} t+\sigma X_t\,\mathrm{d}B_t,
+  \qquad X_0>0,
+  \]
+  has the explicit solution
+  \[
+  X_t
+  =
+  X_0\exp\!\left\{
+  \left(\mu-\frac12\sigma^2\right)t+\sigma B_t
+  \right\}.
+  \]</p>
+</div>
 
-    <p>The drift cancels exactly when the compensator \(-	heta^2t/2\) is present.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Before a possible hit of zero, apply Ito to \(f(x)=\log x\):
+  \[
+  \mathrm{d}\log X_t
+  =
+  \frac{\mathrm{d}X_t}{X_t}
+  -\frac12\frac{\mathrm{d}[X]_t}{X_t^2}
+  =
+  \left(\mu-\frac12\sigma^2\right)\mathrm{d} t
+  +\sigma\,\mathrm{d}B_t.
+  \]
+  Integrate and exponentiate. The resulting explicit process is strictly positive and directly satisfies the SDE, so no hit of zero occurs.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The process \(M_t=\exp(\theta B_t-\theta^2t/2)\) satisfies \(\mathrm{d}M_t=\theta M_t\,\mathrm{d}B_t\).</p>
-    </div>
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span>
+  \[
+  \mathbb EX_t=X_0e^{\mu t},
+  \qquad
+  \operatorname{Var}(X_t)
+  =
+  X_0^2e^{2\mu t}(e^{\sigma^2t}-1).
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(X_t=\theta B_t-\theta^2t/2\). Then \(\mathrm{d}X_t=\theta\,\mathrm{d}B_t-\theta^2\mathrm{d}t/2\) and \(\mathrm{d}[X]_t=\theta^2\mathrm{d}t\). Itô's formula for \(e^{X_t}\) gives
-\[
-\mathrm{d}M_t=M_t\,\mathrm{d}X_t+\frac12M_t\,\mathrm{d}[X]_t
-=\theta M_t\,\mathrm{d}B_t.
-\]
-The stochastic integral is a local martingale, and integrability here gives a true martingale.</p>
-    </div>
+<h3>Ornstein-Uhlenbeck dynamics</h3>
 
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The linear SDE
+  \[
+  \mathrm{d}X_t=-\theta X_t\,\mathrm{d} t+\sigma\,\mathrm{d}B_t,
+  \qquad\theta>0,
+  \]
+  has solution
+  \[
+  X_t=e^{-\theta t}X_0+
+  \sigma\int_0^te^{-\theta(t-s)}\,\mathrm{d}B_s.
+  \]
+  If \(X_0\sim N(0,\sigma^2/(2\theta))\) independently of future Brownian increments, the process is stationary with
+  \[
+  \operatorname{Cov}(X_s,X_t)
+  =\frac{\sigma^2}{2\theta}e^{-\theta|t-s|}.
+  \]</p>
+</div>
 
-    <h3>PDE representation</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the product formula to the integrating factor:
+  \[
+  \mathrm{d}(e^{\theta t}X_t)
+  =\theta e^{\theta t}X_t\,\mathrm{d} t
+  +e^{\theta t}\,\mathrm{d}X_t
+  =\sigma e^{\theta t}\,\mathrm{d}B_t.
+  \]
+  Integrate and divide by \(e^{\theta t}\). The stochastic integral is Gaussian with variance
+  \[
+  \sigma^2\int_0^te^{-2\theta(t-s)}\,\mathrm{d} s
+  =\frac{\sigma^2}{2\theta}(1-e^{-2\theta t}).
+  \]
+  Combining it with the stationary initial variance gives constant marginal variance. Direct covariance calculation gives the formula.</p>
+</div>
 
-    <p>Itô's formula identifies generators with differential operators.</p>
+<h3>Squared Bessel dynamics</h3>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(u\in C^{1,2}\) solves \(\partial_tu+\frac12\Delta u=0\), then \(u(t,B_t)\) is a local martingale.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(B_t\) is
+  \(d\)-dimensional Brownian motion and
+  \(R_t^2=\|B_t\|^2\), then
+  \[
+  \mathrm{d}(R_t^2)
+  =2R_t\,\mathrm{d}\beta_t+d\,\mathrm{d} t
+  \]
+  for a one-dimensional Brownian motion \(\beta\) after the usual treatment at zero.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Itô's formula gives
-\[
-\mathrm{d}u(t,B_t)=\partial_tu(t,B_t)\,\mathrm{d}t+\nabla u(t,B_t)\cdot\mathrm{d}B_t+\frac12\Delta u(t,B_t)\,\mathrm{d}t.
-\]
-The PDE cancels the drift, leaving only the stochastic integral term.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Multidimensional Ito gives
+  \[
+  \mathrm{d}\|B_t\|^2
+  =2B_t^\top\mathrm{d}B_t+d\,\mathrm{d} t.
+  \]
+  The local martingale
+  \(\int_0^t(B_s/\|B_s\|)^\top\mathrm{d}B_s\) has bracket \(t\) away from zero and is Brownian after localization, so
+  \(B_t^\top\mathrm{d}B_t=R_t\,\mathrm{d}\beta_t\).</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> This is the seed of Feynman-Kac formulas and probabilistic solutions of boundary value problems.</p>
-    </div>
+<h3>Exit-time equations</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(X\) be a diffusion with generator \(L\), and let
+  \(\tau_D\) be the exit time from a bounded domain. If a sufficiently regular function \(u\) solves
+  \[
+  Lu=-1\quad\text{in }D,\qquad u=0\quad\text{on }\partial D,
+  \]
+  then
+  \[
+  u(x)=\mathbb E_x\tau_D.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Ito's formula and the generator identity give
+  \[
+  u(X_{t\wedge\tau_D})
+  =
+  u(x)+M_{t\wedge\tau_D}-(t\wedge\tau_D).
+  \]
+  Take expectations. Boundary conditions and dominated or localized convergence let \(t\to\infty\), yielding
+  \(0=u(x)-\mathbb E_x\tau_D\).</p>
+</div>
+
+<h3>Backward equations</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(u\in C^{1,2}\) solves
+  \[
+  \partial_tu+Lu=0,
+  \]
+  then \(u(t,X_t)\) is a local martingale. Under integrability,
+  \[
+  u(t,x)=\mathbb E_{t,x}[g(X_T)]
+  \]
+  for terminal condition \(u(T,\cdot)=g\).</p>
+</div>
+
+<p>This drift-cancellation principle is the common source of dynamic programming, harmonic representations, and Feynman-Kac formulas. The next pages use the same stochastic exponentials for changes of measure and the same transformations for solving SDEs.</p>

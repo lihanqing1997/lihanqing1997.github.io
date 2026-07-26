@@ -1,0 +1,259 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "18. Dependent censoring and causal survival estimands"
+breadcrumb_child_label_fr: "18. Censure dépendante et paramètres causaux de survie"
+breadcrumb_child_label_zh: "18. 依赖删失与因果生存估计量"
+note_back_url: "/notes/survival-analysis/"
+note_prev_url: "/notes/survival-analysis/bayesian-cox-bvm/"
+---
+
+<p>Independent censoring is often plausible only after conditioning on observed history. In treatment studies, one must additionally distinguish descriptive conditional hazards from causal survival contrasts. Inverse-probability weighting, outcome regression, and efficient influence functions connect these two problems through explicit observation and treatment mechanisms.</p>
+
+<h3>Conditional independent censoring</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let \(H(t)\) be observed history immediately before \(t\), and let
+\[
+G(t\mid H)=P(C\ge t\mid H(t))
+\]
+denote conditional censoring survival. Conditional independent censoring means that, given \(H(t)\) and being event-free and uncensored at \(t\), the censoring increment carries no additional information about the future event increment.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (inverse-censoring identity).</span> For any integrable function \(h(T,Z)\) and fixed \(\tau\),
+\[
+E\left[
+\frac{\Delta\,1\{X\le\tau\}}
+{G(X-\mid H)}
+h(X,Z)
+\right]
+=E\{1(T\le\tau)h(T,Z)\},
+\]
+provided \(G>0\) on the relevant support and censoring is conditionally independent.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on the full event time and observed history,
+\[
+E\{\Delta\mid T,H\}
+=P(C\ge T\mid T,H)
+=G(T-\mid H).
+\]
+Therefore the conditional expectation of the weighted term is
+\[
+1\{T\le\tau\}h(T,Z)
+\frac{G(T-\mid H)}{G(T-\mid H)},
+\]
+which proves the identity after taking expectation.</p>
+</div>
+
+<h3>Weighted counting processes</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Define the censoring weight
+\[
+W_i(t)
+=\frac{1\{C_i\ge t\}}
+{G_i(t-\mid H_i)}.
+\]
+A weighted estimating equation for a hazard regression is
+\[
+U_W(\beta)
+=\sum_i\int_0^\tau
+W_i(t)\{Z_i(t)-\bar Z_W(\beta,t)\}
+\,\mathrm{d}N_i(t),
+\]
+where
+\[
+\bar Z_W(\beta,t)
+=\frac{\sum_iW_i(t)Y_i(t)e^{\beta^\top Z_i(t)}Z_i(t)}
+{\sum_iW_i(t)Y_i(t)e^{\beta^\top Z_i(t)}}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(G\) is correct and positive, weighting restores the full-data risk-set moment:
+\[
+E\{W(t)1(C\ge t)Y^T(t)f(H(t))\}
+=E\{Y^T(t)f(H(t))\},
+\]
+where \(Y^T(t)=1\{T\ge t\}\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on full event and covariate history,
+\[
+E\left[
+\frac{1(C\ge t)}{G(t-\mid H)}
+\middle|T,H
+\right]=1.
+\]
+Multiply by the full-data predictable quantity \(Y^T(t)f(H(t))\) and take expectations.</p>
+</div>
+
+<p>Estimated weights add nuisance-estimation terms to the influence function. Extreme weights reveal practical positivity failure and inflate variance; truncating them changes the estimand and introduces bias. Both the untruncated and sensitivity analyses should be reported.</p>
+
+<h3>Potential event times and causal assumptions</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For treatment \(A\in\{0,1\}\), let \(T^a\) be the event time under intervention \(A=a\). Causal survival and restricted-mean targets are
+\[
+S_a(t)=P(T^a>t),
+\]
+\[
+\Delta_S(t)=S_1(t)-S_0(t),
+\]
+\[
+\mu_a(\tau)=E(T^a\wedge\tau)
+=\int_0^\tau S_a(t)\,\mathrm{d}t,
+\qquad
+\Delta_{\mathrm{RMST}}(\tau)=\mu_1(\tau)-\mu_0(\tau).
+\]</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Identification assumptions.</span></p>
+<ol>
+<li><em>Consistency:</em> \(T=T^A\).</li>
+<li><em>Conditional exchangeability:</em>
+\((T^0,T^1)\perp A\mid L\).</li>
+<li><em>Treatment positivity:</em>
+\(0<P(A=a\mid L)<1\) almost surely.</li>
+<li><em>Conditional independent censoring:</em>
+\(T\perp C\mid(A,L)\), or its longitudinal-history analogue.</li>
+<li><em>Censoring positivity:</em>
+\(P(C\ge t\mid A,L)>0\) wherever \(P(T\ge t\mid A,L)>0\).</li>
+</ol>
+</div>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (g-formula identification).</span> Under consistency and conditional exchangeability,
+\[
+S_a(t)
+=E\{P(T>t\mid A=a,L)\}.
+\]
+With conditionally independent censoring, the inner conditional survival is identified from observed censored data.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> By iterated expectation and exchangeability,
+\[
+P(T^a>t)
+=E\{P(T^a>t\mid L)\}
+=E\{P(T^a>t\mid A=a,L)\}.
+\]
+Consistency replaces \(T^a\) by \(T\) among those with \(A=a\). Conditional independent censoring identifies the resulting conditional event-time law through risk-set or likelihood methods.</p>
+</div>
+
+<h3>Inverse-probability identification</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Let
+\[
+e_a(L)=P(A=a\mid L),\qquad
+G_a(t\mid L)=P(C\ge t\mid A=a,L).
+\]
+Under the identification assumptions,
+\[
+S_a(t)
+=E\left[
+\frac{1\{A=a\}1\{X>t\}}
+{e_a(L)G_a(t\mid L)}
+\right].
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional on \((A,L,T)\),
+\[
+E\left[
+\frac{1(C>t)}{G_a(t\mid L)}
+\middle|A=a,L,T
+\right]=1
+\]
+on \(\{T>t\}\). Thus the expectation reduces to
+\[
+E\left[
+\frac{1(A=a)1(T>t)}{e_a(L)}
+\right].
+\]
+Conditioning on \(L,T^a\), exchangeability and consistency give
+\[
+E\{1(A=a)/e_a(L)\mid L,T^a\}=1,
+\]
+leaving \(P(T^a>t)\).</p>
+</div>
+
+<h3>Augmented estimation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+m_a(t,L)=P(T>t\mid A=a,L).
+\]
+Ignoring the additional longitudinal augmentation needed when censoring occurs before \(t\), the treatment-augmented full-data influence form is
+\[
+\phi_{a,t}^{\mathrm{full}}
+=\frac{1(A=a)}{e_a(L)}
+\{1(T>t)-m_a(t,L)\}
++m_a(t,L)-S_a(t).
+\]
+Observed-data efficient influence functions replace the unavailable
+\(1(T>t)\) component by a censoring-martingale augmentation.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (double robustness in full data).</span> The estimating function obtained by substituting estimators \(\widehat e_a,\widehat m_a\) into \(\phi_{a,t}^{\mathrm{full}}\) has mean zero if either \(e_a\) or \(m_a\) is correctly specified.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(m_a\) is correct, then
+\[
+E\{1(T>t)-m_a(t,L)\mid A=a,L\}=0,
+\]
+so the weighted residual term vanishes regardless of \(\widehat e_a\), while the remaining mean is zero. If \(e_a\) is correct, conditional expectation of the weighted outcome term equals
+\(E\{m_a^{0}(t,L)\}\), where \(m_a^{0}\) is the true outcome regression; the subtraction of the possibly misspecified \(\widehat m_a\) and its plug-in mean cancels algebraically.</p>
+</div>
+
+<p>With censoring, genuine double robustness usually means consistency under a specified union of treatment, censoring, and outcome-model conditions. The exact union depends on the influence function; “doubly robust” should never be stated without naming which nuisance components may be wrong.</p>
+
+<h3>Cross-fitting and rate conditions</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (orthogonal one-step template).</span> Let \(\eta\) collect treatment, censoring, and outcome nuisances, and let \(\phi(O;\psi,\eta)\) be a Neyman-orthogonal influence function for a scalar survival target \(\psi\). Estimate \(\eta\) on training folds and solve
+\[
+\mathbb P_n\phi(O;\widehat\psi,\widehat\eta_{-k(i)})=0.
+\]
+If positivity and moment conditions hold and the relevant nuisance errors satisfy a product rate
+\[
+\|\widehat\eta_1-\eta_{01}\|
+\|\widehat\eta_2-\eta_{02}\|
+=o_P(n^{-1/2}),
+\]
+then
+\[
+\sqrt n(\widehat\psi-\psi_0)
+=\frac1{\sqrt n}\sum_{i=1}^n
+\phi(O_i;\psi_0,\eta_0)+o_P(1).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Expand the cross-fitted estimating equation at \((\psi_0,\eta_0)\). Orthogonality removes the first derivative in nuisance directions, leaving a second-order product remainder. Sample splitting makes the empirical-process term conditionally centered without requiring the fitted nuisance class itself to be Donsker. The product-rate condition makes the remainder \(o_P(n^{-1/2})\), and the ordinary CLT applies to the true influence function.</p>
+</div>
+
+<h3>Hazard ratios and causal interpretation</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Even in a randomized trial, a hazard ratio at time \(t\) compares treatment groups among different sets of survivors. If treatment affects earlier survival, conditioning on survival can induce selection, so a marginal causal hazard ratio is difficult to interpret as an individual-level treatment effect. Survival differences, risk ratios at a fixed horizon, and RMST differences are often more transparent causal targets.</p>
+</div>
+
+<h3>Competing events under interventions</h3>
+
+<p>For competing risks, the total effect on
+\[
+F_k^a(t)=P(T^a\le t,J^a=k)
+\]
+is identified under ordinary treatment and censoring assumptions. A “direct effect eliminating the competing event” invokes a different intervention and generally requires cross-world or separable-effect assumptions. Treating the competing event as censoring silently changes from an observable total-effect target to a hypothetical latent event-time target that is not nonparametrically identified.</p>
+
+<p>The broader potential-outcome, longitudinal-treatment, and efficient-influence-function theory is developed in <a href="{{ '/notes/causal-inference/' | relative_url }}">causal inference</a>.</p>

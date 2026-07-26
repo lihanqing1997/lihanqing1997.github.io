@@ -8,46 +8,209 @@ note_prev_url: "/notes/probability-theory/renewal-random-walks/"
 note_next_url: "/notes/probability-theory/brownian-motion-construction/"
 ---
 
-<p>Gaussian vectors and processes are determined by first and second moments. This rigidity makes them the central tractable class of probability theory.</p>
+<p>Gaussian laws are the unique class in which linear structure and probabilistic structure coincide completely. Means and covariance operators determine every finite-dimensional law; orthogonality becomes independence; conditioning is an affine projection; and a positive semidefinite kernel constructs an entire process.</p>
 
-    <h3>Gaussian vectors</h3>
+<h3>Gaussian vectors and affine representations</h3>
 
-    <p>A vector is Gaussian when every linear projection is one-dimensional Gaussian.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A random vector
+  \(X\in\mathbb R^d\) is Gaussian if \(t^\top X\) has a one-dimensional Gaussian distribution for every \(t\in\mathbb R^d\). Degenerate Gaussian variables, including constants, are allowed. Write
+  \[
+  m=\mathbb EX,\qquad
+  \Sigma=\mathbb E[(X-m)(X-m)^\top].
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A random vector \(X\in\mathbb R^d\) is Gaussian if \(\langle t,X\rangle\) is normally distributed for every \(t\in\mathbb R^d\). Its law is determined by mean \(m=\mathbb EX\) and covariance matrix \(\Sigma=\mathbb E[(X-m)(X-m)^\top]\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The following are equivalent:
+  <ol>
+    <li>\(X\) is Gaussian with mean \(m\) and covariance \(\Sigma\);</li>
+    <li>there are \(r\le d\), a matrix \(A\in\mathbb R^{d\times r}\), and
+    \(Z\sim N_r(0,I_r)\) such that
+    \[
+    X\stackrel d=m+AZ,\qquad AA^\top=\Sigma;
+    \]</li>
+    <li>the characteristic function is
+    \[
+    \varphi_X(t)
+    =\exp\!\left(it^\top m-\frac12t^\top\Sigma t\right).
+    \]</li>
+  </ol></p>
+</div>
 
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(X=m+AZ\), every projection is
+  \(t^\top m+(A^\top t)^\top Z\), hence Gaussian, and independence of the coordinates of \(Z\) gives
+  \[
+  \mathbb Ee^{it^\top X}
+  =e^{it^\top m}e^{-\|A^\top t\|^2/2}
+  =e^{it^\top m-t^\top\Sigma t/2}.
+  \]
+  Conversely, diagonalize the nonnegative matrix
+  \(\Sigma=Q\Lambda Q^\top\) and take
+  \(A=Q\Lambda^{1/2}\), omitting zero eigenvalues. The vector
+  \(m+AZ\) has the displayed characteristic function. A Gaussian vector has the same scalar characteristic function in every direction by the one-dimensional Gaussian formula, so uniqueness of characteristic functions identifies its law.</p>
+</div>
 
-    <h3>Characteristic function</h3>
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> If \(\Sigma\) is singular, \(X\) is supported on the affine subspace
+  \(m+\operatorname{Ran}(\Sigma)\). A Lebesgue density on all of
+  \(\mathbb R^d\) exists only when \(\Sigma\) is positive definite.</p>
+</div>
 
-    <p>The Gaussian characteristic function is explicit.</p>
+<h3>Orthogonality and independence</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X\sim N(m,\Sigma)\), then
-\[
-\mathbb E e^{i\langle t,X\rangle}
-=\exp\left(i\langle t,m\rangle-\frac12\langle t,\Sigma t\rangle\right).
-\]</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> If \((X,Y)\) is jointly Gaussian, then
+  \[
+  X\ \text{and}\ Y\text{ are independent}
+  \quad\Longleftrightarrow\quad
+  \operatorname{Cov}(X,Y)=0.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Diagonalize \(\Sigma=AA^\top\) and write \(X=m+AZ\) with \(Z\) standard normal in a suitable dimension. Independence of standard normal coordinates gives \(\mathbb E e^{i\langle A^\top t,Z\rangle}=\exp(-|A^\top t|^2/2)\), which equals the displayed formula.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independence always implies zero cross-covariance when second moments exist. Conversely, zero cross-covariance makes the joint covariance block diagonal:
+  \[
+  \Sigma_{(X,Y)}
+  =
+  \begin{pmatrix}
+  \Sigma_X&0\\0&\Sigma_Y
+  \end{pmatrix}.
+  \]
+  The Gaussian characteristic function then factors:
+  \[
+  \varphi_{(X,Y)}(s,t)
+  =
+  \varphi_X(s)\varphi_Y(t),
+  \]
+  which characterizes independence.</p>
+</div>
 
+<div class="math-statement example">
+  <p><span class="statement-title">Example (uncorrelated is not generally independent).</span> If \(Z\sim N(0,1)\), then
+  \(\operatorname{Cov}(Z,Z^2-1)=\mathbb EZ^3=0\), but
+  \(Z^2-1\) is determined by \(Z\). The theorem requires the pair itself to be jointly Gaussian; a nonlinear transform of a Gaussian variable usually is not Gaussian.</p>
+</div>
 
-    <h3>Gaussian processes</h3>
+<h3>Gaussian conditioning</h3>
 
-    <p>A Gaussian process is specified by mean and covariance functions.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose
+  \[
+  \begin{pmatrix}X\\Y\end{pmatrix}
+  \sim N\!\left(
+  \begin{pmatrix}m_X\\m_Y\end{pmatrix},
+  \begin{pmatrix}
+  \Sigma_{XX}&\Sigma_{XY}\\
+  \Sigma_{YX}&\Sigma_{YY}
+  \end{pmatrix}\right),
+  \]
+  and \(\Sigma_{YY}\) is invertible. Then
+  \[
+  X\mid(Y=y)
+  \sim N\!\left(
+  m_X+\Sigma_{XY}\Sigma_{YY}^{-1}(y-m_Y),
+  \Sigma_{XX}-\Sigma_{XY}\Sigma_{YY}^{-1}\Sigma_{YX}
+  \right).
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> A process \((X_t)_{t\in T}\) is Gaussian if every finite vector \((X_{t_1},\dots,X_{t_n})\) is Gaussian. Its finite-dimensional laws are determined by \(m(t)=\mathbb EX_t\) and \(K(s,t)=\operatorname{Cov}(X_s,X_t)\), where \(K\) must be positive semidefinite.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define the residual
+  \[
+  R=X-m_X-\Sigma_{XY}\Sigma_{YY}^{-1}(Y-m_Y).
+  \]
+  It is jointly Gaussian with \(Y\), and
+  \[
+  \operatorname{Cov}(R,Y)
+  =\Sigma_{XY}-\Sigma_{XY}\Sigma_{YY}^{-1}\Sigma_{YY}=0.
+  \]
+  Hence \(R\) and \(Y\) are independent. Its covariance is the Schur complement
+  \[
+  \operatorname{Cov}(R)
+  =\Sigma_{XX}-\Sigma_{XY}\Sigma_{YY}^{-1}\Sigma_{YX}.
+  \]
+  Conditioning on \(Y=y\) leaves the independent residual law unchanged and turns the affine prediction term into the displayed mean.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For any finite \(t_1,\dots,t_n\), the matrix \(K(t_i,t_j)\) is nonnegative definite because \(a^\top Ka=\operatorname{Var}(\sum_i a_iX_{t_i})\ge0\). Conversely, a positive semidefinite kernel defines consistent finite-dimensional Gaussian laws, and Kolmogorov extension gives a Gaussian process.</p>
-    </div>
+<p>The conditional mean is exactly the linear least-squares projection of \(X\) onto \(Y\). For Gaussian vectors, linear prediction is not merely optimal among linear predictors: it equals the full conditional expectation.</p>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Brownian motion is the centered Gaussian process with covariance \(K(s,t)=s\wedge t\).</p>
-    </div>
+<h3>Gaussian concentration for linear functionals</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If
+  \(X\sim N_d(m,\Sigma)\), then for every \(t\in\mathbb R^d\) and \(u>0\),
+  \[
+  P\left(|t^\top(X-m)|\ge u\right)
+  \le2\exp\!\left\{-\frac{u^2}{2t^\top\Sigma t}\right\},
+  \]
+  with the natural interpretation when \(t^\top\Sigma t=0\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The projection is
+  \(N(0,v)\), \(v=t^\top\Sigma t\). For \(\lambda>0\),
+  \[
+  P(t^\top(X-m)\ge u)
+  \le e^{-\lambda u}
+  \mathbb Ee^{\lambda t^\top(X-m)}
+  =e^{-\lambda u+\lambda^2v/2}.
+  \]
+  Minimize at \(\lambda=u/v\), and apply the same bound to the negative tail.</p>
+</div>
+
+<h3>Gaussian processes and canonical geometry</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A process
+  \(X=(X_t)_{t\in T}\) is Gaussian if every finite vector
+  \((X_{t_1},\ldots,X_{t_n})\) is Gaussian. It is determined in finite-dimensional law by
+  \[
+  m(t)=\mathbb EX_t,\qquad
+  K(s,t)=\operatorname{Cov}(X_s,X_t).
+  \]</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> A function \(K:T\times T\to\mathbb R\) is the covariance kernel of a centered Gaussian process if and only if it is symmetric and positive semidefinite:
+  \[
+  \sum_{i,j=1}^na_ia_jK(t_i,t_j)\ge0
+  \]
+  for all finite choices. The process exists by Kolmogorov extension and is unique in finite-dimensional distribution.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Necessity follows from
+  \[
+  \sum_{i,j}a_ia_jK(t_i,t_j)
+  =\operatorname{Var}\!\left(\sum_ia_iX_{t_i}\right)\ge0.
+  \]
+  For sufficiency, each finite matrix
+  \((K(t_i,t_j))\) defines a possibly singular Gaussian law. Gaussian marginalization makes these laws consistent, so the extension theorem applies.</p>
+</div>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The canonical pseudometric of a Gaussian process is
+  \[
+  d_X(s,t)
+  =
+  \{\mathbb E(X_s-X_t)^2\}^{1/2}
+  =
+  \{K(s,s)+K(t,t)-2K(s,t)\}^{1/2}.
+  \]
+  It measures probabilistic rather than externally imposed distance between indices.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Examples.</span>
+  <ul>
+    <li>Brownian motion: \(K(s,t)=s\wedge t\), so
+    \(d_B(s,t)=|s-t|^{1/2}\).</li>
+    <li>Brownian bridge on \([0,1]\):
+    \(K(s,t)=s\wedge t-st\).</li>
+    <li>Stationary Ornstein-Uhlenbeck process:
+    \(K(s,t)=(\sigma^2/2\theta)e^{-\theta|t-s|}\).</li>
+  </ul>
+  Continuity and boundedness of a Gaussian process depend on the metric entropy of \((T,d_X)\), developed further in <a href="{{ '/notes/empirical-processes/chaining-and-gaussian-comparison/' | relative_url }}">empirical-process theory</a>.</p>
+</div>

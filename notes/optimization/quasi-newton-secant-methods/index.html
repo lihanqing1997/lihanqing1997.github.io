@@ -8,24 +8,128 @@ note_prev_url: "/notes/optimization/newtons-method/"
 note_next_url: "/notes/optimization/gauss-newton-fisher-scoring-irwls/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Quasi-Newton and secant methods.</p>
+<p>Quasi-Newton methods infer curvature from successive gradients. They retain
+Newton's linear-system form but update an approximate Hessian or inverse
+Hessian using only first-order information.</p>
 
-    <h3>Secant equation</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Quasi-Newton methods maintain an approximation \(B_k\) to the Hessian satisfying the secant equation \(B_{k+1}s_k=y_k\), where \(s_k=x_{k+1}-x_k\) and \(y_k=\nabla f(x_{k+1})-\nabla f(x_k)\).</p>
-    </div>
+<h3>The secant equation as integrated curvature</h3>
 
-    <h3>BFGS update</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The BFGS update is the minimal symmetric rank-two correction preserving positive definiteness when \(s_k^\top y_k>0\). Its inverse form gives a practical approximate Newton direction without solving a full linear system.</p>
-    </div>
+<p>Let
+\[
+s_k=x_{k+1}-x_k,\qquad
+y_k=\nabla f(x_{k+1})-\nabla f(x_k).
+\]
+The fundamental theorem of calculus gives
+\[
+y_k=\left[\int_0^1\nabla^2f(x_k+ts_k)\,\mathrm{d}t\right]s_k.
+\]
+Thus a Hessian approximation \(B_{k+1}\) should satisfy the secant equation
+\[
+B_{k+1}s_k=y_k.
+\]</p>
 
-    <h3>Superlinear convergence</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under smooth strongly convex conditions and suitable line search, BFGS converges superlinearly: the error ratio improves beyond every fixed linear factor near the solution.</p>
-    </div>
+<p>In one dimension this determines the approximation completely:
+\(B_{k+1}=y_k/s_k\), and the resulting root update is the classical secant
+method. In several dimensions one vector equation leaves many degrees of
+freedom, so an update principle is needed.</p>
 
-    <h3>Large-scale version</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Limited-memory BFGS stores only recent \((s_k,y_k)\) pairs. It is often the default deterministic method when full Hessians are too expensive but curvature information matters.</p>
-    </div>
+<h3>The BFGS rank-two update</h3>
+
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> Given a symmetric
+    positive-definite \(B_k\) and \(s_k^\top y_k>0\), BFGS sets
+    \[
+    B_{k+1}
+    =B_k-\frac{B_ks_ks_k^\top B_k}{s_k^\top B_ks_k}
+       +\frac{y_ky_k^\top}{y_k^\top s_k}.
+    \]
+    For \(H_k=B_k^{-1}\), the inverse update is
+    \[
+    H_{k+1}
+    =(I-\rho_ks_ky_k^\top)H_k(I-\rho_ky_ks_k^\top)
+      +\rho_ks_ks_k^\top,
+    \qquad \rho_k=(y_k^\top s_k)^{-1}.
+    \]</p>
+</div>
+
+<div class="math-statement proposition">
+    <p><span class="statement-title">Secant and positive-definite
+    preservation.</span> The BFGS matrix is symmetric,
+    \(B_{k+1}s_k=y_k\), and \(B_{k+1}\succ0\) whenever
+    \(B_k\succ0\) and \(s_k^\top y_k>0\).</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Symmetry is visible.
+    Multiplying by \(s_k\) cancels the first correction against \(B_ks_k\)
+    and leaves \(y_k\). For \(v\ne0\),
+    \[
+    v^\top B_{k+1}v
+    =v^\top B_kv-\frac{(v^\top B_ks_k)^2}{s_k^\top B_ks_k}
+      +\frac{(v^\top y_k)^2}{y_k^\top s_k}.
+    \]
+    Cauchy-Schwarz in the \(B_k\)-inner product makes the first two terms
+    nonnegative. Equality there occurs only when \(v\) is proportional to
+    \(s_k\); then the last term is strictly positive because
+    \(s_k^\top y_k>0\).</p>
+</div>
+
+<p>For a strongly convex \(f\), the curvature condition follows from
+\[
+s_k^\top y_k
+=\int_0^1s_k^\top\nabla^2f(x_k+ts_k)s_k\,\mathrm{d}t
+\ge\mu\|s_k\|^2.
+\]
+In nonconvex problems, a Wolfe line search or a damped update is used to retain
+positive definiteness.</p>
+
+<h3>BFGS directions and line search</h3>
+
+<p>The search direction is
+\[
+p_k=-H_k\nabla f(x_k),
+\]
+which is a descent direction whenever \(H_k\succ0\). One then chooses
+\(\alpha_k>0\) by line search and sets \(x_{k+1}=x_k+\alpha_kp_k\).
+The update incorporates the curvature observed over this accepted step.</p>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Local superlinear convergence.</span>
+    Suppose \(f\) is twice continuously differentiable, strongly convex near
+    \(x^\star\), and its Hessian is Lipschitz there. Under a line search that
+    eventually accepts unit steps and the Dennis-More condition
+    \[
+    \frac{\|(B_k-\nabla^2f(x^\star))s_k\|}{\|s_k\|}\to0,
+    \]
+    the quasi-Newton iterates satisfy
+    \[
+    \frac{\|x_{k+1}-x^\star\|}{\|x_k-x^\star\|}\to0.
+    \]
+    BFGS with a Wolfe line search satisfies this condition under the stated
+    local regularity.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Taylor expansion
+    gives
+    \(\nabla f(x_k)=\nabla^2f(x^\star)e_k+O(\|e_k\|^2)\).
+    With a unit step,
+    \[
+    e_{k+1}
+    =e_k-B_k^{-1}\nabla f(x_k)
+    =B_k^{-1}(B_k-\nabla^2f(x^\star))e_k+O(\|e_k\|^2).
+    \]
+    Uniform positive definiteness bounds \(B_k^{-1}\). The Dennis-More
+    condition makes the first term \(o(\|e_k\|)\), and the remainder is also
+    \(o(\|e_k\|)\). For BFGS, the rank-two variational update and Wolfe
+    curvature condition imply that the accumulated secant errors vanish in
+    the step directions, establishing Dennis-More.</p>
+</div>
+
+<h3>Limited-memory BFGS</h3>
+
+<p>Storing \(H_k\) costs \(O(d^2)\). L-BFGS retains only the most recent
+\(m\) pairs \((s_j,y_j)\) and applies the inverse update implicitly through the
+two-loop recursion, costing \(O(md)\) memory and arithmetic. It is effective
+when gradients are available but Hessian-vector products or factorizations are
+too expensive.</p>

@@ -8,27 +8,162 @@ note_prev_url: "/notes/empirical-processes/overview-and-roadmap/"
 note_next_url: "/notes/empirical-processes/weak-convergence-in-metric-spaces/"
 ---
 
-<p>Large function classes may produce nonmeasurable suprema. Empirical-process theory therefore states many results with outer probability and outer expectation before separability assumptions remove the technical burden.</p>
+<p>An uncountable supremum of measurable random variables need not be measurable. Since \(\ell^\infty(\mathcal F)\) is usually nonseparable, even the empirical process viewed as a function-valued map may fail to be Borel measurable. Outer probability allows rigorous convergence statements before a separability argument resolves this issue.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a possibly nonmeasurable random variable \(Z\), \(E^*Z=\inf\{EY:Y\ge Z,\;Y\ \text{measurable}\}\), and \(P^*(A)=\inf\{P(B):A\subset B,\;B\ \text{measurable}\}\).</p>
-    </div>
+<h3>Outer measure and measurable envelopes</h3>
 
-    <h3>Outer convergence</h3>
-    <ul>
-        <li>Statements such as \(\|P_n-P\|_{\mathcal F}\to0\) are often interpreted as outer convergence unless measurability is known.</li>
-        <li>A countable subclass that approximates every \(f\in\mathcal F\) usually makes the supremum measurable.</li>
-        <li>Outer notation is not decoration: it keeps theorems valid for nonseparable spaces such as \(\ell^\infty(\mathcal F)\).</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> On a probability space \((\Omega,\mathcal A,P)\), the outer probability of an arbitrary set \(A\subseteq\Omega\) is
+  \[
+  P^\star(A)=\inf\{P(B):A\subseteq B,\ B\in\mathcal A\}.
+  \]
+  For an arbitrary extended-real map \(Z:\Omega\to\overline{\mathbb R}\), its outer expectation is
+  \[
+  \mathbb E^\star Z
+  =\inf\{\mathbb EY:Y\text{ is measurable and }Y\ge Z\},
+  \]
+  whenever the positive and negative parts are not both infinite.</p>
+</div>
 
-    <h3>Separability</h3>
-    <p>When applying the theory, first prove or cite separability; otherwise keep \(P^*\), \(E^*\), and measurable majorants in the statement.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (minimal measurable majorant).</span> A measurable \(Z^\star\ge Z\) is a measurable majorant. Under a complete probability space, one can choose \(Z^\star\) so that every measurable majorant \(Y\ge Z\) satisfies \(Y\ge Z^\star\) almost surely. Then
+  \[
+  \mathbb E^\star Z=\mathbb EZ^\star.
+  \]</p>
+</div>
 
-    <!-- expanded-learning -->
-    <h3>Outer probability criterion</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Definition.</span> Outer convergence \(Z_n\to0\) in outer probability means \(P^*(|Z_n|>\varepsilon)\to0\) for every \(\varepsilon>0\). If the relevant supremum is measurable, this reduces to ordinary convergence in probability.</p>
-    </div>
+<p>Similarly, the maximal measurable minorant \(Z_\star\le Z\) gives inner expectation \(\mathbb E_\star Z=\mathbb EZ_\star\). For an arbitrary event \(A\),
+\[
+P_\star(A)=1-P^\star(A^c).
+\]</p>
 
-    <h3>Countable reductions</h3>
-    <p>A common separability check is to find a countable \(\mathcal F_0\subset\mathcal F\) such that for every \(f\in\mathcal F\) there are \(f_m\in\mathcal F_0\) with \(f_m(X)\to f(X)\) sufficiently well. Then the supremum over \(\mathcal F\) can often be replaced by one over \(\mathcal F_0\).</p>
+<h3>Calculus of outer expectation</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Basic properties.</span> For arbitrary maps \(X,Y\) and \(a\ge0\):
+  \[
+  \begin{aligned}
+  X\le Y&\Longrightarrow \mathbb E^\star X\le\mathbb E^\star Y,\\
+  \mathbb E^\star(aX)&=a\mathbb E^\star X,\\
+  \mathbb E^\star(X+Y)&\le\mathbb E^\star X+\mathbb E^\star Y.
+  \end{aligned}
+  \]
+  If \(Y\) is integrable and measurable, then
+  \[
+  \mathbb E^\star(X+Y)=\mathbb E^\star X+\mathbb EY.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Monotonicity and positive homogeneity follow directly by transforming measurable majorants. If \(X^\star,Y^\star\) are minimal majorants, then \(X^\star+Y^\star\) is a measurable majorant of \(X+Y\), giving subadditivity. When \(Y\) is measurable, a majorant \(Z\ge X+Y\) corresponds one-to-one with the majorant \(Z-Y\ge X\); taking infima of expectations yields equality.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Outer Markov inequality.</span> If \(Z\ge0\), then for every \(t>0\),
+  \[
+  P^\star(Z>t)\le\frac{\mathbb E^\star Z}{t}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every measurable majorant \(Y\ge Z\),
+  \[
+  \{Z>t\}\subseteq\{Y>t\},
+  \]
+  so \(P^\star(Z>t)\le P(Y>t)\le\mathbb EY/t\). Take the infimum over \(Y\).</p>
+</div>
+
+<h3>Outer convergence in probability</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For maps \(Z_n,Z\) into a metric space \((S,d)\),
+  \[
+  Z_n\to_{P^\star} Z
+  \]
+  means
+  \[
+  P^\star\{d(Z_n,Z)>\varepsilon\}\to0
+  \quad\text{for every }\varepsilon>0.
+  \]
+  Outer \(o_p(1)\) and \(O_p(1)\) use this probability and outer tightness.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Outer Slutsky principle.</span> If \(X_n=o_{P^\star}(1)\) and \(Y_n=O_{P^\star}(1)\), then
+  \[
+  X_nY_n=o_{P^\star}(1).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Given \(\varepsilon,\eta>0\), choose \(M\) so that
+  \[
+  \limsup_nP^\star(|Y_n|>M)<\eta.
+  \]
+  Then
+  \[
+  P^\star(|X_nY_n|>\varepsilon)
+  \le P^\star(|Y_n|>M)
+  +P^\star(|X_n|>\varepsilon/M).
+  \]
+  Take the limsup and then \(\eta\downarrow0\).</p>
+</div>
+
+<h3>Why suprema can be nonmeasurable</h3>
+
+<p>For each \(f\in\mathcal F\), \(\mathbb G_nf\) is measurable. But
+\[
+\|\mathbb G_n\|_{\mathcal F}
+=\sup_{f\in\mathcal F}|\mathbb G_nf|
+\]
+is an uncountable supremum; sigma-fields are closed only under countable unions, so measurability does not follow formally. Likewise, the map
+\[
+\omega\mapsto\{\mathbb G_nf(\omega):f\in\mathcal F\}
+\]
+may fail to be Borel measurable into nonseparable \(\ell^\infty(\mathcal F)\).</p>
+
+<h3>Pointwise measurable classes</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A class \(\mathcal F\) is pointwise measurable if a countable subclass \(\mathcal F_0\subseteq\mathcal F\) exists such that, for every \(f\in\mathcal F\), there are \(f_m\in\mathcal F_0\) with
+  \[
+  f_m(x)\to f(x)\qquad\text{for every }x\in\mathcal X.
+  \]</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Measurable supremum reduction.</span> If \(\mathcal F\) is pointwise measurable and \(Pf_m\to Pf\) whenever \(f_m\to f\) through the approximating sequence, then
+  \[
+  \sup_{f\in\mathcal F}|\mathbb G_nf|
+  =\sup_{f\in\mathcal F_0}|\mathbb G_nf|,
+  \]
+  and the supremum is measurable.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every sample,
+  \[
+  P_nf_m\to P_nf
+  \]
+  because the empirical average has only finitely many evaluation points. By assumption \(Pf_m\to Pf\), hence \(\mathbb G_nf_m\to\mathbb G_nf\). Every coordinate in the large class is therefore a limit of coordinates in the countable class, so the two suprema agree. A countable supremum of measurable variables is measurable.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> The threshold class
+  \[
+  \{1_{(-\infty,t]}:t\in\mathbb R\}
+  \]
+  is pointwise measurable after using rational thresholds together with a consistent one-sided convention. Monotonicity of distribution functions then identifies the full supremum with a countable one.</p>
+</div>
+
+<h3>Asymptotic measurability</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A sequence of maps \(Z_n\) into a metric space \(S\) is asymptotically measurable if
+  \[
+  \mathbb E^\star h(Z_n)-\mathbb E_\star h(Z_n)\to0
+  \]
+  for every bounded continuous \(h:S\to\mathbb R\).</p>
+</div>
+
+<p>This condition says that any nonmeasurability becomes asymptotically invisible to bounded continuous tests. Weak convergence in the Hoffmann-Jorgensen sense combines outer expectations with asymptotic measurability. In applications, pointwise measurability, image admissibility, or a separable version of the process usually supplies the condition; otherwise outer notation must remain in theorem statements.</p>

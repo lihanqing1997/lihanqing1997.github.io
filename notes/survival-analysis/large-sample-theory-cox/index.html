@@ -8,36 +8,219 @@ note_prev_url: "/notes/survival-analysis/partial-likelihood-score-information/"
 note_next_url: "/notes/survival-analysis/baseline-hazard-survival-prediction/"
 ---
 
+<p>The asymptotic theory of the Cox estimator combines three ingredients: uniform laws of large numbers for random risk-set sums, a martingale central limit theorem for the score, and a local Taylor expansion of a concave criterion. Writing the assumptions explicitly reveals where censoring, support, and covariate regularity enter.</p>
+
+<h3>Population risk-set moments</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> For \(k=0,1,2\), define normalized empirical moments
+\[
+\mathbb S_n^{(k)}(\beta,t)
+=\frac1n\sum_{i=1}^n
+Y_i(t)e^{\beta^\top Z_i(t)}Z_i(t)^{\otimes k}.
+\]
+Their population counterparts are
+\[
+s^{(k)}(\beta,t)
+=E\{Y(t)e^{\beta^\top Z(t)}Z(t)^{\otimes k}\},
+\]
+with
+\[
+e(\beta,t)=\frac{s^{(1)}(\beta,t)}{s^{(0)}(\beta,t)},\qquad
+v(\beta,t)=\frac{s^{(2)}(\beta,t)}{s^{(0)}(\beta,t)}
+-e(\beta,t)e(\beta,t)^\top.
+\]</p>
+</div>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Regularity conditions.</span> Fix a compact parameter neighborhood \(B\) of the true \(\beta_0\) and a finite horizon \(\tau\). Assume:</p>
+<ol>
+<li>the subjects are independent and identically distributed event histories;</li>
+<li>\(Z(t)\) is predictable and uniformly bounded on \([0,\tau]\), or has an exponential envelope strong enough for all displayed risk-set moments;</li>
+<li>\(\inf_{(\beta,t)\in B\times[0,\tau]}s^{(0)}(\beta,t)>0\);</li>
+<li>\(\mathbb S_n^{(k)}\to s^{(k)}\) uniformly in probability for \(k=0,1,2\);</li>
+<li>the baseline cumulative hazard satisfies \(\Lambda_0(\tau)<\infty\);</li>
+<li>the information matrix
+\[
+\Sigma
+=\int_0^\tau v(\beta_0,t)
+s^{(0)}(\beta_0,t)\,\mathrm{d}\Lambda_0(t)
+\]
+is positive definite.</li>
+</ol>
+</div>
+
+<p>Bounded covariates are convenient rather than essential. Uniform convergence can instead be proved from Glivenko-Cantelli conditions for the indexed at-risk class; the relevant machinery is developed in <a href="{{ '/notes/empirical-processes/' | relative_url }}">empirical processes</a>.</p>
+
+<h3>Deterministic limit of partial likelihood</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Up to a term independent of \(\beta\),
+\[
+\frac1n\{\ell_p(\beta)-\ell_p(\beta_0)\}
+\xrightarrow{P}Q(\beta)
+\]
+uniformly on \(B\), where
+\[
+Q(\beta)
+=\int_0^\tau
+\left[
+(\beta-\beta_0)^\top s^{(1)}(\beta_0,t)
+-s^{(0)}(\beta_0,t)
+\log\frac{s^{(0)}(\beta,t)}{s^{(0)}(\beta_0,t)}
+\right]\mathrm{d}\Lambda_0(t).
+\]
+Moreover, \(Q(\beta)\le Q(\beta_0)=0\), with equality only at \(\beta_0\) under identifiability.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Replace the average event measure by its compensator:
+\[
+\frac1n\sum_i\mathrm{d}N_i(t)
+=\mathbb S_n^{(0)}(\beta_0,t)\,\mathrm{d}\Lambda_0(t)
++o_P(1)
+\]
+uniformly after integration against bounded predictable functions. The uniform convergence of risk-set sums then gives \(Q\). For each \(t\), introduce risk-set exponential-tilt weights under \(\beta_0\). Jensen's inequality gives
+\[
+\log E_{\beta_0,t}e^{(\beta-\beta_0)^\top Z}
+\ge(\beta-\beta_0)^\top E_{\beta_0,t}Z,
+\]
+so the integrand in \(Q\) is nonpositive. Strictness follows if no nonzero direction is constant on almost every informative risk set.</p>
+</div>
+
 <h3>Consistency</h3>
 
-    <p>The asymptotic theory of Cox estimators follows the same M-estimation architecture as likelihood theory, but the stochastic part is a martingale integral.</p>
 <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Assume independent observations, bounded covariates, noninformative censoring, identifiability of \(\beta_0\), and uniform convergence of the normalized partial log likelihood \(n^{-1}\ell_p(\beta)\) to a strictly concave limit maximized uniquely at \(\beta_0\). Then the partial likelihood estimator \(\hat\beta\) is consistent.</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Uniform convergence makes the empirical criterion close to its deterministic limit on compact sets. Strict concavity and unique maximization give separation away from every neighborhood of \(\beta_0\). The argmax theorem then yields \(\hat\beta\to\beta_0\).</p>
-    </div>
-    <h3>Asymptotic normality</h3>
-<div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If, in addition, the information matrix \(\mathcal I(\beta_0)\) is nonsingular and the martingale central limit theorem applies to \(n^{-1/2}U(\beta_0)\), then
+<p><span class="statement-title">Theorem.</span> Under the regularity conditions, any maximizer \(\widehat\beta\) of \(\ell_p\) over a compact set containing \(\beta_0\) satisfies
 \[
-\sqrt n(\hat\beta-\beta_0)\Rightarrow N(0,\mathcal I(\beta_0)^{-1}).
+\widehat\beta\xrightarrow{P}\beta_0.
 \]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Taylor expand the score: \(0=U(\hat\beta)=U(\beta_0)-I_n(\tilde\beta)(\hat\beta-\beta_0)\). Divide by \(n\), use \(n^{-1}I_n(\tilde\beta)\to\mathcal I(\beta_0)\) and \(n^{-1/2}U(\beta_0)\Rightarrow N(0,\mathcal I(\beta_0))\), then apply Slutsky.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The proof reveals why martingales enter Cox theory: the score at the truth is a sum of predictable covariates integrated against event martingales.</p>
-    </div>
-    <h3>Information convergence</h3>
-<div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> Suppose \(n^{-1}S^{(k)}(t,\beta)\to s^{(k)}(t,\beta)\) uniformly for \(k=0,1,2\) on compact neighborhoods of \(\beta_0\), and \(s^{(0)}\) is bounded away from zero. Then
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For every neighborhood \(U\) of \(\beta_0\), compactness and the unique maximum of \(Q\) give
 \[
-n^{-1}I_n(\beta)\to \int_0^\tau v(t,\beta)s^{(0)}(t,\beta)\lambda_0(t)\,\mathrm{d}t
+\sup_{\beta\notin U}Q(\beta)<Q(\beta_0).
 \]
-uniformly, where \(v=s^{(2)}/s^{(0)}-\{s^{(1)}/s^{(0)}\}^{\otimes2}\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Replace empirical risk-set sums by their limits in the covariance formula. The event integral has compensator \(S^{(0)}(t,\beta_0)\lambda_0(t)\mathrm{d}t\), and the martingale remainder is \(o_p(n)\) uniformly under boundedness and stochastic equicontinuity.</p>
-    </div>
-    <h3>Sandwich variance under misspecification</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> If the proportional hazards model is used as a working model, the limiting variance need not be the inverse Hessian. The robust form is \(A^{-1}BA^{-1}\), where \(A\) is the limit Hessian and \(B\) is the variance of the score martingale or cluster score.</p>
-    </div>
+Uniform convergence transfers this separation to \(n^{-1}\ell_p\) with probability tending to one. On that event no maximizer can lie outside \(U\). Since \(U\) is arbitrary, consistency follows.</p>
+</div>
+
+<h3>Score central limit theorem</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under the correctly specified Cox model,
+\[
+n^{-1/2}U_n(\beta_0)\Rightarrow N_p(0,\Sigma).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The martingale representation is
+\[
+n^{-1/2}U_n(\beta_0)
+=n^{-1/2}\sum_i\int_0^\tau
+\{Z_i(t)-\bar Z_n(\beta_0,t)\}\,\mathrm{d}M_i(t).
+\]
+Its predictable bracket equals
+\[
+\int_0^\tau
+V_n(\beta_0,t)\mathbb S_n^{(0)}(\beta_0,t)
+\,\mathrm{d}\Lambda_0(t),
+\]
+which converges in probability to \(\Sigma\). Bounded covariates and positive risk sets make the maximal jump \(O_P(n^{-1/2})\), verifying Lindeberg's condition. The multivariate martingale CLT gives the result.</p>
+</div>
+
+<h3>Asymptotic linearity and normality</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Under the regularity conditions,
+\[
+\sqrt n(\widehat\beta-\beta_0)
+=\Sigma^{-1}\frac{1}{\sqrt n}U_n(\beta_0)+o_P(1)
+\Rightarrow N_p(0,\Sigma^{-1}).
+\]
+Equivalently,
+\[
+\widehat\beta-\beta_0
+=\frac1n\sum_{i=1}^n\phi_\beta(O_i)+o_P(n^{-1/2}),
+\]
+where one version of the influence function is
+\[
+\phi_\beta(O_i)
+=\Sigma^{-1}\int_0^\tau
+\{Z_i(t)-e(\beta_0,t)\}\,\mathrm{d}M_i(t).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The score equation and the mean-value theorem give
+\[
+0=U_n(\widehat\beta)
+=U_n(\beta_0)-I_n(\widetilde\beta)
+(\widehat\beta-\beta_0)
+\]
+for an intermediate \(\widetilde\beta\). Consistency and uniform convergence imply
+\(n^{-1}I_n(\widetilde\beta)\xrightarrow{P}\Sigma\). Invert this matrix and combine with the score CLT. Replacing the empirical risk-set mean by its limit in the martingale sum costs \(o_P(1)\), yielding the influence representation.</p>
+</div>
+
+<div class="math-statement corollary">
+<p><span class="statement-title">Corollary.</span> The inverse observed information
+\[
+I_n(\widehat\beta)^{-1}
+\]
+consistently estimates the covariance of \(\widehat\beta\). For any fixed \(a\),
+\[
+\frac{a^\top(\widehat\beta-\beta_0)}
+{\{a^\top I_n(\widehat\beta)^{-1}a\}^{1/2}}
+\Rightarrow N(0,1).
+\]</p>
+</div>
+
+<h3>Local alternatives</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Under local alternatives
+\(\beta_n=\beta_0+h/\sqrt n\),
+\[
+n^{-1/2}U_n(\beta_0)\Rightarrow N_p(\Sigma h,\Sigma),
+\qquad
+\sqrt n(\widehat\beta-\beta_0)\Rightarrow N_p(h,\Sigma^{-1}).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The partial log-likelihood is locally asymptotically quadratic:
+\[
+\ell_p(\beta_0+h/\sqrt n)-\ell_p(\beta_0)
+=h^\top n^{-1/2}U_n(\beta_0)
+-\frac12h^\top\Sigma h+o_P(1).
+\]
+Le Cam's third lemma shifts the score mean from zero to \(\Sigma h\). The estimator expansion then gives the second limit. LAN and contiguity are treated systematically in <a href="{{ '/notes/statistical-decision-theory/local-asymptotic-normality/' | relative_url }}">statistical decision theory</a>.</p>
+</div>
+
+<h3>Misspecification and sandwich covariance</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (pseudo-true Cox parameter).</span> Suppose the true intensity need not be proportional hazards, but the empirical score converges uniformly to a deterministic map \(\Psi(\beta)\) with unique zero \(\beta^\star\). Under differentiability and nonsingularity of
+\[
+A=-\dot\Psi(\beta^\star),
+\]
+the partial-likelihood estimator satisfies
+\[
+\sqrt n(\widehat\beta-\beta^\star)
+\Rightarrow N_p(0,A^{-1}BA^{-\top}),
+\]
+where \(B\) is the limiting covariance of \(n^{-1/2}U_n(\beta^\star)\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Uniform convergence and identification imply
+\(\widehat\beta\to\beta^\star\). Taylor expansion of the score gives
+\[
+\sqrt n(\widehat\beta-\beta^\star)
+=A^{-1}n^{-1/2}U_n(\beta^\star)+o_P(1).
+\]
+A martingale or independent-cluster CLT supplies the covariance \(B\), and Slutsky's theorem completes the argument.</p>
+</div>
+
+<p>The model-based information identity \(A=B\) holds under the correctly specified Cox intensity. Under misspecification or within-cluster dependence, a robust estimator uses empirical score-residual outer products for \(B\). This changes the variance, not the pseudo-true target \(\beta^\star\); scientific interpretation must therefore be reconsidered rather than rescued by robust standard errors alone.</p>

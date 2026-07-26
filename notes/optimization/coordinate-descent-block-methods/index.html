@@ -8,24 +8,119 @@ note_prev_url: "/notes/optimization/accelerated-gradient-methods/"
 note_next_url: "/notes/optimization/stochastic-gradient-methods/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Coordinate descent and block methods.</p>
+<p>Coordinate descent replaces one expensive full-space step by a cheap
+one-dimensional or block update. It is effective when partial derivatives are
+cheap, the data matrix is sparse, or a separable penalty has a closed-form
+coordinate minimizer.</p>
 
-    <h3>Coordinate update</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Coordinate descent updates one coordinate or block at a time: \(x_{k+1}=x_k+u_k\), where \(u_k\) is supported on the selected block and reduces the objective over that block.</p>
-    </div>
+<h3>Coordinate-wise smoothness</h3>
 
-    <h3>Exact block minimization</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(f\) is convex and each block subproblem is minimized exactly, every limit point of a cyclic coordinate descent sequence is globally optimal, provided standard regularity rules exclude pathological flat directions.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> A differentiable
+    function has coordinate Lipschitz constants \(L_i>0\) if
+    \[
+    |\partial_i f(x+te_i)-\partial_i f(x)|\le L_i|t|
+    \qquad(x\in\mathbb R^d,t\in\mathbb R).
+    \]
+    Integration along the coordinate line gives
+    \[
+    f(x+te_i)\le f(x)+t\partial_i f(x)+\frac{L_i}{2}t^2.
+    \]</p>
+</div>
 
-    <h3>Random coordinate rate</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For smooth convex functions with coordinate Lipschitz constants \(L_i\), randomized coordinate descent decreases expected objective at a rate controlled by \(\sum_iL_i\), often much smaller than using the full Lipschitz constant in high dimension.</p>
-    </div>
+<p>Minimizing the upper model in \(t\) gives the coordinate-gradient update
+\[
+x^+=x-\frac{\partial_i f(x)}{L_i}e_i
+\]
+and the decrease
+\[
+f(x^+)\le f(x)-\frac{(\partial_i f(x))^2}{2L_i}.
+\]</p>
 
-    <h3>Sparse models</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Coordinate methods are natural for lasso, generalized linear models, and separable penalties because each update can exploit sparsity and cheap one-dimensional minimization.</p>
-    </div>
+<h3>Randomized coordinate descent</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Expected convergence.</span> Let \(f\) be
+    convex, differentiable, and coordinate-wise smooth. Put
+    \(S=\sum_{i=1}^dL_i\), choose coordinate \(i\) with probability
+    \(p_i=L_i/S\), and take the coordinate-gradient step above. If the initial
+    sublevel set has radius
+    \[
+    R=\sup\{\|x-x^\star\|:f(x)\le f(x_0)\}<\infty,
+    \]
+    then
+    \[
+    \mathbb E[f(x_k)-f^\star]\le\frac{2SR^2}{k+4}.
+    \]
+    If \(f\) is \(\mu\)-strongly convex, then
+    \[
+    \mathbb E[f(x_k)-f^\star]
+    \le\left(1-\frac\mu S\right)^k(f(x_0)-f^\star).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Conditional on \(x\),
+    the coordinate decrease and the sampling probabilities give
+    \[
+    \mathbb E[f(x^+)\mid x]
+    \le f(x)-\frac1{2S}\|\nabla f(x)\|^2.
+    \]
+    Convexity implies
+    \(f(x)-f^\star\le\langle\nabla f(x),x-x^\star\rangle
+    \le R\|\nabla f(x)\|\). Hence, writing
+    \(\Delta_k=\mathbb E[f(x_k)-f^\star]\),
+    \[
+    \Delta_{k+1}\le\Delta_k-\frac{\Delta_k^2}{2SR^2},
+    \]
+    where Jensen's inequality handles the random gap. Taking reciprocals and
+    telescoping gives the \(1/k\) bound. Under strong convexity,
+    \(\|\nabla f(x)\|^2\ge2\mu(f(x)-f^\star)\), so the same one-step estimate
+    directly yields the geometric recursion.</p>
+</div>
+
+<h3>Exact block minimization</h3>
+
+<p>For a partition \(x=(x_{B_1},\ldots,x_{B_m})\), block coordinate descent
+replaces one block by
+\[
+x_{B_i}^+\in
+\operatorname*{arg\,min}_{u}
+f(x_{B_1},\ldots,u,\ldots,x_{B_m}).
+\]
+For continuously differentiable convex \(f\), cyclic exact block minimization
+produces a decreasing objective. If the level set is compact and each block
+minimizer is unique, every cluster point is coordinatewise stationary, hence
+has zero full gradient and is globally optimal.</p>
+
+<p>Uniqueness or a suitable selection rule matters. With nonsmooth,
+nonseparable coupling, coordinatewise optimality may fail to imply global
+stationarity.</p>
+
+<h3>Soft thresholding in lasso regression</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> For
+    \[
+    F(\beta)=\frac1{2n}\|y-X\beta\|^2+\lambda\|\beta\|_1,
+    \]
+    hold all coordinates except \(j\) fixed and let
+    \(r_j=y-\sum_{\ell\ne j}X_\ell\beta_\ell\). The \(j\)-th subproblem is
+    \[
+    \min_b\left\{
+      \frac{\|X_j\|^2}{2n}b^2
+      -\frac{X_j^\top r_j}{n}b+\lambda|b|
+    \right\}.
+    \]
+    Its optimality condition gives
+    \[
+    \beta_j^+
+    =\frac{n}{\|X_j\|^2}
+      S_\lambda\!\left(\frac{X_j^\top r_j}{n}\right),
+    \qquad
+    S_\lambda(t)=\operatorname{sign}(t)(|t|-\lambda)_+.
+    \]
+    Maintaining the residual makes each update proportional to the number of
+    nonzero entries in \(X_j\), which explains the method's efficiency for
+    sparse designs.</p>
+</div>

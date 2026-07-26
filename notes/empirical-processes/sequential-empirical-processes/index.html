@@ -8,31 +8,133 @@ note_prev_url: "/notes/empirical-processes/bootstrap-empirical-processes/"
 note_next_url: "/notes/empirical-processes/two-sample-and-permutation-processes/"
 ---
 
-<p>Sequential empirical processes add a time index to the function index. They describe partial-sample behavior and are central for change-point and monitoring problems.</p>
+<p>A sequential empirical process records every partial sample, not only the terminal empirical measure. Its extra time coordinate turns a Brownian bridge in the function index into a Brownian motion in time and supplies the natural limit theory for cumulative-sum and change-point statistics.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(\alpha_n(t,f)=n^{-1/2}\sum_{i=1}^{\lfloor nt\rfloor}\{f(X_i)-Pf\}\), \(0\le t\le1\), \(f\in\mathcal F\).</p>
-    </div>
+<h3>The Kiefer–Müller process</h3>
 
-    <h3>Time-function indexed limits</h3>
-    <ul>
-        <li>For fixed \(f\), the limit is Brownian motion in the time coordinate with variance \(P(f-Pf)^2\).</li>
-        <li>For classes \(\mathcal F\), the limit is a Gaussian process indexed by both \(t\) and \(f\).</li>
-        <li>Tightness combines time regularity with empirical-process equicontinuity in \(f\).</li>
-    </ul>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For \(0\leq t\leq1\) and \(f\in\mathcal F\), define
+  \[
+  \alpha_n(t,f)
+  =
+  \frac1{\sqrt n}\sum_{i=1}^{\lfloor nt\rfloor}
+  \{f(X_i)-Pf\}.
+  \]
+  A \(P\)-Kiefer–Müller process \(\mathbb K_P\) is centered Gaussian with covariance
+  \[
+  \operatorname{Cov}\{\mathbb K_P(s,f),\mathbb K_P(t,g)\}
+  =(s\wedge t)\{P(fg)-Pf\,Pg\}.
+  \]</p>
+</div>
 
-    <h3>CUSUM statistics</h3>
-    <p>Sequential processes are the empirical-process backbone of cumulative-sum tests, change-point alternatives, and online diagnostics.</p>
+<p>For fixed \(f\), \(t\mapsto\mathbb K_P(t,f)\) is Brownian motion with variance parameter
+\(\operatorname{Var}_P f\). At \(t=1\), \(f\mapsto\mathbb K_P(1,f)\) is the \(P\)-Brownian bridge. The term “bridge” here refers to centering functions by \(P\), not tying the time coordinate to zero at \(t=1\).</p>
 
-    <!-- expanded-learning -->
-    <h3>Sequential covariance</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under Donsker conditions, the limit of \(\alpha_n(t,f)\) is a Gaussian process with covariance
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (sequential Donsker theorem).</span> If \(\mathcal F\) is a measurable \(P\)-Donsker class with square-integrable envelope, then
+  \[
+  \alpha_n\rightsquigarrow\mathbb K_P
+  \qquad\text{in }\ell^\infty([0,1]\times\mathcal F).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Finite-dimensional convergence follows from the multivariate functional central limit theorem. For tightness, regard the process as indexed by product functions
+  \[
+  (u,x)\mapsto1\{u\leq t\}\{f(x)-Pf\}
+  \]
+  under the product of Lebesgue measure on \([0,1]\) and \(P\). Half-line indicators in \(u\) form a VC class, and the Donsker entropy of \(\mathcal F\) combines with it through product-class bounds. The resulting asymptotic equicontinuity controls both \(|s-t|\) and \(\rho_P(f,g)\). \(\square\)</p>
+</div>
+
+<h3>Tying down the time coordinate</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The CUSUM or tied-down process is
+  \[
+  \mathbb U_n(t,f)
+  =
+  \alpha_n(t,f)-\frac{\lfloor nt\rfloor}{n}\alpha_n(1,f).
+  \]</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under the sequential Donsker theorem,
+  \[
+  \mathbb U_n\rightsquigarrow
+  \mathbb U_P(t,f)
+  =\mathbb K_P(t,f)-t\mathbb K_P(1,f),
+  \]
+  whose covariance is
+  \[
+  \operatorname{Cov}\{\mathbb U_P(s,f),\mathbb U_P(t,g)\}
+  =(s\wedge t-st)\{P(fg)-Pf\,Pg\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The map
+  \(z\mapsto\{z(t,f)-tz(1,f)\}\) is continuous in the supremum norm, and
+  \(\sup_t|\lfloor nt\rfloor/n-t|\leq1/n\). Apply the continuous-mapping theorem and calculate covariance bilinearly. \(\square\)</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (mean change).</span> For \(f(x)=x\), \(EX^2<\infty\), and variance \(\sigma^2\),
+  \[
+  \frac1{\sigma}\sup_{0\leq t\leq1}|\mathbb U_n(t,f)|
+  \rightsquig
+  \sup_{0\leq t\leq1}|B(t)|,
+  \]
+  where \(B\) is a standard Brownian bridge. A large value indicates that an early partial-sample mean differs from the full-sample mean.</p>
+</div>
+
+<h3>Local change-point alternatives</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Suppose observations before \(\tau n\) have law \(P\), while those after \(\tau n\) have laws \(P_n\) satisfying
+  \[
+  \sqrt n(P_n-P)f\to\Delta(f).
+  \]
+  Then the tied-down process acquires the deterministic drift
+  \[
+  d_\tau(t)\Delta(f),
+  \qquad
+  d_\tau(t)=
+  \begin{cases}
+  -t(1-\tau),&t\leq\tau,\\
+  -\tau(1-t),&t>\tau,
+  \end{cases}
+  \]
+  up to the sign convention used for the post-change contrast.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Derivation.</span> The expected partial sum contains no drift before \(\tau\), and
+  \((t-\tau)\sqrt n(P_n-P)f\) after \(\tau\). The full-sample centering subtracts
+  \(t(1-\tau)\sqrt n(P_n-P)f\). Combining the two pieces yields the triangular function above. Its absolute value is largest at \(t=\tau\), explaining why CUSUM localizes a single change point. \(\square\)</p>
+</div>
+
+<h3>Sequential distribution functions</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> With
+  \(f_x=1_{(-\infty,x]}\), the process
+  \[
+  \alpha_n(t,x)
+  =\frac1{\sqrt n}\sum_{i\leq\lfloor nt\rfloor}
+  \{1(X_i\leq x)-F(x)\}
+  \]
+  converges to a Gaussian process with covariance
+  \[
+  (s\wedge t)\{F(x\wedge y)-F(x)F(y)\}.
+  \]
+  Suprema over both \(t\) and \(x\) test for an unknown-time change in the entire distribution rather than only its mean.</p>
+</div>
+
+<h3>Dependence and monitoring</h3>
+
+<p>For time series, the covariance kernel changes to the long-run covariance
 \[
-\operatorname{Cov}\{\alpha(s,f),\alpha(t,g)\}=(s\wedge t)\{Pfg-PfPg\}.
+\Gamma(f,g)=\sum_{k\in\mathbb Z}
+\operatorname{Cov}\{f(X_0),g(X_k)\},
 \]
-Centering by the full sample produces Brownian-bridge-type versions useful for change-point tests.</p>
-    </div>
-
-    <h3>Two-index tightness</h3>
-    <p>CUSUM statistics take suprema over time, and sometimes over \(f\) as well. The empirical-process task is therefore two-dimensional: control oscillation in \(t\) and in the function index simultaneously.</p>
+and independence-based symmetrization is no longer valid without modification. Mixing, martingale, physical-dependence, or block-bootstrap methods must establish the functional central limit theorem. Online monitoring also extends the time range beyond one and requires a boundary function chosen to control repeated false alarms.</p>

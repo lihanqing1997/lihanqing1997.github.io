@@ -34,3 +34,77 @@ note_next_url: "/notes/numerical-analysis/multistep-methods/"
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Implicit methods improve stability by requiring nonlinear or linear solves at each step. The practical method is therefore a coupled object: time discretization plus equation solver plus error controller.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Absolute stability</h3>
+
+<p>Apply a one-step method to \(y'=\lambda y\), \(z=h\lambda\):
+\[
+y_{n+1}=R(z)y_n.
+\]
+The absolute-stability region is
+\[
+\mathcal S=\{z\in\mathbb C:|R(z)|\le1\}.
+\]
+Explicit Euler has \(R(z)=1+z\), so on the negative real axis it requires
+\(-2\le h\lambda\le0\). Implicit Euler has
+\(R(z)=(1-z)^{-1}\), containing the entire left half-plane.</p>
+
+<h3>A-stability and L-stability</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A method is A-stable if
+\(\{z:\operatorname{Re}z\le0\}\subset\mathcal S\). It is L-stable if it is
+A-stable and \(R(z)\to0\) as \(z\to\infty\) in the left half-plane.</p>
+</div>
+
+<p>Trapezoidal rule has
+\[
+R(z)=\frac{1+z/2}{1-z/2}
+\]
+and is A-stable but not L-stable: \(R(z)\to-1\), so very stiff modes can
+oscillate numerically instead of being damped. Implicit Euler is L-stable.</p>
+
+<h3>Stiffness</h3>
+
+<p>A problem is stiff when stability, rather than accuracy of the slow
+components, forces an explicit method to take tiny steps. In a system
+\(y'=Ay\) with eigenvalues spanning very different negative scales, the
+stiffness ratio is often approximated by
+\[
+\frac{\max|\operatorname{Re}\lambda_i|}
+{\min|\operatorname{Re}\lambda_i|}.
+\]
+This is heuristic for nonnormal or nonlinear systems; transient growth and
+Jacobian variation also matter.</p>
+
+<h3>Dahlquist barriers</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (second Dahlquist barrier).</span> No
+explicit linear multistep method is A-stable, and an A-stable linear multistep
+method has order at most two.</p>
+</div>
+
+<p>This impossibility motivates implicit Runge--Kutta methods, whose Gauss
+families are A-stable of arbitrarily high order, and BDF methods, which trade
+order for large stiff-stability sectors.</p>
+
+<h3>Contractivity and algebraic stability</h3>
+
+<p>For nonlinear dissipative systems satisfying
+\[
+\langle f(t,y)-f(t,z),y-z\rangle\le0,
+\]
+B-stable methods preserve nonexpansiveness:
+\(\|y_{n+1}-z_{n+1}\|\le\|y_n-z_n\|\).
+Algebraically stable implicit Runge--Kutta methods have this property. Scalar
+absolute stability alone does not guarantee nonlinear contractivity.</p>
+
+<h3>Solving implicit stages</h3>
+
+<p>Implicit methods require nonlinear solves at each step. Newton tolerances
+should be tight enough that algebraic error stays below time-discretization
+error. Reusing Jacobians and factorizations reduces cost; inexact Newton--Krylov
+methods scale to large semidiscrete PDE systems. A nominally stable integrator
+can fail if stage equations are solved inaccurately.</p>

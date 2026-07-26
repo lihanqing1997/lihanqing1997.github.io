@@ -8,27 +8,157 @@ note_prev_url: "/notes/statistical-decision-theory/independent-nonidentically-di
 note_next_url: "/notes/statistical-decision-theory/empirical-measures-and-vc-classes/"
 ---
 
-<p>Lower bounds are decision-theoretic statements: no rule can achieve risk below a certain value. In product experiments they are usually proved by testing arguments.</p>
+<p>A minimax lower bound is proved by replacing estimation with a testing problem that cannot be solved reliably. Two points give sharp local constants, many-point packings capture metric entropy, and hypercubes exploit coordinatewise structure.</p>
 
-    <h3>Two-point testing reduction</h3>
-    <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> If two parameters are separated by loss at scale \(s\), then</p>
-        <p>\[
-\inf_{\hat\theta}\sup_{\theta\in\{\theta_0,\theta_1\}}
-E_\theta L(\theta,\hat\theta)\ge
-\frac{s}{2}\{1-\|P_{\theta_0}-P_{\theta_1}\|_{\mathrm{TV}}\}.
+<h3>Le Cam's two-point method</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(d\) be a semimetric and suppose
+  \[
+  d(\theta_0,\theta_1)\geq2s.
+  \]
+  For every estimator \(\hat\theta\) and \(r>0\),
+  \[
+  \max_{j=0,1}
+  E_{\theta_j}d(\hat\theta,\theta_j)^r
+  \geq
+  \frac{s^r}{2}
+  \{1-\|P_{\theta_0}-P_{\theta_1}\|_{\mathrm{TV}}\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Define a test that chooses the parameter closer to \(\hat\theta\). If it chooses incorrectly under \(\theta_j\), the triangle inequality forces
+  \(d(\hat\theta,\theta_j)\geq s\). Hence
+  \[
+  E_{\theta_j}d(\hat\theta,\theta_j)^r
+  \geq s^rP_{\theta_j}(\text{testing error}).
+  \]
+  The maximum of two errors is at least half their sum, and the minimum sum of type-I and type-II errors is
+  \(1-\|P_{\theta_0}-P_{\theta_1}\|_{\mathrm{TV}}\). \(\square\)</p>
+</div>
+
+<p>Hellinger or KL inequalities make the testing affinity calculable:
+\[
+1-\|P-Q\|_{\mathrm{TV}}
+\geq1-H(P,Q),
+\qquad
+\|P-Q\|_{\mathrm{TV}}
+\leq\sqrt{\tfrac12D_{\mathrm{KL}}(P\|Q)}.
 \]</p>
-    </div>
 
-    <h3>Fano packing bound</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a packing \(\{\theta_1,\ldots,\theta_M\}\), small average KL divergence relative to \(\log M\) forces any estimator to confuse many hypotheses, giving a minimax lower bound.</p>
-    </div>
+<h3>Fano's inequality</h3>
 
-    <h3>Risk from testing error</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Convert an estimator into a test for the finite packing. If the estimator has small loss, it identifies the true packing point. Testing lower bounds therefore imply estimation lower bounds.</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let \(J\) be uniform on
+  \(\{1,\ldots,M\}\), and let \(X\mid J=j\sim P_j\). For every classifier \(\hat J(X)\),
+  \[
+  P(\hat J\ne J)
+  \geq
+  1-\frac{I(J;X)+\log2}{\log M}.
+  \]
+  Moreover, for any reference law \(Q\),
+  \[
+  I(J;X)
+  \leq\frac1M\sum_{j=1}^MD_{\mathrm{KL}}(P_j\|Q).
+  \]</p>
+</div>
 
-    <h3>Hellinger balls and Birgé tests</h3>
-    <p>Le Cam's product-experiment testing bounds use Hellinger geometry to build tests between sets, then turn those tests into estimators and minimax rates.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Let \(E=1\{\hat J\ne J\}\). The chain rule for entropy gives
+  \[
+  H(J\mid X)
+  \leq H(E)+P(E)\log(M-1)
+  \leq\log2+P(E)\log M.
+  \]
+  Since \(I(J;X)=H(J)-H(J\mid X)\) and \(H(J)=\log M\), rearrange. For the second assertion, the mixture law \(\bar P=M^{-1}\sum_jP_j\) minimizes
+  \(M^{-1}\sum_jD_{\mathrm{KL}}(P_j\|Q)\), and
+  \(I(J;X)=M^{-1}\sum_jD_{\mathrm{KL}}(P_j\|\bar P)\). \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (packing lower bound).</span> Suppose
+  \(d(\theta_j,\theta_k)\geq2s\) for \(j\ne k\), and
+  \[
+  \frac1M\sum_{j=1}^M
+  D_{\mathrm{KL}}(P_{\theta_j}\|P_{\theta_0})
+  \leq\alpha\log M
+  \]
+  with \(\alpha<1\). Then
+  \[
+  \inf_{\hat\theta}\sup_{\theta}
+  E_\theta d(\hat\theta,\theta)^r
+  \geq
+  s^r\left(
+  1-\alpha-\frac{\log2}{\log M}
+  \right).
+  \]</p>
+</div>
+
+<h3>Assouad's hypercube</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Assouad).</span> Let parameters be indexed by
+  \(\omega\in\{0,1\}^m\). Suppose changing coordinate \(j\) changes the target by at least \(s_j\) in an additive loss, and let \(P_\omega\) be the corresponding laws. Then
+  \[
+  \inf_{\hat\theta}\sup_\omega E_\omega L(\hat\theta,\theta_\omega)
+  \geq
+  \frac12\sum_{j=1}^m
+  s_j
+  \left[
+    1-
+    \left\|
+      \bar P_{j,0}-\bar P_{j,1}
+    \right\|_{\mathrm{TV}}
+  \right],
+  \]
+  where \(\bar P_{j,b}\) averages \(P_\omega\) over vertices with
+  \(\omega_j=b\).</p>
+</div>
+
+<p>Assouad reduces estimation to \(m\) binary decisions and is especially effective for functions built from many disjoint local perturbations.</p>
+
+<h3>Product divergence calculations</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span>
+  \[
+  D_{\mathrm{KL}}\!\left(
+  \bigotimes_iP_i\,\middle\|\,\bigotimes_iQ_i
+  \right)
+  =
+  \sum_iD_{\mathrm{KL}}(P_i\|Q_i),
+  \]
+  while
+  \[
+  H^2\!\left(\bigotimes_iP_i,\bigotimes_iQ_i\right)
+  \leq\sum_iH^2(P_i,Q_i).
+  \]</p>
+</div>
+
+<p>These identities make local perturbations tractable. Choose separation large enough to imply meaningful loss, but small enough that total KL or Hellinger information remains bounded.</p>
+
+<h3>A nonparametric rate calculation</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (smooth regression heuristic).</span> Place \(m\asymp h^{-d}\) disjoint bumps of width \(h\) and height \(h^s\) in an \(s\)-smooth function class. Neighboring hypercube vertices differ in squared \(L_2\)-loss by order
+  \(h^{2s+d}\), while \(n\) observations give KL divergence of order
+  \(nh^{2s+d}\) per changed bump. Choose
+  \[
+  nh^{2s+d}\asymp1,
+  \qquad h\asymp n^{-1/(2s+d)}.
+  \]
+  Summing over \(m\) coordinates yields squared \(L_2\)-risk
+  \[
+  m h^{2s+d}=h^{2s}
+  \asymp n^{-2s/(2s+d)}.
+  \]</p>
+</div>
+
+<h3>Constrained risk inequalities</h3>
+
+<p>A two-point argument can also quantify superefficiency. If an estimator has exceptionally small risk at \(\theta_0\), change-of-measure inequalities force increased risk at a nearby \(\theta_1\). Such constrained risk inequalities make the cost of Hodges-type behavior explicit rather than merely showing failure of regularity.</p>
+
+<h3>Limit-experiment lower bounds</h3>
+
+<p>Fano and Assouad work directly with finite product laws. Local asymptotic minimax theory instead proves convergence to a limit experiment and imports its Bayes risks. The methods are complementary: direct testing often yields global nonparametric rates, while limit experiments yield sharp local constants and structural conclusions.</p>

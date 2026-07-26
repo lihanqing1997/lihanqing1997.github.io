@@ -77,3 +77,105 @@ Since \(\partial_i p_\theta=s_ip_\theta\), the identity follows.</p>
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> This is the ordinary chain rule applied to \(\ell_{\theta(\phi)}(x)\). It shows that score components transform as a covector frame, while tangent vector components transform contravariantly.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>The Hilbert tangent space</h3>
+
+<p>At a distribution \(P\), scores belong to
+\[
+L_2^0(P)=\{g\in L_2(P):Pg=0\},
+\qquad
+\langle g,h\rangle_P=P(gh).
+\]
+For a model \(\mathcal P\), its tangent set is the collection of scores of
+quadratic-mean differentiable one-dimensional submodels through \(P\); its
+tangent space \(\mathcal T_P\) is the closed linear span of that set in
+\(L_2^0(P)\).  Closure is part of the definition because efficient scores are
+orthogonal projections and therefore require a Hilbert space.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (chain rule for expectations).</span>
+If \(t\mapsto P_t\) has score \(g\) at \(0\), and \(f_t\to f_0\) in
+\(L_2(P)\) with \((f_t-f_0)/t\to\dot f_0\) in \(L_1(P)\), then
+\[
+\left.\frac{\mathrm{d}}{\mathrm{d}t}P_tf_t\right|_{t=0}
+=P\dot f_0+P(f_0g).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put
+\(r_t=(\sqrt{p_t}-\sqrt p)/t-\tfrac12g\sqrt p\), so
+\(\|r_t\|_{L_2(\mu)}\to0\).  The identity
+\[
+\frac{p_t-p}{t}
+=\left(\frac{\sqrt{p_t}-\sqrt p}{t}\right)(\sqrt{p_t}+\sqrt p)
+\]
+and Cauchy--Schwarz imply
+\(\int f_0(p_t-p)/t\,\mathrm{d}\mu\to P(f_0g)\).
+The remaining term \(P_t(f_t-f_0)/t\) tends to \(P\dot f_0\) by the stated
+integrability and contiguity implied by quadratic-mean differentiability.</p>
+</div>
+
+<h3>Parametric scores and coordinate changes</h3>
+
+<p>For a regular chart \(\theta\mapsto P_\theta\), a coordinate velocity
+\(v\in\mathbb R^d\) represents the score \(v^\top\dot\ell_\theta\).  Hence
+\[
+\mathcal T_\theta
+=\{v^\top\dot\ell_\theta:v\in\mathbb R^d\},
+\qquad
+\langle v,w\rangle_\theta=v^\top I_\theta w.
+\]
+Under a smooth coordinate change \(\eta=\psi(\theta)\) with Jacobian
+\(J=\partial\theta/\partial\eta^\top\),
+\(\dot\ell_\eta=J^\top\dot\ell_\theta\).  The functions representing a geometric
+tangent vector change, but their \(L_2(P)\) class and inner products do not.</p>
+
+<h3>Nuisance directions and efficient scores</h3>
+
+<p>Suppose \(\theta=(\psi,\lambda)\), with scalar parameter of interest \(\psi\)
+and nuisance parameter \(\lambda\).  Write the score as
+\((\ell_\psi,\ell_\lambda^\top)^\top\) and partition Fisher information as
+\[
+I=
+\begin{pmatrix}
+I_{\psi\psi}&I_{\psi\lambda}\\
+I_{\lambda\psi}&I_{\lambda\lambda}
+\end{pmatrix}.
+\]
+The nuisance tangent space is
+\(\mathcal T_\lambda=\{a^\top\ell_\lambda:a\in\mathbb R^q\}\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (efficient score).</span> If
+\(I_{\lambda\lambda}\) is nonsingular, the orthogonal residual
+\[
+\ell_\psi^{\mathrm{eff}}
+=\ell_\psi-I_{\psi\lambda}I_{\lambda\lambda}^{-1}\ell_\lambda
+\]
+is orthogonal to every nuisance score, and
+\[
+I_{\psi\psi}^{\mathrm{eff}}
+=P\{(\ell_\psi^{\mathrm{eff}})^2\}
+=I_{\psi\psi}
+-I_{\psi\lambda}I_{\lambda\lambda}^{-1}I_{\lambda\psi}.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For any \(a\),
+\[
+P\!\left[\ell_\psi^{\mathrm{eff}}a^\top\ell_\lambda\right]
+=I_{\psi\lambda}a
+-I_{\psi\lambda}I_{\lambda\lambda}^{-1}I_{\lambda\lambda}a=0.
+\]
+Thus the subtracted term is precisely the Hilbert projection of \(\ell_\psi\)
+onto \(\mathcal T_\lambda\).  Expanding the squared norm gives the Schur
+complement formula.</p>
+</div>
+
+<p>In a semiparametric model, replace the finite span by a closed nuisance
+tangent space and the matrix regression by the orthogonal projection
+\(\Pi_{\mathcal T_\lambda}\ell_\psi\).  This is the geometric origin of
+orthogonal scores, influence functions, and efficiency bounds.</p>

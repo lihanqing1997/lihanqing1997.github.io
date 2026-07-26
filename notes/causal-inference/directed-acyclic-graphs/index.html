@@ -8,24 +8,130 @@ note_prev_url: "/notes/causal-inference/matching-and-stratification/"
 note_next_url: "/notes/causal-inference/d-separation/"
 ---
 
-<p>Directed acyclic graphs records the objects, main results, proof mechanisms, and boundary cases needed for the causal inference note.</p>
+<p>Directed acyclic graphs encode qualitative causal structure through arrows, conditional independences, and intervention semantics. Their value is not decorative: they make identification assumptions explicit and support algorithms for deciding which variables should and should not be adjusted for.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A directed acyclic graph encodes qualitative causal relations through nodes and arrows, with no directed cycles. Parents of a node are its direct graphical causes in the model.</p>
-    </div>
+<h3>Graphs and ancestral relations</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Under the Markov property, each node is independent of its nondescendants conditional on its parents. Under faithfulness, graphical separation corresponds to statistical independence.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A directed graph
+  \(G=(V,E)\) is acyclic if it has no directed cycle. If \(u\to v\), then
+  \(u\) is a parent of \(v\). Ancestors and descendants are defined by directed paths. A topological ordering lists vertices so that every parent precedes its children.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Factor the joint density according to the graph. Conditional independence follows by separating factors involving parents, descendants, and nondescendants.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Every finite DAG has a topological ordering.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> DAGs are not merely pictures; they are formal languages for assumptions. The graph does not prove the assumptions.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A finite DAG has a vertex with no incoming edge; otherwise following parents indefinitely would repeat a vertex and create a directed cycle. Remove such a source, topologically order the remaining DAG by induction, and place the source first.</p>
+</div>
+
+<h3>Markov factorization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A distribution \(P\) is Markov relative to a DAG \(G\) if
+  \[
+  p(v_1,\ldots,v_d)=
+  \prod_{j=1}^d p\{v_j\mid \operatorname{pa}_G(v_j)\}
+  \]
+  for a topological ordering, with densities or probability kernels interpreted relative to suitable dominating measures.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> The factorization implies the local Markov property:
+  every node is conditionally independent of its nondescendants other than parents, given its parents.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Marginalize descendants in reverse topological order; their conditional kernels integrate to one. In the resulting joint density of a node, its parents, and nondescendants, the only factor involving the node is its own conditional density given parents. The conditional law of the node therefore does not depend on the remaining nondescendants.</p>
+</div>
+
+<h3>Structural causal models</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A recursive structural causal model assigns
+  \[
+  V_j=f_j\{\operatorname{pa}_G(V_j),U_j\},
+  \]
+  where the exogenous variables \(U_j\) are jointly independent in a Markovian model. Acyclicity makes the equations solvable in topological order.</p>
+</div>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> A Markovian recursive structural model induces a distribution that factorizes over its DAG.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Conditional on its parents, \(V_j\) is a measurable transform of the independent noise \(U_j\). The conditional law of \(V_j\) therefore depends only on its parents. Multiplying these conditional kernels in topological order gives the joint law.</p>
+</div>
+
+<h3>Interventions and truncated factorization</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> The intervention
+  \(\operatorname{do}(A=a)\) replaces the structural equation for \(A\) by the constant \(a\), leaving all other equations unchanged. Graphically, incoming arrows to \(A\) are deleted.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> In a Markovian causal DAG,
+  \[
+  p(v\setminus a\mid\operatorname{do}(a))
+  =
+  \prod_{V_j\ne A}
+  p\{v_j\mid \operatorname{pa}_G(v_j)\}\big|_{A=a}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Intervention removes the conditional kernel generating \(A\) and fixes its value. Every other structural equation and exogenous-noise law is unchanged, so their observational conditional kernels multiply as before with \(A=a\).</p>
+</div>
+
+<h3>Forks, chains, and colliders</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Along a path:
+  \[
+  X\leftarrow Z\to Y\quad\text{is a fork},\qquad
+  X\to Z\to Y\quad\text{is a chain},\qquad
+  X\to Z\leftarrow Y\quad\text{is a collider}.
+  \]</p>
+</div>
+
+<p>Conditioning on the middle node blocks a fork or chain but opens a collider path. Conditioning on a descendant of a collider can also open it because the descendant carries information about the collider.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> Let \(X,Y\) be independent
+  \(N(0,1)\) and \(Z=X+Y\). Marginally \(X\perp Y\), but
+  \[
+  \operatorname{Cov}(X,Y\mid Z)=-\frac12.
+  \]
+  Observing their common effect makes a large value of one variable evidence for a smaller value of the other.</p>
+</div>
+
+<h3>Latent common causes</h3>
+
+<p>If an unobserved \(U\) causes both \(A\) and \(Y\), the latent projection onto observed variables contains a bidirected edge \(A\leftrightarrow Y\). A pure observed-variable DAG cannot represent this as an ordinary directed arrow without changing causal meaning. Acyclic directed mixed graphs and nested Markov models generalize the graphical language to latent confounding.</p>
+
+<h3>Markov equivalence</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Two DAGs entail the same set of
+  d-separation relations if and only if they have the same undirected skeleton and the same unshielded colliders.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Different skeletons produce a conditional independence involving a missing adjacency. Different unshielded colliders reverse whether a length-two path is open without conditioning. Conversely, once skeleton and unshielded colliders agree, edge orientations differ only through covered-edge reversals, each of which preserves the set of active paths.</p>
+</div>
+
+<p>Observational conditional independences therefore identify at best a Markov-equivalence class without extra assumptions, interventions, temporal order, or functional restrictions.</p>
+
+<h3>Faithfulness and causal discovery</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A distribution is faithful to \(G\) if every conditional independence in the distribution is implied by d-separation in \(G\).</p>
+</div>
+
+<p>The Markov condition says graphical separation implies probabilistic independence; faithfulness gives the converse. It excludes exact algebraic cancellations. Constraint-based causal-discovery algorithms require some form of faithfulness, often strengthened to quantitative conditions for uniform consistency.</p>
+
+<h3>Graphs as assumption ledgers</h3>
+
+<p>An arrow is not merely an association. A causal DAG should be read as a set of intervention and exclusion assumptions. Missing arrows can be more consequential than present arrows, because they assert absence of direct effects. Every analysis should explain the temporal and substantive basis for the graph and examine plausible alternatives rather than presenting one diagram as observed fact.</p>

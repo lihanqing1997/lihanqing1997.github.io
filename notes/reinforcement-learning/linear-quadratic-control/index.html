@@ -1,0 +1,143 @@
+---
+layout: note-detail
+breadcrumb_child_label_en: "22. Linear-quadratic control and continuous actions"
+breadcrumb_child_label_fr: "22. Contrôle linéaire-quadratique et actions continues"
+breadcrumb_child_label_zh: "22. 线性二次控制与连续动作"
+note_back_url: "/notes/reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/partially-observable-problems/"
+note_next_url: "/notes/reinforcement-learning/model-based-reinforcement-learning/"
+---
+
+<p>Linear-quadratic control is the central exactly solvable continuous-state
+control problem. It exposes Riccati equations, stability, certainty
+equivalence, and the relation between dynamic programming and policy
+optimization without hiding them inside a nonlinear function approximator.</p>
+
+<h3>Finite-horizon linear-quadratic regulation</h3>
+
+<p>Consider deterministic dynamics and cost
+\[
+x_{t+1}=Ax_t+Bu_t,
+\]
+\[
+J=\sum_{t=0}^{T-1}
+\left(x_t^\top Qx_t+u_t^\top Ru_t\right)
++x_T^\top Q_Tx_T,
+\]
+where \(Q,Q_T\succeq0\) and \(R\succ0\).</p>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Riccati recursion).</span> The optimal
+value is \(V_t(x)=x^\top P_tx\), where
+\[
+P_T=Q_T,
+\]
+\[
+P_t
+=Q+A^\top P_{t+1}A
+-A^\top P_{t+1}B
+(R+B^\top P_{t+1}B)^{-1}
+B^\top P_{t+1}A.
+\]
+The optimal action is linear,
+\[
+u_t^*=-K_tx_t,\qquad
+K_t=(R+B^\top P_{t+1}B)^{-1}B^\top P_{t+1}A.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Assume
+\(V_{t+1}(x)=x^\top P_{t+1}x\). The Bellman objective is
+\[
+x^\top Qx+u^\top Ru+(Ax+Bu)^\top P_{t+1}(Ax+Bu).
+\]
+Its Hessian in \(u\) is
+\(2(R+B^\top P_{t+1}B)\succ0\). Completing the square gives the minimizing
+\(u=-K_tx\); substituting it leaves the displayed quadratic form \(P_t\).
+Backward induction starts from \(P_T=Q_T\).</p>
+</div>
+
+<h3>Infinite-horizon algebraic Riccati equation</h3>
+
+<p>For discounted or undiscounted stabilizing control, the stationary matrix
+\(P\) solves the discrete algebraic Riccati equation
+\[
+P=Q+A^\top PA
+-A^\top PB(R+B^\top PB)^{-1}B^\top PA.
+\]
+Under stabilizability of \((A,B)\) and detectability of
+\((Q^{1/2},A)\), there is a unique stabilizing solution \(P\succeq0\); the
+closed-loop matrix \(A-BK\) has spectral radius below one. These hypotheses
+cannot be omitted: finite one-step cost does not imply that an unstable system
+can be controlled.</p>
+
+<h3>Gaussian noise and certainty equivalence</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\[
+X_{t+1}=AX_t+BU_t+W_{t+1},
+\qquad E(W_{t+1})=0,\quad
+\operatorname{Cov}(W_{t+1})=\Sigma_W,
+\]
+then the finite-horizon optimal feedback gains \(K_t\) are the same as in the
+deterministic problem. Noise adds only constants to the value:
+\[
+V_t(x)=x^\top P_tx+c_t,\qquad
+c_t=c_{t+1}+\operatorname{tr}(P_{t+1}\Sigma_W).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional expectation of the
+next quadratic value is
+\[
+E[(Ax+Bu+W)^\top P_{t+1}(Ax+Bu+W)]
+=(Ax+Bu)^\top P_{t+1}(Ax+Bu)
++\operatorname{tr}(P_{t+1}\Sigma_W).
+\]
+The added term is independent of \(u\), so completion of the square gives the
+same gain.</p>
+</div>
+
+<h3>Partial observation and the separation principle</h3>
+
+<p>For linear observations
+\[
+Y_t=CX_t+V_t
+\]
+with Gaussian noises, the Kalman filter computes
+\(\widehat X_t=E(X_t\mid Y_{0:t},U_{0:t-1})\). The optimal LQG controller is
+\[
+U_t=-K_t\widehat X_t.
+\]
+Estimation and control Riccati equations separate because conditional
+covariance evolves independently of the realized controls. This separation is
+special; generic POMDPs do not permit an independently optimal filter and
+fully observed controller.</p>
+
+<h3>Policy optimization landscape</h3>
+
+<p>For a stabilizing linear policy \(u=-Kx\), its infinite-horizon cost is
+\[
+J(K)=\operatorname{tr}(P_K\Sigma_0),
+\]
+where
+\[
+P_K=Q+K^\top RK+(A-BK)^\top P_K(A-BK).
+\]
+On the open set of stabilizing gains, every stationary point is globally
+optimal under standard controllability conditions, and policy-gradient methods
+can converge linearly with suitable step sizes. The stability domain is
+nonconvex, however, and a step leaving it makes the cost infinite. Safe
+initialization and stability-preserving updates are substantive assumptions.</p>
+
+<h3>Beyond quadratic structure</h3>
+
+<p>Continuous-action actor--critic methods approximate the same two objects:
+a value or action-value function and a policy-improvement step. LQR shows what
+is lost in the nonlinear case: exact quadratic closure, analytic minimization,
+global stability certificates, and a finite-dimensional Riccati recursion.
+Locally linear models and iterative LQR recover these structures only along a
+nominal trajectory.</p>

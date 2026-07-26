@@ -1,29 +1,163 @@
 ---
 layout: note-detail
 breadcrumb_child_label_en: "18. Invariance, equivariance, and shrinkage"
-breadcrumb_child_label_fr: "18. Invariance, équivariance et shrinkage"
+breadcrumb_child_label_fr: "18. Invariance, équivariance et rétrécissement"
 breadcrumb_child_label_zh: "18. 不变性、等变性与收缩"
 note_back_url: "/notes/statistical-decision-theory/"
 note_prev_url: "/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/"
 note_next_url: "/notes/statistical-decision-theory/poisson-and-infinitely-divisible-experiments/"
 ---
 
-<p>Invariance reduces decision problems by symmetry. Shrinkage shows that symmetry alone does not always imply admissibility, especially in multivariate normal means.</p>
+<p>Symmetry identifies procedures whose behavior is stable under reexpression of the problem. Equivariance often yields constant risk and minimax rules, but it does not guarantee admissibility. The multivariate normal mean provides the decisive example: translation symmetry makes the sample vector minimax, while rotation-respecting shrinkage uniformly improves it in dimension at least three.</p>
 
-    <h3>Invariant experiment and equivariant rule</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A group \(G\) acts on parameters, observations, and actions. A rule \(\delta\) is equivariant if \(\delta(gx)=g\delta(x)\). Its risk satisfies \(R(g\theta,\delta)=R(\theta,\delta)\).</p>
-    </div>
+<h3>Invariant decision problems</h3>
 
-    <h3>James-Stein phenomenon</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(X\sim N_p(\theta,\sigma^2I)\) and loss is \(\|\delta-\theta\|^2\), the usual estimator \(\delta_0(X)=X\) is inadmissible for \(p\ge3\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let a group \(G\) act measurably on the observation space, parameter space, and action space. A decision problem is invariant if
+  \[
+  P_{g\theta}(gA)=P_\theta(A)
+  \]
+  and
+  \[
+  L(g\theta,ga)=L(\theta,a)
+  \]
+  for every \(g\in G\). A nonrandomized rule is equivariant if
+  \[
+  \delta(gx)=g\delta(x).
+  \]</p>
+</div>
 
-    <h3>Stein identity calculation</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For estimators \(X+g(X)\), Stein's identity expresses the risk difference by a divergence term. Taking \(g(x)=-(p-2)\sigma^2x/\|x\|^2\) yields uniformly smaller risk when \(p\ge3\).</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> In an invariant problem, an equivariant rule satisfies
+  \[
+  R(g\theta,\delta)=R(\theta,\delta).
+  \]
+  Hence its risk is constant on parameter orbits.</p>
+</div>
 
-    <h3>Hunt-Stein reduction</h3>
-    <p>In testing problems with group symmetry, invariant or nearly invariant rules can often be taken as minimax candidates. The decision problem is then solved on orbits rather than the full space.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(X\sim P_\theta\), then \(gX\sim P_{g\theta}\). Therefore
+  \[
+  \begin{aligned}
+  R(g\theta,\delta)
+  &=E_{g\theta}L\{g\theta,\delta(X)\}\\
+  &=E_\theta L\{g\theta,\delta(gX)\}\\
+  &=E_\theta L\{g\theta,g\delta(X)\}
+  =R(\theta,\delta).
+  \end{aligned}
+  \]
+  \(\square\)</p>
+</div>
+
+<h3>Location equivariance</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example.</span> For
+  \(X=\theta+\varepsilon\) on \(\mathbb R^p\), translations act by
+  \(g_cx=x+c\), \(g_c\theta=\theta+c\), and \(g_ca=a+c\). Under loss
+  \(\ell(a-\theta)\), every translation-equivariant rule has the form
+  \[
+  \delta(x)=x+b
+  \]
+  when there is only one vector observation. Its risk is
+  \(E\ell(\varepsilon+b)\), independent of \(\theta\). Under centered symmetric noise and squared loss, \(b=0\) is best equivariant.</p>
+</div>
+
+<h3>Invariant minimax reduction</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Hunt–Stein principle, informal general form).</span> For an invariant testing or estimation problem under an amenable group, averaging a rule over increasingly invariant probability measures on the group produces an invariant rule whose maximum risk is no larger in the limit. Consequently, minimax search may be restricted to invariant rules under suitable compactness and lower-semicontinuity conditions.</p>
+</div>
+
+<p>For a compact group, averaging uses normalized Haar measure:
+\[
+\bar\delta(x,C)
+=\int_G\delta(gx,gC)\,\nu(\mathrm{d}g).
+\]
+Convexity of randomized rules and invariance of loss control risk. Noncompact groups require Følner-type approximations or invariant means; the reduction can fail for nonamenable groups.</p>
+
+<h3>Stein's identity</h3>
+
+<div class="math-statement lemma">
+  <p><span class="statement-title">Lemma.</span> If
+  \(X\sim N_p(\theta,\sigma^2I_p)\) and \(g:\mathbb R^p\to\mathbb R^p\) is weakly differentiable with suitable integrability, then
+  \[
+  E_\theta\{(X-\theta)^\top g(X)\}
+  =
+  \sigma^2E_\theta\{\operatorname{div}g(X)\}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For each coordinate, integration by parts against the normal density gives
+  \[
+  E_\theta\{(X_j-\theta_j)g_j(X)\}
+  =
+  \sigma^2E_\theta\{\partial_jg_j(X)\}.
+  \]
+  Sum over \(j\). Boundary terms vanish under the integrability assumptions. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (Stein unbiased risk identity).</span> For
+  \(\delta_g(X)=X+g(X)\),
+  \[
+  R(\theta,\delta_g)
+  =
+  p\sigma^2+
+  E_\theta\left[
+    \|g(X)\|^2
+    +2\sigma^2\operatorname{div}g(X)
+  \right].
+  \]</p>
+</div>
+
+<h3>The James–Stein estimator</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(X\sim N_p(\theta,\sigma^2I_p)\), \(p\geq3\), under squared-error loss. For
+  \[
+  \delta_a(X)
+  =
+  \left(1-\frac a{\|X\|^2}\right)X,
+  \]
+  \[
+  R(\theta,\delta_a)-R(\theta,X)
+  =
+  \{a^2-2a\sigma^2(p-2)\}
+  E_\theta\frac1{\|X\|^2}.
+  \]
+  Hence every \(0<a<2\sigma^2(p-2)\) dominates \(X\); the minimizing choice in this family is \(a=(p-2)\sigma^2\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Set
+  \(g(x)=-ax/\|x\|^2\). Then
+  \[
+  \|g(x)\|^2=\frac{a^2}{\|x\|^2},
+  \]
+  and
+  \[
+  \operatorname{div}\!\left(\frac{x}{\|x\|^2}\right)
+  =
+  \frac{p-2}{\|x\|^2}.
+  \]
+  Insert these identities into Stein's risk formula. For \(p\geq3\),
+  \(E_\theta\|X\|^{-2}<\infty\), and the coefficient is negative in the stated range. \(\square\)</p>
+</div>
+
+<p>The positive-part rule
+\[
+\delta_{\mathrm{JS}}^+(X)
+=\left(1-\frac{(p-2)\sigma^2}{\|X\|^2}\right)_+X
+\]
+further dominates the ordinary James–Stein rule. It avoids reversing the direction of \(X\) when the estimated shrinkage exceeds one.</p>
+
+<h3>Which symmetry is broken?</h3>
+
+<p>James–Stein shrinkage is rotation equivariant but not translation equivariant: it privileges the origin. This is why it can improve the best translation-equivariant rule. A different scientifically meaningful center \(m\) gives shrinkage toward \(m\). Hierarchical and empirical Bayes methods estimate such centers or scales from related coordinates.</p>
+
+<h3>Minimaxity without admissibility</h3>
+
+<p>The estimator \(X\) has constant risk \(p\sigma^2\) and is minimax by diffuse-prior lower bounds. James–Stein has no larger risk and is therefore also minimax, but \(X\) is inadmissible. Invariance produces a powerful reduction and often a minimax rule; complete-class or shrinkage analysis is still needed for admissibility.</p>

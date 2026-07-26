@@ -13,7 +13,20 @@ note_next_url: "/notes/real-analysis/equicontinuity-and-arzela-ascoli/"
     <h3>Pointwise and uniform convergence</h3>
     <p>Pointwise convergence fixes the input first; uniform convergence controls all inputs at once.</p>
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> \(f_n:X\to Y\) converges pointwise to \(f\) if \(f_n(x)\to f(x)\) for every \(x\). If \(Y\) is metric, \(f_n\to f\) uniformly if \(\sup_{x\in X}d(f_n(x),f(x))\to0\).</p>
+        <p><span class="statement-title">Definition.</span> For maps \(f_n:X\to(Y,d)\),
+\[
+\begin{aligned}
+f_n\to f\text{ pointwise}
+&\quad\Longleftrightarrow\quad
+\forall x\ \forall\varepsilon>0\ \exists N=N(x,\varepsilon)\
+\forall n\ge N:\ d(f_n(x),f(x))<\varepsilon,\\
+f_n\to f\text{ uniformly}
+&\quad\Longleftrightarrow\quad
+\forall\varepsilon>0\ \exists N=N(\varepsilon)\
+\forall n\ge N\ \forall x:\ d(f_n(x),f(x))<\varepsilon.
+\end{aligned}
+\]
+When the supremum is defined, uniform convergence is equivalent to \(\sup_{x\in X}d(f_n(x),f(x))\to0\).</p>
     </div>
 
     <div class="math-statement proposition">
@@ -24,6 +37,24 @@ note_next_url: "/notes/real-analysis/equicontinuity-and-arzela-ascoli/"
         <p><span class="statement-title">Proof.</span> Uniform convergence immediately bounds each fixed \(x\). For the converse, \(f_n(x)=x^n\) on \([0,1]\) converges pointwise to \(0\) on \([0,1)\) and \(1\) at \(1\), so the limit is not continuous despite all \(f_n\) being continuous; uniform convergence of continuous functions would preserve continuity.</p>
     </div>
 
+    <figure class="research-figure">
+        <svg viewBox="0 0 720 360" role="img" aria-label="Curves x to the power n concentrate near one, illustrating pointwise but nonuniform convergence.">
+            <line x1="72" y1="304" x2="654" y2="304" stroke="#68737b" stroke-width="1.5"/>
+            <line x1="72" y1="304" x2="72" y2="42" stroke="#68737b" stroke-width="1.5"/>
+            <g fill="none" stroke-linecap="round">
+                <path d="M72 304 C216 298 355 267 654 42" stroke="#bd9c61" stroke-width="2.2"/>
+                <path d="M72 304 C291 304 471 281 654 42" stroke="#8ba39b" stroke-width="2.2"/>
+                <path d="M72 304 C430 304 567 299 654 42" stroke="#55798d" stroke-width="2.4"/>
+                <path d="M72 304 C535 304 620 303 654 42" stroke="#9d625b" stroke-width="2.4"/>
+            </g>
+            <circle cx="654" cy="42" r="4" fill="#394c57"/>
+            <text x="63" y="329" font-family="serif" font-size="18" fill="#68737b">0</text>
+            <text x="648" y="329" font-family="serif" font-size="18" fill="#68737b">1</text>
+            <text x="45" y="49" font-family="serif" font-size="18" fill="#68737b">1</text>
+        </svg>
+        <figcaption>For \(f_n(x)=x^n\), the transition layer narrows but its height remains one; pointwise convergence does not control the worst input.</figcaption>
+    </figure>
+
     <h3>Uniform Cauchy criterion</h3>
     <p>Uniform convergence can be tested without knowing the limit when the target is complete.</p>
     <div class="math-statement theorem">
@@ -32,6 +63,32 @@ note_next_url: "/notes/real-analysis/equicontinuity-and-arzela-ascoli/"
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> Uniform convergence implies the uniform Cauchy estimate by the triangle inequality. Conversely, for each \(x\), \(f_n(x)\) is Cauchy in \(Y\), so define \(f(x)=\lim_n f_n(x)\). Letting \(m\to\infty\) in the uniform Cauchy inequality gives \(\sup_x d(f_n(x),f(x))\le\varepsilon\) for large \(n\).</p>
+    </div>
+
+    <div class="math-statement corollary">
+        <p><span class="statement-title">Corollary.</span> If \(Y\) is Banach, then the space \(C_b(X;Y)\) of bounded continuous maps, equipped with
+\[
+\|f\|_\infty=\sup_{x\in X}\|f(x)\|_Y,
+\]
+is Banach.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> A sup-norm Cauchy sequence is uniformly Cauchy, hence converges uniformly to a \(Y\)-valued function by completeness of \(Y\). The uniform limit theorem makes the limit continuous, and a uniform limit of bounded maps is bounded.</p>
+    </div>
+
+    <h3>Uniform convergence of series of functions</h3>
+    <div class="math-statement theorem">
+        <p><span class="statement-title">Theorem (Weierstrass \(M\)-test).</span> If \(|f_n(x)|\le M_n\) for every \(x\in X\) and \(\sum_nM_n<\infty\), then \(\sum_nf_n\) converges uniformly and absolutely.</p>
+    </div>
+
+    <div class="math-statement proof">
+        <p><span class="statement-title">Proof.</span> For \(m>n\),
+\[
+\sup_{x\in X}\left|\sum_{k=n+1}^{m}f_k(x)\right|
+\le\sum_{k=n+1}^{m}M_k.
+\]
+The scalar series has Cauchy tails, so the function-series partial sums are uniformly Cauchy. Completeness of \(\mathbb R\) or \(\mathbb C\) and the preceding criterion give uniform convergence. The same estimate applied to \(|f_n|\) gives absolute convergence at every \(x\).</p>
     </div>
 
     <h3>Continuity under uniform limits</h3>
@@ -62,4 +119,16 @@ note_next_url: "/notes/real-analysis/equicontinuity-and-arzela-ascoli/"
 
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> By the fundamental theorem, \(f_n(x)=f_n(x_0)+\int_{x_0}^x f_n'(t)\,\mathrm{d}t\). The right side is uniformly Cauchy because the constants converge and the derivatives converge uniformly. Passing to the limit gives \(f(x)=c+\int_{x_0}^x g(t)\,\mathrm{d}t\), hence \(f'=g\).</p>
+    </div>
+
+    <div class="math-statement example">
+        <p><span class="statement-title">Example (why derivative control is needed).</span> The smooth functions
+\[
+f_n(x)=\sqrt{x^2+\frac1n},\qquad x\in[-1,1],
+\]
+converge uniformly to \(|x|\), because \(0\le f_n(x)-|x|\le n^{-1/2}\). Their limit is not differentiable at \(0\). Correspondingly,
+\[
+f_n'(x)=\frac{x}{\sqrt{x^2+1/n}}
+\]
+does not converge uniformly on any interval containing \(0\).</p>
     </div>

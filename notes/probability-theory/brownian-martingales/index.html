@@ -8,50 +8,192 @@ note_prev_url: "/notes/probability-theory/brownian-strong-markov-property/"
 note_next_url: "/notes/probability-theory/donsker-theorem-brownian-bridge/"
 ---
 
-<p>Brownian motion generates a rich family of martingales. These martingales encode Gaussian exponential moments, harmonic functions, and quadratic variation.</p>
+<p>Brownian martingales encode its driftless increments in algebraic forms adapted to different questions. Polynomial martingales measure moments, exponential martingales control barriers and change measure, and space-time harmonic functions connect conditional expectation to the heat equation.</p>
 
-    <h3>Basic Brownian martingales</h3>
+<h3>Linear and quadratic martingales</h3>
 
-    <p>Brownian motion and its compensated square are martingales.</p>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> With respect to the usual Brownian filtration,
+  \[
+  B_t,\qquad B_t^2-t
+  \]
+  are martingales.</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> With respect to its natural filtration, \(B_t\) is a martingale and \(B_t^2-t\) is a martingale.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(s<t\), write
+  \(B_t=B_s+Z\), where \(Z\sim N(0,t-s)\) is independent of
+  \(\mathcal F_s\). Hence
+  \[
+  \mathbb E[B_t\mid\mathcal F_s]=B_s.
+  \]
+  Also
+  \[
+  \mathbb E[B_t^2\mid\mathcal F_s]
+  =B_s^2+2B_s\mathbb EZ+\mathbb EZ^2
+  =B_s^2+t-s,
+  \]
+  which gives the compensated-square identity.</p>
+</div>
 
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> The processes
+  \[
+  B_t^3-3tB_t
+  \]
+  and
+  \[
+  B_t^4-6tB_t^2+3t^2
+  \]
+  are martingales.</p>
+</div>
 
-    <h3>Gaussian increment proof</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Expand
+  \((B_s+Z)^3\) and \((B_s+Z)^4\) conditionally on \(\mathcal F_s\), using
+  \[
+  \mathbb EZ=0,\quad
+  \mathbb EZ^2=t-s,\quad
+  \mathbb EZ^3=0,\quad
+  \mathbb EZ^4=3(t-s)^2.
+  \]
+  The compensating time polynomials cancel the conditional drift.</p>
+</div>
 
-    <p>Independent centered increments give the martingale identities.</p>
+<h3>Exponential martingales</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For \(s\le t\), \(\mathbb E[B_t\mid\mathcal F_s]=B_s\) and \(\mathbb E[B_t^2-t\mid\mathcal F_s]=B_s^2-s\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> For every
+  \(\theta\in\mathbb R\),
+  \[
+  Z_t^\theta
+  =
+  \exp\!\left\{\theta B_t-\frac12\theta^2t\right\}
+  \]
+  is a positive martingale with mean one.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(B_t=B_s+(B_t-B_s)\), where the increment is independent of \(\mathcal F_s\), centered, and has variance \(t-s\). The first identity is immediate. For the second, expand \(B_t^2\); the cross term has conditional mean zero and the increment square has conditional mean \(t-s\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For \(s<t\),
+  \[
+  Z_t^\theta
+  =
+  Z_s^\theta
+  \exp\!\left\{
+  \theta(B_t-B_s)-\frac12\theta^2(t-s)\right\}.
+  \]
+  The second factor is independent of \(\mathcal F_s\) and has expectation one by the Gaussian moment-generating function. Therefore
+  \(\mathbb E[Z_t^\theta\mid\mathcal F_s]=Z_s^\theta\).</p>
+</div>
 
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary (maximal tail bound).</span> For \(a>0\), \(T>0\), and \(\theta>0\),
+  \[
+  P\!\left(\sup_{0\le t\le T}
+  \{\theta B_t-\tfrac12\theta^2t\}\ge a\right)
+  \le e^{-a}.
+  \]</p>
+</div>
 
-    <h3>Exponential martingales</h3>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply Doob's weak maximal inequality to the nonnegative martingale \(Z_t^\theta\):
+  \[
+  P(\sup_{t\le T}Z_t^\theta\ge e^a)
+  \le e^{-a}\mathbb EZ_T^\theta=e^{-a}.
+  \]</p>
+</div>
 
-    <p>Gaussian moment generating functions produce positive martingales.</p>
+<p>Optimizing \(\theta\) turns this inequality into sub-Gaussian boundary bounds. The same exponential martingale is the density process in the <a href="{{ '/notes/probability-theory/girsanov-theorem-change-of-measure/' | relative_url }}">Cameron-Martin-Girsanov theorem</a>.</p>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For \(\theta\in\mathbb R\),
-\[
-M_t^\theta=\exp\left(\theta B_t-\frac12\theta^2t\right)
-\]
-is a martingale.</p>
-    </div>
+<h3>Heat polynomials</h3>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(s\le t\), split \(B_t=B_s+(B_t-B_s)\). Conditional on \(\mathcal F_s\), the increment is \(N(0,t-s)\), so
-\[
-\mathbb E[e^{\theta(B_t-B_s)}]=e^{\theta^2(t-s)/2}.
-\]
-This cancels the deterministic factor between times \(s\) and \(t\), leaving \(M_s^\theta\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Define polynomials
+  \(H_n(x,t)\) by the generating function
+  \[
+  \exp\!\left\{\theta x-\frac12\theta^2t\right\}
+  =
+  \sum_{n=0}^{\infty}\frac{\theta^n}{n!}H_n(x,t).
+  \]
+  Then \(H_n(B_t,t)\) is a martingale for every \(n\). The first terms are
+  \[
+  H_0=1,\quad H_1=x,\quad H_2=x^2-t,\quad
+  H_3=x^3-3tx.
+  \]</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Exponential martingales are the prototype for Girsanov changes of measure.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The exponential generating function is a martingale for every \(\theta\). On compact \(\theta\)-sets its power series can be differentiated term by term in \(L^1\), because Gaussian variables have all exponential moments. Comparing coefficients in
+  \[
+  \mathbb E[Z_t^\theta\mid\mathcal F_s]=Z_s^\theta
+  \]
+  gives
+  \(\mathbb E[H_n(B_t,t)\mid\mathcal F_s]=H_n(B_s,s)\).</p>
+</div>
+
+<h3>Space-time harmonic functions</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Let
+  \(u\in C^{1,2}([0,T]\times\mathbb R)\) satisfy the backward heat equation
+  \[
+  \partial_tu+\frac12\partial_{xx}u=0.
+  \]
+  Under sufficient growth control for integrability,
+  \[
+  u(t,B_t)
+  \]
+  is a martingale on \([0,T]\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Ito's formula gives
+  \[
+  \mathrm{d} u(t,B_t)
+  =
+  \left(\partial_tu+\frac12\partial_{xx}u\right)(t,B_t)\,\mathrm{d} t
+  +\partial_xu(t,B_t)\,\mathrm{d}B_t.
+  \]
+  The PDE cancels the finite-variation drift. The remaining stochastic integral is a local martingale and is a true martingale under the stated integrability control.</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> If \(f\) is bounded measurable and
+  \[
+  u(t,x)=P_{T-t}f(x)=\mathbb E[f(x+B_{T-t})],
+  \]
+  then
+  \[
+  u(t,B_t)=\mathbb E[f(B_T)\mid\mathcal F_t].
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Independent increments give
+  \(B_T=B_t+(B_T-B_t)\), with the second term independent of
+  \(\mathcal F_t\) and distributed as \(B_{T-t}\). Thus the conditional expectation equals \(P_{T-t}f(B_t)\). Smooth approximation gives the heat-equation interpretation when \(f\) is not smooth.</p>
+</div>
+
+<h3>Harmonic functions in several dimensions</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(B_t\) is
+  \(d\)-dimensional Brownian motion and \(h\in C^2(D)\) is harmonic,
+  \(\Delta h=0\), then
+  \[
+  h(B_{t\wedge\tau_U})
+  \]
+  is a local martingale for every relatively compact
+  \(U\Subset D\), where \(\tau_U\) is the exit time from \(U\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Multidimensional Ito gives
+  \[
+  h(B_{t\wedge\tau_U})-h(B_0)
+  =
+  \int_0^{t\wedge\tau_U}\nabla h(B_s)^\top\mathrm{d}B_s
+  +\frac12\int_0^{t\wedge\tau_U}\Delta h(B_s)\,\mathrm{d} s.
+  \]
+  The second term vanishes. Localization inside \(U\) controls the stochastic integral.</p>
+</div>

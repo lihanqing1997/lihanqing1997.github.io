@@ -8,25 +8,162 @@ note_prev_url: "/notes/statistical-decision-theory/overview-and-roadmap/"
 note_next_url: "/notes/statistical-decision-theory/tests-decision-functions-dual-pairings/"
 ---
 
-<p>The risk function is the central mathematical object. It records the loss of a rule at every parameter value and makes comparisons between procedures precise.</p>
+<p>A decision rule maps data into consequences. Decision theory keeps the observation model, action space, and loss separate, because the same experiment may support estimation, testing, prediction, classification, or confidence procedures. The risk integrates data randomness and any deliberate randomization in the action.</p>
 
-    <h3>Statistical decision problem</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A statistical decision problem is \((\Theta,\mathcal X,\{P_\theta\},\mathcal A,L)\). A nonrandomized rule \(\delta:\mathcal X\to\mathcal A\) has risk</p>
-        <p>\[
-R(\theta,\delta)=E_\theta L\{\theta,\delta(X)\}.
-\]</p>
-    </div>
+<h3>Measurable decision rules</h3>
 
-    <h3>Randomized rules and convex risk sets</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Randomized rules choose a probability measure on \(\mathcal A\) after observing \(X\). If rules are allowed to randomize, the attainable set of risk functions is convex.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A statistical decision problem consists of:</p>
+  <ol>
+    <li>a parameter set \(\Theta\);</li>
+    <li>an experiment
+    \(\mathcal E=(\mathcal X,\mathcal A_{\mathcal X},\{P_\theta\})\);</li>
+    <li>an action space \((\mathbb A,\mathcal A_{\mathbb A})\);</li>
+    <li>a jointly measurable loss \(L:\Theta\times\mathbb A\to[0,\infty]\).</li>
+  </ol>
+  <p>A randomized rule is a Markov kernel
+  \(\delta(x,\mathrm{d}a)\) from \(\mathcal X\) to \(\mathbb A\). Its risk is
+  \[
+  R(\theta,\delta)
+  =
+  \int_{\mathcal X}\int_{\mathbb A}
+  L(\theta,a)\delta(x,\mathrm{d}a)P_\theta(\mathrm{d}x).
+  \]</p>
+</div>
 
-    <h3>Convexification by mixing rules</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(\delta_1,\delta_2\) have risks \(R_1,R_2\), then the rule that uses \(\delta_1\) with probability \(\lambda\) has risk \(\lambda R_1+(1-\lambda)R_2\). Hence mixtures of rules give mixtures of risks.</p>
-    </div>
+<p>Standard Borel observation and action spaces ensure that conditional distributions and kernel compositions behave well. A nonrandomized measurable map \(d:\mathcal X\to\mathbb A\) corresponds to the degenerate kernel \(\delta(x,\cdot)=\delta_{d(x)}\).</p>
 
-    <h3>Risk functions as procedure comparisons</h3>
-    <p>A scalar summary is chosen only after a principle is chosen: Bayes risk averages \(R\), minimax risk takes its supremum, and admissibility uses the partial order induced by pointwise domination.</p>
+<h3>Examples of actions and losses</h3>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (point estimation).</span> For
+  \(\mathbb A=\Theta\subset\mathbb R^p\) and quadratic loss
+  \[
+  L(\theta,a)=\|a-\theta\|_2^2,
+  \]
+  the risk is mean squared error. With a positive semidefinite matrix \(W(\theta)\), the local quadratic loss
+  \[
+  L(\theta,a)=(a-\theta)^\top W(\theta)(a-\theta)
+  \]
+  permits parameter-dependent geometry.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (testing).</span> For
+  \(H_0:\theta\in\Theta_0\) against \(H_1:\theta\in\Theta_1\), take
+  \(\mathbb A=\{0,1\}\), where \(1\) denotes rejection, and
+  \[
+  L(\theta,a)
+  =
+  c_0\,1_{\Theta_0}(\theta)a
+  +c_1\,1_{\Theta_1}(\theta)(1-a).
+  \]
+  The two pieces of risk are weighted type-I and type-II error probabilities.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (confidence set).</span> Let an action be a measurable subset \(C\subset\Theta\). A loss can trade noncoverage against size:
+  \[
+  L(\theta,C)=
+  1\{\theta\notin C\}+\lambda\,\nu(C),
+  \]
+  where \(\nu\) is a volume or complexity measure. Thus confidence procedures also fit decision theory, although coverage constraints are often imposed directly rather than scalarized by one \(\lambda\).</p>
+</div>
+
+<h3>Convexification by randomization</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> If \(\delta_0,\delta_1\) are decision rules and \(0\leq\lambda\leq1\), the kernel
+  \[
+  \delta_\lambda
+  =\lambda\delta_1+(1-\lambda)\delta_0
+  \]
+  is a decision rule with
+  \[
+  R(\theta,\delta_\lambda)
+  =
+  \lambda R(\theta,\delta_1)
+  +(1-\lambda)R(\theta,\delta_0)
+  \]
+  for every \(\theta\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> A convex combination of probability kernels is again a probability kernel, and measurability is preserved. Linearity of integration gives
+  \[
+  \begin{aligned}
+  R(\theta,\delta_\lambda)
+  &=\int P_\theta(\mathrm{d}x)\int L(\theta,a)
+  \{\lambda\delta_1+(1-\lambda)\delta_0\}(x,\mathrm{d}a)\\
+  &=\lambda R(\theta,\delta_1)
+  +(1-\lambda)R(\theta,\delta_0).
+  \end{aligned}
+  \]
+  \(\square\)</p>
+</div>
+
+<p>This mixture may be implemented by drawing one independent Bernoulli variable before seeing the data. More general randomized rules permit the action distribution to depend on \(x\). For convex losses and convex action spaces, conditional Jensen often shows that randomization is unnecessary for estimation, but it remains essential for exact tests and for convex-analytic closure.</p>
+
+<h3>Dominance and admissibility</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> A rule \(\delta_1\) dominates \(\delta_0\) if
+  \[
+  R(\theta,\delta_1)\leq R(\theta,\delta_0)
+  \quad\text{for every }\theta,
+  \]
+  with strict inequality for at least one \(\theta\). A rule is admissible if it is not dominated.</p>
+</div>
+
+<p>Admissibility is a Pareto property of the full risk function. It does not assert that the risk is small, only that no other rule is uniformly no worse and somewhere better. Two admissible rules may cross substantially.</p>
+
+<h3>Bayes, minimax, and constrained values</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For a prior \(\Pi\), the Bayes value is
+  \[
+  r_\Pi^*=\inf_\delta\int R(\theta,\delta)\Pi(\mathrm{d}\theta).
+  \]
+  The minimax value is
+  \[
+  r^*=\inf_\delta\sup_{\theta\in\Theta}R(\theta,\delta).
+  \]
+  A constrained value, for example in testing, is
+  \[
+  \inf_{\delta:\,\sup_{\theta\in\Theta_0}R_0(\theta,\delta)\leq\alpha}
+  \sup_{\theta\in\Theta_1}R_1(\theta,\delta).
+  \]</p>
+</div>
+
+<p>These are different scalarizations of one risk set. A prior uses a positive linear functional; minimax uses the support function in the direction of the constant vector; admissibility retains the full coordinatewise partial order.</p>
+
+<h3>Posterior minimization</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Bayes rule by posterior loss).</span> Suppose a prior \(\Pi\) and regular conditional posterior \(\Pi(\mathrm{d}\theta\mid x)\) exist. If a measurable action \(a_\Pi(x)\) minimizes
+  \[
+  \rho_\Pi(a\mid x)
+  =
+  \int L(\theta,a)\Pi(\mathrm{d}\theta\mid x)
+  \]
+  for almost every prior-predictive \(x\), then \(a_\Pi\) is a Bayes rule.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Under the joint law
+  \(\Pi(\mathrm{d}\theta)P_\theta(\mathrm{d}x)\), iterated expectation gives
+  \[
+  r(\Pi,\delta)
+  =
+  \int\left[
+  \int_{\mathbb A}\rho_\Pi(a\mid x)\delta(x,\mathrm{d}a)
+  \right]m_\Pi(\mathrm{d}x),
+  \]
+  where \(m_\Pi\) is the prior predictive law. Pointwise minimization of the bracketed posterior expected loss minimizes its integral. \(\square\)</p>
+</div>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under squared-error loss, the posterior mean is Bayes; under absolute-error loss, any posterior median is Bayes; under \(0\)-\(1\) loss on a discrete parameter space, a posterior mode is Bayes.</p>
+</div>
+
+<p>Decision theory therefore distinguishes three sources of uncertainty cleanly: the sampling law \(P_\theta\), deliberate randomization in \(\delta\), and Bayesian averaging over \(\Pi\). Risk is frequentist even for a Bayes rule; it remains a function of the fixed true parameter.</p>

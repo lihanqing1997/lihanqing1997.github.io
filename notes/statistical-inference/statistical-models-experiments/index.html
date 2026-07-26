@@ -7,32 +7,149 @@ note_back_url: "/notes/statistical-inference/"
 note_next_url: "/notes/statistical-inference/likelihood-score-information/"
 ---
 
-<p>A statistical model is a mathematical description of how data could have been generated. In this note, probability is used as the language for data-generating mechanisms; the inferential question is how the unknown element of the model can be learned from the observed sample.</p>
+<p>Statistical inference begins with an experiment, not with a particular estimator. The experiment specifies which probability laws can govern the observation; an inferential procedure is then a measurable rule applied to that observation. Keeping these two levels separate makes assumptions, identifiability, and optimality mathematically visible.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A <strong>statistical experiment</strong> is a measurable sample space \((\mathcal X,\mathcal A)\) together with a family of probability measures \(\mathcal P=\{P_\theta:\theta\in\Theta\}\). A statistic is a measurable map \(T:\mathcal X\to\mathcal T\). The model is identifiable if \(P_\theta=P_{\theta'}\) implies \(\theta=\theta'\).</p>
-    </div>
+<h3>Experiments, parameters, and procedures</h3>
 
-    <h3>Dominated models</h3>
-    <p>The model is dominated if there exists a \(\sigma\)-finite measure \(\mu\) such that \(P_\theta\ll\mu\) for every \(\theta\). Then \(p_\theta=\mathrm{d}P_\theta/\mathrm{d}\mu\) is a density and likelihood methods can be written using \(p_\theta(x)\). For independent observations, the product experiment has density \(\prod_{i=1}^np_\theta(x_i)\).</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (statistical experiment).</span> A statistical experiment is
+  \[
+  \mathcal E=(\mathcal X,\mathcal A,\{P_\theta:\theta\in\Theta\}),
+  \]
+  where \((\mathcal X,\mathcal A)\) is the sample space and each \(P_\theta\) is a probability measure on it. The parameter space \(\Theta\) is only an index set unless additional topology or geometry is specified. A parameter of interest is a map \(\psi:\Theta\to\Psi\).</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\theta_0\) is the true value in a dominated identifiable model, then the expected log-likelihood contrast satisfies
-        \[
-        E_{\theta_0}\log p_{\theta_0}(X)-E_{\theta_0}\log p_\theta(X)
-        =\operatorname{KL}(P_{\theta_0},P_\theta)\ge0,
-        \]
-        with equality only at \(\theta=\theta_0\), whenever the expectations are well-defined.</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (statistic and procedure).</span> A statistic is a measurable map \(T:(\mathcal X,\mathcal A)\to(\mathcal T,\mathcal B)\). An estimator of \(\psi(\theta)\) is a statistic with values in \(\Psi\). A nonrandomized test is a measurable \(\phi:\mathcal X\to\{0,1\}\); a randomized test has values in \([0,1]\), interpreted as the conditional rejection probability. A \(1-\alpha\) confidence set is a random set \(C(X)\subseteq\Psi\) satisfying
+  \[
+  \inf_{\theta\in\Theta}P_\theta\{\psi(\theta)\in C(X)\}\ge1-\alpha.
+  \]</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The displayed difference is \(E_{\theta_0}\log(p_{\theta_0}/p_\theta)\). Since \(\log u\) is concave,
-        \[
-        E_{\theta_0}\log\frac{p_\theta}{p_{\theta_0}}\le
-        \log E_{\theta_0}\frac{p_\theta}{p_{\theta_0}}=\log\int p_\theta\,\mathrm{d}\mu=0.
-        \]
-        Multiplying by \(-1\) gives nonnegativity. Equality in Jensen requires \(p_\theta/p_{\theta_0}\) to be constant \(P_{\theta_0}\)-a.s.; normalization makes the constant \(1\), and identifiability gives \(\theta=\theta_0\).</p>
-    </div>
+<p>The distinction between \(\theta\) and \(\psi(\theta)\) matters whenever nuisance parameters are present. For example, in \(N(\mu,\sigma^2)\) the target may be \(\mu\), while \(\sigma\) remains part of the experiment because it changes the sampling distribution.</p>
 
-    <h3>Model classes</h3>
-    <p>Parametric models have finite-dimensional \(\Theta\). Nonparametric models allow infinite-dimensional distributions or functions. Semiparametric models contain a finite-dimensional target and an infinite-dimensional nuisance component. This note focuses on frequentist inference; Bayesian priors and posterior analysis belong to the <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a> note, and risk-based optimality belongs to <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">statistical decision theory</a>.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (identifiability).</span> The model is identifiable if \(P_\theta=P_{\theta'}\) implies \(\theta=\theta'\). A functional \(\psi\) is identifiable if
+  \[
+  P_\theta=P_{\theta'}\quad\Longrightarrow\quad \psi(\theta)=\psi(\theta').
+  \]
+  Thus an overparameterized model can fail to identify \(\theta\) while still identifying a scientifically meaningful functional.</p>
+</div>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (a nonidentified mixture representation).</span> The density
+  \[
+  p_{\pi,\mu_1,\mu_2}(x)
+  =\pi\varphi(x-\mu_1)+(1-\pi)\varphi(x-\mu_2)
+  \]
+  is unchanged when \((\pi,\mu_1,\mu_2)\) is replaced by \((1-\pi,\mu_2,\mu_1)\). Ordered means, such as the constraint \(\mu_1\lt\mu_2\), remove label switching, but coincident components still create singular points.</p>
+</div>
+
+<h3>Dominated models and likelihood ratios</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (domination).</span> The experiment is dominated if a \(\sigma\)-finite measure \(\mu\) satisfies \(P_\theta\ll\mu\) for every \(\theta\). A version
+  \[
+  p_\theta=\frac{\mathrm{d}P_\theta}{\mathrm{d}\mu}
+  \]
+  is a density, and \(L(\theta;x)=p_\theta(x)\), regarded as a function of \(\theta\) for fixed \(x\), is a likelihood.</p>
+</div>
+
+<p>The numerical value of a density depends on \(\mu\), but likelihood ratios do not. If \(\nu\) is another dominating measure and \(q_\theta=\mathrm{d}P_\theta/\mathrm{d}\nu\), then for \(P_{\theta_0}\)-almost every \(x\),
+\[
+\frac{q_\theta(x)}{q_{\theta_0}(x)}
+=\frac{p_\theta(x)}{p_{\theta_0}(x)}.
+\]
+Consequently, inferential statements based only on likelihood ratios are invariant to the chosen dominating measure.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (a universal dominating measure for countable models).</span> If \(\Theta=\{\theta_1,\theta_2,\ldots\}\), then
+  \[
+  \mu=\sum_{j=1}^{\infty}2^{-j}P_{\theta_j}
+  \]
+  dominates every \(P_{\theta_j}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> If \(\mu(A)=0\), every nonnegative summand \(2^{-j}P_{\theta_j}(A)\) is zero. Hence \(P_{\theta_j}(A)=0\) for every \(j\), which is precisely \(P_{\theta_j}\ll\mu\).</p>
+</div>
+
+<h3>Repeated observations and product experiments</h3>
+
+<p>For independent observations \(X_i\sim P_{\theta,i}\), the joint law is
+\[
+P_\theta^{(n)}=\bigotimes_{i=1}^nP_{\theta,i}.
+\]
+If \(P_{\theta,i}\) has density \(p_{\theta,i}\) relative to \(\mu_i\), then \(P_\theta^{(n)}\) has density
+\[
+p_\theta^{(n)}(x_1,\ldots,x_n)=\prod_{i=1}^np_{\theta,i}(x_i)
+\]
+relative to \(\bigotimes_i\mu_i\). The i.i.d. experiment is the special case \(P_{\theta,i}=P_\theta\). Dependence is part of the model and cannot be repaired merely by writing a product likelihood.</p>
+
+<div class="math-statement example">
+  <p><span class="statement-title">Example (Bernoulli experiment).</span> For \(X_i\stackrel{\mathrm{iid}}{\sim}\operatorname{Bernoulli}(p)\),
+  \[
+  P_p^{(n)}(X=x)=p^{\sum_i x_i}(1-p)^{n-\sum_i x_i}.
+  \]
+  The entire likelihood depends on \(x\) through \(S_n=\sum_iX_i\). This observation is made exact by sufficiency on the third page.</p>
+</div>
+
+<h3>Kernels, randomization, and comparison of experiments</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition (Markov kernel).</span> A Markov kernel \(K\) from \((\mathcal X,\mathcal A)\) to \((\mathcal Y,\mathcal B)\) assigns a probability measure \(K(x,\cdot)\) to each \(x\), with \(x\mapsto K(x,B)\) measurable for each \(B\). It sends \(P\) to
+  \[
+  KP(B)=\int_{\mathcal X}K(x,B)\,P(\mathrm{d}x).
+  \]</p>
+</div>
+
+<p>A deterministic statistic \(T\) corresponds to \(K(x,B)=1_{\{T(x)\in B\}}\). If \(Q_\theta=KP_\theta\), the experiment \(\{Q_\theta\}\) can be simulated from \(\{P_\theta\}\) without knowing \(\theta\), so it cannot contain more decision-relevant information. Equality in both directions is the formal notion of equivalence used in <a href="{{ '/notes/statistical-decision-theory/blackwell-comparison-and-transitions/' | relative_url }}">Blackwell comparison of experiments</a>.</p>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Data-processing inequality for total variation.</span> For every Markov kernel \(K\),
+  \[
+  \|KP-KQ\|_{\mathrm{TV}}\le\|P-Q\|_{\mathrm{TV}}.
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Using the dual representation,
+  \[
+  2\|KP-KQ\|_{\mathrm{TV}}
+  =\sup_{\|f\|_\infty\le1}\left|\int Kf\,\mathrm{d}(P-Q)\right|,
+  \qquad Kf(x)=\int f(y)K(x,\mathrm{d}y).
+  \]
+  Since \(\|Kf\|_\infty\le\|f\|_\infty\), the last display is at most \(2\|P-Q\|_{\mathrm{TV}}\).</p>
+</div>
+
+<h3>Kullback-Leibler projection and misspecification</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition (population likelihood contrast).</span> Suppose \(P_0\) and \(P_\theta\) have densities \(p_0\) and \(p_\theta\) relative to \(\mu\). Whenever the integrals exist,
+  \[
+  \mathbb E_0\log p_0(X)-\mathbb E_0\log p_\theta(X)
+  =\operatorname{KL}(P_0\|P_\theta)\ge0.
+  \]
+  Equality holds exactly when \(P_0=P_\theta\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> On \(\{p_0>0\}\), write \(r=p_\theta/p_0\). Jensen's inequality gives
+  \[
+  \mathbb E_0\log r
+  \le\log\mathbb E_0r
+  =\log\int_{\{p_0>0\}}p_\theta\,\mathrm{d}\mu
+  \le0.
+  \]
+  Thus \(\mathbb E_0\log(p_0/p_\theta)\ge0\). Equality forces \(r=1\), \(P_0\)-almost surely, and also \(P_\theta\{p_0=0\}=0\); hence the two laws coincide.</p>
+</div>
+
+<p>If \(P_0\notin\{P_\theta\}\), a population maximum-likelihood target is a Kullback-Leibler projection
+\[
+\theta^\star\in\arg\min_{\theta\in\Theta}\operatorname{KL}(P_0\|P_\theta).
+\]
+The parameter \(\theta^\star\) is a property of the chosen working model, not necessarily a physical truth. This distinction drives sandwich covariance formulas and robust inference later in the note.</p>
+
+<h3>Parametric, semiparametric, and nonparametric models</h3>
+
+<p>A parametric model has \(\Theta\subseteq\mathbb R^d\) with fixed finite \(d\). A semiparametric model writes the law as \(P_{\theta,\eta}\), where \(\theta\in\mathbb R^d\) is the target and \(\eta\) is infinite-dimensional. A nonparametric model places no fixed finite-dimensional representation on the unknown law or function. The distinction concerns the local size of the model, not the visual complexity of a formula. Bayesian posterior analysis is developed in <a href="{{ '/notes/bayesian-statistics/' | relative_url }}">Bayesian statistics</a>; frequentist risk comparisons are developed in <a href="{{ '/notes/statistical-decision-theory/' | relative_url }}">statistical decision theory</a>.</p>

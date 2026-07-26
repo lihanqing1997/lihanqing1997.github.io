@@ -62,3 +62,152 @@ when the measures have densities \(p\) relative to a common dominating measure.<
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Discreteness of the random measure does not prevent it from being useful for mixture modeling, because mixtures can smooth the induced sampling density.</p>
     </div>
+
+<h3>Topologies on probability measures</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> On a Polish space \(\mathcal X\), weak convergence
+\[
+P_n\Rightarrow P
+\]
+means
+\[
+\int f\,\mathrm{d}P_n\to\int f\,\mathrm{d}P
+\quad\text{for every }f\in C_b(\mathcal X).
+\]
+The bounded-Lipschitz metric
+\[
+d_{\mathrm{BL}}(P,Q)
+=\sup_{\|f\|_\infty+\operatorname{Lip}(f)\le1}
+\left|\int f\,\mathrm{d}(P-Q)\right|
+\]
+metrizes weak convergence.</p>
+</div>
+
+<p>Weak support is appropriate for distributional functionals continuous under weak convergence, but density estimation often needs stronger Hellinger, \(L^1\), or KL support after a smoothing kernel is applied.</p>
+
+<h3>Random probability measures as measurable maps</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A random probability measure is a measurable map
+\[
+P:\Omega\to\mathcal P(\mathcal X),
+\]
+where \(\mathcal P(\mathcal X)\) carries its Borel \(\sigma\)-field under weak topology. Equivalently, \(P(A)\) is measurable for every set in a countable convergence-determining class.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The law of a random probability measure is determined by the joint laws of
+\[
+\{P(A_1),\ldots,P(A_k)\}
+\]
+over finite measurable partitions \((A_1,\ldots,A_k)\) from a generating algebra, provided these finite-dimensional laws are projectively consistent.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> Evaluation maps on a countable generating algebra generate the Borel \(\sigma\)-field of \(\mathcal P(\mathcal X)\). Consistent finite-dimensional laws define a probability law on the coordinate product by Kolmogorov extension. Additivity and total mass one, imposed on the finite partitions, restrict this law to probability-measure-valued coordinates.</p>
+</div>
+
+<h3>Completely random measures and normalization</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> A completely random measure \(\mu\) has independent masses on disjoint measurable sets. If
+\[
+0<\mu(\mathcal X)<\infty
+\quad\text{almost surely},
+\]
+then
+\[
+P=\frac{\mu}{\mu(\mathcal X)}
+\]
+is a normalized random measure with dependent increments.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> A gamma process with base measure
+\(\alpha\) satisfies
+\[
+\mu(A)\sim\operatorname{Gamma}(\alpha(A),1)
+\]
+independently over disjoint \(A\). Normalization gives a Dirichlet process
+\[
+P\sim\operatorname{DP}(\alpha).
+\]
+The total mass \(\mu(\mathcal X)\) cancels from relative cell masses but controls neither the mean base distribution nor the resulting concentration parameter separately once \(\alpha\) is specified.</p>
+</div>
+
+<h3>Moments of random measures</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> The mean measure of a random probability measure \(P\) is
+\[
+\bar P(A)=E\{P(A)\}.
+\]
+For bounded \(f,g\), covariance is described by
+\[
+\operatorname{Cov}\left(
+\int f\,\mathrm{d}P,\int g\,\mathrm{d}P
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(X_1,X_2\mid P\stackrel{\mathrm{iid}}{\sim}P\), then
+\[
+\operatorname{Cov}\{f(X_1),g(X_2)\}
+=\operatorname{Cov}\left(
+\int f\,\mathrm{d}P,\int g\,\mathrm{d}P
+\right).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Conditional independence gives
+\[
+E\{f(X_1)g(X_2)\mid P\}
+=\left(\int f\,\mathrm{d}P\right)
+\left(\int g\,\mathrm{d}P\right).
+\]
+Take expectations and subtract the product of marginal means.</p>
+</div>
+
+<p>Randomness of \(P\) therefore induces positive or negative dependence among observations according to covariance of random integrals, even though observations are conditionally iid.</p>
+
+<h3>Weak support criterion</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> Suppose a prior on \(\mathcal P(\mathcal X)\) can assign positive probability to arbitrary finite probability vectors over every finite measurable partition whose boundaries have \(P_0\)-mass zero. Then \(P_0\) belongs to its weak support.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof outline.</span> A basic weak neighborhood of \(P_0\) is determined by finitely many bounded continuous integrals. Approximate each function by a simple function on a sufficiently fine partition with \(P_0\)-null boundaries. Closeness of cell masses then makes all integrals close. Positive prior mass for the cell-mass neighborhood gives positive mass to the weak neighborhood.</p>
+</div>
+
+<h3>Discrete draws and smooth observations</h3>
+
+<p>If
+\[
+P=\sum_{h\ge1}w_h\delta_{\theta_h}
+\]
+is discrete and observations are drawn directly from \(P\), ties occur with positive probability. In a mixture model
+\[
+Y_i\mid\theta_i\sim K(\cdot\mid\theta_i),
+\qquad
+\theta_i\mid P\sim P,
+\]
+the induced sampling density
+\[
+f_P(y)=\int K(y\mid\theta)P(\mathrm{d}\theta)
+=\sum_hw_hK(y\mid\theta_h)
+\]
+can be smooth. The random measure clusters latent parameters; the kernel determines observation smoothness.</p>
+
+<h3>Identifiability of random mixing laws</h3>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Remark.</span> Posterior learning of \(P\) depends on identifiability of the mixture map
+\[
+P\mapsto f_P.
+\]
+If two mixing measures generate the same sampling density, the data can identify only their equivalence class even when the prior lives on a rich space. Density contraction can be much faster and more stable than recovery of the mixing distribution itself.</p>
+</div>

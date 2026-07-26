@@ -7,24 +7,132 @@ note_back_url: "/notes/differential-equations/"
 note_next_url: "/notes/differential-equations/picard-iteration-and-contraction/"
 ---
 
-<p>Initial value problems records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>An initial-value problem asks for a curve
+\(x:I\to\mathbb R^d\) satisfying
+\[
+\dot x(t)=f(t,x(t)),\qquad x(t_0)=x_0.
+\]
+Existence, uniqueness, continuation, and dependence on data are separate
+questions. The hypotheses needed for each should not be conflated.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An initial value problem specifies a differential equation and the value of the unknown at an initial time, for example \(\mathrm{d}x/\mathrm{d}t=f(t,x)\), \(x(t_0)=x_0\).</p>
-    </div>
+<h3>Classical solutions and the integral equation</h3>
 
-    <h3>Peano and Picard-Lindelöf theorems</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(f\) is continuous, local solutions exist. If \(f\) is locally Lipschitz in the state variable, the solution is locally unique.</p>
-    </div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(f\) is continuous, a
+\(C^1\) curve \(x\) solves the initial-value problem on \(I\) if and only if
+\[
+x(t)=x_0+\int_{t_0}^t f(s,x(s))\,\mathrm{d}s
+\quad(t\in I).
+\]</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Existence follows from compactness of approximate solutions or Schauder-type fixed points. Uniqueness follows by estimating two solutions and applying Gronwall inequality.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Integrating the differential
+equation gives the integral identity. Conversely, continuity of the integrand
+and the fundamental theorem of calculus show that the right side is \(C^1\)
+with derivative \(f(t,x(t))\).</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> ODE theory separates existence from uniqueness. Continuity alone can create solutions but not determine them.</p>
-    </div>
+<p>The integral equation places the problem in the Banach space
+\(C([t_0-h,t_0+h];\mathbb R^d)\) and makes fixed-point and compactness methods
+available.</p>
+
+<h3>Peano existence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (Peano).</span> Suppose \(f\) is
+continuous on the rectangle
+\[
+R=[t_0-a,t_0+a]\times\overline{B(x_0,b)}.
+\]
+Let \(M=\sup_R\|f\|\) and choose
+\(h\le\min(a,b/M)\). Then the initial-value problem has at least one solution
+on \([t_0-h,t_0+h]\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> On
+\(X=C([t_0-h,t_0+h];\overline{B(x_0,b)})\), define
+\[
+(Tx)(t)=x_0+\int_{t_0}^tf(s,x(s))\,\mathrm{d}s.
+\]
+The choice of \(h\) makes \(T(X)\subset X\). The image is uniformly bounded
+and equi-Lipschitz because \(\|(Tx)'(t)\|\le M\), so its closure is compact by
+Arzelà--Ascoli. Uniform continuity of \(f\) on \(R\) makes \(T\) continuous.
+The compact convex form of Schauder's fixed-point theorem gives \(Tx=x\), hence
+a solution.</p>
+</div>
+
+<h3>Picard--Lindelöf uniqueness</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> If \(f\) is continuous and
+locally Lipschitz in \(x\), uniformly for \(t\) on compact subrectangles, then
+there is a unique local solution through every \((t_0,x_0)\).</p>
+</div>
+
+<p>Existence and uniqueness follow by making the integral operator a contraction
+on a sufficiently short interval. The detailed iteration and estimates are on
+the next page.</p>
+
+<h3>Continuous dependence</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> Suppose \(f,g\) are
+\(L\)-Lipschitz in state on a common region, and \(x,y\) solve
+\[
+\dot x=f(t,x),\quad x(t_0)=x_0,
+\qquad
+\dot y=g(t,y),\quad y(t_0)=y_0.
+\]
+If \(\sup\|f-g\|\le\varepsilon\), then for \(t\ge t_0\),
+\[
+\|x(t)-y(t)\|
+\le e^{L(t-t_0)}\|x_0-y_0\|
++\frac{\varepsilon}{L}\{e^{L(t-t_0)}-1\},
+\]
+with the obvious \(L=0\) limit.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The integral equations imply
+\[
+\|x(t)-y(t)\|
+\le\|x_0-y_0\|
++\int_{t_0}^t
+\{L\|x(s)-y(s)\|+\varepsilon\}\,\mathrm{d}s.
+\]
+Apply the inhomogeneous Gronwall inequality.</p>
+</div>
+
+<h3>Existence without uniqueness</h3>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> The scalar problem
+\[
+\dot x=2\sqrt{|x|},\qquad x(0)=0
+\]
+has, for every \(c\ge0\),
+\[
+x_c(t)=
+\begin{cases}
+0,&t\le c,\\
+(t-c)^2,&t\ge c.
+\end{cases}
+\]
+The vector field is continuous but not locally Lipschitz at zero. Peano
+existence holds, while uniqueness fails through arbitrary waiting time.</p>
+</div>
+
+<h3>Parameters and differentiable dependence</h3>
+
+<p>If \(f(t,x,\theta)\) is \(C^1\) in \((x,\theta)\), then the solution is
+differentiable in \(\theta\) while it remains in a common compact region. The
+sensitivity \(Z=\partial_\theta x\) solves
+\[
+\dot Z=f_x(t,x,\theta)Z+f_\theta(t,x,\theta),
+\qquad
+Z(t_0)=\partial_\theta x_0.
+\]
+This variational equation underlies identifiability, adjoint methods, and
+gradient-based parameter estimation.</p>

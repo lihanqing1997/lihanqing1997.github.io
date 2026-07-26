@@ -8,27 +8,112 @@ note_prev_url: "/notes/statistical-decision-theory/local-asymptotic-normality/"
 note_next_url: "/notes/statistical-decision-theory/convolution-and-asymptotic-admissibility/"
 ---
 
-<p>Local asymptotic minimax theory transfers optimal risks from the Gaussian shift limit back to shrinking neighborhoods in the original model.</p>
+<p>LAN identifies a Gaussian limit experiment. Local asymptotic minimax theory converts the optimal risk in that limit into a lower bound for every sequence of procedures in shrinking neighborhoods of the original parameter. Finite priors provide the rigorous bridge.</p>
 
-    <h3>Local risk</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For an estimator \(T_n\) of \(\theta\), local risk around \(\theta_0\) is evaluated over \(\theta=\theta_0+h/\sqrt n\) with \(h\) restricted to bounded sets.</p>
-    </div>
+<h3>Local loss and neighborhood risk</h3>
 
-    <h3>Local asymptotic minimax lower bound</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under LAN and regularity of the loss \(\ell\),</p>
-        <p>\[
-\lim_{c\to\infty}\liminf_n\inf_{T_n}\sup_{\|h\|\le c}
-E_{\theta_0+h/\sqrt n}\ell\{\sqrt n(T_n-\theta_0-h/\sqrt n)\}
-\ge R_{\mathcal G}^{\star}.
-\]</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let the LAN rate be \(r_n\), and let \(T_n\) estimate \(\theta\). For a loss
+  \(\ell:\mathbb R^p\to[0,\infty)\), the local risk at \(h\) is
+  \[
+  R_n(h,T_n)
+  =
+  E_{\theta_0+r_n^{-1}h}
+  \ell\!\left(
+    r_n\{T_n-(\theta_0+r_n^{-1}h)\}
+  \right).
+  \]</p>
+</div>
 
-    <h3>Limit-experiment proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Any sequence of procedures with bounded local risk has subsequential risk limits in the Gaussian shift experiment. The optimal Gaussian risk therefore lower-bounds all possible local asymptotic risks.</p>
-    </div>
+<p>The centering uses the true local parameter. A fixed estimator bias of order \(r_n^{-1}\) therefore remains visible in the limit.</p>
 
-    <h3>Efficiency interpretation</h3>
-    <p>An estimator is locally asymptotically minimax if it attains the Gaussian shift bound. Efficient regular estimators do this under quadratic loss in smooth finite-dimensional models.</p>
+<h3>The Gaussian benchmark</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Gaussian location minimaxity).</span> Observe
+  \(Y=h+Z\), \(Z\sim N_p(0,I^{-1})\), \(h\in\mathbb R^p\). Let \(\ell\) be bowl-shaped: its sublevel sets are convex and symmetric about zero. Then
+  \[
+  \inf_\delta\sup_{h\in\mathbb R^p}
+  E_h\ell\{\delta(Y)-h\}
+  =
+  E\ell(Z),
+  \]
+  attained by \(\delta(Y)=Y\).</p>
+</div>
+
+<p>For squared loss \(\ell(u)=\|u\|_2^2\), the value is
+\(\operatorname{tr}(I^{-1})\). For a weighted quadratic loss, it is
+\(\operatorname{tr}(WI^{-1})\).</p>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> The identity estimator has constant risk \(E\ell(Z)\), giving the upper bound. For the lower bound, use uniform priors on expanding cubes or diffuse normal priors. Their Bayes estimators approach \(Y\) away from the boundary, and their Bayes risks increase to \(E\ell(Z)\). Every Bayes risk lower-bounds the minimax value. For general bowl-shaped loss, Anderson's inequality controls the effect of symmetric Gaussian noise and the same diffuse-prior argument applies. \(\square\)</p>
+</div>
+
+<h3>The local asymptotic minimax theorem</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose the experiments are LAN at \(\theta_0\) with nonsingular information \(I\), and let \(\ell\) be bounded, continuous, and bowl-shaped. Then
+  \[
+  \lim_{c\to\infty}\liminf_{n\to\infty}
+  \inf_{T_n}
+  \sup_{\|h\|\leq c}
+  R_n(h,T_n)
+  \geq
+  E\ell(I^{-1/2}Z),
+  \qquad Z\sim N_p(0,I_p).
+  \]
+  The same conclusion for unbounded lower-semicontinuous losses follows by truncation when the required moment control holds.</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix a finite set
+  \(H=\{h_1,\ldots,h_k\}\) and a prior \(\pi\) on it. Weak convergence of the local finite experiments to the corresponding Gaussian subexperiment implies that the limiting Bayes risk of any sequence \(T_n\) is at least the optimal Gaussian Bayes risk:
+  \[
+  \liminf_n\sum_{j=1}^k\pi_jR_n(h_j,T_n)
+  \geq r_{\mathcal G}(\pi).
+  \]
+  Since a supremum dominates a prior average,
+  \[
+  \liminf_n\sup_{h\in H}R_n(h,T_n)
+  \geq r_{\mathcal G}(\pi).
+  \]
+  Take the infimum over \(T_n\). Then increase the finite support and choose priors approximating diffuse least favorable priors on expanding compact sets. Their Gaussian Bayes risks approach
+  \(E\ell(I^{-1/2}Z)\). Finally let \(c\to\infty\). For unbounded \(\ell\), apply the argument to \(\ell\wedge M\) and then let \(M\to\infty\). \(\square\)</p>
+</div>
+
+<h3>A covariance lower bound</h3>
+
+<div class="math-statement corollary">
+  <p><span class="statement-title">Corollary.</span> Under quadratic loss, no estimator sequence can have uniformly smaller local asymptotic mean squared error than
+  \[
+  \operatorname{tr}(I^{-1})
+  \]
+  over expanding root-\(n\) neighborhoods.</p>
+</div>
+
+<p>This is stronger than a pointwise Cramér–Rao inequality. It applies to biased and irregular estimators after taking the local supremum, and it is derived from experiment convergence rather than differentiating an estimator's expectation.</p>
+
+<h3>Attaining the bound</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem.</span> Suppose an estimator satisfies uniformly for bounded \(h\),
+  \[
+  r_n\{T_n-(\theta_0+r_n^{-1}h)\}
+  \rightsquigarrow N_p(0,I^{-1})
+  \]
+  under \(P_{n,\theta_0+r_n^{-1}h}\), and the losses are uniformly integrable. Then \(T_n\) attains the local asymptotic minimax bound for quadratic loss.</p>
+</div>
+
+<p>Asymptotic linear estimators with efficient influence function usually satisfy this property. Uniform integrability is needed because weak convergence alone does not imply convergence of unbounded quadratic risks.</p>
+
+<h3>Finite-radius and global distinctions</h3>
+
+<p>For a fixed compact set \(\|h\|\leq c\), shrinkage can improve the Gaussian identity rule and lower the minimax risk below the unrestricted value. The theorem lets \(c\to\infty\) after \(n\to\infty\). This order of limits defines the classical local asymptotic minimax criterion and explains why it coexists with finite-radius shrinkage improvements.</p>
+
+<h3>Semiparametric form</h3>
+
+<p>For a differentiable functional \(\psi(P)\), the Gaussian limit contains only its efficient tangent direction. The information bound becomes the variance of the efficient influence function:
+\[
+\|\tilde\psi_P\|_{P,2}^2.
+\]
+The same finite-prior argument in tangent submodels yields the semiparametric local asymptotic minimax lower bound.</p>

@@ -8,24 +8,133 @@ note_prev_url: "/notes/optimization/normal-cones-projected-optimality/"
 note_next_url: "/notes/optimization/gradient-descent/"
 ---
 
-<p>This page records the definitions, propositions, and proof mechanisms for Saddle points and minimax formulations.</p>
+<p>A minimax problem has two opposed variables: one player minimizes while the
+other maximizes. A saddle point is stronger than equality of the two optimal
+values because it supplies a pair of strategies that certify each other.</p>
 
-    <h3>Saddle point</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A pair \((x^\star,y^\star)\) is a saddle point of \(L(x,y)\) if \(L(x^\star,y)\le L(x^\star,y^\star)\le L(x,y^\star)\) for all feasible \(x,y\).</p>
-    </div>
+<h3>Lower and upper values</h3>
 
-    <h3>Weak minimax inequality</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Always \(\sup_y\inf_x L(x,y)\le\inf_x\sup_y L(x,y)\). Equality is strong minimax duality and requires convexity, compactness, continuity, or related regularity.</p>
-    </div>
+<div class="math-statement definition">
+    <p><span class="statement-title">Definition.</span> For
+    \(L:X\times Y\to\overline{\mathbb R}\), define
+    \[
+    \underline v=\sup_{y\in Y}\inf_{x\in X}L(x,y),
+    \qquad
+    \overline v=\inf_{x\in X}\sup_{y\in Y}L(x,y).
+    \]
+    A pair \((x^\star,y^\star)\) is a saddle point if
+    \[
+    L(x^\star,y)\le L(x^\star,y^\star)\le L(x,y^\star)
+    \qquad(x\in X,y\in Y).
+    \]</p>
+</div>
 
-    <h3>Sion-type principle</h3>
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> When \(X\) is compact convex, \(Y\) is convex, and \(L\) is convex lower semicontinuous in \(x\) and concave upper semicontinuous in \(y\), the minimax equality holds.</p>
-    </div>
+<div class="math-statement proposition">
+    <p><span class="statement-title">Weak minimax inequality.</span> For every
+    function \(L\),
+    \[
+    \underline v\le\overline v.
+    \]
+    If a saddle point exists, equality holds and
+    \(L(x^\star,y^\star)=\underline v=\overline v\).</p>
+</div>
 
-    <h3>Decision-theoretic link</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Least favorable priors and minimax rules are saddle points: a procedure minimizes maximum risk, while a prior maximizes Bayes risk.</p>
-    </div>
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> For every \(x,y\),
+    \[
+    \inf_{u\in X}L(u,y)\le L(x,y)\le\sup_{v\in Y}L(x,v).
+    \]
+    Take the supremum over \(y\) on the left and the infimum over \(x\) on the
+    right. If the saddle inequalities hold, then
+    \[
+    \sup_y\inf_xL(x,y)\ge\inf_xL(x,y^\star)
+    =L(x^\star,y^\star)
+    =\sup_yL(x^\star,y)\ge\inf_x\sup_yL(x,y),
+    \]
+    so weak minimax forces equality throughout.</p>
+</div>
+
+<p>The converse requires attainment. Equality of the values alone need not
+produce a saddle pair when one of the infimum or supremum is not achieved.</p>
+
+<h3>Convex-concave minimax</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Sion's minimax theorem.</span> Let \(X\)
+    be a compact convex subset of a linear topological space and \(Y\) a convex
+    subset of another. Suppose \(L(\cdot,y)\) is lower semicontinuous and
+    convex on \(X\) for every \(y\), and \(L(x,\cdot)\) is upper
+    semicontinuous and concave on \(Y\) for every \(x\). Then
+    \[
+    \sup_{y\in Y}\inf_{x\in X}L(x,y)
+    =
+    \inf_{x\in X}\sup_{y\in Y}L(x,y).
+    \]</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof outline.</span> Fix
+    \(\alpha<\inf_x\sup_yL(x,y)\). For each \(y\), let
+    \(U_y=\{x:L(x,y)>\alpha\}\). Concavity in \(y\) and convexity in \(x\)
+    imply the finite-intersection property needed to show that finitely many
+    such sets cover \(X\) only if a convex combination of their \(y\)-values
+    produces a single \(y_\alpha\) with
+    \(\inf_xL(x,y_\alpha)>\alpha\). Compactness supplies the finite
+    subcover step, and semicontinuity supplies open level sets. Hence
+    \(\sup_y\inf_xL(x,y)\ge\alpha\); let \(\alpha\) increase to the upper
+    value and combine with weak minimax.</p>
+</div>
+
+<h3>Lagrangian saddle points and strong duality</h3>
+
+<div class="math-statement theorem">
+    <p><span class="statement-title">Saddle certificate for convex
+    programs.</span> For a convex program with Lagrangian
+    \(\mathcal L(x,\lambda,\nu)\), a primal-dual feasible triple
+    \((x^\star,\lambda^\star,\nu^\star)\) satisfies KKT if and only if
+    \[
+    \mathcal L(x^\star,\lambda,\nu)
+    \le\mathcal L(x^\star,\lambda^\star,\nu^\star)
+    \le\mathcal L(x,\lambda^\star,\nu^\star)
+    \]
+    for every \(x\) and every dual-feasible \((\lambda,\nu)\), with the
+    equality-variable convention handled by unrestricted \(\nu\).
+    Consequently the primal and dual values agree.</p>
+</div>
+
+<div class="math-statement proof">
+    <p><span class="statement-title">Proof.</span> Stationarity and convexity
+    make \(x^\star\) a global minimizer of
+    \(\mathcal L(\cdot,\lambda^\star,\nu^\star)\), proving the right saddle
+    inequality. Primal feasibility and complementary slackness imply
+    \[
+    \mathcal L(x^\star,\lambda,\nu)
+    \le f(x^\star)
+    =\mathcal L(x^\star,\lambda^\star,\nu^\star),
+    \]
+    proving the left inequality. Conversely, varying \(x\) gives stationarity
+    or subgradient stationarity, while varying each nonnegative multiplier
+    enforces feasibility and complementary slackness.</p>
+</div>
+
+<h3>A finite zero-sum game</h3>
+
+<div class="math-statement example">
+    <p><span class="statement-title">Example.</span> For a payoff matrix
+    \(A\in\mathbb R^{m\times n}\), mixed strategies
+    \(p\in\Delta_m,q\in\Delta_n\) give payoff \(p^\top Aq\). The function is
+    linear in each variable and both simplices are compact convex, so
+    \[
+    \max_{q\in\Delta_n}\min_{p\in\Delta_m}p^\top Aq
+    =
+    \min_{p\in\Delta_m}\max_{q\in\Delta_n}p^\top Aq.
+    \]
+    Linear programming duality computes the same equality. Randomization
+    convexifies the pure strategies and removes a possible minimax gap.</p>
+</div>
+
+<p>The same geometry appears in
+<a href="{{ '/notes/statistical-decision-theory/risk-bayes-and-minimax/' | relative_url }}">Bayes and minimax decision theory</a>:
+a rule minimizes risk while a least favorable prior maximizes Bayes risk.
+Adversarial learning and distributionally robust optimization use analogous
+saddle formulations.</p>

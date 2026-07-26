@@ -7,24 +7,144 @@ note_back_url: "/notes/differential-equations/"
 note_prev_url: "/notes/differential-equations/semigroup-methods/"
 ---
 
-<p>Variational methods records the objects, main results, proof mechanisms, and boundary cases needed for the differential equations note.</p>
+<p>Variational methods solve differential equations by identifying solutions
+as minimizers or critical points of an energy. Compactness supplies a limit,
+lower semicontinuity preserves the energy inequality, and differentiation of
+the functional recovers the equation.</p>
 
-    <h3>Definition</h3>
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Variational methods solve differential equations by finding critical points or minimizers of energy functionals.</p>
-    </div>
+<h3>The direct method</h3>
 
-    <h3>Proposition</h3>
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Coercive weakly lower semicontinuous functionals on reflexive Banach spaces attain minimizers on weakly closed constraint sets. Euler-Lagrange equations then give weak PDEs.</p>
-    </div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (direct method).</span> Let \(X\) be
+a reflexive Banach space and \(J:X\to(-\infty,\infty]\) be proper, coercive,
+and sequentially weakly lower semicontinuous. Then \(J\) attains its minimum.</p>
+</div>
 
-    <h3>Proof</h3>
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Take a minimizing sequence, use coercivity for boundedness, extract a weakly convergent subsequence by reflexivity, and use lower semicontinuity to pass to the limit.</p>
-    </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Choose a minimizing sequence
+\((u_k)\). Coercivity makes it bounded. Reflexivity gives a weakly convergent
+subsequence \(u_{k_j}\rightharpoonup u\). Weak lower semicontinuity yields
+\[
+J(u)\le\liminf_{j\to\infty}J(u_{k_j})=\inf_XJ,
+\]
+so \(u\) is a minimizer.</p>
+</div>
 
-    <h3>Remark</h3>
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Variational methods explain why compactness, convexity, and weak convergence are central to PDE existence theory.</p>
-    </div>
+<div class="math-statement example">
+<p><span class="statement-title">Example (Poisson equation).</span> On
+\(H_0^1(\Omega)\), define
+\[
+J(u)=\frac12\int_\Omega|\nabla u|^2\,\mathrm{d}x
+-\int_\Omega fu\,\mathrm{d}x.
+\]
+Poincare's inequality makes \(J\) coercive, convexity makes it weakly lower
+semicontinuous, and the direct method gives a minimizer. For every
+\(v\in H_0^1(\Omega)\),
+\[
+0=\left.\frac{\mathrm{d}}{\mathrm{d}t}J(u+tv)\right|_{t=0}
+=\int_\Omega\nabla u\cdot\nabla v\,\mathrm{d}x-\int_\Omega fv\,\mathrm{d}x,
+\]
+which is precisely the weak form of \(-\Delta u=f\).</p>
+</div>
+
+<h3>Euler-Lagrange equations</h3>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If
+\[
+J(u)=\int_\Omega L(x,u,\nabla u)\,\mathrm{d}x
+\]
+and \(u\) is a smooth local minimizer with fixed boundary values, then
+\[
+L_z(x,u,\nabla u)
+-\operatorname{div}L_p(x,u,\nabla u)=0.
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For
+\(\varphi\in C_c^\infty(\Omega)\), differentiate
+\(J(u+t\varphi)\) at \(t=0\):
+\[
+0=\int_\Omega
+\bigl(L_z\varphi+L_p\cdot\nabla\varphi\bigr)\,\mathrm{d}x
+=\int_\Omega
+\bigl(L_z-\operatorname{div}L_p\bigr)\varphi\,\mathrm{d}x.
+\]
+The fundamental lemma of the calculus of variations gives the equation.</p>
+</div>
+
+<p>Strict convexity of \(J\) implies uniqueness of the minimizer. Convexity
+also turns the first-order condition into a global one:
+\[
+0\in\partial J(u)
+\quad\Longleftrightarrow\quad
+J(v)\ge J(u)\ \text{for all }v.
+\]</p>
+
+<h3>Eigenvalues through constrained minimization</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (first Dirichlet eigenvalue).</span>
+For a bounded domain,
+\[
+\lambda_1=\min_{\substack{u\in H_0^1(\Omega)\\u\ne0}}
+\frac{\int_\Omega|\nabla u|^2\,\mathrm{d}x}
+{\int_\Omega|u|^2\,\mathrm{d}x}
+\]
+is attained, and a minimizer satisfies
+\[
+-\Delta u=\lambda_1u
+\]
+weakly. It may be chosen positive and \(\lambda_1\) is simple on a connected
+domain.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Normalize a minimizing
+sequence by \(\|u_k\|_2=1\). It is bounded in \(H_0^1\), hence converges weakly
+there and, by Rellich compactness, strongly in \(L^2\). The limit retains
+unit norm and minimizes by weak lower semicontinuity. A Lagrange multiplier
+gives the eigenvalue equation. Positivity follows by replacing \(u\) with
+\(|u|\); the strong maximum principle and the standard quotient argument
+give strict positivity and simplicity.</p>
+</div>
+
+<h3>Critical points beyond minima</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (mountain-pass principle).</span>
+Let \(J\in C^1(X,\mathbb R)\) satisfy the Palais-Smale compactness condition.
+Suppose \(J(0)=0\), \(J\ge\alpha>0\) on \(\|u\|=r\), and
+\(J(e)<0\) for some \(\|e\|>r\). Then
+\[
+c=\inf_{\gamma(0)=0,\,\gamma(1)=e}\max_{t\in[0,1]}J(\gamma(t))
+\]
+is a critical value of \(J\), with \(c\ge\alpha\).</p>
+</div>
+
+<p>The geometry forces every path from \(0\) to \(e\) over an energy barrier.
+The Palais-Smale condition prevents an almost-critical sequence at that
+height from escaping or oscillating without a convergent subsequence.
+Semilinear elliptic equations often possess both a minimizing solution and a
+second mountain-pass solution.</p>
+
+<h3>Gradient flows and compactness defects</h3>
+
+<p>The evolution
+\[
+u_t\in-\partial J(u)
+\]
+is the gradient flow of \(J\). Formally,
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}J(u(t))
+=-\|u_t(t)\|^2\le0.
+\]
+Heat flow is the \(L^2\)-gradient flow of Dirichlet energy; nonlinear
+diffusions arise from other convex energies and metrics.</p>
+
+<p>On unbounded domains or at critical Sobolev exponents, bounded minimizing
+sequences need not be compact. They may translate, vanish, or split into
+separated packets. Concentration-compactness isolates these alternatives and
+replaces a false compactness assertion with a precise analysis of the lost
+mass.</p>

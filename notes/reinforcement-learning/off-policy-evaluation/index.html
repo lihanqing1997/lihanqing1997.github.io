@@ -68,3 +68,95 @@ The ordinary importance-sampling estimator averages \(\rho(\tau_i)G(\tau_i)\).</
     <div class="math-statement remark">
         <p><span class="statement-title">Remark.</span> Failure of overlap is not a technical nuisance; it is nonidentifiability. The data contain no information about target actions absent under the behavior policy.</p>
     </div>
+
+<!-- rigorous-expansion-2026 -->
+<h3>Change of measure on trajectories</h3>
+
+<p>Let behavior policy \(\mu\) generate data and target policy \(\pi\) be
+absolutely continuous with respect to \(\mu\). Define
+\[
+\rho_t=\frac{\pi(A_t\mid S_t)}{\mu(A_t\mid S_t)},
+\qquad
+W_t=\prod_{k=0}^{t}\rho_k.
+\]
+For any integrable function of history through time \(t\),
+\[
+E_\mu\{W_tf(H_t,A_t)\}=E_\pi f(H_t,A_t).
+\]
+The dynamics cancel in the trajectory likelihood ratio.</p>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (per-decision importance
+sampling).</span>
+\[
+J(\pi)
+=E_\mu\sum_{t\ge0}\gamma^tW_tR_t.
+\]
+The estimator is unbiased when support holds and expectations are finite.</p>
+</div>
+
+<p>Its variance can grow exponentially with horizon because \(W_t\) is a
+product. Self-normalization lowers variance but introduces finite-sample bias.
+Clipping weights makes the bias explicit:
+\[
+|E[(W_t-\min\{W_t,c\})R_t]|
+\le R_{\max}E[(W_t-c)_+].
+\]</p>
+
+<h3>Marginal density ratios</h3>
+
+<p>Discounted occupancy ratios
+\[
+w(s,a)=\frac{d_\rho^\pi(s,a)}{d_\rho^\mu(s,a)}
+\]
+avoid full trajectory products:
+\[
+J(\pi)=\frac1{1-\gamma}E_{d^\mu}\{w(S,A)r(S,A)\}.
+\]
+They satisfy a moment equation derived from discounted flow. For every test
+function \(f\),
+\[
+E_{d^\mu}\left[
+w(S,A)\{f(S)-\gamma E_\pi[f(S')\mid S,A]\}
+\right]
+=(1-\gamma)E_\rho f(S).
+\]
+Dual or minimax methods estimate \(w\) from this equation.</p>
+
+<h3>Doubly robust evaluation</h3>
+
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (one-step doubly robust identity).</span>
+Let \(q(s,a)\) be any function,
+\(v_q(s)=E_\pi\{q(s,A)\mid s\}\), and let \(w=d^\pi/d^\mu\). Then
+\[
+J(\pi)
+=E_\rho v_q(S_0)
++\frac1{1-\gamma}E_{d^\mu}\left[
+w(S,A)\{R+\gamma v_q(S')-q(S,A)\}
+\right].
+\]
+The identity remains valid if \(q=Q^\pi\) even with misspecified \(w\), or if
+\(w\) is correct even with misspecified \(q\).</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> If \(w\) is correct, change
+measure to \(d^\pi\). The discounted flow identity telescopes
+\[
+E_\rho v_q+\frac1{1-\gamma}E_{d^\pi}
+\{\gamma v_q(S')-q(S,A)\}=0,
+\]
+because \(E_\pi(q\mid S)=v_q(S)\); the reward term leaves \(J(\pi)\). If
+\(q=Q^\pi\), the conditional Bellman residual has mean zero given \((S,A)\),
+so any integrable weight contributes zero.</p>
+</div>
+
+<h3>Semiparametric inference and overlap</h3>
+
+<p>The doubly robust score is an influence-function representation. With
+cross-fitting and nuisance rates whose product is \(o_p(n^{-1/2})\), it can
+yield root-\(n\) normal inference under iid trajectories or suitable mixing.
+No estimator can overcome absent overlap: if \(d^\pi\) charges a state-action
+region unseen under \(\mu\), target value is not nonparametrically identified.
+Near violations appear as large efficiency bounds and unstable weights.</p>

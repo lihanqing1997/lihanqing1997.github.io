@@ -8,31 +8,187 @@ note_prev_url: "/notes/statistical-inference/linear-and-generalized-linear-model
 note_next_url: "/notes/statistical-inference/robust-inference/"
 ---
 
-<p>Real models are approximations. Misspecification theory asks what likelihood and estimating-equation procedures estimate when the assumed model is not exactly true.</p>
+<p>A working model can be useful without being literally true. Misspecification theory identifies the population functional estimated by a likelihood or estimating equation and derives uncertainty for that functional under the actual law. A robust covariance estimator repairs variance calibration; it does not make a scientifically inappropriate target meaningful.</p>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> In a misspecified parametric model \(\{p_\theta\}\), the pseudo-true value is
-        \[
-        \theta^*=\arg\max_{\theta}E_P\log p_\theta(X),
-        \]
-        equivalently the KL projection of the true distribution \(P\) onto the model.</p>
-    </div>
+<h3>Kullback-Leibler projection</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Misspecified MLE.</span> Under regularity, the MLE converges to \(\theta^*\), and
-        \[
-        \sqrt n(\hat\theta-\theta^*)\rightsquigarrow N(0,A^{-1}BA^{-1}),
-        \]
-        where \(A=-P\ddot\ell_{\theta^*}(X)\) and \(B=P\dot\ell_{\theta^*}(X)\dot\ell_{\theta^*}(X)^\top\).</p>
-    </div>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> Let \(P_0\) be the true law and \(\{P_\theta:\theta\in\Theta\}\) a dominated working model. A pseudo-true parameter is
+  \[
+  \theta^\star\in\arg\max_{\theta\in\Theta}
+  P_0\ell_\theta
+  =\arg\min_{\theta\in\Theta}
+  \operatorname{KL}(P_0\|P_\theta),
+  \]
+  whenever these quantities are finite.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Consistency follows by the same argmax argument, now with limit criterion \(P\log p_\theta\). The score equation gives
-        \[
-        0=P_n\dot\ell_{\theta^*}+P\ddot\ell_{\theta^*}(\hat\theta-\theta^*)+o_p(n^{-1/2}).
-        \]
-        The CLT applies to \(P_n\dot\ell_{\theta^*}\), whose variance is \(B\). Solving the expansion gives the sandwich covariance.</p>
-    </div>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Population score equation.</span> If \(\theta^\star\) is an interior differentiability point and differentiation can pass through \(P_0\), then
+  \[
+  P_0s_{\theta^\star}=0.
+  \]
+  This centering is with respect to \(P_0\), although \(s_{\theta^\star}\) was constructed from the working model.</p>
+</div>
 
-    <h3>Consequences</h3>
-    <p>Under correct specification, \(A=B=I\). Under misspecification, expected curvature and score variance differ, and model-based standard errors are generally wrong. Robust covariance estimates replace \(A,B\) by sample analogues.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> The differentiable map \(\theta\mapsto P_0\ell_\theta\) has an interior maximum at \(\theta^\star\), so its gradient vanishes:
+  \[
+  0=\nabla_\theta P_0\ell_\theta|_{\theta^\star}
+  =P_0s_{\theta^\star}.
+  \]</p>
+</div>
+
+<h3>Misspecified likelihood limit</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Quasi-MLE theorem.</span> Suppose \(\hat\theta_n\to_p\theta^\star\), the empirical score admits a uniform first-order expansion, and
+  \[
+  A=-P_0\nabla_\theta s_{\theta^\star}
+  \quad\text{is nonsingular},\qquad
+  B=P_0(s_{\theta^\star}s_{\theta^\star}^\top)\lt\infty.
+  \]
+  Then
+  \[
+  \sqrt n(\hat\theta_n-\theta^\star)
+  =A^{-1}\frac1{\sqrt n}\sum_{i=1}^n
+  s_{\theta^\star}(X_i)+o_p(1)
+  \rightsquigarrow
+  N(0,A^{-1}BA^{-\top}).
+  \]</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Taylor-expand the empirical score:
+  \[
+  0=P_ns_{\hat\theta_n}
+  =P_ns_{\theta^\star}
+  +P_0\nabla s_{\theta^\star}
+  (\hat\theta_n-\theta^\star)
+  +o_p(n^{-1/2}).
+  \]
+  The population score is zero, so
+  \[
+  \sqrt nP_ns_{\theta^\star}
+  =\frac1{\sqrt n}\sum_{i=1}^ns_{\theta^\star}(X_i)
+  \rightsquigarrow N(0,B).
+  \]
+  Solving the expansion and applying Slutsky gives the result.</p>
+</div>
+
+<p>Under correct specification, the information identity gives \(A=B=I(\theta_0)\), and the covariance reduces to \(I^{-1}\). Under misspecification, curvature \(A\) and score variability \(B\) answer different questions and must remain separate.</p>
+
+<h3>Estimating the sandwich</h3>
+
+<div class="math-statement proposition">
+  <p><span class="statement-title">Plug-in sandwich covariance.</span> Define
+  \[
+  \hat A=-P_n\nabla_\theta s_{\hat\theta_n},
+  \qquad
+  \hat B=P_n(s_{\hat\theta_n}s_{\hat\theta_n}^\top).
+  \]
+  If \(\hat A\to_pA\) and \(\hat B\to_pB\), then
+  \[
+  \widehat{\operatorname{Var}}(\hat\theta_n)
+  =\frac1n\hat A^{-1}\hat B\hat A^{-\top}
+  \]
+  is consistent for the asymptotic covariance divided by \(n\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Matrix inversion and multiplication are continuous at nonsingular \(A\). The continuous mapping theorem gives
+  \[
+  \hat A^{-1}\hat B\hat A^{-\top}
+  \to_pA^{-1}BA^{-\top}.
+  \]</p>
+</div>
+
+<h3>Heteroskedastic linear regression</h3>
+
+<p>Let \(Y_i=X_i^\top\beta^\star+\varepsilon_i\), where \(X_i\in\mathbb R^p\) and
+\[
+\mathbb E(X_i\varepsilon_i)=0,
+\]
+but \(\mathbb E(\varepsilon_i^2\mid X_i)\) need not be constant. The OLS normal equation is
+\[
+P_n\{X(Y-X^\top\hat\beta)\}=0.
+\]
+Thus
+\[
+A=\mathbb E(XX^\top),\qquad
+B=\mathbb E(XX^\top\varepsilon^2),
+\]
+and
+\[
+\sqrt n(\hat\beta-\beta^\star)
+\rightsquigarrow
+N(0,A^{-1}BA^{-1}).
+\]</p>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Derivation.</span> The exact identity
+  \[
+  \hat\beta-\beta^\star
+  =\left(\frac1n\sum_iX_iX_i^\top\right)^{-1}
+  \frac1n\sum_iX_i\varepsilon_i
+  \]
+  reduces the result to a law of large numbers for the Gram matrix and a multivariate central limit theorem for \(X_i\varepsilon_i\).</p>
+</div>
+
+<p>Writing \(X\) for the design matrix and \(\hat e_i=Y_i-X_i^\top\hat\beta\), the HC0 covariance estimator is
+\[
+(X^\top X)^{-1}
+\left(\sum_{i=1}^n\hat e_i^2X_iX_i^\top\right)
+(X^\top X)^{-1}.
+\]
+HC1 multiplies the middle term by \(n/(n-p)\). HC2 and HC3 inflate residuals using leverage \(h_{ii}\), replacing \(\hat e_i^2\) by \(\hat e_i^2/(1-h_{ii})\) or \(\hat e_i^2/(1-h_{ii})^2\), respectively. These corrections target finite-sample leverage bias; they share the same fixed-\(p\) limit under standard conditions.</p>
+
+<h3>Clustered observations</h3>
+
+<p>Suppose clusters \(c=1,\ldots,G\) are independent but observations within a cluster may be arbitrarily dependent. If the estimating contribution is \(\psi_{ci}(\theta)\), define the cluster score
+\[
+\Psi_c(\theta)=\sum_{i\in c}\psi_{ci}(\theta).
+\]
+The variance meat is estimated by
+\[
+\hat B_{\mathrm{cl}}
+=\frac1G\sum_{c=1}^G
+\Psi_c(\hat\theta)\Psi_c(\hat\theta)^\top,
+\]
+with normalization matched to the chosen \(A\). The asymptotic sample size is the number of independent clusters \(G\), not the number of rows. Few-cluster inference needs degrees-of-freedom or randomization methods beyond the large-\(G\) sandwich.</p>
+
+<h3>Serial dependence and long-run variance</h3>
+
+<p>For a stationary dependent score sequence \(\psi_t\), the central limit variance is the long-run covariance
+\[
+B_{\mathrm{LR}}
+=\sum_{k=-\infty}^{\infty}
+\operatorname{Cov}(\psi_0,\psi_k).
+\]
+Heteroskedasticity-and-autocorrelation-consistent estimators replace this series by a kernel-weighted sample sum
+\[
+\hat B_{\mathrm{HAC}}
+=\hat\Gamma_0+
+\sum_{k=1}^{L}w(k/L)
+(\hat\Gamma_k+\hat\Gamma_k^\top).
+\]
+Bandwidth \(L\) must increase slowly enough to control variance while capturing dependence. An i.i.d. sandwich is not robust to serial correlation.</p>
+
+<h3>Targets and robust tests</h3>
+
+<p>Under a misspecified conditional mean model, OLS targets the best linear projection
+\[
+\beta^\star
+=\arg\min_\beta\mathbb E(Y-X^\top\beta)^2,
+\]
+not necessarily a structural slope or a conditional derivative. Sandwich standard errors give valid inference for this projection under the moment assumptions; they do not validate causal interpretation.</p>
+
+<p>A sandwich-Wald statistic for \(H_0:r(\theta^\star)=0\) is
+\[
+n\,r(\hat\theta)^\top
+\{R(\hat\theta)\hat V R(\hat\theta)^\top\}^{-1}
+r(\hat\theta),
+\qquad
+\hat V=\hat A^{-1}\hat B\hat A^{-\top},
+\]
+and converges to \(\chi_q^2\) under regularity. A naive model-based Wald test generally has the wrong null scale when \(A\ne B\).</p>

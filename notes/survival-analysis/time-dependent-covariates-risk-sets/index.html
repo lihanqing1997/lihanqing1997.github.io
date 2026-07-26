@@ -5,38 +5,180 @@ breadcrumb_child_label_fr: "8. Covariables dépendant du temps et dépendance de
 breadcrumb_child_label_zh: "8. 时变协变量与风险集依赖"
 note_back_url: "/notes/survival-analysis/"
 note_prev_url: "/notes/survival-analysis/baseline-hazard-survival-prediction/"
-note_next_url: "/notes/survival-analysis/frailty-random-effects/"
+note_next_url: "/notes/survival-analysis/model-diagnostics-and-alternatives/"
 ---
 
-<h3>Predictability</h3>
+<p>A time-dependent Cox model compares covariate values just before each event among subjects currently at risk. Its formulas look like the baseline-covariate formulas, but validity now depends critically on filtration, predictability, and how histories are encoded.</p>
 
-    <p>Time-dependent covariates are allowed only when the covariate value used at time \(t\) is known just before \(t\). This prevents using future information to predict present failures.</p>
+<h3>Predictable covariate histories</h3>
+
 <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A time-dependent covariate process \(Z_i(t)\) is admissible in the Cox model when it is predictable with respect to the observed filtration. The intensity is
+<p><span class="statement-title">Definition.</span> A predictable-covariate Cox intensity is
 \[
-\lambda_i(t)=Y_i(t)\lambda_0(t)\exp\{Z_i(t)^\top\beta\}.
-\]</p>
-    </div><div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> With predictable \(Z_i(t)\), the Cox score keeps the same form as before, replacing \(Z_i\) by \(Z_i(t)\):
+\lambda_i(t\mid\mathcal F_{t-})
+=Y_i(t)\lambda_0(t)
+\exp\{\beta^\top Z_i(t)\},
+\]
+where \(Y_i\) and \(Z_i\) are predictable. The partial score remains
 \[
-U(\beta)=\sum_i\int_0^\tau\{Z_i(t)-\bar Z(t,\beta)\}\,\mathrm{d}N_i(t).
+U_n(\beta)
+=\sum_i\int_0^\tau
+\{Z_i(t)-\bar Z_n(\beta,t)\}\,\mathrm{d}N_i(t).
 \]</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> At each event time, the conditional probability of the failing subject is computed using the covariate values measurable just before that time. Differentiating the resulting product gives the displayed score.</p>
-    </div>
-    <h3>Risk-set dependence</h3>
-<div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Risk sets make the Cox likelihood nonproduct. Removing one subject changes denominators at all later event times while that subject is at risk. This dependence is one reason high-dimensional Cox theory is subtler than high-dimensional GLM theory.</p>
-    </div>
-    <h3>External and internal covariates</h3>
-<div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An external time-dependent covariate evolves independently of the subject's event process after conditioning on the observed history. An internal covariate is itself affected by the subject's health or event history.</p>
-    </div><div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Predictability is necessary but not always sufficient for causal interpretation. Internal covariates may be valid for prediction while still failing to define a simple intervention effect.</p>
-    </div>
-    <h3>Start-stop data representation</h3>
+</div>
+
 <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(Z_i(t)\) is piecewise constant on intervals \((a_{ik},b_{ik}]\), the Cox partial likelihood can be computed by replacing each subject by start-stop rows with risk indicator \(1\{a_{ik}<t\le b_{ik}\}\) and covariate value \(Z_{ik}\).</p>
-    </div><div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> At every event time, only the interval containing that time contributes to the predictable covariate value and risk indicator. Therefore the expanded data give exactly the same risk-set sums \(S^{(k)}(t,\beta)\).</p>
-    </div>
+<p><span class="statement-title">Proposition.</span> At the true parameter,
+\[
+U_n(\beta_0)
+=\sum_i\int_0^\tau
+\{Z_i(t)-\bar Z_n(\beta_0,t)\}\,\mathrm{d}M_i(t),
+\]
+and is therefore a martingale, provided \(Z_i(t)\) is predictable.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The integrand is predictable because it is formed from predictable covariates and risk indicators. Substitution of
+\[
+\mathrm{d}N_i
+=\mathrm{d}M_i
++Y_i e^{\beta_0^\top Z_i}\mathrm{d}\Lambda_0
+\]
+cancels the compensator after risk-set centering exactly as in the baseline-covariate case.</p>
+</div>
+
+<p>If a value recorded after an event is carried backward to time \(t\), the integrand is anticipative and the martingale proof fails. This is a mathematical formulation of look-ahead bias.</p>
+
+<h3>Start-stop representation</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Divide subject \(i\)'s observed history into intervals
+\[
+(L_{ik},R_{ik}],\qquad k=1,\ldots,K_i,
+\]
+on which covariates are constant at \(Z_{ik}\). Define
+\[
+Y_{ik}(t)=1\{L_{ik}<t\le R_{ik}\},
+\qquad
+\Delta_{ik}=1\{\text{event at }R_{ik}\}.
+\]
+The interval rows are pieces of one subject trajectory, not independent observations.</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> The partial log-likelihood computed from start-stop rows equals the counting-process partial likelihood for the original piecewise-constant path, provided each subject contributes at most one active row at a time and risk sets use the open-left, closed-right convention.</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> At any event time \(t\), exactly one row for each at-risk subject satisfies \(L_{ik}<t\le R_{ik}\), and its stored value equals \(Z_i(t-)\). Therefore the numerator and every term in the risk-set denominator coincide with those of the pathwise partial likelihood. Multiplication over event times gives equality.</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example (treatment initiation).</span> A subject enters at time \(0\), starts treatment at time \(4\), and fails at time \(9\). The correct rows are
+\[
+(0,4],\ Z=0,\ \Delta=0;
+\qquad
+(4,9],\ Z=1,\ \Delta=1.
+\]
+Coding \(Z=1\) from baseline incorrectly assigns the guaranteed event-free period \((0,4]\) to treatment and creates immortal-time bias.</p>
+</div>
+
+<h3>External and internal covariates</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> An <em>external</em> covariate path is generated independently of the subject's event mechanism beyond modeled history, as with ambient temperature or a prescheduled intervention. An <em>internal</em> covariate is affected by the subject's evolving health or event history, as with current biomarker level or number of previous episodes.</p>
+</div>
+
+<p>The partial likelihood can estimate conditional intensity associations for either type when predictability and intensity assumptions hold. However, survival under a fixed future internal-covariate path,
+\[
+\exp\left\{
+-\int_0^te^{\beta^\top z(u)}\,\mathrm{d}\Lambda_0(u)
+\right\},
+\]
+need not be a marginal survival probability because the path itself is random and jointly generated with survival. Dynamic prediction requires a model for that joint evolution, such as a landmark or joint longitudinal-survival model.</p>
+
+<h3>Risk-set sampling and nested case-control designs</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> In nested case-control sampling, when a case occurs at \(t\), a subset \(\widetilde{\mathcal R}(t)\) of controls is sampled from the full risk set. Let
+\(\pi_j(t)\) be subject \(j\)'s conditional inclusion probability. A weighted risk-set sum is
+\[
+\widetilde S^{(k)}(\beta,t)
+=\sum_{j\in\widetilde{\mathcal R}(t)}
+\frac{e^{\beta^\top Z_j(t)}Z_j(t)^{\otimes k}}
+{\pi_j(t)}.
+\]</p>
+</div>
+
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (Horvitz-Thompson identity).</span> Conditional on the full risk set and its covariates,
+\[
+E\{\widetilde S^{(k)}(\beta,t)\mid\mathcal R(t)\}
+=S^{(k)}(\beta,t).
+\]</p>
+</div>
+
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(I_j(t)\) for sampling inclusion. Since
+\(E\{I_j(t)\mid\mathcal R(t)\}=\pi_j(t)\),
+\[
+E\left[
+\frac{I_j(t)}{\pi_j(t)}
+e^{\beta^\top Z_j(t)}Z_j(t)^{\otimes k}
+\middle|\mathcal R(t)
+\right]
+=e^{\beta^\top Z_j(t)}Z_j(t)^{\otimes k}.
+\]
+Sum over the full risk set.</p>
+</div>
+
+<p>Unweighted analysis of a sampled risk set generally changes the target. Variance must also account for the sampling design rather than treating sampled controls as an ordinary cohort.</p>
+
+<h3>Recurrent-event risk sets</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition (Andersen-Gill model).</span> Let \(N_i(t)\) count all recurrent events for subject \(i\). The model
+\[
+\lambda_i(t\mid\mathcal F_{t-})
+=Y_i(t)\lambda_0(t)e^{\beta^\top Z_i(t)}
+\]
+uses a common baseline intensity and leaves a subject at risk after an event. Its partial likelihood has the ordinary Cox form with every jump of \(N_i\) included.</p>
+</div>
+
+<div class="math-statement remark">
+<p><span class="statement-title">Dependence.</span> Repeated events within a subject are not independent. If the conditional intensity is correctly specified, martingale theory remains valid; a subject-cluster sandwich covariance is commonly used to protect against misspecified within-subject dependence. Event-number-stratified Prentice-Williams-Peterson models instead condition risk on having experienced the preceding event. These specifications answer different scientific questions.</p>
+</div>
+
+<h3>Time-dependent coefficients</h3>
+
+<div class="math-statement definition">
+<p><span class="statement-title">Definition.</span> Let
+\[
+\beta(t)=\sum_{k=1}^K\theta_kb_k(t).
+\]
+Then
+\[
+\lambda_i(t)
+=Y_i(t)\lambda_0(t)
+\exp\left\{\sum_{k=1}^K\theta_k^\top Z_i(t)b_k(t)\right\}
+\]
+is an ordinary Cox model in expanded predictable covariates
+\(Z_i(t)b_k(t)\).</p>
+</div>
+
+<div class="math-statement example">
+<p><span class="statement-title">Example.</span> For a binary treatment \(A\), use
+\(\beta(t)=\theta_0+\theta_1\log(1+t)\). The hazard ratio is
+\[
+\exp(\theta_0)(1+t)^{\theta_1}.
+\]
+Testing \(\theta_1=0\) is a direct test of proportionality for this specified temporal deviation. A flexible basis broadens the alternative but requires regularization or a sufficiently large number of events.</p>
+</div>
+
+<h3>Landmark prediction</h3>
+
+<p>At a landmark time \(s\), restrict to subjects with \(Y_i(s)=1\), summarize history through \(H_i(s)\), and model
+\[
+P(T_i>s+u\mid T_i>s,H_i(s)).
+\]
+Landmarking respects the information available at prediction time and can be repeated over \(s\). It estimates a sequence of conditional prediction laws, not automatically one globally coherent joint process. That tradeoff is often preferable to extrapolating an internal biomarker path that is not yet observed.</p>

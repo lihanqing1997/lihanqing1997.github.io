@@ -8,50 +8,153 @@ note_prev_url: "/notes/probability-theory/weak-law-of-large-numbers/"
 note_next_url: "/notes/probability-theory/strong-law-of-large-numbers/"
 ---
 
-<p>Borel-Cantelli lemmas connect summability of probabilities with almost-sure occurrence infinitely often. They are the basic zero-one mechanism behind many almost-sure results.</p>
+<p>The Borel-Cantelli lemmas turn estimates for individual events into pathwise statements about infinitely many events. They are the standard passage from probability bounds to eventual almost-sure behavior. Zero-one laws then explain why many asymptotic events cannot retain an intermediate probability.</p>
 
-    <h3>Infinitely often events</h3>
+<h3>Limsup and liminf events</h3>
 
-    <p>The event of infinitely many occurrences is a tail event built from limsup sets.</p>
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For events \(A_1,A_2,\ldots\),
+  \[
+  \limsup_{n\to\infty}A_n
+  =\bigcap_{m=1}^{\infty}\bigcup_{n\ge m}A_n
+  =\{A_n\ \text{occurs infinitely often}\},
+  \]
+  while
+  \[
+  \liminf_{n\to\infty}A_n
+  =\bigcup_{m=1}^{\infty}\bigcap_{n\ge m}A_n
+  =\{A_n\ \text{occurs eventually always}\}.
+  \]
+  Their complements satisfy
+  \[
+  (\limsup A_n)^c=\liminf A_n^c,\qquad
+  (\liminf A_n)^c=\limsup A_n^c.
+  \]</p>
+</div>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For events \(A_n\), define
-\[
-\{A_n\ \mathrm{i.o.}\}=\limsup_nA_n=\bigcap_{m\ge1}\bigcup_{n\ge m}A_n.
-\]
-It is the event that \(A_n\) occurs for infinitely many \(n\).</p>
-    </div>
+<p>If \(N=\sum_{n\ge1}1_{A_n}\) is the total number of occurrences, then \(\{N=\infty\}=\limsup A_n\). This identity makes the first lemma almost a statement about integrability of a nonnegative integer-valued random variable.</p>
 
+<h3>The two Borel-Cantelli lemmas</h3>
 
-    <h3>Two Borel-Cantelli lemmas</h3>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (first Borel-Cantelli lemma).</span> For arbitrary events \(A_n\), if
+  \[
+  \sum_{n=1}^{\infty}P(A_n)<\infty,
+  \]
+  then \(P(A_n\ \mathrm{i.o.})=0\). No independence assumption is required.</p>
+</div>
 
-    <p>Summable probabilities prevent infinitely many occurrences; independence gives the converse.</p>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> For every \(m\),
+  \[
+  P(\limsup A_n)
+  \le P\!\left(\bigcup_{n\ge m}A_n\right)
+  \le\sum_{n\ge m}P(A_n).
+  \]
+  The tail of a convergent nonnegative series tends to zero. Letting \(m\to\infty\) proves the assertion. Equivalently, Tonelli gives
+  \(\mathbb EN=\sum_nP(A_n)<\infty\), and a nonnegative random variable with finite expectation is finite almost surely.</p>
+</div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\sum_nP(A_n)\lt\infty\), then \(P(A_n\ \mathrm{i.o.})=0\). If the \(A_n\) are independent and \(\sum_nP(A_n)=\infty\), then \(P(A_n\ \mathrm{i.o.})=1\).</p>
-    </div>
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (second Borel-Cantelli lemma).</span> If \(A_1,A_2,\ldots\) are independent and
+  \[
+  \sum_{n=1}^{\infty}P(A_n)=\infty,
+  \]
+  then \(P(A_n\ \mathrm{i.o.})=1\).</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For the first part,
-\[
-P(\limsup A_n)\le P\left(\bigcup_{n\ge m}A_n\right)\le\sum_{n\ge m}P(A_n)\to0.
-\]
-For the independent converse, \(P(\cap_{n=m}^N A_n^c)=\prod_{n=m}^N(1-P(A_n))\le \exp(-\sum_{n=m}^NP(A_n))\to0\). Hence with probability one at least one \(A_n\) occurs after every \(m\), which is exactly infinitely often.</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Fix \(m\). Independence and \(1-x\le e^{-x}\) imply
+  \[
+  P\!\left(\bigcap_{n=m}^{N}A_n^c\right)
+  =\prod_{n=m}^{N}(1-P(A_n))
+  \le \exp\!\left\{-\sum_{n=m}^{N}P(A_n)\right\}\longrightarrow0.
+  \]
+  By continuity from above,
+  \[
+  P\!\left(\bigcap_{n\ge m}A_n^c\right)=0.
+  \]
+  Taking the countable union over \(m\) shows that the event on which only finitely many \(A_n\) occur has probability zero.</p>
+</div>
 
+<div class="math-statement example">
+  <p><span class="statement-title">Example (why dependence matters).</span> Let \(A_n=A\) for every \(n\), where \(P(A)=1/2\). Then \(\sum_nP(A_n)=\infty\), but
+  \[
+  P(A_n\ \mathrm{i.o.})=P(A)=\frac12.
+  \]
+  Divergence of the probability sum alone gives no converse to the first lemma.</p>
+</div>
 
-    <h3>Zero-one laws</h3>
+<h3>Threshold tests for independent observations</h3>
 
-    <p>Tail events often have probability only zero or one.</p>
+<div class="math-statement proposition">
+  <p><span class="statement-title">Proposition.</span> Let \(X_n\) be independent and let \(u_n\) be deterministic. Then
+  \[
+  P(X_n>u_n\ \mathrm{i.o.})=
+  \begin{cases}
+  0,&\sum_nP(X_n>u_n)<\infty,\\
+  1,&\sum_nP(X_n>u_n)=\infty.
+  \end{cases}
+  \]</p>
+</div>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(X_n\) are independent and \(T\in\bigcap_m\sigma(X_m,X_{m+1},\dots)\), then \(P(T)\in\{0,1\}\).</p>
-    </div>
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Apply the two lemmas to \(A_n=\{X_n>u_n\}\). The events inherit independence from the random variables.</p>
+</div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Kolmogorov's zero-one law follows because a tail event is independent of every finite initial sigma-field. A monotone-class argument gives independence from \(\sigma(X_1,X_2,\dots)\), which contains the tail event itself. Thus \(T\) is independent of itself, so \(P(T)=P(T)^2\).</p>
-    </div>
+<div class="math-statement example">
+  <p><span class="statement-title">Example (exponential upper envelope).</span> If \(X_n\) are i.i.d. exponential with mean one, then
+  \(P(X_n>c\log n)=n^{-c}\). Hence
+  \[
+  P(X_n>c\log n\ \mathrm{i.o.})=
+  \begin{cases}
+  0,&c>1,\\
+  1,&0<c\le1.
+  \end{cases}
+  \]
+  In particular, \(\limsup_n X_n/\log n=1\) almost surely: use rational \(c>1\) for the upper bound and rational \(c<1\) for the lower bound.</p>
+</div>
 
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Events such as convergence of \(\sum X_n\), infinitely many exceedances, or limsup growth rates are usually tail events.</p>
-    </div>
+<h3>Kolmogorov's zero-one law</h3>
+
+<div class="math-statement definition">
+  <p><span class="statement-title">Definition.</span> For random variables \(X_1,X_2,\ldots\), the tail sigma-field is
+  \[
+  \mathcal T=\bigcap_{m=1}^{\infty}\sigma(X_m,X_{m+1},\ldots).
+  \]
+  A tail event is unchanged by modifying any finite initial segment of the sequence.</p>
+</div>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Kolmogorov zero-one law).</span> If \(X_1,X_2,\ldots\) are independent, then every \(T\in\mathcal T\) satisfies \(P(T)\in\{0,1\}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof.</span> Put \(\mathcal F_m=\sigma(X_1,\ldots,X_m)\) and \(\mathcal F_\infty=\sigma(\bigcup_m\mathcal F_m)\). Since \(T\in\sigma(X_{m+1},X_{m+2},\ldots)\), independence of the variables implies that \(T\) is independent of \(\mathcal F_m\) for every \(m\). Define
+  \[
+  \mathcal D=\{B\in\mathcal F_\infty:P(T\cap B)=P(T)P(B)\}.
+  \]
+  The class \(\mathcal D\) is a lambda-system and contains the pi-system
+  \(\bigcup_m\mathcal F_m\). Dynkin's pi-lambda theorem therefore gives
+  \(\mathcal D=\mathcal F_\infty\). But \(T\in\mathcal T\subset\mathcal F_\infty\), so \(T\) is independent of itself:
+  \[
+  P(T)=P(T\cap T)=P(T)^2.
+  \]
+  Thus \(P(T)=0\) or \(1\).</p>
+</div>
+
+<p>Convergence of \(\sum_nX_n\), convergence of \(S_n/a_n\), and events of the form \(\{X_n>u_n\ \mathrm{i.o.}\}\) are tail events. The zero-one law does not tell which of zero or one occurs; moment estimates and Borel-Cantelli usually make that decision.</p>
+
+<h3>Hewitt-Savage symmetry</h3>
+
+<div class="math-statement theorem">
+  <p><span class="statement-title">Theorem (Hewitt-Savage zero-one law).</span> Let \(X_n\) be i.i.d. If an event \(A\in\sigma(X_1,X_2,\ldots)\) is invariant under every finite permutation of the coordinates, then \(P(A)\in\{0,1\}\).</p>
+</div>
+
+<div class="math-statement proof">
+  <p><span class="statement-title">Proof outline.</span> Approximate \(A\) in probability by an event \(B\in\sigma(X_1,\ldots,X_m)\). Move the first \(m\) coordinates to a disjoint block by a finite permutation. Invariance of \(A\) makes the moved copy approximate the same event \(A\), while the original and moved copies of \(B\) are independent because the observations are i.i.d. Passing the approximation error to zero shows \(P(A)=P(A)^2\).</p>
+</div>
+
+<div class="math-statement remark">
+  <p><span class="statement-title">Remark.</span> Hewitt-Savage is stronger than Kolmogorov for i.i.d. sequences: permutation-invariant events need not visibly belong to the tail sigma-field. It is useful for statements about unordered samples, empirical distributions, and limsup functionals.</p>
+</div>
