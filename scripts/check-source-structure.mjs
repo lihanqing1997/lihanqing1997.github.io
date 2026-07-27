@@ -62,14 +62,108 @@ function countUnescapedDollars(source) {
   return { display, inline };
 }
 
-function countRawLessThanInMath(source) {
-  let count = 0;
-  for (const pattern of [/\\\(([\s\S]*?)\\\)/g, /\\\[([\s\S]*?)\\\]/g]) {
-    for (const match of source.matchAll(pattern)) {
-      count += (match[1].match(/</g) ?? []).length;
+function mathRegions(source) {
+  const regions = [];
+  const issues = [];
+  let active = null;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const delimiter = source[index];
+    if (!["(", ")", "[", "]"].includes(delimiter) || !isEscaped(source, index)) {
+      continue;
+    }
+
+    if (active === null) {
+      if (delimiter === "(" || delimiter === "[") {
+        active = {
+          close: delimiter === "(" ? ")" : "]",
+          contentStart: index + 1,
+          display: delimiter === "[",
+        };
+      }
+      continue;
+    }
+
+    if (delimiter === active.close) {
+      regions.push({
+        content: source.slice(active.contentStart, index - 1),
+        display: active.display,
+      });
+      active = null;
+    } else if (delimiter === "(" || delimiter === "[") {
+      issues.push(`nested MathJax delimiter \\${delimiter}`);
     }
   }
-  return count;
+
+  if (active !== null) {
+    issues.push(`unclosed MathJax delimiter; expected \\${active.close}`);
+  }
+
+  return { regions, issues };
+}
+
+function isEscaped(source, index) {
+  let backslashes = 0;
+  for (let cursor = index - 1; cursor >= 0 && source[cursor] === "\\"; cursor -= 1) {
+    backslashes += 1;
+  }
+  return backslashes % 2 === 1;
+}
+
+function checkMathStructure(source) {
+  const issues = [];
+  const parsed = mathRegions(source);
+  issues.push(...parsed.issues);
+
+  for (const { content: region } of parsed.regions) {
+    let braces = 0;
+    for (let index = 0; index < region.length; index += 1) {
+      if (isEscaped(region, index)) continue;
+      if (region[index] === "{") braces += 1;
+      if (region[index] === "}") braces -= 1;
+      if (braces < 0) {
+        issues.push("closing TeX brace before an opening brace");
+        break;
+      }
+    }
+    if (braces !== 0) {
+      issues.push(`unbalanced TeX braces (${braces})`);
+    }
+
+    const environments = [];
+    for (const token of region.matchAll(/\\(begin|end)\{([^}]+)\}/g)) {
+      if (token[1] === "begin") {
+        environments.push(token[2]);
+        continue;
+      }
+      const opened = environments.pop();
+      if (opened !== token[2]) {
+        issues.push(`mismatched TeX environment (${opened ?? "none"} / ${token[2]})`);
+      }
+    }
+    if (environments.length > 0) {
+      issues.push(`unclosed TeX environment (${environments.join(", ")})`);
+    }
+  }
+
+  return [...new Set(issues)];
+}
+
+function countRawLessThanInMath(source) {
+  return mathRegions(source).regions.reduce(
+    (count, region) => count + (region.content.match(/</g) ?? []).length,
+    0,
+  );
+}
+
+function repeatedWords(source) {
+  const repetitions = [];
+  const body = source.replace(/^---[\s\S]*?---\s*/, "");
+  for (const match of body.matchAll(/\b([A-Za-z]{2,})\s+\1\b/gi)) {
+    if (match[1].toLowerCase() === "de") continue;
+    repetitions.push(match[0].replace(/\s+/g, " "));
+  }
+  return [...new Set(repetitions)];
 }
 
 function tagBalance(source, tag) {
@@ -98,6 +192,8 @@ for (const file of files) {
   const displayClose = countBackslashDelimiter(source, "]");
   const dollars = countUnescapedDollars(source);
   const rawLessThan = countRawLessThanInMath(source);
+  const mathIssues = checkMathStructure(source);
+  const repetitions = repeatedWords(source);
 
   if (inlineOpen !== inlineClose) {
     errors.push({ file: relative, issue: "unbalanced \\( ... \\)", open: inlineOpen, close: inlineClose });
@@ -117,6 +213,12 @@ for (const file of files) {
       issue: "raw < inside MathJax delimiters; use &lt;",
       occurrences: rawLessThan,
     });
+  }
+  for (const issue of mathIssues) {
+    errors.push({ file: relative, issue });
+  }
+  for (const repetition of repetitions) {
+    errors.push({ file: relative, issue: "repeated adjacent word", text: repetition });
   }
 
   for (const tag of ["div", "figure", "table"]) {
