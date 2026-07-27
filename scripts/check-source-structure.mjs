@@ -62,6 +62,16 @@ function countUnescapedDollars(source) {
   return { display, inline };
 }
 
+function countRawLessThanInMath(source) {
+  let count = 0;
+  for (const pattern of [/\\\(([\s\S]*?)\\\)/g, /\\\[([\s\S]*?)\\\]/g]) {
+    for (const match of source.matchAll(pattern)) {
+      count += (match[1].match(/</g) ?? []).length;
+    }
+  }
+  return count;
+}
+
 function tagBalance(source, tag) {
   const pattern = new RegExp(`<\\/?${tag}\\b[^>]*>`, "gi");
   let balance = 0;
@@ -87,6 +97,7 @@ for (const file of files) {
   const displayOpen = countBackslashDelimiter(source, "[");
   const displayClose = countBackslashDelimiter(source, "]");
   const dollars = countUnescapedDollars(source);
+  const rawLessThan = countRawLessThanInMath(source);
 
   if (inlineOpen !== inlineClose) {
     errors.push({ file: relative, issue: "unbalanced \\( ... \\)", open: inlineOpen, close: inlineClose });
@@ -99,6 +110,13 @@ for (const file of files) {
   }
   if (dollars.inline % 2 !== 0) {
     errors.push({ file: relative, issue: "unbalanced $ ... $", delimiters: dollars.inline });
+  }
+  if (rawLessThan > 0) {
+    errors.push({
+      file: relative,
+      issue: "raw < inside MathJax delimiters; use &lt;",
+      occurrences: rawLessThan,
+    });
   }
 
   for (const tag of ["div", "figure", "table"]) {
