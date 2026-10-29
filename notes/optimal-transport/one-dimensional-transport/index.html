@@ -1,14 +1,22 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "7. One-dimensional transport and monotone rearrangement"
-breadcrumb_child_label_fr: "7. Transport unidimensionnel et réarrangement monotone"
-breadcrumb_child_label_zh: "7. 一维传输与单调重排"
+breadcrumb_child_label_en: "4. One-dimensional transport and monotone rearrangement"
+breadcrumb_child_label_fr: "4. Transport unidimensionnel et réarrangement monotone"
+breadcrumb_child_label_zh: "4. 一维传输与单调重排"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/discrete-transport-and-assignment-problems/"
-note_next_url: "/notes/optimal-transport/brenier-theorem/"
+note_next_url: "/notes/optimal-transport/wasserstein-distances/"
 ---
 
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Compute transport by quantiles and explain how order replaces a multidimensional optimization.</p>
+
 <p>On the real line, order determines optimality. Pairing equal quantile levels produces a coupling with no crossings, and every crossing can be uncrossed without increasing a convex distance cost. This yields explicit formulas unavailable in higher dimensions.</p>
+
+    <p>For this chapter, \(\mathcal P_p(\mathbb R)\) denotes laws with finite \(p\)-th moment, and
+    \[
+    W_p(\mu,\nu)=\left(\inf_{\pi\in\Pi(\mu,\nu)}\int|x-y|^p\,\mathrm{d}\pi\right)^{1/p}.
+    \]
+    The next chapter proves that this transport cost defines a metric and explains its convergence properties.</p>
 
     <h3>Distribution and quantile functions</h3>
 
@@ -69,15 +77,10 @@ note_next_url: "/notes/optimal-transport/brenier-theorem/"
 
     <p>The right-hand side pairs the smaller source with the larger target and the larger source with the smaller target. The lemma says that removing such a crossing cannot increase any convex displacement cost.</p>
 
-    <h3>Optimality of monotone rearrangement</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Monotone rearrangement theorem.</span> Let \(c(x,y)=h(x-y)\) with \(h\) convex and lower semicontinuous. Among all \(\pi\in\Pi(\mu,\nu)\), the quantile coupling \(\pi^\uparrow\) minimizes \(\int c\,\mathrm{d}\pi\). If \(h\) is strictly convex and \(\mu\) is nonatomic, the optimal plan is unique and is induced by \(T=F_\nu^{-1}\circ F_\mu\), up to \(\mu\)-null sets.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For finitely supported measures with rational masses, split atoms into equal subatoms. Any coupling becomes a convex combination of matchings. Repeatedly apply the uncrossing inequality to each inverted pair; after finitely many swaps the matching is monotone and its cost has not increased. The unique monotone matching pairs equal ranks. Approximate general \(\mu,\nu\) weakly by quantized measures and use lower semicontinuity and stability of optimal costs. Strict convexity makes every genuine crossing strictly more expensive. A noncrossing plan with nonatomic first marginal has conditionals concentrated at the monotone map, giving uniqueness.</p>
-    </div>
+<h3>Optimality of monotone rearrangement</h3>
+    <div class="math-statement theorem"><p><span class="statement-title">Monotone rearrangement theorem.</span> Let \(1\le p&lt;\infty\) and \(\mu,\nu\in\mathcal P_p(\mathbb R)\). For \(c(x,y)=|x-y|^p\), the quantile coupling minimizes the cost. For \(p>1\) it is the unique optimal coupling. If in addition \(\mu\) has no atoms, it is induced by \(T=F_\nu^{-1}\circ F_\mu\).</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof outline.</span> For equal-weight finite laws, the Birkhoff theorem on the preceding page reduces optimization to permutations. Removing each inversion by the Monge inequality yields the sorted matching. Rational weights reduce to this case by splitting atoms. For general laws, approximate their quantile functions in \(L^p(0,1)\) by finite nondecreasing step functions. These approximations converge in \(W_p\), and the power-cost stability theorem proved later passes both the optimal values and quantile costs to the limit.</p><p>For \(p>1\), two strictly crossing pairs would allow a strictly improving local exchange. An optimal plan must therefore have monotone support. A monotone coupling has joint distribution function \(\min\{F_\mu(x),F_\nu(y)\}\), which identifies it as the quantile coupling. Atomlessness makes \(F_\mu(X)\) uniform and gives the map formula. The approximation and local-exchange arguments are developed in <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1</a>.</p></div>
+    <p>The same ordering principle extends to other convex displacement costs with suitable integrability. We use the power-cost version so every displayed value is finite. For \(p=1\), uniqueness can fail: if all source points lie to the left of all target points, every coupling has the same linear cost.</p>
 
     <h3>Explicit Wasserstein formulas</h3>
 
@@ -118,9 +121,28 @@ note_next_url: "/notes/optimal-transport/brenier-theorem/"
         Thus one-dimensional empirical transport reduces to sorting.</p>
     </div>
 
+    <h3>A running example: uniform dilation</h3>
+    <div class="math-statement example"><p><span class="statement-title">From a map to an optimality certificate.</span> Take \(\mu=\operatorname{Unif}[0,1]\) and \(\nu=\operatorname{Unif}[0,2]\). Equal quantiles give \(T(x)=2x\). For cost \(c(x,y)=|x-y|^2/2\), its cost is \(1/6\). The potentials
+    \[
+    \varphi(x)=-x^2/2,\qquad\psi(y)=y^2/4
+    \]
+    satisfy
+    \[
+    c(x,y)-\varphi(x)-\psi(y)=(x-y/2)^2\ge0.
+    \]
+    Equality holds on \(y=2x\), and their integrals sum to \(-1/6+1/3=1/6\). Thus the same example has a quantile solution, a convex-gradient map, and a matching primal–dual certificate. Later its interpolation is uniform on \([0,1+t]\), with velocity \(v_t(z)=z/(1+t)\).</p></div>
+
     <h3>Geodesics on the line</h3>
     <p>The quantile representation also linearizes Wasserstein geodesics:
     \[
     F_{\mu_t}^{-1}(u)=(1-t)F_{\mu_0}^{-1}(u)+tF_{\mu_1}^{-1}(u).
     \]
     Consequently \(\mathcal P_2(\mathbb R)\) embeds isometrically as the closed convex cone of nondecreasing functions in \(L^2(0,1)\). This special Hilbertian description explains why one-dimensional barycenters and asymptotics are unusually explicit.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 2</a>, for quantiles and the full rearrangement argument.</p>
+
+<h3>Practice: quantiles, atoms, and sorting</h3>
+<ol class="ot-exercises">
+<li><p>Find \(T\) and \(W_2^2\) from \(\operatorname{Unif}[0,1]\) to \(\operatorname{Unif}[0,2]\).</p><details><summary>Hint and answer</summary><p>The quantiles are \(u\) and \(2u\). Thus \(T(x)=2x\) and \(W_2^2=\int_0^1u^2\,\mathrm{d}u=1/3\).</p></details></li>
+<li><p>For source \((\delta_0+\delta_1)/2\) and target \((\delta_2+\delta_3)/2\), compare the two matchings for \(p=1\) and \(p=2\).</p><details><summary>Hint and answer</summary><p>For \(p=1\), both costs are two. For \(p=2\), sorting costs four, while the crossing matching costs five. Strict convexity distinguishes the latter case.</p></details></li>
+</ol>

@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "12. Geodesics and displacement interpolation"
-breadcrumb_child_label_fr: "12. Géodésiques et interpolation par déplacement"
-breadcrumb_child_label_zh: "12. 测地线与位移插值"
+breadcrumb_child_label_en: "10. Geodesics and displacement interpolation"
+breadcrumb_child_label_fr: "10. Géodésiques et interpolation par déplacement"
+breadcrumb_child_label_zh: "10. 测地线与位移插值"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/wasserstein-distances/"
+note_prev_url: "/notes/optimal-transport/brenier-theorem/"
 note_next_url: "/notes/optimal-transport/continuity-equation/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Construct a geodesic from a coupling and distinguish displacement from mixing densities.</p>
 
 <p>Linear interpolation of measures creates and destroys mass at fixed locations. Wasserstein interpolation instead follows particles along shortest paths. This produces the intrinsic geodesics of the probability-measure space.</p>
 
@@ -82,11 +84,11 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
         \[
         \mu_t=(e_t)_\#\boldsymbol\pi.
         \]
-        Conversely, every \(W_p\)-geodesic admits such a representation under the standard measurable-selection hypotheses.</p>
+        For \(1&lt;p&lt;\infty\), every \(W_p\)-geodesic admits such a representation. This converse is not asserted for \(p=1\): mixture curves can also be \(W_1\)-geodesics.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof idea.</span> Start with an optimal endpoint coupling and choose measurably a minimizing geodesic between almost every endpoint pair. The same distance-scaling proof as in Euclidean space gives a Wasserstein geodesic. Conversely, sample the curve at dyadic times, glue optimal couplings between successive samples, and use equality in the triangle inequality to show that almost every resulting path is a constant-speed base-space geodesic. Tightness and consistency pass to a path-space limit.</p>
+        <p><span class="statement-title">Proof outline.</span> Start with an optimal endpoint coupling and choose measurably a minimizing geodesic between almost every endpoint pair. The same distance-scaling proof as in Euclidean space gives a Wasserstein geodesic. Conversely, sample the curve at dyadic times, glue optimal couplings between successive samples, and use equality in the triangle inequality to show that almost every resulting path is a constant-speed base-space geodesic. Tightness and consistency pass to a path-space limit.</p>
     </div>
 
     <h3>Displacement versus mixture interpolation</h3>
@@ -106,22 +108,27 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
         Only the second curve describes one particle moving continuously from \(0\) to \(1\).</p>
     </div>
 
+    <figure class="ot-comparison">
+        <img src="{{ '/assets/img/note-themes/optimal-transport-mixture-displacement.svg' | relative_url }}" alt="At the midpoint, mixture puts half the mass at each endpoint, while displacement puts all mass at the midpoint. Circle area represents mass." width="680" height="300">
+        <figcaption>Same endpoints, different paths. Mixture changes the weights at fixed locations; displacement changes location. For these endpoints, both paths are geodesics in \(W_1\), but only the moving Dirac is a constant-speed \(W_2\)-geodesic.</figcaption>
+    </figure>
+
     <h3>Gaussian geodesics</h3>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For nondegenerate Gaussian measures, let \(T(x)=m_1+A(x-m_0)\) be the Brenier map from page 8. Then the \(W_2\)-geodesic is Gaussian:
+        <p><span class="statement-title">Proposition.</span> For nondegenerate Gaussian measures, let \(T(x)=m_1+A(x-m_0)\) be the Brenier map from <a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">Quadratic transport and Brenier's theorem</a>. Then the \(W_2\)-geodesic is Gaussian:
         \[
         \mu_t=N(m_t,\Sigma_t),
         \]
         where
         \[
         m_t=(1-t)m_0+tm_1,\qquad
-        \Sigma_t=((1-t)I+tA)\Sigma_0((1-t)I+tA)^{\mathsf T}.
+        \Sigma_t=((1-t)I+tA)\Sigma_0((1-t)I+tA)^\top.
         \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The interpolating map \(T_t=(1-t)I+tT\) is affine. The image of a Gaussian under an affine map is Gaussian, with the displayed mean and covariance.</p>
+        <p><span class="statement-title">Proof.</span> The interpolating map \(T_t=(1-t)\operatorname{id}+tT\) is affine. The image of a Gaussian under an affine map is Gaussian, with the displayed mean and covariance.</p>
     </div>
 
     <h3>Uniqueness and branching</h3>
@@ -129,3 +136,11 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
 
     <h3>Curvature visible in probability space</h3>
     <p>Although Euclidean particles travel along straight lines, \(\mathcal P_2(\mathbb R^d)\) is not a Hilbert space when \(d\ge2\). Distances between displacement geodesics reflect the interaction of their transport maps. This nonlinear geometry is precisely why ordinary convexity must later be replaced by displacement convexity.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §2.2</a>, for dynamical plans and the \(p>1\) converse representation.</p>
+
+<h3>Practice: moving mass versus mixing it</h3>
+<ol class="ot-exercises">
+<li><p>For endpoints \(\delta_0,\delta_1\), compute the distance along the mixture curve for \(W_1\) and \(W_2\).</p><details><summary>Hint and answer</summary><p>Between times \(s,t\), mass \(|t-s|\) crosses distance one. Thus \(W_1=|t-s|\), but \(W_2=\sqrt{|t-s|}\). The mixture is a \(W_1\)-geodesic, not a constant-speed \(W_2\)-geodesic.</p></details></li>
+<li><p>Find the midpoint between \(N(0,1)\) and \(N(0,9)\) in \(W_2\).</p><details><summary>Hint and answer</summary><p>Interpolate standard deviations, not variances: the midpoint is \(N(0,4)\). An equal density mixture is not Gaussian.</p></details></li>
+</ol>

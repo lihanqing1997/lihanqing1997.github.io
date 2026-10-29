@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "21. Inference for transport costs, maps, and barycenters"
-breadcrumb_child_label_fr: "21. Inférence pour les coûts, applications et barycentres de transport"
-breadcrumb_child_label_zh: "21. 传输代价、传输映射与重心的统计推断"
+breadcrumb_child_label_en: "22. Inference for transport costs, maps, and barycenters"
+breadcrumb_child_label_fr: "22. Inférence pour les coûts, applications et barycentres de transport"
+breadcrumb_child_label_zh: "22. 传输代价、传输映射与重心的统计推断"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-distance/"
 note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dimensions/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Separate regular Gaussian inference, nonsmooth limits, and degenerate null limits before choosing a bootstrap.</p>
 
 <p>Statistical optimal transport is not governed by one universal central limit theorem. Transport costs can be smooth away from equality and degenerate at equality; potentials may be unique or set-valued; maps require differentiation of convex potentials; barycenters are nonlinear Fréchet means. The inferential regime must be identified before a limit law or bootstrap is chosen.</p>
 
@@ -23,8 +25,8 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
 
     <h3>Directional derivatives from duality</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Envelope derivative.</span> Let \(\Phi^\star(\mu,\nu)\) be the normalized set of optimal dual pairs. Under compactness and continuity conditions ensuring dual attainment and stable potentials, the directional derivative in signed zero-mass directions \((\alpha,\beta)\) is
+    <div class="math-statement proposition">
+        <p><span class="statement-title">Envelope principle (conditional on directional differentiability).</span> Let \(\Phi^\star(\mu,\nu)\) be the normalized set of optimal dual pairs. Under compactness and continuity conditions ensuring dual attainment and stable potentials, the directional derivative in signed zero-mass directions \((\alpha,\beta)\) is
         \[
         \mathcal T'_{c,(\mu,\nu)}(\alpha,\beta)
         =
@@ -47,7 +49,7 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
     <h3>Central limit theorem in a regular regime</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Two-sample delta method.</span> Suppose the normalized optimal potentials \((\varphi,\psi)\) are unique, square integrable, and the empirical processes admit the required functional convergence. If \(n/(n+m)\to\lambda\in(0,1)\), then
+        <p><span class="statement-title">Two-sample delta method.</span> Suppose the normalized optimal potentials \((\varphi,\psi)\) are unique, square integrable, and the transport functional is Hadamard differentiable tangentially to a space in which the two empirical processes converge, with derivative \((\alpha,\beta)\mapsto\alpha\varphi+\beta\psi\). These are additional hypotheses, not consequences of potential uniqueness alone. If \(n/(n+m)\to\lambda\in(0,1)\), then
         \[
         \sqrt{\frac{nm}{n+m}}
         \{\mathcal T_c(\widehat\mu_n,\widehat\nu_m)-\mathcal T_c(\mu,\nu)\}
@@ -72,13 +74,24 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
         The two empirical averages are independent. The ordinary central limit theorem and the limiting sample-size ratio give the displayed variance.</p>
     </div>
 
+    <div class="math-statement example"><p><span class="statement-title">An explicit regular two-point model.</span> Let \(\mu=\operatorname{Bern}(a)\), \(\nu=\operatorname{Bern}(b)\) on \(\{0,1\}\), with \(0&lt;a,b&lt;1\) and \(a\ne b\). For every \(p\ge1\),
+    \[
+    W_p^p(\mu,\nu)=|a-b|.
+    \]
+    The common mass stays put and exactly \(|a-b|\) crosses the unit gap. If \(\widehat a,\widehat b\) are sample proportions and \(n/(n+m)\to\lambda\), the ordinary delta method gives
+    \[
+    \sqrt{\frac{nm}{n+m}}\bigl(|\widehat a-\widehat b|-|a-b|\bigr)
+    \Rightarrow N\bigl(0,(1-\lambda)a(1-a)+\lambda b(1-b)\bigr).
+    \]
+    At \(a=b\), the same scaling instead gives the absolute value of a centered normal variable. Thus “under equality” does not always mean a second-order limit: it may mean a first-order nonsmooth limit. The smooth one-dimensional \(W_2^2\) example below has a different, quadratic regime.</p></div>
+
     <h3>Nonunique potentials and directional limits</h3>
     <p>If \(\Phi^\star\) contains several normalized pairs, the derivative is a supremum of Gaussian linear functionals rather than a single linear functional. The functional delta method then yields a generally non-Gaussian limit
     \[
     \sup_{(\varphi,\psi)\in\Phi^\star}
-    \{\mathbb G_\mu\varphi+\mathbb G_\nu\psi\}.
+    \{\sqrt{1-\lambda}\,\mathbb G_\mu\varphi+\sqrt\lambda\,\mathbb G_\nu\psi\}.
     \]
-    This occurs naturally for discrete measures, symmetric configurations, and costs with flat optimal faces.</p>
+    Here the independent Brownian bridges correspond to the two samples and the normalization is the same as above. Such limits can occur for discrete measures, symmetric configurations, and costs with flat optimal faces; valid functional convergence must still be proved.</p>
 
     <h3>Degeneracy under equality</h3>
 
@@ -122,32 +135,32 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
         can be controlled by errors in the estimated potential, its gradient, or the source and target measures in stronger norms than weak convergence alone.</p>
     </div>
 
-    <p>Raw empirical measures in dimension \(d\ge2\) usually yield a discrete plan rather than a globally defined map. A map estimator therefore requires interpolation, density smoothing, semi-discrete transport, or another structural regularization. Stability of costs alone is insufficient: differentiating a convex potential is an ill-posed operation unless additional smoothness is imposed.</p>
+    <p>Raw empirical measures in dimension \(d\ge2\) usually yield a discrete plan rather than a globally defined map. A map estimator therefore requires interpolation, density smoothing, semi-discrete transport, or another structural regularization. Cost stability alone does not supply quantitative derivative error bounds or confidence statements for maps. Convexity does provide useful qualitative gradient stability, but rates require additional control of the potential class and the underlying distributions.</p>
 
-    <h3>Statistical barycenters</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Fréchet \(M\)-estimation principle.</span> Let \(\mu_1,\ldots,\mu_N\) be sampled from a law \(\mathsf Q\) on \(\mathcal P_2\), and let
-        \[
-        \widehat{\bar\mu}_N\in\operatorname*{arg\,min}_\nu
-        \frac1{2N}\sum_{i=1}^NW_2^2(\nu,\mu_i).
-        \]
-        If the population barycenter is unique and second moments are integrable, then \(\widehat{\bar\mu}_N\to\bar\mu\) under standard compactness assumptions. If the Fréchet functional has a nonsingular second variation in a tangent chart, then
-        \[
-        \sqrt N\,\log_{\bar\mu}(\widehat{\bar\mu}_N)
-        \Rightarrow H^{-1}G,
-        \]
-        where \(G\) is the Gaussian limit of empirical tangent scores and \(H\) is the Hessian of the population Fréchet functional.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof mechanism.</span> Uniform laws of large numbers on moment-bounded sets give consistency by the argmin theorem. For the limit law, expand the empirical first-order barycenter equation around \(\bar\mu\):
-        \[
-        0=\frac1N\sum_i S(\bar\mu,\mu_i)
-        +H\,\log_{\bar\mu}(\widehat{\bar\mu}_N)+o_{\mathbb P}(N^{-1/2}).
-        \]
-        The first term obeys a central limit theorem in the tangent space, and inversion of \(H\) gives the result. Curvature, nonuniqueness, or singular measures can invalidate this linear chart.</p>
-    </div>
+<h3>Statistical barycenters</h3>
+    <div class="math-statement theorem"><p><span class="statement-title">A one-dimensional barycenter CLT.</span> Let \(\mu_1,\ldots,\mu_N\) be independent identically distributed random laws on \(\mathbb R\), with quantile functions \(Q_i\), and suppose
+    \[
+    \mathbb E\|Q_1\|_{L^2(0,1)}^2&lt;\infty.
+    \]
+    Their sample \(W_2\)-barycenter has quantile \(\widehat Q_N=N^{-1}\sum_iQ_i\). The population barycenter has quantile \(\bar Q=\mathbb EQ_1\), and
+    \[
+    \sqrt N(\widehat Q_N-\bar Q)\Rightarrow G
+    \quad\text{in }L^2(0,1),
+    \]
+    where \(G\) is centered Gaussian with covariance operator
+    \[
+    Ch=\mathbb E\bigl[\langle Q_1-\bar Q,h\rangle(Q_1-\bar Q)\bigr].
+    \]</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The quantile isometry turns squared \(W_2\) distance into squared \(L^2\) distance. The mean of nondecreasing quantiles has a nondecreasing representative and minimizes expected squared \(L^2\) distance, so it is the population barycenter quantile. The same calculation gives the sample quantile formula. The central limit theorem for independent identically distributed variables in a separable Hilbert space, with finite second moment, yields the displayed convergence and covariance operator.</p></div>
+    <p>This theorem observes each input distribution itself. If each \(\mu_i\) is instead estimated from a finite inner sample, an additional estimation layer appears. In higher dimensions there is no global quantile chart: a tangent-space expansion needs its own differentiability, invertibility, remainder, and tightness arguments. The scalar and Hilbert-space calculations cannot simply be relabeled as a general barycenter CLT.</p>
 
     <h3>Regularization changes the estimand</h3>
-    <p>Entropic and other regularizations often restore differentiability and improve sample behavior, but they estimate a regularized transport functional. Valid inference must separate stochastic error from regularization bias and specify whether the regularization parameter is fixed or tends to zero. Pages 23 and 24 make this tradeoff explicit.</p>
+    <p>Entropic and other regularizations often restore differentiability and improve sample behavior, but they estimate a regularized transport functional. Valid inference must separate stochastic error from regularization bias and specify whether the regularization parameter is fixed or tends to zero. <a href="{{ '/notes/optimal-transport/entropic-regularization/' | relative_url }}">Entropic transport</a> and <a href="{{ '/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-transport/' | relative_url }}">Sinkhorn divergences</a> make this tradeoff explicit.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/2506.19025">Balakrishnan–Manole–Wasserman (2025)</a>, for map estimation and inferential regimes. The abstract envelope and barycenter discussions above are conditional roadmaps, not universal limit theorems. The two-point and one-dimensional examples specify concrete models.</p>
+
+<h3>Practice: choosing the inferential regime</h3>
+<ol class="ot-exercises">
+<li><p>At equality of two Bernoulli laws, why is the ordinary centered bootstrap for \(|\widehat a-\widehat b|\) problematic?</p><details><summary>Hint and answer</summary><p>The derivative of \(|z|\) at zero is directional and nonlinear. The bootstrap sees a random local shift rather than reproducing the fixed null absolute-normal law automatically.</p></details></li>
+<li><p>If \(\varepsilon_n\to0\), what extra term must be controlled to use an entropic confidence interval for unregularized transport?</p><details><summary>Hint and answer</summary><p>The bias between the regularized and unregularized population functionals must be negligible on the confidence interval scale or explicitly corrected; numerical error must be controlled too.</p></details></li>
+</ol>

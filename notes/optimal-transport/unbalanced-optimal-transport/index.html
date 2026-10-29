@@ -4,9 +4,11 @@ breadcrumb_child_label_en: "26. Unbalanced optimal transport"
 breadcrumb_child_label_fr: "26. Transport optimal non équilibré"
 breadcrumb_child_label_zh: "26. 非平衡最优传输"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynamics/"
+note_prev_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/"
 note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Separate arbitrary marginal penalties from the specific Hellinger–Kantorovich geometry and track normalization constants.</p>
 
 <p>Classical transport requires equal total mass and preserves every particle. Unbalanced transport permits mass to be created, removed, or attenuated, charging separately for spatial motion and variation of mass. The resulting geometry combines Wasserstein and Fisher--Rao structures.</p>
 
@@ -28,6 +30,13 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     </div>
 
     <p>Transported mass is represented by \(\pi\). Source mass not used by \(\pi_X\) may be destroyed, and missing target mass relative to \(\pi_Y\) may be created. The parameters \(\tau_1,\tau_2\) determine whether it is cheaper to move mass or modify it.</p>
+
+    <p>For finite measures, use the generalized relative entropy
+    \[
+    \operatorname{KL}(\alpha\|\mu)=\int(r\log r-r+1)\,\mathrm{d}\mu,
+    \qquad r=\frac{\mathrm{d}\alpha}{\mathrm{d}\mu},
+    \]
+    and \(+\infty\) if \(\alpha\not\ll\mu\), with \(0\log0=0\). The mass-correction terms matter when masses differ. For the static duality below, assume a compact space, finite continuous nonnegative cost, and \(\tau_i>0\).</p>
 
     <h3>KL-penalized unbalanced transport</h3>
 
@@ -58,11 +67,11 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     <p>Unlike balanced dual potentials, \(\varphi,\psi\) cannot be shifted by opposite constants without changing the objective: the total transported mass is itself an optimized quantity.</p>
 
     <h3>Entropic scaling for unequal mass</h3>
-    <p>Adding coupling entropy with parameter \(\varepsilon\) again gives a Gibbs plan \(P=\operatorname{diag}(u)K\operatorname{diag}(v)\). For discrete KL marginal penalties, generalized Sinkhorn updates take the form
+    <p>Using counting-measure entropy for the discrete coupling, with parameter \(\varepsilon\) again gives a Gibbs plan \(P=\operatorname{diag}(u)K\operatorname{diag}(v)\). For discrete KL marginal penalties, generalized Sinkhorn updates take the form
     \[
     u\leftarrow\left(a\oslash Kv\right)^{\tau_1/(\tau_1+\varepsilon)},
     \qquad
-    v\leftarrow\left(b\oslash K^{\mathsf T}u\right)^{\tau_2/(\tau_2+\varepsilon)}.
+    v\leftarrow\left(b\oslash K^\top u\right)^{\tau_2/(\tau_2+\varepsilon)}.
     \]
     Exponents below one perform only a partial marginal correction. As \(\tau_i\to\infty\), the exponents approach one and balanced Sinkhorn is recovered.</p>
 
@@ -83,7 +92,7 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
         \]</p>
     </div>
 
-    <p>The left side moves existing mass; the right side changes its amplitude. The parameter \(\delta\) sets the relative price of reaction. The induced distance is a form of the Hellinger--Kantorovich or Wasserstein--Fisher--Rao metric, with constants depending on normalization.</p>
+    <p>The left side moves existing mass; the right side changes its amplitude. The parameter \(\delta\) sets the relative price of reaction. On \(\mathbb R^d\) with Euclidean ground distance, minimizing this action defines the Hellinger--Kantorovich or Wasserstein--Fisher--Rao metric, with constants depending on normalization.</p>
 
     <h3>Pure growth and Fisher--Rao geometry</h3>
 
@@ -106,7 +115,7 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     <h3>Cone geometry and Dirac measures</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Dirac formula.</span> In the normalization above,
+        <p><span class="statement-title">Dirac formula.</span> On \(\mathbb R^d\) in the normalization above,
         \[
         \operatorname{HK}_\delta^2(a\delta_x,b\delta_y)
         =
@@ -123,11 +132,11 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     <h3>Dynamic Hellinger--Kantorovich formula</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Dynamic representation.</span> The squared Hellinger--Kantorovich distance is the infimum of \(\mathcal A_\delta\) over all reaction--continuity triples connecting the endpoint measures. Minimizers exist under standard compactness assumptions, and the distance metrizes weak convergence together with convergence of total mass on bounded spaces.</p>
+        <p><span class="statement-title">Dynamic representation.</span> For finite nonnegative measures on \(\mathbb R^d\), the squared Hellinger--Kantorovich distance is the infimum of \(\mathcal A_\delta\) over all reaction--continuity triples connecting the endpoint measures. Minimizers exist under standard compactness assumptions, and the distance metrizes weak convergence together with convergence of total mass on bounded spaces.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof mechanism.</span> Lift each measure to the cone by representing mass as squared radius. Ordinary quadratic transport on the cone simultaneously changes position and radius. Projecting cone geodesics back to \(X\) yields the reaction--continuity equation and its action. Conversely, every finite-action triple admits a cone lift. The Benamou--Brenier formula on the cone gives equality.</p>
+        <p><span class="statement-title">Proof outline.</span> Lift each measure to the cone by representing mass as squared radius. Ordinary quadratic transport on the cone simultaneously changes position and radius. Projecting cone geodesics back to \(X\) yields the reaction--continuity equation and its action. Conversely, every finite-action triple admits a cone lift. The Benamou--Brenier formula on the cone gives equality.</p>
     </div>
 
     <h3>Unbalanced barycenters</h3>
@@ -151,4 +160,12 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     The first term transports mass down the energy gradient; the second creates or destroys it according to the sign of \(F\).</p>
 
     <h3>Balanced and pure-reaction limits</h3>
-    <p>As reaction becomes infinitely expensive, the dynamic constraint approaches mass conservation and the geometry tends toward Wasserstein distance on equal-mass measures. If spatial motion becomes infinitely expensive, only Fisher--Rao change remains. Unbalanced transport is therefore not a small variant of classical transport but a geometry interpolating two distinct mechanisms.</p>
+    <p>As reaction becomes infinitely expensive, the dynamic constraint approaches mass conservation and the geometry tends toward Wasserstein distance on equal-mass measures. If spatial motion becomes infinitely expensive, only Fisher--Rao change remains. The static KL-penalized objective with arbitrary ground cost is not automatically this dynamic HK metric: the exact correspondence uses a specific logarithmic-cosine ground cost. Unbalanced transport is therefore not a small variant of classical transport but a geometry interpolating two distinct mechanisms.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1508.07941">Liero–Mielke–Savaré, <em>Optimal entropy-transport problems and a new Hellinger–Kantorovich distance</em></a>, for the static/dynamic correspondence and cone-lifting theorem.</p>
+
+<h3>Practice: moving mass or changing it</h3>
+<ol class="ot-exercises">
+<li><p>With only reaction, find the optimal mass path from mass 1 to mass 4 at a fixed point.</p><details><summary>Hint and answer</summary><p>The square root of mass interpolates linearly: \(m_t=(1+t)^2\). The action is \(4\delta^2\).</p></details></li>
+<li><p>In the HK Dirac formula, what happens once \(d(x,y)\ge\pi\delta\)?</p><details><summary>Hint and answer</summary><p>The truncated cosine vanishes. Squared distance is \(4\delta^2(a+b)\); increasing separation further does not change it, because annihilation and recreation are cheaper.</p></details></li>
+</ol>

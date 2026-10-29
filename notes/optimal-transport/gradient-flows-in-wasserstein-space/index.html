@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "17. Wasserstein gradient flows and the JKO scheme"
-breadcrumb_child_label_fr: "17. Flots de gradient de Wasserstein et schéma JKO"
-breadcrumb_child_label_zh: "17. 瓦瑟斯坦梯度流与 JKO 格式"
+breadcrumb_child_label_en: "15. Wasserstein gradient flows and the JKO scheme"
+breadcrumb_child_label_fr: "15. Flots de gradient de Wasserstein et schéma JKO"
+breadcrumb_child_label_zh: "15. 瓦瑟斯坦梯度流与 JKO 格式"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/displacement-convexity/"
 note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Derive a JKO step, its energy estimate, and the distinction between an EVI theorem and a formal PDE.</p>
 
 <p>A gradient flow moves in the direction of steepest energy decrease. In Wasserstein space, the motion is a continuity equation whose velocity is the negative gradient of the first variation. The Jordan--Kinderlehrer--Otto scheme constructs this flow through repeated variational minimization.</p>
 
@@ -18,27 +20,16 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
     \]
     The optimality condition \(\nabla F(x_{k+1})+(x_{k+1}-x_k)/\tau=0\) is the backward Euler equation. Replacing Euclidean distance by \(W_2\) gives a definition that requires no linear structure on measures.</p>
 
-    <h3>The JKO minimizing movement</h3>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Given \(\mu_\tau^0\in\mathcal P_2\), define recursively
-        \[
-        \mu_\tau^{k+1}\in
-        \operatorname*{arg\,min}_{\mu\in\mathcal P_2}
-        \left\{
-        \mathcal F(\mu)+\frac{1}{2\tau}W_2^2(\mu,\mu_\tau^k)
-        \right\}.
-        \]
-        The piecewise-constant interpolation is \(\bar\mu_\tau(t)=\mu_\tau^k\) for \(t\in((k-1)\tau,k\tau]\).</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Existence of one step.</span> Suppose \(\mathcal F\) is proper, lower semicontinuous in \(W_2\), and its negative part is controlled so that the penalized functional is coercive in the second moment. Then every JKO step has a minimizer.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Take a minimizing sequence. The penalty and the triangle inequality against \(\delta_0\) bound its second moments, while the coercivity of \(\mathcal F\) prevents escape through its negative part. Wasserstein compactness yields a convergent subsequence. Lower semicontinuity of both \(\mathcal F\) and \(W_2^2(\cdot,\mu_\tau^k)\) makes the limit a minimizer.</p>
-    </div>
+<h3>The JKO minimizing movement</h3>
+    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> Starting from \(\mu_\tau^0\in\mathcal P_2\) with finite energy, set
+    \[
+    \mu_\tau^{k+1}\in\operatorname*{arg\,min}_{\mu\in\mathcal P_2}
+    \left\{\mathcal F(\mu)+\frac{W_2^2(\mu,\mu_\tau^k)}{2\tau}\right\}.
+    \]
+    Write \(\bar\mu_\tau(0)=\mu_\tau^0\) and \(\bar\mu_\tau(t)=\mu_\tau^k\) on \(((k-1)\tau,k\tau]\). The step trades energy reduction against transport effort.</p></div>
+    <div class="math-statement theorem"><p><span class="statement-title">One-step existence: a sufficient weak-topology criterion.</span> Suppose \(\mathcal F\) is proper, bounded below, and sequentially lower semicontinuous under weak convergence of probability measures in \(\mathcal P_2(\mathbb R^d)\). If the old iterate has finite energy, every step has a minimizer.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The old iterate is a finite competitor. A minimizing sequence therefore has bounded \(W_2\)-distance to it, and hence bounded second moments. Extract a weakly convergent subsequence. Portmanteau places its limit in \(\mathcal P_2\). The energy is weakly lower semicontinuous by assumption, as is squared transport cost by compactness of plans and Portmanteau. Their sum attains the infimum.</p></div>
+    <p>This is a sufficient criterion, not the most general JKO theorem. Entropy on all of \(\mathbb R^d\) is not bounded below; it needs a separate lower-bound argument or a confining potential. Another valid route assumes compact penalized sublevels in \(W_2\) and \(W_2\)-lower semicontinuity. A mere second-moment bound cannot replace that compactness assumption.</p>
 
     <h3>Discrete energy estimates</h3>
 
@@ -73,7 +64,7 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
     <h3>Euler equation of one step</h3>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">First-order condition.</span> Suppose \(\mu_\tau^{k+1}=\rho\,\mathrm{d}x\), \(\mathcal F\) has first variation \(\delta\mathcal F/\delta\rho\), and \(T\) is the optimal map from \(\mu_\tau^{k+1}\) to \(\mu_\tau^k\). Then
+        <p><span class="statement-title">First-order condition (smooth setting).</span> Assume sufficient regularity and decay to justify the following variations. Suppose \(\mu_\tau^{k+1}=\rho\,\mathrm{d}x\), \(\mathcal F\) has first variation \(\delta\mathcal F/\delta\rho\), and \(T\) is the optimal map from \(\mu_\tau^{k+1}\) to \(\mu_\tau^k\). Then
         \[
         \frac{T(x)-x}{\tau}
         =
@@ -118,15 +109,14 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
     \right).
     \]</p>
 
-    <h3>Passage to continuous time</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Convergence of minimizing movements.</span> Under properness, lower semicontinuity, compactness of energy sublevels, and an appropriate geodesic-convexity assumption, the interpolants \(\bar\mu_\tau\) converge as \(\tau\downarrow0\), locally uniformly in \(W_2\), to a curve of maximal slope for \(\mathcal F\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof architecture.</span> The discrete energy bound gives uniform second moments and a \(1/2\)-Hölder time modulus. A metric Arzelà--Ascoli theorem yields subsequential convergence. Lower semicontinuity passes the energy and discrete action to the limit. The variational inequality of each minimizing step controls the discrete slopes; their lower limit gives the metric-slope term. The limiting curve therefore satisfies the energy-dissipation inequality. Geodesic convexity then identifies it uniquely, so the whole family converges.</p>
-    </div>
+<h3>Passage to continuous time</h3>
+    <p>The discrete action estimate gives temporal control but not spatial \(W_2\)-compactness. To obtain a curve of maximal slope one also needs a topology with compact sublevels, lower semicontinuity of the slope, and a chain-rule property (a strong upper gradient). General minimizing-movement theory makes these hypotheses precise; see <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapters 2–4 and 11</a>. Ordinary geodesic convexity in a general metric space should not be silently substituted for all of them.</p>
+    <div class="math-statement theorem"><p><span class="statement-title">A concrete evolution theorem.</span> Let \(V\in C^2(\mathbb R^d)\) satisfy \(\lambda I\le D^2V\le L I\), with \(0&lt;\lambda\le L&lt;\infty\), and define
+    \[
+    \mathcal F(\rho\,\mathrm{d}x)=\int\rho\log\rho\,\mathrm{d}x+\int V\rho\,\mathrm{d}x,
+    \]
+    extended by \(+\infty\) off densities. For \(\mu_0\in\mathcal P_2\) of finite energy, JKO interpolants converge locally uniformly in \(W_2\) as \(\tau\downarrow0\) to the unique \(EVI_\lambda\) flow. Its densities solve \(\partial_t\rho=\Delta\rho+\nabla\cdot(\rho\nabla V)\) weakly.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof outline.</span> Write the energy as relative entropy with respect to the confining Gibbs law, up to a constant. Entropy estimates and moment estimates give compactness in a weak topology. The discrete Euler equation identifies the limiting diffusion; generalized-geodesic convexity yields the EVI and uniqueness. Additional moment estimates justify convergence in \(W_2\). These are substantive steps of the minimizing-movement theorem, rather than consequences of the action bound alone; the cited gradient-flow reference proves them.</p></div>
 
     <h3>Evolution variational inequalities</h3>
 
@@ -155,3 +145,11 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
         \]
         Grönwall's inequality gives the result.</p>
     </div>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapters 2–4 and 11</a>, for minimizing-movement convergence and EVI theory; <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 8</a>, for the PDE route.</p>
+
+<h3>Practice: implicit steps and contraction</h3>
+<ol class="ot-exercises">
+<li><p>For \(\mathcal F(\mu)=\tfrac12\int|x|^2\,\mathrm{d}\mu\), compute one JKO step from an arbitrary \(\mu_k\in\mathcal P_2\).</p><details><summary>Hint and answer</summary><p>Minimize \(|x|^2/2+|x-y|^2/(2\tau)\) for each old point \(y\). The minimizer is \(x=y/(1+\tau)\), so \(\mu_{k+1}=(\operatorname{id}/(1+\tau))_\#\mu_k\).</p></details></li>
+<li><p>For this energy, compare the discrete contraction factor after \(k\) steps with the continuous flow.</p><details><summary>Hint and answer</summary><p>The factor is \((1+\tau)^{-k}\), tending to \(e^{-t}\) when \(k\tau\to t\). This agrees with the \(EVI_1\) contraction rate.</p></details></li>
+</ol>

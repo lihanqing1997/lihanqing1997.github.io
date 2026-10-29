@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "4. Kantorovich duality and optimality certificates"
-breadcrumb_child_label_fr: "4. Dualité de Kantorovitch et certificats d'optimalité"
-breadcrumb_child_label_zh: "4. 康托罗维奇对偶与最优性证书"
+breadcrumb_child_label_en: "7. Kantorovich duality and optimality certificates"
+breadcrumb_child_label_fr: "7. Dualité de Kantorovitch et certificats d'optimalité"
+breadcrumb_child_label_zh: "7. 康托罗维奇对偶与最优性证书"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/stability-and-convergence-of-transport-costs/"
 note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Use potentials to give lower bounds and turn complementary slackness into an optimality certificate.</p>
 
 <p>The primal problem chooses how mass moves. The dual problem assigns a value to mass at each endpoint. If the combined endpoint value never exceeds the cost of a journey, then its expected value is a lower bound on every transport plan. At optimality this inequality becomes equality exactly along the journeys actually used.</p>
 
@@ -17,7 +19,7 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
         \[
         \varphi(x)+\psi(y)\le c(x,y)
         \]
-        for all \((x,y)\), or outside a set irrelevant to the marginals under an appropriate integrable formulation. Its dual value is
+        for every \((x,y)\). We use continuous potentials on compact spaces, or explicitly integrable potentials when the spaces are noncompact; feasibility must not merely hold under one chosen coupling. Its dual value is
         \[
         J(\varphi,\psi)=\int_X\varphi\,\mathrm{d}\mu+\int_Y\psi\,\mathrm{d}\nu.
         \]
@@ -45,40 +47,26 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
         Taking the supremum on the left and the infimum on the right proves the claim.</p>
     </div>
 
-    <h3>Strong duality</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Kantorovich duality.</span> Let \(X,Y\) be Polish and let \(c:X\times Y\to[0,\infty]\) be lower semicontinuous. Then
-        \[
-        \inf_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm{d}\pi
-        =
-        \sup_{\varphi\oplus\psi\le c}
-        \left\{\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\right\},
-        \]
-        where the dual may be taken over bounded continuous potentials when \(c\) is bounded and continuous, and over integrable potentials under the general formulation.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof for compact spaces and continuous cost.</span> Consider the Lagrangian
-        \[
-        L(\pi,\varphi,\psi)
-        =\int c\,\mathrm{d}\pi
-        +\int\varphi\,\mathrm{d}(\mu-\pi_X)
-        +\int\psi\,\mathrm{d}(\nu-\pi_Y).
-        \]
-        For a nonnegative measure \(\pi\),
-        \[
-        L=\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu
-        +\int\{c-\varphi\oplus\psi\}\,\mathrm{d}\pi.
-        \]
-        Taking the supremum over \(\varphi,\psi\in C\) enforces \(\pi_X=\mu,\pi_Y=\nu\): if a marginal equality fails, a continuous test function separates the two measures and scaling it makes the supremum infinite. Thus
-        \[
-        \inf_{\pi\ge0}\sup_{\varphi,\psi}L(\pi,\varphi,\psi)
-        =K_c(\mu,\nu).
-        \]
-        Conversely, taking the infimum over \(\pi\ge0\) gives a finite value precisely when \(c-\varphi\oplus\psi\ge0\); in that case the infimum is attained at the zero measure and equals \(J(\varphi,\psi)\). The convex minimax theorem applies after restricting to a compact mass-bounded set containing all feasible plans, because \(c\) and the potentials are continuous and the problem has a feasible point. It permits interchange of infimum and supremum and yields \(K_c=D_c\).</p>
-        <p>For Polish spaces and lower semicontinuous \(c\), approximate the marginals by compact restrictions and \(c\) from below by bounded continuous costs. Apply the compact result, use monotone convergence for the primal values, and diagonalize the dual potentials. Tightness controls the discarded mass. This gives the stated general form.</p>
-    </div>
+<h3>Strong duality</h3>
+    <div class="math-statement theorem"><p><span class="statement-title">Kantorovich duality on compact spaces.</span> If \(X,Y\) are compact metric spaces and \(c\) is finite and continuous, then
+    \[
+    \min_{\pi\in\Pi(\mu,\nu)}\int c\,\mathrm{d}\pi
+    =\sup_{\varphi\in C(X),\,\psi\in C(Y),\,\varphi+\psi\le c}
+    \left\{\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\right\}.
+    \]
+    The supremum is attained; its normalization is discussed below.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(\mathcal P(X\times Y)\) be all probability measures on the compact product, and set
+    \[
+    L(\pi,\varphi,\psi)=\int c\,\mathrm{d}\pi+
+    \int\varphi\,\mathrm{d}(\mu-\pi_X)+\int\psi\,\mathrm{d}(\nu-\pi_Y).
+    \]
+    The supremum over continuous potentials is \(\int c\,\mathrm{d}\pi\) when the marginals are correct and \(+\infty\) otherwise: a continuous test function detects any incorrect marginal and can be scaled. Sion's minimax theorem applies because the probability-measure set is compact convex in the weak topology and \(L\) is continuous affine in each variable. Thus
+    \[
+    K_c=\sup_{\varphi,\psi}\left[J(\varphi,\psi)+
+    \min_{x,y}\{c(x,y)-\varphi(x)-\psi(y)\}\right].
+    \]
+    For a fixed pair let the displayed minimum be \(m\). Replacing \(\varphi\) by \(\varphi+m\) gives a feasible pair with objective \(J+m\). Hence \(K_c\le D_c\); weak duality gives equality.</p></div>
+    <p>On Polish spaces, nonnegative lower-semicontinuous costs also admit strong duality, using bounded continuous feasible potentials for the value formula. Dual attainment does not follow in that generality. The noncompact extension uses approximation and separation; see <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.3</a>. In particular, equality of optimal values and existence of maximizing potentials are different claims.</p>
 
     <h3>Complementary slackness</h3>
 
@@ -108,7 +96,7 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof idea.</span> Replace a maximizing pair successively by its \(c\)-transforms. This does not decrease the objective and produces uniformly bounded, equicontinuous potentials after normalization, because \(c\) is uniformly continuous on the compact product. Arzelà--Ascoli gives uniformly convergent subsequences. The feasibility inequality and objective pass to the limit.</p>
+        <p><span class="statement-title">Proof outline.</span> Replace a maximizing pair successively by its \(c\)-transforms. This does not decrease the objective and produces uniformly bounded, equicontinuous potentials after normalization, because \(c\) is uniformly continuous on the compact product. Arzelà--Ascoli gives uniformly convergent subsequences. The feasibility inequality and objective pass to the limit.</p>
     </div>
 
     <h3>Kantorovich--Rubinstein duality</h3>
@@ -142,3 +130,11 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
     =\int\varphi\,\mathrm{d}\sigma+\int\psi\,\mathrm{d}\tau
     \]
     whenever differentiability holds. This fact later drives statistical limit theory and numerical optimization.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §1.3</a>, for separation, noncompact duality, and attainment conditions. See also <a href="{{ '/notes/optimization/fenchel-conjugates-duality/' | relative_url }}">Fenchel duality</a>.</p>
+
+<h3>Practice: finding touching potentials</h3>
+<ol class="ot-exercises">
+<li><p>For \(\mu=\delta_0\), \(\nu=\delta_a\) on \(\mathbb R\), find a 1-Lipschitz function certifying \(W_1=|a|\).</p><details><summary>Hint and answer</summary><p>For \(a\ne0\), take \(f(x)=-\operatorname{sign}(a)x\) in \(\mu f-\nu f\). It achieves \(|a|\); for \(a=0\), take zero.</p></details></li>
+<li><p>A feasible plan has cost 3 and a feasible dual pair has value 2.9. What is certified?</p><details><summary>Hint and answer</summary><p>The optimum lies in \([2.9,3]\), and the plan is at most 0.1 suboptimal. A small primal–dual gap certifies objective accuracy, not proximity of the plan to a unique optimizer.</p></details></li>
+</ol>

@@ -7,10 +7,12 @@ note_back_url: "/notes/optimal-transport/"
 note_next_url: "/notes/optimal-transport/monge-problem/"
 ---
 
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Construct pushforwards and finite couplings; distinguish moving an atom from splitting it. On a first pass, skim the compactness and disintegration results and return when they are used.</p>
+
 <p>Optimal transport compares two distributions by placing them on a common probability space. Before a cost is minimized, one must understand the three operations that make this possible: moving a measure through a map, joining two measures by a coupling, and composing couplings through a common marginal.</p>
 
     <h3>Probability measures on Polish spaces</h3>
-    <p>Throughout the note, \(X\) and \(Y\) are Polish spaces with their Borel \(\sigma\)-fields. This assumption is broad enough for Euclidean spaces, separable Banach spaces, manifolds, path spaces, and countable discrete spaces, while still providing tightness and regular conditional probabilities.</p>
+    <p>Unless explicitly specialized, \(X\) and \(Y\) are Polish spaces (their topology admits a complete separable metric) with their Borel \(\sigma\)-fields. This assumption is broad enough for Euclidean spaces, separable Banach spaces, manifolds, path spaces, and countable discrete spaces, while still providing tightness and regular conditional probabilities.</p>
 
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> Write \(\mathcal P(X)\) for the Borel probability measures on \(X\). If \(d_X\) is a complete compatible metric and \(p\ge1\), define
@@ -49,7 +51,7 @@ note_next_url: "/notes/optimal-transport/monge-problem/"
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">Example.</span> If \(X=Y=\mathbb R^d\), \(T(x)=Ax+b\), and \(U\sim N(m,\Sigma)\), then \(T_\#N(m,\Sigma)=N(Am+b,A\Sigma A^{\mathsf T})\). If \(\mu\) has density \(f\) and \(T\) is a \(C^1\)-diffeomorphism, then \(T_\#\mu\) has density \(g(y)=f(T^{-1}y)|\det DT(T^{-1}y)|^{-1}\). The Monge--Ampère equation will arise by applying this formula to \(T=\nabla\varphi\).</p>
+        <p><span class="statement-title">Example.</span> If \(X=Y=\mathbb R^d\), \(T(x)=Ax+b\), and \(U\sim N(m,\Sigma)\), then \(T_\#N(m,\Sigma)=N(Am+b,A\Sigma A^\top)\). If \(\mu\) has density \(f\) and \(T\) is a \(C^1\)-diffeomorphism, then \(T_\#\mu\) has density \(g(y)=f(T^{-1}y)|\det DT(T^{-1}y)|^{-1}\). The Monge--Ampère equation will arise by applying this formula to \(T=\nabla\varphi\).</p>
     </div>
 
     <h3>Couplings and transport plans</h3>
@@ -141,12 +143,21 @@ note_next_url: "/notes/optimal-transport/monge-problem/"
         \[
         P(t)=
         \begin{pmatrix}
-        t &amp; a-\
+        t &amp; a-t\\
         b-t &amp; 1-a-b+t
         \end{pmatrix},
-        \qquad
+        \]
+        \[
         \max(0,a+b-1)\le t\le\min(a,b).
         \]
 
         The interval of admissible \(t\)'s is the two-by-two transport polytope. A linear transport cost selects one of its endpoints unless the cost is parallel to the interval. This finite picture already contains convexity, nonuniqueness, and the distinction between marginals and dependence.</p>
     </div>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §§1–2</a>. For prerequisites, review the <a href="{{ '/notes/probability-theory/conditional-probability-regular-conditional-distributions/' | relative_url }}">regular conditional distributions</a> and <a href="{{ '/notes/probability-theory/weak-convergence-tightness/' | relative_url }}">weak convergence and tightness</a> notes.</p>
+
+<h3>Practice: couplings and mass splitting</h3>
+<ol class="ot-exercises">
+<li><p>For \(a=b=1/2\), write all two-by-two couplings. Which are graph plans?</p><details><summary>Hint and answer</summary><p>The parameter is \(0\le t\le1/2\). At the two endpoints the conditional destinations are deterministic; every interior value splits both atoms.</p></details></li>
+<li><p>Let \(X\) be uniform on \([0,1]\) and \(T(x)=x^2\). Find the density of \(T(X)\).</p><details><summary>Hint and answer</summary><p>For \(0&lt;y&lt;1\), the distribution function is \(\sqrt y\), so the density is \(1/(2\sqrt y)\). Its integral is one; a pushforward need not preserve a uniform density.</p></details></li>
+</ol>

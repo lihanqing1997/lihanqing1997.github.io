@@ -57,8 +57,9 @@ mathematical rather than decorative.
 - Keep the canonical detail-page body in English; localize breadcrumbs,
   landing-page titles, and structural navigation.
 - Preserve the numbered breadcrumb and complete Back/Last page/Next page chain.
-- Do not add exercise sections. A problem worth retaining should appear as a
-  worked example.
+- By default, retain problems as worked examples rather than adding exercise
+  sections. The optimal transport note is an explicit user-requested exception:
+  it includes short self-study exercises with expandable hints and answers.
 - Do not use generic visible headings such as `Core facts`, `Proof guide`,
   `Definition`, `Proposition`, `Proof`, or `Remark`.
 

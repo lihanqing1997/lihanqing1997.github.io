@@ -5,8 +5,10 @@ breadcrumb_child_label_fr: "2. Les problèmes de Monge et de Kantorovitch"
 breadcrumb_child_label_zh: "2. 蒙日问题与康托罗维奇问题"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/transport-plans-and-couplings/"
-note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-costs/"
+note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-problems/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Set up both optimization problems and identify when atom splitting makes a map impossible.</p>
 
 <p>The two classical formulations ask the same physical question at different mathematical resolutions. Monge moves each source point to one destination; Kantorovich permits randomized destinations and thereby turns a nonlinear constraint into a convex feasible set.</p>
 
@@ -65,7 +67,7 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof idea.</span> A nonatomic standard probability space is isomorphic modulo null sets to \(([0,1],\lambda)\). A standard Borel probability law \(\nu\) is the image of \(\lambda\) under a measurable map \(Q:[0,1]\to Y\). Composing the two maps gives \(T\). In one dimension, \(Q\) can be taken to be the quantile function of \(\nu\).</p>
+        <p><span class="statement-title">Proof outline.</span> A nonatomic standard probability space is isomorphic modulo null sets to \(([0,1],\lambda)\). A standard Borel probability law \(\nu\) is the image of \(\lambda\) under a measurable map \(Q:[0,1]\to Y\). Composing the two maps gives \(T\). In one dimension, \(Q\) can be taken to be the quantile function of \(\nu\).</p>
     </div>
 
     <p>This theorem gives feasibility, not optimality. The central structural question is therefore: under what assumptions is an optimal Kantorovich plan concentrated on a graph? For quadratic cost and an absolutely continuous source, Brenier's theorem answers this by showing that the unique optimal plan is induced by the gradient of a convex function.</p>
@@ -87,8 +89,16 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">A finite assignment.</span> For equal-weight empirical measures \(\mu=n^{-1}\sum_i\delta_{x_i}\) and \(\nu=n^{-1}\sum_j\delta_{y_j}\), every permutation \(\sigma\) induces a map with cost \(n^{-1}\sum_i c(x_i,y_{\sigma(i)})\). Kantorovich plans are doubly stochastic matrices. The Birkhoff--von Neumann theorem implies that some optimal plan is a permutation plan, although uniqueness may fail.</p>
+        <p><span class="statement-title">A finite assignment.</span> For equal-weight empirical measures with distinct source locations \(\mu=n^{-1}\sum_i\delta_{x_i}\) and \(\nu=n^{-1}\sum_j\delta_{y_j}\), every permutation \(\sigma\) induces a map with cost \(n^{-1}\sum_i c(x_i,y_{\sigma(i)})\). Kantorovich plans are doubly stochastic matrices. The Birkhoff--von Neumann theorem implies that some optimal plan is a permutation plan, although uniqueness may fail.</p>
     </div>
 
     <h3>Convexity gained by relaxation</h3>
     <p>The Kantorovich objective is linear in \(\pi\), and its feasible set is convex. This allows compactness arguments, linear-programming duality, perturbation analysis, and entropy regularization. None of these tools requires an optimizer to be deterministic. The later theory will first solve the relaxed problem and then use duality and convex geometry to decide whether the optimizer actually comes from a map.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 1</a>, for the distinction between feasibility, existence, and map structure.</p>
+
+<h3>Practice: feasibility before optimality</h3>
+<ol class="ot-exercises">
+<li><p>For \(\mu=\delta_0\), \(\nu=(\delta_{-1}+\delta_1)/2\), and \(c=|x-y|^2\), find both optimal values.</p><details><summary>Hint and answer</summary><p>The only plan has cost one. There is no admissible map, so the Monge value is \(+\infty\).</p></details></li>
+<li><p>Compute the optimal quadratic cost from \(\operatorname{Unif}[0,1]\) to \(\operatorname{Unif}[a,a+1]\). Explain why your candidate is globally optimal.</p><details><summary>Hint and answer</summary><p>Translation gives cost \(a^2\). Every coupling has mean displacement \(a\), so Jensen gives the matching lower bound.</p></details></li>
+</ol>

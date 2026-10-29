@@ -1,14 +1,16 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "24. Sinkhorn divergences and semi-discrete transport"
-breadcrumb_child_label_fr: "24. Divergences de Sinkhorn et transport semi-discret"
-breadcrumb_child_label_zh: "24. 辛克霍恩散度与半离散传输"
+breadcrumb_child_label_en: "19. Sinkhorn divergences and semi-discrete transport"
+breadcrumb_child_label_fr: "19. Divergences de Sinkhorn et transport semi-discret"
+breadcrumb_child_label_zh: "19. 辛克霍恩散度与半离散传输"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/entropic-regularization/"
 note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynamics/"
 ---
 
-<p>Two complementary constructions improve the usability of transport without abandoning its geometry. Sinkhorn divergences remove the self-interaction bias of entropy. Semi-discrete transport keeps the source continuous and the target finite, converting the dual problem into a smooth concave optimization over weighted geometric cells.</p>
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Explain debiasing and recover a semi-discrete map from cell masses.</p>
+
+<p>Two complementary constructions improve the usability of transport without abandoning its geometry. Sinkhorn divergences remove the self-interaction bias of entropy. Semi-discrete transport keeps the source continuous and the target finite, converting the dual problem into a concave optimization over weighted geometric cells, differentiable when ties have zero source mass.</p>
 
     <h3>Debiasing entropic transport</h3>
 
@@ -21,11 +23,11 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
         -\frac12\operatorname{OT}_\varepsilon(\mu,\mu)
         -\frac12\operatorname{OT}_\varepsilon(\nu,\nu).
         \]
-        The two self-costs remove the entropic preference for diffuse couplings.</p>
+        The subtraction makes every self-comparison zero. It does not remove every finite-regularization bias relative to ordinary transport.</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Definiteness.</span> For the usual negative-type ground costs, including standard powers of Euclidean distance in their admissible range, \(S_\varepsilon(\mu,\nu)\ge0\) and
+        <p><span class="statement-title">Definiteness.</span> Let \(X\subset\mathbb R^d\) be compact, \(c(x,y)=|x-y|^q\) with \(0&lt;q\le2\), and \(\varepsilon>0\). For probability measures on \(X\), \(S_\varepsilon(\mu,\nu)\ge0\) and
         \[
         S_\varepsilon(\mu,\nu)=0\quad\Longleftrightarrow\quad\mu=\nu.
         \]
@@ -37,7 +39,7 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
     <h3>Interpolation between transport and kernel discrepancies</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Two limiting regimes.</span> Under suitable integrability,
+        <p><span class="statement-title">Two limiting regimes.</span> For the compact Euclidean setting above,
         \[
         \lim_{\varepsilon\downarrow0}S_\varepsilon(\mu,\nu)
         =\operatorname{OT}_0(\mu,\nu),
@@ -54,11 +56,11 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof idea.</span> The small-\(\varepsilon\) statement follows from the zero-temperature convergence of each term, noting that the unregularized self-costs vanish. For large \(\varepsilon\), each entropic optimizer approaches the product coupling. Substitute the three product couplings into the debiased combination; the leading entropic constants cancel.</p>
+        <p><span class="statement-title">Proof outline.</span> The small-\(\varepsilon\) statement follows from the zero-temperature convergence of each term, noting that the unregularized self-costs vanish. For large \(\varepsilon\), each entropic optimizer approaches the product coupling. Substitute the three product couplings into the debiased combination; the leading entropic constants cancel.</p>
     </div>
 
     <h3>Statistical smoothing and bias</h3>
-    <p>For fixed \(\varepsilon>0\), positive kernels make dual potentials smooth functions of the marginals, so \(S_\varepsilon(\widehat\mu_n,\widehat\nu_m)\) often has root-sample Gaussian limits under substantially weaker dimensional conditions than unregularized transport. If \(\varepsilon=\varepsilon_n\downarrow0\), inference must balance three terms:
+    <p>For fixed \(\varepsilon>0\), positive kernels make dual potentials smooth functions of the marginals, so \(S_\varepsilon(\widehat\mu_n,\widehat\nu_m)\) can have root-sample Gaussian limits away from degenerate cases under substantially weaker dimensional conditions than unregularized transport. If \(\varepsilon=\varepsilon_n\downarrow0\), inference must balance three terms:
     \[
     \text{total error}
     =
@@ -73,9 +75,9 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> Let the source be \(\mu=\rho(x)\,\mathrm{d}x\) on \(\Omega\subset\mathbb R^d\), and let
         \[
-        \nu=\sum_{j=1}^Nb_j\delta_{y_j},\qquad b_j>0.
+        \nu=\sum_{j=1}^Nb_j\delta_{y_j},\qquad b_j>0,\quad\sum_jb_j=1.
         \]
-        Semi-discrete transport seeks a measurable partition of \(\Omega\) into cells of masses \(b_j\), sending each cell to \(y_j\).</p>
+        For the results below assume \(\Omega\) compact, \(\mu\) absolutely continuous, the sites distinct, and \(c(x,y)=\tfrac12|x-y|^2\). Ties lie in hyperplanes of zero source mass. Semi-discrete transport seeks a measurable partition of \(\Omega\) into cells of masses \(b_j\), sending each cell to \(y_j\).</p>
     </div>
 
     <h3>Laguerre cells and the dual objective</h3>
@@ -132,7 +134,7 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
     \ \forall k
     \right\}.
     \]
-    Hence each cell is a convex polyhedron. Changing \(\psi_j\) moves its facets without moving the sites \(y_j\); the weights are exactly the variables required to match prescribed cell masses.</p>
+    Each cell is the intersection of \(\Omega\) with a convex polyhedron; the cell is convex when \(\Omega\) is convex. Changing \(\psi_j\) moves its facets without moving the sites \(y_j\); the weights are exactly the variables required to match prescribed cell masses.</p>
 
     <h3>Hessian and Newton geometry</h3>
 
@@ -155,7 +157,7 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof idea.</span> Perturbing \(\psi_j\) moves only facets adjacent to \(L_j\). The coarea formula converts normal facet speed into first-order cell-mass change, producing the boundary integral. Total mass is invariant under adding a common constant to all weights, so row sums vanish. Positivity of facet weights makes the Hessian negative semidefinite, with constants as its gauge nullspace when the adjacency graph is connected.</p>
+        <p><span class="statement-title">Proof outline.</span> Perturbing \(\psi_j\) moves only facets adjacent to \(L_j\). The coarea formula converts normal facet speed into first-order cell-mass change, producing the boundary integral. Total mass is invariant under adding a common constant to all weights, so row sums vanish. Positivity of facet weights makes the Hessian negative semidefinite, with constants as its gauge nullspace when the adjacency graph is connected.</p>
     </div>
 
     <p>After fixing a gauge such as \(\sum_j\psi_j=0\), Newton's method solves
@@ -182,3 +184,11 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
 
     <h3>Consistency under discretization</h3>
     <p>If discrete targets \(\nu_N\to\nu\) in \(W_2\), stability gives convergence of semi-discrete optimal values. Under uniqueness and regularity, the cell maps converge in measure to the Brenier map. This makes semi-discrete transport both a geometric solver and a principled map estimator, provided the discretization and density estimation errors are controlled.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1810.08278">Feydy et al.</a>, for finite-regularization definiteness; <a href="https://arxiv.org/abs/1803.00567">Peyré–Cuturi, <em>Computational optimal transport</em>, Chapter 5</a>, for semi-discrete cells and optimization.</p>
+
+<h3>Practice: self-costs and cell boundaries</h3>
+<ol class="ot-exercises">
+<li><p>For uniform source on \([0,1]\), target sites 0 and 1, and weights \(b=(1/4,3/4)\), find the quadratic semi-discrete map.</p><details><summary>Hint and answer</summary><p>The cell boundary is the source quantile \(r=1/4\). Send \([0,1/4]\) to 0 and the rest to 1. With cost \(|x-y|^2/2\), the dual difference is \(\psi_1-\psi_2=-1/4\).</p></details></li>
+<li><p>For quadratic ground cost, simplify the large-\(\varepsilon\) limit of \(S_\varepsilon\). Can it distinguish all laws?</p><details><summary>Hint and answer</summary><p>Expansion leaves \(|m_\mu-m_\nu|^2\). Distinct laws with the same mean have zero limiting discrepancy, although finite-\(\varepsilon\) definiteness holds under the stated assumptions.</p></details></li>
+</ol>

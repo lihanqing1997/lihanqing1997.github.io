@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "19. Transport inequalities and concentration"
-breadcrumb_child_label_fr: "19. Inégalités de transport et concentration"
-breadcrumb_child_label_zh: "19. 传输不等式与集中性"
+breadcrumb_child_label_en: "17. Transport inequalities and concentration"
+breadcrumb_child_label_fr: "17. Inégalités de transport et concentration"
+breadcrumb_child_label_zh: "17. 传输不等式与集中性"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
-note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-distance/"
+note_next_url: "/notes/optimal-transport/entropic-regularization/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Turn an entropy bound into a transport bound and concentration for Lipschitz observables.</p>
 
 <p>Transport inequalities convert information divergence into geometric distance. Through Kantorovich duality they become exponential bounds for Lipschitz observables, and through gradient flows they connect entropy, Fisher information, curvature, and concentration.</p>
 
@@ -71,7 +73,7 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof from \(T_1\).</span> For the exponentially tilted law \(\nu_\lambda\propto e^{\lambda f}\mu\), Kantorovich--Rubinstein duality gives
+        <p><span class="statement-title">Proof outline from \(T_1\).</span> For the exponentially tilted law \(\nu_\lambda\propto e^{\lambda f}\mu\), Kantorovich--Rubinstein duality gives
         \[
         \nu_\lambda f-\mu f\le W_1(\nu_\lambda,\mu)
         \le\sqrt{2C\,\operatorname{KL}(\nu_\lambda\,\|\,\mu)}.
@@ -156,7 +158,7 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof architecture.</span> Follow the entropy gradient flow from \(\nu\) toward \(\mu\). Along the flow,
+        <p><span class="statement-title">Proof outline.</span> Follow the entropy gradient flow from \(\nu\) toward \(\mu\). Along the flow,
         \[
         -\frac{\mathrm{d}}{\mathrm{d}t}\operatorname{KL}(\nu_t\,\|\,\mu)=I(\nu_t\,\|\,\mu),
         \qquad
@@ -166,7 +168,7 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
         \[
         W_2(\nu,\mu)\le\int_0^\infty\sqrt{I(\nu_t\,\|\,\mu)}\,\mathrm{d}t.
         \]
-        The logarithmic Sobolev inequality forces exponential entropy decay and converts this integral into \(\sqrt{2C\,\operatorname{KL}(\nu\,\|\,\mu)}\).</p>
+        Write \(E(t)=\operatorname{KL}(\nu_t\|\mu)\). Since \(E\le CI/2\), one has \(\sqrt I\le\sqrt{C/2}\,I/\sqrt E=-\sqrt{2C}\,(\sqrt E)\,\!\prime\). Integrating (and justifying the regular flow by approximation) bounds the path length by \(\sqrt{2C\,\operatorname{KL}(\nu\,\|\,\mu)}\).</p>
     </div>
 
     <h3>The HWI inequality</h3>
@@ -186,3 +188,11 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
 
     <h3>Tensorization</h3>
     <p>If each \(\mu_i\) satisfies \(T_2(C_i)\) on \(X_i\), then the product measure satisfies \(T_2(\max_iC_i)\) for the squared product metric. The proof disintegrates a competitor coordinate by coordinate, applies the one-coordinate inequalities conditionally, and uses the chain rule for relative entropy. This dimension-free tensorization is a central reason transport inequalities yield concentration for high-dimensional product measures.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §3</a>, for the gradient-flow framework, and <a href="https://doi.org/10.1007/978-3-540-71050-9">Villani, <em>Optimal transport: old and new</em></a>, for transport inequalities. The smooth proofs require approximation to reach nonsmooth laws.</p>
+
+<h3>Practice: constants and sharpness</h3>
+<ol class="ot-exercises">
+<li><p>Check Gaussian \(T_2\) for \(\nu=N(a,I)\) against \(\gamma=N(0,I)\).</p><details><summary>Hint and answer</summary><p>\(W_2^2=|a|^2\) and \(\operatorname{KL}(\nu\|\gamma)=|a|^2/2\). Equality shows the displayed constant is sharp.</p></details></li>
+<li><p>Given \(\log\mathbb E e^{\lambda(f-\mathbb Ef)}\le C\lambda^2/2\), derive the upper-tail bound.</p><details><summary>Hint and answer</summary><p>Markov gives \(\exp(-\lambda r+C\lambda^2/2)\). Choosing \(\lambda=r/C\) gives \(\exp(-r^2/(2C))\).</p></details></li>
+</ol>

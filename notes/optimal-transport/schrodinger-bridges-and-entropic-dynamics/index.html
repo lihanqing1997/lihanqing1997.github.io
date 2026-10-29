@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "25. Schrödinger bridges and entropic dynamics"
-breadcrumb_child_label_fr: "25. Ponts de Schrödinger et dynamique entropique"
-breadcrumb_child_label_zh: "25. 薛定谔桥与熵动力学"
+breadcrumb_child_label_en: "20. Schrödinger bridges and entropic dynamics"
+breadcrumb_child_label_fr: "20. Ponts de Schrödinger et dynamique entropique"
+breadcrumb_child_label_zh: "20. 薛定谔桥与熵动力学"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-transport/"
-note_next_url: "/notes/optimal-transport/unbalanced-optimal-transport/"
+note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-distance/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Reduce a path-space entropy problem to its endpoints and distinguish diffusion drift from current velocity.</p>
 
 <p>A Schrödinger bridge asks for the most likely random evolution connecting two unlikely endpoint distributions under a reference diffusion. It is a path-space entropy projection whose endpoint reduction is entropic transport and whose zero-noise limit is classical optimal transport.</p>
 
@@ -60,85 +62,74 @@ note_next_url: "/notes/optimal-transport/unbalanced-optimal-transport/"
         The second term is nonnegative and vanishes exactly when the conditional path law given endpoints is the reference bridge. Minimizing leaves only the endpoint coupling problem.</p>
     </div>
 
-    <h3>Relation to entropic optimal transport</h3>
-    <p>For Brownian reference, the endpoint kernel has the form
+<h3>Relation to entropic optimal transport</h3>
+    <p>Fix Brownian motion with generator \(\varepsilon\Delta/2\) and initial probability density \(r_0>0\). Its endpoint density is
     \[
-    r^\varepsilon_{01}(x,y)\propto
-    \exp\!\left(-\frac{|x-y|^2}{2\varepsilon}\right)
+    r_0(x)(2\pi\varepsilon)^{-d/2}
+    \exp\{-|x-y|^2/(2\varepsilon)\}.
     \]
-    relative to suitable reference marginals. Expanding
-    \(\operatorname{KL}(\pi\,\|\,R^\varepsilon_{01})\) yields, up to terms depending only on \(\mu_0,\mu_1\),
+    If \(\mu_i=\rho_i\,\mathrm{d}x\) have finite entropy and the following integrals are finite, then for \(\pi\in\Pi(\mu_0,\mu_1)\),
     \[
-    \frac{1}{2\varepsilon}\int|x-y|^2\,\mathrm{d}\pi
-    +\operatorname{KL}(\pi\,\|\,\mu_0\otimes\mu_1).
+    \begin{aligned}
+    \operatorname{KL}(\pi\|R^\varepsilon_{01})
+    ={}&\operatorname{KL}(\pi\|\mu_0\otimes\mu_1)
+       +\frac1{2\varepsilon}\int|x-y|^2\,\mathrm{d}\pi\\
+       &+\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)
+       +\operatorname{Ent}(\mu_1)
+       +\frac d2\log(2\pi\varepsilon).
+    \end{aligned}
     \]
-    Thus the static Schrödinger bridge is quadratic entropic transport after a change of constants and parameterization.</p>
+    Only the first two terms vary with the coupling. Multiplying by \(\varepsilon\) therefore gives exactly the entropic problem with cost \(|x-y|^2/2\), up to fixed endpoint constants. The Brownian initial law must be specified: “Brownian motion with Lebesgue initial law” would be a sigma-finite reference, not a probability law.</p>
 
-    <h3>Schrödinger potentials</h3>
+<h3>Schrödinger potentials</h3>
+    <p>In the strictly positive finite-state model, entropy duality gives the unique optimizer in the form
+    \[
+    \pi^\star(x,y)=f(x)g(y)R^\varepsilon_{01}(x,y),
+    \]
+    with positive factors unique up to reciprocal scaling. Enforcing marginals gives
+    \[
+    f(x)\mathbb E_R[g(X_1)\mid X_0=x]
+    =\frac{\mu_0(x)}{R_0(x)},\qquad
+    g(y)\mathbb E_R[f(X_0)\mid X_1=y]
+    =\frac{\mu_1(y)}{R_1(y)}.
+    \]
+    These are the Schrödinger equations; alternating them is Sinkhorn scaling with the reference endpoint matrix as kernel. Analogous factorizations hold for diffusion references under additional absolute-continuity and integrability hypotheses. We use such a factorization in the smooth calculations below; the analytic existence theory is in <a href="https://arxiv.org/abs/1308.0215">Léonard's survey, §§2–4</a>.</p>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Factorization theorem.</span> Under positivity and finite-entropy assumptions, the optimal endpoint coupling has form
-        \[
-        \pi^\star(\mathrm{d}x,\mathrm{d}y)
-        =f(x)g(y)R^\varepsilon_{01}(\mathrm{d}x,\mathrm{d}y),
-        \]
-        where \(f,g>0\) solve
-        \[
-        f(x)\int g(y)R^\varepsilon_{01}(\mathrm{d}y\mid x)
-        =\frac{\mathrm{d}\mu_0}{\mathrm{d}R^\varepsilon_0}(x),
-        \]
-        \[
-        g(y)\int f(x)R^\varepsilon_{01}(\mathrm{d}x\mid y)
-        =\frac{\mathrm{d}\mu_1}{\mathrm{d}R^\varepsilon_1}(y).
-        \]
-        The pair is unique up to reciprocal scaling.</p>
-    </div>
+<h3>Entropic interpolation</h3>
+    <p>The marginals \(\mu_t=P_t^\star\) form the entropic interpolation. For a Markov reference and \(P^\star=f(X_0)g(X_1)R\), past and future are conditionally independent given \(X_t\). Consequently
+    \[
+    \frac{\mathrm{d}\mu_t}{\mathrm{d}R_t}
+    =\mathbb E_R[f(X_0)\mid X_t]\,
+     \mathbb E_R[g(X_1)\mid X_t].
+    \]
+    For the Brownian reference above, let \(H_t\) be convolution with the heat kernel of variance \(\varepsilon t\). Define the Lebesgue-density factors
+    \[
+    a_t=H_t(f r_0),\qquad b_t=H_{1-t}g.
+    \]
+    Then \(\rho_t=a_tb_t\), \(\partial_ta_t=\varepsilon\Delta a_t/2\), and \(\partial_tb_t=-\varepsilon\Delta b_t/2\). These factors differ from the conditional-expectation factors when the initial reference density is nonconstant.</p>
 
-    <p>Alternately enforcing these equations is iterative proportional fitting, the path-space version of Sinkhorn scaling.</p>
-
-    <h3>Entropic interpolation</h3>
-    <p>The time marginals
+<h3>Forward, backward, and current velocities</h3>
+    <p>For smooth positive factors, the Brownian bridge's forward drift and backward drift (in the forward-time convention) are
     \[
-    \mu_t=P_t^\star
+    b_t^+=\varepsilon\nabla\log b_t,\qquad
+    b_t^-=-\varepsilon\nabla\log a_t.
     \]
-    form the entropic interpolation between \(\mu_0\) and \(\mu_1\). For a reversible Markov reference, define
+    Their average and half-difference are
     \[
-    f_t(x)=\mathbb E_R[f(X_0)\mid X_t=x],
-    \qquad
-    g_t(x)=\mathbb E_R[g(X_1)\mid X_t=x].
+    v_t=\frac\varepsilon2\nabla\log(b_t/a_t),\qquad
+    u_t=\frac\varepsilon2\nabla\log\rho_t.
     \]
-    Then
+    The forward drift solves a Fokker–Planck equation with diffusion; the current velocity solves the continuity equation without a diffusion term. Indeed,
     \[
-    \frac{\mathrm{d}\mu_t}{\mathrm{d}R_t}=f_tg_t.
+    \partial_t(a_tb_t)=\frac\varepsilon2(b_t\Delta a_t-a_t\Delta b_t)
+    =-\nabla\cdot(\rho_tv_t).
     \]
-    For Brownian motion, \(f_t\) and \(g_t\) evolve by backward and forward heat semigroups.</p>
-
-    <h3>Forward, backward, and current velocities</h3>
-    <p>For Brownian diffusivity \(\varepsilon\), the bridge has forward and backward drifts
-    \[
-    b_t^+=\varepsilon\nabla\log g_t,
-    \qquad
-    b_t^-=-\varepsilon\nabla\log f_t.
-    \]
-    Their average
-    \[
-    v_t=\frac{b_t^++b_t^-}{2}
-    =\frac{\varepsilon}{2}\nabla\log\frac{g_t}{f_t}
-    \]
-    is the current velocity and satisfies
-    \[
-    \partial_t\mu_t+\nabla\cdot(v_t\mu_t)=0.
-    \]
-    Their half-difference
-    \[
-    u_t=\frac{\varepsilon}{2}\nabla\log\rho_t
-    \]
-    is the osmotic velocity, where \(\rho_t\) is the density relative to Lebesgue measure.</p>
+    Mixing reference-relative factors with Lebesgue densities would give an incorrect backward drift.</p>
 
     <h3>Dynamic action with Fisher information</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Entropic dynamic formulation.</span> Up to endpoint-dependent entropy constants, the Brownian Schrödinger problem is equivalent to minimizing
+        <p><span class="statement-title">Entropic dynamic formulation (smooth finite-action setting).</span> Up to endpoint-dependent entropy constants, the Brownian Schrödinger problem is equivalent to minimizing
         \[
         \int_0^1\int
         \left\{
@@ -151,7 +142,7 @@ note_next_url: "/notes/optimal-transport/unbalanced-optimal-transport/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof idea.</span> Girsanov's theorem expresses path-space entropy through the squared controlled forward drift \(b^+\). Decompose
+        <p><span class="statement-title">Proof outline.</span> Girsanov's theorem expresses path-space entropy through the squared controlled forward drift \(b^+\). Decompose
         \[
         b^+=v+\frac{\varepsilon}{2}\nabla\log\rho.
         \]
@@ -159,25 +150,33 @@ note_next_url: "/notes/optimal-transport/unbalanced-optimal-transport/"
     </div>
 
     <h3>Hamilton--Jacobi--Bellman structure</h3>
-    <p>The logarithmic potentials \(\phi_t=\varepsilon\log g_t\) and \(\widehat\phi_t=\varepsilon\log f_t\) satisfy viscous Hamilton--Jacobi equations. For example,
+    <p>The logarithmic potentials \(\phi_t=\varepsilon\log b_t\) and \(\widehat\phi_t=\varepsilon\log a_t\) satisfy viscous Hamilton--Jacobi equations. For example,
     \[
     \partial_t\phi_t+\frac12|\nabla\phi_t|^2
     +\frac{\varepsilon}{2}\Delta\phi_t=0
     \]
-    with the appropriate time orientation. As \(\varepsilon\to0\), the viscosity term disappears and the equation approaches the Hamilton--Jacobi equation of Wasserstein geodesics.</p>
+    Here \(b_t\) solves the backward heat equation, fixing the sign of the Laplacian. As \(\varepsilon\to0\), the viscosity term disappears and the equation approaches the Hamilton--Jacobi equation of Wasserstein geodesics.</p>
 
-    <h3>Zero-noise limit</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Convergence to optimal transport.</span> Under finite second moments and standard tightness assumptions, as \(\varepsilon\downarrow0\), the rescaled Schrödinger endpoint problem \(\Gamma\)-converges to quadratic optimal transport. Optimal endpoint couplings converge to quadratic optimal plans, and entropic interpolations converge to displacement interpolations whenever the limiting optimizer is unique.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof mechanism.</span> Small-noise Brownian paths satisfy a large-deviation principle with rate \(\tfrac12\int|\dot\gamma_t|^2\,\mathrm{d}t\). Entropy minimization therefore concentrates on least-action paths. The contraction principle reduces the endpoint rate to \(\tfrac12|x-y|^2\), producing the Kantorovich cost. Exponential tightness gives compactness, and uniqueness identifies the full limit.</p>
-    </div>
+<h3>Zero-noise limit</h3>
+    <div class="math-statement theorem"><p><span class="statement-title">A concrete small-noise limit.</span> Suppose \(\mu_0,\mu_1\) have bounded densities supported in compact subsets of \(\mathbb R^d\), and take a strictly positive Gaussian initial reference density \(r_0\). Then
+    \[
+    \lim_{\varepsilon\downarrow0}
+    \varepsilon\min_{P:P_i=\mu_i}\operatorname{KL}(P\|R^\varepsilon)
+    =\tfrac12W_2^2(\mu_0,\mu_1).
+    \]
+    The optimal endpoint couplings converge weakly to the unique quadratic optimal plan. Optimal path laws converge weakly to its straight-line dynamical plan.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof outline.</span> All endpoint constants in the entropy identity are finite, and vanish after multiplying by \(\varepsilon\) (including \(\varepsilon\log\varepsilon\)). The compact continuous-cost result on entropic transport gives convergence of the values and endpoint plans. The source has a density, so Brenier gives uniqueness. Conditional on endpoints, a Brownian bridge is its straight-line mean plus a centered Brownian bridge of size \(\sqrt\varepsilon\). Its fluctuations vanish uniformly in probability. Mixing over the converging compactly supported endpoint laws proves weak path-space convergence. General small-noise results require more care with entropy and tails; finite second moments alone do not ensure finite bridge entropy at positive noise.</p></div>
 
     <h3>Gaussian bridges</h3>
-    <p>For Gaussian endpoint laws and a linear Gaussian reference process, the Schrödinger bridge remains Gaussian. Its mean solves a deterministic minimum-energy interpolation, while its covariance solves coupled matrix Riccati equations. In the zero-noise limit these equations reduce to the Gaussian Wasserstein geodesic from page 12.</p>
+    <p>For Gaussian endpoint laws and a linear Gaussian reference process, the Schrödinger bridge remains Gaussian. Its mean solves a deterministic minimum-energy interpolation, while its covariance solves coupled matrix Riccati equations. In the zero-noise limit these equations reduce to the Gaussian Wasserstein geodesic from <a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">Geodesics and displacement interpolation</a>.</p>
 
     <h3>What the bridge adds to transport</h3>
     <p>Classical transport chooses deterministic least-action motion whenever a map exists. A Schrödinger bridge retains stochastic fluctuations around the most likely motion, remains smooth for positive noise, and naturally incorporates a reference dynamics. This makes it a genuine dynamical theory rather than merely a computational regularization.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1308.0215">Léonard, <em>A survey of the Schrödinger problem</em></a>, for entropy factorization, reference measures, and stochastic dynamics. Smooth action formulas need finite entropy, Fisher information, and justified integrations by parts.</p>
+
+<h3>Practice: bridges and deterministic limits</h3>
+<ol class="ot-exercises">
+<li><p>Why does the optimal path law retain the reference conditional bridge for each endpoint pair?</p><details><summary>Hint and answer</summary><p>The conditional relative-entropy term in the chain rule is nonnegative and is zero precisely when the conditional laws coincide.</p></details></li>
+<li><p>For \(\rho_t=a_tb_t\) with the two heat equations stated above, verify the continuity equation for \(v_t\).</p><details><summary>Hint and answer</summary><p>Expand \(\partial_t(a_tb_t)\) and \(-\nabla\cdot[\varepsilon(a_t\nabla b_t-b_t\nabla a_t)/2]\). The mixed gradient terms cancel.</p></details></li>
+</ol>

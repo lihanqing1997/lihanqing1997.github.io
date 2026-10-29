@@ -1,14 +1,18 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "23. Entropic regularization and Sinkhorn scaling"
-breadcrumb_child_label_fr: "23. Régularisation entropique et équilibrage de Sinkhorn"
-breadcrumb_child_label_zh: "23. 熵正则化与辛克霍恩缩放"
+breadcrumb_child_label_en: "18. Entropic regularization and Sinkhorn scaling"
+breadcrumb_child_label_fr: "18. Régularisation entropique et équilibrage de Sinkhorn"
+breadcrumb_child_label_zh: "18. 熵正则化与辛克霍恩缩放"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/projection-based-transport-in-high-dimensions/"
+note_prev_url: "/notes/optimal-transport/talagrand-and-transport-inequalities/"
 note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-transport/"
 ---
 
-<p>Entropy turns the linear transport problem into a strictly convex smooth problem. Its optimizer has a multiplicative Gibbs form, and enforcing the two marginals reduces to alternating diagonal scalings. The regularization is therefore simultaneously variational, probabilistic, and algorithmic.</p>
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Derive Sinkhorn scaling, recognize its entropy convention, and distinguish numerical convergence from regularization bias.</p>
+
+<p>Entropy makes the transport objective strictly convex; in finite dimensions the optimizer also depends smoothly on positive marginal weights. Its optimizer has a multiplicative Gibbs form, and enforcing the two marginals reduces to alternating diagonal scalings. The regularization is therefore simultaneously variational, probabilistic, and algorithmic.</p>
+
+    <p>For the continuous results on this page, take compact metric spaces \(X,Y\) and finite continuous cost \(c\). For matrix scaling, discard zero-weight atoms and assume \(a_i,b_j>0\). These hypotheses keep the kernel strictly positive and bounded away from zero; unbounded costs and noncompact spaces need additional integrability assumptions.</p>
 
     <h3>The entropic transport problem</h3>
 
@@ -27,7 +31,7 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Existence and uniqueness.</span> If the feasible set contains a finite-objective plan and \(c\) is bounded below with the usual lower-semicontinuity assumptions, the entropic problem has a unique minimizer \(\pi_\varepsilon\).</p>
+        <p><span class="statement-title">Existence and uniqueness.</span> Under the compact continuous-cost assumptions above, the entropic problem has a unique minimizer \(\pi_\varepsilon\).</p>
     </div>
 
     <div class="math-statement proof">
@@ -37,7 +41,7 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
     <h3>Dual formulation</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Entropic duality.</span> Under integrability conditions,
+        <p><span class="statement-title">Entropic duality.</span> Under the assumptions above,
         \[
         \operatorname{OT}_\varepsilon(\mu,\nu)
         =
@@ -90,7 +94,7 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
     with
     \[
     u\odot(Kv)=a,\qquad
-    v\odot(K^{\mathsf T}u)=b.
+    v\odot(K^\top u)=b.
     \]</p>
 
     <div class="math-statement proposition">
@@ -98,10 +102,21 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
         \[
         u^{(k+1)}=a\oslash(Kv^{(k)}),
         \qquad
-        v^{(k+1)}=b\oslash(K^{\mathsf T}u^{(k+1)}),
+        v^{(k+1)}=b\oslash(K^\top u^{(k+1)}),
         \]
         where \(\oslash\) is componentwise division. Every row update enforces the first marginal exactly, and every column update enforces the second.</p>
     </div>
+
+    <h3>A practical scaling loop</h3>
+    <pre aria-label="Sinkhorn iteration pseudocode"><code>v = vector of ones
+repeat:
+    u = a / (K v)             # componentwise division
+    v = b / (transpose(K) u)
+    P = diag(u) K diag(v)
+    residual = norm1(P ones - a) + norm1(transpose(P) ones - b)
+until residual is below tolerance or the iteration limit is reached</code></pre>
+    <p>Check both marginals after a complete sweep. Report the residual and whether the iteration limit was reached; a limit is not a convergence certificate. For small \(\varepsilon\), use the log-domain version below. A dense sweep costs \(O(mn)\) arithmetic and storing the dense kernel costs \(O(mn)\) memory; the number of sweeps depends on the kernel and accuracy.</p>
+    <p>The continuous factors above were defined relative to \(\mu\otimes\nu\). The discrete vectors here absorb \(a_i,b_j\). If \(f=\varepsilon\log u\), \(g=\varepsilon\log v\) are these absorbed log-scalings, the relative-entropy dual potentials are \(\varphi_i=f_i-\varepsilon\log a_i\), \(\psi_j=g_j-\varepsilon\log b_j\), up to opposite additive constants. This distinction matters when differentiating the value with respect to marginal weights.</p>
 
     <h3>Why Sinkhorn converges</h3>
 
@@ -110,7 +125,7 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof perspectives.</span> In dual coordinates, each update exactly maximizes the strictly concave dual objective in one block of potentials. The objective increases and is bounded above; strict concavity modulo additive constants identifies the limit. Equivalently, each update is a Kullback--Leibler projection onto one affine marginal set. Alternating Bregman projections converge to the unique intersection minimizer. A quantitative proof uses contraction of the positive kernel in Hilbert's projective metric.</p>
+        <p><span class="statement-title">Proof outline.</span> In dual coordinates, each update exactly maximizes the strictly concave dual objective in one block of potentials. After fixing the additive gauge, positivity bounds the relevant dual level set. Block ascent and uniqueness then identify the limit; monotonicity alone would not prove convergence. Equivalently, each update is a Kullback--Leibler projection onto one affine marginal set. Alternating Bregman projections converge to the unique intersection minimizer. A quantitative proof uses contraction of the positive kernel in Hilbert's projective metric.</p>
     </div>
 
     <h3>Small-regularization limit</h3>
@@ -124,7 +139,7 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since the entropy term is nonnegative, \(\operatorname{OT}_\varepsilon\ge\operatorname{OT}_0\). Evaluate the regularized objective at a finite-entropy optimal plan, or approximate an optimal plan by finite-entropy plans, to obtain the limsup inequality. Compactness gives limit points of \(\pi_\varepsilon\); lower semicontinuity of the cost makes them optimal. Comparing two unregularized optimizers at order \(\varepsilon\) gives the entropy selection rule.</p>
+        <p><span class="statement-title">Proof.</span> Since the entropy term is nonnegative, \(\operatorname{OT}_\varepsilon\ge\operatorname{OT}_0\). Evaluate the regularized objective at a finite-entropy optimal plan, or use product couplings within increasingly fine partitions to approximate an optimal plan by finite-entropy plans, to obtain the limsup inequality. Uniform continuity of the cost controls the partition approximation error. Compactness gives limit points of \(\pi_\varepsilon\); lower semicontinuity of the cost makes them optimal. Comparing two unregularized optimizers at order \(\varepsilon\) gives the entropy selection rule.</p>
     </div>
 
     <h3>Large-regularization limit</h3>
@@ -149,3 +164,11 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
 
     <h3>Regularization bias</h3>
     <p>\(\operatorname{OT}_\varepsilon(\mu,\mu)\) is generally positive, so the regularized cost is not a distance and is biased toward diffuse couplings. Smaller \(\varepsilon\) reduces geometric bias but slows scaling and increases statistical and numerical sensitivity. The next page studies debiasing and separates the fully discrete and semi-discrete computational geometries.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1803.00567">Peyré–Cuturi, <em>Computational optimal transport</em>, Chapter 4</a>, for entropy conventions, convergence proofs for matrix scaling, and stable algorithms.</p>
+
+<h3>Practice: scaling and regularization</h3>
+<ol class="ot-exercises">
+<li><p>For \(a=b=(1/2,1/2)\), \(C=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), and \(k=e^{-1/\varepsilon}\), find the entropic optimizer.</p><details><summary>Hint and answer</summary><p>Symmetry and scaling give \(P_\varepsilon=\frac1{2(1+k)}\begin{pmatrix}1&amp;k\\k&amp;1\end{pmatrix}\). It approaches the diagonal plan as \(\varepsilon\downarrow0\) and the independent plan as \(\varepsilon\to\infty\).</p></details></li>
+<li><p>Run one row update and one column update on a positive matrix. Why must you check both marginals before stopping?</p><details><summary>Hint and answer</summary><p>The column update can disturb the row sums just enforced. A useful stopping residual is \(\|P\mathbf1-a\|_1+\|P^\top\mathbf1-b\|_1\). Small residual alone does not bound the bias from choosing positive \(\varepsilon\).</p></details></li>
+</ol>

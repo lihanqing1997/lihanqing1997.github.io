@@ -1,14 +1,16 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "16. Displacement convexity"
-breadcrumb_child_label_fr: "16. Convexité par déplacement"
-breadcrumb_child_label_zh: "16. 位移凸性"
+breadcrumb_child_label_en: "14. Displacement convexity"
+breadcrumb_child_label_fr: "14. Convexité par déplacement"
+breadcrumb_child_label_zh: "14. 位移凸性"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/wasserstein-barycenters-and-frechet-geometry/"
 note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
 ---
 
-<p>Functionals of probability measures are rarely convex under ordinary mixture. The geometry relevant to transport follows displacement geodesics, and convexity along those curves controls uniqueness, contraction, inequalities, and evolution equations.</p>
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Test convexity along transport geodesics and understand the role of the Jacobian in entropy convexity.</p>
+
+<p>Convexity depends on the interpolation used. Entropy is convex under ordinary mixtures, while interaction energies need not be; neither fact alone determines behavior along transport geodesics. The geometry relevant to transport follows displacement geodesics, and convexity along those curves controls uniqueness, contraction, inequalities, and evolution equations.</p>
 
     <h3>Geodesic \(\lambda\)-convexity</h3>
 
@@ -72,19 +74,19 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
         \[
         \mathcal U(\mu)=\int_{\mathbb R^d}U(\rho(x))\,\mathrm{d}x,
         \]
-        and set \(\mathcal U(\mu)=+\infty\) when \(\mu\) is not absolutely continuous. McCann's condition is that
+        and set \(\mathcal U(\mu)=+\infty\) off densities for superlinear \(U\). For the theorem below, assume \(U:[0,\infty)\to\mathbb R\) is continuous and convex, \(U(0)=0\), \(U(r)/r\to\infty\) at infinity, and \(U(r)\ge-Cr^a\) for \(0\le r\le1\), with \(d/(d+2)&lt;a&lt;1\). This last bound controls the negative part on \(\mathcal P_2\). McCann's condition is that
         \[
         s\longmapsto s^dU(s^{-d})
         \]
-        is convex and nonincreasing on \((0,\infty)\), together with the usual lower-semicontinuity growth assumptions.</p>
+        is convex and nonincreasing on \((0,\infty)\).</p>
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">McCann displacement-convexity theorem.</span> If \(U\) satisfies McCann's condition, then \(\mathcal U\) is displacement convex on \(\mathcal P_2(\mathbb R^d)\).</p>
+        <p><span class="statement-title">McCann displacement-convexity theorem.</span> Under the preceding assumptions, if \(U\) satisfies McCann's condition, then \(\mathcal U\) is displacement convex on \(\mathcal P_2(\mathbb R^d)\).</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof for smooth positive densities.</span> Let \(T=\nabla u\) be the optimal map from \(\rho_0\) to \(\rho_1\), and \(T_t=(1-t)I+tDT\). The Jacobian equation gives
+        <p><span class="statement-title">Proof outline via smooth positive densities.</span> Let \(T=\nabla u\) be the optimal map from \(\rho_0\) to \(\rho_1\), put \(T_t(x)=(1-t)x+tT(x)\). Its derivative is \(DT_t=(1-t)I+tDT\). The Jacobian equation gives
         \[
         \rho_t(T_t(x))=\frac{\rho_0(x)}
         {\det((1-t)I+tDT(x))}.
@@ -98,7 +100,12 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
         \[
         J\,U(\rho_0/J),\qquad J=\det((1-t)I+tDT).
         \]
-        McCann's condition is exactly the scalar convexity and monotonicity needed to combine the determinant inequality with the endpoint Jacobians. Integration proves the geodesic convexity inequality. Approximation by smooth positive densities and lower semicontinuity give the general case.</p>
+        Fix \(r=\rho_0(x)>0\), and put \(H_r(s)=s^dU(r/s^d)\). It is a positive rescaling of McCann's convex nonincreasing function. Thus, with \(s_t=J^{1/d}\) and \(s_1=(\det DT)^{1/d}\),
+        \[
+        H_r(s_t)\le H_r((1-t)+ts_1)
+        \le(1-t)H_r(1)+tH_r(s_1).
+        \]
+        Integration and change of variables at the endpoint give the energy inequality. Extending the smooth argument uses approximation preserving the energies, not lower semicontinuity alone; see the source below.</p>
     </div>
 
     <h3>Entropy and porous-medium energies</h3>
@@ -116,11 +123,11 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">Power energies.</span> For \(U(r)=r^m/(m-1)\), McCann's condition holds when
+        <p><span class="statement-title">Power energies.</span> For \(m>0\), \(m\ne1\), and \(U(r)=r^m/(m-1)\), McCann's condition holds when
         \[
         m\ge1-\frac1d.
         \]
-        The range includes the porous-medium case \(m>1\) and part of the fast-diffusion range.</p>
+        The superlinear theorem above directly covers \(m>1\). For \(0&lt;m&lt;1\), the scalar condition still gives the displayed threshold, but the lower-semicontinuous extension assigns the singular part the recession coefficient \(U\,\!\prime(\infty)=0\), rather than \(+\infty\). On all of \(\mathcal P_2(\mathbb R^d)\), further control of the negative part is needed, for example \(m>d/(d+2)\). The fast-diffusion extension is not an automatic consequence of the superlinear statement.</p>
     </div>
 
     <h3>Free energies</h3>
@@ -131,7 +138,7 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
     +\int V\,\mathrm{d}\mu
     +\frac12\iint W(x-y)\,\mathrm{d}\mu(x)\,\mathrm{d}\mu(y)
     \]
-    combines internal, confining, and interaction energies. The previous results allow their displacement-convexity constants to be added. This single class generates the heat, Fokker--Planck, porous-medium, and aggregation--diffusion equations studied on pages 17 and 18.</p>
+    combines internal, confining, and interaction energies. The previous results allow their displacement-convexity constants to be added. This single class generates the heat, Fokker--Planck, porous-medium, and aggregation--diffusion equations studied on <a href="{{ '/notes/optimal-transport/gradient-flows-in-wasserstein-space/' | relative_url }}">the JKO construction</a> and <a href="{{ '/notes/optimal-transport/diffusion-and-interaction-equations/' | relative_url }}">diffusion equations</a>.</p>
 
     <h3>Consequences of strict convexity</h3>
 
@@ -153,4 +160,12 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
     </div>
 
     <h3>Generalized geodesics</h3>
-    <p>The squared Wasserstein distance is not convex along every ordinary geodesic in dimensions \(d\ge2\). Many variational arguments use generalized geodesics with a common base measure: glue optimal maps from a base \(\omega\) to \(\mu_0,\mu_1\), then interpolate their images. Along these curves, squared distance to \(\omega\) has the exact Hilbertian quadratic identity needed for the JKO scheme.</p>
+    <p>The squared Wasserstein distance is not convex along every ordinary geodesic in dimensions \(d\ge2\). Many variational arguments use generalized geodesics with a common base measure: glue optimal maps from a base \(\omega\) to \(\mu_0,\mu_1\), then interpolate their images. Writing \(\mu_t=((1-t)T_0+tT_1)_\#\omega\), the natural coupling to \(\omega\) gives an upper bound for \(W_2^2(\omega,\mu_t)\) by the corresponding Hilbertian quadratic expression. The interpolated coupling need not itself be optimal. For absolutely continuous \(\omega\), both maps are convex gradients and so is their convex combination, which gives equality in this particular setting.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 7</a>, for McCann's condition and the treatment of singular measures and internal energies.</p>
+
+<h3>Practice: which interpolation is convex?</h3>
+<ol class="ot-exercises">
+<li><p>For \(V(x)=|x|^2/2\), show the displacement convexity inequality is an equality with \(\lambda=1\).</p><details><summary>Hint and answer</summary><p>Expand \(|(1-t)x+ty|^2\), integrate under an optimal plan, and identify \(\int|x-y|^2\,\mathrm{d}\pi=W_2^2\).</p></details></li>
+<li><p>Let \(\rho_a\) be uniform on an interval of length \(a>0\). Compute its entropy and test it along interpolation of lengths.</p><details><summary>Hint and answer</summary><p>\(\operatorname{Ent}(\rho_a)=-\log a\). The one-dimensional transport geodesic interpolates lengths linearly, and \(-\log\) is convex.</p></details></li>
+</ol>

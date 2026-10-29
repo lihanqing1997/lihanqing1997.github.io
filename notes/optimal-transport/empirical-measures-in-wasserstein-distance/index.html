@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "20. Empirical measures and Wasserstein convergence"
-breadcrumb_child_label_fr: "20. Mesures empiriques et convergence de Wasserstein"
-breadcrumb_child_label_zh: "20. 经验测度与瓦瑟斯坦收敛"
+breadcrumb_child_label_en: "21. Empirical measures and Wasserstein convergence"
+breadcrumb_child_label_fr: "21. Mesures empiriques et convergence de Wasserstein"
+breadcrumb_child_label_zh: "21. 经验测度与瓦瑟斯坦收敛"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/talagrand-and-transport-inequalities/"
+note_prev_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynamics/"
 note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-barycenters/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Identify the roles of dimension, tails, and support structure in empirical transport error.</p>
 
 <p>When a distribution is observed through samples, its empirical measure is the canonical plug-in estimator in Wasserstein space. Consistency is simple, but rates depend sharply on dimension, moment assumptions, and the local structure of the underlying law.</p>
 
@@ -35,7 +37,7 @@ note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-
         =\frac1n\sum_{i=1}^n|X_i|^p
         \longrightarrow\mathbb E|X_1|^p.
         \]
-        The topology theorem on page 11 converts weak convergence plus moment convergence into \(W_p\)-convergence.</p>
+        The topology theorem on <a href="{{ '/notes/optimal-transport/wasserstein-distances/' | relative_url }}">Wasserstein distances and the topology of probability measures</a> converts weak convergence plus moment convergence into \(W_p\)-convergence.</p>
     </div>
 
     <h3>Dimension-dependent expected rates</h3>
@@ -55,7 +57,7 @@ note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof mechanism.</span> Partition space into dyadic cubes. A transport plan first corrects mass discrepancies on coarse cubes, then recursively within each cube. The cost at scale \(2^{-j}\) is controlled by \(2^{-jp}\) times the total empirical mass fluctuation over the \(2^{jd}\) cells. Binomial fluctuations contribute roughly \(\min\{1,\sqrt{2^{jd}/n}\}\). Summing
+        <p><span class="statement-title">Proof outline.</span> Partition space into dyadic cubes. A transport plan first corrects mass discrepancies on coarse cubes, then recursively within each cube. The cost at scale \(2^{-j}\) is controlled by \(2^{-jp}\) times the total empirical mass fluctuation over the \(2^{jd}\) cells. Binomial fluctuations contribute roughly \(\min\{1,\sqrt{2^{jd}/n}\}\). Summing
         \[
         \sum_{j\ge0}2^{-jp}\min\left\{1,\sqrt{\frac{2^{jd}}n}\right\}
         \]
@@ -112,7 +114,7 @@ note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(X_i\) is replaced by \(X_i'\), couple the two empirical measures by matching all unchanged observations and moving only mass \(1/n\) from \(X_i\) to \(X_i'\). Their \(W_p^p\) distance is at most \(D^p/n\). The triangle inequality for optimal values, or direct replacement in a coupling to \(\mu\), gives the same bounded difference for the statistic. Apply McDiarmid's inequality.</p>
+        <p><span class="statement-title">Proof.</span> If \(X_i\) is replaced by \(X_i'\), couple the two empirical measures by matching all unchanged observations and moving only mass \(1/n\) from \(X_i\) to \(X_i'\). Their \(W_p^p\) distance is at most \(D^p/n\). Disintegrate an optimal coupling with respect to the labeled sample atoms, and replace just the destination source label of mass \(1/n\). Both old and new costs on that part lie in \([0,D^p]\); all other mass is unchanged. Reversing the roles gives the claimed absolute difference. This does not use a triangle inequality for \(W_p^p\), which is not a metric for \(p>1\). Apply McDiarmid's inequality.</p>
     </div>
 
     <h3>Two-sample empirical transport</h3>
@@ -121,7 +123,15 @@ note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-
     |W_p(\widehat\mu_n,\widehat\nu_m)-W_p(\mu,\nu)|
     \le W_p(\widehat\mu_n,\mu)+W_p(\widehat\nu_m,\nu).
     \]
-    Thus one-sample rates immediately imply consistency and deviation bounds away from the null. Under \(\mu=\nu\), however, the first-order derivative of the distance may vanish and the limiting scale can change. Page 21 treats this nonregular behavior.</p>
+    Thus one-sample rates immediately imply consistency and deviation bounds away from the null. Under \(\mu=\nu\), however, the first-order derivative of the distance may vanish and the limiting scale can change. <a href="{{ '/notes/optimal-transport/inference-for-transport-costs-maps-and-barycenters/' | relative_url }}">Inference for transport costs, maps, and barycenters</a> treats this nonregular behavior.</p>
 
     <h3>Tail assumptions are structural</h3>
     <p>A small empirical error in weak topology can hide a large transport error in the tails. Finite \(p\)-th moment is sufficient for consistency but generally not for a clean finite-sample rate. Polynomial moments yield polynomial tail terms, exponential moments yield exponential concentration, and compact support removes tail error entirely. Any statistical claim about empirical Wasserstein distance must therefore state both dimension and tail assumptions.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1312.2128">Fournier–Guillin, <em>On the rate of convergence in Wasserstein distance of the empirical measure</em></a>, for finite-sample bounds with explicit moment regimes.</p>
+
+<h3>Practice: rates with their assumptions</h3>
+<ol class="ot-exercises">
+<li><p>For \(p=2,d=5\), what generic bounded-support rate does the theorem give for \(\mathbb EW_2^2\)?</p><details><summary>Hint and answer</summary><p>It gives \(n^{-2/5}\). Taking a square root bounds \(\mathbb EW_2\) by a constant times \(n^{-1/5}\), using Jensen; the squared-cost rate must not be mislabeled as a distance rate.</p></details></li>
+<li><p>For a Bernoulli law with success probability \(a\in(0,1)\), express \(W_p^p(\widehat\mu_n,\mu)\).</p><details><summary>Hint and answer</summary><p>It is \(|\widehat a-a|\), of stochastic order \(n^{-1/2}\). Hence \(W_p\) has order \(n^{-1/(2p)}\), unlike the smooth one-dimensional quantile regime.</p></details></li>
+</ol>

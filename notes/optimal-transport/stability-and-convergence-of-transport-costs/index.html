@@ -1,14 +1,16 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "3. Existence and stability of optimal plans"
-breadcrumb_child_label_fr: "3. Existence et stabilité des plans optimaux"
-breadcrumb_child_label_zh: "3. 最优传输计划的存在性与稳定性"
+breadcrumb_child_label_en: "6. Existence and stability of optimal plans"
+breadcrumb_child_label_fr: "6. Existence et stabilité des plans optimaux"
+breadcrumb_child_label_zh: "6. 最优传输计划的存在性与稳定性"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/monge-problem/"
+note_prev_url: "/notes/optimal-transport/wasserstein-distances/"
 note_next_url: "/notes/optimal-transport/kantorovich-duality/"
 ---
 
-<p>The Kantorovich relaxation is useful because minimizers survive limiting operations. The proof is a clean instance of the direct method: compactness of feasible plans supplies a limit, closed marginal constraints preserve feasibility, and lower semicontinuity prevents the cost from dropping in the limit.</p>
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Use the direct method and recognize the separate lower-bound and recovery steps in stability.</p>
+
+<p>The Kantorovich relaxation is useful because minimizers survive limiting operations. The proof is a clean instance of the direct method: compactness of feasible plans supplies a limit, closed marginal constraints preserve feasibility, and lower semicontinuity keeps the limiting cost below the liminf of the minimizing costs.</p>
 
     <h3>Lower semicontinuity of integral costs</h3>
 
@@ -36,7 +38,7 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose a minimizing sequence \(\pi_n\in\Pi(\mu,\nu)\). Page 1 showed that \(\Pi(\mu,\nu)\) is weakly compact, so a subsequence converges weakly to some \(\pi\in\Pi(\mu,\nu)\). The preceding lemma gives
+        <p><span class="statement-title">Proof.</span> Choose a minimizing sequence \(\pi_n\in\Pi(\mu,\nu)\). <a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">Measures, pushforwards, and couplings</a> showed that \(\Pi(\mu,\nu)\) is weakly compact, so a subsequence converges weakly to some \(\pi\in\Pi(\mu,\nu)\). The preceding lemma gives
         \[
         \int c\,\mathrm{d}\pi
         \le\liminf_n\int c\,\mathrm{d}\pi_n
@@ -110,3 +112,11 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
     <div class="math-statement example">
         <p><span class="statement-title">Loss of lower semicontinuity.</span> On \(\mathbb R^2\), define \(c(0,0)=1\) and \(c(x,y)=0\) elsewhere. For \(\pi_n=\delta_{(1/n,0)}\Rightarrow\delta_{(0,0)}=\pi\), the costs satisfy \(\int c\,\mathrm{d}\pi_n=0\) but \(\int c\,\mathrm{d}\pi=1\). A discontinuous upward jump can destroy existence by allowing minimizing sequences to approach a more expensive limit.</p>
     </div>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §§1–2</a>, for direct-method existence and stability. The <a href="{{ '/notes/probability-theory/weak-convergence-tightness/' | relative_url }}">weak convergence note</a> supplies Portmanteau and Prokhorov.</p>
+
+<h3>Practice: existence and recovery plans</h3>
+<ol class="ot-exercises">
+<li><p>Which part of the existence proof fails if the cost has an upward jump at the limiting point?</p><details><summary>Hint and answer</summary><p>Portmanteau no longer gives the required lower bound on the limiting cost. The feasible plans may still be compact.</p></details></li>
+<li><p>If \(\mu_n\to\mu\) and \(\nu_n\to\nu\) in \(W_p\), bound \(|W_p(\mu_n,\nu_n)-W_p(\mu,\nu)|\).</p><details><summary>Hint and answer</summary><p>Apply the triangle inequality in both directions. The bound is \(W_p(\mu_n,\mu)+W_p(\nu_n,\nu)\).</p></details></li>
+</ol>

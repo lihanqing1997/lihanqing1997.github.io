@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "8. Quadratic transport and Brenier's theorem"
-breadcrumb_child_label_fr: "8. Transport quadratique et théorème de Brenier"
-breadcrumb_child_label_zh: "8. 二次传输与布雷尼耶定理"
+breadcrumb_child_label_en: "9. Quadratic transport and Brenier's theorem"
+breadcrumb_child_label_fr: "9. Transport quadratique et théorème de Brenier"
+breadcrumb_child_label_zh: "9. 二次传输与布雷尼耶定理"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/one-dimensional-transport/"
-note_next_url: "/notes/optimal-transport/monge-ampere-equation/"
+note_prev_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
+note_next_url: "/notes/optimal-transport/displacement-interpolation/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Explain how convex differentiability turns a plan into a unique map, and compute a Gaussian example.</p>
 
 <p>For squared Euclidean distance, cyclical monotonicity becomes ordinary convexity. This identifies the optimal map as a gradient and gives a multidimensional replacement for monotone rearrangement.</p>
 
@@ -41,19 +43,19 @@ note_next_url: "/notes/optimal-transport/monge-ampere-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Existence of an optimal plan \(\pi\) follows from page 3. Its support is \(c\)-cyclically monotone, so after expanding the quadratic cost it is cyclically monotone for \(x\cdot y\). Rockafellar's theorem gives a convex \(u\) with \(\operatorname{supp}\pi\subset\partial u\).</p>
-        <p>A convex function on \(\mathbb R^d\) is locally Lipschitz in the interior of its effective domain and therefore differentiable Lebesgue-almost everywhere by Rademacher's theorem. Since \(\mu\ll\mathcal L^d\), \(\partial u(x)=\{\nabla u(x)\}\) for \(\mu\)-almost every \(x\). Disintegrating \(\pi=\mu(\mathrm{d}x)\pi_x(\mathrm{d}y)\), the support inclusion forces \(\pi_x=\delta_{\nabla u(x)}\) almost surely. Hence \(\pi=(\operatorname{id},\nabla u)_\#\mu\) and \((\nabla u)_\#\mu=\nu\).</p>
+        <p><span class="statement-title">Proof.</span> Existence of an optimal plan \(\pi\) follows from <a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">Existence and stability of optimal plans</a>. Its support is \(c\)-cyclically monotone, so after expanding the quadratic cost it is cyclically monotone for \(x\cdot y\). Rockafellar's theorem gives a convex \(u\) with \(\operatorname{supp}\pi\subset\partial u\).</p>
+        <p>A convex function on \(\mathbb R^d\) is locally Lipschitz in the interior of its effective domain and therefore differentiable Lebesgue-almost everywhere by Rademacher's theorem. The first marginal is concentrated on \(\operatorname{dom}\partial u\subset\operatorname{dom}u\). Since it is absolutely continuous, this convex domain cannot be lower dimensional. It has nonempty interior, and its boundary has Lebesgue measure zero. Thus \(\mu\) is concentrated on interior differentiability points, where \(\partial u(x)=\{\nabla u(x)\}\). Disintegrating \(\pi=\mu(\mathrm{d}x)\pi_x(\mathrm{d}y)\), the support inclusion forces \(\pi_x=\delta_{\nabla u(x)}\) almost surely. Hence \(\pi=(\operatorname{id},\nabla u)_\#\mu\) and \((\nabla u)_\#\mu=\nu\).</p>
         <p>If \(\widetilde\pi\) is another optimal plan, the average \((\pi+\widetilde\pi)/2\) is optimal and the same argument makes it a graph plan. But the conditional law of this average is \(\tfrac12\delta_{\nabla u(x)}+\tfrac12\widetilde\pi_x\), which can be a Dirac mass only when \(\widetilde\pi_x=\delta_{\nabla u(x)}\) almost surely. Thus the optimal plan is unique.</p>
     </div>
 
     <h3>Converse optimality</h3>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(u\) is convex, \(\nabla u\) exists \(\mu\)-almost everywhere, and \(T=\nabla u\) pushes \(\mu\) to \(\nu\), then \(T\) is optimal for quadratic cost.</p>
+        <p><span class="statement-title">Proposition.</span> Let \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\). If \(u\) is convex, \(\nabla u\) exists \(\mu\)-almost everywhere, and \(T=\nabla u\) pushes \(\mu\) to \(\nu\), then \(T\) is optimal for quadratic cost.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The graph of \(\partial u\) is cyclically monotone by summing the subgradient inequalities around a cycle. Therefore the graph of \(T\) is \(c\)-cyclically monotone for quadratic cost. The optimal support theorem from page 5, or equivalently the convex conjugate inequality \(u(x)+u^*(y)\ge x\cdot y\) with equality at \(y=\nabla u(x)\), supplies dual potentials touching the cost on the graph. Complementary slackness proves optimality.</p>
+        <p><span class="statement-title">Proof outline.</span> Summing subgradient inequalities shows the graph is cyclically monotone for the pairing, hence for quadratic cost. The finite-second-moment quadratic sufficiency theorem then gives optimality; it is the quadratic specialization of <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.2</a>. A Fenchel-duality proof is also possible, but must check integrability of the resulting potentials rather than assume it.</p>
     </div>
 
     <h3>Inverse transport and Legendre duality</h3>
@@ -92,24 +94,25 @@ note_next_url: "/notes/optimal-transport/monge-ampere-equation/"
     <div class="math-statement proof">
         <p><span class="statement-title">Proof.</span> The matrix \(A\) is symmetric positive definite, hence \(T=\nabla u\) for the convex quadratic
         \[
-        u(x)=m_1\cdot x+\tfrac12(x-m_0)^{\mathsf T}A(x-m_0).
+        u(x)=m_1\cdot x+\tfrac12(x-m_0)^\top A(x-m_0).
         \]
-        Direct multiplication gives \(A\Sigma_0A^{\mathsf T}=\Sigma_1\), so \(T_\#\mu=\nu\). The converse proposition proves optimality. Expanding \(\mathbb E|X-T(X)|^2\) and using the covariance identity yields the distance formula.</p>
+        Direct multiplication gives \(A\Sigma_0A^\top=\Sigma_1\), so \(T_\#\mu=\nu\). The converse proposition proves optimality. Expanding \(\mathbb E|X-T(X)|^2\) and using the covariance identity yields the distance formula.</p>
     </div>
 
-    <h3>Polar factorization</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Polar factorization theorem.</span> Let \(\mu\ll\mathcal L^d\) and let \(S\in L^2(\mu;\mathbb R^d)\). If \(\nu=S_\#\mu\), then
-        \[
-        S=\nabla u\circ s
-        \]
-        \(\mu\)-almost everywhere, where \(\nabla u\) is the Brenier map from \(\mu\) to \(\nu\) and \(s_\#\mu=\mu\). Under the usual nondegeneracy assumptions the factorization is unique.</p>
-    </div>
-
-    <p>This is the nonlinear analogue of matrix polar decomposition: the measure-preserving map \(s\) plays the role of the orthogonal factor, and the gradient of a convex function plays the role of the positive factor.</p>
+<h3>Polar factorization</h3>
+    <div class="math-statement theorem"><p><span class="statement-title">Polar factorization with a nondegenerate image.</span> Let \(\mu\in\mathcal P_2(\mathbb R^d)\) be absolutely continuous, \(S\in L^2(\mu;\mathbb R^d)\), and suppose \(\nu=S_\#\mu\) is also absolutely continuous. If \(T=\nabla u\) is the Brenier map from \(\mu\) to \(\nu\), then there is a \(\mu\)-preserving map \(s\) such that \(S=T\circ s\) almost everywhere.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The reverse Brenier map \(R=\nabla u^*\) satisfies \(R_\#\nu=\mu\), \(T\circ R=\operatorname{id}\) \(\nu\)-almost everywhere. Set \(s=R\circ S\). Then \(s_\#\mu=R_\#\nu=\mu\) and \(T\circ s=T\circ R\circ S=S\) almost everywhere.</p></div>
+    <p>This is the nonlinear analogue of matrix polar decomposition: a rearrangement preserving the source law is followed by a convex-gradient deformation. Absolute continuity of the image is a sufficient nondegeneracy assumption for this proof; it must not be silently omitted.</p>
 
     <h3>Why absolute continuity matters</h3>
     <div class="math-statement example">
         <p><span class="statement-title">Example.</span> If \(\mu=\delta_0\) and \(\nu=\tfrac12(\delta_{-1}+\delta_1)\), the optimal plan cannot be induced by a map. More subtly, a source supported on a lower-dimensional surface may meet a multivalued part of \(\partial u\) on a set of positive \(\mu\)-mass. Absolute continuity removes this ambiguity because convex functions are differentiable Lebesgue-almost everywhere.</p>
     </div>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §1.2</a>, for cyclic monotonicity, Rockafellar, and quadratic sufficiency; §1.4 for optimal maps. Convex subgradients are reviewed in the <a href="{{ '/notes/optimization/convex-functions-subdifferentials/' | relative_url }}">convex optimization note</a>.</p>
+
+<h3>Practice: convex gradients and gaussian maps</h3>
+<ol class="ot-exercises">
+<li><p>For centered Gaussian laws with covariances \(I\) and \(\operatorname{diag}(4,9)\), compute \(T\) and \(W_2^2\).</p><details><summary>Hint and answer</summary><p>The map is \(T(x_1,x_2)=(2x_1,3x_2)\). The squared cost is \((2-1)^2+(3-1)^2=5\).</p></details></li>
+<li><p>Why can averaging two optimal graph plans prove uniqueness, even though the average of two maps is not used?</p><details><summary>Hint and answer</summary><p>The average is a plan with conditional law \((\delta_{T_0(x)}+\delta_{T_1(x)})/2\). The graph property of every optimal plan forces these two atoms to coincide almost everywhere.</p></details></li>
+</ol>

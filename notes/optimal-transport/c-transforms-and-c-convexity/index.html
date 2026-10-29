@@ -1,23 +1,25 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "5. c-convexity and cyclical monotonicity"
-breadcrumb_child_label_fr: "5. c-convexité et monotonie cyclique"
-breadcrumb_child_label_zh: "5. c-凸性与循环单调性"
+breadcrumb_child_label_en: "8. c-convexity and cyclical monotonicity"
+breadcrumb_child_label_fr: "8. c-convexité et monotonie cyclique"
+breadcrumb_child_label_zh: "8. c-凸性与循环单调性"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/kantorovich-duality/"
-note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-problems/"
+note_next_url: "/notes/optimal-transport/brenier-theorem/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Translate touching inequalities into geometric restrictions on the support of an optimal plan.</p>
 
 <p>Duality says that optimal mass moves only where \(\varphi(x)+\psi(y)=c(x,y)\). The \(c\)-transform organizes all such touching pairs, while cyclical monotonicity describes them without mentioning the potentials. Together they are the geometric language of optimality.</p>
 
     <h3>The \(c\)-transform</h3>
 
     <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(\varphi:X\to[-\infty,\infty]\), define its \(c\)-transform on \(Y\) by
+        <p><span class="statement-title">Definition.</span> For finite continuous cost on compact \(X,Y\), and a bounded real function \(\varphi:X\to\mathbb R\), define its \(c\)-transform on \(Y\) by
         \[
         \varphi^c(y)=\inf_{x\in X}\{c(x,y)-\varphi(x)\}.
         \]
-        For \(\psi:Y\to[-\infty,\infty]\), define \(\psi^c(x)=\inf_y\{c(x,y)-\psi(y)\}\). A function is \(c\)-concave if it equals the \(c\)-transform of some function. Some authors use the sign-reversed term \(c\)-convex; the present note follows the dual inequality \(\varphi+\psi\le c\).</p>
+        For bounded real \(\psi:Y\to\mathbb R\), define \(\psi^c(x)=\inf_y\{c(x,y)-\psi(y)\}\). A function is \(c\)-concave if it equals the \(c\)-transform of some function. Some authors use the sign-reversed term \(c\)-convex; the present note follows the dual inequality \(\varphi+\psi\le c\).</p>
     </div>
 
     <div class="math-statement proposition">
@@ -27,7 +29,7 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
         \qquad
         \varphi^{ccc}=\varphi^c.
         \]
-        A function \(\varphi\) is \(c\)-concave exactly when \(\varphi=\varphi^{cc}\), up to the usual properness qualifications.</p>
+        A function \(\varphi\) is \(c\)-concave exactly when \(\varphi=\varphi^{cc}\), in this bounded compact setting.</p>
     </div>
 
     <div class="math-statement proof">
@@ -72,48 +74,19 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
         whenever the potentials and cost are continuous; in general the inclusion holds \(\pi\)-almost surely.</p>
     </div>
 
-    <h3>Cyclical monotonicity</h3>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A set \(\Gamma\subset X\times Y\) is \(c\)-cyclically monotone if for every \(N\ge1\), every \((x_i,y_i)\in\Gamma\), and every permutation \(\sigma\) of \(\{1,\ldots,N\}\),
-        \[
-        \sum_{i=1}^N c(x_i,y_i)
-        \le
-        \sum_{i=1}^N c(x_i,y_{\sigma(i)}).
-        \]
-        It is enough to test cyclic permutations after decomposing a permutation into disjoint cycles.</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Every \(c\)-superdifferential \(\partial^c\varphi\) is \(c\)-cyclically monotone.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \((x_i,y_i)\in\partial^c\varphi\), then
-        \[
-        c(x_i,y_i)=\varphi(x_i)+\varphi^c(y_i).
-        \]
-        Feasibility gives \(\varphi(x_i)+\varphi^c(y_{\sigma(i)})\le c(x_i,y_{\sigma(i)})\). Sum over \(i\). Since permutation does not change \(\sum_i\varphi^c(y_i)\), the desired inequality follows.</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Optimal support theorem.</span> Under the standard lower-semicontinuity and finite-cost hypotheses, every optimal plan is concentrated on a \(c\)-cyclically monotone Borel set. Conversely, if a finite-cost plan is concentrated on a \(c\)-cyclically monotone set and that set admits an integrable \(c\)-potential, then the plan is optimal.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For the forward direction, take optimal dual potentials. Complementary slackness places the plan on \(\partial^c\varphi\), which is cyclically monotone. For the converse, the \(c\)-version of Rockafellar's construction produces a \(c\)-concave \(\varphi\) with \(\Gamma\subset\partial^c\varphi\). Thus \(\varphi+\varphi^c=c\) on the support. Integrating gives equality of primal and dual values, so weak duality proves optimality.</p>
-    </div>
-
-    <h3>Rockafellar's construction</h3>
-    <p>Fix \((x_0,y_0)\in\Gamma\). A potential containing a \(c\)-cyclically monotone set in its \(c\)-superdifferential can be built as
+<h3>Cyclical monotonicity</h3>
+    <div class="math-statement definition"><p><span class="statement-title">Definition.</span> For finite cost \(c\), a set \(\Gamma\subset X\times Y\) is \(c\)-cyclically monotone if, for any \(N\), pairs \((x_i,y_i)\in\Gamma\), and permutation \(\sigma\),
     \[
-    \varphi(x)=\inf_{\substack{N\ge1\\(x_i,y_i)\in\Gamma}}
-    \left[
-    c(x,y_N)-c(x_N,y_N)
-    +\sum_{i=0}^{N-1}\{c(x_{i+1},y_i)-c(x_i,y_i)\}
-    \right].
+    \sum_{i=1}^N c(x_i,y_i)\le\sum_{i=1}^N c(x_i,y_{\sigma(i)}).
     \]
-    Cyclical monotonicity prevents contradictory negative cycles. Comparing a chain ending at \(x\) with the same chain extended by \((x,y)\in\Gamma\) yields \(\varphi(z)-\varphi(x)\le c(z,y)-c(x,y)\), which is precisely the supporting inequality defining \((x,y)\in\partial^c\varphi\).</p>
+    No finite reassignment of the destinations improves the cost. Testing all cycles is equivalent to testing all permutations.</p></div>
+    <div class="math-statement proposition"><p><span class="statement-title">Contact sets are cyclically monotone.</span> If finite potentials satisfy \(\varphi+\psi\le c\), their equality set is \(c\)-cyclically monotone.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> On the equality set, the original sum is \(\sum_i\varphi(x_i)+\sum_i\psi(y_i)\). Reordering the second sum does not change it; feasibility bounds the reordered sum by \(\sum_i c(x_i,y_{\sigma(i)})\).</p></div>
+    <div class="math-statement theorem"><p><span class="statement-title">Optimal support: the continuous-cost case.</span> Let \(X,Y\) be Polish, \(c\) finite continuous, and \(\pi\) a finite-cost optimal plan. Then \(\operatorname{supp}\pi\) is \(c\)-cyclically monotone. Conversely, a finite-cost plan is optimal if it is concentrated on a contact set of feasible potentials \(\varphi\in L^1(\mu),\psi\in L^1(\nu)\).</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof outline for necessity.</span> If support points violated a cycle inequality strictly, continuity would preserve the improvement in small neighborhoods of those points. Remove equal small amounts of mass from the plan in these neighborhoods and reconnect their source and target marginals cyclically. The new plan has the same marginals and strictly smaller cost, a contradiction. Keeping track of overlapping neighborhoods gives the standard local-exchange proof; see <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.2</a>.</p><p><span class="statement-title">Proof of sufficiency.</span> Integrating the contact equality gives \(\int c\,\mathrm{d}\pi=J(\varphi,\psi)\). Weak duality proves optimality. This argument does not require a separate dual-attainment theorem.</p></div>
+
+<h3>Why cycles lead to potentials</h3>
+    <p>A supporting potential assigns values consistently along chains of paired points. Cyclical monotonicity rules out an improving closed chain, just as the absence of negative cycles permits consistent shortest-path costs on a finite graph. Constructing a finite integrable potential for a general cost requires additional hypotheses; cyclic monotonicity alone should not be used as an unrestricted optimality certificate. For quadratic cost, Rockafellar's convex subgradient theorem supplies precisely the structure needed on the next page.</p>
 
     <h3>Quadratic cost and ordinary convexity</h3>
 
@@ -122,7 +95,7 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
         \[
         u(x)=\tfrac12|x|^2-\varphi(x).
         \]
-        Then \(\varphi\) is \(c\)-concave exactly when \(u\) is convex, and
+        With the extended-value transforms interpreted for proper potentials on the full Euclidean spaces, \(\varphi\) is \(c\)-concave exactly when \(u\) is lower-semicontinuous and convex, and
         \[
         y\in\partial^c\varphi(x)
         \quad\Longleftrightarrow\quad
@@ -155,3 +128,11 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
         \]
         In one dimension this forbids crossings: \(x_1&lt;x_2\) implies \(y_1\le y_2\). In higher dimensions, all cycle lengths are needed to characterize gradients of convex functions.</p>
     </div>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §1.2</a>, for the optimal support theorem and potential constructions beyond the compact setting.</p>
+
+<h3>Practice: cycles and convex potentials</h3>
+<ol class="ot-exercises">
+<li><p>For quadratic cost, verify that \(T(x)=Ax\) is cyclically monotone when \(A\) is symmetric positive semidefinite.</p><details><summary>Hint and answer</summary><p>It is the gradient of \(u(x)=x^\top Ax/2\). Sum the subgradient inequalities around a cycle.</p></details></li>
+<li><p>In \(\mathbb R^2\), the quarter-turn \(J(x_1,x_2)=(-x_2,x_1)\) satisfies the two-point monotonicity inequality. Is that sufficient?</p><details><summary>Hint and answer</summary><p>No: \(h\cdot Jh=0\) for every \(h\), but the points \(0,e_1,e_2\) and their images violate the three-cycle pairing inequality under a suitable cyclic reassignment. Two-point monotonicity does not characterize convex gradients.</p></details></li>
+</ol>

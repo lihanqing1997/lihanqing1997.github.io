@@ -5,7 +5,10 @@ breadcrumb_child_label_fr: "28. Géométrie de Gromov--Wasserstein"
 breadcrumb_child_label_zh: "28. 格罗莫夫--瓦瑟斯坦几何"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport/"
+note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Compare intrinsic geometries and distinguish zero distance up to isomorphism from identifiable pointwise correspondence.</p>
 
 <p>Classical transport compares measures whose points already live in a common space and can be charged by a cross-space cost \(c(x,y)\). Gromov--Wasserstein geometry removes that common coordinate system. It compares two metric-measure spaces by asking whether pairs of points have similar internal distances under a probabilistic correspondence.</p>
 
@@ -93,14 +96,14 @@ note_prev_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
         d_X(x,x')=d_Y(y,y')
         \]
         for \((\pi\otimes\pi)\)-almost every pair
-        \(((x,y),(x',y'))\). After removing a null set, this holds throughout the support relation. If one \(x\) corresponded to both \(y\) and \(\tilde y\), setting the two \(X\)-coordinates equal would give \(d_Y(y,\tilde y)=0\), hence \(y=\tilde y\); similarly in the other direction. The relation is therefore the graph of a measure-preserving isometry between the supports.</p>
+        \(((x,y),(x',y'))\). The distortion is continuous and nonnegative, so its almost-everywhere vanishing implies it vanishes everywhere on the support relation squared. If one \(x\) corresponded to both \(y\) and \(\tilde y\), setting the two \(X\)-coordinates equal would give \(d_Y(y,\tilde y)=0\), hence \(y=\tilde y\); similarly in the other direction. The relation is therefore the graph of a measure-preserving isometry between the supports.</p>
     </div>
 
     <h3>Finite spaces and a quadratic assignment problem</h3>
 
     <p>Let \(X=\{x_i\}_{i=1}^n\), \(Y=\{y_j\}_{j=1}^m\), with weights
     \(a_i,b_j\), and distance matrices \(D^X,D^Y\). A coupling is a nonnegative matrix \(P\) satisfying
-    \(P\mathbf1_m=a\) and \(P^{\mathsf T}\mathbf1_n=b\). Then
+    \(P\mathbf1_m=a\) and \(P^\top\mathbf1_n=b\). Then
     \[
     \operatorname{GW}_p^p
     =
@@ -125,7 +128,7 @@ note_prev_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
         Thus minimizing distortion is equivalent to maximizing the correlation of the two distance matrices under \(P\otimes P\).</p>
     </div>
 
-    <p>If the weights are uniform and \(P\) is restricted to permutation matrices, this becomes a quadratic assignment problem. The relaxed coupling polytope allows soft correspondences and spaces with different numbers of points, but it does not make the objective convex.</p>
+    <p>If both spaces have \(n\) points with uniform weights and \(P\) is restricted to scaled permutation matrices \(P_\sigma/n\), this becomes a quadratic assignment problem. The relaxed coupling polytope allows soft correspondences and spaces with different numbers of points, but it does not make the objective convex.</p>
 
     <h3>Intrinsic lower bounds</h3>
 
@@ -220,7 +223,7 @@ note_prev_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     Linearizing the quadratic distortion at the current coupling produces an ordinary entropic transport subproblem, which can be solved by Sinkhorn scaling. Alternating or conditional-gradient schemes repeat this step.</p>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">What entropy does not fix.</span> Entropic regularization makes each linearized subproblem smooth and numerically stable, but the full Gromov--Wasserstein objective remains nonconvex. Iterations may converge to different stationary points from different initializations; a small primal update is not a certificate of global optimality.</p>
+        <p><span class="statement-title">What entropy does not fix.</span> Entropic regularization makes each linearized subproblem smooth and numerically stable, but it does not in general make the full Gromov--Wasserstein objective convex. Some special regimes admit global guarantees, including sufficiently strong regularization under quantitative hypotheses; these require separate analysis. Iterations may converge to different stationary points from different initializations; a small primal update is not a certificate of global optimality.</p>
     </div>
 
     <h3>Features, barycenters, and structured data</h3>
@@ -279,3 +282,11 @@ note_prev_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     <h3>Relation to Gromov--Hausdorff geometry</h3>
 
     <p>Gromov--Hausdorff distance controls the largest distortion of a correspondence; Gromov--Wasserstein distance controls an \(L^p\) average distortion weighted by probability. The former is sensitive to every point, while the latter may ignore sets of very small mass. This distinction explains both the statistical robustness and the possible geometric blindness of the measure-weighted formulation.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1803.00567">Peyré–Cuturi, <em>Computational optimal transport</em>, Chapter 10</a>, for intrinsic matching; <a href="https://jmlr.org/papers/v25/24-0039.html">Rioux–Goldfeld–Kato (2024)</a>, for guarantees in a specific quadratic entropic regime. See the final research guide for newer discrete duality work.</p>
+
+<h3>Practice: intrinsic structure and symmetry</h3>
+<ol class="ot-exercises">
+<li><p>Compare two equally weighted two-point spaces with respective distances \(a,b>0\). Prove \(\operatorname{GW}_p=2^{-1/p}|a-b|\).</p><details><summary>Hint and answer</summary><p>Each distance law is \((\delta_0+\delta_a)/2\) or \((\delta_0+\delta_b)/2\). The distance-distribution lower bound gives the claimed value, attained by either bijection.</p></details></li>
+<li><p>If a finite metric-measure space has a nontrivial measure-preserving symmetry, is its zero-distortion correspondence to itself unique?</p><details><summary>Hint and answer</summary><p>No. Both identity and that symmetry induce zero-distortion plans. Zero distance identifies an isomorphism class, not a unique alignment.</p></details></li>
+</ol>

@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "11. Wasserstein distances and the topology of probability measures"
-breadcrumb_child_label_fr: "11. Distances de Wasserstein et topologie des mesures de probabilité"
-breadcrumb_child_label_zh: "11. 瓦瑟斯坦距离与概率测度的拓扑"
+breadcrumb_child_label_en: "5. Wasserstein distances and the topology of probability measures"
+breadcrumb_child_label_fr: "5. Distances de Wasserstein et topologie des mesures de probabilité"
+breadcrumb_child_label_zh: "5. 瓦瑟斯坦距离与概率测度的拓扑"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/"
-note_next_url: "/notes/optimal-transport/displacement-interpolation/"
+note_prev_url: "/notes/optimal-transport/one-dimensional-transport/"
+note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-costs/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Prove the metric triangle inequality by gluing and distinguish weak convergence from convergence of transport costs.</p>
 
 <p>A Wasserstein distance does more than assign a transport cost. It equips a space of probability measures with a metric that simultaneously records weak convergence and control of tails. The geometry developed later rests on this topology.</p>
 
@@ -127,7 +129,13 @@ note_next_url: "/notes/optimal-transport/displacement-interpolation/"
         <p><span class="statement-title">Compactness criterion.</span> A family \(\mathcal K\subset\mathcal P_p(X)\) is relatively compact in \(W_p\) if it is tight and its \(p\)-th moments are uniformly integrable. On a proper metric space, a uniform bound on a moment of order \(q>p\) implies these conditions.</p>
     </div>
 
-    <p>The extra tail condition is essential. Weak compactness alone permits a small amount of mass to escape to infinity while carrying nonvanishing \(p\)-transport cost, as the example on page 3 showed.</p>
+    <p>The extra tail condition is essential. Weak compactness alone permits a small amount of mass to escape to infinity while carrying nonvanishing \(p\)-transport cost, as the example on <a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">Existence and stability of optimal plans</a> showed.</p>
+
+    <div class="math-statement counterexample"><p><span class="statement-title">Bounded moments are not uniform integrability.</span> On \(\mathbb R\), let
+    \[
+    \mu_n=(1-n^{-2})\delta_0+n^{-2}\delta_n.
+    \]
+    Then \(\mu_n\Rightarrow\delta_0\) and \(\int x^2\,\mathrm{d}\mu_n=1\), but \(W_2^2(\mu_n,\delta_0)=1\). Every subsequence has the same weak limit, so none converges in \(W_2\). A second-moment bound gives tightness on Euclidean space, not \(W_2\)-compactness.</p></div>
 
     <h3>The \(W_\infty\) distance</h3>
     <p>For bounded-support measures one may also define
@@ -136,3 +144,11 @@ note_next_url: "/notes/optimal-transport/displacement-interpolation/"
     \operatorname*{ess\,sup}_{(x,y)\sim\pi}d(x,y).
     \]
     It minimizes the largest displacement rather than an average displacement. It is the limit of \(W_p\) as \(p\to\infty\) under suitable boundedness assumptions, but its topology and geodesics can be more rigid.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §2.1</a>, for topology, completeness, and compactness.</p>
+
+<h3>Practice: tails and topology</h3>
+<ol class="ot-exercises">
+<li><p>For \(\mu_n=(1-n^{-q})\delta_0+n^{-q}\delta_n\), when does \(W_p(\mu_n,\delta_0)\to0\)?</p><details><summary>Hint and answer</summary><p>The \(p\)-th power is \(n^{p-q}\). It tends to zero exactly when \(q>p\), although weak convergence holds for every \(q>0\).</p></details></li>
+<li><p>Why does a uniform \((p+\eta)\)-moment bound imply uniformly integrable \(p\)-th moments?</p><details><summary>Hint and answer</summary><p>On \(|x|>R\), \(|x|^p\le R^{-\eta}|x|^{p+\eta}\). Integrate and take the supremum over the family.</p></details></li>
+</ol>

@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "9. The Monge--Ampère equation"
-breadcrumb_child_label_fr: "9. L'équation de Monge--Ampère"
-breadcrumb_child_label_zh: "9. 蒙日--安培方程"
+breadcrumb_child_label_en: "24. The Monge--Ampère equation"
+breadcrumb_child_label_fr: "24. L'équation de Monge--Ampère"
+breadcrumb_child_label_zh: "24. 蒙日--安培方程"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/brenier-theorem/"
+note_prev_url: "/notes/optimal-transport/projection-based-transport-in-high-dimensions/"
 note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-costs/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Derive the Jacobian equation and explain why the target image condition is part of the problem.</p>
 
 <p>Brenier's theorem turns quadratic transport into a convex potential \(u\). When the measures have densities, the pushforward condition becomes a nonlinear partial differential equation for \(u\). Its determinant measures how the gradient map changes volume.</p>
 
@@ -77,7 +79,7 @@ note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Strict convexity makes \(\partial u(x)=\{\nabla u(x)\}\), and the area formula for the injective gradient map gives
+        <p><span class="statement-title">Proof.</span> Differentiability makes \(\partial u(x)=\{\nabla u(x)\}\), and the area formula for the injective gradient map gives
         \[
         \mathcal L^d(\nabla u(E))
         =\int_E|\det D(\nabla u)(x)|\,\mathrm{d}x
@@ -85,17 +87,14 @@ note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-
         \]</p>
     </div>
 
-    <h3>Transport formulation of weak solutions</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Brenier--Alexandrov correspondence.</span> Let \(\Omega,\Lambda\) be bounded convex domains, let \(f,g\) be positive densities with equal total mass, and let \(u\) be the Brenier potential satisfying \((\nabla u)_\#(f\,\mathrm{d}x)=g\,\mathrm{d}y\). Then \(u\) solves
-        \[
-        g(\nabla u)\det D^2u=f
-        \]
-        in the Alexandrov sense, together with \(\partial u(\Omega)\subset\overline\Lambda\) and the full-mass image condition. Conversely, an Alexandrov solution satisfying the transport boundary condition induces the optimal map.</p>
-    </div>
-
-    <p>The equation and the image condition must be kept together. The determinant alone controls local volume change but does not specify which target domain receives the mass.</p>
+<h3>Transport formulation of weak solutions</h3>
+    <div class="math-statement theorem"><p><span class="statement-title">Weighted Alexandrov formulation.</span> Let \(\Omega,\Lambda\) be bounded convex open domains, and let \(f,g\) be densities on them bounded above and below by positive constants, with equal mass. The Brenier potential has the transport boundary condition and satisfies
+    \[
+    \int_{\partial u(E)}g(y)\,\mathrm{d}y=\int_E f(x)\,\mathrm{d}x
+    \quad(E\subset\Omega\text{ Borel}),
+    \]
+    with \(g\) extended by zero outside \(\Lambda\). This weighted subgradient-image identity is the weak meaning of \(g(\nabla u)\det D^2u=f\). Together with \(\partial u(\Omega)\subset\overline\Lambda\) and the full-mass image condition, it characterizes the corresponding convex transport potential up to constants.</p></div>
+    <p>The weighted identity avoids evaluating a density at a multivalued subgradient. Its justification uses almost-everywhere invertibility of the forward and reverse Brenier maps and the convex-target localization theory. For a rigorous treatment see <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.4</a>. Under smoothness it reduces to the change-of-variables calculation above. The equation and the target boundary condition must be kept together: a local volume constraint alone does not choose the destination domain.</p>
 
     <h3>One-dimensional and radial examples</h3>
 
@@ -122,8 +121,16 @@ note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">Quadratic potentials.</span> For \(u(x)=\tfrac12x^{\mathsf T}Ax+b\cdot x\) with \(A>0\), \(\det D^2u=\det A\). The gradient map sends ellipsoids to ellipsoids and recovers the Gaussian transport matrix from page 8.</p>
+        <p><span class="statement-title">Quadratic potentials.</span> For \(u(x)=\tfrac12x^\top Ax+b\cdot x\) with \(A>0\), \(\det D^2u=\det A\). The gradient map sends ellipsoids to ellipsoids and recovers the Gaussian transport matrix from <a href="{{ '/notes/optimal-transport/brenier-theorem/' | relative_url }}">Quadratic transport and Brenier's theorem</a>.</p>
     </div>
 
     <h3>Regularity questions</h3>
     <p>The equation suggests that smooth positive \(f,g\) should produce a smooth potential, but this is false without geometry. Convexity of the domains, bounds away from zero and infinity, and boundary regularity are essential. The next page separates interior regularity, global regularity, and the additional curvature condition required by general costs.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 1</a>, for the relation between Brenier potentials and the second boundary-value problem; the regularity chapter that follows explains its geometric hypotheses.</p>
+
+<h3>Practice: volume and boundary data</h3>
+<ol class="ot-exercises">
+<li><p>For transport from uniform \([0,1]\) to uniform \([0,2]\), solve the one-dimensional Jacobian equation.</p><details><summary>Hint and answer</summary><p>Here \(f=1,g=1/2\), so \(u\,\!\prime\prime=2\). The image condition fixes \(u\,\!\prime(x)=2x\); adding a constant to \(u\) is irrelevant.</p></details></li>
+<li><p>Why does \(\det D^2u=1\) alone not specify a unique transport?</p><details><summary>Hint and answer</summary><p>In \(d\ge2\), many positive-definite matrices \(A\) have determinant one. The potentials \(x^\top Ax/2\) send a given source to different target shapes; the boundary image chooses the target.</p></details></li>
+</ol>

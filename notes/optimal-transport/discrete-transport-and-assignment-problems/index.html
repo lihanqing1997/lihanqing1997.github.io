@@ -1,12 +1,14 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "6. Discrete transport and assignment problems"
-breadcrumb_child_label_fr: "6. Transport discret et problèmes d'affectation"
-breadcrumb_child_label_zh: "6. 离散传输与指派问题"
+breadcrumb_child_label_en: "3. Discrete transport and assignment problems"
+breadcrumb_child_label_fr: "3. Transport discret et problèmes d'affectation"
+breadcrumb_child_label_zh: "3. 离散传输与指派问题"
 note_back_url: "/notes/optimal-transport/"
-note_prev_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
+note_prev_url: "/notes/optimal-transport/monge-problem/"
 note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
 ---
+
+<p class="ot-learning-goal"><strong>Learning goal.</strong> Solve a small transport problem and certify its optimality with dual variables.</p>
 
 <p>For finitely supported measures, optimal transport is a linear program. This is not merely a numerical approximation: the finite model displays the primal polytope, dual potentials, complementary slackness, integrality, and nonuniqueness in completely explicit form.</p>
 
@@ -27,7 +29,7 @@ note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
         \]
         The feasible set
         \[
-        U(a,b)=\{P\ge0:P\mathbf1_n=a,\ P^{\mathsf T}\mathbf1_m=b\}
+        U(a,b)=\{P\ge0:P\mathbf1_n=a,\ P^\top\mathbf1_m=b\}
         \]
         is the transport polytope.</p>
     </div>
@@ -77,13 +79,13 @@ note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
     <div class="math-statement theorem">
         <p><span class="statement-title">Birkhoff--von Neumann theorem.</span> Every \(n\times n\) doubly stochastic matrix is a convex combination of permutation matrices. Consequently, the extreme points of
         \[
-        \mathcal B_n=\{P\ge0:P\mathbf1=\mathbf1,\ P^{\mathsf T}\mathbf1=\mathbf1\}
+        \mathcal B_n=\{P\ge0:P\mathbf1=\mathbf1,\ P^\top\mathbf1=\mathbf1\}
         \]
         are exactly the permutation matrices.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Build a bipartite graph with edge \((i,j)\) whenever \(p_{ij}>0\). For any set \(S\) of row vertices, the total mass leaving \(S\) equals \(|S|\), while each neighboring column receives at most one; hence Hall's condition \(|N(S)|\ge|S|\) holds. There is a perfect matching \(\sigma\) supported on positive entries. Let \(\varepsilon=\min_i p_{i,\sigma(i)}>0\). Then
+        <p><span class="statement-title">Proof.</span> Build a bipartite graph with edge \((i,j)\) whenever \(p_{ij}>0\). For any set \(S\) of row vertices, the total mass leaving \(S\) equals \(|S|\), while each neighboring column receives at most one; hence Hall's condition \(|N(S)|\ge|S|\) holds. There is a perfect matching \(\sigma\) supported on positive entries. Let \(\varepsilon=\min_i p_{i,\sigma(i)}>0\). If \(\varepsilon=1\), the matrix is already the matching permutation matrix and we stop. Otherwise
         \[
         P=\varepsilon P_\sigma+(1-\varepsilon)Q,
         \]
@@ -129,4 +131,12 @@ note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
     </div>
 
     <h3>From discrete to continuous transport</h3>
-    <p>Approximating \(\mu,\nu\) by empirical or quantized measures turns continuous transport into a sequence of finite linear programs. The stability theorem from page 3 explains when their optimal values and plans converge. Entropic regularization will later replace the sparse polytope optimizer by a smooth positive matrix that can be found through diagonal scaling.</p>
+    <p>Approximating \(\mu,\nu\) by empirical or quantized measures turns continuous transport into a sequence of finite linear programs. The stability theorem from <a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">Existence and stability of optimal plans</a> explains when their optimal values and plans converge. Entropic regularization will later replace the sparse polytope optimizer by a smooth positive matrix that can be found through diagonal scaling.</p>
+
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1803.00567">Peyré–Cuturi, <em>Computational optimal transport</em>, §§2–3</a>, for finite transport and algorithms. Linear-programming duality is the imported finite-dimensional result.</p>
+
+<h3>Practice: primal and dual certificates</h3>
+<ol class="ot-exercises">
+<li><p>In the two-by-three example, replace \(c_{13}=3\) by zero. Does the displayed plan remain optimal?</p><details><summary>Hint and answer</summary><p>Yes. The displayed dual variables remain feasible, and both primal and dual values remain \(1/2\). Changing a cost on an unused edge need not change the optimizer, but feasibility must be rechecked.</p></details></li>
+<li><p>For \(a=b=(1/2,1/2)\) and \(C=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), find the optimal plan and a dual certificate.</p><details><summary>Hint and answer</summary><p>The diagonal plan \(P=I/2\) has cost zero; zero dual variables give the same value. Positive off-diagonal mass costs more, so the plan is unique.</p></details></li>
+</ol>
