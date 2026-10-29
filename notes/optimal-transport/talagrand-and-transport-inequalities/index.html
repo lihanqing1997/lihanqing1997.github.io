@@ -52,19 +52,17 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
         where the supremum may be taken over bounded measurable \(f\).</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(h=\mathrm{d}\nu/\mathrm{d}\mu\). For any \(f\), define the tilted law \(\mathrm{d}\mu_f=e^f\mathrm{d}\mu/\int e^f\mathrm{d}\mu\). Nonnegativity of \(\operatorname{KL}(\nu\,\|\,\mu_f)\) gives
-        \[
-        \int f\,\mathrm{d}\nu-\log\int e^f\,\mathrm{d}\mu
-        \le\int\log h\,\mathrm{d}\nu.
-        \]
-        Truncations of \(f=\log h\) approach equality.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(h=\mathrm{d}\nu/\mathrm{d}\mu\). For bounded measurable \(f\), the probability \(\mu_f=e^f\mu/\mu(e^f)\) satisfies
+\[
+0\le\operatorname{KL}(\nu\|\mu_f)
+=\operatorname{KL}(\nu\|\mu)-\nu f+\log\mu(e^f),
+\]
+with the inequality still valid when the entropy is infinite. This proves the upper bound. For the reverse bound set \(f_M=\max(-M,\min(\log h,M))\), with \(\log0=-\infty\). Then \(e^{f_M}\to h\) \(\mu\)-almost everywhere and \(e^{f_M}\le h+1\); dominated convergence gives \(\mu(e^{f_M})\to1\). On \(h\le1\), \(h|\log h|\le1/e\), so the negative parts of \(f_M\) converge in \(L^1(\nu)\). On \(h>1\), their positive parts increase to \(\log h\), so monotone convergence applies, also when the result is infinite. Thus \(\nu f_M\to\operatorname{KL}(\nu\|\mu)\), proving equality.</p></div>
 
     <h3>\(T_1\) and sub-Gaussian observables</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Bobkov--Götze characterization.</span> A probability measure \(\mu\) satisfies \(T_1(C)\) if and only if every \(1\)-Lipschitz \(f\) satisfies
+        <p><span class="statement-title">Bobkov--Götze characterization.</span> For \(C>0\) and \(\mu\in\mathcal P_1(X)\), the measure \(\mu\) satisfies \(T_1(C)\) if and only if every \(1\)-Lipschitz \(f\) satisfies
         \[
         \log\int e^{\lambda(f-\mu f)}\,\mathrm{d}\mu
         \le\frac{C\lambda^2}{2}
@@ -72,20 +70,23 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline from \(T_1\).</span> For the exponentially tilted law \(\nu_\lambda\propto e^{\lambda f}\mu\), Kantorovich--Rubinstein duality gives
-        \[
-        \nu_\lambda f-\mu f\le W_1(\nu_\lambda,\mu)
-        \le\sqrt{2C\,\operatorname{KL}(\nu_\lambda\,\|\,\mu)}.
-        \]
-        Writing \(\Lambda(\lambda)=\log\mu e^{\lambda(f-\mu f)}\), one has \(\Lambda'(\lambda)=\nu_\lambda(f-\mu f)\) and \(\operatorname{KL}(\nu_\lambda\,\|\,\mu)=\lambda\Lambda'(\lambda)-\Lambda(\lambda)\). The resulting differential inequality integrates to \(\Lambda(\lambda)\le C\lambda^2/2\).</p>
-        <p><span class="statement-title">Reverse implication.</span> For any \(\nu\), the entropy variational formula applied to \(\lambda(f-\mu f)\) gives
-        \[
-        \lambda(\nu f-\mu f)
-        \le\operatorname{KL}(\nu\,\|\,\mu)+\frac{C\lambda^2}{2}.
-        \]
-        Optimize over \(\lambda>0\), then take the supremum over \(1\)-Lipschitz \(f\) and use Kantorovich--Rubinstein duality.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> For bounded measurable \(g\), the same tilted-law calculation gives the Gibbs formula
+\[
+\log\mu(e^g)=\sup_\nu\{\nu g-\operatorname{KL}(\nu\|\mu)\};
+\]
+the supremum is attained by \(e^g\mu/\mu(e^g)\).</p>
+<p>Assume \(T_1(C)\) and let \(f\) be bounded and \(1\)-Lipschitz. For every finite-entropy \(\nu\), Kantorovich–Rubinstein and \(T_1\) give \(|\nu f-\mu f|\le\sqrt{2CH}\), where \(H=\operatorname{KL}(\nu\|\mu)\). Therefore
+\[
+\log\mu e^{\lambda(f-\mu f)}
+\le\sup_{H\ge0}\{|\lambda|\sqrt{2CH}-H\}
+=\frac{C\lambda^2}{2}.
+\]
+For an unbounded Lipschitz \(f\), use \(f_R=\max(-R,\min(f,R))\). It is still \(1\)-Lipschitz, and \(\mu f_R\to\mu f\) by \(\mu\in\mathcal P_1\). Fatou applied to the exponentials proves the same bound.</p>
+<p>Conversely, the entropy variational inequality gives, for \(\lambda>0\),
+\[
+\nu f-\mu f\le\frac{H}{\lambda}+\frac{C\lambda}{2}.
+\]
+For \(0&lt;H&lt;\infty\), choose \(\lambda=\sqrt{2H/C}\); for \(H=0\), let \(\lambda\downarrow0\). Taking the supremum over bounded \(1\)-Lipschitz tests gives \(W_1\le\sqrt{2CH}\), using truncations in Kantorovich–Rubinstein duality. If a finite-entropy competitor's first moment is not initially known, apply the same inequality to \(f_R=\min(d(x,x_0),R)\) first; monotone convergence bounds its first moment and justifies this step. Infinite entropy makes the assertion vacuous.</p></div>
 
     <div class="math-statement corollary">
         <p><span class="statement-title">Concentration.</span> Under \(T_1(C)\), every \(1\)-Lipschitz \(f\) satisfies
@@ -105,7 +106,7 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> It suffices by approximation to assume that \(\nu=f\gamma\) is smooth and positive and that the Brenier map \(T=\nabla u\) pushing \(\gamma\) to \(\nu\) is smooth with \(DT>0\). The Jacobian identity gives
+        <p><span class="statement-title">Proof.</span> We give a complete proof for \(\nu=T_\#\gamma\), where \(T=\operatorname{id}+\nabla\chi\), \(\chi\in C_c^\infty(\mathbb R^d)\), and \(I+D^2\chi\) is positive definite everywhere. Then \(T\) is a global smooth diffeomorphism (it is strongly monotone and equals the identity outside a compact set), is a convex gradient, and is optimal. Its image density \(f\) relative to \(\gamma\) is positive and smooth. All nonzero integrands below are supported in a compact set, which justifies the integrations by parts. A proof for all finite-entropy laws, using the already stated displacement-convexity theorem, follows after this calculation. The Jacobian identity gives
         \[
         f(T(x))e^{-|T(x)|^2/2}\det DT(x)=e^{-|x|^2/2},
         \]
@@ -142,10 +143,20 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
         \]</p>
     </div>
 
+
+<div class="math-statement proof"><p><span class="statement-title">Proof for all \(\nu\in\mathcal P_2\), using displacement convexity.</span> If \(H(\nu)=\operatorname{KL}(\nu\|\gamma)=+\infty\), the assertion is immediate. Otherwise \(\nu\) has a density and its entropy is well defined, since \(\nu\in\mathcal P_2\). Write
+\[
+H(\eta)=\operatorname{Ent}(\eta)+\tfrac12\int|x|^2\,\mathrm{d}\eta+\tfrac d2\log(2\pi).
+\]
+McCann's theorem from the displacement-convexity chapter makes the first term displacement convex, and the exact quadratic potential calculation makes the second term displacement \(1\)-convex. Hence, along the geodesic from \(\gamma\) to \(\nu\),
+\[
+0\le H(\nu_t)\le tH(\nu)-\tfrac12t(1-t)W_2^2(\gamma,\nu),
+\]
+using \(H(\gamma)=0\) and nonnegativity of relative entropy. Divide by \(t>0\), then let \(t\downarrow0\). This gives \(H(\nu)\ge W_2^2(\gamma,\nu)/2\) without any smooth approximation. The external input is precisely the general McCann theorem already stated; the smooth proof above separately explains the cancellation behind it.</p></div>
     <h3>Logarithmic Sobolev inequality and \(T_2\)</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Otto--Villani implication.</span> If \(\mu\) satisfies the logarithmic Sobolev inequality
+        <p><span class="statement-title">Otto–Villani implication (external theorem on Euclidean space).</span> For a probability law \(\mu=Z^{-1}e^{-V}\mathrm{d}x\in\mathcal P_2(\mathbb R^d)\) with smooth positive density, if \(\mu\) satisfies the logarithmic Sobolev inequality
         \[
         \operatorname{KL}(\nu\,\|\,\mu)
         \le\frac C2 I(\nu\,\|\,\mu),
@@ -157,24 +168,25 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
         then \(\mu\) satisfies \(T_2(C)\).</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline.</span> Follow the entropy gradient flow from \(\nu\) toward \(\mu\). Along the flow,
-        \[
-        -\frac{\mathrm{d}}{\mathrm{d}t}\operatorname{KL}(\nu_t\,\|\,\mu)=I(\nu_t\,\|\,\mu),
-        \qquad
-        |\dot\nu_t|=\sqrt{I(\nu_t\,\|\,\mu)}.
-        \]
-        Hence
-        \[
-        W_2(\nu,\mu)\le\int_0^\infty\sqrt{I(\nu_t\,\|\,\mu)}\,\mathrm{d}t.
-        \]
-        Write \(E(t)=\operatorname{KL}(\nu_t\|\mu)\). Since \(E\le CI/2\), one has \(\sqrt I\le\sqrt{C/2}\,I/\sqrt E=-\sqrt{2C}\,(\sqrt E)\,\!\prime\). Integrating (and justifying the regular flow by approximation) bounds the path length by \(\sqrt{2C\,\operatorname{KL}(\nu\,\|\,\mu)}\).</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof of the flow criterion.</span> The precise input needed from entropy-flow theory is a curve \(\nu_t\), continuous at \(t=0\), with \(E(t)=\operatorname{KL}(\nu_t\|\mu)\) locally absolutely continuous,
+\[
+-E'(t)=I(t),\qquad |\dot\nu_t|\le\sqrt{I(t)},\qquad E(t)\le CI(t)/2.
+\]
+Under these assumptions we prove the implication completely. Grönwall gives \(E(t)\le E(0)e^{-2t/C}\). On any interval where \(E>0\),
+\[
+\sqrt{I(t)}\le\sqrt{C/2}\,\frac{I(t)}{\sqrt{E(t)}}
+=-\sqrt{2C}\,\frac{\mathrm{d}}{\mathrm{d}t}\sqrt{E(t)}.
+\]
+Integrate first between positive finite times, then let the lower time decrease to zero and the upper time increase. If \(E\) reaches zero, the law is \(\mu\) and the estimate continues with zero remaining length. We obtain
+\[
+\int_0^\infty|\dot\nu_t|\,\mathrm{d}t\le\sqrt{2CE(0)}.
+\]
+The finite tail length makes \(\nu_t\) Cauchy in \(W_2\); completeness gives a \(W_2\)-limit. Pinsker and \(E(t)\to0\) identify this limit with \(\mu\). Consequently \(W_2(\nu_0,\mu)\le\sqrt{2CE(0)}\). Constructing the entropy flow and extending this argument to every finite-entropy initial law are the external ingredients in the general Otto–Villani theorem. The displayed length argument does not assume \(W_2\)-convergence to equilibrium in advance.</p></div>
 
     <h3>The HWI inequality</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">HWI inequality.</span> If \(\mu=e^{-V}\mathrm{d}x/Z\) with \(D^2V\ge\kappa I\), then
+        <p><span class="statement-title">HWI inequality (general external theorem).</span> If \(\mu=e^{-V}\mathrm{d}x/Z\) with \(D^2V\ge\kappa I\), then
         \[
         \operatorname{KL}(\nu\,\|\,\mu)
         \le W_2(\nu,\mu)\sqrt{I(\nu\,\|\,\mu)}
@@ -182,14 +194,36 @@ note_next_url: "/notes/optimal-transport/schrodinger-bridges-and-entropic-dynami
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Relative entropy is displacement \(\kappa\)-convex. Apply the convexity inequality along the geodesic from \(\nu\) to \(\mu\), divide by \(t\), and let \(t\downarrow0\). The directional derivative at \(\nu\) is the \(L^2(\nu)\) pairing of \(\nabla\log(\mathrm{d}\nu/\mathrm{d}\mu)\) with the geodesic velocity. Cauchy--Schwarz bounds it by \(W_2(\nu,\mu)\sqrt I\), yielding the formula.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Derivation when the first variation is justified.</span> Put \(H(\eta)=\operatorname{KL}(\eta\|\mu)\), \(D=W_2(\nu,\mu)\), and let \(T\) be the optimal map from \(\nu\) to \(\mu\). Assume \(\nu\) has a positive smooth density, finite Fisher information, and the geodesic \(\nu_t=((1-t)\operatorname{id}+tT)_\#\nu\) admits the differentiation and integration by parts
+\[
+\left.\frac{\mathrm{d}}{\mathrm{d}t}H(\nu_t)\right|_{t=0+}
+=\int\nabla\log\frac{\mathrm{d}\nu}{\mathrm{d}\mu}\cdot(T-x)\,\mathrm{d}\nu. \tag{1}
+\]
+These are explicit smooth-calculus hypotheses, not an assertion for arbitrary laws. Displacement \(\kappa\)-convexity and \(H(\mu)=0\) give
+\[
+\frac{H(\nu_t)-H(\nu)}t\le-H(\nu)-\frac\kappa2(1-t)D^2.
+\]
+Let \(t\downarrow0\) and use (1). Rearranging and applying Cauchy–Schwarz yields
+\[
+H(\nu)\le-\int\nabla\log\frac{\mathrm{d}\nu}{\mathrm{d}\mu}\cdot(T-x)\,\mathrm{d}\nu-\frac\kappa2D^2
+\le\sqrt{I(\nu\|\mu)}D-\frac\kappa2D^2.
+\]
+The general HWI theorem replaces (1) by the entropy subgradient inequality; see the transport-inequality reference below.</p></div>
 
     <h3>Tensorization</h3>
     <p>If each \(\mu_i\) satisfies \(T_2(C_i)\) on \(X_i\), then the product measure satisfies \(T_2(\max_iC_i)\) for the squared product metric. The proof disintegrates a competitor coordinate by coordinate, applies the one-coordinate inequalities conditionally, and uses the chain rule for relative entropy. This dimension-free tensorization is a central reason transport inequalities yield concentration for high-dimensional product measures.</p>
+<div class="math-statement proof"><p><span class="statement-title">Proof for two factors, then induction.</span> Disintegrate a finite-entropy competitor as \(\nu(\mathrm{d}x_1,\mathrm{d}x_2)=\nu_1(\mathrm{d}x_1)\nu_{x_1}(\mathrm{d}x_2)\). Couple \(X_1\sim\nu_1\) to \(Y_1\sim\mu_1\) optimally. Given \(X_1=x_1\), couple \(X_2\sim\nu_{x_1}\) to \(Y_2\sim\mu_2\) optimally, independently of \(Y_1\). A measurable choice of conditional optimal plans exists on Polish spaces; equivalently use measurable nearly optimal plans and let their error decrease to zero. Conditional on \((X_1,Y_1)\), the law of \(Y_2\) is always \(\mu_2\), so the \(Y\)-marginal is exactly \(\mu_1\otimes\mu_2\). Thus
+\[
+\begin{aligned}
+W_2^2(\nu,\mu_1\otimes\mu_2)
+&amp;\le W_2^2(\nu_1,\mu_1)+\int W_2^2(\nu_{x_1},\mu_2)\,\mathrm{d}\nu_1(x_1)\\
+&amp;\le2C_1H(\nu_1\|\mu_1)+2C_2\int H(\nu_{x_1}\|\mu_2)\,\mathrm{d}\nu_1(x_1)\\
+&amp;\le2\max(C_1,C_2)H(\nu\|\mu_1\otimes\mu_2),
+\end{aligned}
+\]
+where the last equality of entropy terms is the conditional entropy chain rule. If the entropy is infinite the bound is immediate. Repeating the two-factor argument proves the finite-product statement.</p></div>
 
-<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §3</a>, for the gradient-flow framework, and <a href="https://doi.org/10.1007/978-3-540-71050-9">Villani, <em>Optimal transport: old and new</em></a>, for transport inequalities. The smooth proofs require approximation to reach nonsmooth laws.</p>
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §3</a>, for the gradient-flow framework, and <a href="https://doi.org/10.1007/978-3-540-71050-9">Villani, <em>Optimal transport: old and new</em></a>, for transport inequalities. The Gaussian inequality is proved using the stated McCann theorem; general Otto–Villani and HWI extensions are external results; their precise smooth calculations and the complete conditional flow argument are given above.</p>
 
 <h3>Practice: constants and sharpness</h3>
 <ol class="ot-exercises">

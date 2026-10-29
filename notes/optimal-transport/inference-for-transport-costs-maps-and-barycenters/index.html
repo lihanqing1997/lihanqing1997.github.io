@@ -26,7 +26,7 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
     <h3>Directional derivatives from duality</h3>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">Envelope principle (conditional on directional differentiability).</span> Let \(\Phi^\star(\mu,\nu)\) be the normalized set of optimal dual pairs. Under compactness and continuity conditions ensuring dual attainment and stable potentials, the directional derivative in signed zero-mass directions \((\alpha,\beta)\) is
+        <p><span class="statement-title">Envelope principle with a compact potential class.</span> Suppose the dual value, throughout a neighborhood of the base marginals in a specified vector topology, is the maximum over one compact class \(K\) of normalized feasible potential pairs. Suppose potential integration is continuous on \(K\), and pairings with convergent perturbation directions converge uniformly on \(K\). These assumptions hold, for example, for finite cost matrices with strictly positive marginal weights, after restricting to bounded normalized transformed potentials. Let \(\Phi^\star(\mu,\nu)\) be the normalized set of optimal dual pairs. Then the Hadamard directional derivative along feasible perturbations in signed zero-mass directions \((\alpha,\beta)\) is
         \[
         \mathcal T'_{c,(\mu,\nu)}(\alpha,\beta)
         =
@@ -36,13 +36,17 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
         If the normalized dual pair is unique, the derivative is linear.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Duality writes the value as the supremum of affine maps
-        \[
-        (\mu,\nu)\longmapsto\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu
-        \]
-        over the cost-dependent feasible set. For a perturbation of size \(t\), any optimizer at the base point gives a lower derivative bound. Conversely, choose optimizers at the perturbed measures; compactness produces a limiting optimal pair at the base point, giving the matching upper bound. This is Danskin's envelope argument in the topology in which potential integrals are continuous.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(z=(\mu,\nu)\), \(h=(\alpha,\beta)\), \(\ell_k(z)=\mu\varphi_k+\nu\psi_k\), so \(\mathcal T(z)=\max_{k\in K}\ell_k(z)\). Let \(t_j\downarrow0\), \(h_j\to h\), and \(k_j\) maximize at \(z+t_jh_j\). For each base optimizer \(k\in K^*(z)\),
+\[
+\frac{\mathcal T(z+t_jh_j)-\mathcal T(z)}{t_j}\ge\ell_k(h_j).
+\]
+Taking the liminf and then the supremum over \(k\) gives the lower bound. For the upper bound, choose a subsequence realizing the limsup and extract \(k_j\to k_*\in K\). Uniform boundedness of \(\ell_k(h_j)\) and the maximizing inequalities imply \(\ell_{k_j}(z)\to\mathcal T(z)\), so continuity gives \(k_*\in K^*(z)\). Also
+\[
+\frac{\mathcal T(z+t_jh_j)-\mathcal T(z)}{t_j}
+=\frac{\ell_{k_j}(z)-\mathcal T(z)}{t_j}+\ell_{k_j}(h_j)
+\le\ell_{k_j}(h_j)\longrightarrow\ell_{k_*}(h).
+\]
+This is at most \(\sup_{k\in K^*(z)}\ell_k(h)\), matching the lower bound. Uniform convergence in the direction assumption is precisely what makes this a Hadamard, rather than merely fixed-direction, conclusion.</p></div>
 
     <p>Uniqueness of the transport plan does not by itself guarantee differentiability of the value. What matters for the envelope derivative is uniqueness of the normalized dual potentials in the relevant function space.</p>
 
@@ -71,7 +75,7 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
         (\widehat\mu_n-\mu)\varphi+(\widehat\nu_m-\nu)\psi
         +o_{\mathbb P}(n^{-1/2}+m^{-1/2}).
         \]
-        The two empirical averages are independent. The ordinary central limit theorem and the limiting sample-size ratio give the displayed variance.</p>
+        The functional delta method (the external probability theorem for Hadamard differentiable functionals and tight empirical processes) supplies this stochastic remainder under the stated hypotheses. Put \(r_{n,m}=\sqrt{nm/(n+m)}\). Then \(r_{n,m}/\sqrt n\to\sqrt{1-\lambda}\), \(r_{n,m}/\sqrt m\to\sqrt\lambda\), and \(r_{n,m}(n^{-1/2}+m^{-1/2})\) is bounded. The scaled remainder is therefore \(o_{\mathbb P}(1)\). Independence and the scalar CLT give independent centered normals for the two averages; their weighted sum has the displayed variance. Slutsky completes the argument.</p>
     </div>
 
     <div class="math-statement example"><p><span class="statement-title">An explicit regular two-point model.</span> Let \(\mu=\operatorname{Bern}(a)\), \(\nu=\operatorname{Bern}(b)\) on \(\{0,1\}\), with \(0&lt;a,b&lt;1\) and \(a\ne b\). For every \(p\ge1\),
@@ -100,7 +104,7 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
     </div>
 
     <div class="math-statement example">
-        <p><span class="statement-title">One-dimensional \(W_2\) null limit.</span> Suppose \(\mu\) has a positive smooth density \(f\) on a compact interval and quantile \(Q=F^{-1}\). The quantile process satisfies
+        <p><span class="statement-title">One-dimensional \(W_2\) null limit.</span> Suppose \(\mu\) has density \(f\in C^1([a,b])\), \(0&lt;c\le f\le C\), on \([a,b]\), and zero outside. Write \(Q=F^{-1}\). The quantile-process theorem, used here as an external consequence of <a href="{{ '/notes/probability-theory/donsker-theorem-brownian-bridge/' | relative_url }}">the uniform empirical-process CLT</a> and the derivative of inversion, gives convergence in \(L^2(0,1)\):
         \[
         \sqrt n\{F_n^{-1}(u)-Q(u)\}
         \Rightarrow-\frac{B(u)}{f(Q(u))},
@@ -113,6 +117,7 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
         \]
         The limit is quadratic and non-Gaussian, illustrating why a root-\(n\) Gaussian approximation to \(W_2^2\) fails at the null.</p>
     </div>
+<div class="math-statement proof"><p><span class="statement-title">Justification of the final limit.</span> Let \(Z_n=\sqrt n(Q_n-Q)\). The quantile identity gives \(nW_2^2=\|Z_n\|_{L^2}^2\). The map \(z\mapsto\|z\|_2^2\) is continuous, since \(|\|z\|_2^2-\|w\|_2^2|\le\|z-w\|_2(\|z\|_2+\|w\|_2)\). Apply the continuous-mapping theorem to the stated \(L^2\) convergence. The lower bound on \(f\) makes the limiting squared norm integrable, with expectation at most \(c^{-2}\int_0^1u(1-u)\,\mathrm{d}u\). Pointwise quantile convergence alone would not justify the integrated squared limit.</p></div>
 
     <h3>Bootstrap validity</h3>
 
@@ -151,13 +156,17 @@ note_next_url: "/notes/optimal-transport/projection-based-transport-in-high-dime
     \[
     Ch=\mathbb E\bigl[\langle Q_1-\bar Q,h\rangle(Q_1-\bar Q)\bigr].
     \]</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The quantile isometry turns squared \(W_2\) distance into squared \(L^2\) distance. The mean of nondecreasing quantiles has a nondecreasing representative and minimizes expected squared \(L^2\) distance, so it is the population barycenter quantile. The same calculation gives the sample quantile formula. The central limit theorem for independent identically distributed variables in a separable Hilbert space, with finite second moment, yields the displayed convergence and covariance operator.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The quantile isometry turns squared \(W_2\) distance into squared \(L^2\) distance. Bochner expectation exists because \(\mathbb E\|Q_1\|_2\le(\mathbb E\|Q_1\|_2^2)^{1/2}&lt;\infty\). The nondecreasing cone is closed and convex in \(L^2\), so the expectation belongs to it. For any candidate quantile \(q\),
+    \[
+    \mathbb E\|Q_1-q\|_2^2=\mathbb E\|Q_1-\bar Q\|_2^2+\|q-\bar Q\|_2^2,
+    \]
+    because the cross term has zero expectation. This proves the unique population minimizer. Replacing expectation by the finite sample average proves the sample formula. The central limit theorem for independent identically distributed variables in a separable Hilbert space, with finite second moment, yields the displayed convergence and covariance operator.</p></div>
     <p>This theorem observes each input distribution itself. If each \(\mu_i\) is instead estimated from a finite inner sample, an additional estimation layer appears. In higher dimensions there is no global quantile chart: a tangent-space expansion needs its own differentiability, invertibility, remainder, and tightness arguments. The scalar and Hilbert-space calculations cannot simply be relabeled as a general barycenter CLT.</p>
 
     <h3>Regularization changes the estimand</h3>
     <p>Entropic and other regularizations often restore differentiability and improve sample behavior, but they estimate a regularized transport functional. Valid inference must separate stochastic error from regularization bias and specify whether the regularization parameter is fixed or tends to zero. <a href="{{ '/notes/optimal-transport/entropic-regularization/' | relative_url }}">Entropic transport</a> and <a href="{{ '/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-transport/' | relative_url }}">Sinkhorn divergences</a> make this tradeoff explicit.</p>
 
-<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/2506.19025">Balakrishnan–Manole–Wasserman (2025)</a>, for map estimation and inferential regimes. The abstract envelope and barycenter discussions above are conditional roadmaps, not universal limit theorems. The two-point and one-dimensional examples specify concrete models.</p>
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/2506.19025">Balakrishnan–Manole–Wasserman (2025)</a>, for map estimation and inferential regimes. The compact-class envelope theorem and one-dimensional barycenter CLT are proved above with their hypotheses; general empirical-process and quantile-process CLTs are external probability inputs. The two-point and one-dimensional examples specify concrete models.</p>
 
 <h3>Practice: choosing the inferential regime</h3>
 <ol class="ot-exercises">

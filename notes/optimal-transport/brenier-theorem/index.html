@@ -31,6 +31,17 @@ note_next_url: "/notes/optimal-transport/entropic-regularization/"
     </div>
 
     <p>For \(c(x,y)=\tfrac12|x-y|^2\), expanding the squares shows that \(c\)-cyclical monotonicity is exactly cyclical monotonicity of the pairing. The quadratic terms cancel under permutations.</p>
+<div class="math-statement proof"><p><span class="statement-title">Proof of Rockafellar's theorem.</span> If \(\Gamma\) is empty, take \(u=0\). Otherwise fix \((x_0,y_0)\in\Gamma\), and define
+\[
+u(x)=\sup_{m\ge0,\,(x_i,y_i)\in\Gamma,\,1\le i\le m}
+\left\{\sum_{i=0}^{m-1}\langle x_{i+1}-x_i,y_i\rangle+\langle x-x_m,y_m\rangle\right\}.
+\]
+For \(m=0\), the expression means \(\langle x-x_0,y_0\rangle\). A supremum of affine continuous functions is convex and lower semicontinuous. Cyclical monotonicity applied to a chain closed back at \(x_0\) gives \(u(x_0)=0\), so \(u\) is proper.</p>
+<p>For \((a,b)\in\Gamma\), close any such chain through \((a,b)\) and then back to \(x_0\). The resulting cyclic inequality bounds its value at \(a\) by \(\langle a-x_0,b\rangle\). Thus \(u(a)&lt;\infty\). Appending \((a,b)\) to each chain gives
+\[
+u(z)\ge u(a)+\langle z-a,b\rangle\qquad\text{for every }z,
+\]
+where taking the supremum over the original chains justifies the occurrence of \(u(a)\). Hence \(b\in\partial u(a)\). Conversely, if \(y_i\in\partial u(x_i)\), sum \(u(x_{\sigma^{-1}(i)})\ge u(x_i)+y_i\cdot(x_{\sigma^{-1}(i)}-x_i)\); the \(u\)-terms cancel and give the stated permutation inequality.</p></div>
 
     <h3>Brenier's theorem</h3>
 
@@ -54,9 +65,22 @@ note_next_url: "/notes/optimal-transport/entropic-regularization/"
         <p><span class="statement-title">Proposition.</span> Let \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\). If \(u\) is convex, \(\nabla u\) exists \(\mu\)-almost everywhere, and \(T=\nabla u\) pushes \(\mu\) to \(\nu\), then \(T\) is optimal for quadratic cost.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline.</span> Summing subgradient inequalities shows the graph is cyclically monotone for the pairing, hence for quadratic cost. The finite-second-moment quadratic sufficiency theorem then gives optimality; it is the quadratic specialization of <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.2</a>. A Fenchel-duality proof is also possible, but must check integrability of the resulting potentials rather than assume it.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(u^*(y)=\sup_x\{x\cdot y-u(x)\}\). Choose a point \((x_0,y_0)\) in the graph of \(\partial u\), where \(u(x_0)\) is finite. The subgradient inequality and the definition of \(u^*\) give the affine lower bounds
+\[
+u(x)\ge u(x_0)+y_0\cdot(x-x_0),\qquad
+u^*(y)\ge x_0\cdot y-u(x_0).
+\]
+Their negative parts are integrable against \(\mu,\nu\), since both laws have finite second moments. Fenchel equality on the transport graph is
+\[
+u(x)+u^*(T(x))=x\cdot T(x)\quad\mu\text{-a.e.}
+\]
+The right side is integrable by Cauchy–Schwarz. Together with the lower bounds this also makes both positive parts integrable. Thus \(u\in L^1(\mu)\), \(u^*\in L^1(\nu)\); no subtraction of infinite integrals occurs.</p>
+<p>For every competing coupling \(\pi\), Fenchel's inequality can now be integrated:
+\[
+\int x\cdot y\,\mathrm{d}\pi\le\int u\,\mathrm{d}\mu+\int u^*\,\mathrm{d}\nu
+=\int x\cdot T(x)\,\mathrm{d}\mu.
+\]
+Since \(\tfrac12|x-y|^2=\tfrac12|x|^2+\tfrac12|y|^2-x\cdot y\) and the first two integrals depend only on the marginals, this is precisely optimality of the graph plan.</p></div>
 
     <h3>Inverse transport and Legendre duality</h3>
     <p>If both \(\mu\) and \(\nu\) are absolutely continuous, the reverse optimal map is \(\nabla u^*\), where
@@ -96,7 +120,11 @@ note_next_url: "/notes/optimal-transport/entropic-regularization/"
         \[
         u(x)=m_1\cdot x+\tfrac12(x-m_0)^\top A(x-m_0).
         \]
-        Direct multiplication gives \(A\Sigma_0A^\top=\Sigma_1\), so \(T_\#\mu=\nu\). The converse proposition proves optimality. Expanding \(\mathbb E|X-T(X)|^2\) and using the covariance identity yields the distance formula.</p>
+        Direct multiplication gives \(A\Sigma_0A^\top=\Sigma_1\), so \(T_\#\mu=\nu\). The converse proposition proves optimality. Writing \(B=(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\), direct multiplication gives \(A\Sigma_0A=\Sigma_1\) and \(\operatorname{tr}(A\Sigma_0)=\operatorname{tr}B\). For \(Z=X-m_0\), \(\mathbb EZ=0\), \(\mathbb EZZ^\top=\Sigma_0\); hence
+        \[
+        \mathbb E|X-T(X)|^2=|m_0-m_1|^2+\operatorname{tr}((I-A)\Sigma_0(I-A))
+        =|m_0-m_1|^2+\operatorname{tr}(\Sigma_0+\Sigma_1-2B).
+        \]</p>
     </div>
 
 <h3>Polar factorization</h3>

@@ -71,15 +71,41 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Put \(a=x_1-y_2\), \(b=x_1-y_1\), \(c=x_2-y_2\), and \(d=x_2-y_1\). Then \(a\le b,c\le d\) and \(a+d=b+c\). Thus \(b,c\) are less spread than \(a,d\) with the same sum. Convexity, equivalently monotonicity of secant slopes, gives \(h(b)+h(c)\le h(a)+h(d)\).</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Set \(a=x_1-y_2\), \(b=x_1-y_1\), \(c=x_2-y_2\), \(d=x_2-y_1\). Then \(a\le b,c\le d\) and \(b+c=a+d\). If \(a=d\), all four numbers coincide. Otherwise let \(\theta=(b-a)/(d-a)\in[0,1]\). Thus
+\[
+b=(1-\theta)a+\theta d,\qquad c=\theta a+(1-\theta)d.
+\]
+Convexity gives \(h(b)\le(1-\theta)h(a)+\theta h(d)\) and \(h(c)\le\theta h(a)+(1-\theta)h(d)\). Adding proves the inequality. If both orders are strict and \(h\) is strictly convex, then \(0&lt;\theta&lt;1\), and both inequalities are strict.</p></div>
 
     <p>The right-hand side pairs the smaller source with the larger target and the larger source with the smaller target. The lemma says that removing such a crossing cannot increase any convex displacement cost.</p>
 
 <h3>Optimality of monotone rearrangement</h3>
     <div class="math-statement theorem"><p><span class="statement-title">Monotone rearrangement theorem.</span> Let \(1\le p&lt;\infty\) and \(\mu,\nu\in\mathcal P_p(\mathbb R)\). For \(c(x,y)=|x-y|^p\), the quantile coupling minimizes the cost. For \(p>1\) it is the unique optimal coupling. If in addition \(\mu\) has no atoms, it is induced by \(T=F_\nu^{-1}\circ F_\mu\).</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof outline.</span> For equal-weight finite laws, the Birkhoff theorem in the discrete transport chapter reduces optimization to permutations. Removing each inversion by the Monge inequality yields the sorted matching. Rational weights reduce to this case by splitting atoms. For general laws, approximate their quantile functions in \(L^p(0,1)\) by finite nondecreasing step functions. These approximations converge in \(W_p\), and the power-cost stability theorem from the preceding chapter passes both the optimal values and quantile costs to the limit.</p><p>For \(p>1\), two strictly crossing pairs would allow a strictly improving local exchange. An optimal plan must therefore have monotone support. A monotone coupling has joint distribution function \(\min\{F_\mu(x),F_\nu(y)\}\), which identifies it as the quantile coupling. Atomlessness makes \(F_\mu(X)\) uniform and gives the map formula. The approximation and local-exchange arguments are developed in <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1</a>.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(Q_\mu=F_\mu^{-1}\). We first prove optimality and then uniqueness.</p>
+<p><strong>1. Finite laws.</strong> For two laws with \(N\) equal-weight atoms, Birkhoff's theorem reduces the minimum to a permutation. If a permutation has an inversion, interchange the two target indices. The Monge inequality decreases or preserves the cost; the number of inversions decreases when adjacent inverted indices are interchanged. After finitely many interchanges the sorted matching remains. Rational masses reduce to this case by repeating atoms with a common denominator.</p>
+<p>For arbitrary finite laws, fix a coupling matrix \(P\). Choose nonnegative rational matrices \(P^{(k)}\to P\) entrywise with total mass one. Their row and column sums \(a^{(k)},b^{(k)}\) converge to the original masses. The associated quantile functions converge pointwise outside the finitely many limiting cumulative-mass breakpoints. Their values lie in the same finite supports. Dominated convergence and the rational case therefore give
+\[
+\int_0^1|Q_a-Q_b|^p\,\mathrm{d}u
+=\lim_k\int_0^1|Q_{a^{(k)}}-Q_{b^{(k)}}|^p\,\mathrm{d}u
+\le\lim_k\sum_{ij}P^{(k)}_{ij}|x_i-y_j|^p
+=\sum_{ij}P_{ij}|x_i-y_j|^p.
+\]</p>
+<p><strong>2. General laws and the limit.</strong> Let \(q_n\) clip the real line to \([-n,n]\) and then round down to a multiple of \(2^{-n}\). It is nondecreasing, has finite range, and
+\[
+|q_n(x)-x|\le 2^{-n}+|x|\mathbf1_{\{|x|>n\}}.
+\]
+Hence \(q_n\to\operatorname{id}\) in \(L^p(\mu)\) and \(L^p(\nu)\), by the finite moments and dominated convergence on the tails. A nondecreasing function of a uniform variable is the quantile of its own law almost everywhere; thus the quantiles of \(q_{n\#}\mu,q_{n\#}\nu\) are \(q_n\circ Q_\mu,q_n\circ Q_\nu\). For any \(\pi\in\Pi(\mu,\nu)\), the finite case gives
+\[
+\|q_n(Q_\mu)-q_n(Q_\nu)\|_{L^p(0,1)}
+\le\|q_n(x)-q_n(y)\|_{L^p(\pi)}.
+\]
+Each side converges to the corresponding unquantized norm: the norm of its difference is at most the sum of the two quantization errors. Taking limits proves the desired bound for every \(\pi\); the quantile coupling attains it.</p>
+<p><strong>3. Uniqueness when \(p>1\).</strong> Suppose the support of an optimal plan contains \((x_1,y_1),(x_2,y_2)\) with \(x_1&lt;x_2\) and \(y_1>y_2\). Strict uncrossing and continuity provide disjoint neighborhoods \(U_1,U_2\), of positive masses \(m_i\), on which the cost saving is at least \(\delta>0\). Put \(\gamma_i=\pi|_{U_i}/m_i\), and take independent pairs \((X_i,Y_i)\sim\gamma_i\). For \(0&lt;\varepsilon\le\min(m_1,m_2)\), replace \(\varepsilon(\gamma_1+\gamma_2)\) by the laws \(\varepsilon\mathcal L(X_1,Y_2)+\varepsilon\mathcal L(X_2,Y_1)\). This preserves both marginals, remains nonnegative, and lowers the cost by at least \(\varepsilon\delta\), a contradiction.</p>
+<p>The support is therefore monotone. Set \(H(x,y)=\pi(( -\infty,x]\times(-\infty,y])\). The sets \(\{X\le x,Y>y\}\) and \(\{X>x,Y\le y\}\) cannot both have positive mass, since that would give a crossing. Their masses are \(F_\mu(x)-H(x,y)\) and \(F_\nu(y)-H(x,y)\). Consequently
+\[
+H(x,y)=\min(F_\mu(x),F_\nu(y)),
+\]
+which determines exactly the quantile coupling. Finally, if \(\mu\) is atomless, continuity of \(F_\mu\) gives \(F_\mu(X)\sim\operatorname{Unif}(0,1)\) and \(Q_\mu(F_\mu(X))=X\) almost surely. Thus the coupling is the graph of \(Q_\nu\circ F_\mu\).</p></div>
     <p>The same ordering principle extends to other convex displacement costs with suitable integrability. We use the power-cost version so every displayed value is finite. For \(p=1\), uniqueness can fail: if all source points lie to the left of all target points, every coupling has the same linear cost.</p>
 
     <h3>Explicit Wasserstein formulas</h3>
@@ -97,6 +123,7 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
         |F_\mu^{-1}(u)-F_\nu^{-1}(u)|.
         \]</p>
     </div>
+<div class="math-statement proof"><p><span class="statement-title">Proof of the \(W_\infty\) formula.</span> For any coupling \(\pi\), \(W_p\le\|x-y\|_{L^\infty(\pi)}\). The quantile formula and monotone convergence of \(L^p\)-norms on a probability space give \(\lim_{p\to\infty}W_p=\|Q_\mu-Q_\nu\|_\infty\). Taking the infimum over \(\pi\) gives one inequality; using the quantile coupling gives the other.</p></div>
 
     <div class="math-statement example">
         <p><span class="statement-title">Gaussian laws.</span> If \(\mu=N(m_0,\sigma_0^2)\) and \(\nu=N(m_1,\sigma_1^2)\) with \(\sigma_0,\sigma_1>0\), then
@@ -105,7 +132,11 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
         \qquad
         W_2^2(\mu,\nu)=(m_0-m_1)^2+(\sigma_0-\sigma_1)^2.
         \]
-        The formula follows by writing both quantiles with the same standard normal quantile and integrating.</p>
+        Indeed, with \(Z\sim N(0,1)\), the quantile coupling is \(X=m_0+\sigma_0Z\), \(Y=m_1+\sigma_1Z\). Therefore
+        \[
+        \mathbb E|X-Y|^2=(m_0-m_1)^2+2(m_0-m_1)(\sigma_0-\sigma_1)\mathbb EZ+(\sigma_0-\sigma_1)^2\mathbb EZ^2,
+        \]
+        and \(\mathbb EZ=0\), \(\mathbb EZ^2=1\) give the formula.</p>
     </div>
 
     <div class="math-statement example">

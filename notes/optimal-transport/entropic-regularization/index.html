@@ -63,14 +63,12 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write \(\pi=r\,\mu\otimes\nu\) and introduce multipliers \(\varphi,\psi\) for the marginals. Pointwise minimization in \(r\ge0\) uses the convex conjugate
-        \[
-        \sup_{r\ge0}\{sr-\varepsilon(r\log r-r+1)\}
-        =\varepsilon(e^{s/\varepsilon}-1).
-        \]
-        Substituting \(s=\varphi+\psi-c\) gives the dual. Equality in the conjugacy relation gives the exponential density of the optimizer.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The pointwise Fenchel inequality is
+\[
+\varepsilon(r\log r-r+1)\ge sr-\varepsilon(e^{s/\varepsilon}-1),\qquad r\ge0,
+\]
+with equality exactly when \(r=e^{s/\varepsilon}\). Put \(s=\varphi(x)+\psi(y)-c(x,y)\) and integrate against \(\mu\otimes\nu\). For a feasible density \(r\), its marginal constraints turn \(\int(\varphi+\psi)r\) into \(\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\), and \(\int(r\log r-r+1)=\operatorname{KL}(\pi\|\mu\otimes\nu)\). This proves weak duality for continuous potentials.</p>
+<p>The positive-kernel construction in the scaling proof below produces bounded continuous positive factors \(u,v\) such that \(r=u e^{-c/\varepsilon}v\) has both marginals. Choose \(\varphi=\varepsilon\log u\), \(\psi=\varepsilon\log v\). Fenchel equality then holds pointwise. All integrands are bounded on the compact product, so equality of the integrated primal and dual objectives follows. This proves strong duality and attainment, rather than merely computing a formal Lagrange dual.</p></div>
 
     <h3>The Schrödinger system</h3>
     <p>Let \(K_\varepsilon(x,y)=e^{-c(x,y)/\varepsilon}\), \(u(x)=e^{\varphi_\varepsilon(x)/\varepsilon}\), and \(v(y)=e^{\psi_\varepsilon(y)/\varepsilon}\). Then
@@ -124,9 +122,28 @@ until residual is below tolerance or the iteration limit is reached</code></pre>
         <p><span class="statement-title">Sinkhorn scaling theorem.</span> If \(K\) has strictly positive entries and \(a,b\) are strictly positive probability vectors, there exist positive \(u,v\), unique up to \((u,v)\mapsto(\lambda u,\lambda^{-1}v)\), such that \(\operatorname{diag}(u)K\operatorname{diag}(v)\in U(a,b)\). Sinkhorn iterates converge to this scaled matrix.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline.</span> In dual coordinates, each update exactly maximizes the strictly concave dual objective in one block of potentials. After fixing the additive gauge, positivity bounds the relevant dual level set. Block ascent and uniqueness then identify the limit; monotonicity alone would not prove convergence. Equivalently, each update is a Kullback--Leibler projection onto one affine marginal set. Alternating Bregman projections converge to the unique intersection minimizer. A quantitative proof uses contraction of the positive kernel in Hilbert's projective metric.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof, including the continuous kernel used above.</span> Work first with a continuous kernel \(K\) on compact \(X\times Y\), with \(0&lt;k_-\le K\le k_+\). Integrals below use the probability marginals \(\mu,\nu\). Set
+\[
+(L_Kz)(x)=\log\int K(x,y)e^{z(y)}\,\mathrm{d}\nu(y),\qquad
+F(z)=-L_{K^\top}(-L_Kz).
+\]
+For a bounded function \(w\), write \(\operatorname{osc}w=\sup w-\inf w\). Differentiation under the integral, justified by boundedness, gives
+\[
+D L_K(z)[w](x)=\int w(y)p_{x,z}(y)\,\mathrm{d}\nu(y),\qquad
+p_{x,z}(y)=\frac{K(x,y)e^{z(y)}}{\int K(x,y')e^{z(y')}\,\mathrm{d}\nu(y')}.
+\]
+For every \(x,x'\), \(p_{x,z}\ge\eta p_{x',z}\), where \(\eta=(k_-/k_+)^2\). Subtracting this common part of two probability densities gives
+\[
+|D L_K(z)[w](x)-D L_K(z)[w](x')|
+\le(1-\eta)\operatorname{osc}w.
+\]
+Integrating the derivative along the segment from \(z'\) to \(z\) yields
+\[
+\operatorname{osc}(L_Kz-L_Kz')\le q\operatorname{osc}(z-z'),\qquad q=1-\eta&lt;1.
+\]
+The transposed operator satisfies the same bound, so \(F\) is a contraction with factor \(q^2\) modulo additive constants.</p>
+<p>Fix \(y_0\in Y\). On the complete space \(\{z\in C(Y):z(y_0)=0\}\), the oscillation is a norm equivalent to the uniform norm. The map \(z\mapsto F(z)-F(z)(y_0)\) is a contraction, hence has a unique fixed point. For this point \(F(z)=z+\kappa\). Set \(v=e^z\), \(u=1/(Kv)\). The first marginal of \(uKv\,\mu\otimes\nu\) is \(\mu\); the fixed-point equation says its second marginal is \(e^{-\kappa}\nu\). Comparing total masses forces \(\kappa=0\). This proves existence of the scaling and uniqueness modulo reciprocal constants. Iteration converges in oscillation, and after normalization uniformly; therefore the scaled densities converge uniformly as well.</p>
+<p>For matrices, interpret the integrals as sums with weights \(a_i,b_j\). If \(u^{\rm rel},v^{\rm rel}\) denote these relative factors, the absorbed factors in the algorithm are \(u_i=a_i u_i^{\rm rel}\), \(v_j=b_j v_j^{\rm rel}\). The two updates are exactly the fixed-point iteration just proved. Normalization changes neither the matrix nor the iterates' marginal residuals, so the matrices converge to the unique scaling. The contraction constant can approach one when the kernel is poorly conditioned; this proof gives convergence without a uniform small-\(\varepsilon\) iteration bound.</p></div>
 
     <h3>Small-regularization limit</h3>
 
@@ -138,14 +155,38 @@ until residual is below tolerance or the iteration limit is reached</code></pre>
         Every weak limit point of \(\pi_\varepsilon\) is an unregularized optimal plan. If several unregularized optimizers exist, \(\pi_\varepsilon\) selects the one minimizing \(\operatorname{KL}(\pi\,\|\,\mu\otimes\nu)\), when this selection problem is finite.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since the entropy term is nonnegative, \(\operatorname{OT}_\varepsilon\ge\operatorname{OT}_0\). Evaluate the regularized objective at a finite-entropy optimal plan, or use product couplings within increasingly fine partitions to approximate an optimal plan by finite-entropy plans, to obtain the limsup inequality. Uniform continuity of the cost controls the partition approximation error. Compactness gives limit points of \(\pi_\varepsilon\); lower semicontinuity of the cost makes them optimal. Comparing two unregularized optimizers at order \(\varepsilon\) gives the entropy selection rule.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(C_*=\operatorname{OT}_0(\mu,\nu)\), and take an optimal \(\pi_*\). Partition \(X,Y\) into finitely many Borel cells \(A_i,B_j\) of diameter at most \(\delta\), discarding zero-mass cells. With \(a_i=\mu(A_i)\), \(b_j=\nu(B_j)\), \(p_{ij}=\pi_*(A_i\times B_j)\), put
+\[
+\pi^\delta=\sum_{ij}p_{ij}\frac{\mu|_{A_i}}{a_i}\otimes\frac{\nu|_{B_j}}{b_j}.
+\]
+Its marginals are \(\mu,\nu\); its density on each block is \(p_{ij}/(a_i b_j)\). Hence
+\[
+H_\delta=\operatorname{KL}(\pi^\delta\|\mu\otimes\nu)
+=\sum_{ij:p_{ij}>0}p_{ij}\log\frac{p_{ij}}{a_i b_j}&lt;\infty.
+\]
+The two plans assign the same mass to every block. Uniform continuity of \(c\) therefore gives \(|\int c\,\mathrm{d}\pi^\delta-C_*|\le\omega_c(2\delta)\), where \(\omega_c(r)\to0\). Nonnegativity of entropy and comparison with \(\pi^\delta\) yield
+\[
+C_*\le\operatorname{OT}_\varepsilon
+\le C_*+\omega_c(2\delta)+\varepsilon H_\delta.
+\]
+First let \(\varepsilon\downarrow0\) for fixed \(\delta\), then \(\delta\downarrow0\). The cost of \(\pi_\varepsilon\) lies between \(C_*\) and \(\operatorname{OT}_\varepsilon\), so it converges to \(C_*\). Compactness and continuity of \(c\) make every limit plan optimal.</p>
+<p>If an optimal plan \(\widehat\pi\) has finite entropy \(H(\widehat\pi)\), comparison gives
+\[
+C_*+\varepsilon H(\pi_\varepsilon)
+\le\int c\,\mathrm{d}\pi_\varepsilon+\varepsilon H(\pi_\varepsilon)
+\le C_*+\varepsilon H(\widehat\pi).
+\]
+Thus \(H(\pi_\varepsilon)\le H(\widehat\pi)\). Entropy lower semicontinuity gives the same inequality for every limit plan and every finite-entropy optimal competitor. Strict convexity of entropy on the convex optimal set makes this selected plan unique; compactness then gives convergence of the full family.</p></div>
 
     <h3>Large-regularization limit</h3>
-    <p>As \(\varepsilon\to\infty\), minimizing mutual information dominates the cost. The unique zero-information coupling is \(\mu\otimes\nu\), so \(\pi_\varepsilon\Rightarrow\mu\otimes\nu\) under mild conditions. Entropic transport therefore interpolates between optimal geometric dependence and independence.</p>
+<div class="math-statement proposition"><p><span class="statement-title">Independence limit.</span> In the compact setting, \(\pi_\varepsilon\to\mu\otimes\nu\) in total variation and \(\operatorname{OT}_\varepsilon\to C_0=\int c\,\mathrm{d}(\mu\otimes\nu)\) as \(\varepsilon\to\infty\).</p></div>
+<div class="math-statement proof"><p><span class="statement-title">Proof.</span> Comparing with the product plan gives \(\int c\,\mathrm{d}\pi_\varepsilon+\varepsilon H(\pi_\varepsilon)\le C_0\). Since \(c\ge m=\min c\), \(0\le H(\pi_\varepsilon)\le(C_0-m)/\varepsilon\to0\). Pinsker's inequality gives total-variation convergence to the reference product law. Boundedness of \(c\) then gives \(\int c\,\mathrm{d}\pi_\varepsilon\to C_0\). Finally,
+\[
+\int c\,\mathrm{d}\pi_\varepsilon\le\operatorname{OT}_\varepsilon\le C_0,
+\]
+so the objective converges too. This last squeeze is needed: \(H\to0\) alone would not imply \(\varepsilon H\to0\).</p></div>
 
-    <h3>Smooth dependence on the marginals</h3>
+<h3>Smooth dependence on the marginals</h3>
     <p>For fixed \(\varepsilon>0\) and positive kernels, dual potentials are unique modulo constants and vary smoothly with positive discrete marginals. The envelope theorem gives
     \[
     \nabla_a\operatorname{OT}_\varepsilon=\varphi_\varepsilon,

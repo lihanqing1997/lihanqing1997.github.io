@@ -37,7 +37,7 @@ note_next_url: "/notes/optimal-transport/benamou-brenier-formula/"
     <h3>Flows of particles</h3>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Suppose \(v_t\) is smooth and \(X_t(x)\) solves
+        <p><span class="statement-title">Proposition.</span> Suppose \(v\) is continuous in time, smooth in space, and globally Lipschitz in space with an integrable Lipschitz bound. Assume also \(\|v_t\|_\infty\le a(t)\) for some \(a\in L^1(0,T)\). If \(X_t(x)\) solves
         \[
         \frac{\mathrm{d}}{\mathrm{d}t}X_t(x)=v_t(X_t(x)),\qquad X_0(x)=x.
         \]
@@ -45,7 +45,7 @@ note_next_url: "/notes/optimal-transport/benamou-brenier-formula/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For a smooth compactly supported \(\phi\),
+        <p><span class="statement-title">Proof.</span> For \(\phi\in C_c^\infty\), the pathwise chain rule gives \(\phi(X_t)-\phi(X_s)=\int_s^t\nabla\phi(X_r)\cdot v_r(X_r)\,\mathrm{d}r\). Its integrand is bounded in absolute value by \(\|\nabla\phi\|_\infty a(r)\), an integrable function independent of the particle. Fubini therefore gives absolute continuity of the integral, and for almost every \(t\),
         \[
         \frac{\mathrm{d}}{\mathrm{d}t}\int\phi\,\mathrm{d}\mu_t
         =\frac{\mathrm{d}}{\mathrm{d}t}\int\phi(X_t(x))\,\mathrm{d}\mu_0(x)
@@ -69,39 +69,73 @@ note_next_url: "/notes/optimal-transport/benamou-brenier-formula/"
     </div>
 
     <h3>Velocity characterization</h3>
+<div class="math-statement theorem"><p><span class="statement-title">Eulerian characterization in the quadratic case.</span> Let \(t\mapsto\mu_t\in\mathcal P_2(\mathbb R^d)\) be narrowly continuous on \([0,T]\). Then \(\mu\in AC^2([0,T];\mathcal P_2)\) if and only if there is a Borel field \(v\) solving the continuity equation with
+\[
+\int_0^T\int|v_t(x)|^2\,\mathrm{d}\mu_t(x)\,\mathrm{d}t&lt;\infty.
+\]
+Every such field satisfies \(|\dot\mu_t|\le\|v_t\|_{L^2(\mu_t)}\) almost everywhere. There is a unique field in
+\(T_{\mu_t}\mathcal P_2=\overline{\{\nabla\phi:\phi\in C_c^\infty\}}^{L^2(\mu_t)}\)
+with equality; it minimizes the norm among all representing fields.</p></div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> <strong>1. Construct a field from the curve.</strong> Set \(m(t)=|\dot\mu_t|\in L^2(0,T)\). For \(\phi\in C_c^\infty\), \(f_\phi(t)=\int\phi\,\mathrm{d}\mu_t\) is absolutely continuous, since
+\[
+|f_\phi(t)-f_\phi(s)|\le\operatorname{Lip}(\phi)W_2(\mu_t,\mu_s).
+\]
+At times where \(f_\phi'\) and the metric derivative exist, use an optimal coupling \(\pi_{t,h}\) of \(\mu_t,\mu_{t+h}\). Taylor's theorem and Cauchy–Schwarz yield
+\[
+\left|\frac{f_\phi(t+h)-f_\phi(t)}h\right|
+\le\|\nabla\phi\|_{L^2(\mu_t)}\frac{W_2(\mu_t,\mu_{t+h})}{|h|}
++\frac{\|D^2\phi\|_\infty}{2|h|}W_2(\mu_t,\mu_{t+h})^2.
+\]
+The last term tends to zero, because \(W_2/|h|\to m(t)&lt;\infty\). Thus
+\[
+|f_\phi'(t)|\le m(t)\|\nabla\phi\|_{L^2(\mu_t)}. \tag{1}
+\]
+Choose a countable rational vector space of tests dense in the \(C^2\)-norm on each compact support. Remove the union of their exceptional null sets. Inequality (1) then holds simultaneously for every finite real linear combination, by continuity in the coefficients.</p>
+<p>Let \(q(\mathrm{d}t,\mathrm{d}x)=\mathrm{d}t\,\mu_t(\mathrm{d}x)\). On fields \(\xi(t,x)=\sum_{i=1}^N\eta_i(t)\nabla\phi_i(x)\), with bounded measurable \(\eta_i\), define
+\[
+L(\xi)=\int_0^T\sum_i\eta_i(t)f_{\phi_i}'(t)\,\mathrm{d}t.
+\]
+Pointwise application of (1) to \(\sum_i\eta_i(t)\phi_i\) gives
+\[
+|L(\xi)|\le\int_0^T m(t)\|\xi_t\|_{L^2(\mu_t)}\,\mathrm{d}t
+\le\|m\|_{L^2(0,T)}\|\xi\|_{L^2(q)}. \tag{2}
+\]
+In particular, \(L\) is independent of how \(\xi\) is represented. Let \(H\) be the closure of these fields in \(L^2(q;\mathbb R^d)\). <a href="{{ '/notes/functional-analysis/riesz-representation-theorem/' | relative_url }}">Hilbert-space Riesz representation</a> provides \(v\in H\) with \(L(\xi)=\int v\cdot\xi\,\mathrm{d}q\). An \(L^2(q)\) class has a Borel representative, which we use for \(v\).</p>
+<p>The space \(H\) is stable under multiplication by bounded measurable functions of time. Restricting (2) to a measurable set \(A\subset(0,T)\) and approximating \(\mathbf1_Av\) by fields of this space gives
+\[
+\|\mathbf1_Av\|_{L^2(q)}^2
+=L(\mathbf1_Av)
+\le\|\mathbf1_Am\|_{L^2(0,T)}\|\mathbf1_Av\|_{L^2(q)}.
+\]
+Therefore \(\int_A\|v_t\|_{L^2(\mu_t)}^2\,\mathrm{d}t\le\int_A m(t)^2\,\mathrm{d}t\) for every \(A\), so \(\|v_t\|_{L^2(\mu_t)}\le m(t)\) almost everywhere. Using \(\xi=\eta(t)\nabla\phi\) and integrating \(\eta f_\phi'\) by parts proves the weak continuity equation. Density extends the identity to all compactly supported smooth tests; finite sums of separated time and space tests are dense in the corresponding \(C^1\)-norm.</p>
+<p><strong>2. Recover metric speed from a field.</strong> Apply the superposition theorem stated below. If \(e_t(\gamma)=\gamma(t)\), then \((e_s,e_t)_\#\boldsymbol\eta\) is a coupling. Minkowski's integral inequality gives
+\[
+\begin{aligned}
+W_2(\mu_s,\mu_t)
+&amp;\le\left\|\int_s^t\dot\gamma_r\,\mathrm{d}r\right\|_{L^2(\boldsymbol\eta)}
+\le\int_s^t\|\dot\gamma_r\|_{L^2(\boldsymbol\eta)}\,\mathrm{d}r\\
+&amp;=\int_s^t\|v_r\|_{L^2(\mu_r)}\,\mathrm{d}r.
+\end{aligned}
+\]
+Lebesgue differentiation yields \(|\dot\mu_t|\le\|v_t\|_{L^2(\mu_t)}\). Combined with Step 1 this is equality for the constructed field.</p>
+<p><strong>3. Minimality and uniqueness.</strong> An approximating sequence in \(H\) has a subsequence converging in \(L^2(\mu_t)\) for almost every \(t\): choose a subsequence with summable squared \(L^2(q)\) errors and use Tonelli. Thus \(v_t\in T_{\mu_t}\mathcal P_2\). If \(w\) is any other square-integrable representing field, testing the difference equation with \(\eta(t)\phi(x)\) shows \(w_t-v_t\) is orthogonal to every test gradient, hence to the tangent space, for almost every \(t\). Consequently
+\[
+\|w_t\|_{L^2(\mu_t)}^2=\|v_t\|_{L^2(\mu_t)}^2+\|w_t-v_t\|_{L^2(\mu_t)}^2.
+\]
+This proves both assertions.</p></div>
+<p>The general \(1&lt;p&lt;\infty\) characterization replaces squared norms by \(p\)-th powers. We use the proved quadratic version throughout the dynamic chapters; the general result is <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Theorem 8.3.1</a>.</p>
+<div class="math-statement remark"><p><span class="statement-title">Where a discrete velocity lives.</span> A displacement \((y-x)/h\) is defined on \(\pi_{t,h}\), not on \(\mu_t\). Disintegrating \(\pi_{t,h}=\mu_t(\mathrm{d}x)\pi_{t,h,x}(\mathrm{d}y)\) gives the actual field
+\[
+b_{t,h}(x)=\int\frac{y-x}{h}\,\mathrm{d}\pi_{t,h,x}(y),\qquad
+\int|b_{t,h}|^2\,\mathrm{d}\mu_t\le\frac{W_2(\mu_t,\mu_{t+h})^2}{h^2},
+\]
+by conditional Jensen. Taylor's remainder is bounded by \(\|D^2\phi\|_\infty W_2^2/(2|h|)\), exactly as above. The Hilbert-space construction avoids assuming that weak limits on changing marginal spaces automatically define a measurable field.</p></div>
+
+<h3>The superposition principle</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Eulerian characterization.</span> Let \(1&lt;p&lt;\infty\). Let \(\mu_t\in\mathcal P_p(\mathbb R^d)\) be narrowly continuous on \([0,T]\). It belongs to \(AC^p([0,T];\mathcal P_p(\mathbb R^d))\) if and only if there exists a Borel field \(v_t\in L^p(\mu_t;\mathbb R^d)\) solving the continuity equation and satisfying
-        \[
-        \int_0^T\|v_t\|_{L^p(\mu_t)}^p\,\mathrm{d}t&lt;\infty.
-        \]
-        Every such field obeys
-        \[
-        |\dot\mu_t|\le\|v_t\|_{L^p(\mu_t)}
-        \quad\text{a.e.}
-        \]
-        There is a unique minimal velocity in the appropriate tangent class for which equality holds.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof, velocity implies absolute continuity.</span> The superposition principle represents the solution by a probability \(\boldsymbol\eta\) on absolutely continuous paths \(\gamma\) such that \((e_t)_\#\boldsymbol\eta=\mu_t\) and \(\dot\gamma_t=v_t(\gamma_t)\) almost everywhere. The joint law of \((\gamma_s,\gamma_t)\) couples \(\mu_s,\mu_t\), so
-        \[
-        \begin{aligned}
-        W_p(\mu_s,\mu_t)
-        &amp;\le\left(\int|\gamma_t-\gamma_s|^p\,\mathrm{d}\boldsymbol\eta\right)^{1/p}\\
-        &amp;\le\int_s^t
-        \left(\int|\dot\gamma_r|^p\,\mathrm{d}\boldsymbol\eta\right)^{1/p}\mathrm{d}r\\
-        &amp;=\int_s^t\|v_r\|_{L^p(\mu_r)}\,\mathrm{d}r.
-        \end{aligned}
-        \]
-        This proves absolute continuity and the metric-derivative bound.</p>
-        <p><span class="statement-title">Proof outline, absolute continuity implies velocity.</span> For small \(h\), choose optimal plans between \(\mu_t\) and \(\mu_{t+h}\) and view \((y-x)/h\) as a discrete velocity. The \(L^p\) norm of this velocity is \(W_p(\mu_t,\mu_{t+h})/|h|\), which is locally bounded by the metric derivative. Weak compactness in \(L^p(\mu_t)\), together with differentiation of test-function integrals, produces a limiting field \(v_t\) satisfying the continuity equation. Lower semicontinuity gives \(\|v_t\|_{L^p(\mu_t)}\le|\dot\mu_t|\). Combined with the first inequality, equality follows for the minimal representative.</p>
-    </div>
-
-    <h3>The superposition principle</h3>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Superposition principle.</span> If \((\mu_t,v_t)\) solves the continuity equation and \(\int_0^T\int|v_t|\,\mathrm{d}\mu_t\,\mathrm{d}t&lt;\infty\), then there exists a probability measure \(\boldsymbol\eta\) on \(AC([0,T];\mathbb R^d)\) such that
+        <p><span class="statement-title">Superposition principle (external theorem).</span> If \((\mu_t,v_t)\) solves the continuity equation and \(\int_0^T\int|v_t|\,\mathrm{d}\mu_t\,\mathrm{d}t&lt;\infty\), then there exists a probability measure \(\boldsymbol\eta\) on \(AC([0,T];\mathbb R^d)\) such that
         \[
         (e_t)_\#\boldsymbol\eta=\mu_t,\qquad
         \dot\gamma_t=v_t(\gamma_t)
@@ -109,7 +143,7 @@ note_next_url: "/notes/optimal-transport/benamou-brenier-formula/"
         for \(\boldsymbol\eta\)-almost every path and almost every time.</p>
     </div>
 
-    <p>This theorem is a measure-valued extension of the method of characteristics. Even when the vector field has no unique classical flow, the solution is still a probability distribution over integral curves.</p>
+    <p>This is the external input used in Step 2; see Ambrosio–Gigli–Savaré, Theorem 8.2.1. It is a measure-valued extension of the method of characteristics. Even when the vector field has no unique classical flow, the solution is still a probability distribution over integral curves.</p>
 
     <h3>Minimal velocities and tangent directions</h3>
     <p>Velocity fields are not unique. A field \(w_t\) satisfying
@@ -145,7 +179,7 @@ note_next_url: "/notes/optimal-transport/benamou-brenier-formula/"
         wherever \(T_t\) is invertible. Its kinetic norm is constant and equals \(W_2(\mu_0,\mu_1)\).</p>
     </div>
 
-<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §2</a>, and <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapter 8</a>, for the superposition and velocity theorems. The reverse Eulerian implication is only outlined here.</p>
+<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, <em>A user's guide to optimal transport</em>, §2</a>, and <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapter 8</a>, for the superposition and velocity theorems. The quadratic velocity construction is proved above; the superposition theorem is the explicitly stated external input.</p>
 
 <h3>Practice: velocities and conservation</h3>
 <ol class="ot-exercises">

@@ -41,7 +41,7 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     <h3>KL-penalized unbalanced transport</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Dual formulation.</span> For \(D_i=\operatorname{KL}\),
+        <p><span class="statement-title">Dual formulation (general compact-space theorem).</span> For \(D_i=\operatorname{KL}\),
         \[
         \operatorname{UOT}(\mu,\nu)
         =
@@ -53,16 +53,18 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The entropy conjugacy formula is
-        \[
-        \tau\operatorname{KL}(\alpha\,\|\,\mu)
-        =
-        \sup_f\left\{\int f\,\mathrm{d}\alpha
-        -\tau\int(e^{f/\tau}-1)\,\mathrm{d}\mu\right\}.
-        \]
-        Apply it to \(\pi_X,\pi_Y\), then minimize over \(\pi\ge0\). Finiteness requires \(c+f+g\ge0\). Setting \(\varphi=-f,\psi=-g\) gives the constraint and dual objective.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof in the finite positive-weight case; general theorem input.</span> The compact-space version is the entropy-transport duality theorem of <a href="https://arxiv.org/abs/1508.07941">Liero–Mielke–Savaré</a>. Here is a full proof for finite marginals \(a_i,b_j>0\), which also derives the potentials without an unjustified interchange of infimum and supremum.</p>
+<p>For a nonnegative matrix \(P\), write \(r=P\mathbf1\), \(s=P^\top\mathbf1\), and let \(J(P)\) be the primal objective. A minimizer exists: Jensen gives \(\operatorname{KL}(r\|a)\ge M\log(M/A)-M+A\), where \(M=\sum_{ij}P_{ij}\), \(A=\sum_i a_i\); together with nonnegative cost this makes sublevels bounded, and continuity gives attainment. At a minimizer every \(r_i,s_j\) is positive. Otherwise adding a small entry to an empty row or column decreases the entropy by a leading negative multiple of \(h|\log h|\), dominating all finite linear changes; if \(P=0\), the same perturbation fills both an empty row and column and again decreases the objective.</p>
+<p>The partial derivatives now exist, and orthant optimality gives
+\[
+c_{ij}+\tau_1\log(r_i/a_i)+\tau_2\log(s_j/b_j)\ge0,
+\]
+with equality whenever \(P_{ij}>0\). Define \(\varphi_i=-\tau_1\log(r_i/a_i)\), \(\psi_j=-\tau_2\log(s_j/b_j)\). They satisfy \(\varphi_i+\psi_j\le c_{ij}\), and equality on transported edges gives \(\sum c_{ij}P_{ij}=\sum_i r_i\varphi_i+\sum_j s_j\psi_j\). Substitution into \(J\) cancels the logarithmic terms:
+\[
+J(P)=\tau_1\sum_i(a_i-r_i)+\tau_2\sum_j(b_j-s_j)
+=-\tau_1\sum_i a_i(e^{-\varphi_i/\tau_1}-1)-\tau_2\sum_j b_j(e^{-\psi_j/\tau_2}-1).
+\]
+Finally the scalar Fenchel inequality \(\tau\operatorname{KL}(r\|a)\ge-\varphi r-\tau a(e^{-\varphi/\tau}-1)\), summed over marginals and combined with \(c\ge\varphi+\psi\), proves weak duality for every competitor. The constructed pair attains equality, proving finite-dimensional strong duality.</p></div>
 
     <p>Unlike balanced dual potentials, \(\varphi,\psi\) cannot be shifted by opposite constants without changing the objective: the total transported mass is itself an optimized quantity.</p>
 
@@ -103,19 +105,21 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The reaction equation is \(m'=\alpha m\). Put \(r=\sqrt m\), so \(\alpha=2r'/r\). Then
-        \[
-        \delta^2\int_0^1\alpha_t^2m_t\,\mathrm{d}t
-        =4\delta^2\int_0^1|r_t'|^2\,\mathrm{d}t.
-        \]
-        The minimum over curves with fixed endpoints is attained by linear \(r_t\), giving the formula.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof, including zero endpoints.</span> For an admissible absolutely continuous mass path, \(m'=\alpha m\) and \(\int\alpha^2m&lt;\infty\). To avoid dividing by zero, set \(r_\eta=\sqrt{m+\eta}\), \(\eta>0\). Then
+\[
+|r_\eta'|^2=\frac{\alpha^2m^2}{4(m+\eta)}\le\frac14\alpha^2m.
+\]
+The functions \(r_\eta\) converge uniformly to \(r=\sqrt m\), since their difference is at most \(\sqrt\eta\). Weak compactness in \(H^1(0,1)\) and lower semicontinuity give \(r\in H^1\) and \(4\int|r'|^2\le\int\alpha^2m\). Cauchy–Schwarz therefore yields
+\[
+\delta^2\int_0^1\alpha^2m\,\mathrm{d}t\ge4\delta^2\int_0^1|r'|^2\,\mathrm{d}t
+\ge4\delta^2|r(1)-r(0)|^2.
+\]
+For attainment, choose \(r(t)=(1-t)\sqrt{m_0}+t\sqrt{m_1}\), \(m=r^2\), and \(\alpha=2r'/r\) wherever \(r>0\). Put \(\alpha=0\) on the zero set; apart from irrelevant endpoints, that set is either empty or the whole interval. Then \(m'=\alpha m\) almost everywhere and \(\alpha^2m=4|r'|^2\) almost everywhere, giving equality even when one or both endpoint masses vanish.</p></div>
 
     <h3>Cone geometry and Dirac measures</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Dirac formula.</span> On \(\mathbb R^d\) in the normalization above,
+        <p><span class="statement-title">Dirac formula (cone theorem).</span> On \(\mathbb R^d\) in the normalization above,
         \[
         \operatorname{HK}_\delta^2(a\delta_x,b\delta_y)
         =
@@ -132,12 +136,10 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
     <h3>Dynamic Hellinger--Kantorovich formula</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Dynamic representation.</span> For finite nonnegative measures on \(\mathbb R^d\), the squared Hellinger--Kantorovich distance is the infimum of \(\mathcal A_\delta\) over all reaction--continuity triples connecting the endpoint measures. Minimizers exist under standard compactness assumptions, and the distance metrizes weak convergence together with convergence of total mass on bounded spaces.</p>
+        <p><span class="statement-title">Dynamic representation (external cone-lifting theorem).</span> For finite nonnegative measures on \(\mathbb R^d\), the squared Hellinger--Kantorovich distance is the infimum of \(\mathcal A_\delta\) over all reaction--continuity triples connecting the endpoint measures. Minimizers exist under standard compactness assumptions, and the distance metrizes weak convergence together with convergence of total mass on bounded spaces.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline.</span> Lift each measure to the cone by representing mass as squared radius. Ordinary quadratic transport on the cone simultaneously changes position and radius. Projecting cone geodesics back to \(X\) yields the reaction--continuity equation and its action. Conversely, every finite-action triple admits a cone lift. The Benamou--Brenier formula on the cone gives equality.</p>
-    </div>
+    <div class="math-statement remark"><p><span class="statement-title">External theorem and normalization.</span> The general equality is the cone-lifting and dynamic representation theorem of <a href="https://arxiv.org/abs/1508.07941">Liero–Mielke–Savaré</a>. It supplies the lift of every finite-action reaction–continuity curve and the converse projection, a substantial existence result. With reaction coefficient \(\delta^2\), the radial coordinate is \(2\delta\sqrt m\), and the cone angle is \(d(x,y)/(2\delta)\) with transport cut off at \(\pi/2\). These choices give the displayed Dirac formula and reduce at \(x=y\) to the scalar action just proved. A geometric description of a lift alone would not prove the converse or equality of the two infima.</p></div>
 
     <h3>Unbalanced barycenters</h3>
     <p>An unbalanced barycenter minimizes

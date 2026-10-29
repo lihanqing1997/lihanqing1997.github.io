@@ -56,13 +56,22 @@ note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-
         Comparable bounds hold under sufficiently high finite moments, with additional tail terms.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline.</span> Partition space into dyadic cubes. A transport plan first corrects mass discrepancies on coarse cubes, then recursively within each cube. The cost at scale \(2^{-j}\) is controlled by \(2^{-jp}\) times the total empirical mass fluctuation over the \(2^{jd}\) cells. Binomial fluctuations contribute roughly \(\min\{1,\sqrt{2^{jd}/n}\}\). Summing
-        \[
-        \sum_{j\ge0}2^{-jp}\min\left\{1,\sqrt{\frac{2^{jd}}n}\right\}
-        \]
-        yields the three regimes. For unbounded support, apply the argument on dyadic annuli and control the remaining tail with moments.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof for bounded support.</span> Translation and scaling reduce to \([0,1]^d\). Let \(\mathcal D_j\) be its \(2^{jd}\) dyadic cells of side \(2^{-j}\), with a fixed disjoint boundary convention. For any two probability laws \(\alpha,\beta\), a hierarchical matching gives
+\[
+W_p^p(\alpha,\beta)\le C_{d,p}\left[2^{-Lp}+\sum_{j=1}^L2^{-p(j-1)}\sum_{Q\in\mathcal D_j}|\alpha(Q)-\beta(Q)|\right]. \tag{1}
+\]
+Here is the construction: at level \(L\), match the common mass inside each cell; every such displacement has length at most \(\sqrt d\,2^{-L}\). Each cell's remaining mass has a single sign and size \(|\alpha(Q)-\beta(Q)|\). In each parent cell, match opposite residual signs between its children, then pass the unbalanced remainder to the next parent. Inductively its size is exactly the parent's mass discrepancy. At level \(j\), at most \(\frac12\sum_{Q\in\mathcal D_j}|\alpha(Q)-\beta(Q)|\) is newly matched, within parents of diameter \(\sqrt d\,2^{-(j-1)}\). The root has zero discrepancy, so all mass is matched. Product couplings of the restricted residual measures implement each matching, proving (1).</p>
+<p>For \(\alpha=\widehat\mu_n\), \(\beta=\mu\), binomial variance and Cauchy–Schwarz imply
+\[
+\mathbb E|\widehat\mu_n(Q)-\mu(Q)|\le\sqrt{\mu(Q)/n},\qquad
+\mathbb E\sum_{Q\in\mathcal D_j}|\widehat\mu_n(Q)-\mu(Q)|
+\le\min\{2,n^{-1/2}2^{jd/2}\}.
+\]
+Let \(L\to\infty\) in the upper bound (the series converges since each fluctuation sum is at most two). Put \(J=\lfloor(\log_2 n)/d\rfloor\). Splitting the series gives
+\[
+\mathbb EW_p^p\le C_{d,p}\left[n^{-1/2}\sum_{j=1}^J2^{j(d/2-p)}+\sum_{j>J}2^{-jp}\right].
+\]
+The tail is \(O(2^{-Jp})=O(n^{-p/d})\). The first sum is bounded when \(d&lt;2p\), equals \(J\) when \(d=2p\), and is \(O(2^{J(d/2-p)})\) when \(d>2p\). These are exactly the three claimed bounds. Adjusting the constant handles \(n=1\). The unbounded-support moment extensions are external results of Fournier–Guillin; they are not consequences of this bounded-support proof alone.</p></div>
 
     <p>These are distribution-free rates and need not be sharp for smooth low-dimensional laws. They expose the central obstruction: at fine scales there are exponentially many cells relative to the dimension.</p>
 
@@ -80,7 +89,7 @@ note_next_url: "/notes/optimal-transport/inference-for-transport-costs-maps-and-
         \[
         W_p^p(\mu,\nu_n)\ge\int\min_i|x-z_i|^p\,\mathrm{d}\mu(x).
         \]
-        The union of \(n\) balls of radius \(r\) has volume at most \(n\omega_dr^d\). Choose \(r\asymp n^{-1/d}\) so these balls cover at most half of a fixed positive-volume region. On the uncovered part the distance is at least \(r\), giving the lower bound.</p>
+        The union of \(n\) balls of radius \(r\) has volume at most \(n\omega_dr^d\). Choose a measurable region \(A\) with \(0&lt;|A|&lt;\infty\) on which the density is at least \(a>0\), and set \(r=(|A|/(2n\omega_d))^{1/d}\). The union covers at most \(|A|/2\), leaving \(\mu\)-mass at least \(a|A|/2\). On the uncovered part the distance is at least \(r\), giving the lower bound.</p>
     </div>
 
     <p>Since \(\widehat\mu_n\) has at most \(n\) support points, no estimator constrained to the raw empirical support can beat this geometric approximation barrier uniformly over full-dimensional distributions.</p>

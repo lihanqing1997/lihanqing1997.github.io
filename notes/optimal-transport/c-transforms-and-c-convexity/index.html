@@ -83,7 +83,22 @@ note_next_url: "/notes/optimal-transport/brenier-theorem/"
     <div class="math-statement proposition"><p><span class="statement-title">Contact sets are cyclically monotone.</span> If finite potentials satisfy \(\varphi+\psi\le c\), their equality set is \(c\)-cyclically monotone.</p></div>
     <div class="math-statement proof"><p><span class="statement-title">Proof.</span> On the equality set, the original sum is \(\sum_i\varphi(x_i)+\sum_i\psi(y_i)\). Reordering the second sum does not change it; feasibility bounds the reordered sum by \(\sum_i c(x_i,y_{\sigma(i)})\).</p></div>
     <div class="math-statement theorem"><p><span class="statement-title">Optimal support: the continuous-cost case.</span> Let \(X,Y\) be Polish, \(c\) finite continuous, and \(\pi\) a finite-cost optimal plan. Then \(\operatorname{supp}\pi\) is \(c\)-cyclically monotone. Conversely, a finite-cost plan is optimal if it is concentrated on a contact set of feasible potentials \(\varphi\in L^1(\mu),\psi\in L^1(\nu)\).</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof outline for necessity.</span> If support points violated a cycle inequality strictly, continuity would preserve the improvement in small neighborhoods of those points. Remove equal small amounts of mass from the plan in these neighborhoods and reconnect their source and target marginals cyclically. The new plan has the same marginals and strictly smaller cost, a contradiction. Keeping track of overlapping neighborhoods gives the standard local-exchange proof; see <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.2</a>.</p><p><span class="statement-title">Proof of sufficiency.</span> Integrating the contact equality gives \(\int c\,\mathrm{d}\pi=J(\varphi,\psi)\). Weak duality proves optimality. This argument does not require a separate dual-attainment theorem.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof of necessity.</span> Suppose support points \((x_i,y_i)\), \(1\le i\le N\), violate the inequality for a permutation \(\sigma\). By continuity there are product neighborhoods \(U_i\) of these points and \(\delta>0\) such that, for every tuple \((a_i,b_i)\in U_i\),
+\[
+\sum_i c(a_i,b_i)-\sum_i c(a_i,b_{\sigma(i)})\ge\delta.
+\]
+Shrink them so all costs in this formula are bounded. Each \(m_i=\pi(U_i)>0\). Set \(\gamma_i=\pi|_{U_i}/m_i\), \(Q=\bigotimes_i\gamma_i\), and let \(\beta_i\) be the law of \((a_i,b_{\sigma(i)})\) under \(Q\). Choose \(0&lt;\varepsilon\le(\sum_i m_i^{-1})^{-1}\). Even if the neighborhoods overlap,
+\[
+\varepsilon\sum_i\gamma_i\le\varepsilon\left(\sum_i m_i^{-1}\right)\pi\le\pi.
+\]
+Thus \(\pi'=\pi-\varepsilon\sum_i\gamma_i+\varepsilon\sum_i\beta_i\) is nonnegative. Its total mass is one; its source marginals cancel term by term, and its target marginals cancel because \(\sigma\) permutes the indices. It is a competing coupling, with
+\[
+\int c\,\mathrm{d}\pi'-\int c\,\mathrm{d}\pi
+=\varepsilon\int\left[\sum_i c(a_i,b_{\sigma(i)})-\sum_i c(a_i,b_i)\right]\,\mathrm{d}Q
+\le-\varepsilon\delta,
+\]
+contradicting optimality. Only bounded pieces were changed, so the finite integrals are legitimate.</p>
+<p><span class="statement-title">Proof of sufficiency.</span> Integrable contact potentials give \(\int c\,\mathrm{d}\pi=\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\). Weak duality proves optimality.</p></div>
 
 <h3>Why cycles lead to potentials</h3>
     <p>A supporting potential assigns values consistently along chains of paired points. Cyclical monotonicity rules out an improving closed chain, just as the absence of negative cycles permits consistent shortest-path costs on a finite graph. Constructing a finite integrable potential for a general cost requires additional hypotheses; cyclic monotonicity alone should not be used as an unrestricted optimality certificate. For quadratic cost, Rockafellar's convex subgradient theorem supplies precisely the structure needed on the next page.</p>
@@ -103,18 +118,18 @@ note_next_url: "/notes/optimal-transport/brenier-theorem/"
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Expand
-        \[
-        \tfrac12|x-y|^2-\varphi(x)
-        =u(x)-x\cdot y+\tfrac12|y|^2.
-        \]
-        The \(c\)-transform is therefore a Legendre--Fenchel transform up to quadratic terms. The touching equality becomes
-        \[
-        u(z)\ge u(x)+y\cdot(z-x)\qquad\text{for every }z,
-        \]
-        which is exactly \(y\in\partial u(x)\).</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(u^*(y)=\sup_x\{x\cdot y-u(x)\}\). Expanding the square gives
+\[
+\varphi^c(y)=\tfrac12|y|^2-u^*(y),\qquad
+\varphi^{cc}(x)=\tfrac12|x|^2-u^{**}(x).
+\]
+Consequently \(\varphi=\varphi^{cc}\) is equivalent to \(u=u^{**}\); the Fenchel–Moreau theorem identifies this with proper lower-semicontinuous convexity. Finally,
+\[
+\varphi(x)+\varphi^c(y)=\tfrac12|x-y|^2
+\iff u(x)+u^*(y)=x\cdot y
+\iff y\in\partial u(x),
+\]
+where the last equivalence is Fenchel equality. These statements use proper extended-value potentials, so the conjugates are defined before any equality is asserted.</p></div>
 
     <div class="math-statement example">
         <p><span class="statement-title">Two-point condition.</span> For quadratic cost, the two-cycle inequality is

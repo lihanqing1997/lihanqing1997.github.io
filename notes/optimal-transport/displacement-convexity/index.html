@@ -64,7 +64,13 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
         \[
         \mathcal W(\mu_t)\le(1-t)\mathcal W(\mu_0)+t\mathcal W(\mu_1).
         \]
-        Strong convexity yields an additional quadratic term involving \(|(x-x')-(y-y')|^2\); it vanishes for common translations, explaining the flat direction.</p>
+        For \(D=y-x\), \(D'=y'-x'\), strong convexity contributes \(-\lambda t(1-t)\mathbb E|D-D'|^2/4\). Independence gives
+        \[
+        \mathbb E|D-D'|^2=2\mathbb E|D|^2-2|\mathbb ED|^2
+        =2\{W_2^2(\mu_0,\mu_1)-|m_1-m_0|^2\},
+        \]
+        where \(m_i=\int x\,\mathrm{d}\mu_i\). Hence the correction is
+        \(-\lambda t(1-t)[W_2^2-|m_1-m_0|^2]/2\). In particular the energy is displacement \(\lambda\)-convex on a fixed-mean class; common translations have zero correction.</p>
     </div>
 
     <h3>Internal energy and McCann's condition</h3>
@@ -82,31 +88,24 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
     </div>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">McCann displacement-convexity theorem.</span> Under the preceding assumptions, if \(U\) satisfies McCann's condition, then \(\mathcal U\) is displacement convex on \(\mathcal P_2(\mathbb R^d)\).</p>
+        <p><span class="statement-title">McCann displacement-convexity theorem (external result).</span> Under the preceding assumptions, if \(U\) satisfies McCann's condition, then \(\mathcal U\) is displacement convex on \(\mathcal P_2(\mathbb R^d)\).</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof outline via smooth positive densities.</span> Let \(T=\nabla u\) be the optimal map from \(\rho_0\) to \(\rho_1\), put \(T_t(x)=(1-t)x+tT(x)\). Its derivative is \(DT_t=(1-t)I+tDT\). The Jacobian equation gives
-        \[
-        \rho_t(T_t(x))=\frac{\rho_0(x)}
-        {\det((1-t)I+tDT(x))}.
-        \]
-        Since \(DT\) is positive semidefinite, concavity of \(\det(\cdot)^{1/d}\) on positive matrices yields
-        \[
-        \det((1-t)I+tDT)^{1/d}
-        \ge(1-t)+t\det(DT)^{1/d}.
-        \]
-        After changing variables \(z=T_t(x)\), the internal energy becomes an integral of
-        \[
-        J\,U(\rho_0/J),\qquad J=\det((1-t)I+tDT).
-        \]
-        Fix \(r=\rho_0(x)>0\), and put \(H_r(s)=s^dU(r/s^d)\). It is a positive rescaling of McCann's convex nonincreasing function. Thus, with \(s_t=J^{1/d}\) and \(s_1=(\det DT)^{1/d}\),
-        \[
-        H_r(s_t)\le H_r((1-t)+ts_1)
-        \le(1-t)H_r(1)+tH_r(s_1).
-        \]
-        Integration and change of variables at the endpoint give the energy inequality. Extending the smooth argument uses approximation preserving the energies, not lower semicontinuity alone; see the source below.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof in a precise smooth setting.</span> We prove the conclusion when the endpoints have densities on bounded domains and their Brenier map \(T\) is a \(C^1\) diffeomorphism with \(DT\) positive definite and eigenvalues bounded above and away from zero; assume the densities are bounded above and away from zero on their domains. These conditions make every following integral finite. The general theorem stated above is the nonsmooth result in the cited source.</p>
+<p>Set \(T_t=(1-t)\operatorname{id}+tT\) and \(J_t=\det((1-t)I+tDT)\). Strong monotonicity makes \(T_t\) injective, and its positive Jacobian makes it a diffeomorphism onto its image. Change of variables gives \(\rho_t(T_t(x))=\rho_0(x)/J_t(x)\).</p>
+<p>For a positive matrix with eigenvalues \(a_1,\ldots,a_d\), expand \(\prod_i((1-t)+ta_i)\). The sum of its \(k\)-fold products is at least \(\binom dk(\prod_i a_i)^{k/d}\): apply arithmetic–geometric mean to the \(\binom dk\) products, noting that each \(a_i\) occurs \(\binom{d-1}{k-1}\) times. The binomial expansion then proves
+\[
+J_t^{1/d}\ge(1-t)+tJ_1^{1/d}.
+\]
+For \(r>0\), \(H_r(s)=s^dU(r/s^d)=rH_1(s/r^{1/d})\), so McCann's scalar assumption makes \(H_r\) convex and nonincreasing. Therefore
+\[
+J_tU(r/J_t)=H_r(J_t^{1/d})
+\le H_r((1-t)+tJ_1^{1/d})
+\le(1-t)U(r)+tJ_1U(r/J_1).
+\]
+Put \(r=\rho_0(x)\), integrate over the source domain, and change variables by \(T_t\) and \(T\) on the two terms containing Jacobians. This proves
+\(\mathcal U(\mu_t)\le(1-t)\mathcal U(\mu_0)+t\mathcal U(\mu_1)\)
+in the stated setting. No smooth-to-rough limit is asserted by this calculation: the general version uses almost-everywhere Jacobians and energy approximation as part of McCann's theorem.</p></div>
 
     <h3>Entropy and porous-medium energies</h3>
 

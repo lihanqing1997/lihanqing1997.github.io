@@ -99,14 +99,28 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(W_p(\mu_n,\mu)\to0\), take nearly optimal couplings \((X_n,X)\). Then \(d(X_n,X)\to0\) in \(L^p\), hence in probability, which implies weak convergence. The reverse triangle inequality
-        \[
-        |d(X_n,x_0)-d(X,x_0)|\le d(X_n,X)
-        \]
-        and the \(L^p\) norm inequality give convergence of \(p\)-th moment norms and uniform integrability.</p>
-        <p>Conversely, weak convergence admits couplings with \(X_n\to X\) almost surely by the Skorokhod representation theorem. Condition (iii) makes \(d(X_n,X)^p\) uniformly integrable because it is bounded by \(2^{p-1}\{d(X_n,x_0)^p+d(X,x_0)^p\}\). Vitali's theorem yields \(\mathbb E d(X_n,X)^p\to0\), hence \(W_p(\mu_n,\mu)\to0\). Equivalence of (ii) and (iii) follows by truncating the moment function and using weak convergence on bounded continuous truncations.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(r(x)=d(x,x_0)\).</p>
+<p><strong>(i) implies (ii).</strong> Choose couplings \((X_n,X)\) with \(\mathbb E d(X_n,X)^p\le W_p(\mu_n,\mu)^p+1/n\). They may be put on one probability space by disintegrating each over the common law of \(X\) and taking the product of the conditional kernels. Then \(d(X_n,X)\to0\) in probability, so \(X_n\Rightarrow X\). Moreover,
+\[
+\left|\|r(X_n)\|_p-\|r(X)\|_p\right|
+\le\|r(X_n)-r(X)\|_p\le\|d(X_n,X)\|_p\longrightarrow0.
+\]
+Taking \(p\)-th powers yields convergence of moments.</p>
+<p><strong>(ii) implies (iii) and (i).</strong> The Skorokhod representation theorem for Polish spaces gives variables with these laws and \(X_n\to X\) almost surely. Put \(Y_n=r(X_n)^p\), \(Y=r(X)^p\). Then \(Y_n\to Y\) almost surely and \(\mathbb EY_n\to\mathbb EY\). Since \(\min(Y_n,Y)\le Y\), dominated convergence gives
+\[
+\mathbb E|Y_n-Y|=\mathbb EY_n+\mathbb EY-2\mathbb E\min(Y_n,Y)\longrightarrow0.
+\]
+An \(L^1\)-convergent sequence is uniformly integrable, which is (iii). Also
+\[
+0\le d(X_n,X)^p\le2^{p-1}(Y_n+Y).
+\]
+The right side is uniformly integrable and the left side tends to zero almost surely. Vitali's theorem gives \(\mathbb E d(X_n,X)^p\to0\), hence (i).</p>
+<p><strong>(iii) implies (ii).</strong> For \(f_R(x)=\min(r(x)^p,R)\), weak convergence gives \(\int f_R\,\mathrm{d}\mu_n\to\int f_R\,\mathrm{d}\mu\). The errors satisfy
+\[
+0\le\int(r^p-f_R)\,\mathrm{d}\mu_n
+\le\int_{\{r^p>R\}}r^p\,\mathrm{d}\mu_n,
+\]
+uniformly vanishing as \(R\to\infty\). The same tail bound for \(\mu\) follows from its finite moment. First let \(n\to\infty\), then \(R\to\infty\). This proves (ii).</p></div>
 
     <h3>Completeness and separability</h3>
 
@@ -114,20 +128,29 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
         <p><span class="statement-title">Theorem.</span> If \((X,d)\) is complete and separable, then \((\mathcal P_p(X),W_p)\) is complete and separable.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For completeness, take a \(W_p\)-Cauchy sequence and extract a subsequence with \(W_p(\mu_{n_k},\mu_{n_{k+1}})\le2^{-k}\). Glue nearly optimal successive couplings to random variables \(X_k\) on one space. Then
-        \[
-        \sum_k\|d(X_k,X_{k+1})\|_{L^p}&lt;\infty.
-        \]
-        Hence \(X_k\) is almost surely Cauchy along a further argument and converges to an \(X\)-valued variable \(X_\infty\), using completeness of \(X\). Minkowski and tail summation give \(\|d(X_k,X_\infty)\|_{L^p}\to0\), so \(W_p(\mu_{n_k},\mathcal L(X_\infty))\to0\). The Cauchy property brings the full sequence to the same limit.</p>
-        <p>For separability, choose a countable dense subset \(D\subset X\). Finitely supported probability measures on \(D\) with rational weights form a countable family. Truncation to a compact high-mass set, quantization by nearby points of \(D\), and rational approximation of weights show that this family is \(W_p\)-dense.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> <strong>Completeness.</strong> From a Cauchy sequence extract \(\mu_{n_k}\) with \(W_p(\mu_{n_k},\mu_{n_{k+1}})\le2^{-k}\). Optimal successive couplings can be glued on a single space: disintegrate them into transition kernels and use the countable product construction for kernels. Thus there are \(X_k\sim\mu_{n_k}\) with \(\|d(X_k,X_{k+1})\|_p\le2^{-k}\). By Tonelli and \(\|\cdot\|_1\le\|\cdot\|_p\),
+\[
+\mathbb E\sum_{k=1}^\infty d(X_k,X_{k+1})\le\sum_{k=1}^\infty2^{-k}&lt;\infty.
+\]
+The sum is finite almost surely, so \(X_k\) is Cauchy almost surely. Completeness of \(X\) gives a measurable limit \(X_\infty\). For each \(k\), Fatou followed by Minkowski gives
+\[
+\|d(X_k,X_\infty)\|_p
+\le\liminf_{\ell\to\infty}\|d(X_k,X_\ell)\|_p
+\le\sum_{j=k}^\infty2^{-j}=2^{1-k}.
+\]
+In particular, \(\|d(X_\infty,x_0)\|_p\le\|d(X_1,x_0)\|_p+1&lt;\infty\). Thus its law belongs to \(\mathcal P_p\) and is the \(W_p\)-limit of the subsequence. For the whole sequence use \(W_p(\mu_n,\mathcal L(X_\infty))\le W_p(\mu_n,\mu_{n_k})+2^{1-k}\), first choosing \(k\) and then \(n\).</p>
+<p><strong>Separability.</strong> Enumerate a countable dense subset as \(D=\{x_1,x_2,\ldots\}\). Let \(q_N(x)\) be a nearest point among \(x_1,\ldots,x_N\), breaking ties by the smallest index. These maps are Borel, \(d(x,q_N(x))\to0\), and \(d(x,q_N(x))\le d(x,x_1)\). Dominated convergence gives
+\[
+W_p(\mu,q_{N\#}\mu)^p\le\int d(x,q_N(x))^p\,\mathrm{d}\mu\longrightarrow0.
+\]
+On a fixed finite support of diameter \(D_N\), changing the weight vector from \(a\) to \(b\) costs at most \(D_N^p\|a-b\|_1/2\): keep the common mass at each point and couple the remaining equal masses arbitrarily. Rational weights therefore approximate \(q_{N\#}\mu\). All finite rationally weighted laws on \(D\) form the required countable dense set.</p></div>
 
     <h3>Relative compactness</h3>
 
     <div class="math-statement proposition">
         <p><span class="statement-title">Compactness criterion.</span> A family \(\mathcal K\subset\mathcal P_p(X)\) is relatively compact in \(W_p\) if it is tight and its \(p\)-th moments are uniformly integrable. On a proper metric space, a uniform bound on a moment of order \(q>p\) implies these conditions.</p>
     </div>
+<div class="math-statement proof"><p><span class="statement-title">Proof.</span> Tightness and Prokhorov give a weakly convergent subsequence from any sequence in \(\mathcal K\). Uniform integrability passes to the limit through bounded continuous truncations of \(r^p\) and implies convergence of moments, by the same truncation argument as above. The topology theorem upgrades this subsequence to \(W_p\)-convergence. If \(\sup_{\mu\in\mathcal K}\int r^q\,\mathrm{d}\mu=M&lt;\infty\), then \(\mu(r>R)\le M/R^q\) and \(\int_{r>R}r^p\,\mathrm{d}\mu\le M/R^{q-p}\). On a proper space closed balls are compact, so these are respectively tightness and uniform integrability.</p></div>
 
     <p>The extra tail condition is essential. Weak compactness alone permits a small amount of mass to escape to infinity while carrying nonvanishing \(p\)-transport cost, as the example on <a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">Existence and stability of optimal plans</a> showed.</p>
 

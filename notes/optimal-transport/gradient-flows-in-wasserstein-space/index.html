@@ -28,7 +28,11 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
     \]
     Write \(\bar\mu_\tau(0)=\mu_\tau^0\) and \(\bar\mu_\tau(t)=\mu_\tau^k\) on \(((k-1)\tau,k\tau]\). The step trades energy reduction against transport effort.</p></div>
     <div class="math-statement theorem"><p><span class="statement-title">One-step existence: a sufficient weak-topology criterion.</span> Suppose \(\mathcal F\) is proper, bounded below, and sequentially lower semicontinuous under weak convergence of probability measures in \(\mathcal P_2(\mathbb R^d)\). If the old iterate has finite energy, every step has a minimizer.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The old iterate is a finite competitor. A minimizing sequence therefore has bounded \(W_2\)-distance to it, and hence bounded second moments. Extract a weakly convergent subsequence. Portmanteau places its limit in \(\mathcal P_2\). The energy is weakly lower semicontinuous by assumption, as is squared transport cost by compactness of plans and Portmanteau. Their sum attains the infimum.</p></div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(\eta\) for the old iterate and \(b=\inf\mathcal F> -\infty\). For a minimizing sequence \(\mu_j\), discard finitely many terms so
+\[
+\mathcal F(\mu_j)+\frac{W_2^2(\mu_j,\eta)}{2\tau}\le\mathcal F(\eta)+1.
+\]
+Thus \(W_2^2(\mu_j,\eta)\le2\tau(\mathcal F(\eta)+1-b)\). An optimal coupling and \(|x|^2\le2|x-y|^2+2|y|^2\) give a uniform second-moment bound on \(\mu_j\). Markov and Prokhorov yield a weakly convergent subsequence \(\mu_j\Rightarrow\mu\); Portmanteau gives \(\int|x|^2\,\mathrm{d}\mu&lt;\infty\). Optimal couplings of \(\mu_j,\eta\) are tight, so the cost liminf inequality gives \(W_2^2(\mu,\eta)\le\liminf_jW_2^2(\mu_j,\eta)\). Adding the assumed energy liminf inequality proves that \(\mu\) attains the infimum. Weak convergence, rather than unproved \(W_2\)-compactness, is what this argument uses.</p></div>
     <p>This is a sufficient criterion, not the most general JKO theorem. Entropy on all of \(\mathbb R^d\) is not bounded below; it needs a separate lower-bound argument or a confining potential. Another valid route assumes compact penalized sublevels in \(W_2\) and \(W_2\)-lower semicontinuity. A mere second-moment bound cannot replace that compactness assumption.</p>
 
     <h3>Discrete energy estimates</h3>
@@ -58,13 +62,23 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
         \le\sum_{k=m}^{n-1}W_2(\mu_\tau^k,\mu_\tau^{k+1})
         \le C\sqrt{t-s+\tau}.
         \]
-        The second inequality follows from Cauchy--Schwarz and the discrete action bound.</p>
+        More precisely, writing \(C^2=2(\mathcal F(\mu_\tau^0)-\inf\mathcal F)\),
+        \[
+        \sum_{k=m}^{n-1}W_2(\mu_\tau^k,\mu_\tau^{k+1})
+        \le\sqrt{(n-m)\tau}\left(\sum_{k=m}^{n-1}\frac{W_2^2(\mu_\tau^k,\mu_\tau^{k+1})}{\tau}\right)^{1/2}
+        \le C\sqrt{t-s}.
+        \]
+        For arbitrary times of the piecewise constant interpolation, rounding to grid times changes \(t-s\) by at most \(\tau\), yielding the stated relaxed bound.</p>
     </div>
 
     <h3>Euler equation of one step</h3>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">First-order condition (smooth setting).</span> Assume sufficient regularity and decay to justify the following variations. Suppose \(\mu_\tau^{k+1}=\rho\,\mathrm{d}x\), \(\mathcal F\) has first variation \(\delta\mathcal F/\delta\rho\), and \(T\) is the optimal map from \(\mu_\tau^{k+1}\) to \(\mu_\tau^k\). Then
+        <p><span class="statement-title">First-order condition (smooth setting).</span> Assume the energy has the directional expansion
+        \[
+        \mathcal F((\operatorname{id}+h\xi)_\#\mu)=\mathcal F(\mu)+h\int\nabla(\delta\mathcal F/\delta\rho)\cdot\xi\,\mathrm{d}\mu+o(|h|)
+        \]
+        for every \(\xi\in C_c^\infty(\mathbb R^d;\mathbb R^d)\), with the displayed gradient locally integrable against \(\mu\). Suppose \(\mu_\tau^{k+1}=\rho\,\mathrm{d}x\), \(\mathcal F\) has first variation \(\delta\mathcal F/\delta\rho\), and \(T\) is the optimal map from \(\mu_\tau^{k+1}\) to \(\mu_\tau^k\). Then
         \[
         \frac{T(x)-x}{\tau}
         =
@@ -73,13 +87,17 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
         \]</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Perturb the new measure by \(S_\varepsilon=\operatorname{id}+\varepsilon\xi\). The derivative of \(\mathcal F(S_{\varepsilon\#}\mu)\) is
-        \[
-        \int\nabla\!\left(\frac{\delta\mathcal F}{\delta\rho}\right)\cdot\xi\,\mathrm{d}\mu.
-        \]
-        Coupling \(S_\varepsilon(x)\) with \(T(x)\) shows that the derivative of \(\tfrac12W_2^2(S_{\varepsilon\#}\mu,\mu_\tau^k)\) is \(\int(x-T(x))\cdot\xi(x)\,\mathrm{d}\mu\). Stationarity for every \(\xi\) gives the formula. Thus the forward discrete velocity \((x-T(x))/\tau\) is the negative Wasserstein gradient.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(\mu=\mu_\tau^{k+1}\), \(\eta=\mu_\tau^k\), and \(\mu_h=(\operatorname{id}+h\xi)_\#\mu\). The coupling \((x+h\xi(x),T(x))_\#\mu\) gives the exact upper bound
+\[
+\frac12W_2^2(\mu_h,\eta)-\frac12W_2^2(\mu,\eta)
+\le h\int(x-T(x))\cdot\xi(x)\,\mathrm{d}\mu+\frac{h^2}{2}\int|\xi|^2\,\mathrm{d}\mu.
+\]
+Minimality and the assumed energy expansion imply
+\[
+0\le\mathcal F(\mu_h)+\frac{W_2^2(\mu_h,\eta)}{2\tau}-\mathcal F(\mu)-\frac{W_2^2(\mu,\eta)}{2\tau}
+\le h A+o(|h|),
+\]
+where \(A=\int[\nabla(\delta\mathcal F/\delta\rho)+(x-T(x))/\tau]\cdot\xi\,\mathrm{d}\mu\). Divide by \(h>0\), then by \(h&lt;0\), and let \(h\to0\); the two inequalities force \(A=0\). Testing all \(\xi\) gives the asserted almost-everywhere identity. This proof uses an upper bound for transport cost and both signs of the perturbation; an upper bound alone does not establish differentiability of that cost.</p></div>
 
     <h3>Metric slope and energy dissipation</h3>
 
@@ -111,12 +129,38 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
 
 <h3>Passage to continuous time</h3>
     <p>The discrete action estimate gives temporal control but not spatial \(W_2\)-compactness. To obtain a curve of maximal slope one also needs a topology with compact sublevels, lower semicontinuity of the slope, and a chain-rule property (a strong upper gradient). General minimizing-movement theory makes these hypotheses precise; see <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapters 2–4 and 11</a>. Ordinary geodesic convexity in a general metric space should not be silently substituted for all of them.</p>
-    <div class="math-statement theorem"><p><span class="statement-title">A concrete evolution theorem.</span> Let \(V\in C^2(\mathbb R^d)\) satisfy \(\lambda I\le D^2V\le L I\), with \(0&lt;\lambda\le L&lt;\infty\), and define
+    <div class="math-statement theorem"><p><span class="statement-title">A concrete evolution theorem (external result).</span> Let \(V\in C^2(\mathbb R^d)\) satisfy \(\lambda I\le D^2V\le L I\), with \(0&lt;\lambda\le L&lt;\infty\), and define
     \[
     \mathcal F(\rho\,\mathrm{d}x)=\int\rho\log\rho\,\mathrm{d}x+\int V\rho\,\mathrm{d}x,
     \]
     extended by \(+\infty\) off densities. For \(\mu_0\in\mathcal P_2\) of finite energy, JKO interpolants converge locally uniformly in \(W_2\) as \(\tau\downarrow0\) to the unique \(EVI_\lambda\) flow. Its densities solve \(\partial_t\rho=\Delta\rho+\nabla\cdot(\rho\nabla V)\) weakly.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof outline.</span> Write the energy as relative entropy with respect to the confining Gibbs law, up to a constant. Entropy estimates and moment estimates give compactness in a weak topology. The discrete Euler equation identifies the limiting diffusion; generalized-geodesic convexity yields the EVI and uniqueness. Additional moment estimates justify convergence in \(W_2\). These are substantive steps of the minimizing-movement theorem, rather than consequences of the action bound alone; the cited gradient-flow reference proves them.</p></div>
+    <div class="math-statement remark"><p><span class="statement-title">Theorem used and hypotheses.</span> This is the JKO/EVI convergence theorem for entropy plus a uniformly convex potential, from <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapter 11</a>. The Hessian bounds give quadratic confinement, a globally Lipschitz drift, and \(\lambda\)-convexity along generalized geodesics. Writing \(\mathcal F=\operatorname{KL}(\cdot\|Z^{-1}e^{-V}\mathrm{d}x)-\log Z\) gives properness and the needed lower bound. Finite initial energy and second moment are included in the statement. The theorem supplies convergence and identification of the weak PDE; the discrete action estimate by itself supplies neither. The following solvable case proves a continuous-time limit directly.</p></div>
+<div class="math-statement proposition"><p><span class="statement-title">A complete JKO limit for Gaussian heat flow.</span> For entropy alone, starting from \(N(0,s_0^2I_d)\), \(s_0>0\), each step is \(N(0,s_k^2I_d)\), where
+\[
+s_{k+1}=\frac{s_k+\sqrt{s_k^2+4\tau}}2.
+\]
+The interpolants converge uniformly in \(W_2\) on every bounded time interval to \(N(0,(s_0^2+2t)I_d)\), the heat flow.</p></div>
+<div class="math-statement proof"><p><span class="statement-title">Proof.</span> For any competitor of mean \(m\) and \(d\sigma^2=\int|x-m|^2\,\mathrm{d}\mu\), nonnegativity of entropy relative to \(N(m,\sigma^2I_d)\) gives
+\[
+\operatorname{Ent}(\mu)\ge-\frac d2\log(2\pi e\sigma^2).
+\]
+For every coupling with \(Y\sim N(0,s_k^2I_d)\), Cauchy–Schwarz gives
+\(\mathbb E[(X-m)\cdot Y]\le d\sigma s_k\), so
+\[
+W_2^2(\mu,N(0,s_k^2I_d))\ge |m|^2+d(\sigma-s_k)^2.
+\]
+Both bounds are attained by \(N(0,\sigma^2I_d)\). Measures without densities have infinite entropy; the bounds also exclude a minimizing sequence with \(\sigma\to0\) or \(\sigma\to\infty\). Thus minimization over all \(\mathcal P_2\) reduces to \(m=0\) and the strictly convex scalar function \(-d\log\sigma+d(\sigma-s_k)^2/(2\tau)\). Its derivative vanishes exactly when \(\sigma-s_k=\tau/\sigma\), giving the recurrence.</p>
+<p>It follows that \(s_{k+1}\ge s_0\) and
+\[
+s_{k+1}^2-s_k^2=2\tau-\frac{\tau^2}{s_{k+1}^2},\qquad
+0\le s_0^2+2k\tau-s_k^2\le\frac{k\tau^2}{s_0^2}.
+\]
+If \(t\in((k-1)\tau,k\tau]\subset[0,T+\tau]\), then
+\[
+|s_k^2-(s_0^2+2t)|\le\frac{(T+\tau)\tau}{s_0^2}+2\tau.
+\]
+The Gaussian distance is \(\sqrt d\,|s_k-\sqrt{s_0^2+2t}|\), at most \(\sqrt d/(2s_0)\) times this bound. It tends uniformly to zero. Finally, the density with variance \(a(t)=s_0^2+2t\) satisfies
+\(\partial_t\rho=(-d/a+|x|^2/a^2)\rho=\Delta\rho\), by direct differentiation.</p></div>
 
     <h3>Evolution variational inequalities</h3>
 
@@ -138,13 +182,20 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
         In particular, the flow is unique and depends continuously on its initial law.</p>
     </div>
 
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Insert \(\nu_t\) as comparison in the EVI for \(\mu_t\), and \(\mu_t\) in the EVI for \(\nu_t\). The energy differences cancel. A standard doubling-of-time argument yields
-        \[
-        \frac{\mathrm{d}}{\mathrm{d}t}W_2^2(\mu_t,\nu_t)+2\lambda W_2^2(\mu_t,\nu_t)\le0.
-        \]
-        Grönwall's inequality gives the result.</p>
-    </div>
+    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Work on \([a,b]\subset(0,\infty)\), where the EVI curves are locally absolutely continuous and their energies locally integrable. Set \(D(t,s)=\tfrac12W_2^2(\mu_t,\nu_s)\). For a fixed comparison time, each EVI holds almost everywhere in the other time. Fubini and the two EVI inequalities give, for almost every \((t,s)\),
+\[
+\partial_tD(t,s)+\lambda D(t,s)\le\mathcal F(\nu_s)-\mathcal F(\mu_t),\qquad
+\partial_sD(t,s)+\lambda D(t,s)\le\mathcal F(\mu_t)-\mathcal F(\nu_s).
+\]
+Distances between locally absolutely continuous curves have integrable separate derivatives on compact rectangles. Adding the inequalities is therefore valid also in distributions:
+\[
+(\partial_t+\partial_s)D+2\lambda D\le0.
+\]
+Use coordinates \(t=r+q\), \(s=r-q\). For almost every \(q\), the function \(r\mapsto D(r+q,r-q)\) is absolutely continuous and obeys \(\partial_rD\le-2\lambda D\). Integrating after multiplication by \(e^{2\lambda r}\) yields
+\[
+D(b+q,b-q)\le e^{-2\lambda(b-a)}D(a+q,a-q)
+\]
+whenever the points remain in the time domain. Choose admissible \(q_j\to0\); continuity of the curves gives the same inequality on the diagonal. Let \(a\downarrow0\), use continuity at the initial laws, and take square roots. This justifies using moving comparisons without assuming their exceptional time sets agree on the diagonal.</p></div>
 
 <p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapters 2–4 and 11</a>, for minimizing-movement convergence and EVI theory; <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 8</a>, for the PDE route.</p>
 
