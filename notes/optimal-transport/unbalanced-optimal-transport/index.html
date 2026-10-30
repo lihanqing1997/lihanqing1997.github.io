@@ -53,18 +53,57 @@ note_next_url: "/notes/optimal-transport/multi-marginal-and-martingale-transport
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof in the finite positive-weight case; general theorem input.</span> The compact-space version is the entropy-transport duality theorem of <a href="https://arxiv.org/abs/1508.07941">Liero–Mielke–Savaré</a>. Here is a full proof for finite marginals \(a_i,b_j>0\), which also derives the potentials without an unjustified interchange of infimum and supremum.</p>
-<p>For a nonnegative matrix \(P\), write \(r=P\mathbf1\), \(s=P^\top\mathbf1\), and let \(J(P)\) be the primal objective. A minimizer exists: Jensen gives \(\operatorname{KL}(r\|a)\ge M\log(M/A)-M+A\), where \(M=\sum_{ij}P_{ij}\), \(A=\sum_i a_i\); together with nonnegative cost this makes sublevels bounded, and continuity gives attainment. At a minimizer every \(r_i,s_j\) is positive. Otherwise adding a small entry to an empty row or column decreases the entropy by a leading negative multiple of \(h|\log h|\), dominating all finite linear changes; if \(P=0\), the same perturbation fills both an empty row and column and again decreases the objective.</p>
-<p>The partial derivatives now exist, and orthant optimality gives
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof in the finite positive-weight case.</span> The compact-space theorem is the external entropy-transport duality result of <a href="https://arxiv.org/abs/1508.07941">Liero–Mielke–Savaré</a>. Here let \(a_i,b_j>0\), \(c_{ij}\ge0\), and \(\tau_1,\tau_2>0\). For \(P\ge0\), write \(r_i=\sum_jP_{ij}\), \(s_j=\sum_iP_{ij}\), and
 \[
-c_{ij}+\tau_1\log(r_i/a_i)+\tau_2\log(s_j/b_j)\ge0,
-\]
-with equality whenever \(P_{ij}>0\). Define \(\varphi_i=-\tau_1\log(r_i/a_i)\), \(\psi_j=-\tau_2\log(s_j/b_j)\). They satisfy \(\varphi_i+\psi_j\le c_{ij}\), and equality on transported edges gives \(\sum c_{ij}P_{ij}=\sum_i r_i\varphi_i+\sum_j s_j\psi_j\). Substitution into \(J\) cancels the logarithmic terms:
+J(P)=\sum_{ij}c_{ij}P_{ij}+\tau_1\sum_i\left[r_i\log(r_i/a_i)-r_i+a_i\right]
++\tau_2\sum_j\left[s_j\log(s_j/b_j)-s_j+b_j\right].
+\]</p>
+<p><strong>Existence.</strong> Put \(M=\sum_{ij}P_{ij}\), \(A=\sum_ia_i\), and \(h(t)=t\log t-t+1\). Jensen with probability weights \(a_i/A\) gives
 \[
-J(P)=\tau_1\sum_i(a_i-r_i)+\tau_2\sum_j(b_j-s_j)
-=-\tau_1\sum_i a_i(e^{-\varphi_i/\tau_1}-1)-\tau_2\sum_j b_j(e^{-\psi_j/\tau_2}-1).
+\sum_i a_ih(r_i/a_i)
+\ge A h\left(\sum_i\frac{a_i}{A}\frac{r_i}{a_i}\right)
+=A h(M/A)=M\log(M/A)-M+A\longrightarrow\infty
 \]
-Finally the scalar Fenchel inequality \(\tau\operatorname{KL}(r\|a)\ge-\varphi r-\tau a(e^{-\varphi/\tau}-1)\), summed over marginals and combined with \(c\ge\varphi+\psi\), proves weak duality for every competitor. The constructed pair attains equality, proving finite-dimensional strong duality.</p></div>
+as \(M\to\infty\). All other objective terms are nonnegative, so sublevels have bounded \(M\), hence bounded entries \(0\le P_{ij}\le M\). The extension \(0\log0=0\) makes \(J\) continuous on the closed orthant. Its sublevels are compact, and the finite competitor \(P=0\) gives attainment.</p>
+<p><strong>Positive marginal masses.</strong> Suppose a minimizer has \(r_i=0\), and perturb by \(P_h=P+hE_{ij}\), \(h>0\). The row entropy increment divided by \(h\) is
+\[
+\frac{[h\log(h/a_i)-h+a_i]-a_i}{h}=\log(h/a_i)-1\to-\infty.
+\]
+If \(s_j>0\), the column increment divided by \(h\) tends to \(\log(s_j/b_j)\); if \(s_j=0\), it is \(\log(h/b_j)-1\to-\infty\). The cost increment divided by \(h\) is the finite \(c_{ij}\). Thus \((J(P_h)-J(P))/h\to-\infty\), contradicting minimality. The same argument for an empty column proves all \(r_i,s_j>0\).</p>
+<p><strong>Potentials and contact.</strong> Differentiating at this minimizer gives
+\[
+D_{ij}=\partial_{P_{ij}}J=c_{ij}+\tau_1\log(r_i/a_i)+\tau_2\log(s_j/b_j).
+\]
+The feasible perturbation \(P+hE_{ij}\) implies \(D_{ij}\ge0\); when \(P_{ij}>0\), both signs of small \(h\) are feasible, hence \(D_{ij}=0\). Define
+\[
+\varphi_i=-\tau_1\log(r_i/a_i),\qquad\psi_j=-\tau_2\log(s_j/b_j).
+\]
+Then \(c_{ij}-\varphi_i-\psi_j=D_{ij}\ge0\) and \(P_{ij}D_{ij}=0\), so
+\[
+\sum_{ij}c_{ij}P_{ij}=\sum_{ij}(\varphi_i+\psi_j)P_{ij}
+=\sum_i\varphi_ir_i+\sum_j\psi_js_j.
+\]
+Substitution cancels the logarithmic terms and gives
+\[
+\begin{aligned}
+J(P)&amp;=\tau_1\sum_i(a_i-r_i)+\tau_2\sum_j(b_j-s_j)\\
+&amp;=-\tau_1\sum_i a_i(e^{-\varphi_i/\tau_1}-1)
+-\tau_2\sum_j b_j(e^{-\psi_j/\tau_2}-1).
+\end{aligned}
+\]</p>
+<p><strong>Weak duality for every competitor.</strong> Scalar Fenchel inequality for \(h\) gives, for \(r\ge0\), \(a>0\),
+\[
+\tau a h(r/a)+\varphi r+\tau a(e^{-\varphi/\tau}-1)\ge0.
+\]
+Sum this over the two marginals of any \(Q\ge0\), with any feasible \(\varphi_i+\psi_j\le c_{ij}\). Then
+\[
+J(Q)\ge\sum_{ij}(c_{ij}-\varphi_i-\psi_j)Q_{ij}
+-\tau_1\sum_i a_i(e^{-\varphi_i/\tau_1}-1)-\tau_2\sum_j b_j(e^{-\psi_j/\tau_2}-1)
+\ge\text{dual value}.
+\]
+The constructed pair attains equality at the minimizing \(P\), proving finite-dimensional strong duality.</p>
+</div>
 
     <p>Unlike balanced dual potentials, \(\varphi,\psi\) cannot be shifted by opposite constants without changing the objective: the total transported mass is itself an optimized quantity.</p>
 
@@ -105,16 +144,32 @@ Finally the scalar Fenchel inequality \(\tau\operatorname{KL}(r\|a)\ge-\varphi r
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof, including zero endpoints.</span> For an admissible absolutely continuous mass path, \(m'=\alpha m\) and \(\int\alpha^2m&lt;\infty\). To avoid dividing by zero, set \(r_\eta=\sqrt{m+\eta}\), \(\eta>0\). Then
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof, including zero endpoints.</span> For an admissible absolutely continuous mass path, \(m'=\alpha m\) and \(\int\alpha^2m&lt;\infty\). To avoid dividing by zero, set \(r_\eta=\sqrt{m+\eta}\), \(\eta>0\). Then
 \[
 |r_\eta'|^2=\frac{\alpha^2m^2}{4(m+\eta)}\le\frac14\alpha^2m.
 \]
-The functions \(r_\eta\) converge uniformly to \(r=\sqrt m\), since their difference is at most \(\sqrt\eta\). Weak compactness in \(H^1(0,1)\) and lower semicontinuity give \(r\in H^1\) and \(4\int|r'|^2\le\int\alpha^2m\). Cauchy–Schwarz therefore yields
+The functions \(r_\eta\) converge uniformly to \(r=\sqrt m\), since their difference is at most \(\sqrt\eta\). Because \(m\) is absolutely continuous, it is bounded on \([0,1]\). For \(0&lt;\eta\le1\),
+\[
+\|r_\eta\|_{L^2}^2\le\|m\|_\infty+1,\qquad
+\|r_\eta'\|_{L^2}^2\le\tfrac14\int_0^1\alpha^2m.
+\]
+Thus a sequence \(\eta_k\downarrow0\) has a weakly convergent \(H^1\) subsequence. Uniform convergence \(r_{\eta_k}\to\sqrt m\) identifies its weak limit as \(r=\sqrt m\). Lower semicontinuity gives
+\[
+4\int_0^1|r'|^2\le4\liminf_k\int_0^1|r_{\eta_k}'|^2\le\int_0^1\alpha^2m.
+\] Cauchy–Schwarz therefore yields
 \[
 \delta^2\int_0^1\alpha^2m\,\mathrm{d}t\ge4\delta^2\int_0^1|r'|^2\,\mathrm{d}t
 \ge4\delta^2|r(1)-r(0)|^2.
 \]
-For attainment, choose \(r(t)=(1-t)\sqrt{m_0}+t\sqrt{m_1}\), \(m=r^2\), and \(\alpha=2r'/r\) wherever \(r>0\). Put \(\alpha=0\) on the zero set; apart from irrelevant endpoints, that set is either empty or the whole interval. Then \(m'=\alpha m\) almost everywhere and \(\alpha^2m=4|r'|^2\) almost everywhere, giving equality even when one or both endpoint masses vanish.</p></div>
+For attainment, choose \(r(t)=(1-t)\sqrt{m_0}+t\sqrt{m_1}\), \(m=r^2\), and \(\alpha=2r'/r\) wherever \(r>0\). Put \(\alpha=0\) on the zero set; apart from irrelevant endpoints, that set is either empty or the whole interval. Then \(m'=\alpha m\) almost everywhere and \(\alpha^2m=4|r'|^2\) almost everywhere, and the achieved action is
+\[
+\delta^2\int_0^1\alpha^2m\,\mathrm{d}t
+=4\delta^2\int_0^1|\sqrt{m_1}-\sqrt{m_0}|^2\,\mathrm{d}t
+=4\delta^2(\sqrt{m_1}-\sqrt{m_0})^2.
+\]
+This remains valid when either endpoint is zero; the definition of \(\alpha\) at a time endpoint does not affect the equation or integral.</p>
+</div>
 
     <h3>Cone geometry and Dirac measures</h3>
 

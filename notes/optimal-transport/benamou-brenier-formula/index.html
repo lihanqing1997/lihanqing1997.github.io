@@ -43,7 +43,7 @@ note_next_url: "/notes/optimal-transport/displacement-convexity/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For any admissible pair, <a href="{{ '/notes/optimal-transport/continuity-equation/' | relative_url }}">Absolutely continuous curves and the continuity equation</a> gives
+<p><span class="statement-title">Proof.</span> For any admissible pair, <a href="{{ '/notes/optimal-transport/continuity-equation/' | relative_url }}">Absolutely continuous curves and the continuity equation</a> gives
         \[
         W_2(\mu_0,\mu_1)
         \le\int_0^1|\dot\mu_t|\,\mathrm{d}t
@@ -60,8 +60,13 @@ note_next_url: "/notes/optimal-transport/displacement-convexity/"
         \[
         \|v_t\|_{L^2(\mu_t)}=|\dot\mu_t|=W_2(\mu_0,\mu_1)
         \]
-        for almost every \(t\). Its action is therefore exactly \(W_2^2(\mu_0,\mu_1)\), attaining the lower bound.</p>
-    </div>
+        for almost every \(t\). Consequently
+\[
+\inf\mathcal A\le\mathcal A(\mu,v)
+=\int_0^1W_2^2(\mu_0,\mu_1)\,\mathrm{d}t=W_2^2(\mu_0,\mu_1)\le\inf\mathcal A.
+\]
+This proves equality and attainment.</p>
+</div>
 
     <h3>Convex momentum formulation</h3>
     <p>If \(\mu_t=\rho_t\,\mathrm{d}x\), introduce momentum \(m_t=\rho_tv_t\). The constraints become linear:
@@ -75,8 +80,20 @@ note_next_url: "/notes/optimal-transport/displacement-convexity/"
     with the lower-semicontinuous convention \(0/0=0\) and \(|m|^2/0=+\infty\) for \(m\ne0\). The perspective function \((\rho,m)\mapsto|m|^2/\rho\) is convex, so the dynamic transport problem is a convex optimization problem in \((\rho,m)\).</p>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Convexity.</span> Since \(q(v)=|v|^2\) is convex, its perspective \(\rho q(m/\rho)=|m|^2/\rho\) is convex for \(\rho>0\). The lower-semicontinuous extension preserves convexity at \(\rho=0\).</p>
-    </div>
+<p><span class="statement-title">Convexity.</span> Define \(f(\rho,m)=|m|^2/\rho\) for \(\rho>0\), \(f(0,0)=0\), and \(f(0,m)=+\infty\) if \(m\ne0\). An explicit representation is
+\[
+f(\rho,m)=\sup_{z\in\mathbb R^d}\{2z\cdot m-\rho|z|^2\},\qquad\rho\ge0.
+\]
+For \(\rho>0\), completing the square proves it:
+\[
+2z\cdot m-\rho|z|^2=\frac{|m|^2}{\rho}-\rho\left|z-\frac m\rho\right|^2.
+\]
+For \(\rho=0\), the supremum is zero when \(m=0\), and tends to infinity along \(z=tm\) when \(m\ne0\). Each function inside the supremum is continuous affine in \((\rho,m)\); therefore the supremum is convex and lower semicontinuous, including at zero density. Explicitly, for \(0\le t\le1\),
+\[
+f((1-t)a+tb)\le(1-t)f(a)+tf(b),
+\]
+by taking the supremum of the affine identity. Integrating this pointwise inequality proves convexity of the action in \((\rho,m)\).</p>
+</div>
 
     <h3>Equations for a smooth geodesic</h3>
     <p>A minimal velocity belongs to the tangent space and is therefore a gradient, \(v_t=\nabla\phi_t\), under smoothness assumptions. First variations of the action subject to the continuity equation give
@@ -93,17 +110,33 @@ note_next_url: "/notes/optimal-transport/displacement-convexity/"
     \]
     this is pressureless Euler flow: particles keep constant velocity along straight characteristics.</p>
 
-    <div class="math-statement proof"><p><span class="statement-title">Smooth variational derivation.</span> Take smooth positive \(\rho\) and smooth fields on a flat torus (or impose compactly supported variations and the integrability needed on \(\mathbb R^d\)). Fix the endpoint densities. The half-action Lagrangian, after integration by parts in time and space, is
+    <div class="math-statement proof">
+<p><span class="statement-title">Smooth variational derivation.</span> Take smooth positive \(\rho\) and smooth fields on a flat torus (or impose compactly supported variations and the integrability needed on \(\mathbb R^d\)). Fix the endpoint densities. The half-action Lagrangian, after integration by parts in time and space, is
 \[
 \mathscr L(\rho,v,\phi)=\int_0^1\int\rho\left(\tfrac12|v|^2-\partial_t\phi-v\cdot\nabla\phi\right)\,\mathrm{d}x\,\mathrm{d}t
 +\left[\int\phi\rho\,\mathrm{d}x\right]_0^1.
 \]
-The endpoint term has zero variation. For arbitrary smooth variations \(w\) of \(v\), stationarity gives \(\int\rho(v-\nabla\phi)\cdot w=0\), hence \(v=\nabla\phi\). Varying \(\rho\) by smooth \(\sigma\) with \(\int\sigma_t=0\) gives
+The endpoint term has zero variation. For \(v_h=v+hw\), differentiation gives
+\[
+\left.\frac{\mathrm{d}}{\mathrm{d}h}\mathscr L(\rho,v_h,\phi)\right|_{h=0}
+=\int_0^1\int\rho(v-\nabla\phi)\cdot w\,\mathrm{d}x\,\mathrm{d}t=0.
+\]
+Since \(w\) is arbitrary and \(\rho>0\), the fundamental lemma of variations yields \(v=\nabla\phi\). Varying \(\rho\) by smooth \(\sigma\) with \(\int\sigma_t=0\) gives
 \[
 \int\sigma\left(-\partial_t\phi-\tfrac12|\nabla\phi|^2\right)=0.
 \]
-The bracket is therefore a function of time alone. Adding a function of time to \(\phi\) removes it without changing \(v\), yielding Hamilton–Jacobi. Finally, componentwise differentiation gives
-\(\nabla(|\nabla\phi|^2/2)=D^2\phi\,\nabla\phi=(v\cdot\nabla)v\), hence Burgers. This is a smooth stationarity calculation; the preceding dynamic transport theorem supplies the rigorous measure-valued minimization statement.</p></div>
+The bracket is therefore a function of time alone. Write \(-\partial_t\phi-\tfrac12|\nabla\phi|^2=a(t)\). Replacing \(\phi\) by \(\widetilde\phi=\phi+\int_0^t a(s)\,\mathrm{d}s\) preserves \(\nabla\widetilde\phi=v\) and gives
+\[
+\partial_t\widetilde\phi+\tfrac12|\nabla\widetilde\phi|^2
+=\partial_t\phi+a(t)+\tfrac12|\nabla\phi|^2=0.
+\] For each coordinate \(i\), commutation of smooth second derivatives gives
+\[
+\partial_i\left(\tfrac12|\nabla\widetilde\phi|^2\right)
+=\sum_j(\partial_j\widetilde\phi)(\partial_i\partial_j\widetilde\phi)
+=\sum_jv_j\partial_jv_i.
+\]
+Taking a spatial gradient of Hamilton–Jacobi therefore gives \(\partial_tv+(v\cdot\nabla)v=0\). This is a smooth stationarity calculation; the preceding dynamic transport theorem supplies the rigorous measure-valued minimization statement.</p>
+</div>
 
     <h3>Otto's tangent metric</h3>
 
@@ -143,8 +176,18 @@ The bracket is therefore a function of time alone. Adding a function of time to 
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Substitute \(\partial_t\rho=-\nabla\cdot(\rho v)\) into the first-variation formula and integrate by parts. The resulting \(L^2(\rho)\) pairing identifies the Riemannian gradient.</p>
-    </div>
+<p><span class="statement-title">Proof in the smooth setting.</span> Put \(f_t=\delta\mathcal F/\delta\rho(\rho_t)\). Assume the chain rule is valid and work on a torus, or assume sufficient integrability and vanishing boundary flux on \(\mathbb R^d\). The continuity equation and integration by parts give
+\[
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}t}\mathcal F(\rho_t)
+&amp;=\int f_t\partial_t\rho_t\,\mathrm{d}x\\
+&amp;=-\int f_t\nabla\cdot(\rho_tv_t)\,\mathrm{d}x\\
+&amp;=\int\nabla f_t\cdot v_t\,\rho_t\,\mathrm{d}x
+=\langle\nabla f_t,v_t\rangle_{L^2(\rho_t)}.
+\end{aligned}
+\]
+When \(\nabla f_t\) belongs to the Wasserstein tangent space, it is the vector representing this directional derivative in that Hilbert space. This is the stated formal gradient; for rough densities the chain rule and tangent-space membership require separate justification.</p>
+</div>
 
     <h3>Examples of the action</h3>
 

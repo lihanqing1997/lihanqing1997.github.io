@@ -45,14 +45,32 @@ note_next_url: "/notes/optimal-transport/benamou-brenier-formula/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(\phi\in C_c^\infty\), the pathwise chain rule gives \(\phi(X_t)-\phi(X_s)=\int_s^t\nabla\phi(X_r)\cdot v_r(X_r)\,\mathrm{d}r\). Its integrand is bounded in absolute value by \(\|\nabla\phi\|_\infty a(r)\), an integrable function independent of the particle. Fubini therefore gives absolute continuity of the integral, and for almost every \(t\),
-        \[
-        \frac{\mathrm{d}}{\mathrm{d}t}\int\phi\,\mathrm{d}\mu_t
-        =\frac{\mathrm{d}}{\mathrm{d}t}\int\phi(X_t(x))\,\mathrm{d}\mu_0(x)
-        =\int\nabla\phi(X_t(x))\cdot v_t(X_t(x))\,\mathrm{d}\mu_0(x).
-        \]
-        Pushing forward the last integral gives \(\int\nabla\phi\cdot v_t\,\mathrm{d}\mu_t\), which is the weak equation.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Fix \(\phi\in C_c^\infty(\mathbb R^d)\). The chain rule along each particle gives
+\[
+\phi(X_t(x))-\phi(X_s(x))
+=\int_s^t\nabla\phi(X_r(x))\cdot v_r(X_r(x))\,\mathrm{d}r.
+\]
+The integrand satisfies
+\[
+|\nabla\phi(X_r(x))\cdot v_r(X_r(x))|
+\le\|\nabla\phi\|_\infty a(r),
+\qquad\int_s^t\int\|\nabla\phi\|_\infty a(r)\,\mathrm{d}\mu_0(x)\,\mathrm{d}r&lt;\infty.
+\]
+Thus Fubini and the pushforward identity yield
+\[
+\begin{aligned}
+\int\phi\,\mathrm{d}\mu_t-\int\phi\,\mathrm{d}\mu_s
+&amp;=\int\int_s^t\nabla\phi(X_r(x))\cdot v_r(X_r(x))\,\mathrm{d}r\,\mathrm{d}\mu_0(x)\\
+&amp;=\int_s^t\int\nabla\phi(X_r(x))\cdot v_r(X_r(x))\,\mathrm{d}\mu_0(x)\,\mathrm{d}r\\
+&amp;=\int_s^t\int\nabla\phi(y)\cdot v_r(y)\,\mathrm{d}\mu_r(y)\,\mathrm{d}r.
+\end{aligned}
+\]
+The right integrand lies in \(L^1(s,t)\), so the left scalar function is absolutely continuous, with derivative \(\int\nabla\phi\cdot v_t\,\mathrm{d}\mu_t\) almost everywhere. For \(\eta\in C_c^\infty(0,T)\), integration by parts gives
+\[
+\int_0^T\int[\eta'(t)\phi(x)+\eta(t)\nabla\phi(x)\cdot v_t(x)]\,\mathrm{d}\mu_t(x)\,\mathrm{d}t=0.
+\]
+Finite sums of these separated tests are dense in the compactly supported \(C^1\) test space. The integrable bound on \(v\) permits passage to the limit, giving the distributional continuity equation.</p>
+</div>
 
     <h3>Metric absolute continuity</h3>
 
@@ -81,13 +99,28 @@ with equality; it minimizes the norm among all representing fields.</p></div>
 \[
 |f_\phi(t)-f_\phi(s)|\le\operatorname{Lip}(\phi)W_2(\mu_t,\mu_s).
 \]
-At times where \(f_\phi'\) and the metric derivative exist, use an optimal coupling \(\pi_{t,h}\) of \(\mu_t,\mu_{t+h}\). Taylor's theorem and Cauchy–Schwarz yield
+At times where \(f_\phi'\) and the metric derivative exist, use an optimal coupling \(\pi_{t,h}\) of \(\mu_t,\mu_{t+h}\). Taylor's theorem gives
+\[
+\phi(y)-\phi(x)=\nabla\phi(x)\cdot(y-x)+R_\phi(x,y),
+\qquad |R_\phi(x,y)|\le\tfrac12\|D^2\phi\|_\infty|y-x|^2.
+\]
+Integrating against \(\pi_{t,h}\), its marginals give the increment of \(f_\phi\), while
+\[
+\left|\int\nabla\phi(x)\cdot(y-x)\,\mathrm{d}\pi_{t,h}\right|
+\le\left(\int|\nabla\phi|^2\,\mathrm{d}\mu_t\right)^{1/2}
+\left(\int|y-x|^2\,\mathrm{d}\pi_{t,h}\right)^{1/2}.
+\]
+Dividing by \(|h|\) yields
 \[
 \left|\frac{f_\phi(t+h)-f_\phi(t)}h\right|
 \le\|\nabla\phi\|_{L^2(\mu_t)}\frac{W_2(\mu_t,\mu_{t+h})}{|h|}
 +\frac{\|D^2\phi\|_\infty}{2|h|}W_2(\mu_t,\mu_{t+h})^2.
 \]
-The last term tends to zero, because \(W_2/|h|\to m(t)&lt;\infty\). Thus
+The remainder tends to zero because
+\[
+\frac{W_2(\mu_t,\mu_{t+h})^2}{|h|}
+=|h|\left(\frac{W_2(\mu_t,\mu_{t+h})}{|h|}\right)^2\longrightarrow0.
+\] Thus
 \[
 |f_\phi'(t)|\le m(t)\|\nabla\phi\|_{L^2(\mu_t)}. \tag{1}
 \]
@@ -108,7 +141,13 @@ In particular, \(L\) is independent of how \(\xi\) is represented. Let \(H\) be 
 =L(\mathbf1_Av)
 \le\|\mathbf1_Am\|_{L^2(0,T)}\|\mathbf1_Av\|_{L^2(q)}.
 \]
-Therefore \(\int_A\|v_t\|_{L^2(\mu_t)}^2\,\mathrm{d}t\le\int_A m(t)^2\,\mathrm{d}t\) for every \(A\), so \(\|v_t\|_{L^2(\mu_t)}\le m(t)\) almost everywhere. Using \(\xi=\eta(t)\nabla\phi\) and integrating \(\eta f_\phi'\) by parts proves the weak continuity equation. Density extends the identity to all compactly supported smooth tests; finite sums of separated time and space tests are dense in the corresponding \(C^1\)-norm.</p>
+Therefore \(\int_A\|v_t\|_{L^2(\mu_t)}^2\,\mathrm{d}t\le\int_A m(t)^2\,\mathrm{d}t\) for every \(A\), so \(\|v_t\|_{L^2(\mu_t)}\le m(t)\) almost everywhere. For \(\xi=\eta(t)\nabla\phi\), \(\eta\in C_c^\infty(0,T)\), the Riesz identity and time integration by parts give
+\[
+\int_0^T\int\eta(t)\nabla\phi(x)\cdot v_t(x)\,\mathrm{d}\mu_t(x)\,\mathrm{d}t
+=\int_0^T\eta(t)f_\phi'(t)\,\mathrm{d}t
+=-\int_0^T\eta'(t)f_\phi(t)\,\mathrm{d}t.
+\]
+Equivalently, \(\int(\partial_t(\eta\phi)+\nabla_x(\eta\phi)\cdot v)\,\mathrm{d}q=0\), the weak continuity equation for separated tests. Density extends the identity to all compactly supported smooth tests; finite sums of separated time and space tests are dense in the corresponding \(C^1\)-norm.</p>
 <p><strong>2. Recover metric speed from a field.</strong> Apply the superposition theorem stated below. If \(e_t(\gamma)=\gamma(t)\), then \((e_s,e_t)_\#\boldsymbol\eta\) is a coupling. Minkowski's integral inequality gives
 \[
 \begin{aligned}
@@ -118,12 +157,27 @@ W_2(\mu_s,\mu_t)
 &amp;=\int_s^t\|v_r\|_{L^2(\mu_r)}\,\mathrm{d}r.
 \end{aligned}
 \]
-Lebesgue differentiation yields \(|\dot\mu_t|\le\|v_t\|_{L^2(\mu_t)}\). Combined with Step 1 this is equality for the constructed field.</p>
-<p><strong>3. Minimality and uniqueness.</strong> An approximating sequence in \(H\) has a subsequence converging in \(L^2(\mu_t)\) for almost every \(t\): choose a subsequence with summable squared \(L^2(q)\) errors and use Tonelli. Thus \(v_t\in T_{\mu_t}\mathcal P_2\). If \(w\) is any other square-integrable representing field, testing the difference equation with \(\eta(t)\phi(x)\) shows \(w_t-v_t\) is orthogonal to every test gradient, hence to the tangent space, for almost every \(t\). Consequently
+Writing \(g(r)=\|v_r\|_{L^2(\mu_r)}\in L^2(0,T)\), the bound proves \(\mu\in AC^2\). At Lebesgue points of \(g\) where the metric derivative exists,
+\[
+|\dot\mu_t|=\lim_{h\to0}\frac{W_2(\mu_{t+h},\mu_t)}{|h|}
+\le\lim_{h\to0}\frac1{|h|}\int_{\min(t,t+h)}^{\max(t,t+h)}g(r)\,\mathrm{d}r=g(t).
+\] Combined with Step 1 this is equality for the constructed field.</p>
+<p><strong>3. Minimality and uniqueness.</strong> An approximating sequence in \(H\) has a subsequence converging in \(L^2(\mu_t)\) for almost every \(t\): choose \(\xi_n\to v\) with \(\sum_n\|\xi_n-v\|_{L^2(q)}^2&lt;\infty\). Tonelli gives
+\[
+\int_0^T\sum_n\|\xi_n(t,\cdot)-v_t\|_{L^2(\mu_t)}^2\,\mathrm{d}t
+=\sum_n\|\xi_n-v\|_{L^2(q)}^2&lt;\infty,
+\]
+so the summands tend to zero for almost every \(t\). Thus \(v_t\in T_{\mu_t}\mathcal P_2\). If \(w\) is any other square-integrable representing field, testing the difference equation with \(\eta(t)\phi(x)\) shows \(w_t-v_t\) is orthogonal to every test gradient, hence to the tangent space, for almost every \(t\). More explicitly, the difference equation gives
+\[
+\int_0^T\eta(t)\left[\int\nabla\phi\cdot(w_t-v_t)\,\mathrm{d}\mu_t\right]\,\mathrm{d}t=0
+\quad(\forall\eta\in C_c^\infty(0,T)).
+\]
+The bracket is integrable, hence zero almost everywhere. Use a countable dense test family to obtain one common full-measure set, and then extend by \(L^2(\mu_t)\)-continuity to the tangent space. Therefore \(\langle v_t,w_t-v_t\rangle_{L^2(\mu_t)}=0\), and expansion of the square gives
 \[
 \|w_t\|_{L^2(\mu_t)}^2=\|v_t\|_{L^2(\mu_t)}^2+\|w_t-v_t\|_{L^2(\mu_t)}^2.
 \]
-This proves both assertions.</p></div>
+This proves both assertions.</p>
+</div>
 <p>The general \(1&lt;p&lt;\infty\) characterization replaces squared norms by \(p\)-th powers. We use the proved quadratic version throughout the dynamic chapters; the general result is <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Theorem 8.3.1</a>.</p>
 <div class="math-statement remark"><p><span class="statement-title">Where a discrete velocity lives.</span> A displacement \((y-x)/h\) is defined on \(\pi_{t,h}\), not on \(\mu_t\). Disintegrating \(\pi_{t,h}=\mu_t(\mathrm{d}x)\pi_{t,h,x}(\mathrm{d}y)\) gives the actual field
 \[

@@ -47,8 +47,64 @@ note_next_url: "/notes/optimal-transport/monge-problem/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The identity follows from the definition when \(g=\mathbf 1_B\). Linearity gives it for nonnegative simple functions. If \(g_n\uparrow g\) are simple, the monotone convergence theorem on both sides gives the nonnegative case. Applying the result to the positive and negative parts gives the integrable case.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(\nu=T_\#\mu\). We extend the defining identity from sets to functions in four steps.</p>
+<p><strong>1. Indicators.</strong> For \(B\in\mathcal B(Y)\), \(\mathbf1_B(T(x))=\mathbf1_{T^{-1}(B)}(x)\). Therefore
+\[
+\begin{aligned}
+\int_Y\mathbf1_B\,\mathrm{d}\nu
+&amp;=\nu(B)=\mu(T^{-1}(B))\\
+&amp;=\int_X\mathbf1_{T^{-1}(B)}\,\mathrm{d}\mu
+=\int_X\mathbf1_B\circ T\,\mathrm{d}\mu.
+\end{aligned}
+\]</p>
+<p><strong>2. Nonnegative simple functions.</strong> For \(s=\sum_{j=1}^m a_j\mathbf1_{B_j}\), where \(a_j\ge0\) and \(B_j\) are Borel, finite linearity gives
+\[
+\begin{aligned}
+\int_Ys\,\mathrm{d}\nu
+&amp;=\sum_{j=1}^m a_j\int_Y\mathbf1_{B_j}\,\mathrm{d}\nu\\
+&amp;=\sum_{j=1}^m a_j\int_X\mathbf1_{B_j}\circ T\,\mathrm{d}\mu
+=\int_Xs\circ T\,\mathrm{d}\mu.
+\end{aligned}
+\]</p>
+<p><strong>3. Nonnegative Borel functions.</strong> For \(g:Y\to[0,\infty]\), set
+\[
+g_n(y)=2^{-n}\left\lfloor2^n\min\{g(y),n\}\right\rfloor.
+\]
+Each \(g_n\) is a nonnegative Borel simple function. The dyadic grids are nested, so
+\[
+0\le g_n\le g_{n+1},\qquad
+0\le\min\{g,n\}-g_n&lt;2^{-n}.
+\]
+Consequently \(g_n\uparrow g\) pointwise on \(Y\) and \(g_n\circ T\uparrow g\circ T\) pointwise on \(X\). The compositions are measurable because \(T\) is measurable. The monotone convergence theorem applies to both sequences:
+\[
+\begin{aligned}
+\int_Yg\,\mathrm{d}\nu
+&amp;=\lim_n\int_Yg_n\,\mathrm{d}\nu
+&amp;&amp;\text{(monotone convergence)}\\
+&amp;=\lim_n\int_Xg_n\circ T\,\mathrm{d}\mu
+&amp;&amp;\text{(Step 2)}\\
+&amp;=\int_Xg\circ T\,\mathrm{d}\mu
+&amp;&amp;\text{(monotone convergence).}
+\end{aligned}
+\]
+These equalities are valid even when the common value is \(+\infty\).</p>
+<p><strong>4. Integrable signed functions.</strong> Suppose \(\int_Y|g|\,\mathrm{d}\nu&lt;\infty\). Step 3 first gives
+\[
+\int_X|g\circ T|\,\mathrm{d}\mu
+=\int_X|g|\circ T\,\mathrm{d}\mu
+=\int_Y|g|\,\mathrm{d}\nu&lt;\infty.
+\]
+Thus both sides of the desired identity are defined. With \(g^+=\max(g,0)\), \(g^-=\max(-g,0)\), all integrals in the following subtraction are finite:
+\[
+\begin{aligned}
+\int_Yg\,\mathrm{d}\nu
+&amp;=\int_Yg^+\,\mathrm{d}\nu-\int_Yg^-\,\mathrm{d}\nu\\
+&amp;=\int_Xg^+\circ T\,\mathrm{d}\mu-\int_Xg^-\circ T\,\mathrm{d}\mu\\
+&amp;=\int_X(g^+-g^-)\circ T\,\mathrm{d}\mu
+=\int_Xg\circ T\,\mathrm{d}\mu.
+\end{aligned}
+\]</p>
+</div>
 
     <div class="math-statement example">
         <p><span class="statement-title">Example.</span> If \(X=Y=\mathbb R^d\), \(T(x)=Ax+b\), and \(U\sim N(m,\Sigma)\), then \(T_\#N(m,\Sigma)=N(Am+b,A\Sigma A^\top)\). If \(\mu\) has density \(f\) and \(T\) is a \(C^1\)-diffeomorphism, then \(T_\#\mu\) has density \(g(y)=f(T^{-1}y)|\det DT(T^{-1}y)|^{-1}\). The Monge--Ampère equation will arise by applying this formula to \(T=\nabla\varphi\).</p>
@@ -75,16 +131,30 @@ note_next_url: "/notes/optimal-transport/monge-problem/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Convexity follows because the marginal maps are linear. Given \(\varepsilon>0\), tightness of \(\mu\) and \(\nu\) provides compact sets \(K_X,K_Y\) with \(\mu(K_X)\ge1-\varepsilon/2\) and \(\nu(K_Y)\ge1-\varepsilon/2\). Every \(\pi\in\Pi(\mu,\nu)\) then satisfies
-
-        \[
-        \pi(K_X\times K_Y)
-        \ge 1-\pi(K_X^c\times Y)-\pi(X\times K_Y^c)
-        \ge1-\varepsilon.
-        \]
-
-        Hence the family is tight. If \(\pi_n\Rightarrow\pi\), continuity of the projections gives \((\operatorname{pr}_X)_\#\pi_n\Rightarrow(\operatorname{pr}_X)_\#\pi\), so the first marginal of \(\pi\) is \(\mu\); similarly the second is \(\nu\). Prokhorov's theorem now yields compactness.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> For \(\pi_0,\pi_1\in\Pi(\mu,\nu)\) and \(t\in[0,1]\), put \(\pi_t=(1-t)\pi_0+t\pi_1\). For Borel \(A\subset X\), \(B\subset Y\),
+\[
+\pi_t(A\times Y)=(1-t)\mu(A)+t\mu(A)=\mu(A),\qquad
+\pi_t(X\times B)=\nu(B).
+\]
+Hence \(\pi_t\in\Pi(\mu,\nu)\), proving convexity.</p>
+<p>Given \(\varepsilon>0\), tightness of the two probabilities on Polish spaces gives compact \(K_X,K_Y\) with \(\mu(K_X^c),\nu(K_Y^c)\le\varepsilon/2\). Uniformly over \(\pi\in\Pi(\mu,\nu)\),
+\[
+\begin{aligned}
+\pi((K_X\times K_Y)^c)
+&amp;\le\pi(K_X^c\times Y)+\pi(X\times K_Y^c)\\
+&amp;=\mu(K_X^c)+\nu(K_Y^c)\le\varepsilon.
+\end{aligned}
+\]
+Since \(K_X\times K_Y\) is compact, this is tightness of the entire family.</p>
+<p>If \(\pi_n\Rightarrow\pi\), then for every \(f\in C_b(X)\), \(f\circ\operatorname{pr}_X\in C_b(X\times Y)\), and
+\[
+\int_Xf\,\mathrm{d}(\operatorname{pr}_X)_\#\pi
+=\int_{X\times Y}f(x)\,\mathrm{d}\pi
+=\lim_n\int f(x)\,\mathrm{d}\pi_n
+=\int_Xf\,\mathrm{d}\mu.
+\]
+Bounded continuous functions determine Borel probabilities on Polish spaces, so \((\operatorname{pr}_X)_\#\pi=\mu\). The identical computation with \(g\in C_b(Y)\) gives the second marginal \(\nu\). Thus the family is weakly closed. Prokhorov's theorem makes a tight family relatively weakly compact; closedness makes \(\Pi(\mu,\nu)\) weakly compact.</p>
+</div>
 
     <h3>Maps, kernels, and disintegration</h3>
     <p>A map sends all mass located at \(x\) to one point. A general plan may split that mass among several destinations. Disintegration makes this distinction exact.</p>
@@ -102,9 +172,31 @@ note_next_url: "/notes/optimal-transport/monge-problem/"
     </div>
 
     <p>The kernel \(\pi_x\) is the conditional law of the destination given the source \(x\). Deterministic plans are therefore precisely the couplings whose conditional laws are Dirac masses.</p>
-<div class="math-statement proof"><p><span class="statement-title">Verification of the map criterion.</span> If \(\pi=(\operatorname{id},T)_\#\mu\), then for Borel \(A,B\),
-\(\pi(A\times B)=\int_A\mathbf1_B(T(x))\,\mathrm{d}\mu\),
-so uniqueness of disintegration gives \(\pi_x=\delta_{T(x)}\) almost everywhere. Conversely, if a measurable kernel is Dirac almost everywhere, its point can be chosen measurably: the embedding \(y\mapsto\delta_y\) from Polish \(Y\) into \(\mathcal P(Y)\) is continuous and injective, and its inverse on its Borel image is measurable by the standard-Borel inverse theorem. Compose this inverse with the kernel, extending by a fixed point on the exceptional set. The resulting \(T\) is measurable, and the rectangle identity above proves \(\pi=(\operatorname{id},T)_\#\mu\). Disintegration itself is the external conditional-probability theorem; this verifies its transport consequence.</p></div>
+<div class="math-statement proof">
+<p><span class="statement-title">Verification of the map criterion.</span> Suppose \(\pi=(\operatorname{id},T)_\#\mu\). For Borel \(A\subset X,B\subset Y\),
+\[
+\begin{aligned}
+\pi(A\times B)
+&amp;=\int_X\mathbf1_A(x)\mathbf1_B(T(x))\,\mathrm{d}\mu(x)\\
+&amp;=\int_A\delta_{T(x)}(B)\,\mathrm{d}\mu(x).
+\end{aligned}
+\]
+The kernel \(x\mapsto\delta_{T(x)}\) is measurable, so uniqueness in the disintegration theorem implies \(\pi_x=\delta_{T(x)}\) for \(\mu\)-almost every \(x\).</p>
+<p>Conversely, write \(k(x)=\pi_x\), viewed as a measurable map into \(\mathcal P(Y)\). The map \(\iota:Y\to\mathcal P(Y)\), \(\iota(y)=\delta_y\), is continuous and injective. The standard-Borel inverse theorem says that \(D=\iota(Y)\) is Borel and \(\iota^{-1}:D\to Y\) is measurable. Thus \(E=k^{-1}(D)\) is measurable; the Dirac assumption says \(\mu(E)=1\). Fix \(y_0\in Y\) and define
+\[
+T(x)=\begin{cases}\iota^{-1}(k(x)),&amp;x\in E,\\y_0,&amp;x\notin E.\end{cases}
+\]
+This map is measurable. For every Borel rectangle,
+\[
+\begin{aligned}
+\pi(A\times B)
+&amp;=\int_Ak(x)(B)\,\mathrm{d}\mu(x)\\
+&amp;=\int_A\delta_{T(x)}(B)\,\mathrm{d}\mu(x)
+=((\operatorname{id},T)_\#\mu)(A\times B).
+\end{aligned}
+\]
+The two probability measures agree on the rectangle \(\pi\)-system, which generates \(\mathcal B(X\times Y)\); the uniqueness theorem for measures gives equality everywhere. Disintegration and the standard-Borel inverse theorem are the probability inputs used here.</p>
+</div>
 
     <div class="math-statement example">
         <p><span class="statement-title">Example.</span> Let \(\mu=\delta_0\) and \(\nu=\tfrac12(\delta_{-1}+\delta_1)\). There is one coupling, \(\pi=\delta_0\otimes\nu\), and its conditional law at \(0\) is \(\nu\). No map \(T\) can satisfy \(T_\#\mu=\nu\), because the image of a Dirac mass under a map is another Dirac mass. This is the simplest reason the Kantorovich relaxation is needed.</p>
@@ -118,25 +210,35 @@ so uniqueness of disintegration gives \(\pi_x=\delta_{T(x)}\) almost everywhere.
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Disintegrate the two plans over their common marginal:
-
-        \[
-        \pi_{12}(\mathrm{d}x_1,\mathrm{d}x_2)
-        =\mu_2(\mathrm{d}x_2)K_{21}(x_2,\mathrm{d}x_1),
-        \quad
-        \pi_{23}(\mathrm{d}x_2,\mathrm{d}x_3)
-        =\mu_2(\mathrm{d}x_2)K_{23}(x_2,\mathrm{d}x_3).
-        \]
-
-        Define
-
-        \[
-        \gamma(\mathrm{d}x_1,\mathrm{d}x_2,\mathrm{d}x_3)
-        =\mu_2(\mathrm{d}x_2)K_{21}(x_2,\mathrm{d}x_1)K_{23}(x_2,\mathrm{d}x_3).
-        \]
-
-        Integrating out \(x_3\) gives \(\pi_{12}\), and integrating out \(x_1\) gives \(\pi_{23}\). Thus the two pairwise couplings can be realized simultaneously, conditionally independently given \(x_2\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Disintegration over the common marginal provides probability kernels \(K_{21},K_{23}\) with
+\[
+\pi_{12}(\mathrm{d}x_1,\mathrm{d}x_2)=\mu_2(\mathrm{d}x_2)K_{21}(x_2,\mathrm{d}x_1),\qquad
+\pi_{23}(\mathrm{d}x_2,\mathrm{d}x_3)=\mu_2(\mathrm{d}x_2)K_{23}(x_2,\mathrm{d}x_3).
+\]
+Define the product-kernel measure by its nonnegative integrals:
+\[
+\int f\,\mathrm{d}\gamma
+=\int_{X_2}\int_{X_1}\int_{X_3}
+ f(x_1,x_2,x_3)\,K_{23}(x_2,\mathrm{d}x_3)K_{21}(x_2,\mathrm{d}x_1)\,\mathrm{d}\mu_2(x_2).
+\]
+Measurability and countable additivity follow from the kernel integration theorem and monotone convergence. In particular,
+\[
+\gamma(X_1\times X_2\times X_3)
+=\int_{X_2}K_{21}(x_2,X_1)K_{23}(x_2,X_3)\,\mathrm{d}\mu_2=1.
+\]
+For Borel \(A_i\subset X_i\), the marginal identities are
+\[
+\begin{aligned}
+\gamma(A_1\times A_2\times X_3)
+&amp;=\int_{A_2}K_{21}(x_2,A_1)\underbrace{K_{23}(x_2,X_3)}_{1}\,\mathrm{d}\mu_2
+=\pi_{12}(A_1\times A_2),\\
+\gamma(X_1\times A_2\times A_3)
+&amp;=\int_{A_2}\underbrace{K_{21}(x_2,X_1)}_{1}K_{23}(x_2,A_3)\,\mathrm{d}\mu_2
+=\pi_{23}(A_2\times A_3).
+\end{aligned}
+\]
+Agreement on rectangles determines both marginals. The construction makes \(x_1,x_3\) conditionally independent given \(x_2\).</p>
+</div>
 
     <h3>A finite coupling polytope</h3>
 

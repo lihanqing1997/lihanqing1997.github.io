@@ -42,13 +42,27 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For compact sets \(K_i\subset X_i\),
-        \[
-        \gamma\!\left((K_1\times\cdots\times K_N)^c\right)
-        \le \sum_{i=1}^N\mu_i(K_i^c)
-        \]
-        for every admissible \(\gamma\). Tightness of the marginals therefore gives uniform tightness of \(\Pi(\mu_1,\ldots,\mu_N)\). A minimizing sequence has a weakly convergent subsequence. Coordinate projections are continuous, so the limit retains every marginal. Apply the Portmanteau theorem to \(c-\sum_i a_i\), then restore the fixed integrals \(\int a_i\,\mathrm{d}\mu_i\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> For \(\varepsilon>0\), choose compact \(K_i\subset X_i\) with \(\mu_i(K_i^c)\le\varepsilon/N\). Every admissible \(\gamma\) satisfies
+\[
+\gamma\left(\left(\prod_iK_i\right)^c\right)
+\le\sum_i\gamma(p_i^{-1}(K_i^c))=\sum_i\mu_i(K_i^c)\le\varepsilon.
+\]
+Thus the coupling family is tight. If \(\gamma_n\Rightarrow\gamma\), then for each \(f\in C_b(X_i)\),
+\[
+\int f\,\mathrm{d}(p_i)_\#\gamma
+=\int f\circ p_i\,\mathrm{d}\gamma
+=\lim_n\int f\circ p_i\,\mathrm{d}\gamma_n=\int f\,\mathrm{d}\mu_i.
+\]
+So it is also weakly closed, hence compact by Prokhorov.</p>
+<p>Let \(a(x)=\sum_i a_i(x_i)\), \(A=\sum_i\int a_i\,\mathrm{d}\mu_i\), and \(g=c-a\). Continuity of \(a_i\) makes \(g\) lower semicontinuous, and the hypothesis gives \(g\ge0\). Also, for every feasible \(\gamma\), \(\int a\,\mathrm{d}\gamma=A\) is finite. A minimizing sequence has a feasible limit \(\gamma_*\), and Portmanteau gives
+\[
+\inf\int c\le\int c\,\mathrm{d}\gamma_*
+=A+\int g\,\mathrm{d}\gamma_*
+\le A+\liminf_n\int g\,\mathrm{d}\gamma_n
+=\liminf_n\int c\,\mathrm{d}\gamma_n=\inf\int c.
+\]
+Thus the limit attains the finite optimal value.</p>
+</div>
 
     <h3>Duality and splitting sets</h3>
 
@@ -63,15 +77,54 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
         The dual contains one potential for each marginal.</p>
     </div>
 
-    <p><strong>Proof.</strong> Put \(Z=\prod_iX_i\) and
-    \[
-    L(\gamma,\varphi_1,\ldots,\varphi_N)=\int c\,\mathrm{d}\gamma+\sum_i\int\varphi_i\,\mathrm{d}(\mu_i-(p_i)_\#\gamma).
-    \]
-    The supremum over continuous potentials is infinite if a marginal is wrong, since a detecting test can be scaled, and equals the cost otherwise. The set \(\mathcal P(Z)\) is compact convex; the potential space is convex; \(L\) is continuous affine in each argument. Sion's minimax theorem therefore gives
-    \[
-    \mathsf{MMOT}_c=\sup_{\varphi_i}\left[\sum_i\int\varphi_i\,\mathrm{d}\mu_i+\min_Z(c-\sum_i\varphi_i)\right].
-    \]
-    Adding the displayed minimum to the first potential turns each bracket into the value of a feasible dual tuple. This proves the upper bound by the dual supremum; integrating its constraint proves the reverse bound. For attainment, successively replace each potential by \(\inf_{x_{-i}}(c-\sum_{j\ne i}\varphi_j)\). Every replacement increases the objective and gives that potential the modulus of continuity of \(c\) in its coordinate. After all \(N\) replacements, normalize the first \(N-1\) potentials to vanish at fixed base points, shifting the last one by the opposite sum of constants. Their oscillations are uniformly bounded by \(2\|c\|_\infty\); the last potential, being the final transform, is bounded by the cost and these normalized potentials. Arzelà–Ascoli on each compact factor now gives uniformly convergent maximizing subsequences. Feasibility and the integrals pass to the limit, proving attainment.</p>
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof of duality and attainment.</span> Put \(Z=\prod_iX_i\), and let \(p_i\) be the coordinate projections. Define
+\[
+L(\gamma,\varphi_1,\ldots,\varphi_N)=\int c\,\mathrm{d}\gamma+\sum_i\int\varphi_i\,\mathrm{d}(\mu_i-(p_i)_\#\gamma).
+\]
+If some marginal is wrong, a continuous test \(f\) has \(a=\int f\,\mathrm{d}(\mu_i-(p_i)_\#\gamma)\ne0\). Choosing \(\varphi_i=t\operatorname{sgn}(a)f\), other potentials zero, sends \(L\) to infinity. Therefore
+\[
+\sup_{\varphi_i\in C(X_i)}L
+=\begin{cases}\int c\,\mathrm{d}\gamma,&amp;\gamma\in\Pi(\mu_1,\ldots,\mu_N),\\+\infty,&amp;\text{otherwise}.\end{cases}
+\]
+The set \(\mathcal P(Z)\) is compact convex and \(L\) is continuous affine in both arguments. Sion's minimax theorem gives
+\[
+\begin{aligned}
+\mathsf{MMOT}_c
+&amp;=\inf_\gamma\sup_{\varphi_i}L=\sup_{\varphi_i}\inf_\gamma L\\
+&amp;=\sup_{\varphi_i}\left[\sum_i\mu_i\varphi_i+\min_Z\left(c-\sum_i\varphi_i\right)\right].
+\end{aligned}
+\]
+The infimum of a continuous function over probability laws is its pointwise minimum, attained by a Dirac law. If that minimum is \(m\), replace \(\varphi_1\) by \(\varphi_1+m\); then \(\sum_i\varphi_i+m\le c\), and the bracket is exactly the new feasible objective. This gives primal value at most dual supremum. Conversely, for feasible potentials and any coupling,
+\[
+\sum_i\int\varphi_i\,\mathrm{d}\mu_i
+=\int\sum_i\varphi_i(x_i)\,\mathrm{d}\gamma\le\int c\,\mathrm{d}\gamma,
+\]
+proving the reverse inequality.</p>
+<p>For attainment, take a maximizing sequence and, for each member, successively replace coordinates \(i=1,\ldots,N\) by
+\[
+\widetilde\varphi_i(x_i)=\inf_{x_{-i}}\left(c(x_1,\ldots,x_N)-\sum_{j\ne i}\varphi_j(x_j)\right).
+\]
+Feasibility gives \(\widetilde\varphi_i\ge\varphi_i\), and the new tuple remains feasible; thus values cannot decrease. Each replaced coordinate satisfies
+\[
+|\widetilde\varphi_i(x_i)-\widetilde\varphi_i(x_i')|
+\le\sup_{x_{-i}}|c(x_i,x_{-i})-c(x_i',x_{-i})|.
+\]
+Later replacements do not change this function. Normalize the first \(N-1\) coordinates to vanish at base points, adding the opposite total shift to the last. With \(M=\|c\|_\infty\),
+\[
+\|\varphi_i\|_\infty\le2M\quad(i&lt;N),
+\qquad
+\varphi_N(x_N)=\inf_{x_{-N}}\left(c-\sum_{i&lt;N}\varphi_i\right),
+\qquad \|\varphi_N\|_\infty\le(2N-1)M.
+\]
+The last equality remains valid because the compensating shifts cancel inside its transform. Uniform continuity of \(c\) makes all coordinate families equicontinuous. Arzelà–Ascoli and a finite diagonal extraction give uniform limits \(\varphi_i^{(n_k)}\to\varphi_i\). Then
+\[
+\sum_i\varphi_i\le c,\qquad
+\left|\sum_i\mu_i\varphi_i^{(n_k)}-\sum_i\mu_i\varphi_i\right|
+\le\sum_i\|\varphi_i^{(n_k)}-\varphi_i\|_\infty\to0.
+\]
+The limiting feasible tuple attains the dual value.</p>
+</div>
 
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> A set \(\Gamma\subset X_1\times\cdots\times X_N\) is a \(c\)-splitting set if there are functions \(\varphi_i\) such that
@@ -94,9 +147,23 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Equality on \(\Gamma\) changes the left side into
-        \(\sum_{i,k}\varphi_i(x_i^k)\). Permuting the \(k\)-indices does not change this sum. Applying the splitting inequality to each recombined tuple gives the right side. An optimal plan is concentrated on a splitting set whenever dual optimizers exist.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> On a splitting set, \(c(x^k)=\sum_i\varphi_i(x_i^k)\). For arbitrary coordinate permutations,
+\[
+\begin{aligned}
+\sum_{k=1}^m c(x_1^k,\ldots,x_N^k)
+&amp;=\sum_{i=1}^N\sum_{k=1}^m\varphi_i(x_i^k)\\
+&amp;=\sum_{i=1}^N\sum_{k=1}^m\varphi_i(x_i^{\sigma_i(k)})\\
+&amp;=\sum_{k=1}^m\sum_{i=1}^N\varphi_i(x_i^{\sigma_i(k)})\\
+&amp;\le\sum_{k=1}^m c(x_1^{\sigma_1(k)},\ldots,x_N^{\sigma_N(k)}).
+\end{aligned}
+\]
+The second equality uses that each \(\sigma_i\) reorders the same finite sum; the last uses feasibility at each recombined tuple. If primal and dual optimizers exist, their nonnegative slack satisfies
+\[
+\int\left(c-\sum_i\varphi_i\right)\,\mathrm{d}\gamma
+=\text{primal value}-\text{dual value}=0.
+\]
+Thus the slack vanishes \(\gamma\)-almost everywhere, giving the asserted splitting set.</p>
+</div>
 
     <h3>Quadratic interaction and Wasserstein barycenters</h3>
 
@@ -123,13 +190,24 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Rewrite the right side as an infimum over joint laws of \((X_1,\ldots,X_N,Y)\) with \(X_i\sim\mu_i\):
-        \[
-        \inf\mathbb E\sum_i\lambda_i|X_i-Y|^2.
-        \]
-        Conditional on \(X_1,\ldots,X_N\), the unique minimizer in \(Y\) is
-        \(Y=\sum_i\lambda_iX_i\), and the minimum is \(c_\lambda(X_1,\ldots,X_N)\). Conversely, glue optimal couplings between any candidate \(\nu\) and the \(\mu_i\) conditionally on their common \(\nu\)-coordinate. The two infima are therefore equal.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Let \(B(x)=\sum_i\lambda_ix_i\). Expansion and \(\sum_i\lambda_i(x_i-B)=0\) give
+\[
+\sum_i\lambda_i|x_i-y|^2=c_\lambda(x)+|y-B(x)|^2\ge c_\lambda(x).
+\]
+Given a candidate \(\nu\), disintegrate its optimal couplings with \(\mu_i\) as \(\nu(\mathrm{d}y)K_i(y,\mathrm{d}x_i)\) and form \(P=\nu(\mathrm{d}y)\prod_iK_i(y,\mathrm{d}x_i)\). Its input marginal \(\gamma\) belongs to \(\Pi(\mu_1,\ldots,\mu_N)\), so
+\[
+\sum_i\lambda_iW_2^2(\mu_i,\nu)
+=\int\sum_i\lambda_i|x_i-y|^2\,\mathrm{d}P
+\ge\int c_\lambda\,\mathrm{d}\gamma\ge\inf_\gamma\int c_\lambda\,\mathrm{d}\gamma.
+\]
+Taking the infimum in \(\nu\) gives one direction. Conversely, for any input coupling \(\gamma\), put \(\nu=B_\#\gamma\). Jensen gives its finite second moment, and \((x_i,B)_\#\gamma\) is a coupling with \(\mu_i\). Hence
+\[
+\inf_\nu\sum_i\lambda_iW_2^2(\mu_i,\nu)
+\le\sum_i\lambda_iW_2^2(\mu_i,B_\#\gamma)
+\le\int\sum_i\lambda_i|x_i-B|^2\,\mathrm{d}\gamma=\int c_\lambda\,\mathrm{d}\gamma.
+\]
+Taking the infimum in \(\gamma\) gives equality. For optimal \(\gamma_*\), both last inequalities are equalities, so \(B_\#\gamma_*\) is a barycenter.</p>
+</div>
 
     <h3>When is a multi-marginal optimizer a graph?</h3>
 
@@ -140,7 +218,7 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
     must be injective when restricted to every \(c\)-splitting set.</p>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Graph theorem.</span> Assume dual optimizers exist, \(c\) is differentiable in \(x_1\), twist on splitting sets holds, and the first dual potential is differentiable \(\mu_1\)-almost everywhere. For instance, local bounds on \(D_{x_1}c\) uniform in the remaining coordinates make transformed first potentials locally Lipschitz, so an absolutely continuous \(\mu_1\) gives this differentiability by Rademacher. If \(\mu_1\) is absolutely continuous, then every optimizer is concentrated on a graph
+        <p><span class="statement-title">Graph theorem.</span> Assume the primal and dual optima are finite and attained, \(c\) is differentiable in \(x_1\), twist on splitting sets holds, and the first dual potential is differentiable \(\mu_1\)-almost everywhere. For instance, local bounds on \(D_{x_1}c\) uniform in the remaining coordinates make transformed first potentials locally Lipschitz, so an absolutely continuous \(\mu_1\) gives this differentiability by Rademacher. If \(\mu_1\) is absolutely continuous, then every optimizer is concentrated on a graph
         \[
         (x_1,T_2(x_1),\ldots,T_N(x_1)).
         \]
@@ -148,13 +226,21 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> On a splitting set supporting an optimizer, equality of the dual constraint gives, at differentiability points,
+<p><span class="statement-title">Proof.</span> For a contact tuple \((x_1,\ldots,x_N)\), fix \(x_2,\ldots,x_N\) and define
+\[
+F(z)=c(z,x_2,\ldots,x_N)-\varphi_1(z)-\sum_{i=2}^N\varphi_i(x_i).
+\]
+Then \(F\ge0\) and \(F(x_1)=0\). At a differentiability point, the difference quotients along each vector \(a\) are nonnegative for \(h>0\) and nonpositive for \(h&lt;0\); their common limit is \(DF(x_1)\cdot a=0\). Thus
         \[
         \nabla\varphi_1(x_1)=D_{x_1}c(x_1,x_2,\ldots,x_N).
         \]
-        For fixed \(x_1\), twist on splitting sets permits at most one tuple \((x_2,\ldots,x_N)\). Disintegration over \(\mu_1\) therefore has Dirac conditional laws. If \(\gamma\) and \(\widetilde\gamma\) were two optimizers, their average would also be optimal and hence would also have Dirac conditional laws. But its conditional law is
-        \(\tfrac12\delta_{(T_2,\ldots,T_N)}+\tfrac12\delta_{(\widetilde T_2,\ldots,\widetilde T_N)}\); it is Dirac only when the two tuples agree \(\mu_1\)-almost everywhere. Thus \(\gamma=\widetilde\gamma\).</p>
-    </div>
+        For fixed \(x_1\), twist on splitting sets permits at most one tuple \((x_2,\ldots,x_N)\). Disintegrate \(\gamma=\mu_1(\mathrm{d}x_1)K_{x_1}(\mathrm{d}x_2\cdots\mathrm{d}x_N)\). Its contact-set concentration gives
+\[
+K_{x_1}\{(x_2,\ldots,x_N):D_{x_1}c=\nabla\varphi_1(x_1)\text{ and contact holds}\}=1
+\]
+almost everywhere. Twist makes the set a singleton; the measurable Dirac-kernel criterion gives \(K_{x_1}=\delta_{(T_2(x_1),\ldots,T_N(x_1))}\) for measurable \(T_i\). If \(\gamma\) and \(\widetilde\gamma\) were two optimizers, their average would also be optimal and hence would also have Dirac conditional laws. But its conditional law is
+        \(\tfrac12\delta_{(T_2,\ldots,T_N)}+\tfrac12\delta_{(\widetilde T_2,\ldots,\widetilde T_N)}\); if it equals \(\delta_{S(x_1)}\), evaluation on the complement of \(\{S(x_1)\}\) forces both atoms to equal \(S(x_1)\). Thus the two tuples agree \(\mu_1\)-almost everywhere. Thus \(\gamma=\widetilde\gamma\).</p>
+</div>
 
     <h3>Martingale couplings and convex order</h3>
 
@@ -184,7 +270,15 @@ note_next_url: "/notes/optimal-transport/gromov-wasserstein-geometry/"
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Necessity and a complete finite-support converse.</span> Conditional Jensen gives \(\phi(X)=\phi(\mathbb E[Y\mid X])\le\mathbb E[\phi(Y)\mid X]\), so every martingale coupling implies convex order.</p>
+    <div class="math-statement proof">
+<p><span class="statement-title">Necessity and a complete finite-support converse.</span> For a convex test \(\phi\), conditional Jensen gives
+\[
+\int\phi\,\mathrm{d}\mu=\mathbb E\phi(X)
+=\mathbb E\phi(\mathbb E[Y\mid X])
+\le\mathbb E\bigl[\mathbb E[\phi(Y)\mid X]\bigr]
+=\int\phi\,\mathrm{d}\nu.
+\]
+For linearly growing tests all quantities are integrable by the first moments; for general convex tests the affine lower bound and monotone truncation justify extended positive values. Thus every martingale coupling implies convex order.</p>
 <p>For the converse with finite supports, write \(\mu=\sum_i a_i\delta_{x_i}\), \(\nu=\sum_j b_j\delta_{y_j}\), with positive weights. Let \(K=\operatorname{conv}\{y_j\}\). The convex linearly growing function \(x\mapsto\operatorname{dist}(x,K)\) has zero \(\nu\)-integral, so convex order forces each \(x_i\in K\). We seek \(P\ge0\) with row sums \(a\), column sums \(b\), and \(\sum_jP_{ij}(y_j-x_i)=0\). Farkas's finite-dimensional feasibility theorem says this system is solvable if and only if every tuple \((u_i,v_j,h_i)\) satisfying
 \[
 u_i+v_j+h_i\cdot(y_j-x_i)\ge0\quad\text{for all }i,j
@@ -194,12 +288,19 @@ has \(\sum_i a_i u_i+\sum_j b_jv_j\ge0\).</p>
 \[
 \chi(x)=\min\left\{\sum_jq_jv_j:q_j\ge0,\ \sum_jq_j=1,\ \sum_jq_jy_j=x\right\}.
 \]
-It is convex and piecewise affine: its epigraph is the convex hull of the finitely many lifted points \((y_j,v_j)\), plus the upward vertical ray. On \(K\), it is the maximum of the finitely many affine functions defining its nonvertical lower facets, working in the affine hull if necessary. This maximum extends to a finite convex function of at most linear growth on \(\mathbb R^d\). The constraints imply \(u_i\ge-\chi(x_i)\): multiply them by any admissible \(q_j\) and minimize. Also \(v_j\ge\chi(y_j)\). Thus convex order gives
+It is convex and piecewise affine: its epigraph is the convex hull of the finitely many lifted points \((y_j,v_j)\), plus the upward vertical ray. On \(K\), it is the maximum of the finitely many affine functions defining its nonvertical lower facets, working in the affine hull if necessary. This maximum extends to a finite convex function of at most linear growth on \(\mathbb R^d\). For any feasible \(q\) in the definition of \(\chi(x_i)\), multiply the Farkas inequalities by \(q_j\) and sum:
+\[
+0\le\sum_jq_j[u_i+v_j+h_i\cdot(y_j-x_i)]
+=u_i+\sum_jq_jv_j+h_i\cdot\left(\sum_jq_jy_j-x_i\right)
+=u_i+\sum_jq_jv_j.
+\]
+Minimizing the last expression over \(q\) yields \(u_i\ge-\chi(x_i)\). For \(x=y_j\), the feasible choice \(q=\delta_j\) gives \(\chi(y_j)\le v_j\). Thus convex order gives
 \[
 \sum_i a_i u_i+\sum_j b_jv_j
 \ge-\int\chi\,\mathrm{d}\mu+\int\chi\,\mathrm{d}\nu\ge0.
 \]
-Farkas now supplies the martingale matrix, completing the finite-support proof. The extension to arbitrary \(\mathcal P_1\) laws is the external Strassen theorem; it requires an approximation preserving convex order and first moments, and is not inferred from weak compactness alone.</p></div>
+Farkas now supplies the martingale matrix, completing the finite-support proof. The extension to arbitrary \(\mathcal P_1\) laws is the external Strassen theorem; it requires an approximation preserving convex order and first moments, and is not inferred from weak compactness alone.</p>
+</div>
 
     <div class="math-statement example">
         <p><span class="statement-title">Example.</span> Let \(\mu=\delta_0\) and
@@ -235,7 +336,8 @@ Farkas now supplies the martingale matrix, completing the finite-support proof. 
         where the supremum may be taken over continuous \(\varphi,\psi\) and continuous \(h\) with values in \(\mathbb R^d\).</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(A,B\) be the compact convex hulls of the supports and work on the compact convex set \(\mathcal P(A\times B)\). Define
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(A,B\) be the compact convex hulls of the supports and work on the compact convex set \(\mathcal P(A\times B)\). Define
 \[
 L(\pi,\varphi,\psi,h)=\int c\,\mathrm{d}\pi+
 \int\varphi\,\mathrm{d}(\mu-\pi_X)+\int\psi\,\mathrm{d}(\nu-\pi_Y)
@@ -243,12 +345,26 @@ L(\pi,\varphi,\psi,h)=\int c\,\mathrm{d}\pi+
 \]
 If the marginals are correct but the martingale constraint fails, its vector signed measure
 \(M(E)=\int\mathbf1_E(x)(y-x)\,\mathrm{d}\pi\)
-is nonzero. A continuous vector test detects \(M\), and scaling its sign makes the supremum over \(h\) infinite. Incorrect marginals are detected similarly. Thus \(\inf_\pi\sup L\) equals the martingale primal value, whose feasible set is nonempty by Strassen. All integrands are bounded continuous on the compact product. Sion's theorem applies to this continuous affine Lagrangian and gives
+is nonzero. By uniqueness of finite signed measures, some continuous vector field \(h_0\) has \(a=\int h_0\cdot\mathrm{d}M\ne0\). With \(h=-t\operatorname{sgn}(a)h_0\),
+\[
+-\int h(x)\cdot(y-x)\,\mathrm{d}\pi=t|a|\longrightarrow+\infty.
+\] Incorrect marginals are detected similarly. Thus \(\inf_\pi\sup L\) equals the martingale primal value, whose feasible set is nonempty by Strassen. All integrands are bounded continuous on the compact product. Sion's theorem applies to this continuous affine Lagrangian and gives
 \[
 \mathsf{MOT}_c=\sup_{\varphi,\psi,h}\left[\mu\varphi+\nu\psi+
 \min_{A\times B}(c-\varphi-\psi-h(x)\cdot(y-x))\right].
 \]
-Shifting \(\varphi\) by the displayed minimum turns each bracket into a feasible dual value. Conversely, integration of the feasible inequality against a martingale plan cancels the \(h\)-term and gives weak duality. This proves equality of values. It asserts no dual attainment; compact primal feasibility does not by itself give bounded dual maximizers.</p></div>
+If \(m\) is the displayed minimum, then
+\[
+\varphi(x)+m+\psi(y)+h(x)\cdot(y-x)\le c(x,y),
+\qquad \mu(\varphi+m)+\nu\psi=\mu\varphi+\nu\psi+m.
+\]
+Thus each bracket is a feasible dual value. Conversely, for a martingale plan,
+\[
+\int h(x)\cdot(y-x)\,\mathrm{d}\pi
+=\int h(x)\cdot\mathbb E[Y-X\mid X=x]\,\mathrm{d}\mu(x)=0.
+\]
+Integrating dual feasibility gives \(\mu\varphi+\nu\psi\le\int c\,\mathrm{d}\pi\), proving weak duality. This proves equality of values. It asserts no dual attainment; compact primal feasibility does not by itself give bounded dual maximizers.</p>
+</div>
 
     <p>The term \(h(x)\cdot(y-x)\) has no counterpart in ordinary transport. In robust pricing it is the gain of a self-financing linear hedge, while \(\varphi\) and \(\psi\) are static positions depending on the initial and terminal states.</p>
 
@@ -272,11 +388,23 @@ Shifting \(\varphi\) by the displayed minimum turns each bracket into a feasible
         \(\pi_n\in\Pi_M(\mu_n,\nu_n)\), \(\pi_n\Rightarrow\pi\), and the first moments are uniformly integrable. Then \(\pi\in\Pi_M(\mu,\nu)\), where \(\mu,\nu\) are its marginals.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> For a bounded continuous \(f\), choose a continuous cutoff \(\chi_R(x,y)\) equal to one when \(|x|+|y|\le R\), zero when \(|x|+|y|\ge2R\), and between zero and one otherwise. Weak convergence passes the bounded continuous integral \(\int\chi_R(y-x)f(x)\,\mathrm{d}\pi_n\) to its limit. The error is at most
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For a bounded continuous \(f\), choose a continuous cutoff \(\chi_R(x,y)\) equal to one when \(|x|+|y|\le R\), zero when \(|x|+|y|\ge2R\), and between zero and one otherwise. Weak convergence passes the bounded continuous integral \(\int\chi_R(y-x)f(x)\,\mathrm{d}\pi_n\) to its limit. The error is at most
 \[
 \|f\|_\infty\int_{\{|x|+|y|>R\}}(|x|+|y|)\,\mathrm{d}\pi_n\longrightarrow0
 \]
-uniformly as \(R\to\infty\). Marginal uniform integrability implies this joint bound by the small-event cutoff estimate proved in the stability chapter, with \(p=1\). The same tail property holds for the weak limit by truncation. Hence \(\int(y-x)f(x)\,\mathrm{d}\pi=0\). Define the finite vector signed measure \(M(E)=\int\mathbf1_E(x)(y-x)\,\mathrm{d}\pi\). Continuous tests annihilate it, so uniqueness of finite Borel measures gives \(M=0\). This is exactly the constraint for every bounded measurable \(f\).</p></div>
+uniformly as \(R\to\infty\). Marginal uniform integrability implies this joint bound by the small-event cutoff estimate proved in the stability chapter, with \(p=1\). Set \(r=|x|+|y|\) and \(\tau(R)=\sup_n\int_{r>R}r\,\mathrm{d}\pi_n\to0\). Portmanteau for the continuous nonnegative function \((r-R)_+\) yields
+\[
+\int_{r>2R}r\,\mathrm{d}\pi\le2\int(r-R)_+\,\mathrm{d}\pi
+\le2\liminf_n\int(r-R)_+\,\mathrm{d}\pi_n\le2\tau(R).
+\]
+Thus the limit also has integrable first moments and vanishing tails. For fixed \(R\), let \(n\to\infty\) in the cutoff integral; since \(\int(y-x)f(x)\,\mathrm{d}\pi_n=0\),
+\[
+\left|\int(y-x)f(x)\,\mathrm{d}\pi\right|
+\le\|f\|_\infty\left[\int_{r>R}r\,\mathrm{d}\pi+\tau(R)\right]\longrightarrow0.
+\]
+Hence the integral is zero. Define the finite vector signed measure \(M(E)=\int\mathbf1_E(x)(y-x)\,\mathrm{d}\pi\). Continuous tests annihilate it, so uniqueness of finite Borel measures gives \(M=0\). This is exactly the constraint for every bounded measurable \(f\).</p>
+</div>
 
     <p>Existence and stability of martingale optimizers then follow by the direct method. The essential extra hypothesis is first-moment control: weak convergence alone does not preserve conditional means.</p>
 

@@ -60,9 +60,22 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The set \(\Pi(\mu_X,\mu_Y)\) is weakly compact. If \(\pi_n\Rightarrow\pi\), then \(\pi_n\otimes\pi_n\Rightarrow\pi\otimes\pi\). To justify the product limit on the compact space \(Z=X\times Y\), first test \(f(z)g(z')\), whose integral factors and converges. Finite sums of such products are uniformly dense in \(C(Z\times Z)\) by Stone–Weierstrass; uniform approximation then proves convergence for every continuous test. The distortion integrand is continuous and bounded on
-        \((X\times Y)^2\), so its integral converges. The objective is therefore continuous on a compact set.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(Z=X\times Y\). The coupling set is weakly compact. We first verify continuity of \(\pi\mapsto\pi\otimes\pi\). If \(\pi_n\Rightarrow\pi\), then for \(f,g\in C(Z)\),
+\[
+\int f(z)g(z')\,\mathrm{d}(\pi_n\otimes\pi_n)
+=\left(\int f\,\mathrm{d}\pi_n\right)\left(\int g\,\mathrm{d}\pi_n\right)
+\longrightarrow\left(\int f\,\mathrm{d}\pi\right)\left(\int g\,\mathrm{d}\pi\right).
+\]
+For arbitrary \(H\in C(Z^2)\) and \(\varepsilon>0\), Stone–Weierstrass supplies \(H_\varepsilon(z,z')=\sum_{j=1}^m f_j(z)g_j(z')\) with \(\|H-H_\varepsilon\|_\infty&lt;\varepsilon\). Hence
+\[
+\limsup_n\left|\int H\,\mathrm{d}(\pi_n\otimes\pi_n)-\int H\,\mathrm{d}(\pi\otimes\pi)\right|\le2\varepsilon.
+\]
+Let \(\varepsilon\downarrow0\); this proves product weak convergence. Now
+\[
+H((x,y),(x',y'))=|d_X(x,x')-d_Y(y,y')|^p
+\]
+is continuous and bounded on the compact product. Its integral, \(\operatorname{dis}_p(\pi)^p\), is therefore continuous. A minimizing sequence has a feasible convergent subsequence, and its limiting objective is the infimum. Taking a positive \(p\)-th root proves attainment for \(\operatorname{GW}_p\).</p>
+</div>
 
     <h3>The metric theorem</h3>
 
@@ -72,15 +85,23 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Nonnegativity and symmetry are immediate. If the spaces are isomorphic through \(T\), then
+<p><span class="statement-title">Proof.</span> Nonnegativity and symmetry are immediate. If the spaces are isomorphic through \(T\), then
         \((\operatorname{id},T)_\#\mu_X\) has zero distortion.</p>
 
         <p>For the triangle inequality, let
         \(\pi_{XY}\in\Pi(\mu_X,\mu_Y)\) and
         \(\pi_{YZ}\in\Pi(\mu_Y,\mu_Z)\). The gluing lemma produces a law
         \(\eta\) on \(X\times Y\times Z\) with these two marginals. Let
-        \(\pi_{XZ}\) be its \((X,Z)\)-marginal. Minkowski's inequality in
-        \(L^p(\eta\otimes\eta)\) gives
+        \(\pi_{XZ}\) be its \((X,Z)\)-marginal. For two independent triples under \(\eta\otimes\eta\), put \(A=d_X(x,x')-d_Y(y,y')\), \(B=d_Y(y,y')-d_Z(z,z')\). Then
+\[
+\begin{aligned}
+\operatorname{dis}_p(\pi_{XZ})
+&amp;=\|A+B\|_{L^p(\eta\otimes\eta)}\\
+&amp;\le\|A\|_{L^p(\eta\otimes\eta)}+\|B\|_{L^p(\eta\otimes\eta)}
+=\operatorname{dis}_p(\pi_{XY})+\operatorname{dis}_p(\pi_{YZ}).
+\end{aligned}
+\]
+This is Minkowski's inequality with the correct product marginals and gives
         \[
         \operatorname{dis}_p(\pi_{XZ})
         \le
@@ -95,12 +116,20 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
         d_X(x,x')=d_Y(y,y')
         \]
         for \((\pi\otimes\pi)\)-almost every pair
-        \(((x,y),(x',y'))\). The distortion is continuous and nonnegative, so its almost-everywhere vanishing implies it vanishes everywhere on the support relation squared. If one \(x\) corresponded to both \(y\) and \(\tilde y\), setting the two \(X\)-coordinates equal would give \(d_Y(y,\tilde y)=0\), hence \(y=\tilde y\); similarly in the other direction. Let \(S=\operatorname{supp}\pi\). Its coordinate projections are compact, hence closed, and have full marginal mass. They therefore equal \(\operatorname{supp}\mu_X\) and \(\operatorname{supp}\mu_Y\). The uniqueness of each fiber just proved makes \(S\) the graph of a bijection \(T\) between these supports. The distance identity makes \(T\) an isometry, hence continuous with continuous inverse. Finally, for every Borel \(B\),
+        \(((x,y),(x',y'))\). Let \(S=\operatorname{supp}\pi\). If the nonnegative continuous distortion \(H\) were positive at some \((z,z')\in S^2\), neighborhoods \(U,V\) would satisfy \(H\ge\delta>0\) on \(U\times V\). But
+\[
+\int H\,\mathrm{d}(\pi\otimes\pi)\ge\delta\pi(U)\pi(V)>0,
+\]
+a contradiction. Thus the distance identity holds for every pair in \(S^2\). If one \(x\) corresponded to both \(y\) and \(\tilde y\), setting the two \(X\)-coordinates equal would give \(d_Y(y,\tilde y)=0\), hence \(y=\tilde y\); similarly in the other direction. Let \(S=\operatorname{supp}\pi\). Its coordinate projections are compact, hence closed, and have full marginal mass. Closedness and full marginal mass imply \(\operatorname{supp}\mu_X\subset p_X(S)\). Conversely, if \((x,y)\in S\), every open neighborhood \(U\ni x\) has
+\[
+\mu_X(U)=\pi(U\times Y)>0,
+\]
+so \(x\in\operatorname{supp}\mu_X\). Hence \(p_X(S)=\operatorname{supp}\mu_X\); the identical argument gives \(p_Y(S)=\operatorname{supp}\mu_Y\). The uniqueness of each fiber just proved makes \(S\) the graph of a bijection \(T\) between these supports. The distance identity makes \(T\) an isometry, hence continuous with continuous inverse. Finally, for every Borel \(B\),
         \[
         \mu_Y(B)=\pi(X\times B)=\pi(\{(x,T(x)):T(x)\in B\})=\mu_X(T^{-1}(B)).
         \]
         Thus it is measure preserving, proving the zero-distance implication with the required measurability.</p>
-    </div>
+</div>
 
     <h3>Finite spaces and a quadratic assignment problem</h3>
 
@@ -128,7 +157,13 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
         2\sum_{i,k,j,\ell}
         D^X_{ik}D^Y_{j\ell}P_{ij}P_{k\ell}.
         \]
-        Thus minimizing distortion is equivalent to maximizing the correlation of the two distance matrices under \(P\otimes P\).</p>
+        Indeed, expand \((D^X_{ik}-D^Y_{j\ell})^2\) and use the marginal identities:
+\[
+\sum_{j,\ell}P_{ij}P_{k\ell}=\left(\sum_jP_{ij}\right)\left(\sum_\ell P_{k\ell}\right)=a_ia_k,
+\quad
+\sum_{i,k}P_{ij}P_{k\ell}=b_jb_\ell.
+\]
+The two square terms are therefore fixed by the marginals; the cross term is exactly the displayed four-index sum. Thus minimizing distortion is equivalent to maximizing that correlation.</p>
     </div>
 
     <p>If both spaces have \(n\) points with uniform weights and \(P\) is restricted to scaled permutation matrices \(P_\sigma/n\), this becomes a quadratic assignment problem. The relaxed coupling polytope allows soft correspondences and spaces with different numbers of points, but it does not make the objective convex.</p>
@@ -150,13 +185,21 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Every \(\pi\in\Pi(\mu_X,\mu_Y)\) makes
-        \[
-        \bigl(d_X(x,x'),d_Y(y,y')\bigr)_\#(\pi\otimes\pi)
-        \]
-        a coupling of \(\rho_X,\rho_Y\). Its \(p\)-cost is exactly
-        \(\operatorname{dis}_p^p(\pi)\). Minimize first over all couplings of the distance distributions, then over \(\pi\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> For \(\pi\in\Pi(\mu_X,\mu_Y)\), define
+\[
+\zeta=(d_X(x,x'),d_Y(y,y'))_\#(\pi\otimes\pi).
+\]
+Its first marginal is \(\rho_X\), because the \((x,x')\)-marginal of \(\pi\otimes\pi\) is \(\mu_X\otimes\mu_X\); its second is similarly \(\rho_Y\). Therefore
+\[
+\begin{aligned}
+W_p(\rho_X,\rho_Y)^p
+&amp;\le\int|r-s|^p\,\mathrm{d}\zeta(r,s)\\
+&amp;=\iint|d_X(x,x')-d_Y(y,y')|^p\,\mathrm{d}\pi(x,y)\,\mathrm{d}\pi(x',y')
+=\operatorname{dis}_p(\pi)^p.
+\end{aligned}
+\]
+Taking the infimum over \(\pi\) and then the positive \(p\)-th root proves the bound.</p>
+</div>
 
     <p>A sharper hierarchy can compare pointwise eccentricities
     \[
@@ -187,12 +230,26 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Couple \(\mathsf Z_s\) and \(\mathsf Z_t\) by using the same \((x,y)\) at both times. Since
-        \(d_t-d_s=(t-s)(d_Y-d_X)\), this coupling has distortion
-        \(|t-s|\operatorname{GW}_p(\mathsf X,\mathsf Y)\), proving the upper bound. Applying this upper bound to the three pieces
-        \(\mathsf X\to\mathsf Z_s\to\mathsf Z_t\to\mathsf Y\), their upper bounds sum exactly to
-        \(\operatorname{GW}_p(\mathsf X,\mathsf Y)\). The triangle inequality forces equality in every piece.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(D=\operatorname{GW}_p(\mathsf X,\mathsf Y)\). For \(0&lt;t&lt;1\), \(d_t\) is a metric: it is symmetric, has the triangle inequality termwise, and \(d_t(z,z')=0\) forces both coordinates of \(z,z'\) to agree. At \(t=0,1\) its metric quotient is the corresponding endpoint space with the correct projected measure.</p>
+<p>Couple two intermediate spaces by the diagonal law \((z,z)_\#\pi_*\), where \(z=(x,y)\). For independent \(z,z'\sim\pi_*\),
+\[
+d_t(z,z')-d_s(z,z')=(t-s)(d_Y(y,y')-d_X(x,x')),
+\]
+so this coupling has distortion
+\[
+\left(\iint|d_t-d_s|^p\,\mathrm{d}\pi_*\,\mathrm{d}\pi_*\right)^{1/p}
+=|t-s|\operatorname{dis}_p(\pi_*)=|t-s|D.
+\]
+Thus \(\operatorname{GW}_p(\mathsf Z_s,\mathsf Z_t)\le|t-s|D\), also at the quotient endpoints. For \(0\le s\le t\le1\), triangle inequality gives
+\[
+\begin{aligned}
+\operatorname{GW}_p(\mathsf Z_s,\mathsf Z_t)
+&amp;\ge D-\operatorname{GW}_p(\mathsf X,\mathsf Z_s)-\operatorname{GW}_p(\mathsf Z_t,\mathsf Y)\\
+&amp;\ge D-sD-(1-t)D=(t-s)D.
+\end{aligned}
+\]
+The bounds agree; symmetry handles \(s>t\).</p>
+</div>
 
     <p>The interpolation changes the metric itself rather than moving points through a fixed ambient space. This is the intrinsic analogue of displacement interpolation.</p>
 
@@ -260,14 +317,22 @@ note_next_url: "/notes/optimal-transport/research-directions-and-reading/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\gamma\) couple \(\mu,\nu\). For two independent draws from \(\gamma\),
-        \[
-        |d(x,x')-d(y,y')|
-        \le d(x,y)+d(x',y').
-        \]
-        Minkowski gives
-        \(\operatorname{dis}_p(\gamma)\le2(\int d(x,y)^p\,\mathrm{d}\gamma)^{1/p}\). Infimize over \(\gamma\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> For any \(\gamma\in\Pi(\mu,\nu)\), draw \((x,y),(x',y')\) independently with law \(\gamma\). The two triangle inequalities
+\[
+d(x,x')\le d(x,y)+d(y,y')+d(y',x'),
+\quad d(y,y')\le d(y,x)+d(x,x')+d(x',y')
+\]
+imply \(|d(x,x')-d(y,y')|\le d(x,y)+d(x',y')\). Minkowski on \(\gamma\otimes\gamma\) gives
+\[
+\begin{aligned}
+\operatorname{dis}_p(\gamma)
+&amp;\le\|d(x,y)+d(x',y')\|_{L^p(\gamma\otimes\gamma)}\\
+&amp;\le\|d(x,y)\|_{L^p(\gamma\otimes\gamma)}+\|d(x',y')\|_{L^p(\gamma\otimes\gamma)}\\
+&amp;=2\left(\int d(x,y)^p\,\mathrm{d}\gamma\right)^{1/p}.
+\end{aligned}
+\]
+Taking the infimum over \(\gamma\) proves \(\operatorname{GW}_p\le2W_p\).</p>
+</div>
 
     <div class="math-statement corollary">
         <p><span class="statement-title">Empirical consistency.</span> If \(X\) is compact and

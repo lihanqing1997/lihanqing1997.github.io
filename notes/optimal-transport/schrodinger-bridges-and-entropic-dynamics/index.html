@@ -48,25 +48,38 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Disintegrate \(P\) and \(R^\varepsilon\) with respect to \((X_0,X_1)\). The chain rule for entropy gives
-        \[
-        \operatorname{KL}(P\,\|\,R^\varepsilon)
-        =
-        \operatorname{KL}(P_{01}\,\|\,R^\varepsilon_{01})
-        +\int
-        \operatorname{KL}\!\left(
-        P^{xy}\,\|\,R^{\varepsilon,xy}
-        \right)
-        \,\mathrm{d}P_{01}(x,y).
-        \]
-        For finite entropy, the density factorization behind this identity is
-        \[
-        \frac{\mathrm{d}P}{\mathrm{d}R}(\omega)
-        =\frac{\mathrm{d}P_{01}}{\mathrm{d}R_{01}}(X_0,X_1)
-        \frac{\mathrm{d}P^{X_0X_1}}{\mathrm{d}R^{X_0X_1}}(\omega).
-        \]
-        Integrating its logarithm conditionally proves the chain rule; negative entropy integrands are integrable since \(r\log r\ge-1/e\), and truncation gives the extended-value identity. The second term is nonnegative. For any finite-entropy endpoint competitor \(\pi\), choosing \(P^{xy}=R^{xy}\) makes it zero and preserves the endpoints. Thus each static competitor has a dynamic competitor of exactly the same value, while every dynamic competitor has value at least its endpoint entropy. Taking infima proves equality. Uniqueness of the conditional bridge is asserted when the optimal value is finite; an infinite objective alone does not identify a minimizer.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Write \(R=R^\varepsilon\), \(Z=(X_0,X_1)\). First suppose \(P\ll R\), with density \(H\). Disintegrate \(R=R^zR_{01}(\mathrm{d}z)\) and define
+\[
+h(z)=\int H(\omega)\,\mathrm{d}R^z(\omega),\qquad
+k_z(\omega)=H(\omega)/h(z)\quad\text{when }h(z)>0.
+\]
+Then \(P_{01}=hR_{01}\), \(P^z=k_zR^z\), because for bounded measurable \(a,b\),
+\[
+\int a(Z)b(\omega)\,\mathrm{d}P
+=\int a(z)\left[\int b(\omega)H(\omega)\,\mathrm{d}R^z\right]\,\mathrm{d}R_{01}(z)
+=\int a(z)\left[\int b\,\mathrm{d}P^z\right]\,\mathrm{d}P_{01}(z).
+\]
+The set \(h=0\) is \(P_{01}\)-null, so arbitrary conditional definitions there do not matter. On a \(P\)-full set, \(H=h(Z)k_Z\), hence \(\log H=\log h(Z)+\log k_Z\). Conditional integration yields
+\[
+\begin{aligned}
+H(P\mid R)
+&amp;=\int\log H\,\mathrm{d}P\\
+&amp;=\int\log h\,\mathrm{d}P_{01}+\int\left[\int\log k_z\,\mathrm{d}P^z\right]\,\mathrm{d}P_{01}(z)\\
+&amp;=H(P_{01}\mid R_{01})+\int H(P^z\mid R^z)\,\mathrm{d}P_{01}(z).
+\end{aligned}
+\]
+The negative parts are integrable: \(\int_{h&lt;1}h|\log h|\,\mathrm{d}R_{01}\le1/e\), and \(\int_{k_z&lt;1}k_z|\log k_z|\,\mathrm{d}R^z\le1/e\) for each \(z\). Truncation and monotone convergence of positive parts therefore justify the identity even when the entropy is infinite. If \(P\not\ll R\), its infinite value cannot improve any finite competitor; the lower inequality also follows from entropy monotonicity under the endpoint map.</p>
+<p>Since conditional entropies are nonnegative, every dynamic competitor satisfies \(H(P\mid R)\ge H(P_{01}\mid R_{01})\). Conversely, for an endpoint law \(\pi=hR_{01}\) of finite entropy, define
+\[
+P_\pi(\mathrm{d}\omega)=\int R^z(\mathrm{d}\omega)\,\pi(\mathrm{d}z).
+\]
+Its endpoint law is \(\pi\), its density relative to \(R\) is \(h(Z)\), and
+\[
+H(P_\pi\mid R)=\int\log h(Z)\,\mathrm{d}P_\pi
+=\int\log h\,\mathrm{d}\pi=H(\pi\mid R_{01}).
+\]
+Taking infima gives both inequalities and hence equality. If the static infimum is infinite, the dynamic lower bound is already infinite, so equality still holds. At finite optimal value, the nonnegative conditional term vanishes exactly when \(P^z=R^z\) for \(\pi\)-almost every \(z\), proving the asserted bridge representation.</p>
+</div>
 
 <h3>Relation to entropic optimal transport</h3>
     <p>Fix Brownian motion with generator \(\varepsilon\Delta/2\) and initial probability density \(r_0>0\). Its endpoint density is
@@ -78,9 +91,9 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
     \[
     \begin{aligned}
     \operatorname{KL}(\pi\|R^\varepsilon_{01})
-    ={}&\operatorname{KL}(\pi\|\mu_0\otimes\mu_1)
+    ={}&amp;\operatorname{KL}(\pi\|\mu_0\otimes\mu_1)
        +\frac1{2\varepsilon}\int|x-y|^2\,\mathrm{d}\pi\\
-       &+\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)
+       &amp;+\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)
        +\operatorname{Ent}(\mu_1)
        +\frac d2\log(2\pi\varepsilon).
     \end{aligned}
@@ -147,7 +160,8 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
         subject to the continuity equation and endpoint constraints.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof using the drift-entropy identity.</span> The stochastic input is the finite-energy Girsanov identity: for an admissible controlled law with forward drift \(b^+\), diffusion coefficient \(\sqrt\varepsilon I\), and initial law \(\mu_0\),
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof using the drift-entropy identity.</span> The stochastic input is the finite-energy Girsanov identity: for an admissible controlled law with forward drift \(b^+\), diffusion coefficient \(\sqrt\varepsilon I\), and initial law \(\mu_0\),
 \[
 \operatorname{KL}(P\|R^\varepsilon)
 =\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)
@@ -156,7 +170,12 @@ note_next_url: "/notes/optimal-transport/empirical-measures-in-wasserstein-dista
 Here admissibility means that the controlled diffusion exists, is absolutely continuous with respect to the reference law, and its change-of-drift density satisfies the Girsanov identity; bounded smooth drifts with the usual exponential-martingale integrability are a sufficient case. The extension to general finite-action laws is an external result in <a href="https://arxiv.org/abs/1308.0215">Léonard, §4</a>.</p>
 <p>Assume smooth positive densities, finite kinetic and Fisher integrals, and either periodic boundary conditions or decay making the following integrations by parts valid. The forward Fokker–Planck equation is
 \(\partial_t\rho=-\nabla\cdot(\rho b^+)+\varepsilon\Delta\rho/2\).
-Define \(v=b^+-\varepsilon\nabla\log\rho/2\); it satisfies the continuity equation. Pointwise expansion gives
+Define \(v=b^+-\varepsilon\nabla\log\rho/2\). Since \(\rho\nabla\log\rho=\nabla\rho\),
+\[
+\rho v=\rho b^+-\tfrac\varepsilon2\nabla\rho,
+\qquad-\nabla\cdot(\rho v)=-\nabla\cdot(\rho b^+)+\tfrac\varepsilon2\Delta\rho=\partial_t\rho.
+\]
+Thus it satisfies the continuity equation. Pointwise expansion gives
 \[
 \frac{|b^+|^2}{2\varepsilon}\rho
 =\frac{|v|^2}{2\varepsilon}\rho+\frac\varepsilon8|\nabla\log\rho|^2\rho
@@ -168,14 +187,25 @@ The entropy chain rule and continuity equation yield
 =\int(1+\log\rho_t)(-\nabla\cdot(\rho_tv_t))\,\mathrm{d}x
 =\int v_t\cdot\nabla\rho_t\,\mathrm{d}x.
 \]
-Cauchy–Schwarz bounds this last integrand by the product of kinetic and Fisher square roots, so it is time-integrable. Combining with (1) gives exactly
+Cauchy–Schwarz first in space, then in time, gives
+\[
+\begin{aligned}
+\int_0^1\left|\int v_t\cdot\nabla\rho_t\,\mathrm{d}x\right|\,\mathrm{d}t
+&amp;\le\int_0^1\left(\int|v_t|^2\rho_t\right)^{1/2}
+\left(\int|\nabla\log\rho_t|^2\rho_t\right)^{1/2}\,\mathrm{d}t\\
+&amp;\le\left(\int_0^1\int|v_t|^2\rho_t\right)^{1/2}
+\left(\int_0^1\int|\nabla\log\rho_t|^2\rho_t\right)^{1/2}&lt;\infty.
+\end{aligned}
+\]
+Hence integration of the entropy derivative gives the finite endpoint difference. Combining with (1) gives exactly
 \[
 \operatorname{KL}(P\|R^\varepsilon)
 =\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)
 +\tfrac12[\operatorname{Ent}(\rho_1)-\operatorname{Ent}(\rho_0)]
 +\int_0^1\int\left(\frac{|v|^2}{2\varepsilon}+\frac\varepsilon8|\nabla\log\rho|^2\right)\rho.
 \]
-The first two terms depend only on endpoints. Conversely, an admissible smooth continuity-equation pair defines the forward drift by the same substitution, so minimization over corresponding admissible pairs gives the claimed smooth formulation. This calculation keeps all constants and the stochastic input explicit.</p></div>
+The first two terms depend only on endpoints. Conversely, an admissible smooth continuity-equation pair defines the forward drift by the same substitution, so minimization over corresponding admissible pairs gives the claimed smooth formulation. This calculation keeps all constants and the stochastic input explicit.</p>
+</div>
 
     <h3>Hamilton--Jacobi--Bellman structure</h3>
     <p>The logarithmic potentials \(\phi_t=\varepsilon\log b_t\) and \(\widehat\phi_t=\varepsilon\log a_t\) satisfy viscous Hamilton--Jacobi equations. For example,
@@ -193,7 +223,20 @@ The first two terms depend only on endpoints. Conversely, an admissible smooth c
     =\tfrac12W_2^2(\mu_0,\mu_1).
     \]
     The optimal endpoint couplings converge weakly to the unique quadratic optimal plan. Optimal path laws converge weakly to its straight-line dynamical plan.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Bounded compactly supported densities have finite Lebesgue entropy: their positive entropy parts are bounded and their negative parts satisfy \(|r\log r|\le1/e\) on a finite-volume support. The Gaussian \(r_0\) has bounded logarithm on that support, so \(\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)&lt;\infty\). The endpoint identity therefore gives
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Bounded compactly supported densities have finite Lebesgue entropy: their positive entropy parts are bounded and their negative parts satisfy \(|r\log r|\le1/e\) on a finite-volume support. The Gaussian \(r_0\) has bounded logarithm on that support, so \(\operatorname{KL}(\mu_0\|r_0\,\mathrm{d}x)&lt;\infty\). To verify the endpoint constants, write \(\mu_i=\rho_i\,\mathrm{d}x\), \(a=\mathrm{d}\pi/\mathrm{d}(\mu_0\otimes\mu_1)\), and \(c=|x-y|^2/2\). On a \(\pi\)-full set,
+\[
+\log\frac{\mathrm{d}\pi}{\mathrm{d}R^\varepsilon_{01}}(x,y)
+=\log a(x,y)+\log\frac{\rho_0(x)}{r_0(x)}+\log\rho_1(y)
++\tfrac d2\log(2\pi\varepsilon)+c(x,y)/\varepsilon.
+\]
+Integrating, multiplying by \(\varepsilon\), and using the endpoint marginals gives
+\[
+\varepsilon H(\pi\mid R^\varepsilon_{01})
+=\int c\,\mathrm{d}\pi+\varepsilon H(\pi\mid\mu_0\otimes\mu_1)
++\varepsilon\left[H(\mu_0\mid r_0\,\mathrm{d}x)+\operatorname{Ent}(\mu_1)+\tfrac d2\log(2\pi\varepsilon)\right].
+\]
+The last bracket is independent of \(\pi\). Static reduction and minimization therefore give
 \[
 \varepsilon\inf_P\operatorname{KL}(P\|R^\varepsilon)
 =\operatorname{OT}_\varepsilon(\mu_0,\mu_1)
@@ -204,12 +247,28 @@ For cost \(|x-y|^2/2\), compact entropic convergence makes the first term tend t
 \[
 \gamma_t=(1-t)X+tY+\sqrt\varepsilon\,\beta_t.
 \]
-Doob's \(L^2\) inequality and \(\sup_t|B_t-tB_1|\le\sup_t|B_t|+|B_1|\) give \(\mathbb E\sup_t|\beta_t|^2\le10d\). For every bounded \(1\)-Lipschitz functional \(G\) on path space with the uniform metric,
+Doob's \(L^2\) inequality for the submartingale \(|B_t|\) gives \(\mathbb E\sup_{t\le1}|B_t|^2\le4\mathbb E|B_1|^2=4d\). Therefore
+\[
+\mathbb E\sup_{t\le1}|\beta_t|^2
+\le2\mathbb E\sup_{t\le1}|B_t|^2+2\mathbb E|B_1|^2\le8d+2d=10d.
+\]
+For the straight path \(\ell_{X,Y}(t)=(1-t)X+tY\),
+\[
+\mathbb E\|\gamma-\ell_{X,Y}\|_\infty
+=\sqrt\varepsilon\,\mathbb E\|\beta\|_\infty
+\le\sqrt\varepsilon\,(\mathbb E\|\beta\|_\infty^2)^{1/2}\le\sqrt{10d\varepsilon}.
+\] For every bounded \(1\)-Lipschitz functional \(G\) on path space with the uniform metric,
 \[
 \left|\mathbb EG(\gamma)-\int G(t\mapsto(1-t)x+ty)\,\mathrm{d}\pi_\varepsilon(x,y)\right|
 \le\sqrt{10d\varepsilon}.
 \]
-The straight-path map is continuous from endpoint space into path space, so weak convergence of \(\pi_\varepsilon\) passes the second term to the straight-path law of \(\pi_*\). Bounded Lipschitz tests determine weak convergence on this Polish path space. This proves the full asserted path limit.</p></div>
+The endpoint-to-path map satisfies
+\[
+\|\ell_{x,y}-\ell_{x',y'}\|_\infty
+\le|x-x'|+|y-y'|,
+\]
+so it is continuous from endpoint space into path space, so weak convergence of \(\pi_\varepsilon\) passes the second term to the straight-path law of \(\pi_*\). Bounded Lipschitz tests determine weak convergence on this Polish path space. This proves the full asserted path limit.</p>
+</div>
 
     <h3>Gaussian bridges</h3>
     <p>For Gaussian endpoint laws and a linear Gaussian reference process, the Schrödinger bridge remains Gaussian. Its mean solves a deterministic minimum-energy interpolation, while its covariance solves coupled matrix Riccati equations. In the zero-noise limit these equations reduce to the Gaussian Wasserstein geodesic from <a href="{{ '/notes/optimal-transport/displacement-interpolation/' | relative_url }}">Geodesics and displacement interpolation</a>.</p>

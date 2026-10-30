@@ -28,11 +28,25 @@ note_next_url: "/notes/optimal-transport/diffusion-and-interaction-equations/"
     \]
     Write \(\bar\mu_\tau(0)=\mu_\tau^0\) and \(\bar\mu_\tau(t)=\mu_\tau^k\) on \(((k-1)\tau,k\tau]\). The step trades energy reduction against transport effort.</p></div>
     <div class="math-statement theorem"><p><span class="statement-title">One-step existence: a sufficient weak-topology criterion.</span> Suppose \(\mathcal F\) is proper, bounded below, and sequentially lower semicontinuous under weak convergence of probability measures in \(\mathcal P_2(\mathbb R^d)\). If the old iterate has finite energy, every step has a minimizer.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(\eta\) for the old iterate and \(b=\inf\mathcal F> -\infty\). For a minimizing sequence \(\mu_j\), discard finitely many terms so
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(\eta\) for the old iterate and \(b=\inf\mathcal F> -\infty\). For a minimizing sequence \(\mu_j\), discard finitely many terms so
 \[
 \mathcal F(\mu_j)+\frac{W_2^2(\mu_j,\eta)}{2\tau}\le\mathcal F(\eta)+1.
 \]
-Thus \(W_2^2(\mu_j,\eta)\le2\tau(\mathcal F(\eta)+1-b)\). An optimal coupling and \(|x|^2\le2|x-y|^2+2|y|^2\) give a uniform second-moment bound on \(\mu_j\). Markov and Prokhorov yield a weakly convergent subsequence \(\mu_j\Rightarrow\mu\); Portmanteau gives \(\int|x|^2\,\mathrm{d}\mu&lt;\infty\). Optimal couplings of \(\mu_j,\eta\) are tight, so the cost liminf inequality gives \(W_2^2(\mu,\eta)\le\liminf_jW_2^2(\mu_j,\eta)\). Adding the assumed energy liminf inequality proves that \(\mu\) attains the infimum. Weak convergence, rather than unproved \(W_2\)-compactness, is what this argument uses.</p></div>
+Thus \(W_2^2(\mu_j,\eta)\le2\tau(\mathcal F(\eta)+1-b)\). Integrate \(|x|^2\le2|x-y|^2+2|y|^2\) against an optimal coupling to obtain
+\[
+\int|x|^2\,\mathrm{d}\mu_j
+\le2W_2^2(\mu_j,\eta)+2\int|y|^2\,\mathrm{d}\eta
+\le4\tau(\mathcal F(\eta)+1-b)+2\int|y|^2\,\mathrm{d}\eta=:M.
+\]
+In particular \(\mu_j(|x|>R)\le M/R^2\). Markov and Prokhorov yield a weakly convergent subsequence \(\mu_j\Rightarrow\mu\); Portmanteau gives \(\int|x|^2\,\mathrm{d}\mu&lt;\infty\). Optimal couplings of \(\mu_j,\eta\) are tight, so the cost liminf inequality gives \(W_2^2(\mu,\eta)\le\liminf_jW_2^2(\mu_j,\eta)\). Let \(J(\mu)=\mathcal F(\mu)+W_2^2(\mu,\eta)/(2\tau)\). Since \(\mathcal F\ge b\), adding the two lower bounds is legitimate and gives
+\[
+\inf J\le J(\mu)
+\le\liminf_j\mathcal F(\mu_j)+\liminf_j\frac{W_2^2(\mu_j,\eta)}{2\tau}
+\le\liminf_jJ(\mu_j)=\inf J.
+\]
+Thus \(\mu\) attains the infimum. Weak convergence, rather than unproved \(W_2\)-compactness, is what this argument uses.</p>
+</div>
     <p>This is a sufficient criterion, not the most general JKO theorem. Entropy on all of \(\mathbb R^d\) is not bounded below; it needs a separate lower-bound argument or a confining potential. Another valid route assumes compact penalized sublevels in \(W_2\) and \(W_2\)-lower semicontinuity. A mere second-moment bound cannot replace that compactness assumption.</p>
 
     <h3>Discrete energy estimates</h3>
@@ -52,8 +66,22 @@ Thus \(W_2^2(\mu_j,\eta)\le2\tau(\mathcal F(\eta)+1-b)\). An optimal coupling an
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use \(\mu=\mu_\tau^k\) as a competitor in the minimization. Sum the resulting inequalities; the energy terms telescope.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> The old iterate is an admissible competitor, so minimality and \(W_2(\mu_\tau^k,\mu_\tau^k)=0\) give
+\[
+\mathcal F(\mu_\tau^{k+1})+\frac{W_2^2(\mu_\tau^{k+1},\mu_\tau^k)}{2\tau}
+\le\mathcal F(\mu_\tau^k)+0.
+\]
+Rearrange and sum from \(k=0\) to \(N-1\):
+\[
+\begin{aligned}
+\sum_{k=0}^{N-1}\frac{W_2^2(\mu_\tau^{k+1},\mu_\tau^k)}{2\tau}
+&amp;\le\sum_{k=0}^{N-1}\bigl(\mathcal F(\mu_\tau^k)-\mathcal F(\mu_\tau^{k+1})\bigr)\\
+&amp;=\mathcal F(\mu_\tau^0)-\mathcal F(\mu_\tau^N)
+\le\mathcal F(\mu_\tau^0)-\inf\mathcal F.
+\end{aligned}
+\]
+Multiplying by two proves the dissipation estimate.</p>
+</div>
 
     <div class="math-statement corollary">
         <p><span class="statement-title">Temporal modulus.</span> For grid times \(s=m\tau&lt;n\tau=t\),
@@ -87,7 +115,8 @@ Thus \(W_2^2(\mu_j,\eta)\le2\tau(\mathcal F(\eta)+1-b)\). An optimal coupling an
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(\mu=\mu_\tau^{k+1}\), \(\eta=\mu_\tau^k\), and \(\mu_h=(\operatorname{id}+h\xi)_\#\mu\). The coupling \((x+h\xi(x),T(x))_\#\mu\) gives the exact upper bound
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(\mu=\mu_\tau^{k+1}\), \(\eta=\mu_\tau^k\), and \(\mu_h=(\operatorname{id}+h\xi)_\#\mu\). The coupling \((x+h\xi(x),T(x))_\#\mu\) gives the exact upper bound
 \[
 \frac12W_2^2(\mu_h,\eta)-\frac12W_2^2(\mu,\eta)
 \le h\int(x-T(x))\cdot\xi(x)\,\mathrm{d}\mu+\frac{h^2}{2}\int|\xi|^2\,\mathrm{d}\mu.
@@ -97,7 +126,16 @@ Minimality and the assumed energy expansion imply
 0\le\mathcal F(\mu_h)+\frac{W_2^2(\mu_h,\eta)}{2\tau}-\mathcal F(\mu)-\frac{W_2^2(\mu,\eta)}{2\tau}
 \le h A+o(|h|),
 \]
-where \(A=\int[\nabla(\delta\mathcal F/\delta\rho)+(x-T(x))/\tau]\cdot\xi\,\mathrm{d}\mu\). Divide by \(h>0\), then by \(h&lt;0\), and let \(h\to0\); the two inequalities force \(A=0\). Testing all \(\xi\) gives the asserted almost-everywhere identity. This proof uses an upper bound for transport cost and both signs of the perturbation; an upper bound alone does not establish differentiability of that cost.</p></div>
+where \(A=\int[\nabla(\delta\mathcal F/\delta\rho)+(x-T(x))/\tau]\cdot\xi\,\mathrm{d}\mu\). Write the remainder as \(r(h)\) with \(r(h)/|h|\to0\). The inequality \(hA+r(h)\ge0\) gives
+\[
+A\ge-r(h)/h\quad(h>0),\qquad A\le-r(h)/h\quad(h&lt;0).
+\]
+Taking the respective one-sided limits yields \(A\ge0\) and \(A\le0\), hence \(A=0\). Thus the locally integrable vector field
+\[
+G=\nabla(\delta\mathcal F/\delta\rho)+(\operatorname{id}-T)/\tau
+\]
+satisfies \(\int G\cdot\xi\,\mathrm{d}\mu=0\) for all smooth compactly supported vector fields. Each component of the locally finite signed measure \(G\mu\) annihilates all test functions, hence is zero. Therefore \(G=0\) \(\mu\)-almost everywhere, which is the asserted identity. This proof uses an upper bound for transport cost and both signs of the perturbation; an upper bound alone does not establish differentiability of that cost.</p>
+</div>
 
     <h3>Metric slope and energy dissipation</h3>
 
@@ -140,7 +178,16 @@ where \(A=\int[\nabla(\delta\mathcal F/\delta\rho)+(x-T(x))/\tau]\cdot\xi\,\math
 s_{k+1}=\frac{s_k+\sqrt{s_k^2+4\tau}}2.
 \]
 The interpolants converge uniformly in \(W_2\) on every bounded time interval to \(N(0,(s_0^2+2t)I_d)\), the heat flow.</p></div>
-<div class="math-statement proof"><p><span class="statement-title">Proof.</span> For any competitor of mean \(m\) and \(d\sigma^2=\int|x-m|^2\,\mathrm{d}\mu\), nonnegativity of entropy relative to \(N(m,\sigma^2I_d)\) gives
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For any competitor of mean \(m\) and \(d\sigma^2=\int|x-m|^2\,\mathrm{d}\mu\), write \(g(x)=(2\pi\sigma^2)^{-d/2}\exp(-|x-m|^2/(2\sigma^2))\). For a density \(\rho\),
+\[
+\begin{aligned}
+0\le H(\mu\mid g\,\mathrm{d}x)
+&amp;=\int\rho\log\rho\,\mathrm{d}x-\int\log g\,\mathrm{d}\mu\\
+&amp;=\operatorname{Ent}(\mu)+\tfrac d2\log(2\pi\sigma^2)+\frac{d\sigma^2}{2\sigma^2}.
+\end{aligned}
+\]
+Thus
 \[
 \operatorname{Ent}(\mu)\ge-\frac d2\log(2\pi e\sigma^2).
 \]
@@ -149,8 +196,23 @@ For every coupling with \(Y\sim N(0,s_k^2I_d)\), Cauchy–Schwarz gives
 \[
 W_2^2(\mu,N(0,s_k^2I_d))\ge |m|^2+d(\sigma-s_k)^2.
 \]
-Both bounds are attained by \(N(0,\sigma^2I_d)\). Measures without densities have infinite entropy; the bounds also exclude a minimizing sequence with \(\sigma\to0\) or \(\sigma\to\infty\). Thus minimization over all \(\mathcal P_2\) reduces to \(m=0\) and the strictly convex scalar function \(-d\log\sigma+d(\sigma-s_k)^2/(2\tau)\). Its derivative vanishes exactly when \(\sigma-s_k=\tau/\sigma\), giving the recurrence.</p>
-<p>It follows that \(s_{k+1}\ge s_0\) and
+Indeed,
+\[
+\mathbb E|X-Y|^2=|m|^2+d\sigma^2+ds_k^2-2\mathbb E[(X-m)\cdot Y]
+\ge|m|^2+d(\sigma-s_k)^2.
+\]
+For \(X=\sigma Z,Y=s_kZ\), \(Z\sim N(0,I_d)\), both entropy and transport bounds are equalities. Measures without densities have infinite entropy; the bounds also exclude a minimizing sequence with \(\sigma\to0\) or \(\sigma\to\infty\). Thus minimization over all \(\mathcal P_2\) reduces to \(m=0\) and the strictly convex scalar function \(-d\log\sigma+d(\sigma-s_k)^2/(2\tau)\). Its derivatives are
+\[
+f'(\sigma)=-d/\sigma+d(\sigma-s_k)/\tau,\qquad
+f''(\sigma)=d/\sigma^2+d/\tau>0.
+\]
+The equation \(f'(\sigma)=0\) is \(\sigma^2-s_k\sigma-\tau=0\). Its unique positive root is the stated recurrence.</p>
+<p>The recurrence gives \(s_{k+1}-s_k=\tau/s_{k+1}>0\) and
+\[
+s_{k+1}^2-s_k^2=(s_{k+1}-s_k)(2s_{k+1}-(s_{k+1}-s_k))
+=2\tau-\tau^2/s_{k+1}^2.
+\]
+Summing from zero to \(k-1\), and using \(s_{j+1}\ge s_0\), gives
 \[
 s_{k+1}^2-s_k^2=2\tau-\frac{\tau^2}{s_{k+1}^2},\qquad
 0\le s_0^2+2k\tau-s_k^2\le\frac{k\tau^2}{s_0^2}.
@@ -160,7 +222,8 @@ If \(t\in((k-1)\tau,k\tau]\subset[0,T+\tau]\), then
 |s_k^2-(s_0^2+2t)|\le\frac{(T+\tau)\tau}{s_0^2}+2\tau.
 \]
 The Gaussian distance is \(\sqrt d\,|s_k-\sqrt{s_0^2+2t}|\), at most \(\sqrt d/(2s_0)\) times this bound. It tends uniformly to zero. Finally, the density with variance \(a(t)=s_0^2+2t\) satisfies
-\(\partial_t\rho=(-d/a+|x|^2/a^2)\rho=\Delta\rho\), by direct differentiation.</p></div>
+\(\partial_t\rho=(-d/a+|x|^2/a^2)\rho=\Delta\rho\), by direct differentiation.</p>
+</div>
 
     <h3>Evolution variational inequalities</h3>
 
@@ -182,20 +245,33 @@ The Gaussian distance is \(\sqrt d\,|s_k-\sqrt{s_0^2+2t}|\), at most \(\sqrt d/(
         In particular, the flow is unique and depends continuously on its initial law.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Work on \([a,b]\subset(0,\infty)\), where the EVI curves are locally absolutely continuous and their energies locally integrable. Set \(D(t,s)=\tfrac12W_2^2(\mu_t,\nu_s)\). For a fixed comparison time, each EVI holds almost everywhere in the other time. Fubini and the two EVI inequalities give, for almost every \((t,s)\),
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Work on \([a,b]\subset(0,\infty)\), where the EVI curves are locally absolutely continuous and their energies locally integrable. Set \(D(t,s)=\tfrac12W_2^2(\mu_t,\nu_s)\). For a fixed comparison time, each EVI holds almost everywhere in the other time. Fubini and the two EVI inequalities give, for almost every \((t,s)\),
 \[
 \partial_tD(t,s)+\lambda D(t,s)\le\mathcal F(\nu_s)-\mathcal F(\mu_t),\qquad
 \partial_sD(t,s)+\lambda D(t,s)\le\mathcal F(\mu_t)-\mathcal F(\nu_s).
 \]
-Distances between locally absolutely continuous curves have integrable separate derivatives on compact rectangles. Adding the inequalities is therefore valid also in distributions:
+On a compact time rectangle the distances are bounded by some \(M\). The inequality
+\[
+|D(t+h,s)-D(t,s)|
+\le\tfrac12\bigl[W_2(\mu_{t+h},\nu_s)+W_2(\mu_t,\nu_s)\bigr]W_2(\mu_{t+h},\mu_t)
+\]
+therefore yields \(|\partial_tD(t,s)|\le M|\dot\mu_t|\) almost everywhere, and likewise \(|\partial_sD(t,s)|\le M|\dot\nu_s|\). These bounds are integrable on the rectangle. Adding the inequalities is therefore valid also in distributions:
 \[
 (\partial_t+\partial_s)D+2\lambda D\le0.
 \]
-Use coordinates \(t=r+q\), \(s=r-q\). For almost every \(q\), the function \(r\mapsto D(r+q,r-q)\) is absolutely continuous and obeys \(\partial_rD\le-2\lambda D\). Integrating after multiplication by \(e^{2\lambda r}\) yields
+Use coordinates \(t=r+q\), \(s=r-q\). For almost every \(q\), the function \(r\mapsto D(r+q,r-q)\) is absolutely continuous and obeys \(\partial_rD\le-2\lambda D\). Writing \(G_q(r)=D(r+q,r-q)\), the chain rule for the linear change of variables gives \(G_q'=(\partial_t+\partial_s)D\). Hence
+\[
+\frac{\mathrm{d}}{\mathrm{d}r}\bigl(e^{2\lambda r}G_q(r)\bigr)
+=e^{2\lambda r}(G_q'+2\lambda G_q)\le0
+\quad\text{a.e.}
+\]
+Integration gives
 \[
 D(b+q,b-q)\le e^{-2\lambda(b-a)}D(a+q,a-q)
 \]
-whenever the points remain in the time domain. Choose admissible \(q_j\to0\); continuity of the curves gives the same inequality on the diagonal. Let \(a\downarrow0\), use continuity at the initial laws, and take square roots. This justifies using moving comparisons without assuming their exceptional time sets agree on the diagonal.</p></div>
+whenever the points remain in the time domain. Choose admissible \(q_j\to0\); continuity of the curves gives the same inequality on the diagonal. Let \(a\downarrow0\), use continuity at the initial laws, and take square roots. This justifies using moving comparisons without assuming their exceptional time sets agree on the diagonal.</p>
+</div>
 
 <p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://doi.org/10.1007/978-3-7643-8722-8">Ambrosio–Gigli–Savaré, Chapters 2–4 and 11</a>, for minimizing-movement convergence and EVI theory; <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 8</a>, for the PDE route.</p>
 

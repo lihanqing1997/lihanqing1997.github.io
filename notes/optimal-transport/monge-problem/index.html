@@ -13,7 +13,7 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
 <p>The two classical formulations ask the same physical question at different mathematical resolutions. Monge moves each source point to one destination; Kantorovich permits randomized destinations and thereby turns a nonlinear constraint into a convex feasible set.</p>
 
     <h3>Transport costs</h3>
-    <p>Let \(c:X\times Y\to(-\infty,\infty]\) be a Borel cost. The value \(c(x,y)=+\infty\) may encode a forbidden movement. For existence results we usually assume that \(c\) is lower semicontinuous and bounded below, while duality requires additional integrability conditions.</p>
+    <p>Let \(c:X\times Y\to(-\infty,\infty]\) be a Borel cost. Unless stated otherwise, assume the cost is bounded below, so its integrals are defined without subtracting infinities. The value \(c(x,y)=+\infty\) may encode a forbidden movement. For existence results we usually assume that \(c\) is lower semicontinuous and bounded below, while duality requires additional integrability conditions.</p>
 
     <div class="math-statement definition">
         <p><span class="statement-title">Definition.</span> For a measurable map \(T:X\to Y\) satisfying \(T_\#\mu=\nu\), its Monge cost is
@@ -46,13 +46,21 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(T_\#\mu=\nu\), set \(\pi_T=(\operatorname{id},T)_\#\mu\). Its first marginal is \(\mu\), and its second marginal is \(T_\#\mu=\nu\). The pushforward identity gives
-        \[
-        \int c(x,y)\,\mathrm{d}\pi_T(x,y)
-        =\int c(x,T(x))\,\mathrm{d}\mu(x).
-        \]
-        Taking the infimum over maps proves the inequality.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Given \(T_\#\mu=\nu\), let \(F(x)=(x,T(x))\) and \(\pi_T=F_\#\mu\). For Borel \(A\subset X,B\subset Y\),
+\[
+\begin{aligned}
+\pi_T(A\times Y)&amp;=\mu(F^{-1}(A\times Y))=\mu(A),\\
+\pi_T(X\times B)&amp;=\mu(F^{-1}(X\times B))=\mu(T^{-1}(B))=\nu(B).
+\end{aligned}
+\]
+Thus \(\pi_T\in\Pi(\mu,\nu)\). The change-of-variables identity yields, whenever the cost integral is defined (in particular for a cost bounded below),
+\[
+K_c(\mu,\nu)\le\int_{X\times Y}c\,\mathrm{d}\pi_T
+=\int_X c\circ F\,\mathrm{d}\mu
+=\mathcal C_M(T).
+\]
+Taking the infimum over all admissible \(T\) gives \(K_c\le M_c\). If there is no such \(T\), then \(M_c=+\infty\) and the inequality still holds.</p>
+</div>
 
     <p>The inequality can be strict because the Monge feasible set may be empty. Even when maps exist, the relaxed problem is analytically better behaved: \(\Pi(\mu,\nu)\) is convex and weakly compact, while a weak limit of graph measures need not itself be concentrated on a graph.</p>
 
@@ -66,11 +74,36 @@ note_next_url: "/notes/optimal-transport/discrete-transport-and-assignment-probl
         <p><span class="statement-title">Measurable transport theorem.</span> If \(X,Y\) are standard Borel spaces, \(\mu\) is nonatomic, and \(\nu\in\mathcal P(Y)\), then there exists a measurable \(T:X\to Y\) such that \(T_\#\mu=\nu\).</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof using the standard-Borel representation theorem.</span> We use this measure-theoretic input: a nonatomic standard probability space admits a measurable \(U:X\to(0,1)\) with \(U_\#\mu=\lambda\), and a standard Borel space admits a Borel embedding \(j:Y\to[0,1]\) whose image \(B\) is Borel and whose inverse on \(B\) is measurable. Set \(\eta=j_\#\nu\), and let \(Q\) be its real quantile function. The quantile identity gives \(Q_\#\lambda=\eta\); in particular \(Q(u)\in B\) for almost every \(u\). Define \(q(u)=j^{-1}(Q(u))\) on this full-measure set and set it equal to a fixed \(y_0\in Y\) elsewhere. This is measurable. For any Borel \(A\subset Y\),
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof using the standard-Borel representation theorem.</span> We invoke the following probability theorem: there are a measurable \(U:X\to(0,1)\) and a Borel embedding \(j:Y\to[0,1]\) such that
 \[
-\lambda(q^{-1}(A))=\eta(j(A))=\nu(A).
+U_\#\mu=\lambda_{(0,1)},\qquad B=j(Y)\text{ is Borel},\qquad j^{-1}:B\to Y\text{ is measurable}.
 \]
-Thus \(T=q\circ U\) is measurable and \(T_\#\mu=q_\#\lambda=\nu\). The construction uses the standard-Borel theorem only for the representation, rather than presuming an optimal map exists.</p></div>
+Put \(\eta=j_\#\nu\), \(F(t)=\eta(( -\infty,t])\), and \(Q(u)=\inf\{t:F(t)\ge u\}\). Right-continuity of \(F\) gives
+\[
+Q(u)\le t\ \Longleftrightarrow\ u\le F(t),\qquad
+\lambda\{u:Q(u)\le t\}=F(t).
+\]
+(The converse uses \(F(t+1/k)\ge u\) and then \(k\to\infty\).) Thus \(Q_\#\lambda=\eta\). In particular \(E=Q^{-1}(B)\) is Borel and
+\[
+\lambda(E)=\eta(B)=\nu(Y)=1.
+\]
+Fix \(y_0\in Y\) and set \(q(u)=j^{-1}(Q(u))\) on \(E\), and \(q(u)=y_0\) elsewhere. For Borel \(A\subset Y\), \(j(A)\) is Borel and
+\[
+\begin{aligned}
+\lambda(q^{-1}(A))
+&amp;=\lambda\{u\in E:Q(u)\in j(A)\}\\
+&amp;=\eta(j(A))=\nu(j^{-1}(j(A)))=\nu(A).
+\end{aligned}
+\]
+The exceptional set \(E^c\) has zero measure. Finally \(T=q\circ U\) is measurable and
+\[
+\mu(T^{-1}(A))
+=\mu(U^{-1}(q^{-1}(A)))
+=\lambda(q^{-1}(A))=\nu(A).
+\]
+Hence \(T_\#\mu=\nu\).</p>
+</div>
 
     <p>This theorem gives feasibility, not optimality. The central structural question is therefore: under what assumptions is an optimal Kantorovich plan concentrated on a graph? For quadratic cost and an absolutely continuous source, Brenier's theorem answers this by showing that the unique optimal plan is induced by the gradient of a convex function.</p>
 

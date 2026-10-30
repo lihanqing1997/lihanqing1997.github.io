@@ -35,8 +35,30 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Compactness of \(\Pi(\mu,\nu)\), lower semicontinuity of the cost integral, and lower semicontinuity of relative entropy give existence by the direct method. Relative entropy is strictly convex on densities with respect to \(\mu\otimes\nu\), while the cost is linear. Two distinct finite-objective minimizers would have a midpoint with strictly smaller entropy and the same averaged cost, contradicting minimality.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Let \(R=\mu\otimes\nu\) and \(F_\varepsilon(\pi)=\int c\,\mathrm{d}\pi+\varepsilon H(\pi\mid R)\). The product plan gives a finite comparison value:
+\[
+\inf_{\Pi(\mu,\nu)}F_\varepsilon\le F_\varepsilon(R)=\int c\,\mathrm{d}R&lt;\infty.
+\]
+We use the entropy variational formula
+\[
+H(\pi\mid R)=\sup_{f\in C(X\times Y)}\left\{\int f\,\mathrm{d}\pi-\log\int e^f\,\mathrm{d}R\right\}.
+\]
+It makes entropy weakly lower semicontinuous, as a supremum of continuous affine functions of \(\pi\). This is a probability input; the entropy chapter derives the corresponding variational identity. A minimizing sequence has a weakly convergent subsequence \(\pi_{n_k}\Rightarrow\pi_*\in\Pi(\mu,\nu)\), and
+\[
+\inf F_\varepsilon\le F_\varepsilon(\pi_*)
+\le\liminf_kF_\varepsilon(\pi_{n_k})=\inf F_\varepsilon.
+\]
+Thus a finite-objective minimizer exists.</p>
+<p>If two distinct minimizers have densities \(r_0,r_1\) relative to \(R\), the set \(E=\{r_0\ne r_1\}\) has positive \(R\)-measure. Strict convexity of \(h(r)=r\log r-r+1\) gives
+\[
+h\left(\tfrac12(r_0+r_1)\right)\le\tfrac12h(r_0)+\tfrac12h(r_1),
+\]
+with strict inequality on \(E\). Integrating and adding the linear cost yields
+\[
+F_\varepsilon((\pi_0+\pi_1)/2)&lt;\tfrac12F_\varepsilon(\pi_0)+\tfrac12F_\varepsilon(\pi_1)=\inf F_\varepsilon,
+\]
+a contradiction. Measures with infinite entropy cannot minimize the finite value.</p>
+</div>
 
     <h3>Dual formulation</h3>
 
@@ -63,12 +85,34 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The pointwise Fenchel inequality is
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put \(h(r)=r\log r-r+1\) for \(r\ge0\). Maximizing \(sr-\varepsilon h(r)\) gives the critical equation \(s-\varepsilon\log r=0\), so
 \[
-\varepsilon(r\log r-r+1)\ge sr-\varepsilon(e^{s/\varepsilon}-1),\qquad r\ge0,
+\sup_{r\ge0}\{sr-\varepsilon h(r)\}=\varepsilon(e^{s/\varepsilon}-1),
+\qquad \varepsilon h(r)-sr+\varepsilon(e^{s/\varepsilon}-1)\ge0,
 \]
-with equality exactly when \(r=e^{s/\varepsilon}\). Put \(s=\varphi(x)+\psi(y)-c(x,y)\) and integrate against \(\mu\otimes\nu\). For a feasible density \(r\), its marginal constraints turn \(\int(\varphi+\psi)r\) into \(\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\), and \(\int(r\log r-r+1)=\operatorname{KL}(\pi\|\mu\otimes\nu)\). This proves weak duality for continuous potentials.</p>
-<p>The positive-kernel construction in the scaling proof below produces bounded continuous positive factors \(u,v\) such that \(r=u e^{-c/\varepsilon}v\) has both marginals. Choose \(\varphi=\varepsilon\log u\), \(\psi=\varepsilon\log v\). Fenchel equality then holds pointwise. All integrands are bounded on the compact product, so equality of the integrated primal and dual objectives follows. This proves strong duality and attainment, rather than merely computing a formal Lagrange dual.</p></div>
+with equality exactly at \(r=e^{s/\varepsilon}\). For a feasible density \(r=\mathrm{d}\pi/\mathrm{d}R\), \(R=\mu\otimes\nu\), let \(s=\varphi(x)+\psi(y)-c(x,y)\). The marginal constraints imply
+\[
+\int r\,\mathrm{d}R=1,\qquad
+\int(\varphi(x)+\psi(y))r\,\mathrm{d}R
+=\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu=:J.
+\]
+Consequently the primal-minus-dual gap is
+\[
+\begin{aligned}
+&amp;\int cr\,\mathrm{d}R+\varepsilon H(\pi\mid R)
+-\left[J-\varepsilon\int(e^{s/\varepsilon}-1)\,\mathrm{d}R\right]\\
+&amp;\quad=\int\left[\varepsilon h(r)-sr+\varepsilon(e^{s/\varepsilon}-1)\right]\,\mathrm{d}R\ge0.
+\end{aligned}
+\]
+Infinite-entropy competitors have infinite primal value, so this proves weak duality for all competitors.</p>
+<p>The scaling construction below, proved independently of duality, supplies continuous positive \(u,v\) with \(r(x,y)=u(x)e^{-c(x,y)/\varepsilon}v(y)\) having the prescribed marginals. Set
+\[
+\varphi=\varepsilon\log u,\qquad\psi=\varepsilon\log v,\qquad
+r=e^{(\varphi+\psi-c)/\varepsilon}=e^{s/\varepsilon}.
+\]
+These quantities are bounded on the compact product, and the gap integrand is identically zero. Hence primal and dual values coincide and both are attained, with the stated density formula.</p>
+</div>
 
     <h3>The Schrödinger system</h3>
     <p>Let \(K_\varepsilon(x,y)=e^{-c(x,y)/\varepsilon}\), \(u(x)=e^{\varphi_\varepsilon(x)/\varepsilon}\), and \(v(y)=e^{\psi_\varepsilon(y)/\varepsilon}\). Then
@@ -122,7 +166,8 @@ until residual is below tolerance or the iteration limit is reached</code></pre>
         <p><span class="statement-title">Sinkhorn scaling theorem.</span> If \(K\) has strictly positive entries and \(a,b\) are strictly positive probability vectors, there exist positive \(u,v\), unique up to \((u,v)\mapsto(\lambda u,\lambda^{-1}v)\), such that \(\operatorname{diag}(u)K\operatorname{diag}(v)\in U(a,b)\). Sinkhorn iterates converge to this scaled matrix.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof, including the continuous kernel used above.</span> Work first with a continuous kernel \(K\) on compact \(X\times Y\), with \(0&lt;k_-\le K\le k_+\). Integrals below use the probability marginals \(\mu,\nu\). Set
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof, including the continuous kernel used above.</span> Work first with a continuous kernel \(K\) on compact \(X\times Y\), with \(0&lt;k_-\le K\le k_+\). Integrals below use the probability marginals \(\mu,\nu\). Set
 \[
 (L_Kz)(x)=\log\int K(x,y)e^{z(y)}\,\mathrm{d}\nu(y),\qquad
 F(z)=-L_{K^\top}(-L_Kz).
@@ -132,18 +177,47 @@ For a bounded function \(w\), write \(\operatorname{osc}w=\sup w-\inf w\). Diffe
 D L_K(z)[w](x)=\int w(y)p_{x,z}(y)\,\mathrm{d}\nu(y),\qquad
 p_{x,z}(y)=\frac{K(x,y)e^{z(y)}}{\int K(x,y')e^{z(y')}\,\mathrm{d}\nu(y')}.
 \]
-For every \(x,x'\), \(p_{x,z}\ge\eta p_{x',z}\), where \(\eta=(k_-/k_+)^2\). Subtracting this common part of two probability densities gives
+For every \(x,x'\), \(p_{x,z}\ge\eta p_{x',z}\), where \(\eta=(k_-/k_+)^2\). If \(\eta&lt;1\), write
+\[
+p_{x,z}=\eta p_{x',z}+(1-\eta)q_{x,x',z},\qquad q_{x,x',z}\ge0,\quad\int q_{x,x',z}\,\mathrm{d}\nu=1.
+\]
+The ratio estimate follows from
+\[
+\frac{p_{x,z}(y)}{p_{x',z}(y)}
+=\frac{K(x,y)}{K(x',y)}\frac{\int K(x',w)e^{z(w)}\,\mathrm{d}\nu(w)}{\int K(x,w)e^{z(w)}\,\mathrm{d}\nu(w)}
+\ge(k_-/k_+)^2=\eta.
+\]
+Thus the derivative difference is \((1-\eta)(\int wq_{x,x',z}\,\mathrm{d}\nu-\int wp_{x',z}\,\mathrm{d}\nu)\), whose absolute value is at most \((1-\eta)(\sup w-\inf w)\). When \(\eta=1\), the two densities coincide. This proves
 \[
 |D L_K(z)[w](x)-D L_K(z)[w](x')|
 \le(1-\eta)\operatorname{osc}w.
 \]
-Integrating the derivative along the segment from \(z'\) to \(z\) yields
+For the segment \(z_t=z'+t(z-z')\), boundedness of \(z,z',w,K\) justifies differentiation under the integral by dominated convergence. The fundamental theorem of calculus gives
+\[
+L_Kz-L_Kz'=\int_0^1 DL_K(z_t)[z-z']\,\mathrm{d}t.
+\]
+Taking the oscillation gives
 \[
 \operatorname{osc}(L_Kz-L_Kz')\le q\operatorname{osc}(z-z'),\qquad q=1-\eta&lt;1.
 \]
 The transposed operator satisfies the same bound, so \(F\) is a contraction with factor \(q^2\) modulo additive constants.</p>
-<p>Fix \(y_0\in Y\). On the complete space \(\{z\in C(Y):z(y_0)=0\}\), the oscillation is a norm equivalent to the uniform norm. The map \(z\mapsto F(z)-F(z)(y_0)\) is a contraction, hence has a unique fixed point. For this point \(F(z)=z+\kappa\). Set \(v=e^z\), \(u=1/(Kv)\). The first marginal of \(uKv\,\mu\otimes\nu\) is \(\mu\); the fixed-point equation says its second marginal is \(e^{-\kappa}\nu\). Comparing total masses forces \(\kappa=0\). This proves existence of the scaling and uniqueness modulo reciprocal constants. Iteration converges in oscillation, and after normalization uniformly; therefore the scaled densities converge uniformly as well.</p>
-<p>For matrices, interpret the integrals as sums with weights \(a_i,b_j\). If \(u^{\rm rel},v^{\rm rel}\) denote these relative factors, the absorbed factors in the algorithm are \(u_i=a_i u_i^{\rm rel}\), \(v_j=b_j v_j^{\rm rel}\). The two updates are exactly the fixed-point iteration just proved. Normalization changes neither the matrix nor the iterates' marginal residuals, so the matrices converge to the unique scaling. The contraction constant can approach one when the kernel is poorly conditioned; this proof gives convergence without a uniform small-\(\varepsilon\) iteration bound.</p></div>
+<p>Fix \(y_0\in Y\). On the complete space \(\{z\in C(Y):z(y_0)=0\}\), the oscillation is a norm equivalent to the uniform norm. The map \(z\mapsto F(z)-F(z)(y_0)\) is a contraction, hence has a unique fixed point. For this point \(F(z)=z+\kappa\). Set \(v=e^z\), \(u=1/(Kv)\). The two marginal densities are
+\[
+u(x)(Kv)(x)=1,\qquad
+v(y)(K^\top u)(y)=e^{z(y)}e^{-F(z)(y)}=e^{-\kappa}.
+\]
+Integrating both marginals gives \(1=e^{-\kappa}\), hence \(\kappa=0\). This proves existence of the scaling and uniqueness modulo reciprocal constants. For the normalized iteration \(z_{n+1}=F(z_n)-F(z_n)(y_0)\), Banach's estimate gives
+\[
+\|z_n-z_*\|_\infty\le\operatorname{osc}(z_n-z_*)\le q^{2n}\operatorname{osc}(z_0-z_*).
+\]
+Thus \(v_n=e^{z_n}\to v_*\) uniformly. The lower bound \(Kv_n\ge k_-\min v_n>0\) uniformly for large \(n\) gives \(u_{n+1}=1/(Kv_n)\to u_*\) uniformly. The unnormalized next column factor is \(v_{n+1}^{\mathrm{raw}}=e^{F(z_n)}\to e^{F(z_*)}=v_*\). Therefore
+\[
+u_{n+1}Kv_n\longrightarrow u_*Kv_*,\qquad
+u_{n+1}Kv_{n+1}^{\mathrm{raw}}\longrightarrow u_*Kv_*
+\]
+uniformly. These are the row-updated and column-updated densities. Dividing \(v_{n+1}^{\mathrm{raw}}\) by a normalization constant and multiplying its paired \(u\)-factor by that same constant leaves the density unchanged.</p>
+<p>For matrices, interpret the integrals as sums with weights \(a_i,b_j\). If \(u^{\rm rel},v^{\rm rel}\) denote these relative factors, the absorbed factors in the algorithm are \(u_i=a_i u_i^{\rm rel}\), \(v_j=b_j v_j^{\rm rel}\). The two updates are exactly the fixed-point iteration just proved. Normalization changes neither the matrix nor the iterates' marginal residuals, so the matrices converge to the unique scaling. The contraction constant can approach one when the kernel is poorly conditioned; this proof gives convergence without a uniform small-\(\varepsilon\) iteration bound.</p>
+</div>
 
     <h3>Small-regularization limit</h3>
 
@@ -155,16 +229,27 @@ The transposed operator satisfies the same bound, so \(F\) is a contraction with
         Every weak limit point of \(\pi_\varepsilon\) is an unregularized optimal plan. If several unregularized optimizers exist, \(\pi_\varepsilon\) selects the one minimizing \(\operatorname{KL}(\pi\,\|\,\mu\otimes\nu)\), when this selection problem is finite.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(C_*=\operatorname{OT}_0(\mu,\nu)\), and take an optimal \(\pi_*\). Partition \(X,Y\) into finitely many Borel cells \(A_i,B_j\) of diameter at most \(\delta\), discarding zero-mass cells. With \(a_i=\mu(A_i)\), \(b_j=\nu(B_j)\), \(p_{ij}=\pi_*(A_i\times B_j)\), put
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(C_*=\operatorname{OT}_0(\mu,\nu)\), and take an optimal \(\pi_*\). Partition \(X,Y\) into finitely many Borel cells \(A_i,B_j\) of diameter at most \(\delta\), discarding zero-mass cells. With \(a_i=\mu(A_i)\), \(b_j=\nu(B_j)\), \(p_{ij}=\pi_*(A_i\times B_j)\), put
 \[
 \pi^\delta=\sum_{ij}p_{ij}\frac{\mu|_{A_i}}{a_i}\otimes\frac{\nu|_{B_j}}{b_j}.
 \]
-Its marginals are \(\mu,\nu\); its density on each block is \(p_{ij}/(a_i b_j)\). Hence
+For Borel \(E\subset X\), the row sums \(\sum_jp_{ij}=a_i\) give
+\[
+\pi^\delta(E\times Y)=\sum_{ij}p_{ij}\frac{\mu(E\cap A_i)}{a_i}
+=\sum_i\mu(E\cap A_i)=\mu(E).
+\]
+The column calculation gives \(\nu\). Its density on each block is \(p_{ij}/(a_i b_j)\). Hence
 \[
 H_\delta=\operatorname{KL}(\pi^\delta\|\mu\otimes\nu)
 =\sum_{ij:p_{ij}>0}p_{ij}\log\frac{p_{ij}}{a_i b_j}&lt;\infty.
 \]
-The two plans assign the same mass to every block. Uniform continuity of \(c\) therefore gives \(|\int c\,\mathrm{d}\pi^\delta-C_*|\le\omega_c(2\delta)\), where \(\omega_c(r)\to0\). Nonnegativity of entropy and comparison with \(\pi^\delta\) yield
+The two plans assign the same mass to every block. Writing \(c^-_{ij},c^+_{ij}\) for the infimum and supremum on each block, both cost integrals belong to \([\sum p_{ij}c^-_{ij},\sum p_{ij}c^+_{ij}]\). Thus
+\[
+\left|\int c\,\mathrm{d}\pi^\delta-\int c\,\mathrm{d}\pi_*\right|
+\le\sum_{ij}p_{ij}(c^+_{ij}-c^-_{ij})\le\omega_c(2\delta)\sum_{ij}p_{ij}=\omega_c(2\delta).
+\]
+Uniform continuity of \(c\) therefore gives \(|\int c\,\mathrm{d}\pi^\delta-C_*|\le\omega_c(2\delta)\), where \(\omega_c(r)\to0\). Nonnegativity of entropy and comparison with \(\pi^\delta\) yield
 \[
 C_*\le\operatorname{OT}_\varepsilon
 \le C_*+\omega_c(2\delta)+\varepsilon H_\delta.
@@ -176,15 +261,40 @@ C_*+\varepsilon H(\pi_\varepsilon)
 \le\int c\,\mathrm{d}\pi_\varepsilon+\varepsilon H(\pi_\varepsilon)
 \le C_*+\varepsilon H(\widehat\pi).
 \]
-Thus \(H(\pi_\varepsilon)\le H(\widehat\pi)\). Entropy lower semicontinuity gives the same inequality for every limit plan and every finite-entropy optimal competitor. Strict convexity of entropy on the convex optimal set makes this selected plan unique; compactness then gives convergence of the full family.</p></div>
+Thus \(H(\pi_\varepsilon)\le H(\widehat\pi)\). For any convergent subsequence \(\pi_{\varepsilon_k}\Rightarrow\bar\pi\), lower semicontinuity gives
+\[
+H(\bar\pi)\le\liminf_kH(\pi_{\varepsilon_k})\le H(\widehat\pi).
+\]
+This holds for every finite-entropy optimal competitor \(\widehat\pi\). Strict convexity of entropy on the convex optimal set makes this selected plan unique; compactness then gives convergence of the full family.</p>
+</div>
 
     <h3>Large-regularization limit</h3>
 <div class="math-statement proposition"><p><span class="statement-title">Independence limit.</span> In the compact setting, \(\pi_\varepsilon\to\mu\otimes\nu\) in total variation and \(\operatorname{OT}_\varepsilon\to C_0=\int c\,\mathrm{d}(\mu\otimes\nu)\) as \(\varepsilon\to\infty\).</p></div>
-<div class="math-statement proof"><p><span class="statement-title">Proof.</span> Comparing with the product plan gives \(\int c\,\mathrm{d}\pi_\varepsilon+\varepsilon H(\pi_\varepsilon)\le C_0\). Since \(c\ge m=\min c\), \(0\le H(\pi_\varepsilon)\le(C_0-m)/\varepsilon\to0\). Pinsker's inequality gives total-variation convergence to the reference product law. Boundedness of \(c\) then gives \(\int c\,\mathrm{d}\pi_\varepsilon\to C_0\). Finally,
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put \(R=\mu\otimes\nu\), \(C_0=\int c\,\mathrm{d}R\), \(m=\min c\). Comparison with \(R\) gives
 \[
-\int c\,\mathrm{d}\pi_\varepsilon\le\operatorname{OT}_\varepsilon\le C_0,
+\int c\,\mathrm{d}\pi_\varepsilon+\varepsilon H(\pi_\varepsilon\mid R)\le C_0,
+\qquad 0\le H(\pi_\varepsilon\mid R)\le\frac{C_0-m}{\varepsilon}\to0.
 \]
-so the objective converges too. This last squeeze is needed: \(H\to0\) alone would not imply \(\varepsilon H\to0\).</p></div>
+Use the convention \(\|P-Q\|_{\mathrm{TV}}=\sup_A|P(A)-Q(A)|\). Pinsker's inequality yields
+\[
+\|\pi_\varepsilon-R\|_{\mathrm{TV}}
+\le\sqrt{H(\pi_\varepsilon\mid R)/2}\to0,
+\quad
+\left|\int c\,\mathrm{d}\pi_\varepsilon-C_0\right|
+\le2\|c\|_\infty\|\pi_\varepsilon-R\|_{\mathrm{TV}}\to0.
+\]
+Nonnegativity of entropy and the comparison bound now sandwich the full objective:
+\[
+\int c\,\mathrm{d}\pi_\varepsilon\le\operatorname{OT}_\varepsilon\le C_0.
+\]
+Both endpoints tend to \(C_0\), so \(\operatorname{OT}_\varepsilon\to C_0\). In particular
+\[
+\varepsilon H(\pi_\varepsilon\mid R)
+=\operatorname{OT}_\varepsilon-\int c\,\mathrm{d}\pi_\varepsilon\to0.
+\]
+This establishes convergence of the penalty as well as the plan.</p>
+</div>
 
 <h3>Smooth dependence on the marginals</h3>
     <p>For fixed \(\varepsilon>0\) and positive kernels, dual potentials are unique modulo constants and vary smoothly with positive discrete marginals. The envelope theorem gives

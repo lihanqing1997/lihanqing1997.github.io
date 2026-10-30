@@ -19,16 +19,36 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
     \]
     It averages locations through transport rather than averaging densities.</p></div>
     <div class="math-statement theorem"><p><span class="statement-title">Existence and uniqueness.</span> A barycenter exists. If at least one input \(\mu_j\) is absolutely continuous, it is unique.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Existence.</span> Comparing a minimizing sequence \(\nu_n\) with a fixed competitor bounds \(W_2(\nu_n,\mu_1)\), hence bounds its second moments. This gives tightness and a weakly convergent subsequence, \(\nu_n\Rightarrow\nu\). Portmanteau gives \(\nu\in\mathcal P_2\). For each \(i\), optimal plans between \(\nu_n\) and \(\mu_i\) have weakly convergent subsequences with limiting marginals \(\nu,\mu_i\); lower semicontinuity of squared distance yields
-    \[
-    W_2^2(\nu,\mu_i)\le\liminf_nW_2^2(\nu_n,\mu_i).
-    \]
-    The finite weighted sum is therefore lower semicontinuous, so \(\nu\) is a minimizer. We used weak compactness, not a false assertion of \(W_2\)-compactness from bounded moments.</p>
-    <p><span class="statement-title">Uniqueness.</span> Each \(W_2^2(\mu_i,\cdot)\) is convex under ordinary mixtures: mix two optimal plans to obtain a feasible plan for the mixed target. If \(\mu_j\) is absolutely continuous, this convexity is strict between distinct targets \(\nu_0,\nu_1\). Indeed, equality would make
-    \[
-    (1-t)(\operatorname{id},T_0)_\#\mu_j+t(\operatorname{id},T_1)_\#\mu_j
-    \]
-    optimal for the mixed target. Brenier's theorem forces its conditional distribution \((1-t)\delta_{T_0(x)}+t\delta_{T_1(x)}\) to be a Dirac mass. Thus \(T_0=T_1\) almost everywhere, implying \(\nu_0=\nu_1\), a contradiction. Since \(\lambda_j>0\), \(\mathcal V\) is strictly mixture-convex.</p></div>
+    <div class="math-statement proof">
+<p><span class="statement-title">Existence.</span> Recall \(\mathcal V(\nu)=\tfrac12\sum_i\lambda_iW_2^2(\nu,\mu_i)\), where \(\lambda_i>0\), \(\sum_i\lambda_i=1\). Choose a minimizing sequence with \(\mathcal V(\nu_n)\le C&lt;\infty\). Then
+\[
+W_2^2(\nu_n,\mu_1)\le2C/\lambda_1,\qquad
+\int|z|^2\,\mathrm{d}\nu_n(z)
+\le2W_2^2(\nu_n,\mu_1)+2\int|x|^2\,\mathrm{d}\mu_1(x)\le M.
+\]
+The moment bound follows by integrating \(|z|^2\le2|z-x|^2+2|x|^2\) against an optimal coupling. Markov gives \(\nu_n(|z|>R)\le M/R^2\), so Prokhorov gives a weakly convergent subsequence \(\nu_{n_k}\Rightarrow\nu\). Portmanteau yields \(\int|z|^2\,\mathrm{d}\nu\le M\).</p>
+<p>For each \(i\), take a further subsequence realizing the liminf of \(W_2^2(\nu_{n_k},\mu_i)\), and then a weak limit \(\pi_i\) of the corresponding optimal couplings. Its marginals are \(\nu,\mu_i\), and
+\[
+W_2^2(\nu,\mu_i)\le\int|z-x|^2\,\mathrm{d}\pi_i
+\le\liminf_kW_2^2(\nu_{n_k},\mu_i).
+\]
+For the finite nonnegative sum,
+\[
+\inf\mathcal V\le\mathcal V(\nu)
+\le\tfrac12\sum_i\lambda_i\liminf_kW_2^2(\nu_{n_k},\mu_i)
+\le\liminf_k\mathcal V(\nu_{n_k})=\inf\mathcal V.
+\]
+Hence \(\nu\) is a barycenter.</p>
+<p><span class="statement-title">Uniqueness.</span> If \(\pi_{i,0},\pi_{i,1}\) optimally couple \(\mu_i\) to \(\nu_0,\nu_1\), then \((1-t)\pi_{i,0}+t\pi_{i,1}\) couples \(\mu_i\) to \(\nu_t=(1-t)\nu_0+t\nu_1\), giving
+\[
+W_2^2(\mu_i,\nu_t)\le(1-t)W_2^2(\mu_i,\nu_0)+tW_2^2(\mu_i,\nu_1).
+\]
+For an absolutely continuous \(\mu_j\), write \(\pi_{j,k}=(\operatorname{id},T_k)_\#\mu_j\). If equality held for \(0&lt;t&lt;1\), the mixed plan would be optimal; Brenier forces its conditional laws to be Dirac:
+\[
+(1-t)\delta_{T_0(x)}+t\delta_{T_1(x)}=\delta_{S(x)}\quad\mu_j\text{-a.e.}
+\]
+Evaluating the complement of \(\{S(x)\}\) gives \(T_0=T_1=S\) almost everywhere, hence \(\nu_0=\nu_1\). Thus distinct targets give strict inequality for the \(j\)-th term; since \(\lambda_j>0\), \(\mathcal V\) is strictly convex under mixtures. Two different minimizers would have a midpoint of smaller value, a contradiction.</p>
+</div>
     <p>Absolute continuity of the barycenter itself is a further regularity result, not a consequence of this uniqueness proof. The first-order equation below explicitly assumes it. Ordinary mixture convexity here is compatible with the failure of general geodesic convexity of squared Wasserstein distance.</p>
 
     <h3>First-order optimality</h3>
@@ -42,22 +62,31 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The following argument uses only transport couplings and elementary differentiation, before the general continuity-equation calculus. Perturb \(\bar\mu\) by \(S_\varepsilon=\operatorname{id}+\varepsilon\xi\), with smooth compactly supported \(\xi\). Coupling \(S_\varepsilon(x)\) with \(T_i(x)\) gives
+<p><span class="statement-title">Proof.</span> The following argument uses only transport couplings and elementary differentiation, before the general continuity-equation calculus. Perturb \(\bar\mu\) by \(S_\varepsilon=\operatorname{id}+\varepsilon\xi\), with smooth compactly supported \(\xi\). Coupling \(S_\varepsilon(x)\) with \(T_i(x)\) gives
         \[
         W_2^2(S_{\varepsilon\#}\bar\mu,\mu_i)
         \le\int|x+\varepsilon\xi(x)-T_i(x)|^2\,\mathrm{d}\bar\mu(x).
         \]
-        Writing \(B=\int\xi\cdot\sum_i\lambda_i(x-T_i(x))\,\mathrm{d}\bar\mu\), expansion and minimality give
+        The expansion used here is
+\[
+|x+\varepsilon\xi-T_i|^2=|x-T_i|^2+2\varepsilon(x-T_i)\cdot\xi+\varepsilon^2|\xi|^2.
+\]
+Writing \(B=\int\xi\cdot\sum_i\lambda_i(x-T_i(x))\,\mathrm{d}\bar\mu\), expansion and minimality give
         \[
         0\le\mathcal V(S_{\varepsilon\#}\bar\mu)-\mathcal V(\bar\mu)
         \le\varepsilon B+\frac{\varepsilon^2}{2}\int|\xi|^2\,\mathrm{d}\bar\mu.
         \]
-        Divide separately for \(\varepsilon>0\) and \(\varepsilon&lt;0\) and let \(\varepsilon\to0\); this forces \(B=0\), namely
+        Put \(Q=\int|\xi|^2\,\mathrm{d}\bar\mu\). For \(\varepsilon>0\), \(B\ge-\varepsilon Q/2\); for \(\varepsilon&lt;0\), \(B\le-\varepsilon Q/2\). Passing to zero from the respective sides gives \(B\ge0\) and \(B\le0\), namely
         \[
         \int \xi(x)\cdot\sum_i\lambda_i(x-T_i(x))\,\mathrm{d}\bar\mu(x)=0
         \]
-        for every \(\xi\). Hence the vector field in parentheses vanishes almost surely.</p>
-    </div>
+        for every \(\xi\). Let \(G(x)=\sum_i\lambda_i(x-T_i(x))\in L^2(\bar\mu)\). Smooth compactly supported vector fields are dense in \(L^2(\bar\mu;\mathbb R^d)\). Choose \(\xi_n\to G\) in that space; then
+\[
+\int|G|^2\,\mathrm{d}\bar\mu
+=\lim_n\int\xi_n\cdot G\,\mathrm{d}\bar\mu=0,
+\]
+where convergence follows from Cauchy–Schwarz. Thus \(G=0\) almost everywhere.</p>
+</div>
 
     <h3>Multi-marginal formulation</h3>
 
@@ -77,14 +106,39 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Given a candidate \(\nu\), glue optimal couplings of \(\nu\) with all \(\mu_i\) conditionally on the barycenter variable \(z\). For every \(x_1,\ldots,x_N,z\),
-        \[
-        \sum_i\lambda_i|x_i-z|^2
-        =
-        \sum_i\lambda_i|x_i-\bar x_\lambda|^2+|z-\bar x_\lambda|^2.
-        \]
-        The minimum over \(z\) is attained at \(\bar x_\lambda\), giving one inequality. Conversely, any multi-marginal coupling and \(z=\bar x_\lambda\) induce couplings of its law with each \(\mu_i\), giving the other inequality. Both infima are attained by the direct method. If the starting \(\nu\) is a barycenter, the same identity and equality of the infima force \(\mathbb E|z-\bar x_\lambda|^2=0\) in the glued plan. Thus <em>every</em> barycenter is the weighted-sum law of an optimal input coupling, the fact used in the stability proof below.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Write \(B(x_1,\ldots,x_N)=\sum_i\lambda_ix_i\). Expanding around \(B\) and using \(\sum_i\lambda_i(x_i-B)=0\) gives
+\[
+\begin{aligned}
+\sum_i\lambda_i|x_i-z|^2
+&amp;=\sum_i\lambda_i|x_i-B|^2+2(B-z)\cdot\sum_i\lambda_i(x_i-B)+\sum_i\lambda_i|B-z|^2\\
+&amp;=\sum_i\lambda_i|x_i-B|^2+|B-z|^2.
+\end{aligned}
+\]
+Let \(I\) be the infimum on the left in the theorem, and \(J\) the multi-marginal infimum. Given \(\nu\), disintegrate optimal couplings as \(\pi_i(\mathrm{d}z,\mathrm{d}x_i)=\nu(\mathrm{d}z)K_i(z,\mathrm{d}x_i)\), and glue them by
+\[
+P(\mathrm{d}z,\mathrm{d}x_1\cdots\mathrm{d}x_N)
+=\nu(\mathrm{d}z)\prod_iK_i(z,\mathrm{d}x_i).
+\]
+The input marginal \(\gamma=(x_1,\ldots,x_N)_\#P\) is feasible, and
+\[
+\sum_i\lambda_iW_2^2(\nu,\mu_i)
+=\int\sum_i\lambda_i|x_i-z|^2\,\mathrm{d}P
+\ge\int\sum_i\lambda_i|x_i-B|^2\,\mathrm{d}\gamma\ge J.
+\]
+Taking the infimum in \(\nu\) gives \(I\ge J\).</p>
+<p>Conversely, given \(\gamma\in\Pi(\mu_1,\ldots,\mu_N)\), set \(\nu=B_\#\gamma\). Jensen gives \(\int|B|^2\,\mathrm{d}\gamma\le\sum_i\lambda_i\int|x_i|^2\,\mathrm{d}\mu_i&lt;\infty\), so \(\nu\in\mathcal P_2\). The laws \((B,x_i)_\#\gamma\) are feasible couplings; therefore
+\[
+I\le\sum_i\lambda_iW_2^2(\nu,\mu_i)
+\le\int\sum_i\lambda_i|B-x_i|^2\,\mathrm{d}\gamma.
+\]
+Taking the infimum gives \(I\le J\). The input coupling set is tight and weakly closed, hence compact; the nonnegative continuous cost is lower semicontinuous in its integral and finite on the product coupling. The direct method gives a minimizer \(\gamma_*\). The last inequalities are then equalities, making \(B_\#\gamma_*\) a barycenter.</p>
+<p>If the starting \(\nu\) was a barycenter, its glued plan satisfies
+\[
+I=\int\sum_i\lambda_i|x_i-B|^2\,\mathrm{d}\gamma+\int|B-z|^2\,\mathrm{d}P
+\ge J+\int|B-z|^2\,\mathrm{d}P=I+\int|B-z|^2\,\mathrm{d}P.
+\]
+Hence \(B=z\) almost surely and \(\gamma\) is optimal. Thus every barycenter has the asserted representation.</p>
+</div>
 
     <h3>One-dimensional barycenters</h3>
 
@@ -97,13 +151,17 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> By the one-dimensional formula,
-        \[
-        \mathcal V(\nu)=\frac12\int_0^1
-        \sum_i\lambda_i|F_\nu^{-1}(u)-F_{\mu_i}^{-1}(u)|^2\,\mathrm{d}u.
-        \]
-        Pointwise minimization in \(F_\nu^{-1}(u)\) gives the weighted average. It remains nondecreasing because it is a positive combination of nondecreasing functions, so it is a valid quantile.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(Q_i=F_{\mu_i}^{-1}\), \(\bar Q=\sum_i\lambda_iQ_i\). For every real \(q\), expansion gives
+\[
+\sum_i\lambda_i|q-Q_i(u)|^2
+=|q-\bar Q(u)|^2+\sum_i\lambda_i|\bar Q(u)-Q_i(u)|^2.
+\]
+The cross term is zero because \(\sum_i\lambda_i(\bar Q-Q_i)=0\). Since \(\bar Q\) is nondecreasing and \(\|\bar Q\|_2\le\sum_i\lambda_i\|Q_i\|_2&lt;\infty\), it is almost everywhere the quantile of \(\bar\mu=\bar Q_\#\lambda\in\mathcal P_2\). For any \(\nu\in\mathcal P_2(\mathbb R)\), integrating the identity gives
+\[
+\mathcal V(\nu)=\tfrac12\|F_\nu^{-1}-\bar Q\|_{L^2(0,1)}^2+\mathcal V(\bar\mu).
+\]
+Thus \(\bar\mu\) minimizes. Equality forces \(F_\nu^{-1}=\bar Q\) almost everywhere, hence \(\nu=\bar\mu\), proving uniqueness.</p>
+</div>
 
     <h3>Gaussian barycenters</h3>
 
@@ -125,19 +183,63 @@ note_next_url: "/notes/optimal-transport/continuity-equation/"
     \[
     \bar\Sigma^{1/2}=\sum_i\lambda_i\Sigma_i^{1/2}.
     \]</p>
-<div class="math-statement proof"><p><span class="statement-title">Proof in the commuting case.</span> Simultaneously diagonalize the covariances, with coordinate standard deviations \(s_{i\ell}>0\). For any joint coupling of the Gaussian inputs, its multi-marginal objective is
+<div class="math-statement proof">
+<p><span class="statement-title">Proof in the commuting case.</span> Choose a common orthonormal basis diagonalizing all covariances, with diagonal entries \(s_{i\ell}^2>0\). For any joint law of the inputs, the variance identity gives
 \[
-\sum_i\lambda_i\mathbb E|X_i|^2-\mathbb E\left|\sum_i\lambda_iX_i\right|^2.
+\mathbb E\sum_i\lambda_i|X_i-\bar X|^2
+=\sum_i\lambda_i\mathbb E|X_i|^2-\mathbb E|\bar X|^2,
+\qquad\bar X=\sum_i\lambda_iX_i.
 \]
-The first term and all means are fixed. For each coordinate, Cauchy–Schwarz gives \(\operatorname{Cov}(X_{i\ell},X_{j\ell})\le s_{i\ell}s_{j\ell}\), so the second term is maximized by \(X_{i\ell}=m_{i\ell}+s_{i\ell}Z_\ell\), with a common vector of independent standard normals \(Z\). This joint law therefore minimizes the objective. Its weighted sum is Gaussian with mean \(\sum_i\lambda_im_i\) and coordinate standard deviations \(\sum_i\lambda_i s_{i\ell}\), proving the formula among all candidate laws. The general matrix theorem above is the external Gaussian barycenter result in the source below.</p></div>
+The first term is fixed. With \(\bar m_\ell=\sum_i\lambda_im_{i\ell}\),
+\[
+\begin{aligned}
+\mathbb E|\bar X|^2
+&amp;=|\bar m|^2+\sum_{\ell=1}^d\sum_{i,j}\lambda_i\lambda_j
+\operatorname{Cov}(X_{i\ell},X_{j\ell})\\
+&amp;\le|\bar m|^2+\sum_{\ell=1}^d\sum_{i,j}\lambda_i\lambda_js_{i\ell}s_{j\ell}
+=|\bar m|^2+\sum_{\ell=1}^d\left(\sum_i\lambda_is_{i\ell}\right)^2.
+\end{aligned}
+\]
+The inequality is Cauchy–Schwarz for each pair of centered coordinates. Equality holds simultaneously for
+\[
+X_{i\ell}=m_{i\ell}+s_{i\ell}Z_\ell,\qquad (Z_1,\ldots,Z_d)\sim N(0,I_d).
+\]
+These have the prescribed Gaussian marginals. Their joint law therefore minimizes the multi-marginal objective, and
+\[
+\bar X_\ell=\bar m_\ell+\left(\sum_i\lambda_is_{i\ell}\right)Z_\ell.
+\]
+The representation theorem proves that this Gaussian law is a barycenter among all probability laws. Uniqueness follows from the absolutely continuous input. The noncommuting matrix theorem stated above is the cited external result.</p>
+</div>
 
 <h3>Stability of barycenters</h3>
     <div class="math-statement theorem"><p><span class="statement-title">Stability.</span> If \(\mu_{i,n}\to\mu_i\) in \(W_2\) with fixed positive weights, barycenters \(\bar\mu_n\) are relatively compact in \(W_2\), and every limit is a barycenter of the limiting inputs. A unique limiting barycenter gives convergence of the whole sequence.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Use the multi-marginal representation above to write each barycenter as the law of \(Z_n=\sum_i\lambda_iX_{i,n}\) under an optimal joint coupling of the inputs. The input \(W_2\)-convergence makes each family \(|X_{i,n}|^2\) uniformly integrable. Jensen gives
-    \[
-    |Z_n|^2\le\sum_i\lambda_i|X_{i,n}|^2.
-    \]
-    A finite sum of uniformly integrable families remains uniformly integrable under arbitrary couplings: on a small-probability event, bound each term by its own tail plus a fixed cutoff times the event probability. Thus the barycenters have uniformly integrable second moments as well as tightness, giving \(W_2\)-compactness. The triangle inequality implies \(\mathcal V_n(\nu_n)\to\mathcal V(\nu)\) whenever \(\nu_n\to\nu\) in \(W_2\). Passing \(\mathcal V_n(\bar\mu_n)\le\mathcal V_n(\nu)\) to a subsequential limit proves optimality. Uniqueness identifies all limits.</p></div>
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Represent each barycenter as \(\bar\mu_n=\mathcal L(Z_n)\), \(Z_n=\sum_i\lambda_iX_{i,n}\), with \(X_{i,n}\sim\mu_{i,n}\) under an optimal input coupling. Put \(S_n=\sum_i\lambda_i|X_{i,n}|^2\); Jensen gives \(|Z_n|^2\le S_n\). Input \(W_2\)-convergence implies
+\[
+M:=\sup_n\mathbb ES_n&lt;\infty,\qquad
+\tau(L):=\sum_i\lambda_i\sup_n\mathbb E[|X_{i,n}|^2\mathbf1_{\{|X_{i,n}|^2>L\}}]\to0.
+\]
+For any event \(E\),
+\[
+\mathbb E[S_n\mathbf1_E]\le L\mathbb P(E)+\tau(L).
+\]
+Taking \(E=\{|Z_n|^2>R\}\) and using \(\mathbb P(E)\le M/R\) gives
+\[
+\sup_n\mathbb E[|Z_n|^2\mathbf1_{\{|Z_n|^2>R\}}]\le LM/R+\tau(L).
+\]
+Let \(R\to\infty\), then \(L\to\infty\). Thus the barycenters have uniformly integrable second moments; Markov also gives tightness on \(\mathbb R^d\). The Wasserstein compactness criterion supplies a subsequence \(\bar\mu_{n_k}\to\bar\mu\) in \(W_2\).</p>
+<p>For any \(\nu_n\to\nu\) in \(W_2\), triangle inequality gives
+\[
+|W_2(\nu_n,\mu_{i,n})-W_2(\nu,\mu_i)|
+\le W_2(\nu_n,\nu)+W_2(\mu_{i,n},\mu_i)\to0.
+\]
+Squaring convergent finite numbers and summing gives \(\mathcal V_n(\nu_n)\to\mathcal V(\nu)\). Hence for every fixed competitor \(\eta\),
+\[
+\mathcal V(\bar\mu)=\lim_k\mathcal V_{n_k}(\bar\mu_{n_k})
+\le\lim_k\mathcal V_{n_k}(\eta)=\mathcal V(\eta).
+\]
+Every limit is a barycenter. If the limiting barycenter is unique and the full sequence failed to converge to it, a subsequence at distance at least \(\varepsilon>0\) would have a convergent further subsequence, contradicting this identification.</p>
+</div>
 
     <h3>Population Fréchet means</h3>
     <p>If \(\mathsf Q\) is a probability distribution on \(\mathcal P_2(\mathbb R^d)\), a population barycenter minimizes

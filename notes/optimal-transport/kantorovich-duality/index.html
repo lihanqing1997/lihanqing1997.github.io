@@ -38,14 +38,26 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Using the marginal constraints,
-        \[
-        J(\varphi,\psi)
-        =\int_{X\times Y}\{\varphi(x)+\psi(y)\}\,\mathrm{d}\pi(x,y)
-        \le\int_{X\times Y}c(x,y)\,\mathrm{d}\pi(x,y).
-        \]
-        Taking the supremum on the left and the infimum on the right proves the claim.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Since \(\pi_X=\mu\), \(\pi_Y=\nu\), the pushforward integral identity gives
+\[
+\int\varphi(x)\,\mathrm{d}\pi=\int\varphi\,\mathrm{d}\mu,
+\qquad \int\psi(y)\,\mathrm{d}\pi=\int\psi\,\mathrm{d}\nu.
+\]
+These integrals are finite for the integrable feasible potentials under consideration. Hence
+\[
+\begin{aligned}
+J(\varphi,\psi)
+&amp;=\int(\varphi(x)+\psi(y))\,\mathrm{d}\pi(x,y)\\
+&amp;\le\int c(x,y)\,\mathrm{d}\pi(x,y)
+\qquad\text{because }\varphi(x)+\psi(y)\le c(x,y).
+\end{aligned}
+\]
+For each fixed \(\pi\), take the supremum over feasible potentials; then take the infimum over \(\pi\):
+\[
+D_c\le\int c\,\mathrm{d}\pi\quad(\forall\pi\in\Pi(\mu,\nu))
+\quad\Longrightarrow\quad D_c\le K_c.
+\]</p>
+</div>
 
 <h3>Strong duality</h3>
     <div class="math-statement theorem"><p><span class="statement-title">Kantorovich duality on compact spaces.</span> If \(X,Y\) are compact metric spaces and \(c\) is finite and continuous, then
@@ -55,23 +67,38 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
     \left\{\int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu\right\}.
     \]
     The supremum is attained; its normalization is discussed below.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(\mathcal P(X\times Y)\) be all probability measures on the compact product, and set
-    \[
-    L(\pi,\varphi,\psi)=\int c\,\mathrm{d}\pi+
-    \int\varphi\,\mathrm{d}(\mu-\pi_X)+\int\psi\,\mathrm{d}(\nu-\pi_Y).
-    \]
-    The supremum over continuous potentials is \(\int c\,\mathrm{d}\pi\) when the marginals are correct and \(+\infty\) otherwise: a continuous test function detects any incorrect marginal and can be scaled. Sion's minimax theorem applies because the probability-measure set is compact convex in the weak topology and \(L\) is continuous affine in each variable. Thus
-    \[
-    K_c=\sup_{\varphi,\psi}\left[J(\varphi,\psi)+
-    \min_{x,y}\{c(x,y)-\varphi(x)-\psi(y)\}\right].
-    \]
-    For a fixed pair let the displayed minimum be \(m\). Replacing \(\varphi\) by \(\varphi+m\) gives a feasible pair with objective \(J+m\). Hence \(K_c\le D_c\); weak duality gives equality.</p></div>
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \(Z=X\times Y\), \(V=C(X)\times C(Y)\), and define
+\[
+L(\pi,\varphi,\psi)=\int c\,\mathrm{d}\pi+
+\int\varphi\,\mathrm{d}(\mu-\pi_X)+\int\psi\,\mathrm{d}(\nu-\pi_Y),
+\quad \pi\in\mathcal P(Z).
+\]
+If \(\pi_X\ne\mu\), some \(f\in C(X)\) has \(a=\int f\,\mathrm{d}(\mu-\pi_X)\ne0\). Taking \(\varphi=tf\operatorname{sgn}(a)\), \(\psi=0\), gives \(L=\int c\,\mathrm{d}\pi+t|a|\to\infty\). The other marginal is treated identically. Therefore
+\[
+\sup_{(\varphi,\psi)\in V}L(\pi,\varphi,\psi)
+=\begin{cases}\int c\,\mathrm{d}\pi,&amp;\pi\in\Pi(\mu,\nu),\\+\infty,&amp;\text{otherwise}.\end{cases}
+\]
+The set \(\mathcal P(Z)\) is compact convex in the weak topology, \(V\) is convex, and \(L\) is continuous affine in both variables. Sion's minimax theorem (the convex-analysis input) gives
+\[
+\begin{aligned}
+K_c&amp;=\inf_{\pi\in\mathcal P(Z)}\sup_{(\varphi,\psi)\in V}L
+=\sup_{(\varphi,\psi)\in V}\inf_{\pi\in\mathcal P(Z)}L\\
+&amp;=\sup_{(\varphi,\psi)\in V}\left[J(\varphi,\psi)+\min_{(x,y)\in Z}(c(x,y)-\varphi(x)-\psi(y))\right].
+\end{aligned}
+\]
+The last equality holds because integrating a continuous function against a probability is at least its minimum, with equality for a Dirac mass at a minimizer. Write that minimum as \(m\). Then
+\[
+\varphi(x)+m+\psi(y)\le c(x,y),\qquad J(\varphi+m,\psi)=J(\varphi,\psi)+m\le D_c.
+\]
+Thus \(K_c\le D_c\), and weak duality gives equality. Attainment is proved below by a normalized compactness argument.</p>
+</div>
     <p>On Polish spaces, nonnegative lower-semicontinuous costs also admit strong duality, using bounded continuous feasible potentials for the value formula. Dual attainment does not follow in that generality. The noncompact extension uses approximation and separation; see <a href="https://cvgmt.sns.it/paper/195/">Ambrosio–Gigli, §1.3</a>. In particular, equality of optimal values and existence of maximizing potentials are different claims.</p>
 
     <h3>Complementary slackness</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Optimality certificate.</span> Let \(\pi\in\Pi(\mu,\nu)\) and let \((\varphi,\psi)\) be dual feasible. If both values are finite, then \(\pi\) and \((\varphi,\psi)\) are primal and dual optimal if and only if
+        <p><span class="statement-title">Optimality certificate.</span> Assume strong duality, as in the compact continuous-cost theorem above. Let \(\pi\in\Pi(\mu,\nu)\) and let \((\varphi,\psi)\) be dual feasible. If both values are finite, then \(\pi\) and \((\varphi,\psi)\) are primal and dual optimal if and only if
         \[
         \varphi(x)+\psi(y)=c(x,y)
         \qquad\text{for }\pi\text{-almost every }(x,y).
@@ -79,13 +106,21 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The nonnegative slack \(s=c-\varphi-\psi\) satisfies
-        \[
-        \int s\,\mathrm{d}\pi
-        =\int c\,\mathrm{d}\pi-J(\varphi,\psi).
-        \]
-        If the equality holds \(\pi\)-almost surely, the primal and dual values coincide, so weak duality makes both optimal. Conversely, if both are optimal, strong duality makes the right-hand side zero. A nonnegative measurable function with zero integral vanishes almost surely.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Work under strong-duality hypotheses, in particular the compact continuous-cost setting above. The slack \(s=c-\varphi-\psi\) is nonnegative, and finite primal and dual values give
+\[
+\int s\,\mathrm{d}\pi=\int c\,\mathrm{d}\pi-J(\varphi,\psi).
+\]
+If \(s=0\) \(\pi\)-almost everywhere, weak duality and feasibility give the sandwich
+\[
+J(\varphi,\psi)\le D_c\le K_c\le\int c\,\mathrm{d}\pi=J(\varphi,\psi).
+\]
+Every inequality is equality, proving both optimalities. Conversely, optimality and strong duality imply \(\int s\,\mathrm{d}\pi=K_c-D_c=0\). For each integer \(n\ge1\),
+\[
+0=\int s\,\mathrm{d}\pi\ge n^{-1}\pi(s\ge n^{-1}),\qquad
+\{s>0\}=\bigcup_{n\ge1}\{s\ge n^{-1}\}.
+\]
+Each set in the union has measure zero, so \(\pi(s>0)=0\), which is the contact identity.</p>
+</div>
 
     <p>This criterion converts a global optimization problem into a geometric support condition. One does not need to compare a candidate plan with every competitor; it suffices to find potentials touching the cost on its support.</p>
 
@@ -95,21 +130,36 @@ note_next_url: "/notes/optimal-transport/c-transforms-and-c-convexity/"
         <p><span class="statement-title">Proposition.</span> If \(X,Y\) are compact and \(c\) is continuous, the dual supremum is attained. Potentials are nonunique because \((\varphi+a,\psi-a)\) has the same feasibility and value. One may normalize, for example, by fixing \(\varphi(x_0)=0\).</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Take continuous feasible pairs \((\varphi_n,\psi_n)\) with objectives tending to the dual value. Define
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Let \((\varphi_n,\psi_n)\) be continuous feasible pairs with \(J(\varphi_n,\psi_n)\to D_c\). Set
 \[
-f_n(x)=\inf_y(c(x,y)-\psi_n(y)),\qquad
-g_n(y)=\inf_x(c(x,y)-f_n(x)).
+f_n(x)=\inf_y(c(x,y)-\psi_n(y)),\qquad g_n(y)=\inf_x(c(x,y)-f_n(x)).
 \]
-Then \(f_n\ge\varphi_n\), \(g_n\ge\psi_n\), and \(f_n+g_n\le c\). For all \(x,x',y,y'\),
+Feasibility gives \(f_n\ge\varphi_n\); the inequality \(f_n(x)\le c(x,y)-\psi_n(y)\) gives \(g_n\ge\psi_n\). Also \(f_n+g_n\le c\). Thus
 \[
-|f_n(x)-f_n(x')|\le\sup_y|c(x,y)-c(x',y)|,\quad
-|g_n(y)-g_n(y')|\le\sup_x|c(x,y)-c(x,y')|.
+J(\varphi_n,\psi_n)\le J(f_n,g_n)\le D_c,\qquad J(f_n,g_n)\to D_c.
 \]
-Normalize \(f_n(x_0)=0\) by opposite constant shifts. If \(M=\|c\|_\infty\), the first bound gives \(\|f_n\|_\infty\le2M\); since \(g_n=f_n^c\), also \(\|g_n\|_\infty\le3M\). Uniform continuity of \(c\) makes both families equicontinuous. Arzelà–Ascoli gives a common subsequence converging uniformly to \((f,g)\). The inequality \(f+g\le c\) passes pointwise to the limit, while
+For any families \((a_z),(b_z)\), \(|\inf_z a_z-\inf_z b_z|\le\sup_z|a_z-b_z|\). Therefore
 \[
-\left|\int f_n\,\mathrm{d}\mu-\int f\,\mathrm{d}\mu\right|\le\|f_n-f\|_\infty\to0
+|f_n(x)-f_n(x')|\le\sup_y|c(x,y)-c(x',y)|,
+\quad |g_n(y)-g_n(y')|\le\sup_x|c(x,y)-c(x,y')|.
 \]
-and likewise for \(g_n\). The objectives still tend to the supremum, so the limit attains it.</p></div>
+Replace \((f_n,g_n)\) by \((f_n-f_n(x_0),g_n+f_n(x_0))\), preserving both the objective and \(g_n=f_n^c\). With \(M=\|c\|_\infty\),
+\[
+f_n(x_0)=0,\qquad |f_n(x)|\le2M,\qquad
+-3M\le c(x,y)-f_n(x)\le3M,\qquad |g_n(y)|\le3M.
+\]
+Uniform continuity of \(c\) makes the displayed moduli tend to zero independently of \(n\). Arzelà–Ascoli, applied successively to the two families, gives one subsequence with
+\[
+\|f_{n_k}-f\|_\infty+\|g_{n_k}-g\|_\infty\to0.
+\]
+Pointwise limits give \(f(x)+g(y)\le c(x,y)\). Moreover
+\[
+|J(f_{n_k},g_{n_k})-J(f,g)|
+\le\|f_{n_k}-f\|_\infty+\|g_{n_k}-g\|_\infty\to0.
+\]
+Hence \(J(f,g)=D_c\), proving attainment with \(f(x_0)=0\).</p>
+</div>
 
     <h3>Kantorovich--Rubinstein duality</h3>
 
@@ -123,17 +173,38 @@ and likewise for \(g_n\). The objectives still tend to the supremum, so the limi
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> If \(f\) is \(1\)-Lipschitz, then \(f(x)-f(y)\le d(x,y)\), so \((f,-f)\) is dual feasible and weak duality gives the lower bound. For the reverse direction, start from any feasible \((\varphi,\psi)\) and define
-        \[
-        f(x)=\inf_y\{d(x,y)-\psi(y)\}.
-        \]
-        The triangle inequality shows that \(f\) is \(1\)-Lipschitz. Feasibility gives \(\varphi\le f\), while the definition gives \(f(y)\le-\psi(y)\) by choosing the same point in the infimum. Hence
-        \[
-        \int\varphi\,\mathrm{d}\mu+\int\psi\,\mathrm{d}\nu
-        \le\int f\,\mathrm{d}\mu-\int f\,\mathrm{d}\nu.
-        \]
-        Taking the supremum and invoking Kantorovich duality proves the formula.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Normalize Lipschitz functions by \(f(x_0)=0\); then \(|f(x)|\le d(x,x_0)\), so both integrals are finite. For every coupling,
+\[
+\int f\,\mathrm{d}(\mu-\nu)=\int(f(x)-f(y))\,\mathrm{d}\pi\le\int d(x,y)\,\mathrm{d}\pi.
+\]
+Taking the supremum over 1-Lipschitz \(f\) and the infimum over \(\pi\) gives \(S(\mu,\nu)\le W_1(\mu,\nu)\), where \(S\) denotes the claimed supremum.</p>
+<p><strong>Finite support.</strong> On a finite set \(D\) containing both supports, finite Kantorovich duality gives feasible vectors \(\varphi,\psi\). Define
+\[
+f(x)=\min_{y\in D}\{d(x,y)-\psi(y)\},\qquad x\in D.
+\]
+The triangle inequality gives \(f(x)\le d(x,x')+f(x')\), and swapping \(x,x'\) gives \(|f(x)-f(x')|\le d(x,x')\). Feasibility and the choice \(y=x\) give
+\[
+\varphi(x)\le f(x)\le-\psi(x),\qquad
+J(\varphi,\psi)\le\int f\,\mathrm{d}(\mu-\nu).
+\]
+Thus finite duality proves \(W_1=S\) on \(D\). The extension
+\[
+\widetilde f(x)=\min_{z\in D}\{f(z)+d(x,z)\},\qquad x\in X,
+\]
+is 1-Lipschitz by the same inequality and equals \(f\) on \(D\), so the finite-support formula also holds with test functions on \(X\).</p>
+<p><strong>General measures.</strong> Use the finite quantizations from the Wasserstein separability proof: \(\mu_n=q_{n\#}\mu\), \(\nu_n=q_{n\#}\nu\), with
+\[
+e_n:=\int d(x,q_n(x))\,\mathrm{d}\mu(x)+\int d(y,q_n(y))\,\mathrm{d}\nu(y)\to0.
+\]
+The metric triangle inequality gives \(|W_1(\mu_n,\nu_n)-W_1(\mu,\nu)|\le e_n\). Uniformly over all 1-Lipschitz \(f\),
+\[
+\left|\int f\,\mathrm{d}(\mu_n-\nu_n)-\int f\,\mathrm{d}(\mu-\nu)\right|\le e_n.
+\]
+Taking suprema yields \(|S(\mu_n,\nu_n)-S(\mu,\nu)|\le e_n\). The finite-support equality therefore passes to the limit:
+\[
+W_1(\mu,\nu)=\lim_nW_1(\mu_n,\nu_n)=\lim_nS(\mu_n,\nu_n)=S(\mu,\nu).
+\]</p>
+</div>
 
     <h3>Potentials as sensitivity derivatives</h3>
     <p>Dual potentials also measure the first-order response of the optimal value to changes in the marginals. Formally, if \(\mu_t=\mu+t\sigma\) and \(\nu_t=\nu+t\tau\) preserve total mass, an optimal pair \((\varphi,\psi)\) gives

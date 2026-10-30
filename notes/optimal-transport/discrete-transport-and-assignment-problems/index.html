@@ -39,8 +39,33 @@ note_next_url: "/notes/optimal-transport/wasserstein-distances/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The product matrix \(p_{ij}=a_ib_j\) is feasible, proving nonemptiness. Closedness and boundedness in finite dimension give compactness, and the constraints are linear, giving convexity. There are \(m+n\) equality constraints, but one is redundant because total row mass equals total column mass. To check there is no other dependence, let row coefficients \(\alpha_i\) and column coefficients \(\beta_j\) produce the zero functional on all matrices. The coefficient of \(p_{ij}\) is \(\alpha_i+\beta_j\), hence \(\alpha_i=-\beta_j\) for every \(i,j\). All \(\alpha_i\) are the same constant and all \(\beta_j\) its negative, giving exactly one dependence. The rank is \(m+n-1\). The product matrix is strictly positive, so a relative neighborhood in the equality-constraint affine space remains nonnegative. This proves the affine hull has full dimension \(mn-(m+n-1)=(m-1)(n-1)\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> The product matrix \(P^0=(a_ib_j)\) satisfies
+\[
+\sum_jp^0_{ij}=a_i\sum_jb_j=a_i,\qquad
+\sum_ip^0_{ij}=b_j\sum_ia_i=b_j.
+\]
+Thus \(U(a,b)\ne\varnothing\). Every feasible matrix has \(0\le p_{ij}\le\min(a_i,b_j)\); the equality constraints and the nonnegative orthant are closed. Therefore \(U(a,b)\) is closed and bounded, hence compact. For feasible \(P,Q\),
+\[
+((1-t)P+tQ)\mathbf1=a,\quad ((1-t)P+tQ)^\top\mathbf1=b,\quad (1-t)P+tQ\ge0
+\]
+for \(0\le t\le1\), proving convexity.</p>
+<p>Let \(L(P)=(P\mathbf1,P^\top\mathbf1)\). A dependence among the \(m+n\) constraints has coefficients \((\alpha,\beta)\) satisfying
+\[
+0=\alpha\cdot P\mathbf1+\beta\cdot P^\top\mathbf1
+=\sum_{ij}(\alpha_i+\beta_j)p_{ij}\quad\text{for every }P.
+\]
+Testing matrices with one nonzero entry gives
+\[
+\alpha_i+\beta_j=0\ (\forall i,j)
+\quad\Longleftrightarrow\quad
+\alpha_i=t\ (\forall i),\ \beta_j=-t\ (\forall j).
+\]
+Thus \(\dim\ker L^\top=1\), \(\operatorname{rank}L=m+n-1\), and
+\[
+\dim\{P:L(P)=(a,b)\}=mn-(m+n-1)=(m-1)(n-1).
+\]
+Since \(\delta=\min_{ij}a_ib_j>0\), every \(H\in\ker L\) with \(\|H\|_\infty&lt;\delta\) satisfies \(P^0+H>0\) and is feasible. Hence the polytope contains a relative open neighborhood in this affine space and has that entire space as its affine hull.</p>
+</div>
 
     <h3>Primal and dual linear programs</h3>
 
@@ -55,16 +80,30 @@ note_next_url: "/notes/optimal-transport/wasserstein-distances/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Introduce multipliers \(u_i\) and \(v_j\) for the row and column constraints. The Lagrangian is
-        \[
-        \sum_{i,j}c_{ij}p_{ij}
-        +\sum_i u_i\left(a_i-\sum_jp_{ij}\right)
-        +\sum_j v_j\left(b_j-\sum_ip_{ij}\right)
-        =
-        a\cdot u+b\cdot v+\sum_{i,j}(c_{ij}-u_i-v_j)p_{ij}.
-        \]
-        Its infimum over \(p_{ij}\ge0\) is finite exactly when \(u_i+v_j\le c_{ij}\), in which case it equals \(a\cdot u+b\cdot v\). Finite-dimensional linear-programming duality gives equality of the two optimal values because the primal polytope is nonempty and bounded.</p>
-    </div>
+<p><span class="statement-title">Proof using finite-dimensional linear-programming duality.</span> With row multipliers \(u\in\mathbb R^m\) and column multipliers \(v\in\mathbb R^n\),
+\[
+\begin{aligned}
+L(P,u,v)
+&amp;=\sum_{ij}c_{ij}p_{ij}+\sum_i u_i\left(a_i-\sum_jp_{ij}\right)+\sum_jv_j\left(b_j-\sum_ip_{ij}\right)\\
+&amp;=a\cdot u+b\cdot v+\sum_{ij}(c_{ij}-u_i-v_j)p_{ij}.
+\end{aligned}
+\]
+If some \(c_{ij}-u_i-v_j&lt;0\), taking \(p_{ij}\to\infty\) and all other entries zero makes \(L\to-\infty\). If all coefficients are nonnegative, the minimum over \(P\ge0\) is attained at zero. Therefore
+\[
+\inf_{P\ge0}L(P,u,v)=
+\begin{cases}a\cdot u+b\cdot v,&amp;u_i+v_j\le c_{ij}\ \forall i,j,\\-\infty,&amp;\text{otherwise}.\end{cases}
+\]
+For feasible \(P\) and feasible \((u,v)\), the gap is
+\[
+\sum_{ij}c_{ij}p_{ij}-a\cdot u-b\cdot v
+=\sum_{ij}p_{ij}(c_{ij}-u_i-v_j)\ge0.
+\]
+The primal is feasible and compact, and its objective is finite because \(C\) is a real matrix. The finite-dimensional LP duality theorem therefore gives equality and attainment of the two optimal values. The gap vanishes exactly when every nonnegative summand vanishes:
+\[
+p_{ij}(c_{ij}-u_i-v_j)=0\quad(\forall i,j).
+\]
+Together with equality of optimal values, this proves the complementary-slackness corollary as well.</p>
+</div>
 
     <div class="math-statement corollary">
         <p><span class="statement-title">Complementary slackness.</span> A feasible \(P\) and feasible \((u,v)\) are optimal if and only if
@@ -85,12 +124,36 @@ note_next_url: "/notes/optimal-transport/wasserstein-distances/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Build a bipartite graph with edge \((i,j)\) whenever \(p_{ij}>0\). For any set \(S\) of row vertices, the total mass leaving \(S\) equals \(|S|\), while each neighboring column receives at most one; hence Hall's condition \(|N(S)|\ge|S|\) holds. There is a perfect matching \(\sigma\) supported on positive entries. Let \(\varepsilon=\min_i p_{i,\sigma(i)}>0\). If \(\varepsilon=1\), the matrix is already the matching permutation matrix and we stop. Otherwise
-        \[
-        P=\varepsilon P_\sigma+(1-\varepsilon)Q,
-        \]
-        where \(Q=(P-\varepsilon P_\sigma)/(1-\varepsilon)\) is again doubly stochastic. At least one additional entry becomes zero. Iteration terminates after finitely many steps and gives a convex combination of permutation matrices. A permutation matrix cannot be written as a nontrivial convex combination of other doubly stochastic matrices because its zero pattern forces both matrices in the combination to coincide with it.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Join row \(i\) to column \(j\) when \(p_{ij}>0\). For row set \(S\) with neighbor set \(N(S)\),
+\[
+|S|=\sum_{i\in S}\sum_jp_{ij}
+=\sum_{j\in N(S)}\sum_{i\in S}p_{ij}
+\le\sum_{j\in N(S)}\sum_ip_{ij}=|N(S)|.
+\]
+Hall's matching theorem (the finite combinatorial input) supplies a permutation \(\sigma\) with \(p_{i,\sigma(i)}>0\) for every \(i\). Set \(\varepsilon=\min_i p_{i,\sigma(i)}\). If \(\varepsilon=1\), the row sums force \(P=P_\sigma\). Otherwise \(0&lt;\varepsilon&lt;1\) and
+\[
+Q=\frac{P-\varepsilon P_\sigma}{1-\varepsilon}\ge0,\qquad
+Q\mathbf1=\frac{\mathbf1-\varepsilon\mathbf1}{1-\varepsilon}=\mathbf1,
+\qquad Q^\top\mathbf1=\mathbf1.
+\]
+Thus \(P=\varepsilon P_\sigma+(1-\varepsilon)Q\). At least one selected positive entry becomes zero, and no zero entry becomes positive:
+\[
+\#\{(i,j):q_{ij}>0\}&lt;\#\{(i,j):p_{ij}>0\}.
+\]
+Induction on this finite integer terminates at permutation matrices. Substitution gives \(P=\sum_{r=1}^N\theta_rP_{\sigma_r}\), \(\theta_r\ge0\), \(\sum_r\theta_r=1\).</p>
+<p>If \(P_\sigma=tA+(1-t)B\) with \(0&lt;t&lt;1\) and \(A,B\in\mathcal B_n\), then
+\[
+(P_\sigma)_{ij}=0\ \Longrightarrow\ a_{ij}=b_{ij}=0,
+\qquad \sum_ja_{ij}=\sum_jb_{ij}=1
+\ \Longrightarrow\ a_{i,\sigma(i)}=b_{i,\sigma(i)}=1.
+\]
+Hence \(A=B=P_\sigma\): permutations are extreme. Conversely the convex decomposition shows an extreme matrix must itself be a permutation. Finally, linearity gives
+\[
+\langle C,P\rangle=\sum_r\theta_r\langle C,P_{\sigma_r}\rangle
+\ge\min_\sigma\langle C,P_\sigma\rangle,
+\]
+which proves the assignment corollary after dividing by \(n\) for probability masses.</p>
+</div>
 
     <div class="math-statement corollary">
         <p><span class="statement-title">Assignment corollary.</span> For equal-weight measures with \(m=n\), a linear transport cost has an optimal permutation plan. The Kantorovich relaxation therefore has the same value as the discrete assignment problem, though the relaxed optimizer may be nonunique.</p>
@@ -104,8 +167,23 @@ note_next_url: "/notes/optimal-transport/wasserstein-distances/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Associate a bipartite support graph to \(P\). If its positive edges contain a cycle, add and subtract a small \(\varepsilon\) alternately around the cycle. Both resulting matrices remain feasible and distinct, with \(P\) their midpoint, so \(P\) is not extreme. Thus a vertex has acyclic support. A forest on \(m+n\) vertices has at most \(m+n-1\) edges. Nondegeneracy means the support is a spanning tree, giving equality.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Suppose the positive support contains a simple cycle with edges \((i_r,j_r)\), \((i_{r+1},j_r)\), \(1\le r\le k\), where \(i_{k+1}=i_1\). Define \(H\) by
+\[
+h_{i_rj_r}=1,\qquad h_{i_{r+1}j_r}=-1,
+\qquad h_{ij}=0\text{ off the cycle}.
+\]
+Each row and column of \(H\) sums to zero. For \(0&lt;\varepsilon&lt;\min\{p_{ij}:(i,j)\text{ lies on the cycle}\}\),
+\[
+P^\pm=P\pm\varepsilon H\ge0,\quad
+P^\pm\mathbf1=a,\quad (P^\pm)^\top\mathbf1=b,
+\quad P=\tfrac12(P^++P^-),\quad P^+\ne P^-.
+\]
+So a vertex cannot have a cycle. Its support is a forest on \(m+n\) vertices; with \(k\ge1\) connected components, the number of positive entries is
+\[
+|E|=(m+n)-k\le m+n-1.
+\]
+A nondegenerate basic feasible solution has as many positive variables as the constraint rank, namely \(m+n-1\). Its forest therefore has \(k=1\), so it is a spanning tree.</p>
+</div>
 
     <h3>A complete two-by-three example</h3>
 

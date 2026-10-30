@@ -37,13 +37,26 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Let \(\pi\) be an optimal coupling and \(\mu_t=((1-t)x+ty)_\#\pi\). Pointwise \(\lambda\)-convexity of \(V\) gives
-        \[
-        V((1-t)x+ty)
-        \le(1-t)V(x)+tV(y)-\frac{\lambda}{2}t(1-t)|x-y|^2.
-        \]
-        Integrate with respect to \(\pi\), and use \(\int|x-y|^2\,\mathrm{d}\pi=W_2^2(\mu_0,\mu_1)\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> The Hessian bound means \(x\mapsto V(x)-\lambda|x|^2/2\) is convex. Its convexity inequality and the identity
+\[
+|(1-t)x+ty|^2=(1-t)|x|^2+t|y|^2-t(1-t)|x-y|^2
+\]
+give
+\[
+V((1-t)x+ty)\le(1-t)V(x)+tV(y)-\tfrac\lambda2t(1-t)|x-y|^2.
+\]
+Let \(\pi\) be an optimal coupling and \(F_t(x,y)=(1-t)x+ty\). Since \(\mu_t=F_{t\#}\pi\), integration gives
+\[
+\begin{aligned}
+\mathcal V(\mu_t)&amp;=\int V(F_t(x,y))\,\mathrm{d}\pi\\
+&amp;\le(1-t)\int V(x)\,\mathrm{d}\mu_0+t\int V(y)\,\mathrm{d}\mu_1
+-\tfrac\lambda2t(1-t)\int|x-y|^2\,\mathrm{d}\pi\\
+&amp;=(1-t)\mathcal V(\mu_0)+t\mathcal V(\mu_1)
+-\tfrac\lambda2t(1-t)W_2^2(\mu_0,\mu_1).
+\end{aligned}
+\]
+The Hessian bound supplies a quadratic-affine lower bound for \(V\), so its negative part is integrable for \(\mathcal P_2\) laws. The inequality is therefore meaningful also with infinite positive energy; for finite endpoint energies all terms above are finite.</p>
+</div>
 
     <h3>Interaction energy</h3>
 
@@ -56,22 +69,37 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use two independent copies \((x,y)\), \((x',y')\) of an optimal coupling. Along interpolation,
+<p><span class="statement-title">Proof.</span> Use two independent copies \((x,y)\), \((x',y')\) of an optimal coupling. Along interpolation,
         \[
         x_t-x_t'=(1-t)(x-x')+t(y-y').
         \]
-        Convexity of \(W\), followed by integration over the product coupling, gives
+        Writing \(F_t(x,y)=(1-t)x+ty\), its product pushforward is \(\mu_t\otimes\mu_t\). Thus
+\[
+\begin{aligned}
+\mathcal W(\mu_t)
+&amp;=\tfrac12\iint W((1-t)(x-x')+t(y-y'))\,\mathrm{d}\pi(x,y)\,\mathrm{d}\pi(x',y')\\
+&amp;\le\tfrac{1-t}{2}\iint W(x-x')\,\mathrm{d}\pi\,\mathrm{d}\pi
++\tfrac t2\iint W(y-y')\,\mathrm{d}\pi\,\mathrm{d}\pi\\
+&amp;=(1-t)\mathcal W(\mu_0)+t\mathcal W(\mu_1).
+\end{aligned}
+\]
+This proves
         \[
         \mathcal W(\mu_t)\le(1-t)\mathcal W(\mu_0)+t\mathcal W(\mu_1).
         \]
-        For \(D=y-x\), \(D'=y'-x'\), strong convexity contributes \(-\lambda t(1-t)\mathbb E|D-D'|^2/4\). Independence gives
+        For \(D=y-x\), \(D'=y'-x'\), strong convexity contributes \(-\lambda t(1-t)\mathbb E|D-D'|^2/4\). Expanding and using independence gives
+\[
+\mathbb E[D\cdot D']=\mathbb ED\cdot\mathbb ED'=|\mathbb ED|^2,
+\qquad \mathbb ED=m_1-m_0,
+\]
+and consequently
         \[
         \mathbb E|D-D'|^2=2\mathbb E|D|^2-2|\mathbb ED|^2
         =2\{W_2^2(\mu_0,\mu_1)-|m_1-m_0|^2\},
         \]
         where \(m_i=\int x\,\mathrm{d}\mu_i\). Hence the correction is
         \(-\lambda t(1-t)[W_2^2-|m_1-m_0|^2]/2\). In particular the energy is displacement \(\lambda\)-convex on a fixed-mean class; common translations have zero correction.</p>
-    </div>
+</div>
 
     <h3>Internal energy and McCann's condition</h3>
 
@@ -91,9 +119,31 @@ note_next_url: "/notes/optimal-transport/gradient-flows-in-wasserstein-space/"
         <p><span class="statement-title">McCann displacement-convexity theorem (external result).</span> Under the preceding assumptions, if \(U\) satisfies McCann's condition, then \(\mathcal U\) is displacement convex on \(\mathcal P_2(\mathbb R^d)\).</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof in a precise smooth setting.</span> We prove the conclusion when the endpoints have densities on bounded domains and their Brenier map \(T\) is a \(C^1\) diffeomorphism with \(DT\) positive definite and eigenvalues bounded above and away from zero; assume the densities are bounded above and away from zero on their domains. These conditions make every following integral finite. The general theorem stated above is the nonsmooth result in the cited source.</p>
-<p>Set \(T_t=(1-t)\operatorname{id}+tT\) and \(J_t=\det((1-t)I+tDT)\). Strong monotonicity makes \(T_t\) injective, and its positive Jacobian makes it a diffeomorphism onto its image. Change of variables gives \(\rho_t(T_t(x))=\rho_0(x)/J_t(x)\).</p>
-<p>For a positive matrix with eigenvalues \(a_1,\ldots,a_d\), expand \(\prod_i((1-t)+ta_i)\). The sum of its \(k\)-fold products is at least \(\binom dk(\prod_i a_i)^{k/d}\): apply arithmetic–geometric mean to the \(\binom dk\) products, noting that each \(a_i\) occurs \(\binom{d-1}{k-1}\) times. The binomial expansion then proves
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof in a precise smooth setting.</span> We prove the conclusion when the endpoints have densities on bounded domains and their Brenier map \(T\) is a \(C^1\) diffeomorphism with \(DT\) positive definite and eigenvalues bounded above and away from zero; assume the densities are bounded above and away from zero on their domains. These conditions make every following integral finite. The general theorem stated above is the nonsmooth result in the cited source.</p>
+<p>Set \(T_t=(1-t)\operatorname{id}+tT\) and \(J_t=\det((1-t)I+tDT)\). Strong monotonicity makes \(T_t\) injective, and its positive Jacobian makes it a diffeomorphism onto its image. The change-of-variables formula and pushforward identity imply
+\[
+\int f(T_t(x))\rho_t(T_t(x))J_t(x)\,\mathrm{d}x
+=\int f(z)\rho_t(z)\,\mathrm{d}z
+=\int f(T_t(x))\rho_0(x)\,\mathrm{d}x.
+\]
+Testing arbitrary bounded Borel \(f\) and using invertibility gives \(\rho_t(T_t(x))J_t(x)=\rho_0(x)\) almost everywhere.</p>
+<p>For a positive matrix with eigenvalues \(a_1,\ldots,a_d\), expand \(\prod_i((1-t)+ta_i)\). The sum of its \(k\)-fold products is at least \(\binom dk(\prod_i a_i)^{k/d}\): apply arithmetic–geometric mean to the \(\binom dk\) products, noting that each \(a_i\) occurs \(\binom{d-1}{k-1}\) times. More explicitly, for \(1\le k\le d\),
+\[
+\begin{aligned}
+\frac1{\binom dk}\sum_{|I|=k}\prod_{i\in I}a_i
+&amp;\ge\left(\prod_{|I|=k}\prod_{i\in I}a_i\right)^{1/\binom dk}\\
+&amp;=\left(\prod_{i=1}^d a_i^{\binom{d-1}{k-1}}\right)^{1/\binom dk}
+=\left(\prod_i a_i\right)^{k/d}.
+\end{aligned}
+\]
+Taking the \(k=0\) term to be one,
+\[
+J_t=\sum_{k=0}^d(1-t)^{d-k}t^k\sum_{|I|=k}\prod_{i\in I}a_i
+\ge\sum_{k=0}^d\binom dk(1-t)^{d-k}t^kJ_1^{k/d}
+=((1-t)+tJ_1^{1/d})^d.
+\]
+Taking the positive \(d\)-th root proves
 \[
 J_t^{1/d}\ge(1-t)+tJ_1^{1/d}.
 \]
@@ -103,9 +153,20 @@ J_tU(r/J_t)=H_r(J_t^{1/d})
 \le H_r((1-t)+tJ_1^{1/d})
 \le(1-t)U(r)+tJ_1U(r/J_1).
 \]
-Put \(r=\rho_0(x)\), integrate over the source domain, and change variables by \(T_t\) and \(T\) on the two terms containing Jacobians. This proves
+With \(\Omega_0\) the source domain, substitute \(r=\rho_0(x)\) and integrate:
+\[
+\begin{aligned}
+\mathcal U(\mu_t)
+&amp;=\int_{T_t(\Omega_0)}U(\rho_t(z))\,\mathrm{d}z
+=\int_{\Omega_0}J_tU(\rho_0/J_t)\,\mathrm{d}x\\
+&amp;\le(1-t)\int_{\Omega_0}U(\rho_0)\,\mathrm{d}x
++t\int_{\Omega_0}J_1U(\rho_0/J_1)\,\mathrm{d}x\\
+&amp;=(1-t)\mathcal U(\mu_0)+t\mathcal U(\mu_1).
+\end{aligned}
+\] This proves
 \(\mathcal U(\mu_t)\le(1-t)\mathcal U(\mu_0)+t\mathcal U(\mu_1)\)
-in the stated setting. No smooth-to-rough limit is asserted by this calculation: the general version uses almost-everywhere Jacobians and energy approximation as part of McCann's theorem.</p></div>
+in the stated setting. No smooth-to-rough limit is asserted by this calculation: the general version uses almost-everywhere Jacobians and energy approximation as part of McCann's theorem.</p>
+</div>
 
     <h3>Entropy and porous-medium energies</h3>
 
@@ -150,13 +211,21 @@ in the stated setting. No smooth-to-rough limit is asserted by this calculation:
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply \(\lambda\)-convexity along a geodesic from \(\mu_\star\) to \(\mu\). Minimality gives \(\mathcal F(\mu_\star)\le\mathcal F(\mu_t)\). Rearranging,
-        \[
-        t\{\mathcal F(\mu)-\mathcal F(\mu_\star)\}
-        \ge\frac{\lambda}{2}t(1-t)W_2^2(\mu,\mu_\star).
-        \]
-        Divide by \(t\) and let \(t\downarrow0\). Two minimizers would make the left side zero and hence have zero distance.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> If \(\mathcal F(\mu)=+\infty\), the bound is immediate. Otherwise take a geodesic \(\mu_t\) from the finite-energy minimizer \(\mu_*\) to \(\mu\). Minimality and displacement convexity imply, for \(0&lt;t&lt;1\),
+\[
+\mathcal F(\mu_*)\le\mathcal F(\mu_t)
+\le(1-t)\mathcal F(\mu_*)+t\mathcal F(\mu)-\tfrac\lambda2t(1-t)W_2^2(\mu_*,\mu).
+\]
+Subtract \((1-t)\mathcal F(\mu_*)\) and divide by \(t>0\):
+\[
+\mathcal F(\mu)-\mathcal F(\mu_*)\ge\tfrac\lambda2(1-t)W_2^2(\mu_*,\mu).
+\]
+The distance is finite and independent of \(t\), so \(t\downarrow0\) gives the asserted estimate. If \(\mu\) is another minimizer, then
+\[
+0=\mathcal F(\mu)-\mathcal F(\mu_*)\ge\tfrac\lambda2W_2^2(\mu_*,\mu)\ge0.
+\]
+Because \(\lambda>0\), this forces \(W_2(\mu_*,\mu)=0\), hence \(\mu=\mu_*\).</p>
+</div>
 
     <h3>Generalized geodesics</h3>
     <p>The squared Wasserstein distance is not convex along every ordinary geodesic in dimensions \(d\ge2\). Many variational arguments use generalized geodesics with a common base measure: glue optimal maps from a base \(\omega\) to \(\mu_0,\mu_1\), then interpolate their images. Writing \(\mu_t=((1-t)T_0+tT_1)_\#\omega\), the natural coupling to \(\omega\) gives an upper bound for \(W_2^2(\omega,\mu_t)\) by the corresponding Hilbertian quadratic expression. The interpolated coupling need not itself be optimal. For absolutely continuous \(\omega\), both maps are convex gradients and so is their convex combination, which gives equality in this particular setting.</p>

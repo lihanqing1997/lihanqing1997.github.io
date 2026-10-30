@@ -55,9 +55,28 @@ note_next_url: "/notes/optimal-transport/displacement-interpolation/"
         The latter is an energy-distance or maximum-mean-discrepancy form when \(-c\) induces a positive kernel modulo constants.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The preceding chapter proves convergence of the entropic <em>values</em> for each fixed pair of compactly supported laws. At zero regularization the diagonal coupling gives \(\operatorname{OT}_0(\alpha,\alpha)=0\). Applying the small-regularization theorem to all three terms therefore gives the first limit. At large regularization that chapter proves
-\(\operatorname{OT}_\varepsilon(\alpha,\beta)\to\int c\,\mathrm{d}\alpha\,\mathrm{d}\beta\),
-including the fact that the entropy penalty tends to zero. Substituting this convergence for \((\mu,\nu),(\mu,\mu),(\nu,\nu)\) gives the second displayed expression. Convergence of the plans alone would not control the entropy penalties, which are multiplied by \(\varepsilon\).</p></div>
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Define \(C(\alpha,\beta)=\int c(x,y)\,\alpha(\mathrm{d}x)\beta(\mathrm{d}y)\). The preceding chapter proves convergence of the full entropic values:
+\[
+\operatorname{OT}_\varepsilon(\alpha,\beta)\to
+\begin{cases}\operatorname{OT}_0(\alpha,\beta),&amp;\varepsilon\downarrow0,\\C(\alpha,\beta),&amp;\varepsilon\to\infty.\end{cases}
+\]
+For \(c(x,y)=|x-y|^q\), nonnegativity and the diagonal plan imply
+\[
+0\le\operatorname{OT}_0(\alpha,\alpha)
+\le\int c(x,x)\,\mathrm{d}\alpha(x)=0.
+\]
+All limiting values are finite on compact sets. Taking limits in the finite three-term expression therefore gives
+\[
+\begin{aligned}
+\lim_{\varepsilon\downarrow0}S_\varepsilon(\mu,\nu)
+&amp;=\operatorname{OT}_0(\mu,\nu)-\tfrac12\cdot0-\tfrac12\cdot0,\\
+\lim_{\varepsilon\to\infty}S_\varepsilon(\mu,\nu)
+&amp;=C(\mu,\nu)-\tfrac12C(\mu,\mu)-\tfrac12C(\nu,\nu).
+\end{aligned}
+\]
+These substitutions are justified by convergence of objectives, including their entropy penalties, established in the preceding chapter.</p>
+</div>
 
     <h3>Statistical smoothing and bias</h3>
     <p>For fixed \(\varepsilon>0\), positive kernels make dual potentials smooth functions of the marginals, so \(S_\varepsilon(\widehat\mu_n,\widehat\nu_m)\) can have root-sample Gaussian limits away from degenerate cases under substantially weaker dimensional conditions than unregularized transport. If \(\varepsilon=\varepsilon_n\downarrow0\), inference must balance three terms:
@@ -111,17 +130,34 @@ including the fact that the entropy penalty tends to zero. Substituting this con
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> In the Kantorovich dual, optimize the source potential pointwise:
-        \[
-        \varphi(x)=\min_j\{c(x,y_j)-\psi_j\}.
-        \]
-        Substitution gives \(\Phi\). At almost every \(x\), the minimizing index is unique, because the tie sets are hyperplanes and \(\mu\) has a density. For a coordinate perturbation of size \(h\), the difference quotient of the minimum is bounded by one and converges to \(-\mathbf1_{L_j}(x)\). Dominated convergence therefore yields
-        \[
-        \frac{\partial\Phi}{\partial\psi_j}
-        =b_j-\mu(L_j(\psi)).
-        \]
-        Thus stationarity is exactly the cell-mass condition. Complementary slackness then sends each cell to its defining target point.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> For fixed \(\psi\in\mathbb R^N\), dual feasibility is
+\[
+\varphi(x)\le c(x,y_j)-\psi_j\quad(1\le j\le N),
+\]
+so the largest feasible source potential is \(m_\psi(x)=\min_j(c(x,y_j)-\psi_j)\). Since \(\mu\ge0\), choosing this largest potential maximizes its integral and yields \(\Phi(\psi)=b\cdot\psi+\int m_\psi\,\mathrm{d}\mu\). The minimum of affine functions of \(\psi\) is concave, hence \(\Phi\) is concave. Dual attainment follows from compact continuous-cost duality, restricting \(\mu\) to its compact support.</p>
+<p>For quadratic cost and distinct sites, each tie set satisfies
+\[
+c(x,y_i)-c(x,y_j)=\psi_i-\psi_j,
+\]
+an affine hyperplane with nonzero normal \(y_j-y_i\). Their finite union is Lebesgue-null, hence \(\mu\)-null. At a point with unique minimizing index \(k(x)\), the finite gap to the other indices is positive. Therefore, for sufficiently small \(|h|\),
+\[
+\frac{m_{\psi+he_j}(x)-m_\psi(x)}{h}=-\mathbf1_{\{k(x)=j\}}.
+\]
+For every \(x,h\ne0\), the elementary minimum inequality gives
+\[
+|m_{\psi+he_j}(x)-m_\psi(x)|\le|h|.
+\]
+The quotient is bounded by the integrable constant one; dominated convergence implies
+\[
+\partial_{\psi_j}\Phi=b_j+\int(-\mathbf1_{L_j})\,\mathrm{d}\mu=b_j-\mu(L_j).
+\]
+At an unconstrained maximizer all partial derivatives vanish, so \(\mu(L_j)=b_j\). Define \(T(x)=y_j\) on cell \(j\), resolving null ties arbitrarily. Then
+\[
+T_\#\mu(\{y_j\})=\mu(L_j)=b_j,\qquad
+m_\psi(x)+\psi_j=c(x,y_j)\quad(x\in L_j).
+\]
+The map is feasible and its graph is a dual contact set; the optimality certificate proves it is optimal.</p>
+</div>
 
     <h3>Power diagrams for quadratic cost</h3>
     <p>For \(c(x,y)=\tfrac12|x-y|^2\),
@@ -156,22 +192,40 @@ including the fact that the entropy penalty tends to zero. Substituting this con
         Thus the Hessian is a negative weighted graph Laplacian.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> For \(i\ne j\), put \(g_{ij}(x)=c(x,y_i)-c(x,y_j)\). The inequality defining cell \(i\) against \(j\) is \(g_{ij}(x)\le\psi_i-\psi_j\). Under \(\psi_j\mapsto\psi_j+h\), its threshold decreases by \(h\); cell \(i\) loses a slab of normal thickness \(h/|\nabla g_{ij}|\) along \(F_{ij}\). The coarea formula expresses that slab's mass as
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> For \(i\ne j\), set \(g_{ij}(x)=c(x,y_i)-c(x,y_j)\), \(a=\psi_i-\psi_j\), and
 \[
-\int_{\psi_i-\psi_j-h}^{\psi_i-\psi_j}
-\left(\int_{\{g_{ij}=s\}\cap L_i\text{ against the other sites}}
-\frac{\rho}{|\nabla g_{ij}|}\,\mathrm{d}\mathcal H^{d-1}\right)\mathrm{d}s.
+D_{ij}=\Omega\cap\bigcap_{k\ne i,j}\{c(x,y_i)-c(x,y_k)\le\psi_i-\psi_k\}.
 \]
-The regularity assumptions make the inner integral continuous at the facet level. Changes near intersections of facets have volume \(O(h^2)\), since they have codimension at least two; boundedness of \(\rho\) makes their mass \(o(|h|)\). Dividing by \(h\) gives
+Then \(L_i=D_{ij}\cap\{g_{ij}\le a\}\). Only the last threshold changes under \(\psi_j\mapsto\psi_j+h\); for \(h>0\), it becomes \(a-h\). Thus, exactly up to null boundaries,
 \[
-\partial_{\psi_j}\mu(L_i)=-w_{ij},\qquad
-w_{ij}=\int_{F_{ij}}\frac{\rho}{|\nabla g_{ij}|}\,\mathrm{d}\mathcal H^{d-1}.
+\mu(L_i(\psi+he_j))-\mu(L_i(\psi))
+=-\int_{D_{ij}\cap\{a-h&lt;g_{ij}\le a\}}\rho(x)\,\mathrm{d}x.
 \]
-Since \(\partial_{\psi_i}\Phi=b_i-\mu(L_i)\), the off-diagonal Hessian entry is \(w_{ij}\). Invariance of every cell under \(\psi\mapsto\psi+a\mathbf1\) gives the diagonal entry \(-\sum_{j\ne i}w_{ij}\). Hence for every \(z\in\mathbb R^N\),
+Since \(g_{ij}\) is affine with nonzero gradient, the coarea formula gives
 \[
-z^\top D^2\Phi\,z=-\sum_{i&lt;j}w_{ij}(z_i-z_j)^2\le0.
+\frac{\mu(L_i(\psi+he_j))-\mu(L_i(\psi))}{h}
+=-\frac1h\int_{a-h}^a A_{ij}(s)\,\mathrm{d}s,
+\quad
+A_{ij}(s)=\int_{D_{ij}\cap\{g_{ij}=s\}}\frac{\rho}{|\nabla g_{ij}|}\,\mathrm{d}\mathcal H^{d-1}.
 \]
-Its nullspace consists of vectors constant on each connected component of the positive-weight adjacency graph. In particular it consists only of constants when that graph is connected.</p></div>
+The same formula with oriented integrals holds for \(h&lt;0\). The stated transversality and stable-combinatorics assumptions make \(A_{ij}\) continuous at \(a\): parameterize the parallel slices in a fixed hyperplane; their indicators converge except on codimension-one boundaries within that hyperplane, a null set, and are bounded on a fixed compact set. Continuity and boundedness of \(\rho\) permit dominated convergence in this parameterization. Therefore
+\[
+\left|\frac1h\int_{a-h}^aA_{ij}(s)\,\mathrm{d}s-A_{ij}(a)\right|
+\le\sup_{|s-a|\le|h|}|A_{ij}(s)-A_{ij}(a)|\to0.
+\]
+It follows that \(\partial_{\psi_j}\mu(L_i)=-w_{ij}\), with \(w_{ij}=A_{ij}(a)\). Differentiating \(\partial_{\psi_i}\Phi=b_i-\mu(L_i)\) gives \(H_{ij}=w_{ij}\) for \(i\ne j\).</p>
+<p>The cells satisfy \(L_i(\psi+t\mathbf1)=L_i(\psi)\). Differentiating this identity gives \(\sum_jH_{ij}=0\), hence \(H_{ii}=-\sum_{j\ne i}w_{ij}\). Since \(w_{ij}=w_{ji}\ge0\),
+\[
+\begin{aligned}
+z^\top Hz
+&amp;=-\sum_i\sum_{j\ne i}w_{ij}z_i^2+2\sum_{i&lt;j}w_{ij}z_iz_j\\
+&amp;=-\sum_{i&lt;j}w_{ij}(z_i^2+z_j^2-2z_iz_j)
+=-\sum_{i&lt;j}w_{ij}(z_i-z_j)^2\le0.
+\end{aligned}
+\]
+Equality holds exactly when \(z_i=z_j\) along every edge with \(w_{ij}>0\), namely when \(z\) is constant on each connected component.</p>
+</div>
 
     <p>After fixing a gauge such as \(\sum_j\psi_j=0\), Newton's method solves
     \[

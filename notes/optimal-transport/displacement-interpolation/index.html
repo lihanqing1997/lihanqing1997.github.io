@@ -37,22 +37,25 @@ note_next_url: "/notes/optimal-transport/wasserstein-barycenters-and-frechet-geo
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(s&lt;t\), the joint law of
-        \[
-        x_s=(1-s)x+sy,\qquad x_t=(1-t)x+ty
-        \]
-        under \(\pi\) couples \(\mu_s,\mu_t\). Since \(|x_t-x_s|=(t-s)|y-x|\),
-        \[
-        W_p(\mu_s,\mu_t)\le(t-s)W_p(\mu_0,\mu_1).
-        \]
-        Apply this bound to the intervals \([0,s]\), \([s,t]\), and \([t,1]\). The triangle inequality gives
-        \[
-        W_p(\mu_0,\mu_1)
-        \le W_p(\mu_0,\mu_s)+W_p(\mu_s,\mu_t)+W_p(\mu_t,\mu_1)
-        \le W_p(\mu_0,\mu_1).
-        \]
-        All inequalities are equalities, proving the formula for every \(s,t\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(F_t(x,y)=(1-t)x+ty\), \(D=W_p(\mu_0,\mu_1)\). The law \(\gamma_{s,t}=(F_s,F_t)_\#\pi\) has marginals \(\mu_s,\mu_t\), and
+\[
+\begin{aligned}
+W_p(\mu_s,\mu_t)^p
+&amp;\le\int|F_s(x,y)-F_t(x,y)|^p\,\mathrm{d}\pi\\
+&amp;=|t-s|^p\int|x-y|^p\,\mathrm{d}\pi
+=|t-s|^pD^p.
+\end{aligned}
+\]
+For \(0\le s\le t\le1\), triangle inequality gives the matching lower bound:
+\[
+\begin{aligned}
+W_p(\mu_s,\mu_t)
+&amp;\ge D-W_p(\mu_0,\mu_s)-W_p(\mu_t,\mu_1)\\
+&amp;\ge D-sD-(1-t)D=(t-s)D.
+\end{aligned}
+\]
+Combining bounds yields \(W_p(\mu_s,\mu_t)=|t-s|D\); symmetry handles \(s>t\).</p>
+</div>
 
     <h3>Interpolation induced by a map</h3>
 
@@ -87,18 +90,52 @@ note_next_url: "/notes/optimal-transport/wasserstein-barycenters-and-frechet-geo
         For \(1&lt;p&lt;\infty\), every \(W_p\)-geodesic admits such a representation. This converse is not asserted for \(p=1\): mixture curves can also be \(W_1\)-geodesics.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The measurable-selection theorem for Polish spaces supplies a universally measurable choice of a minimizing geodesic for each endpoint pair: \(\operatorname{Geo}(X)\) is a closed subset of \(C([0,1];X)\), and its continuous endpoint map is onto \(X\times X\). Universal measurability suffices after completing the endpoint coupling. Lifting an optimal coupling by this choice gives a dynamical plan. For \(D=W_p(\mu_0,\mu_1)\), its marginals satisfy \(W_p(\mu_s,\mu_t)\le(t-s)D\). Adding the bounds on \([0,s],[s,t],[t,1]\) and using the endpoint triangle inequality forces equality, proving existence.</p>
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The measurable-selection theorem for Polish spaces supplies a universally measurable choice of a minimizing geodesic for each endpoint pair: \(\operatorname{Geo}(X)\) is a closed subset of \(C([0,1];X)\), and its continuous endpoint map is onto \(X\times X\). Universal measurability suffices after completing the endpoint coupling. If \(S(x,y)\) denotes this choice and \(\pi\) is an optimal endpoint coupling, define \(\boldsymbol\pi=S_\#\pi\). Then
+\[
+(e_0,e_1)_\#\boldsymbol\pi=\pi,\qquad
+\int d(\gamma(s),\gamma(t))^p\,\mathrm{d}\boldsymbol\pi
+=|t-s|^p\int d(x,y)^p\,\mathrm{d}\pi.
+\]
+This is the required dynamical plan. For \(D=W_p(\mu_0,\mu_1)\), its marginals satisfy \(W_p(\mu_s,\mu_t)\le(t-s)D\). Adding the bounds on \([0,s],[s,t],[t,1]\) and using the endpoint triangle inequality forces equality, proving existence.</p>
 <p>For the converse, assume \(p>1\) and take a given constant-speed geodesic. At dyadic times \(t_i=i2^{-n}\), glue optimal successive couplings to a joint law of \(X_i\). Let \(A_i=d(X_{i-1},X_i)\). Then
 \[
 D\le\|d(X_0,X_{2^n})\|_p\le\left\|\sum_iA_i\right\|_p
 \le\sum_i\|A_i\|_p=D.
 \]
-All inequalities are equalities. Equality in the pointwise triangle inequality gives \(d(X_0,X_{2^n})=\sum_iA_i\) almost surely. Strict convexity of \(L^p\) gives \(A_i=2^{-n}d(X_0,X_{2^n})\) almost surely. Applying the triangle inequality to a subchain and its complement then forces
+All inequalities are equalities. Equality in the pointwise triangle inequality gives \(d(X_0,X_{2^n})=\sum_iA_i\) almost surely. Put \(N=2^n\). If \(D>0\), all \(\|A_i\|_p=D/N\). Equality in Minkowski and strict convexity of the \(L^p\) unit ball imply
+\[
+\frac{A_i}{\|A_i\|_p}=\frac{A_j}{\|A_j\|_p}\quad\text{a.s. for all }i,j.
+\]
+Indeed, a convex average of distinct unit vectors has norm strictly less than one. Thus all \(A_i\) are equal; since their sum is \(d(X_0,X_N)\),
+\[
+A_i=N^{-1}d(X_0,X_N)\quad\text{a.s.}
+\] For \(i&lt;j\), upper and lower triangle bounds give
+\[
+\begin{aligned}
+d(X_i,X_j)&amp;\le\sum_{r=i+1}^j A_r,\\
+d(X_i,X_j)&amp;\ge d(X_0,X_N)-\sum_{r=1}^iA_r-\sum_{r=j+1}^NA_r
+=\sum_{r=i+1}^jA_r.
+\end{aligned}
+\]
+Substitution yields
 \[
 d(X_i,X_j)=|t_i-t_j|\,d(X_0,X_{2^n})
 \]
 for every pair of dyadic indices. The endpoint coupling is optimal as well. If \(D=0\), all these variables coincide and the conclusion is immediate.</p>
-<p>To pass to all dyadic times, view each finite joint law as a law on the countable product indexed by all dyadic times, filling missing coordinates with independent variables of their prescribed marginals. These laws are tight: for a given \(\delta>0\), choose a compact set for the \(k\)-th coordinate with failure probability at most \(\delta2^{-k}\), and use the compact product and the union bound. Prokhorov gives a weak limit. Each finite distance equality is a closed constraint and holds for all sufficiently fine grids, so Portmanteau preserves it. The endpoint cost is at most \(D^p\) by lower semicontinuity and at least \(D^p\) by its marginals, hence remains optimal. Almost every dyadic sample is therefore a constant-speed isometry, scaled by its endpoint distance. Completeness of \(X\) extends it uniquely to a continuous geodesic. Evaluation at dyadic times makes this extension measurable into \(C([0,1];X)\); its path law is the required dynamical plan. Continuity identifies its marginals at all remaining times.</p></div>
+<p>To pass to all dyadic times, view each finite joint law as a law on the countable product indexed by all dyadic times, filling missing coordinates with independent variables of their prescribed marginals. These laws are tight: for a given \(\delta>0\), choose a compact set for the \(k\)-th coordinate with failure probability at most \(\delta2^{-k}\), and use the compact product and the union bound. If \(\mathbb D=\{s_1,s_2,\ldots\}\) lists the dyadic times and \(K_k\subset X\) has \(\mu_{s_k}(K_k^c)\le\delta2^{-k}\), then every product-space law \(P_n\) satisfies
+\[
+P_n\left(\left(\prod_kK_k\right)^c\right)\le\sum_kP_n(X_{s_k}\notin K_k)
+\le\sum_k\delta2^{-k}=\delta.
+\]
+The countable compact product is compact. Prokhorov therefore gives a subsequence \(P_{n_j}\Rightarrow P\). Each finite distance equality is a closed constraint and holds for all sufficiently fine grids, so Portmanteau preserves it. The endpoint cost is at most \(D^p\) by lower semicontinuity and at least \(D^p\) by its marginals, hence remains optimal. Almost every dyadic sample is therefore a constant-speed isometry, scaled by its endpoint distance. Completeness of \(X\) extends it uniquely to a continuous geodesic. Evaluation at dyadic times makes this extension measurable into \(C([0,1];X)\); its path law is the required dynamical plan. For \(s_k\in\mathbb D\) with \(s_k\to t\), every lifted path has \(\gamma(s_k)\to\gamma(t)\). For bounded continuous \(f\), dominated convergence gives
+\[
+\int f(\gamma(t))\,\mathrm{d}\boldsymbol\pi
+=\lim_k\int f(\gamma(s_k))\,\mathrm{d}\boldsymbol\pi
+=\lim_k\int f\,\mathrm{d}\mu_{s_k}=\int f\,\mathrm{d}\mu_t,
+\]
+where the last step uses \(W_p\)-continuity of the given curve. This identifies every time marginal.</p>
+</div>
 
     <h3>Displacement versus mixture interpolation</h3>
     <p>The ordinary convex mixture
@@ -137,8 +174,20 @@ for every pair of dyadic indices. The endpoint coupling is optimal as well. If \
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The interpolating map \(T_t=(1-t)\operatorname{id}+tT\) is affine. The image of a Gaussian under an affine map is Gaussian, with the displayed mean and covariance.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Let \(X=m_0+Z\), where \(\mathbb EZ=0\), \(\mathbb EZZ^\top=\Sigma_0\), and set \(B_t=(1-t)I+tA\). Then
+\[
+T_t(X)=(1-t)(m_0+Z)+t(m_1+AZ)
+=\underbrace{(1-t)m_0+tm_1}_{m_t}+B_tZ.
+\]
+This affine image is Gaussian, and its mean and covariance are
+\[
+\mathbb ET_t(X)=m_t+B_t\mathbb EZ=m_t,
+\qquad
+\mathbb E[(T_t(X)-m_t)(T_t(X)-m_t)^\top]
+=B_t\mathbb E[ZZ^\top]B_t^\top=B_t\Sigma_0B_t^\top.
+\]
+The displacement interpolation theorem identifies this family as the \(W_2\)-geodesic.</p>
+</div>
 
     <h3>Uniqueness and branching</h3>
     <p>A unique endpoint coupling and unique base-space geodesics imply a unique displacement interpolation. Nonuniqueness can arise either from several optimal couplings or from branching geodesics in \(X\). In \(\mathbb R^d\) with quadratic cost and absolutely continuous source, Brenier's theorem removes the first ambiguity and straight lines remove the second. On branching metric spaces, the same mass can follow several shortest paths.</p>

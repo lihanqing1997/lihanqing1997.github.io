@@ -19,7 +19,7 @@ note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-
         \[
         f(x)=g(T(x))|\det DT(x)|
         \]
-        for almost every \(x\). If \(T=\nabla u\) with \(u\) convex and \(D^2u>0\), then
+        for almost every \(x\). If \(T=\nabla u\) with \(u\) convex, \(D^2u>0\), and \(g>0\) almost everywhere on \(\Lambda\), then
         \[
         \boxed{\det D^2u(x)=\frac{f(x)}{g(\nabla u(x))}},
         \qquad
@@ -28,17 +28,25 @@ note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For every bounded continuous \(h\),
-        \[
-        \int_\Lambda h(y)g(y)\,\mathrm{d}y
-        =\int_\Omega h(T(x))f(x)\,\mathrm{d}x.
-        \]
-        Changing variables \(y=T(x)\) in the left side gives
-        \[
-        \int_\Omega h(T(x))g(T(x))|\det DT(x)|\,\mathrm{d}x.
-        \]
-        Equality for all \(h\) yields the Jacobian identity. For a convex potential, \(DT=D^2u\) is positive semidefinite, so the absolute value may be removed. The image condition is the second boundary condition, not a pointwise Dirichlet condition.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> The pushforward identity gives, for bounded Borel \(h\),
+\[
+\int_\Lambda h(y)g(y)\,\mathrm{d}y=\int_\Omega h(T(x))f(x)\,\mathrm{d}x.
+\]
+The ordinary change-of-variables theorem for the diffeomorphism \(T\) also gives
+\[
+\int_\Lambda h(y)g(y)\,\mathrm{d}y
+=\int_\Omega h(T(x))g(T(x))|\det DT(x)|\,\mathrm{d}x.
+\]
+For any Borel \(A\subset\Omega\), take \(h=\mathbf1_A\circ T^{-1}\); this is Borel since \(T^{-1}\) is continuous. Subtraction yields
+\[
+\int_A\bigl[f(x)-g(T(x))|\det DT(x)|\bigr]\,\mathrm{d}x=0\quad(\forall A).
+\]
+Both functions are integrable densities. Choosing the sets where their difference is positive and negative proves equality almost everywhere. If \(T=\nabla u\), then \(DT=D^2u>0\), so \(|\det DT|=\det D^2u\). At points where \(g(\nabla u)>0\), division gives
+\[
+\det D^2u=\frac{f}{g\circ\nabla u}.
+\]
+Finally \(T:\Omega\to\Lambda\) is onto by hypothesis, hence \(\nabla u(\Omega)=\Lambda\). This is the transport image condition.</p>
+</div>
 
     <h3>Ellipticity and convexity</h3>
     <p>The operator \(u\mapsto\det D^2u\) is elliptic only on convex functions. Indeed, differentiating the determinant at a positive-definite matrix \(A\) in direction \(H\) gives
@@ -58,16 +66,32 @@ note_next_url: "/notes/optimal-transport/regularity-of-optimal-maps-and-general-
         L_uv=\nabla\cdot(\operatorname{cof}(D^2u)\nabla v).
         \]</p>
     </div>
-<div class="math-statement proof"><p><span class="statement-title">Proof.</span> Assume \(u\in C^3\), \(v\in C^2\), and write \(C=\operatorname{cof}(D^2u)\). Differentiating the determinant polynomial gives \(\left.\frac{\mathrm{d}}{\mathrm{d}h}\det(D^2u+hD^2v)\right|_{h=0}=\sum_{ij}C_{ij}v_{ij}\). For \(d\ge2\), the cofactor has the alternating-symbol expression
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Assume \(u\in C^3\), \(v\in C^2\), and write \(C=\operatorname{cof}(D^2u)\). For \(A=D^2u\), \(B=D^2v\), the Leibniz polynomial gives
+\[
+\begin{aligned}
+\left.\frac{\mathrm{d}}{\mathrm{d}h}\det(A+hB)\right|_{h=0}
+&amp;=\sum_{\sigma\in S_d}\operatorname{sgn}(\sigma)
+\sum_{k=1}^d B_{k,\sigma(k)}\prod_{i\ne k}A_{i,\sigma(i)}\\
+&amp;=\sum_{k,j}\operatorname{cof}(A)_{kj}B_{kj}=\sum_{ij}C_{ij}v_{ij}.
+\end{aligned}
+\]
+The second equality collects the terms having \(\sigma(k)=j\); their remaining signed product is precisely the cofactor. For \(d\ge2\), the cofactor has the alternating-symbol expression
 \[
 C_{ij}=\frac1{(d-1)!}\sum_{i_2,\ldots,i_d}\sum_{j_2,\ldots,j_d}
 \epsilon_{i i_2\cdots i_d}\epsilon_{j j_2\cdots j_d}\prod_{k=2}^d u_{i_kj_k}.
 \]
-In \(\sum_i\partial_i C_{ij}\), a derivative hitting the \(k\)-th factor produces \(u_{i i_k j_k}\). Summing over \(i,i_k\) gives zero: this third derivative is symmetric under exchanging the two indices, whereas the first alternating symbol changes sign and all other factors remain unchanged. Each product-rule term therefore vanishes, proving \(\sum_i\partial_iC_{ij}=0\). In \(d=1\), \(C=1\) and the identity is immediate. The product rule now gives
+In \(\sum_i\partial_i C_{ij}\), a derivative hitting the \(k\)-th factor produces \(u_{i i_k j_k}\). Summing over \(i,i_k\) gives zero: this third derivative is symmetric under exchanging the two indices, whereas the first alternating symbol changes sign and all other factors remain unchanged. For the sum \(S_k\) of terms in which the derivative hits factor \(k\), relabel the dummy indices \(i\leftrightarrow i_k\). Then
+\[
+\epsilon_{i i_2\cdots i_k\cdots i_d}\mapsto-\epsilon_{i i_2\cdots i_k\cdots i_d},
+\qquad u_{i i_k j_k}=u_{i_k i j_k},
+\]
+while the remaining factors do not involve those two indices. Thus \(S_k=-S_k\), so \(S_k=0\). Summing the zero terms proves proving \(\sum_i\partial_iC_{ij}=0\). In \(d=1\), \(C=1\) and the identity is immediate. The product rule now gives
 \[
 \sum_{ij}\partial_i(C_{ij}\partial_jv)=\sum_{ij}C_{ij}v_{ij}+\sum_j\left(\sum_i\partial_iC_{ij}\right)\partial_jv=L_uv.
 \]
-For a Hessian the cofactor matrix is symmetric, so column and row divergence are equivalent.</p></div>
+For a Hessian the cofactor matrix is symmetric, so column and row divergence are equivalent.</p>
+</div>
 
     <h3>Alexandrov solutions</h3>
     <p>Optimal potentials need not be twice differentiable. The correct weak formulation uses the geometry of the subgradient rather than distributional determinants.</p>
@@ -82,20 +106,29 @@ For a Hessian the cofactor matrix is symmetric, so column and row divergence are
     </div>
 
     <div class="math-statement proposition">
-        <p><span class="statement-title">Consistency.</span> If \(u\in C^2(\Omega)\) is strictly convex, then
+        <p><span class="statement-title">Consistency.</span> If \(\Omega\) is convex and open and \(u\in C^2(\Omega)\) is strictly convex, then
         \[
         M_u(E)=\int_E\det D^2u(x)\,\mathrm{d}x.
         \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Differentiability makes \(\partial u(x)=\{\nabla u(x)\}\), and the area formula for the injective gradient map gives
-        \[
-        \mathcal L^d(\nabla u(E))
-        =\int_E|\det D(\nabla u)(x)|\,\mathrm{d}x
-        =\int_E\det D^2u(x)\,\mathrm{d}x.
-        \]</p>
-    </div>
+<p><span class="statement-title">Proof.</span> On the convex domain \(\Omega\), differentiability gives \(\partial u(x)=\{\nabla u(x)\}\). Strict convexity makes the gradient injective: if \(x\ne y\) and \(\nabla u(x)=\nabla u(y)=a\), strict supporting-plane inequalities give
+\[
+u(y)>u(x)+a\cdot(y-x),\qquad u(x)>u(y)+a\cdot(x-y),
+\]
+whose sum is the contradiction \(0>0\). Thus \(\nabla u\) is injective. It is locally Lipschitz because \(u\in C^2\). The area formula, applied on compact subsets and then by monotone exhaustion of \(\Omega\), gives
+\[
+\int_E|\det D(\nabla u)(x)|\,\mathrm{d}x
+=\int_{\mathbb R^d}\#\{x\in E:\nabla u(x)=y\}\,\mathrm{d}y
+=\mathcal L^d(\nabla u(E)).
+\]
+The multiplicity is exactly one on the image and zero elsewhere. Since \(D^2u\) is positive semidefinite, its determinant is nonnegative. Hence
+\[
+M_u(E)=\mathcal L^d(\partial u(E))=\mathcal L^d(\nabla u(E))
+=\int_E\det D^2u\,\mathrm{d}x.
+\]</p>
+</div>
 
 <h3>Transport formulation of weak solutions</h3>
     <div class="math-statement theorem"><p><span class="statement-title">Weighted Alexandrov formulation (external weak change-of-variables theorem).</span> Let \(\Omega,\Lambda\) be bounded convex open domains, and let \(f,g\) be densities on them bounded above and below by positive constants, with equal mass. The Brenier potential has the transport boundary condition and satisfies

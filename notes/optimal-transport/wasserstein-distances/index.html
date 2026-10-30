@@ -38,8 +38,21 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use the product coupling \(\mu\otimes\nu\) and the inequality \(d(x,y)^p\le2^{p-1}\{d(x,x_0)^p+d(y,x_0)^p\}\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> The product measure is a coupling. The triangle inequality and convexity of \(t\mapsto t^p\) give
+\[
+d(x,y)^p\le(d(x,x_0)+d(y,x_0))^p
+\le2^{p-1}(d(x,x_0)^p+d(y,x_0)^p).
+\]
+Tonelli's theorem applies to these nonnegative functions; because both marginals have total mass one,
+\[
+\begin{aligned}
+W_p(\mu,\nu)^p
+&amp;\le\int_{X\times X}d(x,y)^p\,\mathrm{d}(\mu\otimes\nu)\\
+&amp;\le2^{p-1}\left[\left(\int_Xd(x,x_0)^p\,\mathrm{d}\mu\right)\nu(X)
++\mu(X)\left(\int_Xd(y,x_0)^p\,\mathrm{d}\nu\right)\right]&lt;\infty.
+\end{aligned}
+\]</p>
+</div>
 
     <h3>The metric axioms</h3>
 
@@ -48,18 +61,32 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Nonnegativity and symmetry are immediate. If \(W_p(\mu,\nu)=0\), an optimal plan \(\pi\) satisfies \(d(x,y)=0\) almost surely, so it is concentrated on the diagonal and its two marginals coincide.</p>
-        <p>For the triangle inequality, choose \(\pi_{12}\in\Pi(\mu_1,\mu_2)\) and \(\pi_{23}\in\Pi(\mu_2,\mu_3)\), and glue them to \(\gamma\) on \(X^3\). Its \((1,3)\)-marginal is a coupling of \(\mu_1,\mu_3\). Minkowski's inequality gives
-        \[
-        \begin{aligned}
-        W_p(\mu_1,\mu_3)
-        &amp;\le\left(\int d(x_1,x_3)^p\,\mathrm{d}\gamma\right)^{1/p}\\
-        &amp;\le\left(\int d(x_1,x_2)^p\,\mathrm{d}\gamma\right)^{1/p}
-        +\left(\int d(x_2,x_3)^p\,\mathrm{d}\gamma\right)^{1/p}.
-        \end{aligned}
-        \]
-        Taking infima over the two plans proves \(W_p(\mu_1,\mu_3)\le W_p(\mu_1,\mu_2)+W_p(\mu_2,\mu_3)\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Nonnegativity follows from \(d^p\ge0\). The map \(S(x,y)=(y,x)\) gives a cost-preserving bijection \(S_\#: \Pi(\mu,\nu)\to\Pi(\nu,\mu)\), so \(W_p(\mu,\nu)=W_p(\nu,\mu)\). The diagonal plan gives
+\[
+W_p(\mu,\mu)^p\le\int_Xd(x,x)^p\,\mathrm{d}\mu(x)=0.
+\]
+Conversely, for bounded 1-Lipschitz \(f\) and any \(\pi\in\Pi(\mu,\nu)\), Hölder's inequality on the probability space \((X^2,\pi)\) gives
+\[
+\left|\int f\,\mathrm{d}\mu-\int f\,\mathrm{d}\nu\right|
+=\left|\int(f(x)-f(y))\,\mathrm{d}\pi\right|
+\le\int d(x,y)\,\mathrm{d}\pi
+\le\left(\int d(x,y)^p\,\mathrm{d}\pi\right)^{1/p}.
+\]
+Taking the infimum shows \(W_p=0\) forces equality of all bounded Lipschitz integrals, which determine probabilities on a metric space. Thus \(\mu=\nu\).</p>
+<p>For \(\varepsilon>0\), choose couplings \(\pi_{12},\pi_{23}\) with respective \(L^p\)-costs at most \(W_p(\mu_1,\mu_2)+\varepsilon\), \(W_p(\mu_2,\mu_3)+\varepsilon\). Glue them to \(\gamma\). Its \((1,3)\)-marginal is feasible, so
+\[
+\begin{aligned}
+W_p(\mu_1,\mu_3)
+&amp;\le\|d(x_1,x_3)\|_{L^p(\gamma)}\\
+&amp;\le\|d(x_1,x_2)+d(x_2,x_3)\|_{L^p(\gamma)}\\
+&amp;\le\|d(x_1,x_2)\|_{L^p(\gamma)}+\|d(x_2,x_3)\|_{L^p(\gamma)}
+&amp;&amp;\text{(Minkowski)}\\
+&amp;=\|d(x_1,x_2)\|_{L^p(\pi_{12})}+\|d(x_2,x_3)\|_{L^p(\pi_{23})}\\
+&amp;\le W_p(\mu_1,\mu_2)+W_p(\mu_2,\mu_3)+2\varepsilon.
+\end{aligned}
+\]
+Let \(\varepsilon\downarrow0\). This proof uses approximate minimizers and does not depend on the later existence theorem.</p>
+</div>
 
     <h3>Elementary comparisons</h3>
 
@@ -75,8 +102,25 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For every coupling, the \(L^p\)-norm of \(d(x,y)\) is at most its \(L^q\)-norm; take infima. A coupling with \(\delta_{x_0}\) is unique, namely \(\mu(\mathrm{d}x)\delta_{x_0}(\mathrm{d}y)\), giving the second formula.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> If \(p&lt;q\), Hölder with exponents \(q/p\) and \(q/(q-p)\) yields, for every probability coupling \(\pi\),
+\[
+\int d^p\,\mathrm{d}\pi
+\le\left(\int d^q\,\mathrm{d}\pi\right)^{p/q}
+\left(\int1\,\mathrm{d}\pi\right)^{1-p/q}
+=\left(\int d^q\,\mathrm{d}\pi\right)^{p/q}.
+\]
+Therefore \(W_p\le\|d\|_{L^p(\pi)}\le\|d\|_{L^q(\pi)}\); taking the infimum over \(\pi\) gives \(W_p\le W_q\). For \(p=q\) equality is immediate.</p>
+<p>If \(\pi\in\Pi(\mu,\delta_{x_0})\), then \(\pi(X\times\{x_0\})=1\), and for Borel \(A,B\),
+\[
+\pi(A\times B)=\mathbf1_B(x_0)\pi(A\times X)=\mu(A)\delta_{x_0}(B).
+\]
+Thus \(\Pi(\mu,\delta_{x_0})=\{\mu\otimes\delta_{x_0}\}\), and
+\[
+W_p(\mu,\delta_{x_0})^p
+=\int_{X\times X}d(x,y)^p\,\mu(\mathrm{d}x)\delta_{x_0}(\mathrm{d}y)
+=\int_Xd(x,x_0)^p\,\mathrm{d}\mu(x).
+\]</p>
+</div>
 
     <p>On a space of finite diameter \(D\), interpolation gives \(W_q^q\le D^{q-p}W_p^p\). On unbounded spaces no reverse comparison is possible without stronger moment bounds.</p>
 
@@ -99,28 +143,57 @@ note_next_url: "/notes/optimal-transport/stability-and-convergence-of-transport-
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(r(x)=d(x,x_0)\).</p>
-<p><strong>(i) implies (ii).</strong> Choose couplings \((X_n,X)\) with \(\mathbb E d(X_n,X)^p\le W_p(\mu_n,\mu)^p+1/n\). They may be put on one probability space by disintegrating each over the common law of \(X\) and taking the product of the conditional kernels. Then \(d(X_n,X)\to0\) in probability, so \(X_n\Rightarrow X\). Moreover,
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(r(x)=d(x,x_0)\). We use the probability theorems of Skorokhod representation and Vitali convergence, in their Polish-space and uniform-integrability forms.</p>
+<p><strong>(i) implies (ii).</strong> Choose \(\pi_n\in\Pi(\mu_n,\mu)\) with
 \[
-\left|\|r(X_n)\|_p-\|r(X)\|_p\right|
-\le\|r(X_n)-r(X)\|_p\le\|d(X_n,X)\|_p\longrightarrow0.
+\int d(x,y)^p\,\mathrm{d}\pi_n\le W_p(\mu_n,\mu)^p+n^{-1}\longrightarrow0.
 \]
-Taking \(p\)-th powers yields convergence of moments.</p>
-<p><strong>(ii) implies (iii) and (i).</strong> The Skorokhod representation theorem for Polish spaces gives variables with these laws and \(X_n\to X\) almost surely. Put \(Y_n=r(X_n)^p\), \(Y=r(X)^p\). Then \(Y_n\to Y\) almost surely and \(\mathbb EY_n\to\mathbb EY\). Since \(\min(Y_n,Y)\le Y\), dominated convergence gives
+For bounded 1-Lipschitz \(f\),
 \[
-\mathbb E|Y_n-Y|=\mathbb EY_n+\mathbb EY-2\mathbb E\min(Y_n,Y)\longrightarrow0.
+\left|\int f\,\mathrm{d}\mu_n-\int f\,\mathrm{d}\mu\right|
+\le\left(\int d^p\,\mathrm{d}\pi_n\right)^{1/p}\to0.
 \]
-An \(L^1\)-convergent sequence is uniformly integrable, which is (iii). Also
+The bounded-Lipschitz characterization gives \(\mu_n\Rightarrow\mu\). The reverse triangle inequality for \(L^p(\pi_n)\), followed by \(|r(x)-r(y)|\le d(x,y)\), gives
 \[
-0\le d(X_n,X)^p\le2^{p-1}(Y_n+Y).
+\left|\left(\int r^p\,\mathrm{d}\mu_n\right)^{1/p}
+-\left(\int r^p\,\mathrm{d}\mu\right)^{1/p}\right|
+\le\|r(x)-r(y)\|_{L^p(\pi_n)}\le\|d\|_{L^p(\pi_n)}\to0.
 \]
-The right side is uniformly integrable and the left side tends to zero almost surely. Vitali's theorem gives \(\mathbb E d(X_n,X)^p\to0\), hence (i).</p>
-<p><strong>(iii) implies (ii).</strong> For \(f_R(x)=\min(r(x)^p,R)\), weak convergence gives \(\int f_R\,\mathrm{d}\mu_n\to\int f_R\,\mathrm{d}\mu\). The errors satisfy
+Continuity of \(t\mapsto t^p\) gives convergence of the moments.</p>
+<p><strong>(ii) implies (iii) and (i).</strong> Skorokhod representation supplies \(X_n\sim\mu_n,X\sim\mu\) on one space with \(X_n\to X\) almost surely. Let \(Y_n=r(X_n)^p,Y=r(X)^p\). Then \(Y_n\to Y\) almost surely and \(\mathbb EY_n\to\mathbb EY&lt;\infty\). Since \(0\le\min(Y_n,Y)\le Y\), dominated convergence gives
 \[
-0\le\int(r^p-f_R)\,\mathrm{d}\mu_n
-\le\int_{\{r^p>R\}}r^p\,\mathrm{d}\mu_n,
+\mathbb E|Y_n-Y|
+=\mathbb EY_n+\mathbb EY-2\mathbb E\min(Y_n,Y)\longrightarrow0.
 \]
-uniformly vanishing as \(R\to\infty\). The same tail bound for \(\mu\) follows from its finite moment. First let \(n\to\infty\), then \(R\to\infty\). This proves (ii).</p></div>
+Here is the needed uniform-integrability implication explicitly. For any event \(E\),
+\[
+\mathbb E[Y_n\mathbf1_E]\le\mathbb E|Y_n-Y|+\mathbb E[Y\mathbf1_E].
+\]
+For large \(n\), the first term is uniformly small; absolute continuity of the integral of \(Y\) controls the second when \(\mathbb P(E)\) is small. The finitely many remaining \(Y_n\) have the same property. Also \(M=\sup_n\mathbb EY_n&lt;\infty\), so
+\[
+\sup_n\mathbb P(Y_n>R)\le M/R\to0,\qquad
+\sup_n\mathbb E[Y_n\mathbf1_{\{Y_n>R\}}]\to0.
+\]
+This is (iii). Moreover,
+\[
+Z_n=d(X_n,X)^p\to0\text{ a.s.},\qquad 0\le Z_n\le2^{p-1}(Y_n+Y).
+\]
+The small-event bound just proved also holds for \(Y_n+Y\); together with its bounded expectations it proves uniform integrability of \(Z_n\). Vitali now gives \(\mathbb EZ_n\to0\), and
+\[
+0\le W_p(\mu_n,\mu)^p\le\mathbb E Z_n\longrightarrow0.
+\]</p>
+<p><strong>(iii) implies (ii).</strong> Let \(f_R=r^p\wedge R\in C_b(X)\). For fixed \(R\), weak convergence gives convergence of its integrals. Thus
+\[
+\begin{aligned}
+\left|\int r^p\,\mathrm{d}\mu_n-\int r^p\,\mathrm{d}\mu\right|
+&amp;\le\left|\int f_R\,\mathrm{d}\mu_n-\int f_R\,\mathrm{d}\mu\right|\\
+&amp;\quad+\int_{\{r^p>R\}}r^p\,\mathrm{d}\mu_n
++\int_{\{r^p>R\}}r^p\,\mathrm{d}\mu.
+\end{aligned}
+\]
+Taking \(\limsup_{n\to\infty}\), then \(R\to\infty\), gives zero: (iii) controls the first tail uniformly, and dominated convergence controls the tail of \(\mu\).</p>
+</div>
 
     <h3>Completeness and separability</h3>
 
@@ -128,29 +201,87 @@ uniformly vanishing as \(R\to\infty\). The same tail bound for \(\mu\) follows f
         <p><span class="statement-title">Theorem.</span> If \((X,d)\) is complete and separable, then \((\mathcal P_p(X),W_p)\) is complete and separable.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> <strong>Completeness.</strong> From a Cauchy sequence extract \(\mu_{n_k}\) with \(W_p(\mu_{n_k},\mu_{n_{k+1}})\le2^{-k}\). Optimal successive couplings can be glued on a single space: disintegrate them into transition kernels and use the countable product construction for kernels. Thus there are \(X_k\sim\mu_{n_k}\) with \(\|d(X_k,X_{k+1})\|_p\le2^{-k}\). By Tonelli and \(\|\cdot\|_1\le\|\cdot\|_p\),
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> <strong>Completeness.</strong> From a \(W_p\)-Cauchy sequence choose indices \(n_k\) with \(W_p(\mu_{n_k},\mu_{n_{k+1}})&lt;2^{-k}\). Choose couplings whose \(L^p\)-costs are at most \(2^{-k}\). Disintegrating them into transition kernels and applying the countable kernel-product theorem produces \(X_k\sim\mu_{n_k}\) with
 \[
-\mathbb E\sum_{k=1}^\infty d(X_k,X_{k+1})\le\sum_{k=1}^\infty2^{-k}&lt;\infty.
+\|d(X_k,X_{k+1})\|_p\le2^{-k}.
 \]
-The sum is finite almost surely, so \(X_k\) is Cauchy almost surely. Completeness of \(X\) gives a measurable limit \(X_\infty\). For each \(k\), Fatou followed by Minkowski gives
+By Tonelli and Hölder,
 \[
+\mathbb E\left[\sum_{k=1}^\infty d(X_k,X_{k+1})\right]
+=\sum_{k=1}^\infty\mathbb Ed(X_k,X_{k+1})
+\le\sum_{k=1}^\infty2^{-k}=1.
+\]
+Hence the sum is finite almost surely. For \(\ell>k\),
+\[
+d(X_k,X_\ell)\le\sum_{j=k}^{\ell-1}d(X_j,X_{j+1})\longrightarrow0
+\quad\text{as }k,\ell\to\infty\text{ a.s.}
+\]
+Completeness gives \(X_k\to X_\infty\) almost surely; extend the measurable limit arbitrarily on the null exceptional set. Fatou for the nonnegative \(p\)-th powers and Minkowski give
+\[
+\begin{aligned}
 \|d(X_k,X_\infty)\|_p
-\le\liminf_{\ell\to\infty}\|d(X_k,X_\ell)\|_p
-\le\sum_{j=k}^\infty2^{-j}=2^{1-k}.
+&amp;\le\liminf_{\ell\to\infty}\|d(X_k,X_\ell)\|_p\\
+&amp;\le\sum_{j=k}^\infty\|d(X_j,X_{j+1})\|_p
+\le2^{1-k}.
+\end{aligned}
 \]
-In particular, \(\|d(X_\infty,x_0)\|_p\le\|d(X_1,x_0)\|_p+1&lt;\infty\). Thus its law belongs to \(\mathcal P_p\) and is the \(W_p\)-limit of the subsequence. For the whole sequence use \(W_p(\mu_n,\mathcal L(X_\infty))\le W_p(\mu_n,\mu_{n_k})+2^{1-k}\), first choosing \(k\) and then \(n\).</p>
-<p><strong>Separability.</strong> Enumerate a countable dense subset as \(D=\{x_1,x_2,\ldots\}\). Let \(q_N(x)\) be a nearest point among \(x_1,\ldots,x_N\), breaking ties by the smallest index. These maps are Borel, \(d(x,q_N(x))\to0\), and \(d(x,q_N(x))\le d(x,x_1)\). Dominated convergence gives
+Also \(\|d(X_\infty,x_0)\|_p\le1+\|d(X_1,x_0)\|_p&lt;\infty\). With \(\mu_\infty=\mathcal L(X_\infty)\),
 \[
-W_p(\mu,q_{N\#}\mu)^p\le\int d(x,q_N(x))^p\,\mathrm{d}\mu\longrightarrow0.
+W_p(\mu_{n_k},\mu_\infty)\le2^{1-k},\qquad
+W_p(\mu_n,\mu_\infty)\le W_p(\mu_n,\mu_{n_k})+2^{1-k}.
 \]
-On a fixed finite support of diameter \(D_N\), changing the weight vector from \(a\) to \(b\) costs at most \(D_N^p\|a-b\|_1/2\): keep the common mass at each point and couple the remaining equal masses arbitrarily. Rational weights therefore approximate \(q_{N\#}\mu\). All finite rationally weighted laws on \(D\) form the required countable dense set.</p></div>
+Given \(\varepsilon>0\), choose \(k\) large enough that the second term is below \(\varepsilon/2\) and \(n_k\) lies in a Cauchy tail; then the first term is below \(\varepsilon/2\) for all sufficiently large \(n\).</p>
+<p><strong>Separability.</strong> Enumerate a dense countable set \(D=\{x_1,x_2,\ldots\}\). Let \(q_N(x)\) be a nearest point among the first \(N\) points, with ties broken by index. Its fibers are Borel comparisons of continuous distance functions, and
+\[
+d(x,q_N(x))=\min_{1\le j\le N}d(x,x_j)\downarrow0,
+\qquad d(x,q_N(x))^p\le d(x,x_1)^p\in L^1(\mu).
+\]
+Dominated convergence gives
+\[
+W_p(\mu,q_{N\#}\mu)^p\le\int d(x,q_N(x))^p\,\mathrm{d}\mu\to0.
+\]
+For two weight vectors \(a,b\) on this finite support, put \(r_i=(a_i-b_i)_+\), \(s_i=(b_i-a_i)_+\), \(\delta=\sum_i r_i=\sum_i s_i=\|a-b\|_1/2\). If \(\delta>0\), a coupling is
+\[
+p_{ij}=\min(a_i,b_i)\mathbf1_{i=j}+r_is_j/\delta.
+\]
+Writing \(D_N=\max_{i,j\le N}d(x_i,x_j)\), its cost is at most
+\[
+\sum_{ij}d(x_i,x_j)^pp_{ij}\le D_N^p\frac{\sum_ir_i\sum_js_j}{\delta}
+=D_N^p\|a-b\|_1/2.
+\]
+For \(a=b\) the cost is zero. Rational probability vectors are dense in the finite simplex, so finitely supported laws on \(D\) with rational weights form a countable \(W_p\)-dense set.</p>
+</div>
 
     <h3>Relative compactness</h3>
 
     <div class="math-statement proposition">
         <p><span class="statement-title">Compactness criterion.</span> A family \(\mathcal K\subset\mathcal P_p(X)\) is relatively compact in \(W_p\) if it is tight and its \(p\)-th moments are uniformly integrable. On a proper metric space, a uniform bound on a moment of order \(q>p\) implies these conditions.</p>
     </div>
-<div class="math-statement proof"><p><span class="statement-title">Proof.</span> Tightness and Prokhorov give a weakly convergent subsequence from any sequence in \(\mathcal K\). Uniform integrability passes to the limit through bounded continuous truncations of \(r^p\) and implies convergence of moments, by the same truncation argument as above. The topology theorem upgrades this subsequence to \(W_p\)-convergence. If \(\sup_{\mu\in\mathcal K}\int r^q\,\mathrm{d}\mu=M&lt;\infty\), then \(\mu(r>R)\le M/R^q\) and \(\int_{r>R}r^p\,\mathrm{d}\mu\le M/R^{q-p}\). On a proper space closed balls are compact, so these are respectively tightness and uniform integrability.</p></div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Put \(r(x)=d(x,x_0)\). From any sequence \(\mu_n\in\mathcal K\), tightness and Prokhorov give \(\mu_{n_k}\Rightarrow\mu\). Uniform integrability implies \(M=\sup_{\eta\in\mathcal K}\int r^p\,\mathrm{d}\eta&lt;\infty\). For \(R>0\),
+\[
+\int(r^p\wedge R)\,\mathrm{d}\mu
+=\lim_k\int(r^p\wedge R)\,\mathrm{d}\mu_{n_k}\le M.
+\]
+Monotone convergence as \(R\uparrow\infty\) yields \(\int r^p\,\mathrm{d}\mu\le M\). Consequently
+\[
+\begin{aligned}
+\limsup_k\left|\int r^p\,\mathrm{d}\mu_{n_k}-\int r^p\,\mathrm{d}\mu\right|
+\le\sup_{\eta\in\mathcal K}\int_{\{r^p>R\}}r^p\,\mathrm{d}\eta
++\int_{\{r^p>R\}}r^p\,\mathrm{d}\mu\longrightarrow0.
+\end{aligned}
+\]
+The topology theorem gives \(W_p(\mu_{n_k},\mu)\to0\). Every sequence has such a subsequence, which is relative compactness in a metric space.</p>
+<p>If \(\sup_{\eta\in\mathcal K}\int r^q\,\mathrm{d}\eta=M_q&lt;\infty\), then
+\[
+\eta(r>R)\le R^{-q}\int r^q\,\mathrm{d}\eta\le M_qR^{-q},
+\qquad
+\int_{\{r>R\}}r^p\,\mathrm{d}\eta
+\le R^{p-q}\int_{\{r>R\}}r^q\,\mathrm{d}\eta\le M_qR^{p-q}.
+\]
+On a proper space \(\{r\le R\}\) is compact, so the first bound proves tightness; since \(q>p\), the second proves uniform integrability.</p>
+</div>
 
     <p>The extra tail condition is essential. Weak compactness alone permits a small amount of mass to escape to infinity while carrying nonvanishing \(p\)-transport cost, as the example on <a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">Existence and stability of optimal plans</a> showed.</p>
 

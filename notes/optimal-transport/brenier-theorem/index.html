@@ -31,17 +31,39 @@ note_next_url: "/notes/optimal-transport/entropic-regularization/"
     </div>
 
     <p>For \(c(x,y)=\tfrac12|x-y|^2\), expanding the squares shows that \(c\)-cyclical monotonicity is exactly cyclical monotonicity of the pairing. The quadratic terms cancel under permutations.</p>
-<div class="math-statement proof"><p><span class="statement-title">Proof of Rockafellar's theorem.</span> If \(\Gamma\) is empty, take \(u=0\). Otherwise fix \((x_0,y_0)\in\Gamma\), and define
+<div class="math-statement proof">
+<p><span class="statement-title">Proof of Rockafellar's theorem.</span> If \(\Gamma=\varnothing\), take \(u=0\). Otherwise fix \((x_0,y_0)\in\Gamma\). For a finite chain \((x_i,y_i)\in\Gamma\), \(1\le i\le m\), define
 \[
-u(x)=\sup_{m\ge0,\,(x_i,y_i)\in\Gamma,\,1\le i\le m}
-\left\{\sum_{i=0}^{m-1}\langle x_{i+1}-x_i,y_i\rangle+\langle x-x_m,y_m\rangle\right\}.
+A_{\mathcal C}(x)=\sum_{i=0}^{m-1}\langle x_{i+1}-x_i,y_i\rangle+\langle x-x_m,y_m\rangle,
+\qquad u(x)=\sup_{\mathcal C}A_{\mathcal C}(x).
 \]
-For \(m=0\), the expression means \(\langle x-x_0,y_0\rangle\). A supremum of affine continuous functions is convex and lower semicontinuous. Cyclical monotonicity applied to a chain closed back at \(x_0\) gives \(u(x_0)=0\), so \(u\) is proper.</p>
-<p>For \((a,b)\in\Gamma\), close any such chain through \((a,b)\) and then back to \(x_0\). The resulting cyclic inequality bounds its value at \(a\) by \(\langle a-x_0,b\rangle\). Thus \(u(a)&lt;\infty\). Appending \((a,b)\) to each chain gives
+For \(m=0\), take \(A_{\mathcal C}(x)=\langle x-x_0,y_0\rangle\). Every \(A_{\mathcal C}\) is finite affine continuous, so their supremum is convex, lower semicontinuous, and never \(-\infty\). Cyclical monotonicity for a chain closed at \(x_0\) gives
 \[
-u(z)\ge u(a)+\langle z-a,b\rangle\qquad\text{for every }z,
+A_{\mathcal C}(x_0)=\sum_{i=0}^{m-1}\langle x_{i+1}-x_i,y_i\rangle+\langle x_0-x_m,y_m\rangle\le0.
 \]
-where taking the supremum over the original chains justifies the occurrence of \(u(a)\). Hence \(b\in\partial u(a)\). Conversely, if \(y_i\in\partial u(x_i)\), sum \(u(x_{\sigma^{-1}(i)})\ge u(x_i)+y_i\cdot(x_{\sigma^{-1}(i)}-x_i)\); the \(u\)-terms cancel and give the stated permutation inequality.</p></div>
+The chain of length zero gives zero, hence \(u(x_0)=0\) and \(u\) is proper.</p>
+<p>For \((a,b)\in\Gamma\), close the chain through \((a,b)\) and back to \(x_0\). The same inequality reads
+\[
+A_{\mathcal C}(a)+\langle x_0-a,b\rangle\le0,
+\quad\text{so}\quad
+\langle a-x_0,y_0\rangle\le u(a)\le\langle a-x_0,b\rangle&lt;\infty.
+\]
+Appending \((a,b)\) to a chain gives an admissible expression at \(z\):
+\[
+u(z)\ge A_{\mathcal C}(a)+\langle z-a,b\rangle.
+\]
+Taking the supremum over \(\mathcal C\) yields \(u(z)\ge u(a)+\langle z-a,b\rangle\) for every \(z\), so \(b\in\partial u(a)\).</p>
+<p>Conversely, if \(y_i\in\partial u(x_i)\), the subgradient inequality gives
+\[
+u(x_{\sigma^{-1}(i)})\ge u(x_i)+y_i\cdot(x_{\sigma^{-1}(i)}-x_i).
+\]
+Sum in \(i\). The \(u\)-terms cancel under a permutation, giving
+\[
+0\ge\sum_i y_i\cdot x_{\sigma^{-1}(i)}-\sum_i y_i\cdot x_i
+=\sum_j x_j\cdot y_{\sigma(j)}-\sum_jx_j\cdot y_j,
+\]
+which is the required cyclical monotonicity.</p>
+</div>
 
     <h3>Brenier's theorem</h3>
 
@@ -54,10 +76,38 @@ where taking the supremum over the original chains justifies the occurrence of \
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Existence of an optimal plan \(\pi\) follows from <a href="{{ '/notes/optimal-transport/stability-and-convergence-of-transport-costs/' | relative_url }}">Existence and stability of optimal plans</a>. Its support is \(c\)-cyclically monotone, so after expanding the quadratic cost it is cyclically monotone for \(x\cdot y\). Rockafellar's theorem gives a convex \(u\) with \(\operatorname{supp}\pi\subset\partial u\).</p>
-        <p>A convex function on \(\mathbb R^d\) is locally Lipschitz in the interior of its effective domain and therefore differentiable Lebesgue-almost everywhere by Rademacher's theorem. The first marginal is concentrated on \(\operatorname{dom}\partial u\subset\operatorname{dom}u\). Since it is absolutely continuous, this convex domain cannot be lower dimensional. It has nonempty interior, and its boundary has Lebesgue measure zero. Thus \(\mu\) is concentrated on interior differentiability points, where \(\partial u(x)=\{\nabla u(x)\}\). Disintegrating \(\pi=\mu(\mathrm{d}x)\pi_x(\mathrm{d}y)\), the support inclusion forces \(\pi_x=\delta_{\nabla u(x)}\) almost surely. Hence \(\pi=(\operatorname{id},\nabla u)_\#\mu\) and \((\nabla u)_\#\mu=\nu\).</p>
-        <p>If \(\widetilde\pi\) is another optimal plan, the average \((\pi+\widetilde\pi)/2\) is optimal and the same argument makes it a graph plan. But the conditional law of this average is \(\tfrac12\delta_{\nabla u(x)}+\tfrac12\widetilde\pi_x\), which can be a Dirac mass only when \(\widetilde\pi_x=\delta_{\nabla u(x)}\) almost surely. Thus the optimal plan is unique.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> <strong>Existence and convex structure.</strong> The product plan has finite quadratic cost because \(\mu,\nu\in\mathcal P_2\); the existence theorem gives an optimizer \(\pi\). Its support \(\Gamma\) is cyclically monotone for quadratic cost. Cancelling the marginal square terms in the cyclic inequality gives
+\[
+\sum_i\left(\tfrac12|x_i|^2+\tfrac12|y_i|^2-x_i\cdot y_i\right)
+\le\sum_i\left(\tfrac12|x_i|^2+\tfrac12|y_{\sigma(i)}|^2-x_i\cdot y_{\sigma(i)}\right)
+\quad\Longrightarrow\quad\sum_ix_i\cdot y_i\ge\sum_ix_i\cdot y_{\sigma(i)}.
+\]
+Rockafellar therefore gives proper lower-semicontinuous convex \(u\) with \(\Gamma\subset\partial u\).</p>
+<p><strong>Concentration on a graph.</strong> Write \(D=\operatorname{dom}u\). The first marginal satisfies \(\mu(D)=1\). A convex set with empty interior is contained in a proper affine subspace, of Lebesgue measure zero; this contradicts \(\mu\ll\mathcal L^d\) and \(\mu(D)=1\). Thus \(D\) has nonempty interior. We use two convex-analysis facts: \(\mathcal L^d(\partial D)=0\), and \(u\) is locally Lipschitz on \(D^\circ\). Rademacher's theorem gives a Lebesgue-null set \(N\subset D^\circ\) outside which \(u\) is differentiable. Hence
+\[
+\mu(D^\circ\setminus N)=1,\qquad
+\partial u(x)=\{\nabla u(x)\}\quad(x\in D^\circ\setminus N).
+\]
+Choose a Borel representative \(T=\nabla u\) on this full-measure set and extend it arbitrarily elsewhere. Disintegrate \(\pi=\mu(\mathrm{d}x)\pi_x(\mathrm{d}y)\). Since \(\pi(\partial u)=1\),
+\[
+1=\int\pi_x(\partial u(x))\,\mathrm{d}\mu(x),\quad 0\le\pi_x(\partial u(x))\le1,
+\]
+so \(\pi_x(\{T(x)\})=1\) almost everywhere. Thus
+\[
+\pi=\mu(\mathrm{d}x)\delta_{T(x)}(\mathrm{d}y)=(\operatorname{id},T)_\#\mu,
+\qquad T_\#\mu=\pi_Y=\nu.
+\]</p>
+<p><strong>Uniqueness.</strong> If \(\widetilde\pi\) is another optimizer, linearity of the cost gives
+\[
+\int c\,\mathrm{d}\bigl((\pi+\widetilde\pi)/2\bigr)
+=\tfrac12K_c+\tfrac12K_c=K_c.
+\]
+The argument just proved makes this average a graph plan, say with kernel \(\delta_{S(x)}\). Uniqueness of disintegration gives
+\[
+\tfrac12\delta_{T(x)}+\tfrac12\widetilde\pi_x=\delta_{S(x)}\quad\mu\text{-a.e.}
+\]
+Evaluating the complement of \(\{S(x)\}\), both nonnegative summands must vanish. Thus \(T(x)=S(x)\) and \(\widetilde\pi_x=\delta_{S(x)}\) almost everywhere. Consequently \(\widetilde\pi=\pi\), and every optimal map equals \(T\) \(\mu\)-almost everywhere.</p>
+</div>
 
     <h3>Converse optimality</h3>
 
@@ -65,22 +115,45 @@ where taking the supremum over the original chains justifies the occurrence of \
         <p><span class="statement-title">Proposition.</span> Let \(\mu,\nu\in\mathcal P_2(\mathbb R^d)\). If \(u\) is convex, \(\nabla u\) exists \(\mu\)-almost everywhere, and \(T=\nabla u\) pushes \(\mu\) to \(\nu\), then \(T\) is optimal for quadratic cost.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Let \(u^*(y)=\sup_x\{x\cdot y-u(x)\}\). Choose a point \((x_0,y_0)\) in the graph of \(\partial u\), where \(u(x_0)\) is finite. The subgradient inequality and the definition of \(u^*\) give the affine lower bounds
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Choose \((x_0,y_0)\in\partial u\). The subgradient inequality and conjugate definition imply
 \[
 u(x)\ge u(x_0)+y_0\cdot(x-x_0),\qquad
 u^*(y)\ge x_0\cdot y-u(x_0).
 \]
-Their negative parts are integrable against \(\mu,\nu\), since both laws have finite second moments. Fenchel equality on the transport graph is
+Thus for a finite constant \(C\),
 \[
-u(x)+u^*(T(x))=x\cdot T(x)\quad\mu\text{-a.e.}
+u^-(x)\le C+|y_0||x|\in L^1(\mu),\qquad
+(u^*)^-(y)\le C+|x_0||y|\in L^1(\nu).
 \]
-The right side is integrable by Cauchy–Schwarz. Together with the lower bounds this also makes both positive parts integrable. Thus \(u\in L^1(\mu)\), \(u^*\in L^1(\nu)\); no subtraction of infinite integrals occurs.</p>
-<p>For every competing coupling \(\pi\), Fenchel's inequality can now be integrated:
+Fenchel equality on \(T=\nabla u\) gives \(u(x)+u^*(T(x))=x\cdot T(x)\) almost everywhere, and
 \[
-\int x\cdot y\,\mathrm{d}\pi\le\int u\,\mathrm{d}\mu+\int u^*\,\mathrm{d}\nu
+\int|x\cdot T(x)|\,\mathrm{d}\mu
+\le\left(\int|x|^2\,\mathrm{d}\mu\right)^{1/2}
+\left(\int|T(x)|^2\,\mathrm{d}\mu\right)^{1/2}
+=\left(\int|x|^2\,\mathrm{d}\mu\int|y|^2\,\mathrm{d}\nu\right)^{1/2}&lt;\infty.
+\]
+The identity also gives the positive-part bounds
+\[
+u^+(x)\le|x\cdot T(x)|+(u^*)^-(T(x)),\quad
+(u^*)^+(T(x))\le|x\cdot T(x)|+u^-(x).
+\]
+Hence \(u\in L^1(\mu)\), \(u^*\in L^1(\nu)\), and all ensuing subtractions are finite.</p>
+<p>For any \(\pi\in\Pi(\mu,\nu)\), integrate \(x\cdot y\le u(x)+u^*(y)\):
+\[
+\int x\cdot y\,\mathrm{d}\pi
+\le\int u\,\mathrm{d}\mu+\int u^*\,\mathrm{d}\nu
 =\int x\cdot T(x)\,\mathrm{d}\mu.
 \]
-Since \(\tfrac12|x-y|^2=\tfrac12|x|^2+\tfrac12|y|^2-x\cdot y\) and the first two integrals depend only on the marginals, this is precisely optimality of the graph plan.</p></div>
+Let \(A=\tfrac12\int|x|^2\,\mathrm{d}\mu+\tfrac12\int|y|^2\,\mathrm{d}\nu\). Then
+\[
+\int\tfrac12|x-y|^2\,\mathrm{d}\pi
+=A-\int x\cdot y\,\mathrm{d}\pi
+\ge A-\int x\cdot T(x)\,\mathrm{d}\mu
+=\int\tfrac12|x-T(x)|^2\,\mathrm{d}\mu,
+\]
+which proves optimality.</p>
+</div>
 
     <h3>Inverse transport and Legendre duality</h3>
     <p>If both \(\mu\) and \(\nu\) are absolutely continuous, the reverse optimal map is \(\nabla u^*\), where
@@ -116,20 +189,54 @@ Since \(\tfrac12|x-y|^2=\tfrac12|x|^2+\tfrac12|y|^2-x\cdot y\) and the first two
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The matrix \(A\) is symmetric positive definite, hence \(T=\nabla u\) for the convex quadratic
-        \[
-        u(x)=m_1\cdot x+\tfrac12(x-m_0)^\top A(x-m_0).
-        \]
-        Direct multiplication gives \(A\Sigma_0A^\top=\Sigma_1\), so \(T_\#\mu=\nu\). The converse proposition proves optimality. Writing \(B=(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\), direct multiplication gives \(A\Sigma_0A=\Sigma_1\) and \(\operatorname{tr}(A\Sigma_0)=\operatorname{tr}B\). For \(Z=X-m_0\), \(\mathbb EZ=0\), \(\mathbb EZZ^\top=\Sigma_0\); hence
-        \[
-        \mathbb E|X-T(X)|^2=|m_0-m_1|^2+\operatorname{tr}((I-A)\Sigma_0(I-A))
-        =|m_0-m_1|^2+\operatorname{tr}(\Sigma_0+\Sigma_1-2B).
-        \]</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(B=(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\), \(A=\Sigma_0^{-1/2}B\Sigma_0^{-1/2}\). Symmetry is immediate from transposition, and for \(z\ne0\),
+\[
+z^\top Az=(\Sigma_0^{-1/2}z)^\top B(\Sigma_0^{-1/2}z)>0.
+\]
+Thus \(T(x)=m_1+A(x-m_0)=\nabla u(x)\) for the convex quadratic \(u(x)=m_1\cdot x+\tfrac12(x-m_0)^\top A(x-m_0)\). Matrix multiplication gives
+\[
+\begin{aligned}
+A\Sigma_0A^\top
+&amp;=\Sigma_0^{-1/2}B\Sigma_0^{-1/2}\Sigma_0\Sigma_0^{-1/2}B\Sigma_0^{-1/2}\\
+&amp;=\Sigma_0^{-1/2}B^2\Sigma_0^{-1/2}=\Sigma_1.
+\end{aligned}
+\]
+An affine image of a Gaussian is Gaussian with transformed mean and covariance, so \(T_\#\mu=\nu\). The preceding proposition proves optimality.</p>
+<p>Let \(Z=X-m_0\), \(\Delta=m_0-m_1\). Then \(\mathbb EZ=0\), \(\mathbb EZZ^\top=\Sigma_0\), and
+\[
+\begin{aligned}
+\mathbb E|X-T(X)|^2
+&amp;=\mathbb E|\Delta+(I-A)Z|^2\\
+&amp;=|\Delta|^2+2\Delta^\top(I-A)\mathbb EZ
++\operatorname{tr}((I-A)\Sigma_0(I-A)^\top)\\
+&amp;=|\Delta|^2+\operatorname{tr}(\Sigma_0+A\Sigma_0A-\Sigma_0A-A\Sigma_0).
+\end{aligned}
+\]
+Cyclicity of trace yields
+\[
+\operatorname{tr}(A\Sigma_0)=\operatorname{tr}(\Sigma_0^{-1/2}B\Sigma_0^{1/2})=\operatorname{tr}B.
+\]
+Together with \(A\Sigma_0A=\Sigma_1\), this gives the stated formula without assuming the covariance matrices commute.</p>
+</div>
 
 <h3>Polar factorization</h3>
     <div class="math-statement theorem"><p><span class="statement-title">Polar factorization with a nondegenerate image.</span> Let \(\mu\in\mathcal P_2(\mathbb R^d)\) be absolutely continuous, \(S\in L^2(\mu;\mathbb R^d)\), and suppose \(\nu=S_\#\mu\) is also absolutely continuous. If \(T=\nabla u\) is the Brenier map from \(\mu\) to \(\nu\), then there is a \(\mu\)-preserving map \(s\) such that \(S=T\circ s\) almost everywhere.</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> The reverse Brenier map \(R=\nabla u^*\) satisfies \(R_\#\nu=\mu\), \(T\circ R=\operatorname{id}\) \(\nu\)-almost everywhere. Set \(s=R\circ S\). Then \(s_\#\mu=R_\#\nu=\mu\) and \(T\circ s=T\circ R\circ S=S\) almost everywhere.</p></div>
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> The optimal plan \(\pi=(\operatorname{id},T)_\#\mu\) has reversed plan \(\pi^{\mathrm{rev}}=(T,\operatorname{id})_\#\mu\), optimal from \(\nu\) to \(\mu\) because the quadratic cost is symmetric. Since \(\nu\) is absolutely continuous, Brenier uniqueness in that direction makes it \((\operatorname{id},R)_\#\nu\). Reversing the subgradient relation identifies \(R=\nabla u^*\) almost everywhere. Equality of these joint laws gives
+\[
+R(T(x))=x\quad\mu\text{-a.e.},\qquad T(R(y))=y\quad\nu\text{-a.e.},\qquad R_\#\nu=\mu.
+\]
+Set \(s=R\circ S\). For Borel \(A\),
+\[
+\mu(s^{-1}(A))=\mu(S^{-1}(R^{-1}(A)))
+=\nu(R^{-1}(A))=\mu(A).
+\]
+Thus \(s_\#\mu=\mu\). If \(N\) is the \(\nu\)-null set where \(T\circ R\ne\operatorname{id}\), then \(\mu(S^{-1}(N))=\nu(N)=0\). Outside that set,
+\[
+T(s(x))=T(R(S(x)))=S(x),
+\]
+proving the factorization almost everywhere.</p>
+</div>
     <p>This is the nonlinear analogue of matrix polar decomposition: a rearrangement preserving the source law is followed by a convex-gradient deformation. Absolute continuity of the image is a sufficient nondegeneracy assumption for this proof; it must not be silently omitted.</p>
 
     <h3>Why absolute continuity matters</h3>

@@ -30,15 +30,35 @@ note_next_url: "/notes/optimal-transport/talagrand-and-transport-inequalities/"
         up to an irrelevant additive constant.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof in a smooth setting.</span> For a direct justification, work first on a flat torus with smooth \(\rho>0\), smooth \(U,V,W\), and even \(W\). A smooth zero-mass perturbation \(\sigma\) keeps \(\rho+h\sigma>0\) for small \(|h|\). Compactness bounds all difference quotients, so differentiation under the integrals is justified by dominated convergence. The interaction term has derivative
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof in a smooth setting.</span> For a direct justification, work first on a flat torus with smooth \(\rho>0\), smooth \(U,V,W\), and even \(W\). A smooth zero-mass perturbation \(\sigma\) keeps \(\rho+h\sigma>0\) for small \(|h|\). For \(|h|\le h_0\) small enough, \(\rho+h\sigma\) takes values in a compact subinterval \([a,b]\subset(0,\infty)\). The mean-value theorem gives
+\[
+\left|\frac{U(\rho+h\sigma)-U(\rho)}h\right|\le\sup_{r\in[a,b]}|U'(r)|\,|\sigma|,
+\]
+an integrable bound on the compact torus. Dominated convergence therefore gives the internal-energy derivative. The interaction expansion is exact:
+\[
+(\rho(x)+h\sigma(x))(\rho(y)+h\sigma(y))
+=\rho(x)\rho(y)+h[\sigma(x)\rho(y)+\rho(x)\sigma(y)]+h^2\sigma(x)\sigma(y).
+\]
+Its quadratic remainder divided by \(h\) tends to zero in the integral because \(W,\sigma\) are bounded. The interaction term has derivative
 \[
 \frac12\iint W(x-y)[\sigma(x)\rho(y)+\rho(x)\sigma(y)]\,\mathrm{d}x\,\mathrm{d}y.
 \]
-Interchanging \(x,y\) in its second integral and using \(W(y-x)=W(x-y)\) makes the two terms equal. Their sum is \(\int(W*\rho)\sigma\). The internal and potential derivatives are \(\int U'(\rho)\sigma\) and \(\int V\sigma\). Therefore
+Fubini and evenness give
+\[
+\begin{aligned}
+\iint W(x-y)\rho(x)\sigma(y)\,\mathrm{d}x\,\mathrm{d}y
+&amp;=\iint W(y-x)\rho(y)\sigma(x)\,\mathrm{d}x\,\mathrm{d}y\\
+&amp;=\int\sigma(x)\left[\int W(x-y)\rho(y)\,\mathrm{d}y\right]\,\mathrm{d}x
+=\int(W*\rho)\sigma\,\mathrm{d}x.
+\end{aligned}
+\]
+The first term has this same value, cancelling the factor \(1/2\). The internal and potential derivatives are \(\int U'(\rho)\sigma\) and \(\int V\sigma\). Therefore
 \[
 D\mathcal F(\rho)[\sigma]=\int[U'(\rho)+V+W*\rho]\sigma\,\mathrm{d}x.
 \]
-Since \(\int\sigma=0\), adding a constant to the bracket changes no variation. The same calculation on \(\mathbb R^d\) is valid whenever its difference quotients have integrable dominating functions; this must be checked for the chosen growth and tails.</p></div>
+Since \(\int\sigma=0\), adding a constant to the bracket changes no variation. The same calculation on \(\mathbb R^d\) is valid whenever its difference quotients have integrable dominating functions; this must be checked for the chosen growth and tails.</p>
+</div>
 
     <div class="math-statement corollary">
         <p><span class="statement-title">Gradient-flow equation.</span> The formal \(W_2\)-gradient flow is
@@ -64,18 +84,31 @@ Since \(\int\sigma=0\), adding a constant to the bracket changes no variation. T
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(F_t=U'(\rho_t)+V+W*\rho_t\). The chain rule just proved and \(\partial_t\rho=\nabla\cdot(\rho\nabla F)\) give
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(F_t=U'(\rho_t)+V+W*\rho_t\). The chain rule just proved and \(\partial_t\rho=\nabla\cdot(\rho\nabla F)\) give
 \[
 \frac{\mathrm{d}}{\mathrm{d}t}\mathcal F(\rho_t)=\int F_t\nabla\cdot(\rho_t\nabla F_t)\,\mathrm{d}x
 =-\int\rho_t|\nabla F_t|^2\,\mathrm{d}x
 \]
-on the torus, without boundary terms. For \(\mathbb R^d\), take cutoffs \(\chi_R\) equal to one on \(B_R\), supported in \(B_{2R}\), with \(|\nabla\chi_R|\le C/R\). The integration by parts has error
+on the torus, without boundary terms. For \(\mathbb R^d\), take cutoffs \(\chi_R\) equal to one on \(B_R\), supported in \(B_{2R}\), with \(|\nabla\chi_R|\le C/R\). The exact cutoff identity is
+\[
+\int\chi_RF_t\nabla\cdot(\rho_t\nabla F_t)\,\mathrm{d}x
+=-\int\chi_R\rho_t|\nabla F_t|^2\,\mathrm{d}x
+-\int F_t\rho_t\nabla F_t\cdot\nabla\chi_R\,\mathrm{d}x.
+\]
+The final term is the error
 \[
 -\int F_t\rho_t\nabla F_t\cdot\nabla\chi_R\,\mathrm{d}x,
 \qquad
 |\text{error}|\le\frac C R\int_{R&lt;|x|&lt;2R}|F_t|\rho_t|\nabla F_t|\,\mathrm{d}x.
 \]
-If this bound tends to zero (also integrably in time for a time-integrated identity), and \(\rho|\nabla F|^2\) is integrable, dominated convergence gives the same identity. These are explicit sufficient decay conditions. When \(-\nabla F\) belongs to the tangent space, the velocity theorem identifies its norm with metric speed; identifying the metric slope additionally uses the energy subgradient theorem, not integration by parts alone.</p></div>
+If this bound tends to zero (also integrably in time for a time-integrated identity), and both \(\rho|\nabla F|^2\) and \(F\partial_t\rho\) are integrable, dominated convergence gives
+\[
+\lim_R\int\chi_R\rho|\nabla F|^2=\int\rho|\nabla F|^2,
+\qquad\lim_R\int\chi_RF\partial_t\rho=\int F\partial_t\rho.
+\]
+Together with the vanishing error, this proves the same identity. These are explicit sufficient decay conditions. When \(-\nabla F\) belongs to the tangent space, the velocity theorem identifies its norm with metric speed; identifying the metric slope additionally uses the energy subgradient theorem, not integration by parts alone.</p>
+</div>
 
     <h3>The heat equation</h3>
 
@@ -91,19 +124,26 @@ If this bound tends to zero (also integrably in time for a time-integrated ident
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since \(\delta\operatorname{Ent}/\delta\rho=1+\log\rho\),
-        \[
-        \nabla\cdot(\rho\nabla\log\rho)
-        =\nabla\cdot(\nabla\rho)=\Delta\rho.
-        \]
-        Moreover,
-        \[
-        \frac{\mathrm{d}}{\mathrm{d}t}\operatorname{Ent}(\rho_t)
-        =-\int\frac{|\nabla\rho_t|^2}{\rho_t}\,\mathrm{d}x
-        =-\int|\nabla\log\rho_t|^2\rho_t\,\mathrm{d}x,
-        \]
-        so entropy dissipation is the Fisher information.</p>
-    </div>
+<p><span class="statement-title">Proof of the smooth equation.</span> In the smooth positive-density setting above, \(U(r)=r\log r\) satisfies \(U'(r)=1+\log r\). Componentwise,
+\[
+\partial_i(1+\log\rho)=\frac{\partial_i\rho}{\rho},\qquad
+\rho\nabla(1+\log\rho)=\nabla\rho.
+\]
+The velocity and continuity equation are therefore
+\[
+v=-\nabla\log\rho,\qquad
+\partial_t\rho=-\nabla\cdot(\rho v)
+=\nabla\cdot(\rho\nabla\log\rho)
+=\nabla\cdot(\nabla\rho)=\Delta\rho.
+\]
+Under the preceding integrability and boundary assumptions, the dissipation identity becomes
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}\operatorname{Ent}(\rho_t)
+=-\int\rho_t\left|\frac{\nabla\rho_t}{\rho_t}\right|^2\,\mathrm{d}x
+=-\int\frac{|\nabla\rho_t|^2}{\rho_t}\,\mathrm{d}x.
+\]
+The weak gradient-flow identification uses the evolution theory cited in the preceding chapter; this calculation explicitly identifies its smooth PDE and dissipation.</p>
+</div>
 
     <h3>Fokker--Planck and Langevin dynamics</h3>
 
@@ -146,7 +186,7 @@ If this bound tends to zero (also integrably in time for a time-integrated ident
     <div class="math-statement theorem">
         <p><span class="statement-title">Power internal energy.</span> For
         \[
-        \mathcal U_m(\rho)=\frac{1}{m-1}\int\rho^m\,\mathrm{d}x,\qquad m\ne1,
+        \mathcal U_m(\rho)=\frac{1}{m-1}\int\rho^m\,\mathrm{d}x,\qquad m>0,\quad m\ne1,
         \]
         the Wasserstein gradient flow is
         \[
@@ -155,14 +195,22 @@ If this bound tends to zero (also integrably in time for a time-integrated ident
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The first variation is \(\tfrac{m}{m-1}\rho^{m-1}\). Hence
-        \[
-        \nabla\cdot\left(\rho\nabla\frac{m}{m-1}\rho^{m-1}\right)
-        =\nabla\cdot(m\rho^{m-1}\nabla\rho)
-        =\Delta(\rho^m).
-        \]
-        The case \(m>1\) is porous-medium diffusion with finite-speed propagation; \(m&lt;1\) is fast diffusion, subject to the integrability range dictated by dimension.</p>
-    </div>
+<p><span class="statement-title">Proof of the smooth equation.</span> For \(m>0\), \(m\ne1\), differentiation of \(U_m(r)=r^m/(m-1)\) gives
+\[
+U_m'(\rho)=\frac m{m-1}\rho^{m-1},
+\qquad \nabla U_m'(\rho)=m\rho^{m-2}\nabla\rho.
+\]
+For a positive smooth density,
+\[
+\rho\nabla U_m'(\rho)=m\rho^{m-1}\nabla\rho=\nabla(\rho^m).
+\]
+Substituting this flux into the continuity equation with \(v=-\nabla U_m'(\rho)\) gives
+\[
+\partial_t\rho=\nabla\cdot(\rho\nabla U_m'(\rho))
+=\nabla\cdot\nabla(\rho^m)=\Delta(\rho^m).
+\]
+For \(m>1\) this is porous-medium diffusion; for \(0&lt;m&lt;1\) it is fast diffusion. Construction of global probability solutions requires the stated energy framework and the dimension-dependent integrability conditions; the algebraic identification alone does not establish that existence theorem.</p>
+</div>
 
     <h3>Aggregation and interaction</h3>
 
@@ -187,17 +235,47 @@ If this bound tends to zero (also integrably in time for a time-integrated ident
     <h3>Weak solutions from JKO</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Variational construction.</span> Under lower semicontinuity, coercivity, and displacement-convexity assumptions on the free energy, the JKO scheme has a continuous-time limit that is a weak solution of the corresponding diffusion equation and satisfies the energy-dissipation inequality.</p>
+        <p><span class="statement-title">Identification from a convergent JKO scheme.</span> Suppose smooth JKO steps satisfy the first-order condition of the preceding chapter and, on every bounded time interval, \(\sum_kW_2^2(\mu^k,\mu^{k-1})/\tau\le A&lt;\infty\) uniformly as \(\tau\downarrow0\). Suppose their piecewise constant interpolants satisfy
+\[
+\mathrm{d}t\,\mu_\tau(t)\rightharpoonup\rho(t,x)\,\mathrm{d}t\,\mathrm{d}x,
+\qquad
+v_\tau\,\mathrm{d}t\,\mu_\tau(t)\rightharpoonup-\rho\nabla\{U'(\rho)+V+W*\rho\}\,\mathrm{d}t\,\mathrm{d}x
+\]
+against continuous compactly supported scalar and vector tests, respectively, with common initial law \(\rho_0\,\mathrm{d}x\). Then \(\rho\) solves the displayed diffusion equation weakly with that initial law. Existence of these convergences is supplied, for the uniformly convex Fokker–Planck model, by the concrete evolution theorem in the preceding chapter; other energies require their own compactness and flux-identification estimates.</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Identification of the PDE.</span> The Euler equation of each JKO step gives the discrete velocity
-        \[
-        v_\tau^{k+1}
-        =-\nabla\{U'(\rho_\tau^{k+1})+V+W*\rho_\tau^{k+1}\}.
-        \]
-        Insert this field in the discrete weak continuity equation, sum over time steps, and use the action bound for compactness. Weak convergence of the densities and lower-semicontinuity of the dissipation identify the limiting continuity equation with the displayed PDE.</p>
-    </div>
+<p><span class="statement-title">Proof of the conditional limit statement.</span> Let \(t_k=k\tau\), \(\mu^k=\rho^k\,\mathrm{d}x\), and let \(T_k\) optimally transport \(\mu^k\) to \(\mu^{k-1}\). The first-order JKO equation gives \(v^k=(\operatorname{id}-T_k)/\tau\). Thus
+\[
+\tau\int|v^k|^2\,\mathrm{d}\mu^k=\frac{W_2^2(\mu^k,\mu^{k-1})}{\tau},
+\qquad \sum_k\tau\int|v^k|^2\,\mathrm{d}\mu^k\le A.
+\]
+For \(\phi\in C_c^\infty([0,\infty)\times\mathbb R^d)\), Taylor expansion in space gives
+\[
+\begin{aligned}
+&amp;\int\phi(t_{k-1},x)\,\mathrm{d}\mu^k(x)-\int\phi(t_{k-1},y)\,\mathrm{d}\mu^{k-1}(y)\\
+&amp;\quad=\tau\int\nabla\phi(t_{k-1},x)\cdot v^k(x)\,\mathrm{d}\mu^k(x)+r_k,
+\qquad |r_k|\le\tfrac12\|D_x^2\phi\|_\infty W_2^2(\mu^k,\mu^{k-1}).
+\end{aligned}
+\]
+Also \(\phi(t_k,x)-\phi(t_{k-1},x)=\int_{t_{k-1}}^{t_k}\partial_t\phi(t,x)\,\mathrm{d}t\). Add this identity and sum over all steps meeting the time support of \(\phi\). The left side telescopes to \(-\int\phi(0,x)\,\mathrm{d}\mu^0\). With the piecewise constant \(\mu_\tau(t)=\mu^k\), \(v_\tau(t)=v^k\) on \((t_{k-1},t_k]\), we obtain
+\[
+\int\phi(0,x)\,\mathrm{d}\mu^0
++\int_0^\infty\int(\partial_t\phi+\nabla\phi\cdot v_\tau)\,\mathrm{d}\mu_\tau\,\mathrm{d}t=R_\tau.
+\]
+The summed spatial errors are at most \(\tfrac12\|D_x^2\phi\|_\infty\tau A\). Replacing \(\nabla\phi(t_{k-1})\) by \(\nabla\phi(t)\) costs at most
+\[
+\tau\|\partial_t\nabla\phi\|_\infty\int_0^{T_\phi}\int|v_\tau|\,\mathrm{d}\mu_\tau\,\mathrm{d}t
+\le\tau\|\partial_t\nabla\phi\|_\infty\sqrt{T_\phi A},
+\]
+where \(T_\phi\) contains the time support and the last bound is Cauchy–Schwarz. Hence \(|R_\tau|\le C_\phi\tau\to0\).</p>
+<p>By the stated convergences of the space-time density and flux, both integrals pass to the limit, yielding
+\[
+\int\phi(0,x)\rho_0(x)\,\mathrm{d}x
++\int_0^\infty\int\left[\rho\partial_t\phi-\rho\nabla\{U'(\rho)+V+W*\rho\}\cdot\nabla\phi\right]\,\mathrm{d}x\,\mathrm{d}t=0.
+\]
+This is the weak formulation of the claimed PDE. The flux-convergence assumption is essential: weak convergence of densities alone does not permit passage through the nonlinear expression \(\rho\nabla U'(\rho)\).</p>
+</div>
 
 <p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://cvgmt.sns.it/paper/2813/">Santambrogio, <em>Optimal transport for applied mathematicians</em>, Chapter 8</a>, for weak-solution constructions. The first-variation and dissipation calculations on this page assume smoothness and sufficient boundary decay.</p>
 

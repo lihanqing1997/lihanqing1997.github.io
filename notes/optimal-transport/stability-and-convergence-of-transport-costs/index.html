@@ -23,13 +23,32 @@ note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> After adding a constant, assume \(f\ge0\). There exist bounded continuous functions \(f_k\uparrow f\); for example one may use the infimal regularizations \(f_k(z)=\min\{k,\inf_w(f(w)+k\,d(z,w))\}\). For fixed \(k\),
-        \[
-        \int f_k\,\mathrm{d}\eta=\lim_n\int f_k\,\mathrm{d}\eta_n
-        \le\liminf_n\int f\,\mathrm{d}\eta_n.
-        \]
-        Letting \(k\to\infty\) and applying monotone convergence proves the claim.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Subtract a finite lower bound so that \(f\ge0\). Define
+\[
+f_k(z)=\min\left\{k,\inf_w\bigl(f(w)+k\,d(z,w)\bigr)\right\}.
+\]
+If \(f\equiv\infty\), then \(f_k\equiv k\); otherwise the infimum is finite and the triangle inequality implies \(|f_k(z)-f_k(z')|\le k d(z,z')\). Thus \(f_k\in C_b(Z)\), and
+\[
+0\le f_k(z)\le f_{k+1}(z)\le f(z).
+\]
+To prove \(f_k(z)\uparrow f(z)\), suppose its limit is \(a&lt;f(z)\). Choose \(b\) with \(a&lt;b&lt;f(z)\). For all large \(k>b\), the cap is inactive and some \(w_k\) satisfies
+\[
+f(w_k)+k\,d(z,w_k)&lt;b,\qquad d(z,w_k)&lt;b/k\to0,\qquad f(w_k)&lt;b.
+\]
+Lower semicontinuity would give \(f(z)\le\liminf_k f(w_k)\le b\), a contradiction. For fixed \(k\), weak convergence gives
+\[
+\int f_k\,\mathrm{d}\eta
+=\lim_n\int f_k\,\mathrm{d}\eta_n
+\le\liminf_n\int f\,\mathrm{d}\eta_n.
+\]
+Taking the supremum in \(k\), monotone convergence yields
+\[
+\int f\,\mathrm{d}\eta
+=\sup_k\int f_k\,\mathrm{d}\eta
+\le\liminf_n\int f\,\mathrm{d}\eta_n.
+\]
+Adding back the lower bound proves the original claim.</p>
+</div>
 
     <h3>Existence by the direct method</h3>
 
@@ -38,33 +57,59 @@ note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Choose a minimizing sequence \(\pi_n\in\Pi(\mu,\nu)\). <a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">Measures, pushforwards, and couplings</a> showed that \(\Pi(\mu,\nu)\) is weakly compact, so a subsequence converges weakly to some \(\pi\in\Pi(\mu,\nu)\). The preceding lemma gives
-        \[
-        \int c\,\mathrm{d}\pi
-        \le\liminf_n\int c\,\mathrm{d}\pi_n
-        =K_c(\mu,\nu).
-        \]
-        Since \(\pi\) is feasible, the reverse inequality follows from the definition of the infimum. Thus equality holds and \(\pi\) is optimal.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Let \(m\) be a finite lower bound for \(c\). The finite-cost feasible plan ensures
+\[
+m\le K:=K_c(\mu,\nu)\le\int c\,\mathrm{d}\pi_0&lt;\infty.
+\]
+By the definition of infimum choose \(\pi_n\in\Pi(\mu,\nu)\) with
+\[
+K\le\int c\,\mathrm{d}\pi_n\le K+n^{-1}.
+\]
+The compactness theorem in <a href="{{ '/notes/optimal-transport/transport-plans-and-couplings/' | relative_url }}">Measures, pushforwards, and couplings</a> gives a subsequence \(\pi_{n_k}\Rightarrow\pi\in\Pi(\mu,\nu)\). Feasibility gives the first inequality below; the preceding Portmanteau lemma gives the second:
+\[
+K\le\int c\,\mathrm{d}\pi
+\le\liminf_k\int c\,\mathrm{d}\pi_{n_k}
+\le\lim_k(K+n_k^{-1})=K.
+\]
+Thus \(\int c\,\mathrm{d}\pi=K\), so \(\pi\) is an optimal plan.</p>
+</div>
 
     <p>Nothing in this argument implies uniqueness or determinism. Those are geometric properties of the cost and the marginals, not consequences of compactness.</p>
 
     <h3>Stability when the marginals vary</h3>
 
     <div class="math-statement theorem">
-        <p><span class="statement-title">Stability theorem.</span> Suppose \(\mu_n\Rightarrow\mu\), \(\nu_n\Rightarrow\nu\), and \(\pi_n\in\Pi(\mu_n,\nu_n)\). Then \((\pi_n)\) is tight. Every weak limit point \(\pi\) belongs to \(\Pi(\mu,\nu)\). If \(c\) is lower semicontinuous and bounded below, then
+        <p><span class="statement-title">Stability theorem.</span> Suppose \(\mu_n\Rightarrow\mu\), \(\nu_n\Rightarrow\nu\), and \(\pi_n\in\Pi(\mu_n,\nu_n)\). Then \((\pi_n)\) is tight. Every weak limit point \(\pi\) belongs to \(\Pi(\mu,\nu)\). If \(\pi_{n_k}\Rightarrow\pi\) and \(c\) is lower semicontinuous and bounded below, then
         \[
-        \int c\,\mathrm{d}\pi\le\liminf_n\int c\,\mathrm{d}\pi_n.
+        \int c\,\mathrm{d}\pi\le\liminf_{k\to\infty}\int c\,\mathrm{d}\pi_{n_k}.
         \]</p>
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Weakly convergent sequences of probability measures are uniformly tight. Choose compact \(K_X,K_Y\) carrying mass at least \(1-\varepsilon/2\) for all sufficiently large \(n\); enlarge them to handle the finitely many remaining indices. Then
-        \[
-        \pi_n(K_X\times K_Y)\ge1-\mu_n(K_X^c)-\nu_n(K_Y^c)\ge1-\varepsilon.
-        \]
-        Prokhorov gives subsequential compactness. If \(\pi_{n_k}\Rightarrow\pi\), pushing forward by the continuous projections identifies the marginals of \(\pi\) as \(\mu,\nu\). The cost inequality is the Portmanteau lemma.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Weakly convergent probability sequences on Polish spaces are uniformly tight. Given \(\varepsilon>0\), choose compact \(K_X,K_Y\) with
+\[
+\sup_n\mu_n(K_X^c)\le\varepsilon/2,\qquad
+\sup_n\nu_n(K_Y^c)\le\varepsilon/2.
+\]
+For every \(n\),
+\[
+\pi_n((K_X\times K_Y)^c)
+\le\pi_n(K_X^c\times Y)+\pi_n(X\times K_Y^c)
+=\mu_n(K_X^c)+\nu_n(K_Y^c)\le\varepsilon.
+\]
+This proves tightness. If \(\pi_{n_k}\Rightarrow\pi\), then for \(f\in C_b(X)\),
+\[
+\int f\,\mathrm{d}(\operatorname{pr}_X)_\#\pi
+=\lim_k\int f(x)\,\mathrm{d}\pi_{n_k}
+=\lim_k\int f\,\mathrm{d}\mu_{n_k}
+=\int f\,\mathrm{d}\mu.
+\]
+Hence the first marginal is \(\mu\); testing \(g(y)\), \(g\in C_b(Y)\), identifies the second as \(\nu\). The cost bound applies along this same convergent subsequence:
+\[
+\int c\,\mathrm{d}\pi\le\liminf_{k\to\infty}\int c\,\mathrm{d}\pi_{n_k}.
+\]
+It follows from Portmanteau because \(c\) is lower semicontinuous and bounded below.</p>
+</div>
 
     <h3>Convergence of optimal values</h3>
     <p>The preceding theorem gives the lower-bound half. To identify the limit as optimal, one also needs recovery plans whose costs approach that of a prescribed limiting plan.</p>
@@ -77,20 +122,57 @@ note_next_url: "/notes/optimal-transport/one-dimensional-transport/"
         Moreover, every weak limit of optimal plans for \((\mu_n,\nu_n)\) is optimal for \((\mu,\nu)\).</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> For the liminf, take a subsequence realizing the liminf of the optimal values and optimal plans along it. Tightness gives a further weakly convergent subsequence with limit \(\bar\pi\in\Pi(\mu,\nu)\). Bounded continuity implies convergence of the costs, so
-\(K_c(\mu,\nu)\le\int c\,\mathrm{d}\bar\pi=\liminf_n K_c(\mu_n,\nu_n)\).</p>
-<p>For the limsup, fix an optimal \(\pi\in\Pi(\mu,\nu)\). Skorokhod representations of the two marginal convergences supply \(\alpha_n\in\Pi(\mu,\mu_n)\), \(\beta_n\in\Pi(\nu,\nu_n)\) such that their coordinate distances tend to zero in probability. Disintegrate
-\(\alpha_n=\mu(\mathrm{d}x)A_n(x,\mathrm{d}x')\), \(\beta_n=\nu(\mathrm{d}y)B_n(y,\mathrm{d}y')\), and define
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(K_n=K_c(\mu_n,\nu_n)\), \(K=K_c(\mu,\nu)\). All these values are finite and attained by the existence theorem.</p>
+<p><strong>Lower bound.</strong> Choose \(n_k\) with \(K_{n_k}\to\liminf_nK_n\), and optimizers \(\pi_{n_k}\). Stability gives a further subsequence converging to \(\bar\pi\in\Pi(\mu,\nu)\). Since \(c\in C_b\),
 \[
-\lambda_n(\mathrm{d}x,\mathrm{d}y,\mathrm{d}x',\mathrm{d}y')
-=\pi(\mathrm{d}x,\mathrm{d}y)A_n(x,\mathrm{d}x')B_n(y,\mathrm{d}y').
-\]
-The \((x',y')\)-law \(\widetilde\pi_n\) has the required new marginals. Under \(\lambda_n\), the product distance between \((x,y)\) and \((x',y')\) tends to zero in probability. For any \(\delta>0\), choose a compact set carrying \(\pi\)-mass at least \(1-\delta\). Continuity at its points and a finite subcover give a uniform neighborhood size on which the change in \(c\) is at most \(\delta\). Outside this event the difference is at most \(2\|c\|_\infty\). Consequently
+K\le\int c\,\mathrm{d}\bar\pi
+=\lim_k\int c\,\mathrm{d}\pi_{n_k}
+=\liminf_nK_n.
+\]</p>
+<p><strong>Recovery coupling.</strong> Fix an optimizer \(\pi\in\Pi(\mu,\nu)\). Skorokhod representation gives couplings \(\alpha_n\in\Pi(\mu,\mu_n)\), \(\beta_n\in\Pi(\nu,\nu_n)\) with
 \[
-\limsup_n\int|c(x',y')-c(x,y)|\,\mathrm{d}\lambda_n
-\le\delta+2\|c\|_\infty\delta.
+\alpha_n\{d_X(x,x')>r\}\to0,\qquad
+\beta_n\{d_Y(y,y')>r\}\to0\quad(r>0).
 \]
-Let \(\delta\downarrow0\). Hence \(\int c\,\mathrm{d}\widetilde\pi_n\to\int c\,\mathrm{d}\pi\), which proves the limsup inequality. Applying the same cost continuity to any convergent subsequence of optimal plans proves the final assertion.</p></div>
+Disintegrate \(\alpha_n=\mu(\mathrm{d}x)A_n(x,\mathrm{d}x')\), \(\beta_n=\nu(\mathrm{d}y)B_n(y,\mathrm{d}y')\), and set
+\[
+\lambda_n=\pi(\mathrm{d}x,\mathrm{d}y)A_n(x,\mathrm{d}x')B_n(y,\mathrm{d}y'),
+\qquad \widetilde\pi_n=(x',y')_\#\lambda_n.
+\]
+For Borel \(E\subset X\),
+\[
+\widetilde\pi_n(E\times Y)
+=\int A_n(x,E)\,\mathrm{d}\pi(x,y)
+=\int A_n(x,E)\,\mathrm{d}\mu(x)=\mu_n(E).
+\]
+The analogous calculation gives \(\nu_n\), so \(\widetilde\pi_n\) is feasible.</p>
+<p><strong>Convergence of recovery costs.</strong> Put \(z=(x,y)\), \(z'=(x',y')\) and \(d_Z=d_X+d_Y\). The union bound gives
+\[
+\lambda_n\{d_Z(z,z')>r\}
+\le\alpha_n\{d_X>r/2\}+\beta_n\{d_Y>r/2\}\to0.
+\]
+Choose compact \(H\subset X\times Y\) with \(\pi(H^c)&lt;\delta\). Continuity and compactness imply that some \(r>0\) satisfies
+\[
+z\in H,\ d_Z(z,z')&lt;r\quad\Longrightarrow\quad |c(z')-c(z)|&lt;\delta.
+\]
+To see the uniform radius, otherwise take \(z_j\in H\), \(d_Z(z_j,z_j')\to0\), \(|c(z_j')-c(z_j)|\ge\delta\); a convergent subsequence in \(H\) contradicts continuity. With \(M=\|c\|_\infty\),
+\[
+\int|c(z')-c(z)|\,\mathrm{d}\lambda_n
+\le\delta+2M\bigl[\pi(H^c)+\lambda_n\{d_Z\ge r\}\bigr].
+\]
+First take \(\limsup_n\), then \(\delta\downarrow0\), to obtain convergence to zero. Hence
+\[
+\limsup_nK_n\le\lim_n\int c\,\mathrm{d}\widetilde\pi_n
+=\int c\,\mathrm{d}\pi=K.
+\]
+Combined with the lower bound, \(K_n\to K\). Finally, if optimizers \(\pi_{n_k}\Rightarrow\pi_*\), then
+\[
+\pi_*\in\Pi(\mu,\nu),\qquad
+\int c\,\mathrm{d}\pi_* =\lim_k\int c\,\mathrm{d}\pi_{n_k}=\lim_kK_{n_k}=K,
+\]
+which proves optimality of every limit.</p>
+</div>
 
     <h3>Unbounded costs and moment control</h3>
 
@@ -102,17 +184,41 @@ Let \(\delta\downarrow0\). Hence \(\int c\,\mathrm{d}\widetilde\pi_n\to\int c\,\
         then \(K_c(\mu_n,\nu_n)\to K_c(\mu,\nu)\), and limit points of optimal plans are optimal.</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Set \(A=|x|^p\), \(B=|y|^p\), and include the limiting marginals in the families below. Their \(p\)-moments are uniformly integrable by the topology theorem. For any coupling \(\pi\) of a pair of these marginals, any measurable event \(E\), and \(M>0\),
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Include \(\mu,\nu\) in the marginal families and write \(\mathcal G\) for all couplings of the corresponding pairs. Put \(A=|x|^p\), \(B=|y|^p\). The topology theorem gives
+\[
+\tau(M):=\sup_n\left[\int_{\{A>M\}}A\,\mathrm{d}\mu_n+\int_{\{B>M\}}B\,\mathrm{d}\nu_n\right]\longrightarrow0,
+\quad D:=\sup_{\pi\in\mathcal G}\int(A+B)\,\mathrm{d}\pi&lt;\infty.
+\]
+For any event \(E\) and \(\pi\in\mathcal G\), splitting each term at \(M\) gives
 \[
 \int_E(A+B)\,\mathrm{d}\pi
-\le 2M\pi(E)+\int_{\{A>M\}}A\,\mathrm{d}\mu_n+\int_{\{B>M\}}B\,\mathrm{d}\nu_n. \tag{1}
+\le2M\pi(E)+\tau(M).
 \]
-The last two terms tend to zero uniformly in \(n\). Also \(\sup_\pi\int(A+B)\,\mathrm{d}\pi&lt;\infty\), so Markov's inequality makes \(\pi(A+B>R)\to0\) uniformly. In (1), first choose \(M\), then let \(R\to\infty\) with \(E=\{A+B>R\}\). This proves uniform integrability of \(A+B\) over all these couplings, without imposing independence.</p>
-<p>Let \(c_L=\max(-L,\min(c,L))\). It is bounded continuous, and
+For \(E=\{A+B>R\}\), Markov gives \(\pi(E)\le D/R\); hence
 \[
-|c-c_L|\le C(1+A+B)\mathbf1_{\{C(1+A+B)>L\}}.
+\sup_{\pi\in\mathcal G}\int_{\{A+B>R\}}(A+B)\,\mathrm{d}\pi
+\le2MD/R+\tau(M).
 \]
-Thus \(\sup_\pi\int|c-c_L|\,\mathrm{d}\pi\to0\). The bounded-cost theorem applied to \(c_L\), followed by \(L\to\infty\), proves convergence of the infima. For any weakly convergent sequence of optimal plans the identical truncation argument proves convergence of their \(c\)-integrals, so its limit is optimal. The same bounds justify existence for these unbounded signed costs by the direct method.</p></div>
+Taking \(R\to\infty\) first, then \(M\to\infty\), proves uniform integrability over all couplings, without independence.</p>
+<p>Set \(c_L=\max(-L,\min(c,L))\in C_b\). The growth assumption gives
+\[
+|c-c_L|\le C(1+A+B)\mathbf1_{\{C(1+A+B)>L\}},\qquad
+\epsilon_L:=\sup_{\pi\in\mathcal G}\int|c-c_L|\,\mathrm{d}\pi\to0.
+\]
+The elementary inequality \(|\inf F-\inf G|\le\sup|F-G|\) yields
+\[
+|K_c(\mu_n,\nu_n)-K_c(\mu,\nu)|
+\le2\epsilon_L+|K_{c_L}(\mu_n,\nu_n)-K_{c_L}(\mu,\nu)|.
+\]
+For fixed \(L\), the last term tends to zero by the bounded-cost theorem; letting \(L\to\infty\) proves the claim about values.</p>
+<p>If \(\pi_{n_k}\Rightarrow\pi\), stability identifies its marginals, and
+\[
+\left|\int c\,\mathrm{d}\pi_{n_k}-\int c\,\mathrm{d}\pi\right|
+\le2\epsilon_L+\left|\int c_L\,\mathrm{d}\pi_{n_k}-\int c_L\,\mathrm{d}\pi\right|.
+\]
+The same ordered limits prove convergence of costs. For fixed marginals this also shows the cost functional is continuous on the compact coupling set, so a minimizer exists despite the signed unbounded cost. For optimal \(\pi_{n_k}\), the limit cost equals \(\lim_kK_c(\mu_{n_k},\nu_{n_k})=K_c(\mu,\nu)\), proving optimality.</p>
+</div>
 
     <h3>Failure without the hypotheses</h3>
 

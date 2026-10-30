@@ -34,16 +34,20 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For every \(x\),
-        \[
-        F_\mu^{-1}(u)\le x\quad\Longleftrightarrow\quad u\le F_\mu(x).
-        \]
-        Therefore
-        \[
-        \mathbb P(F_\mu^{-1}(U)\le x)=\mathbb P(U\le F_\mu(x))=F_\mu(x),
-        \]
-        which identifies the distribution.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Put \(F=F_\mu\), \(Q=F_\mu^{-1}\). For \(u\in(0,1)\), the set \(A_u=\{t:F(t)\ge u\}\) is nonempty and bounded below, since \(F(-\infty)=0\), \(F(+\infty)=1\). If \(u\le F(x)\), then \(x\in A_u\), hence \(Q(u)\le x\). Conversely, if \(Q(u)\le x\), for every \(k\) some \(t_k\in A_u\) satisfies \(t_k&lt;Q(u)+1/k\le x+1/k\). Therefore
+\[
+F(x+1/k)\ge F(t_k)\ge u,\qquad F(x)=\lim_{k\to\infty}F(x+1/k)\ge u,
+\]
+where the limit uses right-continuity. We have proved
+\[
+\{u:Q(u)\le x\}=(0,F(x)]\cap(0,1).
+\]
+This also proves measurability of \(Q\). For \(U\sim\lambda_{(0,1)}\),
+\[
+\mathbb P(Q(U)\le x)=\lambda((0,F(x)]\cap(0,1))=F(x)=\mu((-\infty,x]).
+\]
+The half-lines determine a Borel probability on \(\mathbb R\), so \(Q_\#\lambda=\mu\).</p>
+</div>
 
     <h3>The quantile coupling</h3>
 
@@ -71,41 +75,118 @@ note_next_url: "/notes/optimal-transport/kantorovich-duality/"
         \]</p>
     </div>
 
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Set \(a=x_1-y_2\), \(b=x_1-y_1\), \(c=x_2-y_2\), \(d=x_2-y_1\). Then \(a\le b,c\le d\) and \(b+c=a+d\). If \(a=d\), all four numbers coincide. Otherwise let \(\theta=(b-a)/(d-a)\in[0,1]\). Thus
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Define
+\[
+a=x_1-y_2,\quad b=x_1-y_1,\quad c=x_2-y_2,\quad d=x_2-y_1.
+\]
+The order assumptions give \(a\le b,c\le d\), and direct addition gives \(b+c=a+d\). If \(a=d\), all four coincide and the assertion is equality. Otherwise set \(\theta=(b-a)/(d-a)\in[0,1]\); then
 \[
 b=(1-\theta)a+\theta d,\qquad c=\theta a+(1-\theta)d.
 \]
-Convexity gives \(h(b)\le(1-\theta)h(a)+\theta h(d)\) and \(h(c)\le\theta h(a)+(1-\theta)h(d)\). Adding proves the inequality. If both orders are strict and \(h\) is strictly convex, then \(0&lt;\theta&lt;1\), and both inequalities are strict.</p></div>
+By the definition of convexity,
+\[
+\begin{aligned}
+h(b)+h(c)
+&amp;\le[(1-\theta)h(a)+\theta h(d)]+[\theta h(a)+(1-\theta)h(d)]\\
+&amp;=h(a)+h(d).
+\end{aligned}
+\]
+Substituting \(a,b,c,d\) gives the desired inequality. If \(x_1&lt;x_2\), \(y_1&lt;y_2\), then
+\[
+0&lt;\theta=\frac{y_2-y_1}{(x_2-x_1)+(y_2-y_1)}&lt;1.
+\]
+For strictly convex \(h\), both convexity inequalities are strict.</p>
+</div>
 
     <p>The right-hand side pairs the smaller source with the larger target and the larger source with the smaller target. The lemma says that removing such a crossing cannot increase any convex displacement cost.</p>
 
 <h3>Optimality of monotone rearrangement</h3>
     <div class="math-statement theorem"><p><span class="statement-title">Monotone rearrangement theorem.</span> Let \(1\le p&lt;\infty\) and \(\mu,\nu\in\mathcal P_p(\mathbb R)\). For \(c(x,y)=|x-y|^p\), the quantile coupling minimizes the cost. For \(p>1\) it is the unique optimal coupling. If in addition \(\mu\) has no atoms, it is induced by \(T=F_\nu^{-1}\circ F_\mu\).</p></div>
-    <div class="math-statement proof"><p><span class="statement-title">Proof.</span> Write \(Q_\mu=F_\mu^{-1}\). We first prove optimality and then uniqueness.</p>
-<p><strong>1. Finite laws.</strong> For two laws with \(N\) equal-weight atoms, Birkhoff's theorem reduces the minimum to a permutation. If a permutation has an inversion, interchange the two target indices. The Monge inequality decreases or preserves the cost; the number of inversions decreases when adjacent inverted indices are interchanged. After finitely many interchanges the sorted matching remains. Rational masses reduce to this case by repeating atoms with a common denominator.</p>
-<p>For arbitrary finite laws, fix a coupling matrix \(P\). Choose nonnegative rational matrices \(P^{(k)}\to P\) entrywise with total mass one. Their row and column sums \(a^{(k)},b^{(k)}\) converge to the original masses. The associated quantile functions converge pointwise outside the finitely many limiting cumulative-mass breakpoints. Their values lie in the same finite supports. Dominated convergence and the rational case therefore give
+    <div class="math-statement proof">
+<p><span class="statement-title">Proof.</span> Write \(Q_\eta=F_\eta^{-1}\).</p>
+<p><strong>1. Finite laws.</strong> Sort equal-weight atoms as \(x_1\le\cdots\le x_N\), \(y_1\le\cdots\le y_N\). By Birkhoff, a minimizing coupling can be chosen as a permutation. If adjacent positions satisfy \(\sigma(i)>\sigma(i+1)\), interchange these two values to obtain \(\sigma'\). The Monge inequality gives
 \[
-\int_0^1|Q_a-Q_b|^p\,\mathrm{d}u
-=\lim_k\int_0^1|Q_{a^{(k)}}-Q_{b^{(k)}}|^p\,\mathrm{d}u
-\le\lim_k\sum_{ij}P^{(k)}_{ij}|x_i-y_j|^p
-=\sum_{ij}P_{ij}|x_i-y_j|^p.
-\]</p>
-<p><strong>2. General laws and the limit.</strong> Let \(q_n\) clip the real line to \([-n,n]\) and then round down to a multiple of \(2^{-n}\). It is nondecreasing, has finite range, and
-\[
-|q_n(x)-x|\le 2^{-n}+|x|\mathbf1_{\{|x|>n\}}.
+\begin{aligned}
+&amp;|x_i-y_{\sigma'(i)}|^p+|x_{i+1}-y_{\sigma'(i+1)}|^p\\
+&amp;\hspace{1em}\le |x_i-y_{\sigma(i)}|^p+|x_{i+1}-y_{\sigma(i+1)}|^p.
+\end{aligned}
 \]
-Hence \(q_n\to\operatorname{id}\) in \(L^p(\mu)\) and \(L^p(\nu)\), by the finite moments and dominated convergence on the tails. A nondecreasing function of a uniform variable is the quantile of its own law almost everywhere; thus the quantiles of \(q_{n\#}\mu,q_{n\#}\nu\) are \(q_n\circ Q_\mu,q_n\circ Q_\nu\). For any \(\pi\in\Pi(\mu,\nu)\), the finite case gives
+The inversion count \(\#\{i&lt;j:\sigma(i)>\sigma(j)\}\) falls by one. After finitely many steps it is zero, giving the sorted matching. Repeating atoms reduces rational masses to equal weights.</p>
+<p>For arbitrary finite masses and any coupling matrix \(P\), choose rational probability matrices \(P^{(k)}\to P\) entrywise. For example, enumerate its \(M\) entries, round the first \(M-1\) down to multiples of \(1/k\), and assign the remaining mass to the last entry. Their row and column masses \(a^{(k)},b^{(k)}\) converge to \(a,b\). Outside the finitely many limiting cumulative-mass breakpoints,
+\[
+Q_{a^{(k)}}(u)\to Q_a(u),\qquad Q_{b^{(k)}}(u)\to Q_b(u).
+\]
+All values lie in fixed finite supports, so the integrands are bounded by \(\max_{i,j}|x_i-y_j|^p\). Dominated convergence gives
+\[
+\begin{aligned}
+\int_0^1|Q_a-Q_b|^p\,\mathrm{d}u
+&amp;=\lim_k\int_0^1|Q_{a^{(k)}}-Q_{b^{(k)}}|^p\,\mathrm{d}u\\
+&amp;\le\lim_k\sum_{ij}P^{(k)}_{ij}|x_i-y_j|^p
+=\sum_{ij}P_{ij}|x_i-y_j|^p.
+\end{aligned}
+\]</p>
+<p><strong>2. General laws.</strong> Let
+\[
+q_n(x)=2^{-n}\left\lfloor2^n\max(-n,\min(x,n))\right\rfloor.
+\]
+This nondecreasing map has finite range and satisfies
+\[
+|q_n(x)-x|\le2^{-n}+|x|\mathbf1_{\{|x|>n\}},
+\quad
+\int|q_n(x)-x|^p\,\mathrm{d}\eta
+\le2^{p-1}\left(2^{-np}+\int_{|x|>n}|x|^p\,\mathrm{d}\eta\right)\to0
+\]
+for \(\eta=\mu,\nu\); the tail tends to zero by dominated convergence, dominated by \(|x|^p\in L^1(\eta)\). A nondecreasing measurable \(h\) on \((0,1)\) equals the quantile of \(h_\#\lambda\) almost everywhere: both have initial intervals as sublevel sets, of the same lengths, so these sets agree almost everywhere for every rational level; their countable union identifies the functions. Apply this to \(h=q_n\circ Q_\eta\). For any \(\pi\in\Pi(\mu,\nu)\), the finite-law result gives
 \[
 \|q_n(Q_\mu)-q_n(Q_\nu)\|_{L^p(0,1)}
 \le\|q_n(x)-q_n(y)\|_{L^p(\pi)}.
 \]
-Each side converges to the corresponding unquantized norm: the norm of its difference is at most the sum of the two quantization errors. Taking limits proves the desired bound for every \(\pi\); the quantile coupling attains it.</p>
-<p><strong>3. Uniqueness when \(p>1\).</strong> Suppose the support of an optimal plan contains \((x_1,y_1),(x_2,y_2)\) with \(x_1&lt;x_2\) and \(y_1>y_2\). Strict uncrossing and continuity provide disjoint neighborhoods \(U_1,U_2\), of positive masses \(m_i\), on which the cost saving is at least \(\delta>0\). Put \(\gamma_i=\pi|_{U_i}/m_i\), and take independent pairs \((X_i,Y_i)\sim\gamma_i\). For \(0&lt;\varepsilon\le\min(m_1,m_2)\), replace \(\varepsilon(\gamma_1+\gamma_2)\) by the laws \(\varepsilon\mathcal L(X_1,Y_2)+\varepsilon\mathcal L(X_2,Y_1)\). This preserves both marginals, remains nonnegative, and lowers the cost by at least \(\varepsilon\delta\), a contradiction.</p>
-<p>The support is therefore monotone. Set \(H(x,y)=\pi(( -\infty,x]\times(-\infty,y])\). The sets \(\{X\le x,Y>y\}\) and \(\{X>x,Y\le y\}\) cannot both have positive mass, since that would give a crossing. Their masses are \(F_\mu(x)-H(x,y)\) and \(F_\nu(y)-H(x,y)\). Consequently
+Put \(e_n(\eta)=\|q_n-\operatorname{id}\|_{L^p(\eta)}\to0\). The reverse triangle inequality and the quantile representation imply
 \[
-H(x,y)=\min(F_\mu(x),F_\nu(y)),
+\begin{aligned}
+\left|\|q_n(Q_\mu)-q_n(Q_\nu)\|_p-\|Q_\mu-Q_\nu\|_p\right|&amp;\le e_n(\mu)+e_n(\nu),\\
+\left|\|q_n(x)-q_n(y)\|_{L^p(\pi)}-\|x-y\|_{L^p(\pi)}\right|&amp;\le e_n(\mu)+e_n(\nu).
+\end{aligned}
 \]
-which determines exactly the quantile coupling. Finally, if \(\mu\) is atomless, continuity of \(F_\mu\) gives \(F_\mu(X)\sim\operatorname{Unif}(0,1)\) and \(Q_\mu(F_\mu(X))=X\) almost surely. Thus the coupling is the graph of \(Q_\nu\circ F_\mu\).</p></div>
+Taking limits yields \(\|Q_\mu-Q_\nu\|_p\le\|x-y\|_{L^p(\pi)}\) for every coupling. The quantile coupling attains the left side, proving optimality.</p>
+<p><strong>3. Uniqueness for \(p>1\).</strong> If the support of an optimal \(\pi\) contains \(x_1&lt;x_2\), \(y_1>y_2\), strict uncrossing and continuity give disjoint bounded neighborhoods \(U_1,U_2\), \(m_i=\pi(U_i)>0\), and \(\delta>0\) such that
+\[
+|a_1-b_1|^p+|a_2-b_2|^p-|a_1-b_2|^p-|a_2-b_1|^p\ge\delta
+\]
+for \((a_i,b_i)\in U_i\). Put \(\gamma_i=\pi|_{U_i}/m_i\), \(Q=\gamma_1\otimes\gamma_2\), and let \(\beta_1,\beta_2\) be the \(Q\)-laws of \((a_1,b_2)\), \((a_2,b_1)\). For \(0&lt;\varepsilon\le\min(m_1,m_2)\),
+\[
+\pi'=\pi-\varepsilon(\gamma_1+\gamma_2)+\varepsilon(\beta_1+\beta_2)\ge0.
+\]
+Its source marginals are unchanged because \((\beta_i)_X=(\gamma_i)_X\), and its target marginals are unchanged because \((\beta_1)_Y=(\gamma_2)_Y\), \((\beta_2)_Y=(\gamma_1)_Y\). Thus \(\pi'\) is feasible, but
+\[
+\int|x-y|^p\,\mathrm{d}\pi'-\int|x-y|^p\,\mathrm{d}\pi
+\le-\varepsilon\delta&lt;0,
+\]
+a contradiction. The support is monotone.</p>
+<p>Write \(H(x,y)=\pi(( -\infty,x]\times(-\infty,y])\). The two crossing regions cannot both have positive mass. Their masses give
+\[
+(F_\mu(x)-H(x,y))(F_\nu(y)-H(x,y))=0,\qquad
+H(x,y)\le\min(F_\mu(x),F_\nu(y)).
+\]
+Therefore \(H(x,y)=\min(F_\mu(x),F_\nu(y))\). This is exactly the quantile joint distribution, since
+\[
+\lambda\{u:Q_\mu(u)\le x,\ Q_\nu(u)\le y\}
+=\lambda\{u:u\le\min(F_\mu(x),F_\nu(y))\}.
+\]
+Joint distribution functions determine the plan, proving uniqueness.</p>
+<p><strong>4. The map when \(\mu\) is atomless.</strong> Then \(F_\mu\) is continuous. The inverse definition and continuity give, for \(0&lt;u&lt;1\),
+\[
+F_\mu(Q_\mu(u))\ge u,\qquad
+F_\mu(Q_\mu(u)-1/k)&lt;u\quad(k\ge1),
+\quad\Longrightarrow\quad F_\mu(Q_\mu(u))=u.
+\]
+With \(X=Q_\mu(U)\), \(Y=Q_\nu(U)\), it follows that
+\[
+Y=Q_\nu(U)=Q_\nu(F_\mu(X))=T(X)\quad\text{a.s.}
+\]
+Thus \(\pi^\uparrow=(\operatorname{id},T)_\#\mu\). Define \(T\) arbitrarily where \(F_\mu(x)\notin(0,1)\); that set has \(\mu\)-measure zero.</p>
+</div>
     <p>The same ordering principle extends to other convex displacement costs with suitable integrability. We use the power-cost version so every displayed value is finite. For \(p=1\), uniqueness can fail: if all source points lie to the left of all target points, every coupling has the same linear cost.</p>
 
     <h3>Explicit Wasserstein formulas</h3>
@@ -123,7 +204,18 @@ which determines exactly the quantile coupling. Finally, if \(\mu\) is atomless,
         |F_\mu^{-1}(u)-F_\nu^{-1}(u)|.
         \]</p>
     </div>
-<div class="math-statement proof"><p><span class="statement-title">Proof of the \(W_\infty\) formula.</span> For any coupling \(\pi\), \(W_p\le\|x-y\|_{L^\infty(\pi)}\). The quantile formula and monotone convergence of \(L^p\)-norms on a probability space give \(\lim_{p\to\infty}W_p=\|Q_\mu-Q_\nu\|_\infty\). Taking the infimum over \(\pi\) gives one inequality; using the quantile coupling gives the other.</p></div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof of the \(W_\infty\) formula.</span> By definition \(W_\infty=\inf_{\pi\in\Pi(\mu,\nu)}\|x-y\|_{L^\infty(\pi)}\). Put \(h=|Q_\mu-Q_\nu|\), which is bounded under compact support. For every coupling and finite \(p\),
+\[
+\|h\|_{L^p(0,1)}=W_p(\mu,\nu)
+\le\|x-y\|_{L^p(\pi)}\le\|x-y\|_{L^\infty(\pi)}.
+\]
+If \(M=\|h\|_\infty\), then \(\|h\|_p\le M\). For every \(0\le a&lt;M\), \(\delta_a=\lambda(h>a)>0\), and
+\[
+\|h\|_p\ge a\delta_a^{1/p}\longrightarrow a.
+\]
+Letting \(a\uparrow M\) proves \(\|h\|_p\to M\). Thus \(M\le\|x-y\|_{L^\infty(\pi)}\) for every \(\pi\), and \(M\le W_\infty\). Conversely the quantile coupling satisfies \(\|x-y\|_{L^\infty(\pi^\uparrow)}=M\), so \(W_\infty\le M\).</p>
+</div>
 
     <div class="math-statement example">
         <p><span class="statement-title">Gaussian laws.</span> If \(\mu=N(m_0,\sigma_0^2)\) and \(\nu=N(m_1,\sigma_1^2)\) with \(\sigma_0,\sigma_1>0\), then

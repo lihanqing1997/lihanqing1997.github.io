@@ -20,6 +20,14 @@ being developed.
 6. Keep explanatory prose close to the formula or theorem it explains. It
    should expose motivation, geometry, or proof strategy rather than repeat the
    visible heading.
+7. In the optimal transport note, proofs must display their mathematical steps:
+   define constructed objects, show intermediate equalities and inequalities,
+   and accompany them with short justifications. For a limit, specify the
+   convergence mode, the bound or integrability hypothesis permitting passage,
+   and the order of limits. Naming a method in prose is not a substitute for
+   carrying it out. Keep scope balanced by choosing results and explicitly
+   identifying external theorem inputs, while retaining complete derivations
+   for the proofs included.
 
 ## Self-containedness
 

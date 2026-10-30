@@ -34,16 +34,39 @@ note_next_url: "/notes/optimal-transport/monge-ampere-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Symmetry and nonnegativity are immediate. Minkowski's inequality in \(L^p(\mathbb S^{d-1})\), combined with the triangle inequality for each one-dimensional \(W_p\), proves the sliced triangle inequality; the max version follows by taking suprema. Finiteness follows from the projection bound in the next proposition. Measurability in direction follows from
+<p><span class="statement-title">Proof.</span> Symmetry and nonnegativity are immediate. Write \(a_\theta=W_p(P_{\theta\#}\mu,P_{\theta\#}\nu)\), \(b_\theta=W_p(P_{\theta\#}\nu,P_{\theta\#}\eta)\). The one-dimensional triangle inequality and Minkowski give
+\[
+\begin{aligned}
+\operatorname{SW}_p(\mu,\eta)
+&amp;\le\left(\int(a_\theta+b_\theta)^p\,\mathrm{d}\sigma\right)^{1/p}\\
+&amp;\le\left(\int a_\theta^p\,\mathrm{d}\sigma\right)^{1/p}
++\left(\int b_\theta^p\,\mathrm{d}\sigma\right)^{1/p}
+=\operatorname{SW}_p(\mu,\nu)+\operatorname{SW}_p(\nu,\eta).
+\end{aligned}
+\]
+For the maximum version, \(\sup_\theta(a_\theta+b_\theta)\le\sup_\theta a_\theta+\sup_\theta b_\theta\) proves the analogous inequality. Finiteness follows from the projection bound in the next proposition. Measurability in direction follows from
         \[
         W_p(P_{\theta\#}\mu,P_{\eta\#}\mu)\le|\theta-\eta|\left(\int|x|^p\,\mathrm{d}\mu\right)^{1/p},
         \]
-        obtained by coupling both projections of the same \(x\); apply the triangle inequality to both laws. If \(\operatorname{SW}_p=0\), the integrand vanishes on a full-surface-measure set \(A\). This set is dense because every nonempty open patch has positive surface measure (for \(d=1\), each of the two directions has positive mass). For each \(\theta\), choose \(\theta_j\in A\) tending to it. For every \(r\in\mathbb R\), bounded convergence gives
+        Indeed, the coupling \((P_\theta,P_\eta)_\#\mu\) has cost
+\[
+\int|(\theta-\eta)^\top x|^p\,\mathrm{d}\mu(x)
+\le|\theta-\eta|^p\int|x|^p\,\mathrm{d}\mu(x).
+\]
+Writing \(M_p(\mu)=(\int|x|^p\,\mathrm{d}\mu)^{1/p}\), triangle inequality gives
+\[
+|a_\theta-a_\eta|\le|\theta-\eta|(M_p(\mu)+M_p(\nu)).
+\]
+Thus the directional integrand is continuous and measurable. If \(\operatorname{SW}_p=0\), the integrand vanishes on a full-surface-measure set \(A\). This set is dense because every nonempty open patch has positive surface measure (for \(d=1\), each of the two directions has positive mass). For each \(\theta\), choose \(\theta_j\in A\) tending to it. For every \(r\in\mathbb R\),
+\[
+e^{ir\theta_j\cdot x}\to e^{ir\theta\cdot x},\qquad |e^{ir\theta_j\cdot x}|=1\in L^1(\mu)\cap L^1(\nu).
+\]
+Dominated convergence therefore gives
         \[
         \widehat\mu(r\theta)=\lim_j\widehat\mu(r\theta_j)=\lim_j\widehat\nu(r\theta_j)=\widehat\nu(r\theta).
         \]
         Every frequency has the form \(r\theta\); uniqueness of characteristic functions gives \(\mu=\nu\). If \(\operatorname{MSW}_p=0\), every direction already has equal projected laws, so the same conclusion holds.</p>
-    </div>
+</div>
 
     <h3>Comparison with ordinary Wasserstein distance</h3>
 
@@ -57,12 +80,21 @@ note_next_url: "/notes/optimal-transport/monge-ampere-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The first inequality is \(L^p\)-average at most supremum. Since \(P_\theta\) is \(1\)-Lipschitz, the pushforward of any coupling gives
-        \[
-        W_p(P_{\theta\#}\mu,P_{\theta\#}\nu)\le W_p(\mu,\nu).
-        \]
-        Take the supremum over \(\theta\).</p>
-    </div>
+<p><span class="statement-title">Proof.</span> Surface measure \(\sigma\) is normalized to mass one. For the nonnegative function \(a_\theta=W_p(P_{\theta\#}\mu,P_{\theta\#}\nu)\),
+\[
+\int a_\theta^p\,\mathrm{d}\sigma\le(\sup_\theta a_\theta)^p\sigma(\mathbb S^{d-1})=(\operatorname{MSW}_p)^p.
+\]
+For any \(\pi\in\Pi(\mu,\nu)\), \((P_\theta,P_\theta)_\#\pi\) couples the projected laws, and \(|\theta|=1\) gives
+\[
+W_p^p(P_{\theta\#}\mu,P_{\theta\#}\nu)
+\le\int|\theta^\top(x-y)|^p\,\mathrm{d}\pi
+\le\int|x-y|^p\,\mathrm{d}\pi.
+\]
+Taking the infimum over \(\pi\), then the supremum over \(\theta\), and finally positive \(p\)-th roots, yields
+\[
+\operatorname{SW}_p\le\operatorname{MSW}_p\le W_p.
+\]</p>
+</div>
 
     <p>A reverse inequality requires restrictions such as compact support or regularity, and its constant generally deteriorates with dimension. Projection distances are therefore weaker quantitatively even though they identify the law.</p>
 
@@ -100,13 +132,23 @@ note_next_url: "/notes/optimal-transport/monge-ampere-equation/"
     </div>
 
     <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Projection commutes with empirical measures:
-        \[
-        P_{\theta\#}\widehat\mu_n
-        =\frac1n\sum_i\delta_{\theta^\top X_i}.
-        \]
-        The identity then follows from Tonelli's theorem.</p>
-    </div>
+<p><span class="statement-title">Proof.</span> For each Borel \(A\subset\mathbb R\),
+\[
+(P_{\theta\#}\widehat\mu_n)(A)
+=\frac1n\sum_{i=1}^n\mathbf1_A(\theta^\top X_i),
+\]
+so \(P_{\theta\#}\widehat\mu_n=n^{-1}\sum_i\delta_{\theta^\top X_i}\), the empirical law of i.i.d. samples from \(P_{\theta\#}\mu\). The function
+\(Z(\omega,\theta)=W_p^p(P_{\theta\#}\widehat\mu_n(\omega),P_{\theta\#}\mu)\)
+is nonnegative and jointly measurable: it is measurable in the samples and continuous in direction by the preceding proof. Tonelli therefore gives
+\[
+\begin{aligned}
+\mathbb E\operatorname{SW}_p^p(\widehat\mu_n,\mu)
+&amp;=\int\left[\int Z(\omega,\theta)\,\mathrm{d}\sigma(\theta)\right]\,\mathrm{d}\mathbb P(\omega)\\
+&amp;=\int\left[\int Z(\omega,\theta)\,\mathrm{d}\mathbb P(\omega)\right]\,\mathrm{d}\sigma(\theta).
+\end{aligned}
+\]
+If the inner expectation is at most \(R_n\) for every direction, the right side is at most \(R_n\sigma(\mathbb S^{d-1})=R_n\).</p>
+</div>
 
     <p>The constants may still depend on dimension through projected moments or through uniformity over directions. Slicing mitigates the geometric curse of matching but does not make high-dimensional statistics entirely dimension free.</p>
 
