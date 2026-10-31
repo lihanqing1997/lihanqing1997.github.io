@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "27. 随机博弈与多智能体学习"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/average-reward-ergodic-control/"
 note_next_url: "/notes/reinforcement-learning/research-directions-and-reading/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 27
 ---
 
-<p class="rl-learning-goal">Prove the discounted zero-sum Shapley theorem and understand exactly what no-regret learning says about repeated general-sum play.</p>
-<h3>Two-player zero-sum Markov games</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Prove the discounted zero-sum Shapley theorem and understand exactly what no-regret learning says about repeated general-sum play.</p>
+<h3 id="two-player-zero-sum-markov-games">Two-player zero-sum Markov games</h3>
 <p>Let states, maximizing-player actions \(a\), and minimizing-player actions \(b\) be finite. The first player receives bounded reward \(r(s,a,b)\), the second its negative, and the next-state kernel is \(P(\cdot\mid s,a,b)\). Actions are chosen simultaneously using independent private randomization conditional on the common history. For a value vector \(v\), define the local matrix
 \[
  M_s(v)_{ab}=r(s,a,b)+\gamma\sum_{s'}P(s'\mid s,a,b)v(s'),\qquad 0\le\gamma&lt;1.
@@ -20,11 +23,11 @@ The external finite matrix-game minimax theorem states
  =\min_{y\in\Delta_B}\max_{x\in\Delta_A}x^\top My,
 \]
 with an attained saddle pair. This follows from finite LP duality; it is the game-theory input to the following proof.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (discounted Shapley operator).</span>
+<div class="math-statement theorem" id="theorem-discounted-shapley-operator" data-result-number="27.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-discounted-shapley-operator" aria-label="Link to theorem 27.1">Theorem 27.1 (discounted Shapley operator).</a></span>
 The operator \((Tv)(s)=\operatorname{val}(M_s(v))\) is a \(\gamma\)-contraction. Its fixed point \(v_*\) is the game value, and saddle strategies in each matrix \(M_s(v_*)\) form optimal stationary policies against arbitrary history-dependent opponents.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For any matrices \(M,N\) and distributions \(x,y\),
 \[
@@ -51,7 +54,7 @@ The terminal term tends to zero, and the reward series converges in \(L^1\) sinc
 </div>
 
 <p>The proof extends the MDP maximization to a matrix-game value. It does not extend unchanged to general-sum games, where players have distinct rewards and there is no common scalar minimax operator. If opponents are learning, one player's effective transition law changes over time; independent Q-learning no longer sees the fixed environment assumed by its convergence theorem.</p>
-<h3>External regret and coarse correlated equilibrium</h3>
+<h3 id="external-regret-and-coarse-correlated-equilibrium">External regret and coarse correlated equilibrium</h3>
 <p>For a finite <em>one-stage</em> general-sum game with utilities \(u_i(a_i,a_{-i})\), consider joint realized plays \(a^1,\ldots,a^T\). Define player \(i\)'s external regret
 \[
  R_{i,T}=\max_{b_i}\sum_{t=1}^T
@@ -64,7 +67,7 @@ A distribution \(q\) is a coarse correlated equilibrium (CCE) if no player benef
  \mathbb E_q[u_i(b_i,A_{-i})-u_i(A)]\le0
  \quad\text{for every }i,b_i.
 \]</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For each \(i,b_i\), the empirical definition gives the exact identity and bound
 \[
@@ -76,8 +79,8 @@ Thus if \(R_{i,T}\le\varepsilon_iT\), the empirical distribution is an approxima
 </div>
 
 <p>Internal/swap regret permits deviations depending on the recommended action and leads to correlated-equilibrium inequalities. In Markov games, deviations affect future state visitation, so a stagewise no-regret calculation alone does not prove equilibrium for whole policies. Cooperative learning, centralized training with decentralized execution, opponent modeling, and multi-agent credit assignment each impose additional information and optimization choices.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (matching pennies).</span>
+<div class="math-statement example" id="example-matching-pennies" data-result-number="27.2">
+<p><span class="statement-title"><a class="note-permalink" href="#example-matching-pennies" aria-label="Link to worked example 27.2">Worked example 27.2 (matching pennies).</a></span>
 In a one-state zero-sum game, let the reward matrix be
 \[
  M=\begin{pmatrix}1&amp;-1\\-1&amp;1\end{pmatrix}.
@@ -88,9 +91,12 @@ If the row player chooses the first action with probability \(p\), its payoffs a
 \]
 so \(v_*=0\). Pure best responses can keep switching even though the equilibrium value is well defined.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>If a matrix-game solver has value error at most \(\eta\) at each backup, bound the asymptotic value-iteration error.</p><details><summary>Hint and solution</summary><p>The recursion satisfies \(e_{n+1}\le\gamma e_n+\eta\), so \(e_n\le\gamma^ne_0+\eta(1-\gamma^n)/(1-\gamma)\). Hence \(\limsup e_n\le\eta/(1-\gamma)\). This controls value error, not automatically each player's exploitability.</p></details></li>
-<li><p>Why does an empirical CCE not imply that the product of its marginal distributions is a CCE?</p><details><summary>Hint and solution</summary><p>The inequalities use the joint distribution, including correlation between players' actions. Replacing it by independent marginals changes both realized utility and deviation payoffs. The regret proof supplies no equality relating these two distributions.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-27-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-27-1">Exercise 27.1.</a></strong> If a matrix-game solver has value error at most \(\eta\) at each backup, bound the asymptotic value-iteration error.</p><details class="note-hint"><summary>Hint</summary><p>Apply the scalar contraction-with-error recurrence.</p></details><details><summary>Solution</summary><p>The recursion satisfies \(e_{n+1}\le\gamma e_n+\eta\), so \(e_n\le\gamma^ne_0+\eta(1-\gamma^n)/(1-\gamma)\). Hence \(\limsup e_n\le\eta/(1-\gamma)\). This controls value error, not automatically each player's exploitability.</p></details></li>
+<li id="exercise-27-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-27-2">Exercise 27.2.</a></strong> Why does an empirical CCE not imply that the product of its marginal distributions is a CCE?</p><details class="note-hint"><summary>Hint</summary><p>Identify which expectations depend on correlations between the players’ actions.</p></details><details><summary>Solution</summary><p>The inequalities use the joint distribution, including correlation between players' actions. Replacing it by independent marginals changes both realized utility and deviation payoffs. The regret proof supplies no equality relating these two distributions.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1063912/">Shapley, <em>Stochastic Games</em> (1953)</a>; <a href="https://tor-lattimore.com/downloads/book/book.pdf">Lattimore–Szepesvári, <em>Bandit Algorithms</em></a> for online learning and regret; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. Finite minimax is the external input; contraction, history-policy verification, and the regret-to-CCE implication are proved explicitly.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1063912/">Shapley, <em>Stochastic Games</em> (1953)</a>; <a href="https://tor-lattimore.com/downloads/book/book.pdf">Lattimore–Szepesvári, <em>Bandit Algorithms</em></a> for online learning and regret; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. Finite minimax is the external input; contraction, history-policy verification, and the regret-to-CCE implication are proved explicitly.</p>
+</section>

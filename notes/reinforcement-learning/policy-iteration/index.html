@@ -6,20 +6,23 @@ breadcrumb_child_label_zh: "7. 策略迭代"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/policy-evaluation/"
 note_next_url: "/notes/reinforcement-learning/value-iteration/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 7
 ---
 
-<p class="rl-learning-goal">Prove policy improvement and finite termination, and define partial policy evaluation without conflicting conventions.</p>
-<h3>The exact improvement identity</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Prove policy improvement and finite termination, and define partial policy evaluation without conflicting conventions.</p>
+<h3 id="the-exact-improvement-identity">The exact improvement identity</h3>
 <p>Given \(\pi\), let \(g=T^{\pi'}V^\pi-V^\pi\). It is the advantage of changing the first action distribution while using \(V^\pi\) as continuation value.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (policy improvement).</span>
+<div class="math-statement theorem" id="theorem-policy-improvement" data-result-number="7.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-policy-improvement" aria-label="Link to theorem 7.1">Theorem 7.1 (policy improvement).</a></span>
 \[
 V^{\pi'}-V^\pi=(I-\gamma P_{\pi'})^{-1}g
 =\sum_{t\ge0}\gamma^tP_{\pi'}^tg.
 \]
 Thus \(g\ge0\) implies \(V^{\pi'}\ge V^\pi\). Under \(g\ge0\), improvement at \(s\) is strict if \(g(x)&gt;0\) and \(\gamma^tP_{\pi'}^t(s,x)&gt;0\) for some \(t,x\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Subtract \(V^\pi\) from the Bellman equation for \(\pi'\):
 \[
@@ -36,12 +39,12 @@ Apply the convergent resolvent. If \(g\ge0\), all terms are nonnegative, and
 under the stated condition. At \(\gamma=0\), only immediate improvement matters.</p>
 </div>
 
-<h3>An algorithm that terminates</h3>
+<h3 id="an-algorithm-that-terminates">An algorithm that terminates</h3>
 <p>Start with a deterministic stationary policy. Evaluate \(V^{\pi_k}\) exactly and choose \(\pi_{k+1}\) greedily. Keep \(\pi_k(s)\) whenever it already maximizes the score; otherwise select a maximizer by a fixed ordering. Stop when the policy is unchanged.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (finite termination).</span> This algorithm terminates after finitely many policy changes, at an optimal policy.</p>
+<div class="math-statement theorem" id="theorem-finite-termination" data-result-number="7.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-finite-termination" aria-label="Link to theorem 7.2">Theorem 7.2 (finite termination).</a></span> This algorithm terminates after finitely many policy changes, at an optimal policy.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Greediness gives
 \[
@@ -64,7 +67,7 @@ TV^{\pi_k}=T^{\pi_k}V^{\pi_k}=V^{\pi_k}.
 Uniqueness of the optimal fixed point proves \(V^{\pi_k}=V^*\). Without the tie rule, policies can keep alternating between equal optimal actions.</p>
 </div>
 
-<h3>Modified policy iteration</h3>
+<h3 id="modified-policy-iteration">Modified policy iteration</h3>
 <p>Our convention is
 \[
 \pi_{k+1}\in\operatorname{Greedy}(V_k),\qquad
@@ -76,15 +79,15 @@ For \(m_k=1\), \(V_{k+1}=T^{\pi_{k+1}}V_k=TV_k\), exactly value iteration. Holdi
 \le\gamma^{m}\|V_k-V^{\pi_{k+1}}\|_\infty\longrightarrow0.
 \]
 Thus exact evaluation is the infinite-sweep limit. Setting \(m_k=0\) would leave the value unchanged. Approximate-greedy error bounds will be developed later.</p>
-<h3>The Newton calculation on one greedy region</h3>
+<h3 id="the-newton-calculation-on-one-greedy-region">The Newton calculation on one greedy region</h3>
 <p>Where a single policy \(\pi\) is greedy, \(F(V)=V-TV=(I-\gamma P_\pi)V-r_\pi\). Its Jacobian is invertible and the Newton update is
 \[
 V-(I-\gamma P_\pi)^{-1}F(V)
 =(I-\gamma P_\pi)^{-1}r_\pi=V^\pi.
 \]
 This explains the relation to Newton methods on affine pieces. Across action ties, ordinary smooth differentiability need not hold.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (one strict improvement).</span>
+<div class="math-statement example" id="example-one-strict-improvement" data-result-number="7.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-one-strict-improvement" aria-label="Link to worked example 7.3">Worked example 7.3 (one strict improvement).</a></span>
 At state \(s\), stay gives reward \(1\) and remains at \(s\); go gives reward \(0\) and moves to absorbing \(g\), with reward \(2\). For \(\gamma=0.9\), the stay policy has value \((10,20)\). Its scores are
 \[
 Q^\pi(s,\mathrm{stay})=1+0.9(10)=10,\quad
@@ -92,9 +95,12 @@ Q^\pi(s,\mathrm{go})=0.9(20)=18.
 \]
 Switching to go gives \((18,20)\). Its stay score is \(17.2&lt;18\), so the next policy stays unchanged and is optimal.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Show that equal consecutive values imply optimality even without the tie rule.</p><details><summary>Hint and solution</summary><p>If \(V^{\pi'}=V^\pi\) and \(\pi'\) is greedy, then \(TV^\pi=T^{\pi'}V^\pi=T^{\pi'}V^{\pi'}=V^{\pi'}=V^\pi\). Thus \(V^\pi=V^*\), though the recorded policies might still alternate.</p></details></li>
-<li><p>Compute \(g\) and the resolvent improvement in the example.</p><details><summary>Hint and solution</summary><p>\(g=(8,0)^\top\). Under the new policy \(P_{\pi'}g=0\), since \(s\) immediately moves to \(g\). Thus the resolvent sum equals \((8,0)^\top\), precisely the value improvement.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-7-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-7-1">Exercise 7.1.</a></strong> Show that equal consecutive values imply optimality even without the tie rule.</p><details class="note-hint"><summary>Hint</summary><p>Substitute the common value into the Bellman equation of the new greedy policy.</p></details><details><summary>Solution</summary><p>If \(V^{\pi'}=V^\pi\) and \(\pi'\) is greedy, then \(TV^\pi=T^{\pi'}V^\pi=T^{\pi'}V^{\pi'}=V^{\pi'}=V^\pi\). Thus \(V^\pi=V^*\), though the recorded policies might still alternate.</p></details></li>
+<li id="exercise-7-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-7-2">Exercise 7.2.</a></strong> Compute \(g\) and the resolvent improvement in the example.</p><details class="note-hint"><summary>Hint</summary><p>Compute the one-step advantage and check whether it can be revisited under the new policy.</p></details><details><summary>Solution</summary><p>\(g=(8,0)^\top\). Under the new policy \(P_{\pi'}g=0\), since \(s\) immediately moves to \(g\). Thus the resolvent sum equals \((8,0)^\top\), precisely the value improvement.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy iteration; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, §4.3. The resolvent and Bellman verification used here were proved in earlier chapters.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy iteration; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, §4.3. The resolvent and Bellman verification used here were proved in earlier chapters.</p>
+</section>

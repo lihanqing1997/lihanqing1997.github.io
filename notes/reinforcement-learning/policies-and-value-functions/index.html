@@ -6,10 +6,15 @@ breadcrumb_child_label_zh: "2. 策略与价值函数"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/markov-decision-processes/"
 note_next_url: "/notes/reinforcement-learning/bellman-expectation-equations/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 2
 ---
 
-<p class="rl-learning-goal">Relate state values, action values, advantages, and discounted occupancy measures using one consistent normalization.</p>
-<h3>Starting a process at a specified state</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Relate state values, action values, advantages, and discounted occupancy measures using one consistent normalization.</p>
+<h3 id="starting-a-process-at-a-specified-state">Starting a process at a specified state</h3>
+<div class="math-statement definition" id="definition-values-and-advantages" data-result-number="2.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-values-and-advantages" aria-label="Link to definition 2.1">Definition 2.1 (Values and advantages).</a></span></p>
 <p>In the finite discounted model of the previous chapter, \(\mathbb E_s^\pi\) denotes the process initialized at \(S_0=s\), even if \(\rho(s)=0\). For a stationary policy \(\pi\), define
 \[
 V^\pi(s)=\mathbb E_s^\pi\sum_{t\ge0}\gamma^tR_{t+1},\qquad
@@ -20,15 +25,16 @@ In \(\mathbb E_{s,a}^\pi\), the first action is forced to be \(a\); subsequent a
 A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s),\qquad
 J_\rho(\pi)=\sum_s\rho(s)V^\pi(s).
 \]</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (one-step identities).</span>
+</div>
+<div class="math-statement proposition" id="proposition-one-step-identities" data-result-number="2.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-one-step-identities" aria-label="Link to proposition 2.2">Proposition 2.2 (one-step identities).</a></span>
 \[
 Q^\pi(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V^\pi(s'),\qquad
 V^\pi(s)=\sum_a\pi(a\mid s)Q^\pi(s,a).
 \]
 In particular, \(\sum_a\pi(a\mid s)A^\pi(s,a)=0\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For an \(n\)-step return after the forced action, conditioning on the first transition gives
 \[
@@ -48,15 +54,18 @@ Finally,
 \]</p>
 </div>
 
-<h3>Discounted occupancy and the flow equation</h3>
+<h3 id="discounted-occupancy-and-the-flow-equation">Discounted occupancy and the flow equation</h3>
+<div class="math-statement definition" id="definition-normalized-discounted-occupancy" data-result-number="2.3">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-normalized-discounted-occupancy" aria-label="Link to definition 2.3">Definition 2.3 (Normalized discounted occupancy).</a></span></p>
 <p>For any policy, including a history-dependent one, define the normalized state-action occupancy and its state marginal by
 \[
 d_\rho^\pi(s,a)=(1-\gamma)\sum_{t\ge0}\gamma^t\mathbb P_\rho^\pi(S_t=s,A_t=a),
 \qquad d_{\rho,S}^\pi(s)=\sum_a d_\rho^\pi(s,a).
 \]
 All terms are nonnegative, so summing them in either order gives \(\sum_{s,a}d_\rho^\pi(s,a)=1\). This notation always reserves \(d_\rho^\pi\) for state-action mass and \(d_{\rho,S}^\pi\) for state mass.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (occupancy identities).</span> For every bounded \(f\),
+</div>
+<div class="math-statement proposition" id="proposition-occupancy-identities" data-result-number="2.4">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-occupancy-identities" aria-label="Link to proposition 2.4">Proposition 2.4 (occupancy identities).</a></span> For every bounded \(f\),
 \[
 \mathbb E_\rho^\pi\sum_{t\ge0}\gamma^tf(S_t,A_t)
 =\frac{\langle d_\rho^\pi,f\rangle}{1-\gamma},
@@ -68,7 +77,7 @@ d_{\rho,S}^\pi(s')=(1-\gamma)\rho(s')
 \]
 For stationary \(\pi\), \(d_\rho^\pi(s,a)=d_{\rho,S}^\pi(s)\pi(a\mid s)\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The series of absolute expected values is bounded by \(\|f\|_\infty/(1-\gamma)\). Therefore
 \[
@@ -92,11 +101,11 @@ d_{\rho,S}^\pi(s')-(1-\gamma)\rho(s')
 Under stationarity, substitute \(\mathbb P(S_t=s,A_t=a)=\mathbb P(S_t=s)\pi(a\mid s)\) into the defining sum to obtain the factorization.</p>
 </div>
 
-<h3>Which arrays are realizable occupancies?</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (finite occupancy polytope).</span> An array \(d\ge0\) is the occupancy of a stationary randomized policy if and only if its state marginal \(d_S\) satisfies the flow equations above. A realizing policy is \(\pi(a\mid s)=d(s,a)/d_S(s)\) whenever \(d_S(s)&gt;0\).</p>
+<h3 id="which-arrays-are-realizable-occupancies">Which arrays are realizable occupancies?</h3>
+<div class="math-statement theorem" id="theorem-finite-occupancy-polytope" data-result-number="2.5">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-finite-occupancy-polytope" aria-label="Link to theorem 2.5">Theorem 2.5 (finite occupancy polytope).</a></span> An array \(d\ge0\) is the occupancy of a stationary randomized policy if and only if its state marginal \(d_S\) satisfies the flow equations above. A realizing policy is \(\pi(a\mid s)=d(s,a)/d_S(s)\) whenever \(d_S(s)&gt;0\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Necessity was proved above. Conversely, summing the assumed flow equations gives
 \[
@@ -118,15 +127,15 @@ The actual occupancy marginal \(\tilde d_S\) for this policy satisfies the same 
 Because \(\gamma&lt;1\), \(z=0\); hence \(d=d_\rho^\pi\). In particular, any history-dependent policy's occupancy can be realized by a stationary randomized one for the fixed initial law \(\rho\).</p>
 </div>
 
-<h3>A precise comparison between policies</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (performance difference).</span> For stationary policies \(\pi,\pi'\),
+<h3 id="a-precise-comparison-between-policies">A precise comparison between policies</h3>
+<div class="math-statement theorem" id="theorem-performance-difference" data-result-number="2.6">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-performance-difference" aria-label="Link to theorem 2.6">Theorem 2.6 (performance difference).</a></span> For stationary policies \(\pi,\pi'\),
 \[
 J_\rho(\pi')-J_\rho(\pi)
 =\frac1{1-\gamma}\sum_{s,a}d_\rho^{\pi'}(s,a)A^\pi(s,a).
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-4" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Under the trajectory law of \(\pi'\), the one-step identity gives
 \[
@@ -143,8 +152,8 @@ Multiply by \(\gamma^t\) and sum only to \(n-1\):
 \]
 Here \(|\gamma^n\mathbb E V^\pi(S_n)|\le\gamma^nR_{\max}/(1-\gamma)\to0\), and \(\mathbb E G^{(n)}\to J_\rho(\pi')\). Also \(|A^\pi|\le2R_{\max}/(1-\gamma)\), so the advantage series is absolutely integrable. Pass to the limit and use the occupancy identity to obtain the formula.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (advantage and repeated improvement).</span>
+<div class="math-statement example" id="example-advantage-and-repeated-improvement" data-result-number="2.7">
+<p><span class="statement-title"><a class="note-permalink" href="#example-advantage-and-repeated-improvement" aria-label="Link to worked example 2.7">Worked example 2.7 (advantage and repeated improvement).</a></span>
 In one state, let actions \(a,b\) have rewards \(0,1\), both returning to that state, and let \(\pi(b)=p\). Then
 \[
 V^\pi=\frac p{1-\gamma},\quad
@@ -158,9 +167,12 @@ Thus \(A^\pi(a)=-p\), \(A^\pi(b)=1-p\). For \(\pi'(b)=q\),
 \]
 The advantage measures one-step improvement; occupancy and the horizon factor accumulate its repeated effect.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>In the example, take \(p=1/4,q=3/4,\gamma=1/2\). Compute both values and the performance difference.</p><details><summary>Hint and solution</summary><p>\(V^\pi=1/2\), \(V^{\pi'}=3/2\), and the difference is \(1\). The occupancy advantage is \(q-p=1/2\), divided by \(1-\gamma=1/2\).</p></details></li>
-<li><p>Show directly from the flow equations that \(\langle d,r\rangle/(1-\gamma)\) is a linear objective over a compact polytope.</p><details><summary>Hint and solution</summary><p>The constraints are finitely many linear equalities and inequalities. Summing flow shows \(\sum d=1\), so the feasible set is closed and bounded, hence compact. Nonemptiness follows from any stationary policy. The objective is linear, so its maximum is attained. Bellman duality is established in the optimality chapter.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-2-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-2-1">Exercise 2.1.</a></strong> In the example, take \(p=1/4,q=3/4,\gamma=1/2\). Compute both values and the performance difference.</p><details class="note-hint"><summary>Hint</summary><p>Evaluate the one-state geometric returns and check the occupancy advantage independently.</p></details><details><summary>Solution</summary><p>\(V^\pi=1/2\), \(V^{\pi'}=3/2\), and the difference is \(1\). The occupancy advantage is \(q-p=1/2\), divided by \(1-\gamma=1/2\).</p></details></li>
+<li id="exercise-2-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-2-2">Exercise 2.2.</a></strong> Show directly from the flow equations that \(\langle d,r\rangle/(1-\gamma)\) is a linear objective over a compact polytope.</p><details class="note-hint"><summary>Hint</summary><p>Sum the flow equations to obtain total mass, then use closedness and finite-dimensional boundedness.</p></details><details><summary>Solution</summary><p>The constraints are finitely many linear equalities and inequalities. Summing flow shows \(\sum d=1\), so the feasible set is closed and bounded, hence compact. Nonemptiness follows from any stationary policy. The objective is linear, so its maximum is attained. Bellman duality is established in the optimality chapter.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, occupancy measures and policy comparison; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 3. The discounted flow identities here will also be used in off-policy evaluation and constrained control.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, occupancy measures and policy comparison; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 3. The discounted flow identities here will also be used in off-policy evaluation and constrained control.</p>
+</section>

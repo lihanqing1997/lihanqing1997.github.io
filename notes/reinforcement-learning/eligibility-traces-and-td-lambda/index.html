@@ -6,18 +6,24 @@ breadcrumb_child_label_zh: "11. 资格迹与 TD lambda"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/q-learning/"
 note_next_url: "/notes/reinforcement-learning/function-approximation/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 11
 ---
 
-<p class="rl-learning-goal">Derive the lambda-return, its limiting cases, and the precise fixed-value forward–backward identity.</p>
-<h3>Longer returns and their limits</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive the lambda-return, its limiting cases, and the precise fixed-value forward–backward identity.</p>
+<h3 id="longer-returns-and-their-limits">Longer returns and their limits</h3>
+<div class="math-statement definition" id="definition-multistep-and-lambda-returns" data-result-number="11.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-multistep-and-lambda-returns" aria-label="Link to definition 11.1">Definition 11.1 (Multistep and lambda returns).</a></span></p>
 <p>Fix a bounded value vector \(V\) throughout the calculation, and assume bounded rewards and \(\gamma&lt;1\). Define
 \[
 G_t^{(n)}=\sum_{k=0}^{n-1}\gamma^kR_{t+k+1}+\gamma^nV(S_{t+n}),\qquad
 G_t^\lambda=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}G_t^{(n)}
 \]
 for \(0\le\lambda&lt;1\). At \(\lambda=0\), interpret the weights as unit mass at \(n=1\).</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (controlled Monte Carlo limit).</span> Let \(C=\|V\|_\infty+R_{\max}/(1-\gamma)\). Then
+</div>
+<div class="math-statement proposition" id="proposition-controlled-monte-carlo-limit" data-result-number="11.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-controlled-monte-carlo-limit" aria-label="Link to proposition 11.2">Proposition 11.2 (controlled Monte Carlo limit).</a></span> Let \(C=\|V\|_\infty+R_{\max}/(1-\gamma)\). Then
 \[
 |G_t^{(n)}-G_t|\le C\gamma^n,\qquad
 |G_t^\lambda-G_t|\le
@@ -25,7 +31,7 @@ C\frac{\gamma(1-\lambda)}{1-\gamma\lambda}.
 \]
 Consequently \(G_t^\lambda\to G_t\) uniformly over paths, and hence in \(L^1\), as \(\lambda\uparrow1\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Subtract the infinite return, leaving a bootstrap term and a discounted reward tail:
 \[
@@ -44,9 +50,9 @@ Their absolute values sum to at most \(C\gamma^n\). The lambda weights are nonne
 The denominator tends to \(1-\gamma&gt;0\). The deterministic upper bound proves both pathwise and \(L^1\) convergence, without an unspecified Abelian-limit argument.</p>
 </div>
 
-<h3>The multistep Bellman operator</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (lambda resolvent).</span> For a fixed stationary policy,
+<h3 id="the-multistep-bellman-operator">The multistep Bellman operator</h3>
+<div class="math-statement proposition" id="proposition-lambda-resolvent" data-result-number="11.3">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-lambda-resolvent" aria-label="Link to proposition 11.3">Proposition 11.3 (lambda resolvent).</a></span> For a fixed stationary policy,
 \[
 T_\lambda^\pi V=(1-\lambda)\sum_{n\ge1}\lambda^{n-1}(T^\pi)^nV
 =V+(I-\gamma\lambda P_\pi)^{-1}(T^\pi V-V).
@@ -54,7 +60,7 @@ T_\lambda^\pi V=(1-\lambda)\sum_{n\ge1}\lambda^{n-1}(T^\pi)^nV
 Its fixed point is \(V^\pi\), and its sup-norm Lipschitz constant is at most
 \(\kappa_\lambda=\gamma(1-\lambda)/(1-\gamma\lambda)&lt;1\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Induction on \(n\) gives
 \[
@@ -81,14 +87,14 @@ T_\lambda^\pi V-T_\lambda^\pi W
 Its norm is at most \(\kappa_\lambda\|V-W\|_\infty\). Substituting \(V^\pi\) in the resolvent yields a fixed point; contraction proves uniqueness.</p>
 </div>
 
-<h3>Forward and backward credit assignment</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (TD-error expansion).</span> For fixed \(V\), put \(\delta_t=R_{t+1}+\gamma V(S_{t+1})-V(S_t)\). Then
+<h3 id="forward-and-backward-credit-assignment">Forward and backward credit assignment</h3>
+<div class="math-statement proposition" id="proposition-td-error-expansion" data-result-number="11.4">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-td-error-expansion" aria-label="Link to proposition 11.4">Proposition 11.4 (TD-error expansion).</a></span> For fixed \(V\), put \(\delta_t=R_{t+1}+\gamma V(S_{t+1})-V(S_t)\). Then
 \[
 G_t^\lambda-V(S_t)=\sum_{k=0}^\infty(\gamma\lambda)^k\delta_{t+k}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For each finite \(n\), expand and cancel the intermediate value terms:
 \[
@@ -106,14 +112,14 @@ Since \(|\delta_t|\le D:=R_{\max}+(1+\gamma)\|V\|_\infty\), the weighted sum of 
 =\sum_{k\ge0}(\gamma\lambda)^k\delta_{t+k}.
 \]</p>
 </div>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (offline forward–backward equivalence).</span> For a finite episode ending at time \(H\), take terminal value zero and extend rewards and values by zero thereafter. Hold \(V\) fixed during the episode. Let features be \(\phi_t=\phi(S_t)\) and \(z_{-1}=0,\ z_t=\gamma\lambda z_{t-1}+\phi_t\). With a common step \(\alpha\), the total forward and backward updates agree:
+<div class="math-statement theorem" id="theorem-offline-forwardbackward-equivalence" data-result-number="11.5">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-offline-forwardbackward-equivalence" aria-label="Link to theorem 11.5">Theorem 11.5 (offline forward–backward equivalence).</a></span> For a finite episode ending at time \(H\), take terminal value zero and extend rewards and values by zero thereafter. Hold \(V\) fixed during the episode. Let features be \(\phi_t=\phi(S_t)\) and \(z_{-1}=0,\ z_t=\gamma\lambda z_{t-1}+\phi_t\). With a common step \(\alpha\), the total forward and backward updates agree:
 \[
 \alpha\sum_{t=0}^{H-1}[G_t^\lambda-V(S_t)]\phi_t
 =\alpha\sum_{k=0}^{H-1}\delta_k z_k.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-4" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The preceding identity terminates at \(H-1\) because all later TD errors are zero. Expanding the trace recursively gives
 \[
@@ -132,8 +138,8 @@ All sums are finite, so their order can be exchanged directly:
 \]
 If \(V\) changes within the episode, the telescoping calculation no longer uses one fixed function; ordinary online accumulating traces are then not exactly this offline forward view. True-online TD uses a corrected trace to obtain a corresponding online identity.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (two rewards and two credits).</span>
+<div class="math-statement example" id="example-two-rewards-and-two-credits" data-result-number="11.6">
+<p><span class="statement-title"><a class="note-permalink" href="#example-two-rewards-and-two-credits" aria-label="Link to worked example 11.6">Worked example 11.6 (two rewards and two credits).</a></span>
 Let an episode have rewards \(R_1=0,R_2=1\), terminal state at time 2, \(V=0\), and \(\gamma=\lambda=1/2\). Then \(\delta_0=0,\delta_1=1\), and
 \[
 G_0^\lambda=(\gamma\lambda)\delta_1=\tfrac14,\qquad G_1^\lambda=1.
@@ -141,11 +147,14 @@ G_0^\lambda=(\gamma\lambda)\delta_1=\tfrac14,\qquad G_1^\lambda=1.
 For distinct state indicators \(e_0,e_1\), the last trace is \(z_1=\tfrac14e_0+e_1\). The backward update \(\alpha\delta_1z_1\) therefore assigns exactly the same credits as the two forward errors.</p>
 </div>
 
-<h3>Off-policy traces</h3>
+<h3 id="off-policy-traces">Off-policy traces</h3>
 <p>Importance ratios \(\rho_t=\pi(A_t\mid S_t)/\mu(A_t\mid S_t)\) correct the target policy, but their products can have large variance. Retrace and V-trace truncate some coefficients. Their fixed points depend on which ratios are clipped: clipping trace propagation need not introduce the same bias as clipping the policy correction in the TD residual. Specify the entire operator before claiming either exactness or bias. The unweighted on-policy proof above does not establish an off-policy theorem.</p>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Compute \(\kappa_\lambda\) at \(\gamma=0.9\) for \(\lambda=0,1/2,0.9\).</p><details><summary>Hint and solution</summary><p>The values are \(0.9\), \(0.45/0.55=9/11\), and \(0.09/0.19=9/19\). Longer expected backups contract more strongly, although sampled returns can have more noise.</p></details></li>
-<li><p>In the two-step example, replace \(\lambda\) by 1. What are the forward credits?</p><details><summary>Hint and solution</summary><p>Define the endpoint by the Monte Carlo return. The credits are \(G_0=1/2\) and \(G_1=1\); the trace is \(z_1=(1/2)e_0+e_1\). The finite-episode identity remains valid at \(\lambda=1\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-11-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-11-1">Exercise 11.1.</a></strong> Compute \(\kappa_\lambda\) at \(\gamma=0.9\) for \(\lambda=0,1/2,0.9\).</p><details class="note-hint"><summary>Hint</summary><p>Substitute each trace parameter into the contraction coefficient before comparing the values.</p></details><details><summary>Solution</summary><p>The values are \(0.9\), \(0.45/0.55=9/11\), and \(0.09/0.19=9/19\). Longer expected backups contract more strongly, although sampled returns can have more noise.</p></details></li>
+<li id="exercise-11-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-11-2">Exercise 11.2.</a></strong> In the two-step example, replace \(\lambda\) by 1. What are the forward credits?</p><details class="note-hint"><summary>Hint</summary><p>Use the Monte Carlo endpoint and the finite trace recursion.</p></details><details><summary>Solution</summary><p>Define the endpoint by the Monte Carlo return. The credits are \(G_0=1/2\) and \(G_1=1\); the trace is \(z_1=(1/2)e_0+e_1\). The finite-episode identity remains valid at \(\lambda=1\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 7 and 12. For distinct off-policy operators see <a href="https://arxiv.org/abs/1606.02647">Munos et al., Safe and efficient off-policy reinforcement learning</a>, and <a href="https://proceedings.mlr.press/v80/espeholt18a.html">Espeholt et al., IMPALA</a>.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 7 and 12. For distinct off-policy operators see <a href="https://arxiv.org/abs/1606.02647">Munos et al., Safe and efficient off-policy reinforcement learning</a>, and <a href="https://proceedings.mlr.press/v80/espeholt18a.html">Espeholt et al., IMPALA</a>.</p>
+</section>

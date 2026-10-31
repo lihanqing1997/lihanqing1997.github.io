@@ -6,13 +6,16 @@ breadcrumb_child_label_zh: "22. 基于模型的强化学习"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
 note_next_url: "/notes/reinforcement-learning/partially-observable-problems/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 22
 ---
 
-<p class="rl-learning-goal">Quantify how model error changes value and policy quality, then identify what a learned latent state must preserve.</p>
-<h3>Learning a model and planning in it</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Quantify how model error changes value and policy quality, then identify what a learned latent state must preserve.</p>
+<h3 id="learning-a-model-and-planning-in-it">Learning a model and planning in it</h3>
 <p>Let \(M=(r,P)\) and \(\widehat M=(\widehat r,\widehat P)\) share finite state/action spaces and \(0\le\gamma&lt;1\). Assume \(|r|,|\widehat r|\le R_{\max}\). A learned model supports simulated Bellman backups, policy search, or short model rollouts. Its usefulness depends on prediction errors at state-action pairs the planner will use.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (discounted simulation bound).</span>
+<div class="math-statement theorem" id="theorem-discounted-simulation-bound" data-result-number="22.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-discounted-simulation-bound" aria-label="Link to theorem 22.1">Theorem 22.1 (discounted simulation bound).</a></span>
 If \(\|r-\widehat r\|_\infty\le\varepsilon_r\) and
 \(\sup_{s,a}\|P(\cdot\mid s,a)-\widehat P(\cdot\mid s,a)\|_1\le\varepsilon_P\),
 then every stationary policy satisfies
@@ -23,7 +26,7 @@ then every stationary policy satisfies
  +\frac{\gamma R_{\max}\varepsilon_P}{(1-\gamma)^2}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Subtract the two Bellman equations, adding and subtracting \(\gamma P_\pi V_{\widehat M}^\pi\):
 \[
@@ -52,9 +55,9 @@ Multiplying proves the bound. These are uniform inequalities, so the conclusion 
  \end{aligned}
 \]
 This separates estimation and planning error. It requires model accuracy beyond the fitted policy alone because the comparator policy also appears.</p>
-<h3>An occupancy-weighted error identity</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (where model error matters).</span>
+<h3 id="an-occupancy-weighted-error-identity">An occupancy-weighted error identity</h3>
+<div class="math-statement proposition" id="proposition-where-model-error-matters" data-result-number="22.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-where-model-error-matters" aria-label="Link to proposition 22.2">Proposition 22.2 (where model error matters).</a></span>
 For a fixed policy, define
 \(e^\pi(s,a)=r(s,a)-\widehat r(s,a)+
 \gamma(P-\widehat P)V_{\widehat M}^\pi(s,a)\).
@@ -64,7 +67,7 @@ Then
  =\frac1{1-\gamma}\mathbb E_{d_{\rho,M}^\pi}[e^\pi(S,A)].
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The preceding Bellman subtraction is
 \(V_M^\pi-V_{\widehat M}^\pi=(I-\gamma P_\pi)^{-1}e_\pi^\pi\).
@@ -84,7 +87,7 @@ All terms are bounded by a constant times \(\gamma^t\); no uncontrolled limit ex
        \frac{(H-h)(H-h+1)}2 R_{\max}\varepsilon_P.
 \]
 To verify this, write \(D_h\le\varepsilon_r+(H-h)R_{\max}\varepsilon_P+D_{h+1}\), with \(D_{H+1}=0\), and sum the arithmetic series. The quadratic horizon factor is the explicit accumulation of transition error.</p>
-<h3>Latent states and planning consistency</h3>
+<h3 id="latent-states-and-planning-consistency">Latent states and planning consistency</h3>
 <p>A representation \(z=\phi(s)\) is an exact controlled abstraction if, whenever \(\phi(s)=\phi(\widetilde s)\), for every action \(a\),
 \[
  r(s,a)=r(\widetilde s,a),\qquad
@@ -93,8 +96,8 @@ To verify this, write \(D_h\le\varepsilon_r+(H-h)R_{\max}\varepsilon_P+D_{h+1}\)
  \quad\text{for every }z'.
 \]
 These equalities define a well-defined latent reward and transition kernel. For any \(v\) on latent states, the ground Bellman backup of \(v\circ\phi\) equals \((T_{\rm latent}v)\circ\phi\), by substitution into the displayed sums. Iterating from zero and taking the uniform contraction limit proves \(V^*=V_{\rm latent}^*\circ\phi\), and a latent greedy policy is optimal in the original MDP. Predicting observations well does not imply these reward-and-control identities.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (small transition error, long-horizon effect).</span>
+<div class="math-statement example" id="example-small-transition-error-long-horizon-effect" data-result-number="22.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-small-transition-error-long-horizon-effect" aria-label="Link to worked example 22.3">Worked example 22.3 (small transition error, long-horizon effect).</a></span>
 State \(g\) gives reward one and stays in \(g\) with probability \(1-p\), otherwise entering a zero-reward absorbing state. A model incorrectly sets \(p=0\). Then
 \[
  V_M(g)=\frac1{1-\gamma+\gamma p},\qquad
@@ -106,9 +109,12 @@ State \(g\) gives reward one and stays in \(g\) with probability \(1-p\), otherw
 \]
 The row \(\ell^1\) error is \(2p\). For \(p\ll1-\gamma\), the actual value error is approximately \(\gamma p/(1-\gamma)^2\), exhibiting the squared effective-horizon dependence.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Two states share a latent label but have action rewards \((1,0)\) and \((0,1)\). Can a policy using only that label be optimal in both states?</p><details><summary>Hint and solution</summary><p>No. The first state requires the first action, the second requires the second. A shared randomized action probability \(q\) gives rewards \(q\) and \(1-q\); at least one is at most \(1/2\). The abstraction violates reward consistency.</p></details></li>
-<li><p>If \(\gamma=0.9\), \(R_{\max}=1\), \(\varepsilon_r=0.01\), and \(\varepsilon_P=0.001\), evaluate the uniform planning-loss guarantee.</p><details><summary>Hint and solution</summary><p>\(\varepsilon_{\rm val}=0.01/0.1+0.9(0.001)/0.1^2=0.19\). Exact planning gives a policy-loss bound \(2\varepsilon_{\rm val}=0.38\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-22-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-22-1">Exercise 22.1.</a></strong> Two states share a latent label but have action rewards \((1,0)\) and \((0,1)\). Can a policy using only that label be optimal in both states?</p><details class="note-hint"><summary>Hint</summary><p>Write the two expected rewards as functions of the same action probability.</p></details><details><summary>Solution</summary><p>No. The first state requires the first action, the second requires the second. A shared randomized action probability \(q\) gives rewards \(q\) and \(1-q\); at least one is at most \(1/2\). The abstraction violates reward consistency.</p></details></li>
+<li id="exercise-22-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-22-2">Exercise 22.2.</a></strong> If \(\gamma=0.9\), \(R_{\max}=1\), \(\varepsilon_r=0.01\), and \(\varepsilon_P=0.001\), evaluate the uniform planning-loss guarantee.</p><details class="note-hint"><summary>Hint</summary><p>Compute the reward and transition contributions to the simulation bound, then account for policy selection.</p></details><details><summary>Solution</summary><p>\(\varepsilon_{\rm val}=0.01/0.1+0.9(0.001)/0.1^2=0.19\). Exact planning gives a policy-loss bound \(2\varepsilon_{\rm val}=0.38\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://arxiv.org/abs/2301.04104">Hafner and coauthors, DreamerV3</a> as a modern learned-world-model example. Neural latent-model experiments do not inherit the exact abstraction theorem without its consistency conditions.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://arxiv.org/abs/2301.04104">Hafner and coauthors, DreamerV3</a> as a modern learned-world-model example. Neural latent-model experiments do not inherit the exact abstraction theorem without its consistency conditions.</p>
+</section>

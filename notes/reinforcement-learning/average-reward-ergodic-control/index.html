@@ -6,13 +6,19 @@ breadcrumb_child_label_zh: "26. 平均奖励与遍历控制"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control/"
 note_next_url: "/notes/reinforcement-learning/stochastic-games-multi-agent-learning/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 26
 ---
 
-<p class="rl-learning-goal">Replace discounted contraction by a Poisson equation, and prove average-reward control and a vanishing-discount limit under an explicit mixing condition.</p>
-<h3>A finite irreducible policy chain</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Replace discounted contraction by a Poisson equation, and prove average-reward control and a vanishing-discount limit under an explicit mixing condition.</p>
+<h3 id="a-finite-irreducible-policy-chain">A finite irreducible policy chain</h3>
+<div class="math-statement definition" id="definition-invariant-law-and-gain" data-result-number="26.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-invariant-law-and-gain" aria-label="Link to definition 26.1">Definition 26.1 (Invariant law and gain).</a></span></p>
 <p>Fix a stationary policy with transition matrix \(P\) and bounded mean reward vector \(r\). This chapter uses no discount in the average-reward objective. Let \(d\) be its invariant probability vector, \(d^\top P=d^\top\), and define \(g=d^\top r\). Here \(d\) is a stationary distribution, not the discounted occupancy used earlier.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Poisson equation and gain).</span>
+</div>
+<div class="math-statement theorem" id="theorem-poisson-equation-and-gain" data-result-number="26.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-poisson-equation-and-gain" aria-label="Link to theorem 26.2">Theorem 26.2 (Poisson equation and gain).</a></span>
 If \(P\) is finite and irreducible, there is \(h\in\mathbb R^S\) satisfying
 \[
  g\mathbf1+h=r+Ph.
@@ -23,7 +29,7 @@ The scalar \(g\) is unique, \(h\) is unique up to constants, and for every initi
 \]
 Periodicity does not obstruct this expected-average conclusion.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 First, an invariant distribution exists: the Cesàro averages
 \(d_n^\top=n^{-1}\sum_{t=0}^{n-1}e_s^\top P^t\) lie in a compact simplex, and
@@ -48,10 +54,10 @@ Multiplication of any Poisson equation by \(d^\top\) identifies \(g\); subtracti
 The right-hand side has absolute value at most \(2\|h\|_\infty\). Division by \(n\) and passage to the limit prove the gain formula.</p>
 </div>
 
-<h3>Bias as a stopped centered return</h3>
+<h3 id="bias-as-a-stopped-centered-return">Bias as a stopped centered return</h3>
 <p>Normalize \(h(s_0)=0\), and let \(\tau=\inf\{t\ge0:S_t=s_0\}\). Finite irreducibility supplies integers \(m\) and \(\epsilon&gt;0\) such that, from every state, the chance of hitting \(s_0\) within \(m\) steps is at least \(\epsilon\): choose a positive-probability path for each state and take the minimum of finitely many path probabilities. The Markov property gives
 \(\Pr_s(\tau&gt;km)\le(1-\epsilon)^k\), hence \(\mathbb E_s\tau&lt;\infty\).</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For the bounded stopping time \(\tau\wedge n\), sum the conditional identity
 \(\mathbb E[h(S_t)-h(S_{t+1})\mid S_0,\ldots,S_t]=r(S_t)-g\),
@@ -67,7 +73,7 @@ The sum is dominated by \(\|r-g\mathbf1\|_\infty\tau\), which is integrable. Als
 For \(s=s_0\), \(\tau=0\) and both sides are zero. The hitting-time convention is explicit; replacing it with a positive return time without explanation changes the representation being used.</p>
 </div>
 
-<h3>Control under a uniform minorization condition</h3>
+<h3 id="control-under-a-uniform-minorization-condition">Control under a uniform minorization condition</h3>
 <p>For the next results assume a finite controlled model and a common probability vector \(\nu\), with \(0&lt;\epsilon\le1\), such that
 \[
  P(s'\mid s,a)\ge\epsilon\nu(s')\qquad\text{for every }s,a,s'.
@@ -76,7 +82,7 @@ This is a sufficient condition, stronger than general communicating or unichain 
 \((Th)(s)=\max_a\{r(s,a)+Ph(s,a)\}\) and
 \(\operatorname{sp}(u)=\max_su(s)-\min_su(s)\).
 On the subspace \(\mathcal H=\{h:h(s_0)=0\}\), span is a norm.</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Write \(P_{s,a}=\epsilon\nu+(1-\epsilon)\widetilde P_{s,a}\) when \(\epsilon&lt;1\); the case \(\epsilon=1\) is immediate. For \(u=v-w\), every actionwise backup difference lies in the common interval
 \[
@@ -100,7 +106,7 @@ Summing \(n\) steps and dividing by \(n\) bounds its expected average reward by
 The remainder tends to zero. A stationary maximizing selector gives equality at every step, hence average reward \(g_*\). This proves optimality and supplies a convergent relative-value iteration under the stated condition.</p>
 </div>
 
-<h3>A justified vanishing-discount limit</h3>
+<h3 id="a-justified-vanishing-discount-limit">A justified vanishing-discount limit</h3>
 <p>Let \(V_\gamma^*\) be the discounted optimal value for this same uniformly minorized model, and put
 \(h_\gamma=V_\gamma^*-V_\gamma^*(s_0)\mathbf1\),
 \(g_\gamma=(1-\gamma)V_\gamma^*(s_0)\).
@@ -108,7 +114,7 @@ With \(T_\gamma v=\max_a(r+\gamma Pv)\), the Bellman equation becomes
 \[
  g_\gamma\mathbf1+h_\gamma=T_\gamma h_\gamma.
 \]</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-4" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The normalized discounted map has span contraction coefficient \(\gamma(1-\epsilon)\). Moreover, each difference of corresponding action scores for \(T_\gamma h_*\) and \(Th_*\) lies between
 \(-(1-\gamma)\max h_*\) and \(-(1-\gamma)\min h_*\). Thus
@@ -133,17 +139,20 @@ uniformly in \(s\). This proves convergence of the entire normalized family unde
 </div>
 
 <p>General average-reward theory weakens this condition using recurrence classes, bias spans, and communicating structure. In multichain models the gain may depend on the initial state. Ordinary relative-value iteration may oscillate in periodic models, so the discounted contraction proof cannot simply be reused at \(\gamma=1\).</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a periodic chain and an oscillating iteration).</span>
+<div class="math-statement example" id="example-a-periodic-chain-and-an-oscillating-iteration" data-result-number="26.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-periodic-chain-and-an-oscillating-iteration" aria-label="Link to worked example 26.3">Worked example 26.3 (a periodic chain and an oscillating iteration).</a></span>
 Let \(P=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), \(r=(1,0)^\top\). Then \(d=(1/2,1/2)^\top\), \(g=1/2\), and with \(h(1)=0\), the Poisson equation gives \(h=(0,-1/2)^\top\). The gain exists despite periodicity. But relative iteration from zero gives
 \[
  (0,0)\ \mapsto\ (0,-1)\ \mapsto\ (0,0)\ \mapsto\cdots .
 \]
 The common-row minorization with \(\epsilon&gt;0\) fails, so this example does not contradict the contraction theorem.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Verify the hitting-time representation of \(h(2)\) in the worked chain.</p><details><summary>Hint and solution</summary><p>Starting at state \(2\), the first hit of state \(1\) occurs at time one. The centered reward is \(r(2)-g=-1/2\), so \(h(2)=-1/2\).</p></details></li>
-<li><p>If \(P(\cdot\mid s,a)=\nu\) for every row, what does relative iteration do?</p><details><summary>Hint and solution</summary><p>Here \(\epsilon=1\). Since \(Th(s)=\max_a r(s,a)+\nu^\top h\), normalization removes the common continuation term. One iteration gives \(h_*(s)=\max_a r(s,a)-\max_a r(s_0,a)\), independently of the initial vector.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-26-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-26-1">Exercise 26.1.</a></strong> Verify the hitting-time representation of \(h(2)\) in the worked chain.</p><details class="note-hint"><summary>Hint</summary><p>Determine the first hitting time and sum the centered rewards before that hit.</p></details><details><summary>Solution</summary><p>Starting at state \(2\), the first hit of state \(1\) occurs at time one. The centered reward is \(r(2)-g=-1/2\), so \(h(2)=-1/2\).</p></details></li>
+<li id="exercise-26-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-26-2">Exercise 26.2.</a></strong> If \(P(\cdot\mid s,a)=\nu\) for every row, what does relative iteration do?</p><details class="note-hint"><summary>Hint</summary><p>The continuation term is identical at every state; inspect what normalization subtracts.</p></details><details><summary>Solution</summary><p>Here \(\epsilon=1\). Since \(Th(s)=\max_a r(s,a)+\nu^\top h\), normalization removes the common continuation term. One iteration gives \(h_*(s)=\max_a r(s,a)-\max_a r(s_0,a)\), independently of the initial vector.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://arxiv.org/abs/2506.20904">Zurek–Zamir–Chen, average-reward offline RL and transient coverage</a> for a modern extension. The core proofs here deliberately use finite irreducibility for evaluation and common minorization for control; they do not assert the same conclusions under arbitrary recurrence assumptions.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://arxiv.org/abs/2506.20904">Zurek–Zamir–Chen, average-reward offline RL and transient coverage</a> for a modern extension. The core proofs here deliberately use finite irreducibility for evaluation and common minorization for control; they do not assert the same conclusions under arbitrary recurrence assumptions.</p>
+</section>

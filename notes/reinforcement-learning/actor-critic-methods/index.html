@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "16. 演员-评论家方法"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/baselines-and-variance-reduction/"
 note_next_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 16
 ---
 
-<p class="rl-learning-goal">Connect critic error to actor bias, derive compatible features, and distinguish a local policy surrogate from a global improvement guarantee.</p>
-<h3>Which distribution does the actor need?</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Connect critic error to actor bias, derive compatible features, and distinguish a local policy surrogate from a global improvement guarantee.</p>
+<h3 id="which-distribution-does-the-actor-need">Which distribution does the actor need?</h3>
 <p>For \(J_\rho(\theta)=\rho^\top V^{\pi_\theta}\), the gradient uses discounted occupancy \(d_\rho^{\pi_\theta}\), not an arbitrary replay or stationary distribution. An exact sampling construction is to draw \(T\), independently of a trajectory from \(\rho\), with \(\Pr(T=t)=(1-\gamma)\gamma^t\). Then
 \[
  \Pr(S_T=s,A_T=a)=\sum_{t\ge0}(1-\gamma)\gamma^t
@@ -23,9 +26,9 @@ Equivalently one can weight all trajectory terms by \(\gamma^t\). A continuing-c
            [z_\theta(S,A)(P e)(S,A)].
 \]
 Indeed, \(\mathbb E[\delta^{\widetilde V}\mid s,a]=A^\pi(s,a)+\gamma Pe(s,a)-e(s)\), and \(\sum_a\pi(a\mid s)z(s,a)e(s)=0\). Hence the bias norm is at most \(\gamma L\|e\|_\infty/(1-\gamma)\) when \(\|z\|\le L\). Training and evaluation on a dependent sample require conditioning on the full history; this fixed-critic identity cannot silently treat a fitted random critic as independent.</p>
-<h3>Compatible function approximation</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (compatible least squares).</span>
+<h3 id="compatible-function-approximation">Compatible function approximation</h3>
+<div class="math-statement proposition" id="proposition-compatible-least-squares" data-result-number="16.1">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-compatible-least-squares" aria-label="Link to proposition 16.1">Proposition 16.1 (compatible least squares).</a></span>
 Fix \(\theta\), let \(F=\mathbb E_d[zz^\top]\), and choose any minimizer \(w\) of
 \(\mathbb E_d[(Q^\pi(s,a)-b(s)-z(s,a)^\top w)^2]\).
 Then
@@ -34,7 +37,7 @@ Then
 \]
 Thus the fitted advantage gives the exact population gradient, even if its pointwise approximation is imperfect.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The loss is the finite quadratic
 \[
@@ -44,7 +47,7 @@ Its normal equation is \(Fw=\mathbb E_d[z(Q^\pi-b)]\). The baseline term is zero
 \(\mathbb E_d[z(z^\top w)]=Fw=\mathbb E_d[zQ^\pi]\), as claimed.</p>
 </div>
 
-<h3>Two time scales: what must be established</h3>
+<h3 id="two-time-scales-what-must-be-established">Two time scales: what must be established</h3>
 <p>A typical recursion has a critic step \(\beta_n\) and a slower actor step \(\alpha_n\):
 \[
  w_{n+1}=w_n+\beta_n\{h(w_n,\theta_n)+M_{n+1}\},\qquad
@@ -54,28 +57,28 @@ The usual step requirements are
 \(\sum\alpha_n=\sum\beta_n=\infty\),
 \(\sum(\alpha_n^2+\beta_n^2)&lt;\infty\), and \(\alpha_n/\beta_n\to0\).
 For example, \(\beta_n=n^{-0.6}\), \(\alpha_n=n^{-0.9}\) satisfy them. These conditions alone do not prove convergence.</p>
-<p><strong>External theorem input.</strong> Two-time-scale stochastic approximation additionally needs appropriate stability of the iterates, regularity of the mean fields, controlled noise, and an attracting critic equilibrium \(w_*(\theta)\); Markov sampling needs its own mixing/Poisson-equation conditions. Under a theorem that establishes
+<p class="note-external-input"><strong>External theorem input.</strong> Two-time-scale stochastic approximation additionally needs appropriate stability of the iterates, regularity of the mean fields, controlled noise, and an attracting critic equilibrium \(w_*(\theta)\); Markov sampling needs its own mixing/Poisson-equation conditions. Under a theorem that establishes
 \(\|w_n-w_*(\theta_n)\|\to0\), a locally Lipschitz actor field satisfies, on a compact set,
 \[
  \|g(w_n,\theta_n)-g(w_*(\theta_n),\theta_n)\|
  \le C\|w_n-w_*(\theta_n)\|\longrightarrow0.
 \]
 This is the precise reduction to the limiting actor field. It does not identify that field with \(\nabla J_\rho\) unless the critic and sampling identities above also hold. Nor does convergence to stationary points imply global optimality for arbitrary neural policies. We use the general tracking theorem as a sourced input, rather than omit its stability hypotheses in a purported short proof.</p>
-<h3>A quantitative policy-surrogate bound</h3>
+<h3 id="a-quantitative-policy-surrogate-bound">A quantitative policy-surrogate bound</h3>
 <p>For two stationary policies define \(d=d_{\rho,S}^\pi\), \(d'=d_{\rho,S}^{\pi'}\),
 \(f(s)=\sum_a\pi'(a\mid s)A^\pi(s,a)\), and
 \[
  \mathcal L_\pi(\pi')=J_\rho(\pi)+\frac{d^\top f}{1-\gamma},
  \qquad \epsilon=\max_s\sum_a|\pi'(a\mid s)-\pi(a\mid s)|.
 \]</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (surrogate error).</span>
+<div class="math-statement proposition" id="proposition-surrogate-error" data-result-number="16.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-surrogate-error" aria-label="Link to proposition 16.2">Proposition 16.2 (surrogate error).</a></span>
 \[
  |J_\rho(\pi')-\mathcal L_\pi(\pi')|
  \le\frac{\gamma\epsilon\|f\|_\infty}{(1-\gamma)^2}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Subtract the occupancy flow equations to obtain, as row vectors,
 \[
@@ -105,8 +108,8 @@ and Hölder's inequality proves the bound. In particular, a surrogate gain excee
  \qquad r_\theta=\frac{\pi_\theta(A\mid S)}{\pi_{\rm old}(A\mid S)}.
 \]
 Clipping this sampled objective does not enforce a uniform statewise policy-distance constraint; the preceding theorem is not automatically a monotonic-improvement theorem for PPO.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a critic can be wrong without biasing this actor).</span>
+<div class="math-statement example" id="example-a-critic-can-be-wrong-without-biasing-this-actor" data-result-number="16.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-critic-can-be-wrong-without-biasing-this-actor" aria-label="Link to worked example 16.3">Worked example 16.3 (a critic can be wrong without biasing this actor).</a></span>
 In the one-state two-action example, let \(\widetilde V=V^\pi+c\). Since \(Pe=c\) for both actions,
 \[
  \mathbb E[z\,\delta^{\widetilde V}]
@@ -115,9 +118,12 @@ In the one-state two-action example, let \(\widetilde V=V^\pi+c\). Since \(Pe=c\
 \]
 The actor mean is correct for any constant \(c\), although its variance can change. In multiple states an action-dependent next-state error \(Pe(s,a)\) need not cancel.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Why does a replay buffer drawn from a different state law invalidate the exact compatible-gradient conclusion for \(J_\rho\)?</p><details><summary>Hint and solution</summary><p>The normal equation then uses the replay-weighted matrix and right-hand side, whereas the gradient theorem uses \(d_\rho^\pi\). Equality requires matching that law or a valid density-ratio correction, in addition to action corrections.</p></details></li>
-<li><p>Let \(\gamma=1/2\), \(\epsilon=0.1\), and \(\|A^\pi\|_\infty\le2\). What surrogate gain suffices to certify strict improvement?</p><details><summary>Hint and solution</summary><p>The quadratic error is at most \(\gamma\epsilon^2\|A^\pi\|_\infty/(1-\gamma)^2=0.04\). A gain strictly larger than \(0.04\) suffices.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-16-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-16-1">Exercise 16.1.</a></strong> Why does a replay buffer drawn from a different state law invalidate the exact compatible-gradient conclusion for \(J_\rho\)?</p><details class="note-hint"><summary>Hint</summary><p>Compare the distribution in the regression normal equation with the distribution in the policy-gradient theorem.</p></details><details><summary>Solution</summary><p>The normal equation then uses the replay-weighted matrix and right-hand side, whereas the gradient theorem uses \(d_\rho^\pi\). Equality requires matching that law or a valid density-ratio correction, in addition to action corrections.</p></details></li>
+<li id="exercise-16-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-16-2">Exercise 16.2.</a></strong> Let \(\gamma=1/2\), \(\epsilon=0.1\), and \(\|A^\pi\|_\infty\le2\). What surrogate gain suffices to certify strict improvement?</p><details class="note-hint"><summary>Hint</summary><p>Use the quadratic surrogate-error bound and require a strictly larger surrogate gain.</p></details><details><summary>Solution</summary><p>The quadratic error is at most \(\gamma\epsilon^2\|A^\pi\|_\infty/(1-\gamma)^2=0.04\). A gain strictly larger than \(0.04\) suffices.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://doi.org/10.1016/S0167-6911(97)90015-3">Borkar, stochastic approximation with two time scales</a>; <a href="https://proceedings.mlr.press/v37/schulman15.html">TRPO</a>; <a href="https://arxiv.org/abs/1707.06347">PPO</a>. The two-time-scale tracking theory is an external input, not a claim proved by the actor-bias calculation.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://doi.org/10.1016/S0167-6911(97)90015-3">Borkar, stochastic approximation with two time scales</a>; <a href="https://proceedings.mlr.press/v37/schulman15.html">TRPO</a>; <a href="https://arxiv.org/abs/1707.06347">PPO</a>. The two-time-scale tracking theory is an external input, not a claim proved by the actor-bias calculation.</p>
+</section>

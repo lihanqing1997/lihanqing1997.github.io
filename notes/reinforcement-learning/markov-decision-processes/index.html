@@ -5,10 +5,15 @@ breadcrumb_child_label_fr: "1. Processus de décision markoviens"
 breadcrumb_child_label_zh: "1. 马尔可夫决策过程"
 note_back_url: "/notes/reinforcement-learning/"
 note_next_url: "/notes/reinforcement-learning/policies-and-value-functions/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 1
 ---
 
-<p class="rl-learning-goal">Specify the probability law behind an algorithm, distinguish the policy from the environment, and justify infinite discounted returns.</p>
-<h3>A common model and notation</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Specify the probability law behind an algorithm, distinguish the policy from the environment, and justify infinite discounted returns.</p>
+<h3 id="a-common-model-and-notation">A common model and notation</h3>
+<div class="math-statement definition" id="definition-finite-discounted-mdp-and-trajectory-law" data-result-number="1.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-finite-discounted-mdp-and-trajectory-law" aria-label="Link to definition 1.1">Definition 1.1 (Finite discounted MDP and trajectory law).</a></span></p>
 <p>The core chapters use a finite state set \(\mathsf S\), finite nonempty action sets \(\mathsf A(s)\), an initial distribution \(\rho\), and \(0\le\gamma&lt;1\). The environment is a joint kernel \(K(\mathrm{d}r,s'\mid s,a)\) for the reward \(R_{t+1}\) and next state \(S_{t+1}\). Its transition marginal and reward mean are
 \[
 P(s'\mid s,a)=\int K(\mathrm{d}r,s'\mid s,a),\qquad
@@ -27,16 +32,17 @@ For example, the law of a finite trajectory is the iterated product
 \pi_t(a_t\mid h_t)K(\mathrm{d}r_{t+1},s_{t+1}\mid s_t,a_t).
 \]
 These compatible finite laws define the infinite trajectory law by the standard extension theorem for kernels. A stationary Markov policy has \(\pi_t(a\mid H_t)=\pi(a\mid S_t)\); a deterministic one chooses a single action at each state.</p>
-<h3>From a policy to a Markov chain</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> Under a stationary Markov policy,
+</div>
+<h3 id="from-a-policy-to-a-markov-chain">From a policy to a Markov chain</h3>
+<div class="math-statement proposition" id="proposition-from-a-policy-to-a-markov-chain" data-result-number="1.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-from-a-policy-to-a-markov-chain" aria-label="Link to proposition 1.2">Proposition 1.2 (From a policy to a Markov chain).</a></span> Under a stationary Markov policy,
 \[
 P_\pi(s,s')=\sum_a\pi(a\mid s)P(s'\mid s,a),\qquad
 r_\pi(s)=\sum_a\pi(a\mid s)r(s,a)
 \]
 are the state transition matrix and expected one-step reward.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For every \(s'\), conditional expectation and the finite partition by actions give
 \[
@@ -55,9 +61,9 @@ Thus the conditional law depends only on \(S_t\). Likewise,
 Both calculations use the environment kernel; the policy does not change \(K\).</p>
 </div>
 
-<h3>Discounting and legitimate limiting operations</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (return and truncation).</span> For every policy, define
+<h3 id="discounting-and-legitimate-limiting-operations">Discounting and legitimate limiting operations</h3>
+<div class="math-statement proposition" id="proposition-return-and-truncation" data-result-number="1.3">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-return-and-truncation" aria-label="Link to proposition 1.3">Proposition 1.3 (return and truncation).</a></span> For every policy, define
 \[
 G^{(n)}=\sum_{t=0}^{n-1}\gamma^tR_{t+1},\qquad
 G=\sum_{t=0}^{\infty}\gamma^tR_{t+1},\qquad J_\rho(\pi)=\mathbb E_\rho^\pi G.
@@ -69,7 +75,7 @@ Then \(G\) exists absolutely almost surely,
 \]
 and \(J_\rho(\pi)=\sum_{t\ge0}\gamma^t\mathbb E_\rho^\pi r(S_t,A_t)\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The deterministic majorant gives
 \[
@@ -90,11 +96,11 @@ Hence partial sums are Cauchy and the same bound holds for the infinite tail. In
 The left side tends to \(\mathbb E G\) in \(L^1\); the right side is an absolutely convergent numerical series since \(|r|\le R_{\max}\). This proves the identity without exchanging an uncontrolled infinite sum and expectation.</p>
 </div>
 
-<h3>History dependence and Markovization</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> For any history-dependent policy \(\pi\), there is a possibly time-dependent Markov policy \(\bar\pi_t(a\mid s)\) with the same joint law of \((S_t,A_t)\) at every time. Consequently \(J_\rho(\bar\pi)=J_\rho(\pi)\).</p>
+<h3 id="history-dependence-and-markovization">History dependence and Markovization</h3>
+<div class="math-statement theorem" id="theorem-history-dependence-and-markovization" data-result-number="1.4">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-history-dependence-and-markovization" aria-label="Link to theorem 1.4">Theorem 1.4 (History dependence and Markovization).</a></span> For any history-dependent policy \(\pi\), there is a possibly time-dependent Markov policy \(\bar\pi_t(a\mid s)\) with the same joint law of \((S_t,A_t)\) at every time. Consequently \(J_\rho(\bar\pi)=J_\rho(\pi)\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Set \(m_t(s,a)=\mathbb P_\rho^\pi(S_t=s,A_t=a)\) and \(m_t(s)=\sum_a m_t(s,a)\). Define
 \[
@@ -116,8 +122,8 @@ Induction proves equality of all state-action marginals. For every \(n\), the ex
 \]
 This does not make \(\bar\pi\) stationary. Stationary optimality will follow later from Bellman verification.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a two-state reward process).</span>
+<div class="math-statement example" id="example-a-two-state-reward-process" data-result-number="1.5">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-two-state-reward-process" aria-label="Link to worked example 1.5">Worked example 1.5 (a two-state reward process).</a></span>
 Let state \(g\) reward \(1\) and move to absorbing state \(b\) with probability \(p\); at \(b\), reward is \(0\). Starting at \(g\), \(\mathbb P(S_t=g)=(1-p)^t\), so
 \[
 J_g=\sum_{t\ge0}[\gamma(1-p)]^t=\frac1{1-\gamma(1-p)}.
@@ -125,11 +131,14 @@ J_g=\sum_{t\ge0}[\gamma(1-p)]^t=\frac1{1-\gamma(1-p)}.
 For \(p=1/2\) and \(\gamma=0.9\), this is \(20/11\), rather than the upper bound \(10\). Transition persistence and discounting both determine the effective reward horizon.</p>
 </div>
 
-<h3>Other regimes and prerequisites</h3>
+<h3 id="other-regimes-and-prerequisites">Other regimes and prerequisites</h3>
 <p>Finite-horizon problems use a time index and backward recursion. Average reward requires recurrence assumptions rather than setting \(\gamma=1\) in the results above. On standard Borel spaces, sums become kernel integrals; measurable selection and integrability must be checked before asserting optimal policies. Continuous-state LQR and belief-state control appear later with their own assumptions. The general-space discussion is an extension, not an implicit hypothesis change in the finite core.</p>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>If \(R_{\max}=1\) and \(\gamma=0.9\), how many terms guarantee return truncation error at most \(0.01\)?</p><details><summary>Hint and solution</summary><p>Solve \(10(0.9)^n\le0.01\). Thus \(n\ge\log(0.001)/\log(0.9)\), and \(n=66\) suffices. This is a deterministic bound, not a confidence statement.</p></details></li>
-<li><p>Can Markovization preserve all correlations between actions at different times?</p><details><summary>Hint and solution</summary><p>No. In a one-state MDP, choose a fair bit at time zero and repeat it forever. Markovization uses a fresh fair action at each time. Both have the same one-time marginals, but the original has \(\mathbb P(A_1=A_0)=1\) and the new policy has probability \(1/2\). Additive expected returns agree despite different path laws.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-1-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-1-1">Exercise 1.1.</a></strong> If \(R_{\max}=1\) and \(\gamma=0.9\), how many terms guarantee return truncation error at most \(0.01\)?</p><details class="note-hint"><summary>Hint</summary><p>Insert the reward and discount values into the deterministic tail bound and solve the geometric inequality.</p></details><details><summary>Solution</summary><p>Solve \(10(0.9)^n\le0.01\). Thus \(n\ge\log(0.001)/\log(0.9)\), and \(n=66\) suffices. This is a deterministic bound, not a confidence statement.</p></details></li>
+<li id="exercise-1-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-1-2">Exercise 1.2.</a></strong> Can Markovization preserve all correlations between actions at different times?</p><details class="note-hint"><summary>Hint</summary><p>Compare a single persistent random choice with fresh independent choices at each time.</p></details><details><summary>Solution</summary><p>No. In a one-state MDP, choose a fair bit at time zero and repeat it forever. Markovization uses a fresh fair action at each time. Both have the same one-time marginals, but the original has \(\mathbb P(A_1=A_0)=1\) and the new policy has probability \(1/2\). Additive expected returns agree despite different path laws.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, finite-MDP foundations; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 3. Review <a href="/notes/probability-theory/conditional-expectation/">conditional expectation</a> and <a href="/notes/probability-theory/conditional-probability-regular-conditional-distributions/">conditional kernels</a>.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, finite-MDP foundations; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 3. Review <a href="/notes/probability-theory/conditional-expectation/">conditional expectation</a> and <a href="/notes/probability-theory/conditional-probability-regular-conditional-distributions/">conditional kernels</a>.</p>
+</section>

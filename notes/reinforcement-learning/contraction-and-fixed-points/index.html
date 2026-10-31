@@ -6,18 +6,21 @@ breadcrumb_child_label_zh: "4. 压缩映射与不动点"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/bellman-expectation-equations/"
 note_next_url: "/notes/reinforcement-learning/bellman-optimality-equations/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 4
 ---
 
-<p class="rl-learning-goal">Prove contraction convergence with its error bounds before using it to establish optimal control.</p>
-<h3>A complete proof of the contraction theorem</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Banach).</span> Let \((\mathcal X,d)\) be a nonempty complete metric space and \(F:\mathcal X\to\mathcal X\) satisfy \(d(Fx,Fy)\le\gamma d(x,y)\), \(0\le\gamma&lt;1\). Then \(F\) has a unique fixed point \(x^*\), and for \(x_n=F^nx_0\),
+<p class="note-learning-goal"><strong>Learning goal.</strong> Prove contraction convergence with its error bounds before using it to establish optimal control.</p>
+<h3 id="a-complete-proof-of-the-contraction-theorem">A complete proof of the contraction theorem</h3>
+<div class="math-statement theorem" id="theorem-banach" data-result-number="4.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-banach" aria-label="Link to theorem 4.1">Theorem 4.1 (Banach).</a></span> Let \((\mathcal X,d)\) be a nonempty complete metric space and \(F:\mathcal X\to\mathcal X\) satisfy \(d(Fx,Fy)\le\gamma d(x,y)\), \(0\le\gamma&lt;1\). Then \(F\) has a unique fixed point \(x^*\), and for \(x_n=F^nx_0\),
 \[
 d(x_n,x^*)\le\gamma^nd(x_0,x^*),\qquad
 d(x_n,x^*)\le\frac{\gamma^n}{1-\gamma}d(x_1,x_0).
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Induction gives \(d(x_{k+1},x_k)\le\gamma^kd(x_1,x_0)\). For any \(m&gt;n\),
 \[
@@ -37,16 +40,16 @@ d(y,x^*)=d(Fy,Fx^*)\le\gamma d(y,x^*),
 which forces \(y=x^*\). Repeated contraction against \(x^*\) gives the first rate. Letting \(m\to\infty\) in the Cauchy bound gives the second. When \(\gamma=0\), the map is constant and all iterates after the first equal \(x^*\).</p>
 </div>
 
-<h3>Why Bellman operators contract</h3>
+<h3 id="why-bellman-operators-contract">Why Bellman operators contract</h3>
 <p>In \(\mathbb R^{|\mathsf S|}\) with sup norm, define
 \[
 (TV)(s)=\max_{a\in\mathsf A(s)}\left[r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V(s')\right].
 \]
 This is a map on a complete finite-dimensional space. At this stage, its fixed point is simply a vector; the next chapter identifies it with the optimal return.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> Both \(T\) and \(T^\pi\) are monotone \(\gamma\)-contractions. They satisfy \(T(V+c\mathbf1)=TV+\gamma c\mathbf1\), and similarly for \(T^\pi\).</p>
+<div class="math-statement proposition" id="proposition-why-bellman-operators-contract" data-result-number="4.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-why-bellman-operators-contract" aria-label="Link to proposition 4.2">Proposition 4.2 (Why Bellman operators contract).</a></span> Both \(T\) and \(T^\pi\) are monotone \(\gamma\)-contractions. They satisfy \(T(V+c\mathbf1)=TV+\gamma c\mathbf1\), and similarly for \(T^\pi\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For finite vectors \((f_a),(g_a)\), choose \(a_f\in\arg\max_a f_a\). Then
 \[
@@ -69,9 +72,9 @@ For \(T^\pi\), replace the maximum by averaging over \(\pi\), which yields the s
 because each transition row sums to one, proving the translation identity.</p>
 </div>
 
-<h3>Residuals and perturbed iterations</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (residual certificate).</span> If \(F\) is a \(\gamma\)-contraction with fixed point \(x^*\), then
+<h3 id="residuals-and-perturbed-iterations">Residuals and perturbed iterations</h3>
+<div class="math-statement proposition" id="proposition-residual-certificate" data-result-number="4.3">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-residual-certificate" aria-label="Link to proposition 4.3">Proposition 4.3 (residual certificate).</a></span> If \(F\) is a \(\gamma\)-contraction with fixed point \(x^*\), then
 \[
 d(x,x^*)\le\frac{d(x,Fx)}{1-\gamma}.
 \]
@@ -80,7 +83,7 @@ If \(\widetilde F\tilde x=\tilde x\), then
 d(x^*,\tilde x)\le\frac{d(F\tilde x,\widetilde F\tilde x)}{1-\gamma}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The triangle inequality and contraction yield
 \[
@@ -93,15 +96,15 @@ d(\tilde x,F\tilde x)=d(\widetilde F\tilde x,F\tilde x).
 \]
 No contraction assumption on \(\widetilde F\) is needed once its fixed point is supplied.</p>
 </div>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (accumulated error).</span> If \(d(x_{k+1},Fx_k)\le\epsilon_k\), then
+<div class="math-statement proposition" id="proposition-accumulated-error" data-result-number="4.4">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-accumulated-error" aria-label="Link to proposition 4.4">Proposition 4.4 (accumulated error).</a></span> If \(d(x_{k+1},Fx_k)\le\epsilon_k\), then
 \[
 d(x_n,x^*)\le\gamma^nd(x_0,x^*)+
 \sum_{j=0}^{n-1}\gamma^{n-1-j}\epsilon_j.
 \]
 In particular, \(\epsilon_j\le\epsilon\) gives \(\limsup_n d(x_n,x^*)\le\epsilon/(1-\gamma)\); if \(\epsilon_j\to0\), then \(x_n\to x^*\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-4" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Set \(e_k=d(x_k,x^*)\). Then
 \[
@@ -116,8 +119,8 @@ Substitution, or induction on \(n\), gives the displayed finite convolution. A u
 \]
 First let \(n\to\infty\) with \(N\) fixed, and then \(\eta\downarrow0\). This order of limits proves \(e_n\to0\). For \(\gamma=0\), the direct inequality \(e_{k+1}\le\epsilon_k\) suffices.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a computable error certificate).</span>
+<div class="math-statement example" id="example-a-computable-error-certificate" data-result-number="4.5">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-computable-error-certificate" aria-label="Link to worked example 4.5">Worked example 4.5 (a computable error certificate).</a></span>
 For \(F(x)=1+0.8x\), the fixed point is \(5\). At \(x=4.9\),
 \[
 |F(x)-x|=|4.92-4.9|=0.02,\qquad
@@ -125,9 +128,12 @@ For \(F(x)=1+0.8x\), the fixed point is \(5\). At \(x=4.9\),
 \]
 The horizon factor is sharp. A Bellman residual of \(0.02\) cannot be read as a value error of \(0.02\).</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Give a nonexpansive map with no fixed point, and another with many fixed points.</p><details><summary>Hint and solution</summary><p>On \(\mathbb R\), \(F(x)=x+1\) has none and \(F(x)=x\) has every point fixed. Both have Lipschitz constant one. The strict inequality \(\gamma&lt;1\) is essential.</p></details></li>
-<li><p>If every backup has error at most \(10^{-3}\), compare the guaranteed asymptotic value error at discounts \(0.9\) and \(0.99\).</p><details><summary>Hint and solution</summary><p>The bounds are \(0.01\) and \(0.1\). A longer effective horizon amplifies persistent local error; it does not merely require more iterations.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-4-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-4-1">Exercise 4.1.</a></strong> Give a nonexpansive map with no fixed point, and another with many fixed points.</p><details class="note-hint"><summary>Hint</summary><p>Try a translation of the real line and the identity map.</p></details><details><summary>Solution</summary><p>On \(\mathbb R\), \(F(x)=x+1\) has none and \(F(x)=x\) has every point fixed. Both have Lipschitz constant one. The strict inequality \(\gamma&lt;1\) is essential.</p></details></li>
+<li id="exercise-4-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-4-2">Exercise 4.2.</a></strong> If every backup has error at most \(10^{-3}\), compare the guaranteed asymptotic value error at discounts \(0.9\) and \(0.99\).</p><details class="note-hint"><summary>Hint</summary><p>Divide the common backup error by one minus each discount.</p></details><details><summary>Solution</summary><p>The bounds are \(0.01\) and \(0.1\). A longer effective horizon amplifies persistent local error; it does not merely require more iterations.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, discounted dynamic programming; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 4. Completeness is automatic for finite vectors; general-state extensions require an invariant complete function space.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, discounted dynamic programming; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 4. Completeness is automatic for finite vectors; general-state extensions require an invariant complete function space.</p>
+</section>

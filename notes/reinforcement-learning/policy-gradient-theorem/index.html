@@ -6,25 +6,31 @@ breadcrumb_child_label_zh: "14. 策略梯度定理"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/approximate-dynamic-programming/"
 note_next_url: "/notes/reinforcement-learning/baselines-and-variance-reduction/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 14
 ---
 
-<p class="rl-learning-goal">Derive the gradient from a finite Bellman system, then justify its trajectory representation without differentiating an undefined infinite product.</p>
-<h3>A differentiable policy family</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive the gradient from a finite Bellman system, then justify its trajectory representation without differentiating an undefined infinite product.</p>
+<h3 id="a-differentiable-policy-family">A differentiable policy family</h3>
+<div class="math-statement definition" id="definition-policy-family-and-score" data-result-number="14.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-policy-family-and-score" aria-label="Link to definition 14.1">Definition 14.1 (Policy family and score).</a></span></p>
 <p>Keep the finite discounted MDP and a fixed initial distribution \(\rho\). Let \(\theta\in U\subset\mathbb R^p\), with \(U\) open, and let each \(\pi_\theta(a\mid s)&gt;0\) be continuously differentiable. The environment and \(\rho\) do not depend on \(\theta\). Write
 \[
  z_\theta(s,a)=\nabla_\theta\log\pi_\theta(a\mid s),\qquad
  J(\theta)=\rho^\top V_\theta,\qquad d_\theta=d_\rho^{\pi_\theta}.
 \]
 Here \(d_\theta\) is the normalized <em>state-action</em> occupancy. On a sufficiently small compact neighborhood of any parameter, finiteness and positivity give a uniform bound \(\|z_\theta(s,a)\|\le L\). This is a local assumption; a softmax score need not be bounded for arbitrary feature families on infinite spaces.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (policy gradient).</span>
+</div>
+<div class="math-statement theorem" id="theorem-policy-gradient" data-result-number="14.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-policy-gradient" aria-label="Link to theorem 14.2">Theorem 14.2 (policy gradient).</a></span>
 \[
  \nabla J(\theta)=\frac1{1-\gamma}
    \sum_{s,a}d_\theta(s,a)z_\theta(s,a)Q_\theta(s,a).
 \]
 The formula accounts for the dependence of the state distribution on the policy; it does not assume that distribution is fixed.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Put \(P_\theta=P_{\pi_\theta}\), \(r_\theta=r_{\pi_\theta}\). Since \(\|\gamma P_\theta\|_\infty&lt;1\),
 \[
@@ -52,9 +58,9 @@ Thus the multiplication and summation are justified. Finally
 \(d_\theta(s,a)=d_{\rho,S}^{\pi_\theta}(s)\pi_\theta(a\mid s)\).</p>
 </div>
 
-<h3>Why the likelihood-ratio derivation is legitimate</h3>
+<h3 id="why-the-likelihood-ratio-derivation-is-legitimate">Why the likelihood-ratio derivation is legitimate</h3>
 <p>Define \(J_H=\mathbb E_\theta\sum_{t=0}^{H-1}\gamma^tR_{t+1}\). A finite state-action path has policy factor \(\prod_{k=0}^{H-1}\pi_\theta(a_k\mid s_k)\); the environment factors have zero derivative. If rewards have a non-discrete law, integrate them first conditional on the finite path. The resulting finite sum can be differentiated term by term.</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 With \(z_k=z_\theta(S_k,A_k)\), finite differentiation yields
 \[
@@ -92,7 +98,7 @@ Continuity of \(g\) now gives \(J(\theta+h)-J(\theta)=g(\theta)^\top h+o(\|h\|)\
 The conditional-return limit is valid in \(L^1\), since its tail is bounded by \(R_{\max}\gamma^{H-k}/(1-\gamma)\).</p>
 </div>
 
-<h3>Natural and deterministic policy gradients</h3>
+<h3 id="natural-and-deterministic-policy-gradients">Natural and deterministic policy gradients</h3>
 <p>The occupancy-weighted Fisher matrix is \(F=\mathbb E_{d_\theta}[zz^\top]\succeq0\). If \(F\succ0\), maximizing \(g^\top v-\tfrac12v^\top Fv\) gives \(v=F^{-1}g\). When \(F\) is singular, \(g=\nabla J\) still lies in its range: for \(u\in\ker F\), \(\mathbb E(u^\top z)^2=0\), so \(u^\top g=\mathbb E[(u^\top z)Q]/(1-\gamma)=0\). The solutions are \(F^\dagger g+\ker F\); \(F^\dagger g\) is the minimum Euclidean norm solution. This is a local metric statement, not a global convergence theorem.</p>
 <p>For a deterministic policy \(\mu_\theta(s)\) with continuous actions, retain finite states, and assume \(r(s,a)\), \(P(s'\mid s,a)\), and \(\mu_\theta\) are \(C^1\) on the relevant neighborhoods. Define
 \(Q_\theta(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V_\theta(s')\).
@@ -108,8 +114,8 @@ Multiplication by the same resolvent therefore proves
  \nabla J(\theta)=\frac1{1-\gamma}\mathbb E_{s\sim d_{\rho,S}^{\mu_\theta}}[g(s)].
 \]
 Infinite state spaces require additional differentiability and domination hypotheses; this finite-state derivation does not supply them.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (one-state softmax).</span>
+<div class="math-statement example" id="example-one-state-softmax" data-result-number="14.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-one-state-softmax" aria-label="Link to worked example 14.3">Worked example 14.3 (one-state softmax).</a></span>
 Actions have rewards \(0,1\), both return to the same state, and \(p=\pi_\theta(1)=1/(1+e^{-\theta})\). Then
 \[
  J=\frac p{1-\gamma},\quad z(1)=1-p,\quad z(0)=-p,\quad F=p(1-p).
@@ -122,9 +128,12 @@ Since \(Q(1)-Q(0)=1\),
 \]
 The natural-gradient direction is \(1/(1-\gamma)\), although the ordinary gradient vanishes as \(p\to0\) or \(1\).</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Show that any state baseline \(b(s)\) can replace \(Q\) by \(Q-b\) in the theorem.</p><details><summary>Hint and solution</summary><p>\(\sum_a\pi(a\mid s)z(s,a)b(s)=b(s)\nabla\sum_a\pi(a\mid s)=0\) at every state. On the finite state space any finite baseline is integrable.</p></details></li>
-<li><p>Bound the gradient error caused by truncating at horizon \(H\).</p><details><summary>Hint and solution</summary><p>The proof gives \[\|\nabla J-\nabla J_H\|\le LR_{\max}\gamma^H\left[\frac{H+1}{1-\gamma}+\frac{\gamma}{(1-\gamma)^2}\right].\] Obtain the sum by writing \(t=H+j\) and using \(\sum_jj\gamma^j=\gamma/(1-\gamma)^2\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-14-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-14-1">Exercise 14.1.</a></strong> Show that any state baseline \(b(s)\) can replace \(Q\) by \(Q-b\) in the theorem.</p><details class="note-hint"><summary>Hint</summary><p>Condition on the state and differentiate the normalization of its action probabilities.</p></details><details><summary>Solution</summary><p>\(\sum_a\pi(a\mid s)z(s,a)b(s)=b(s)\nabla\sum_a\pi(a\mid s)=0\) at every state. On the finite state space any finite baseline is integrable.</p></details></li>
+<li id="exercise-14-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-14-2">Exercise 14.2.</a></strong> Bound the gradient error caused by truncating at horizon \(H\).</p><details class="note-hint"><summary>Hint</summary><p>Bound the omitted double sum and evaluate the tail of a geometrically weighted arithmetic sequence.</p></details><details><summary>Solution</summary><p>The proof gives \[\|\nabla J-\nabla J_H\|\le LR_{\max}\gamma^H\left[\frac{H+1}{1-\gamma}+\frac{\gamma}{(1-\gamma)^2}\right].\] Obtain the sum by writing \(t=H+j\) and using \(\sum_jj\gamma^j=\gamma/(1-\gamma)^2\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The finite-state matrix proof and the uniform derivative-tail argument above are self-contained given elementary multivariable calculus and the earlier occupancy identities.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The finite-state matrix proof and the uniform derivative-tail argument above are self-contained given elementary multivariable calculus and the earlier occupancy identities.</p>
+</section>

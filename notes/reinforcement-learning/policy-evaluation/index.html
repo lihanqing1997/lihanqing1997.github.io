@@ -6,24 +6,27 @@ breadcrumb_child_label_zh: "6. 策略评估"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/bellman-optimality-equations/"
 note_next_url: "/notes/reinforcement-learning/policy-iteration/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 6
 ---
 
-<p class="rl-learning-goal">Evaluate a fixed policy from a known model or independent simulated episodes, separating sampling error from return truncation.</p>
-<h3>Exact and iterative evaluation</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Evaluate a fixed policy from a known model or independent simulated episodes, separating sampling error from return truncation.</p>
+<h3 id="exact-and-iterative-evaluation">Exact and iterative evaluation</h3>
 <p>For a stationary policy in a finite discounted MDP,
 \[
 (I-\gamma P_\pi)V^\pi=r_\pi.
 \]
 A direct linear solve obtains the value without explicitly computing a matrix inverse. Alternatively, iterate \(V_{k+1}=T^\pi V_k\).</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (evaluation error).</span>
+<div class="math-statement theorem" id="theorem-evaluation-error" data-result-number="6.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-evaluation-error" aria-label="Link to theorem 6.1">Theorem 6.1 (evaluation error).</a></span>
 \[
 V_k-V^\pi=\gamma^kP_\pi^k(V_0-V^\pi),\qquad
 \|V_k-V^\pi\|_\infty\le\gamma^k\|V_0-V^\pi\|_\infty.
 \]
 At any iterate, \(\|V_k-V^\pi\|_\infty\le\|T^\pi V_k-V_k\|_\infty/(1-\gamma)\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Subtract the fixed-point equation from one update:
 \[
@@ -38,21 +41,21 @@ V^\pi-V_k=(I-\gamma P_\pi)^{-1}(T^\pi V_k-V_k).
 Its norm is at most \(\sum_{t\ge0}\gamma^t\|T^\pi V_k-V_k\|_\infty\), which equals the stated certificate.</p>
 </div>
 
-<h3>Monte Carlo with an explicit sampling law</h3>
+<h3 id="monte-carlo-with-an-explicit-sampling-law">Monte Carlo with an explicit sampling law</h3>
 <p>Suppose the environment can be restarted independently at state \(s\). Generate independent episodes under the same policy, with full discounted returns \(G_i\). Then
 \[
 \widehat V_n(s)=\frac1n\sum_{i=1}^nG_i,\quad
 \mathbb E G_i=V^\pi(s),\quad |G_i|\le B:=\frac{R_{\max}}{1-\gamma}.
 \]
 The strong law gives \(\widehat V_n(s)\to V^\pi(s)\) almost surely. Returns from overlapping visits along one trajectory are generally dependent; this independent-episode statement does not cover them.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (truncation and confidence).</span> Use only \(H\) rewards of each episode and set \(\widehat V_{n,H}=n^{-1}\sum_iG_i^{(H)}\). For \(0&lt;\delta&lt;1\), with probability at least \(1-\delta\),
+<div class="math-statement proposition" id="proposition-truncation-and-confidence" data-result-number="6.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-truncation-and-confidence" aria-label="Link to proposition 6.2">Proposition 6.2 (truncation and confidence).</a></span> Use only \(H\) rewards of each episode and set \(\widehat V_{n,H}=n^{-1}\sum_iG_i^{(H)}\). For \(0&lt;\delta&lt;1\), with probability at least \(1-\delta\),
 \[
 |\widehat V_{n,H}(s)-V^\pi(s)|
 \le B\gamma^H+B\sqrt{\frac{2\log(2/\delta)}n}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(m_H=\mathbb E_s^\pi G^{(H)}\). The deterministic tail bound gives
 \[
@@ -71,7 +74,7 @@ Set \(u=B\sqrt{2\log(2/\delta)/n}\). On the complementary event,
 For all states simultaneously, allocate failure probability \(\delta/|\mathsf S|\) to each state and take a union bound.</p>
 </div>
 
-<h3>What one trajectory changes</h3>
+<h3 id="what-one-trajectory-changes">What one trajectory changes</h3>
 <p>A continuing trajectory may support consistency through an ergodic theorem, but its sample size is not a count of independent returns. Finite-sample bounds need explicit mixing or martingale arguments. TD below handles dependence by conditioning on history. Least-squares TD appears after function approximation is defined.</p>
 <p>For a stationary scalar sequence \((Y_t)\) with finite second moments, expansion gives
 \[
@@ -80,8 +83,8 @@ For all states simultaneously, allocate failure probability \(\delta/|\mathsf S|
 \frac2{n^2}\sum_{k=1}^{n-1}(n-k)\operatorname{Cov}(Y_0,Y_k).
 \]
 Indeed, expand the variance as \(n^{-2}\sum_{i,j}\operatorname{Cov}(Y_i,Y_j)\): there are \(n\) diagonal pairs and \(2(n-k)\) ordered pairs at lag \(k\). Dropping the covariance terms requires a reason such as independence.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a computable stopping decision).</span>
+<div class="math-statement example" id="example-a-computable-stopping-decision" data-result-number="6.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-computable-stopping-decision" aria-label="Link to worked example 6.3">Worked example 6.3 (a computable stopping decision).</a></span>
 Let \(\gamma=1/2\), \(P_\pi=\begin{pmatrix}1/2&amp;1/2\\0&amp;1\end{pmatrix}\), \(r_\pi=(1,2)^\top\), and \(V_0=0\). Then
 \[
 V_1=(1,2)^\top,\quad V_2=(7/4,3)^\top,\quad
@@ -89,9 +92,12 @@ T^\pi V_2=(35/16,7/2)^\top.
 \]
 The residual is \((7/16,1/2)^\top\), giving error certificate \(1\). The exact value \((8/3,4)^\top\) has error \(\max\{11/12,1\}=1\), so the certificate is attained.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>If rewards lie in \([0,1]\), improve the sampling constant.</p><details><summary>Hint and solution</summary><p>Returns lie in \([0,B]\), an interval of length \(B\). Hoeffding gives \(B\sqrt{\log(2/\delta)/(2n)}\), half the previous radius. Truncation is unchanged.</p></details></li>
-<li><p>For \(\gamma=1/2,R_{\max}=1\), choose \(H,n\) making the stated bound at most \(0.1\) with confidence \(0.95\), allocating half to each error.</p><details><summary>Hint and solution</summary><p>Here \(B=2\). Require \(2(1/2)^H\le0.05\), so \(H=6\). Require \(2\sqrt{2\log40/n}\le0.05\), so \(n\ge3200\log40\); \(n=11805\) suffices.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-6-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-6-1">Exercise 6.1.</a></strong> If rewards lie in \([0,1]\), improve the sampling constant.</p><details class="note-hint"><summary>Hint</summary><p>Use the length of the smaller interval containing each return in Hoeffding’s inequality.</p></details><details><summary>Solution</summary><p>Returns lie in \([0,B]\), an interval of length \(B\). Hoeffding gives \(B\sqrt{\log(2/\delta)/(2n)}\), half the previous radius. Truncation is unchanged.</p></details></li>
+<li id="exercise-6-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-6-2">Exercise 6.2.</a></strong> For \(\gamma=1/2,R_{\max}=1\), choose \(H,n\) making the stated bound at most \(0.1\) with confidence \(0.95\), allocating half to each error.</p><details class="note-hint"><summary>Hint</summary><p>Allocate the tolerance between the geometric truncation term and the sampling term, then solve each inequality.</p></details><details><summary>Solution</summary><p>Here \(B=2\). Require \(2(1/2)^H\le0.05\), so \(H=6\). Require \(2\sqrt{2\log40/n}\le0.05\), so \(n\ge3200\log40\); \(n=11805\) suffices.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 4–5; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy evaluation. Review the <a href="/notes/probability-theory/strong-law-of-large-numbers/">strong law</a> for independent-sample consistency.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 4–5; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy evaluation. Review the <a href="/notes/probability-theory/strong-law-of-large-numbers/">strong law</a> for independent-sample consistency.</p>
+</section>

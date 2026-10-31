@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "25. 约束与风险敏感控制"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/linear-quadratic-control/"
 note_next_url: "/notes/reinforcement-learning/average-reward-ergodic-control/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 25
 ---
 
-<p class="rl-learning-goal">Distinguish expectation constraints, tail risk, and robustness; derive their finite-dimensional identities without mixing cost and reward signs.</p>
-<h3>Expected constraints and occupancy measures</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Distinguish expectation constraints, tail risk, and robustness; derive their finite-dimensional identities without mixing cost and reward signs.</p>
+<h3 id="expected-constraints-and-occupancy-measures">Expected constraints and occupancy measures</h3>
 <p>Return to the finite discounted reward-maximization problem. Let \(d(s,a)\) be normalized occupancy from \(\rho\), and let \(\mathcal D\) be the flow polytope proved in the policies chapter:
 \[
  d\ge0,\qquad \sum_a d(s,a)=(1-\gamma)\rho(s)+
@@ -27,7 +30,7 @@ Dividing objective and budgets by \(1-\gamma\) converts to unnormalized discount
  \quad g(\lambda)=\max_{d\in\mathcal D}L(d,\lambda).
 \]
 For feasible \(d\), \(L(d,\lambda)\ge\langle r,d\rangle\), so \(g(\lambda)\) is an upper bound on the constrained optimum. <strong>External theorem input:</strong> finite-dimensional linear-programming strong duality gives equality with \(\min_{\lambda\ge0}g(\lambda)\) when the displayed finite LP is feasible (its objective is bounded by compactness). This is an LP theorem, not a claim of strong duality for arbitrary neural-policy parameterizations.</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 At a primal-dual optimal pair \(d_*,\lambda_*\), equality of the primal and dual values gives
 \[
@@ -48,12 +51,12 @@ Projected descent therefore increases the multiplier when a cost exceeds its bud
 \(\lambda_i^+=[\lambda_i+\eta(\langle c_i,d_\lambda\rangle-b_i)]_+\).</p>
 </div>
 
-<h3>Entropic risk: the sign of the parameter matters</h3>
+<h3 id="entropic-risk-the-sign-of-the-parameter-matters">Entropic risk: the sign of the parameter matters</h3>
 <p>Now let \(C\) denote a <em>cost</em> on a finite outcome space with probabilities \(p_i&gt;0\). For \(\eta\ne0\), define
 \(\mathcal R_\eta(C)=\eta^{-1}\log\sum_i p_i e^{\eta C_i}\).
 Positive \(\eta\) penalizes upper-tail cost; negative \(\eta\) has the opposite tilt.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (entropic variational identity).</span>
+<div class="math-statement proposition" id="proposition-entropic-variational-identity" data-result-number="25.1">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-entropic-variational-identity" aria-label="Link to proposition 25.1">Proposition 25.1 (entropic variational identity).</a></span>
 \[
  \mathcal R_\eta(C)=
  \begin{cases}
@@ -64,7 +67,7 @@ Positive \(\eta\) penalizes upper-tail cost; negative \(\eta\) has the opposite 
  \end{cases}
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(Z=\sum_i p_i e^{\eta C_i}\) and \(q_i^*=p_i e^{\eta C_i}/Z\). For every \(q\),
 \[
@@ -84,7 +87,7 @@ Nonnegativity of KL proves the supremum for \(\eta&gt;0\) and the infimum for \(
  \qquad \eta\to0.
 \]
 Thus \(\mathcal R_0(C)\) is defined continuously as \(\mathbb EC\). For a discounted <em>total</em> cost, the effective future exponential parameter becomes \(\eta\gamma^t\); a stationary recursion with an unchanged parameter generally represents a different, nested risk criterion. Time consistency must be specified rather than assumed.</p>
-<h3>CVaR and a finite dual representation</h3>
+<h3 id="cvar-and-a-finite-dual-representation">CVaR and a finite dual representation</h3>
 <p>For upper-tail cost and \(0&lt;\alpha&lt;1\), define
 \[
  \operatorname{CVaR}_\alpha(C)
@@ -94,7 +97,7 @@ The convex objective has subgradients between
 \(1-\Pr(C\ge v)/(1-\alpha)\) and
 \(1-\Pr(C&gt;v)/(1-\alpha)\). A minimizing \(v\) therefore satisfies
 \(\Pr(C&gt;v)\le1-\alpha\le\Pr(C\ge v)\), the quantile condition.</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For any random weight \(Z\) with \(0\le Z\le1/(1-\alpha)\) and \(\mathbb EZ=1\),
 \[
@@ -109,7 +112,7 @@ Choose a minimizing quantile \(v_*\). Set \(Z=1/(1-\alpha)\) on \(C&gt;v_*\), \(
 This proof includes atoms at the quantile, where “average above the quantile” without a partial-atom convention is ambiguous.</p>
 </div>
 
-<h3>Rectangular robust control</h3>
+<h3 id="rectangular-robust-control">Rectangular robust control</h3>
 <p>For cost minimization with an adversarial transition row in a nonempty compact set \(\mathcal P_{s,a}\), define
 \[
  (T_{\rm rob}V)(s)=\min_a\{c(s,a)+
@@ -117,16 +120,19 @@ This proof includes atoms at the quantile, where “average above the quantile�
 \]
 For all probability vectors \(p\),
 \(|p^\top(V-W)|\le\|V-W\|_\infty\); taking maxima and then minima preserves this bound. Thus \(T_{\rm rob}\) is a \(\gamma\)-contraction. Its sequential game interpretation assumes <em>rectangularity</em>: nature can choose each admissible row independently at each visited state-action pair. A single unknown model with coupled row restrictions is a different uncertainty model and need not obey this Bellman recursion.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (randomization and tail cost).</span>
+<div class="math-statement example" id="example-randomization-and-tail-cost" data-result-number="25.2">
+<p><span class="statement-title"><a class="note-permalink" href="#example-randomization-and-tail-cost" aria-label="Link to worked example 25.2">Worked example 25.2 (randomization and tail cost).</a></span>
 One state has actions \(a,b\) with rewards \(0,1\) and costs \(0,2\). Under normalized budget \(b_1=1\), choosing \(b\) with probability \(q\) requires \(2q\le1\), so the optimal constrained policy uses \(q=1/2\). Neither deterministic policy attains this feasible reward. Separately, a cost that is \(10\) with probability \(0.1\) and \(0\) otherwise has mean \(1\), but
 \(\operatorname{CVaR}_{0.9}=10\) and
 \(\mathcal R_\eta=\eta^{-1}\log(0.9+0.1e^{10\eta})\).
 An expectation budget and a tail-risk budget constrain different behavior.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Compute the entropic-risk derivative at \(\eta=0\) for the worked cost distribution.</p><details><summary>Hint and solution</summary><p>Its second moment is \(10\), mean is \(1\), and variance is \(9\). The Taylor coefficient is \(\operatorname{Var}(C)/2=4.5\).</p></details></li>
-<li><p>Find a multiplier certifying the constrained one-state optimum.</p><details><summary>Hint and solution</summary><p>The dual is \(g(\lambda)=\lambda+\max\{0,1-2\lambda\}\), \(\lambda\ge0\). It decreases to \(1/2\) on \([0,1/2]\) and increases afterward, so \(\lambda_*=1/2\), matching primal reward \(q=1/2\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-25-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-25-1">Exercise 25.1.</a></strong> Compute the entropic-risk derivative at \(\eta=0\) for the worked cost distribution.</p><details class="note-hint"><summary>Hint</summary><p>Compute the cost variance and use the local expansion of entropic risk.</p></details><details><summary>Solution</summary><p>Its second moment is \(10\), mean is \(1\), and variance is \(9\). The Taylor coefficient is \(\operatorname{Var}(C)/2=4.5\).</p></details></li>
+<li id="exercise-25-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-25-2">Exercise 25.2.</a></strong> Find a multiplier certifying the constrained one-state optimum.</p><details class="note-hint"><summary>Hint</summary><p>Write the two actionwise Lagrangian values and find where their upper envelope is minimized.</p></details><details><summary>Solution</summary><p>The dual is \(g(\lambda)=\lambda+\max\{0,1-2\lambda\}\), \(\lambda\ge0\). It decreases to \(1/2\) on \([0,1/2]\) and increases afterward, so \(\lambda_*=1/2\), matching primal reward \(q=1/2\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://www.sciencedirect.com/science/article/pii/S0378426602002716">Rockafellar–Uryasev, conditional value-at-risk for general loss distributions</a>. LP strong duality is imported explicitly; the risk identities and robust contraction are derived here.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://www.sciencedirect.com/science/article/pii/S0378426602002716">Rockafellar–Uryasev, conditional value-at-risk for general loss distributions</a>. LP strong duality is imported explicitly; the risk identities and robust contraction are derived here.</p>
+</section>

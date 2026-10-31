@@ -6,17 +6,20 @@ breadcrumb_child_label_zh: "19. 探索与遗憾"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/multi-armed-bandits/"
 note_next_url: "/notes/reinforcement-learning/off-policy-evaluation/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 19
 ---
 
-<p class="rl-learning-goal">Extend optimism from arms to finite-horizon MDPs and keep statistical, planning, and trajectory errors visible in the regret calculation.</p>
-<h3>Episodic regret</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Extend optimism from arms to finite-horizon MDPs and keep statistical, planning, and trajectory errors visible in the regret calculation.</p>
+<h3 id="episodic-regret">Episodic regret</h3>
 <p>This chapter uses an undiscounted horizon \(H\), stages \(h=1,\ldots,H\), \(S\) states, \(A\) actions, rewards in \([0,1]\), and stage-dependent kernels \(P_h\). Episodes start at a fixed state \(s_1\); \(K\) episodes contain \(T=KH\) transitions. Before episode \(k\), the learner chooses a policy \(\pi_k\) using previous data. Its pseudo-regret is
 \[
  \operatorname{Reg}_K=\sum_{k=1}^K
        [V_1^*(s_1)-V_1^{\pi_k}(s_1)].
 \]
 Each summand compares <em>expected total episode returns</em>, not an optimal value with a single immediate reward. Exploration is difficult because actions determine which future states become observable.</p>
-<h3>A concrete confidence event</h3>
+<h3 id="a-concrete-confidence-event">A concrete confidence event</h3>
 <p>Index a model row by \(x=(h,s,a)\), so there are \(D=HSA\) rows. The \(n\) outcomes of any fixed row can be represented by the first \(n\) draws of its independent environment stream. Let \(\widehat r_{x,n}\), \(\widehat P_{x,n}\) be their means. For confidence \(\delta\in(0,1)\), put
 \[
  L=\log\frac{2D(S+1)K}{\delta},\quad
@@ -29,7 +32,7 @@ For \(n=0\), choose any empirical probability vector and mean in \([0,1]\), and 
  \|\widehat P_{x,n}-P_x\|_1\le\beta_P(n)
 \]
 for all counts. The coordinate union gives \(Su_n\); the deterministic distance between two probability vectors is at most two. This construction is conservative but valid under adaptive visitation.</p>
-<h3>Optimistic backward induction</h3>
+<h3 id="optimistic-backward-induction">Optimistic backward induction</h3>
 <p>At the start of episode \(k\), freeze the row counts \(N_{k,h}(s,a)\) and empirical model. Write
 \[
  b_{k,h}(s,a)=\beta_r(N_{k,h}(s,a))
@@ -43,7 +46,7 @@ Starting with \(\widehat V_{k,H+1}=0\), define
  \widehat V_{k,h}=\max_a\widehat Q_{k,h},
 \]
 and let \(\pi_{k,h}\) choose a maximizing action. All these values lie in \([0,H-h+1]\).</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 On \(\mathcal E\), for every vector \(v\in[0,H-h]^S\), including a vector chosen from the same data,
 \[
@@ -59,9 +62,9 @@ Assume \(\widehat V_{k,h+1}\ge V_{h+1}^*\). Positivity of \(\widehat P\) gives
 Since \(Q_h^*\le H-h+1\), clipping preserves this inequality. Maximizing and inducting from \(H+1\) proves \(\widehat V_{k,h}\ge V_h^*\). The bound is uniform over \(v\), so no unjustified independence between the fitted value and fitted transition appears.</p>
 </div>
 
-<h3>The pathwise regret decomposition</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (bonus plus martingale bound).</span>
+<h3 id="the-pathwise-regret-decomposition">The pathwise regret decomposition</h3>
+<div class="math-statement proposition" id="proposition-bonus-plus-martingale-bound" data-result-number="19.1">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-bonus-plus-martingale-bound" aria-label="Link to proposition 19.1">Proposition 19.1 (bonus plus martingale bound).</a></span>
 With probability at least \(1-2\delta\),
 \[
  \operatorname{Reg}_K
@@ -69,7 +72,7 @@ With probability at least \(1-2\delta\),
        +H\sqrt{2KH\log(1/\delta)}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Fix the pre-episode data and put
 \(\Delta_{k,h}(s)=\widehat V_{k,h}(s)-V_h^{\pi_k}(s)\).
@@ -112,14 +115,17 @@ Consequently, Cauchy–Schwarz and \(\sum_xn_x=KH\) give
  \le C\sqrt{2L}\,[HSA+2\sqrt{HSA\cdot KH}].
 \]
 This proves sublinear regret in \(K\) for fixed \(H,S,A\). It is deliberately not a sharp minimax bound: coordinatewise transition confidence loses state factors, and a range bound loses variance information. Variance-aware UCBVI and its lower-bound comparisons refine exactly these steps.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (why immediate optimism is insufficient).</span>
+<div class="math-statement example" id="example-why-immediate-optimism-is-insufficient" data-result-number="19.2">
+<p><span class="statement-title"><a class="note-permalink" href="#example-why-immediate-optimism-is-insufficient" aria-label="Link to worked example 19.2">Worked example 19.2 (why immediate optimism is insufficient).</a></span>
 At stage one, action “safe” gives reward \(1/2\) and terminates. Action “test” gives zero and reaches a second-stage state with an unknown reward in \([0,1]\). A bonus applied only to the immediate reward of “test” can miss the uncertainty of its successor value. Backward optimism propagates the second-stage upper confidence value into
 \(\widehat Q_1(\text{test})=0+\widehat V_2\), allowing exploration when that value exceeds \(1/2\).</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Where would the count argument fail if one used a single stage-independent row count frozen for the whole episode?</p><details><summary>Hint and solution</summary><p>The same row could be visited up to \(H\) times before its count is updated. The sequence of denominators is then not simply \(0,1,\ldots,n_x-1\). One needs an additional within-episode count argument or a delayed-update bound. Stage-specific rows avoid this issue here.</p></details></li>
-<li><p>Why not condition all martingale calculations on the confidence event \(\mathcal E\)?</p><details><summary>Hint and solution</summary><p>The event depends on future observations. Conditioning on it can destroy the zero conditional mean of \(M_{k,h}\). Prove the concentration statement under the original law, then intersect the two high-probability events by a union bound.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-19-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-19-1">Exercise 19.1.</a></strong> Where would the count argument fail if one used a single stage-independent row count frozen for the whole episode?</p><details class="note-hint"><summary>Hint</summary><p>Count how often a single model row can be revisited before the frozen count is refreshed.</p></details><details><summary>Solution</summary><p>The same row could be visited up to \(H\) times before its count is updated. The sequence of denominators is then not simply \(0,1,\ldots,n_x-1\). One needs an additional within-episode count argument or a delayed-update bound. Stage-specific rows avoid this issue here.</p></details></li>
+<li id="exercise-19-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-19-2">Exercise 19.2.</a></strong> Why not condition all martingale calculations on the confidence event \(\mathcal E\)?</p><details class="note-hint"><summary>Hint</summary><p>Ask whether the confidence event is measurable before the next transition.</p></details><details><summary>Solution</summary><p>The event depends on future observations. Conditioning on it can destroy the zero conditional mean of \(M_{k,h}\). Prove the concentration statement under the original law, then intersect the two high-probability events by a union bound.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://proceedings.mlr.press/v70/azar17a.html">Azar–Osband–Munos, minimax regret bounds and UCBVI</a>. Hoeffding's inequality and its conditional exponential-moment form are the concentration inputs. The displayed rate is the elementary bound proved here, not the sharper rate of the cited algorithm.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://proceedings.mlr.press/v70/azar17a.html">Azar–Osband–Munos, minimax regret bounds and UCBVI</a>. Hoeffding's inequality and its conditional exponential-moment form are the concentration inputs. The displayed rate is the elementary bound proved here, not the sharper rate of the cited algorithm.</p>
+</section>

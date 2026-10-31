@@ -6,22 +6,25 @@ breadcrumb_child_label_zh: "21. 离线强化学习"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/off-policy-evaluation/"
 note_next_url: "/notes/reinforcement-learning/model-based-reinforcement-learning/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 21
 ---
 
-<p class="rl-learning-goal">Prove a concrete impossibility without coverage and a policy-selection guarantee from simultaneous pessimistic bounds.</p>
-<h3>A fixed dataset changes the statistical question</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Prove a concrete impossibility without coverage and a policy-selection guarantee from simultaneous pessimistic bounds.</p>
+<h3 id="a-fixed-dataset-changes-the-statistical-question">A fixed dataset changes the statistical question</h3>
 <p>Offline RL chooses a policy without further interaction. Specify whether the data are iid transitions, independent behavior episodes, or one dependent/adaptively collected trajectory: these experiments support different concentration arguments. For a transition sampling law \(\nu\) and normalized discounted occupancy \(d_\rho^\pi\), define
 \[
  C(\pi;\nu)=\max_{(s,a):\,d_\rho^\pi(s,a)&gt;0}
                   \frac{d_\rho^\pi(s,a)}{\nu(s,a)},
 \]
 with \(C=\infty\) if a denominator is zero. Coverage is a relation between the data and a policy, not a property of dataset size alone.</p>
-<h3>An indistinguishable pair of MDPs</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (a coverage obstruction).</span>
+<h3 id="an-indistinguishable-pair-of-mdps">An indistinguishable pair of MDPs</h3>
+<div class="math-statement theorem" id="theorem-a-coverage-obstruction" data-result-number="21.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-a-coverage-obstruction" aria-label="Link to theorem 21.1">Theorem 21.1 (a coverage obstruction).</a></span>
 For any offline algorithm, there are two one-state discounted MDPs with identical dataset laws such that its expected suboptimality is at least \(1/[4(1-\gamma)]\) in one of them, regardless of the number of observations.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Both actions return to the only state. The behavior always chooses \(a\), whose reward is \(1/2\). In model \(M_0\), action \(b\) has reward \(0\); in \(M_1\), it has reward \(1\). All rewards are deterministic. Every dataset, of any size, consists only of observed action \(a\) and reward \(1/2\), so its law is identical in the two models.
 For a returned stationary policy, let \(q\in[0,1]\) be its probability of \(b\), including algorithmic randomness. The law of \(q\) is the same in both models. Direct evaluation gives
@@ -32,21 +35,21 @@ For a returned stationary policy, let \(q\in[0,1]\) be its probability of \(b\),
 Taking expectations and adding yields \(1/[2(1-\gamma)]\); their maximum is at least half that sum. For a returned time-dependent policy, replace \(q\) by its normalized discounted frequency of action \(b\); the same calculation applies if the policy cannot learn from new deployment rewards. Allowing such new information is an online/adaptive-deployment problem, outside the fixed-policy offline claim.</p>
 </div>
 
-<h3>Pessimism and a comparator-specific guarantee</h3>
+<h3 id="pessimism-and-a-comparator-specific-guarantee">Pessimism and a comparator-specific guarantee</h3>
 <p>Suppose a policy class \(\Pi\) has simultaneous confidence bounds, on one event \(\mathcal E\) of probability at least \(1-\delta\):
 \[
  |\widehat J(\pi)-J(\pi)|\le b(\pi)\qquad\text{for every }\pi\in\Pi.
 \]
 The functions and the selected policy may be data dependent; simultaneity is what makes selection valid. Put \(\underline J(\pi)=\widehat J(\pi)-b(\pi)\), and choose \(\widehat\pi\) satisfying
 \(\underline J(\widehat\pi)\ge\sup_{\pi\in\Pi}\underline J(\pi)-\eta\).</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (pessimistic policy selection).</span>
+<div class="math-statement proposition" id="proposition-pessimistic-policy-selection" data-result-number="21.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-pessimistic-policy-selection" aria-label="Link to proposition 21.2">Proposition 21.2 (pessimistic policy selection).</a></span>
 On \(\mathcal E\), for every comparator \(\pi\in\Pi\),
 \[
  J(\pi)-J(\widehat\pi)\le2b(\pi)+\eta.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 On the common confidence event,
 \[
@@ -62,7 +65,7 @@ Rearrange. The bound depends on the uncertainty of the chosen comparator, not di
 </div>
 
 <p>A model-based version uses a confidence set \(\mathcal M\) containing the true model and \(\underline J(\pi)=\inf_{M\in\mathcal M}J_M(\pi)\). The same proof replaces \(2b(\pi)\) by \(J(\pi)-\inf_{M\in\mathcal M}J_M(\pi)\). To make this algorithm concrete, one must specify a statistically valid model set and solve or approximate the resulting optimization; writing an infimum alone is not an efficient algorithm.</p>
-<h3>What function approximation must control</h3>
+<h3 id="what-function-approximation-must-control">What function approximation must control</h3>
 <p>For finite state-action spaces and \(d=d_\rho^\pi\le C\nu\), every function \(f\) obeys
 \[
  \begin{aligned}
@@ -76,17 +79,20 @@ Rearrange. The bound depends on the uncertainty of the chosen comparator, not di
 \]
 Terms with \(\nu=0\) have \(d=0\) and contribute zero. This explains how an estimation error under the data law can become a policy-return error. Without coverage, even zero training error leaves unobserved values unrestricted.</p>
 <p><em>Realizability</em> asks whether the desired value belongs to the function class. <em>Bellman completeness</em> asks whether applying the relevant Bellman operator keeps functions in the class. They are different: a class containing just \(Q^*\) is realizable for control, but need not support policy-evaluation backups for every other policy. Fitted iteration proofs need the closure property they actually use. Conservative value penalties, behavior-constrained policy search, and implicit policy improvement are different responses to distribution shift; none abolishes the indistinguishability example without an additional assumption.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a pessimistic choice).</span>
+<div class="math-statement example" id="example-a-pessimistic-choice" data-result-number="21.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-pessimistic-choice" aria-label="Link to worked example 21.3">Worked example 21.3 (a pessimistic choice).</a></span>
 Two candidate policies have estimates \(\widehat J(\pi_1)=8\), \(\widehat J(\pi_2)=10\), and radii \(b(\pi_1)=1\), \(b(\pi_2)=4\). Their lower bounds are \(7,6\), so pessimistic selection chooses \(\pi_1\). On the common confidence event,
 \[
  J(\pi_2)-J(\pi_1)\le2b(\pi_2)=8.
 \]
 The guarantee is weak for the poorly covered comparator; a high estimated value is not a certificate of a useful policy.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Under the same confidence event, derive a lower bound on improvement over a known baseline policy \(\pi_b\).</p><details><summary>Hint and solution</summary><p>\(J(\widehat\pi)-J(\pi_b)\ge\underline J(\widehat\pi)-[\widehat J(\pi_b)+b(\pi_b)]\). A positive right-hand side certifies improvement; merely maximizing a lower bound does not automatically certify improvement over the true baseline value.</p></details></li>
-<li><p>If \(b(\pi)\le B\sqrt{C(\pi;\nu)/n}\), how large must \(n\) be for the theorem to give comparator loss at most \(\varepsilon\), with exact optimization?</p><details><summary>Hint and solution</summary><p>It suffices that \(2B\sqrt{C(\pi;\nu)/n}\le\varepsilon\), or \(n\ge4B^2C(\pi;\nu)/\varepsilon^2\). This deduction is conditional on a valid simultaneous radius; it is not a derivation of that radius.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-21-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-21-1">Exercise 21.1.</a></strong> Under the same confidence event, derive a lower bound on improvement over a known baseline policy \(\pi_b\).</p><details class="note-hint"><summary>Hint</summary><p>Compare a lower confidence value for the selected policy with an upper confidence value for the baseline.</p></details><details><summary>Solution</summary><p>\(J(\widehat\pi)-J(\pi_b)\ge\underline J(\widehat\pi)-[\widehat J(\pi_b)+b(\pi_b)]\). A positive right-hand side certifies improvement; merely maximizing a lower bound does not automatically certify improvement over the true baseline value.</p></details></li>
+<li id="exercise-21-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-21-2">Exercise 21.2.</a></strong> If \(b(\pi)\le B\sqrt{C(\pi;\nu)/n}\), how large must \(n\) be for the theorem to give comparator loss at most \(\varepsilon\), with exact optimization?</p><details class="note-hint"><summary>Hint</summary><p>Insert the proposed radius into the comparator guarantee and solve for the sample count.</p></details><details><summary>Solution</summary><p>It suffices that \(2B\sqrt{C(\pi;\nu)/n}\le\varepsilon\), or \(n\ge4B^2C(\pi;\nu)/\varepsilon^2\). This deduction is conditional on a valid simultaneous radius; it is not a derivation of that radius.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://arxiv.org/abs/2510.04088">Jiang–Xie, <em>Offline Reinforcement Learning in Large State Spaces: Algorithms and Guarantees</em> (2025)</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The survey separates coverage and function-class assumptions; the elementary impossibility and selection arguments are proved here.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://arxiv.org/abs/2510.04088">Jiang–Xie, <em>Offline Reinforcement Learning in Large State Spaces: Algorithms and Guarantees</em> (2025)</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The survey separates coverage and function-class assumptions; the elementary impossibility and selection arguments are proved here.</p>
+</section>

@@ -6,20 +6,23 @@ breadcrumb_child_label_zh: "15. 基线与方差缩减"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/policy-gradient-theorem/"
 note_next_url: "/notes/reinforcement-learning/actor-critic-methods/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 15
 ---
 
-<p class="rl-learning-goal">Separate preservation of the gradient mean from reduction of its variance, and compute the bias introduced by an approximate critic.</p>
-<h3>State baselines and their optimal value</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Separate preservation of the gradient mean from reduction of its variance, and compute the bias introduced by an approximate critic.</p>
+<h3 id="state-baselines-and-their-optimal-value">State baselines and their optimal value</h3>
 <p>At a fixed state \(s\), let \(A\sim\pi_\theta(\cdot\mid s)\), \(Z=\nabla\log\pi_\theta(A\mid s)\), and let \(Y\) be an integrable return target with \(\mathbb E[Y\mid s,A]=Q^\pi(s,A)\). Assume \(\mathbb E[\|Z\|^2Y^2\mid s]&lt;\infty\). The variance criterion below is the trace of the conditional covariance, \(\mathbb E\|X-\mathbb E X\|^2\).</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (optimal scalar state baseline).</span>
+<div class="math-statement proposition" id="proposition-optimal-scalar-state-baseline" data-result-number="15.1">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-optimal-scalar-state-baseline" aria-label="Link to proposition 15.1">Proposition 15.1 (optimal scalar state baseline).</a></span>
 For every finite \(b=b(s)\), \(\mathbb E[Z(Y-b)\mid s]=\mathbb E[ZY\mid s]\). If \(c(s)=\mathbb E[\|Z\|^2\mid s]&gt;0\), the variance-minimizing baseline is
 \[
  b_*(s)=\frac{\mathbb E[\|Z\|^2Y\mid s]}{\mathbb E[\|Z\|^2\mid s]}.
 \]
 If \(c(s)=0\), then \(Z=0\) almost surely and every baseline is equivalent.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Normalization of the policy gives \(\mathbb E[Z\mid s]=\sum_a\nabla\pi_\theta(a\mid s)=0\). The mean is therefore independent of \(b\). Subtracting its squared norm from the second moment does not change the minimizer. Expand
 \[
@@ -35,10 +38,10 @@ Completing the square gives \(M(b)=M(b_*)+c(s)(b-b_*)^2\). This proves both opti
  Z(Y-b(s,A))+\sum_a\pi_\theta(a\mid s)z_\theta(s,a)b(s,a),
 \]
 whose expectation is \(\mathbb E[ZY\mid s]\); simply subtracting \(Zb(s,A)\) is generally biased.</p>
-<h3>Reward to go: unbiased does not mean universally lower variance</h3>
+<h3 id="reward-to-go-unbiased-does-not-mean-universally-lower-variance">Reward to go: unbiased does not mean universally lower variance</h3>
 <p>The policy-gradient proof removes past rewards using \(\mathbb E[Z_t\mid H_t]=0\). This establishes equality of expectations. It is not, by itself, a conditional-expectation projection of the whole gradient estimator, so a universal variance inequality does not follow.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a variance counterexample).</span>
+<div class="math-statement example" id="example-a-variance-counterexample" data-result-number="15.2">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-variance-counterexample" aria-label="Link to worked example 15.2">Worked example 15.2 (a variance counterexample).</a></span>
 Take two time steps. The first action is fixed, \(R_1=-\gamma\); the second action is Bernoulli with probability \(p=\sigma(\theta)\), but \(R_2=1\) for both actions. The total discounted return is identically zero. At \(p=1/2\), the second-action score \(Z=A-1/2\) has variance \(1/4\). Thus
 \[
  \widehat g_{\rm full}=Z(R_1+\gamma R_2)=0,\qquad
@@ -53,7 +56,7 @@ Take two time steps. The first action is fixed, \(R_1=-\gamma\); the second acti
 when \(\gamma&gt;0\). Removing irrelevant random terms often helps in practice, but covariance with retained terms matters.</p>
 </div>
 
-<h3>Generalized advantage estimation</h3>
+<h3 id="generalized-advantage-estimation">Generalized advantage estimation</h3>
 <p>Let \(\widetilde V=V^\pi+e\), \(\|e\|_\infty\le\varepsilon\), and \(0\le\lambda\le1\). Along an on-policy trajectory set
 \[
  \delta_t^{\widetilde V}=R_{t+1}+\gamma\widetilde V(S_{t+1})-\widetilde V(S_t),
@@ -62,8 +65,8 @@ when \(\gamma&gt;0\). Removing irrelevant random terms often helps in practice, 
                          \delta_{t+\ell}^{\widetilde V}.
 \]
 Bounded rewards and values make this series absolutely convergent, with a deterministic summable bound. This permits conditional expectation term by term.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (exact conditional GAE bias).</span>
+<div class="math-statement proposition" id="proposition-exact-conditional-gae-bias" data-result-number="15.3">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-exact-conditional-gae-bias" aria-label="Link to proposition 15.3">Proposition 15.3 (exact conditional GAE bias).</a></span>
 For \(\gamma&lt;1\),
 \[
  \mathbb E[\widehat A_t^\lambda\mid S_t=s,A_t=a]
@@ -73,7 +76,7 @@ For \(\gamma&lt;1\),
 \]
 In particular the target is conditionally unbiased for the advantage if \(e=0\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For the exact value, \(\mathbb E[\delta_t^{V^\pi}\mid s,a]=A^\pi(s,a)\). If \(\ell\ge1\), the tower property through the history before action \(A_{t+\ell}\) gives
 \[
@@ -100,8 +103,8 @@ The last term has magnitude at most \(\gamma\varepsilon(\gamma\lambda)^{n-1}\to0
        \frac{\gamma(1-\lambda)}{1-\gamma\lambda}.
 \]
 At \(\lambda=1\), an infinite-horizon return minus any fixed state baseline preserves the gradient mean. Finite rollout truncation leaves a terminal term and must be analyzed separately; \(\lambda=1\) does not remove that error.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (the best baseline is not the value).</span>
+<div class="math-statement example" id="example-the-best-baseline-is-not-the-value" data-result-number="15.4">
+<p><span class="statement-title"><a class="note-permalink" href="#example-the-best-baseline-is-not-the-value" aria-label="Link to worked example 15.4">Worked example 15.4 (the best baseline is not the value).</a></span>
 In a one-step Bernoulli bandit with reward \(Y=A\), let \(p=1/4\). The logit score is \(Z=A-p\), so
 \[
  V=p=\tfrac14,\qquad b_*=
@@ -109,9 +112,12 @@ In a one-step Bernoulli bandit with reward \(Y=A\), let \(p=1/4\). The logit sco
 \]
 With \(b=b_*\), both action outcomes give \(Z(Y-b)=p(1-p)=3/16\). The gradient estimator has zero variance; using the value baseline does not attain this.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>For a single TD error (\(\lambda=0\)), identify the conditional advantage bias and the policy-gradient bias.</p><details><summary>Hint and solution</summary><p>The advantage bias is \(\gamma\mathbb E[e(S_{t+1})\mid s,a]-e(s)\). After score averaging only \(\gamma\mathbb E[z_t e(S_{t+1})]\) remains. The normalized gradient bias is bounded by \(\gamma L\varepsilon/(1-\gamma)\).</p></details></li>
-<li><p>If all actions have the same score norm at a state, show that \(b_*=V^\pi(s)\).</p><details><summary>Hint and solution</summary><p>When \(\|Z\|^2=c&gt;0\) almost surely, the common factor cancels: \(b_*=\mathbb E[Y\mid s]=\sum_a\pi(a\mid s)Q^\pi(s,a)=V^\pi(s)\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-15-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-15-1">Exercise 15.1.</a></strong> For a single TD error (\(\lambda=0\)), identify the conditional advantage bias and the policy-gradient bias.</p><details class="note-hint"><summary>Hint</summary><p>Set the trace parameter to zero in the bias identity and use the zero-mean score.</p></details><details><summary>Solution</summary><p>The advantage bias is \(\gamma\mathbb E[e(S_{t+1})\mid s,a]-e(s)\). After score averaging only \(\gamma\mathbb E[z_t e(S_{t+1})]\) remains. The normalized gradient bias is bounded by \(\gamma L\varepsilon/(1-\gamma)\).</p></details></li>
+<li id="exercise-15-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-15-2">Exercise 15.2.</a></strong> If all actions have the same score norm at a state, show that \(b_*=V^\pi(s)\).</p><details class="note-hint"><summary>Hint</summary><p>Cancel the common squared-score factor in the optimal-baseline ratio.</p></details><details><summary>Solution</summary><p>When \(\|Z\|^2=c&gt;0\) almost surely, the common factor cancels: \(b_*=\mathbb E[Y\mid s]=\sum_a\pi(a\mid s)Q^\pi(s,a)=V^\pi(s)\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>; <a href="https://arxiv.org/abs/1506.02438">Schulman and coauthors, generalized advantage estimation</a>. The variance counterexample and the explicit critic-error formula clarify the hypotheses behind common variance-reduction descriptions.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>; <a href="https://arxiv.org/abs/1506.02438">Schulman and coauthors, generalized advantage estimation</a>. The variance counterexample and the explicit critic-error formula clarify the hypotheses behind common variance-reduction descriptions.</p>
+</section>

@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "24. 线性二次控制与连续动作"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/partially-observable-problems/"
 note_next_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 24
 ---
 
-<p class="rl-learning-goal">Derive the discounted Riccati equation, prove the infinite-horizon limit under a stated stability assumption, and differentiate a stabilizing policy's cost.</p>
-<h3>Quadratic cost and discounted stability</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive the discounted Riccati equation, prove the infinite-horizon limit under a stated stability assumption, and differentiate a stabilizing policy's cost.</p>
+<h3 id="quadratic-cost-and-discounted-stability">Quadratic cost and discounted stability</h3>
 <p>Here we <em>minimize cost</em>. Let \(x_t\in\mathbb R^d\), \(u_t\in\mathbb R^m\),
 \[
  x_{t+1}=Ax_t+Bu_t,\qquad
@@ -17,9 +20,9 @@ note_next_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control
 \]
 where \(0&lt;\gamma&lt;1\), \(Q\succ0\), \(R\succ0\), and all matrices are real with compatible dimensions. A feedback \(u=-Kx\) is <em>discount-stable</em> if the spectral radius
 \(\rho(\sqrt\gamma(A-BK))&lt;1\). Assume at least one such \(K_0\) exists. This is the stability hypothesis used below; undiscounted stability \(\rho(A-BK)&lt;1\) is stronger.</p>
-<h3>Complete the square before taking a limit</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (one Riccati step).</span>
+<h3 id="complete-the-square-before-taking-a-limit">Complete the square before taking a limit</h3>
+<div class="math-statement proposition" id="proposition-one-riccati-step" data-result-number="24.1">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-one-riccati-step" aria-label="Link to proposition 24.1">Proposition 24.1 (one Riccati step).</a></span>
 If the continuation cost is \(x^\top Px\), \(P\succeq0\), then
 \[
  \begin{aligned}
@@ -32,7 +35,7 @@ If the continuation cost is \(x^\top Px\), \(P\succeq0\), then
 \]
 The unique minimizing control is \(u=-K(P)x\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Set \(M=R+\gamma B^\top PB\succ0\), \(N=\gamma B^\top PA\). Expand the objective:
 \[
@@ -46,12 +49,12 @@ Since
 the nonnegative square is uniquely minimized at \(u=-M^{-1}Nx\). Substitution yields the formula, including both discount factors in the final \(\gamma^2\) term.</p>
 </div>
 
-<h3>Existence, convergence, and verification</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (infinite-horizon discounted LQR).</span>
+<h3 id="existence-convergence-and-verification">Existence, convergence, and verification</h3>
+<div class="math-statement theorem" id="theorem-infinite-horizon-discounted-lqr" data-result-number="24.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-infinite-horizon-discounted-lqr" aria-label="Link to theorem 24.2">Theorem 24.2 (infinite-horizon discounted LQR).</a></span>
 Under the assumptions above, \(P_0=0,\ P_{n+1}=\mathcal R(P_n)\) converges to a positive definite matrix \(P_*\) solving \(P_*=\mathcal R(P_*)\). The feedback \(K_*=K(P_*)\) is discount-stable and has optimal cost \(x^\top P_*x\) among all control sequences.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The square-completion result and backward induction show that \(x^\top P_nx\) is the optimal \(n\)-step cost with zero terminal cost. Nonnegative stage costs give \(P_n\preceq P_{n+1}\).
 Write \(F_0=A-BK_0\), \(C_0=Q+K_0^\top RK_0\). Discount stability implies
@@ -87,7 +90,7 @@ The terminal term is
 Therefore the feedback cost equals \(x_0^\top P_*x_0\). Any other control sequence has \(n\)-step cost at least \(x_0^\top P_nx_0\); taking \(n\to\infty\), using monotonicity of its nonnegative partial costs and \(P_n\to P_*\), proves its total cost is no smaller. No unproved terminal-limit assumption is imposed on competing controls.</p>
 </div>
 
-<h3>Policy evaluation and the policy gradient</h3>
+<h3 id="policy-evaluation-and-the-policy-gradient">Policy evaluation and the policy gradient</h3>
 <p>For any discount-stable \(K\), put \(F=A-BK\), \(C=Q+K^\top RK\). Then
 \[
  P_K=C+\gamma F^\top P_KF
@@ -98,7 +101,7 @@ Let \(S_0=\mathbb E[x_0x_0^\top]\) be finite, and define the unnormalized discou
  \Sigma_K=\sum_{t\ge0}\gamma^tF^tS_0F^{t\top}
          =S_0+\gamma F\Sigma_KF^\top,\qquad J(K)=\operatorname{tr}(P_KS_0).
 \]</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Discount-stable matrices form an open set. On it, the linear map
 \(\mathcal A_K(X)=X-\gamma F^\top XF\) is invertible by its norm-convergent series inverse, so \(P_K\) is differentiable in \(K\). Differentiate its finite Lyapunov equation, using \(\mathrm dF=-B\,\mathrm dK\):
@@ -135,8 +138,8 @@ For any competing control of finite cost, \(Q\succ0\) implies
 The constant solves \(c=\gamma c+\gamma\operatorname{tr}(P_*W)\), hence
 \(c=\gamma\operatorname{tr}(P_*W)/(1-\gamma)\).
 Partially observed linear-Gaussian control additionally uses a Kalman filter; its separation principle is an external control-theory result, not a consequence of square completion alone.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (a scalar discounted Riccati equation).</span>
+<div class="math-statement example" id="example-a-scalar-discounted-riccati-equation" data-result-number="24.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-a-scalar-discounted-riccati-equation" aria-label="Link to worked example 24.3">Worked example 24.3 (a scalar discounted Riccati equation).</a></span>
 Take \(A=B=Q=R=1\), \(\gamma=1/2\). The equation becomes
 \[
  P=1+\frac{P}{2}-\frac{P^2/4}{1+P/2}
@@ -150,9 +153,12 @@ The positive solution is \(P_*=\sqrt2\), with
 \]
 The first finite-horizon matrices are \(P_0=0,P_1=1,P_2=4/3,P_3=7/5\), increasing to \(\sqrt2\).</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Give a scalar system that is discount-stable but not stable without discounting.</p><details><summary>Hint and solution</summary><p>Let \(F=1.1\), \(\gamma=1/2\). Then \(|F|&gt;1\), but \(\sqrt\gamma|F|\approx0.778&lt;1\); the discounted quadratic series converges although the unscaled state grows.</p></details></li>
-<li><p>In the worked example, with scalar noise variance \(W=1\), compute the additional optimal cost.</p><details><summary>Hint and solution</summary><p>The constant is \(\gamma P_*W/(1-\gamma)=\sqrt2\). Thus \(V(x)=\sqrt2 x^2+\sqrt2\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-24-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-24-1">Exercise 24.1.</a></strong> Give a scalar system that is discount-stable but not stable without discounting.</p><details class="note-hint"><summary>Hint</summary><p>Choose a scalar closed-loop factor larger than one whose discounted square is smaller than one.</p></details><details><summary>Solution</summary><p>Let \(F=1.1\), \(\gamma=1/2\). Then \(|F|&gt;1\), but \(\sqrt\gamma|F|\approx0.778&lt;1\); the discounted quadratic series converges although the unscaled state grows.</p></details></li>
+<li id="exercise-24-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-24-2">Exercise 24.2.</a></strong> In the worked example, with scalar noise variance \(W=1\), compute the additional optimal cost.</p><details class="note-hint"><summary>Hint</summary><p>Insert the noise covariance and Riccati solution into the constant term of the value.</p></details><details><summary>Solution</summary><p>The constant is \(\gamma P_*W/(1-\gamma)=\sqrt2\). Thus \(V(x)=\sqrt2 x^2+\sqrt2\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://proceedings.mlr.press/v80/fazel18a.html">Fazel–Ge–Kakade–Mesbahi, global convergence of LQR policy-gradient methods</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The derivations here use the discounted convention explicitly. Global step-size/convergence results and LQG filtering require additional results beyond the stationary-point calculation.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://proceedings.mlr.press/v80/fazel18a.html">Fazel–Ge–Kakade–Mesbahi, global convergence of LQR policy-gradient methods</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The derivations here use the discounted convention explicitly. Global step-size/convergence results and LQG filtering require additional results beyond the stationary-point calculation.</p>
+</section>

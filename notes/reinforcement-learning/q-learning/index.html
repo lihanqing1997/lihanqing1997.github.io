@@ -6,11 +6,14 @@ breadcrumb_child_label_zh: "10. Q 学习"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/temporal-difference-learning/"
 note_next_url: "/notes/reinforcement-learning/eligibility-traces-and-td-lambda/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 10
 ---
 
-<p class="rl-learning-goal">Derive off-policy Bellman targets, prove tabular Q-learning convergence, and distinguish maximization bias from sampling-policy bias.</p>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive off-policy Bellman targets, prove tabular Q-learning convergence, and distinguish maximization bias from sampling-policy bias.</p>
 <p>Initialize the action-value table at a fixed finite vector.</p>
-<h3>The action-value optimality operator</h3>
+<h3 id="the-action-value-optimality-operator">The action-value optimality operator</h3>
 <p>For a vector on admissible state-action pairs, define
 \[
 (\mathcal TQ)(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)\max_bQ(s',b).
@@ -25,7 +28,7 @@ Its unique fixed point is \(Q^*\). The maximum inequality proves
 \end{aligned}
 \]
 Thus the same stochastic-contraction theorem can act on state-action coordinates.</p>
-<h3>Behavior, information, and the update</h3>
+<h3 id="behavior-information-and-the-update">Behavior, information, and the update</h3>
 <p>Let \(\mathcal F_t\) contain the observed history, \(Q_t\), and the already chosen action \(A_t\). The behavior policy can depend on the past. The environment still samples from \(K(\cdot\mid S_t,A_t)\). Update only \((S_t,A_t)\):
 \[
 Q_{t+1}(S_t,A_t)
@@ -38,10 +41,10 @@ Since \(Q_t,S_t,A_t\) are measurable at time \(t\),
 =(\mathcal TQ_t)(S_t,A_t).
 \]
 No next-action likelihood ratio is needed: the next action is maximized inside the target, not sampled from the behavior policy.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (bounded tabular convergence).</span> Assume a finite discounted MDP with \(|R_{t+1}|\le R_{\max}\); every state-action pair is sampled infinitely often almost surely; and the step on its \(k\)-th visit is a deterministic \(\alpha_{s,a,k}\in(0,1]\) with divergent sum and square-summable squares. Then \(Q_t\to Q^*\) almost surely.</p>
+<div class="math-statement theorem" id="theorem-bounded-tabular-convergence" data-result-number="10.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-bounded-tabular-convergence" aria-label="Link to theorem 10.1">Theorem 10.1 (bounded tabular convergence).</a></span> Assume a finite discounted MDP with \(|R_{t+1}|\le R_{\max}\); every state-action pair is sampled infinitely often almost surely; and the step on its \(k\)-th visit is a deterministic \(\alpha_{s,a,k}\in(0,1]\) with divergent sum and square-summable squares. Then \(Q_t\to Q^*\) almost surely.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Take \(B=\max\{\|Q_0\|_\infty,R_{\max}/(1-\gamma)\}\). If \(\|Q_t\|_\infty\le B\), then
 \[
@@ -61,16 +64,16 @@ Apply the stochastic-contraction theorem from TD with \(F=\mathcal T\), selected
 </div>
 
 <p>The theorem says what follows from infinite coverage; it does not supply an exploration algorithm. A behavior rule that stops visiting a relevant action invalidates the result, even if its global step-size sum diverges. Bounded-variance unbounded rewards can also be treated, but then boundedness of the iterates requires an additional argument not covered by this proof.</p>
-<h3>SARSA and expected SARSA</h3>
+<h3 id="sarsa-and-expected-sarsa">SARSA and expected SARSA</h3>
 <p>For a fixed policy \(\pi\), SARSA replaces the maximum by \(Q_t(S_{t+1},A_{t+1})\), where the next action is drawn from \(\pi\). Expected SARSA uses its conditional mean:
 \[
 Y_t^{\mathrm{ES}}=R_{t+1}+\gamma\sum_b\pi(b\mid S_{t+1})Q_t(S_{t+1},b).
 \]
 With fixed \(\pi\), the mean operator is \(T_Q^\pi\), whose fixed point is \(Q^\pi\). Control with an evolving policy additionally requires control of that evolving mean operator. Greedy-in-the-limit with infinite exploration is a condition on both approximation to greediness and visitation; neither condition follows from the other.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (conditional variance for expected SARSA).</span> For a fixed \(Q_t\) and policy, replacing the sampled next action by its conditional average preserves the mean target and cannot increase its conditional variance.</p>
+<div class="math-statement proposition" id="proposition-conditional-variance-for-expected-sarsa" data-result-number="10.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-conditional-variance-for-expected-sarsa" aria-label="Link to proposition 10.2">Proposition 10.2 (conditional variance for expected SARSA).</a></span> For a fixed \(Q_t\) and policy, replacing the sampled next action by its conditional average preserves the mean target and cannot increase its conditional variance.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(\mathcal G_t=\sigma(\mathcal F_t,R_{t+1},S_{t+1})\), and let \(Y_t=R_{t+1}+\gamma Q_t(S_{t+1},A_{t+1})\). Then
 \[
@@ -86,11 +89,11 @@ The tower property preserves the mean conditional on \(\mathcal F_t\). The condi
 This is a genuine conditional-expectation variance reduction with its conditioning fields specified.</p>
 </div>
 
-<h3>Maximization bias and double estimation</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> If \(\widehat q_a=q_a+\epsilon_a\) are integrable and \(\mathbb E\epsilon_a=0\), then \(\mathbb E\max_a\widehat q_a\ge\max_aq_a\).</p>
+<h3 id="maximization-bias-and-double-estimation">Maximization bias and double estimation</h3>
+<div class="math-statement proposition" id="proposition-maximization-bias-and-double-estimation" data-result-number="10.3">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-maximization-bias-and-double-estimation" aria-label="Link to proposition 10.3">Proposition 10.3 (Maximization bias and double estimation).</a></span> If \(\widehat q_a=q_a+\epsilon_a\) are integrable and \(\mathbb E\epsilon_a=0\), then \(\mathbb E\max_a\widehat q_a\ge\max_aq_a\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Choose \(a^*\in\arg\max_aq_a\). Pointwise, \(\max_a\widehat q_a\ge\widehat q_{a^*}\), so
 \[
@@ -103,17 +106,20 @@ For an independent evaluation vector \(\widetilde q\) with \(\mathbb E\widetilde
 \]
 Independent selection and evaluation remove this upward same-noise bias, but can introduce loss by selecting the wrong action. Online double-Q estimates are not generally independent, so this identity is an explanatory idealization, not a blanket finite-sample guarantee.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (two noisy tied actions).</span>
+<div class="math-statement example" id="example-two-noisy-tied-actions" data-result-number="10.4">
+<p><span class="statement-title"><a class="note-permalink" href="#example-two-noisy-tied-actions" aria-label="Link to worked example 10.4">Worked example 10.4 (two noisy tied actions).</a></span>
 Let \(q_1=q_2=0\), and let the estimation errors be independent fair signs. Their maximum is \(-1\) with probability \(1/4\), and \(1\) with probability \(3/4\). Therefore
 \[
 \mathbb E\max(\widehat q_1,\widehat q_2)=-\tfrac14+\tfrac34=\tfrac12.
 \]
 Evaluating the selected action with an independent fair-sign estimate gives mean zero. In a discounted target, the upward contribution from this example is \(\gamma/2\).</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>In a one-state two-action problem, can Q-learning identify both values if one action is never sampled?</p><details><summary>Hint and solution</summary><p>No. Its untouched Q entry retains its initialization and may dominate the max target. Two reward models agreeing on the sampled action but differing on the other generate identical data, yet can have different optimal policies.</p></details></li>
-<li><p>For fixed \(\pi\), bound the mean-target difference between the max backup and the expected-SARSA backup if \(\pi\) puts mass at least \(1-\epsilon\) on greedy actions and \(\|Q\|_\infty\le B\).</p><details><summary>Hint and solution</summary><p>At each state, \(0\le\max_bQ(s,b)-\sum_b\pi(b\mid s)Q(s,b)\le2B\epsilon\). Multiplying by \(\gamma\) and averaging over the transition gives a bound \(2\gamma B\epsilon\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-10-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-10-1">Exercise 10.1.</a></strong> In a one-state two-action problem, can Q-learning identify both values if one action is never sampled?</p><details class="note-hint"><summary>Hint</summary><p>Compare two environments that agree on all sampled actions and differ on the unsampled one.</p></details><details><summary>Solution</summary><p>No. Its untouched Q entry retains its initialization and may dominate the max target. Two reward models agreeing on the sampled action but differing on the other generate identical data, yet can have different optimal policies.</p></details></li>
+<li id="exercise-10-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-10-2">Exercise 10.2.</a></strong> For fixed \(\pi\), bound the mean-target difference between the max backup and the expected-SARSA backup if \(\pi\) puts mass at least \(1-\epsilon\) on greedy actions and \(\|Q\|_\infty\le B\).</p><details class="note-hint"><summary>Hint</summary><p>Separate the probability mass on maximizing actions from the remaining mass.</p></details><details><summary>Solution</summary><p>At each state, \(0\le\max_bQ(s,b)-\sum_b\pi(b\mid s)Q(s,b)\le2B\epsilon\). Multiplying by \(\gamma\) and averaging over the transition gives a bound \(2\gamma B\epsilon\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 6 and 11; the full convergence argument uses the preceding TD theorem. For the original result see <a href="https://doi.org/10.1007/BF00992698">Watkins–Dayan, Q-learning (1992)</a>.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 6 and 11; the full convergence argument uses the preceding TD theorem. For the original result see <a href="https://doi.org/10.1007/BF00992698">Watkins–Dayan, Q-learning (1992)</a>.</p>
+</section>

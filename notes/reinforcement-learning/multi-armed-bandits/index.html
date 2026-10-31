@@ -6,10 +6,15 @@ breadcrumb_child_label_zh: "18. 多臂老虎机"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
 note_next_url: "/notes/reinforcement-learning/exploration-and-regret/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 18
 ---
 
-<p class="rl-learning-goal">Prove an adaptive-sampling UCB bound and understand why a change of measure forces logarithmic exploration.</p>
-<h3>Reward streams and the regret convention</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Prove an adaptive-sampling UCB bound and understand why a change of measure forces logarithmic exploration.</p>
+<h3 id="reward-streams-and-the-regret-convention">Reward streams and the regret convention</h3>
+<div class="math-statement definition" id="definition-stochastic-bandit-and-pseudo-regret" data-result-number="18.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-stochastic-bandit-and-pseudo-regret" aria-label="Link to definition 18.1">Definition 18.1 (Stochastic bandit and pseudo-regret).</a></span></p>
 <p>There are \(K\) arms. Arm \(a\) has an iid stream \(X_{a,1},X_{a,2},\ldots\in[0,1]\), with mean \(\mu_a\); all streams are independent. At round \(t\), the algorithm chooses \(A_t\) from past observations and fresh internal randomness, then observes the next unused sample from that arm. Write
 \[
  N_a(T)=\sum_{t=1}^T\mathbf1_{\{A_t=a\}},\quad
@@ -21,7 +26,8 @@ The expected pseudo-regret is
             =\sum_a\Delta_a\,\mathbb E N_a(T).
 \]
 It also equals \(T\mu_*-\mathbb E\sum_t X_t\), by conditional expectation. The realized reward difference fluctuates and is not the same random variable as the pseudo-regret sum.</p>
-<h3>UCB with a valid adaptive-count argument</h3>
+</div>
+<h3 id="ucb-with-a-valid-adaptive-count-argument">UCB with a valid adaptive-count argument</h3>
 <p>Pull every arm once. For \(t&gt;K\), let \(n_a=N_a(t-1)\) and choose a maximizing arm for
 \[
  U_a(t)=\widehat\mu_{a,n_a}+\sqrt{\frac{2\log t}{n_a}},
@@ -29,8 +35,8 @@ It also equals \(T\mu_*-\mathbb E\sum_t X_t\), by conditional expectation. The r
 \]
 The external concentration input is Hoeffding's inequality for a <em>fixed</em> sample count:
 \(\Pr(\widehat\mu_{a,n}-\mu_a\ge x)\le e^{-2nx^2}\), and the same for the lower tail. It cannot be applied by pretending the adaptively selected \(n_a\) is deterministic.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (logarithmic UCB bound).</span>
+<div class="math-statement theorem" id="theorem-logarithmic-ucb-bound" data-result-number="18.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-logarithmic-ucb-bound" aria-label="Link to theorem 18.2">Theorem 18.2 (logarithmic UCB bound).</a></span>
 For \(T\ge K\) and each arm with \(\Delta_a&gt;0\),
 \[
  \mathbb E N_a(T)\le \left\lceil\frac{8\log T}{\Delta_a^2}\right\rceil+4,
@@ -40,7 +46,7 @@ For \(T\ge K\) and each arm with \(\Delta_a&gt;0\),
  \left(\left\lceil\frac{8\log T}{\Delta_a^2}\right\rceil+4\right).
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Fix an optimal arm \(a_*\). At round \(t\), define the event \(E_t\) that for every integer \(1\le n\le t\),
 \[
@@ -77,19 +83,19 @@ proves \(\mathbb EN_a(T)\le L+3\). Sum over arms to obtain regret.</p>
 Choosing \(\delta=\sqrt{8K\log T/T}\) when it is at most one yields
 \(\mathcal R_T\le2\sqrt{8KT\log T}+5K\).
 This simple proof has a logarithmic overhead relative to sharp minimax results.</p>
-<h3>Why suboptimal arms must be sampled</h3>
+<h3 id="why-suboptimal-arms-must-be-sampled">Why suboptimal arms must be sampled</h3>
 <p>For Bernoulli means in \((0,1)\), define
 \(\operatorname{kl}(p,q)=p\log(p/q)+(1-p)\log[(1-p)/(1-q)]\).
 Call an algorithm uniformly efficient if its expected regret is \(o(T^\alpha)\) for every \(\alpha&gt;0\) on every such fixed instance.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Bernoulli information lower bound).</span>
+<div class="math-statement theorem" id="theorem-bernoulli-information-lower-bound" data-result-number="18.3">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-bernoulli-information-lower-bound" aria-label="Link to theorem 18.3">Theorem 18.3 (Bernoulli information lower bound).</a></span>
 On an instance with a unique best arm and \(0&lt;\mu_a&lt;\mu_*&lt;1\),
 \[
  \liminf_{T\to\infty}\frac{\mathbb E N_a(T)}{\log T}
  \ge\frac1{\operatorname{kl}(\mu_a,\mu_*)}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Change only arm \(a\)'s mean to \(q&gt;\mu_*\); denote the original and changed history laws by \(P_T,Q_T\). The algorithm's conditional action probabilities are the same functions of history under both laws, so they cancel in the likelihood ratio. The chain rule, conditioning on the chosen action at every round, gives
 \[
@@ -118,8 +124,8 @@ First let \(\alpha\downarrow0\) for fixed \(q\); then let \(q\downarrow\mu_*\), 
 </div>
 
 <p>Thompson sampling chooses an arm by drawing a model from a posterior and acting optimally for that draw. Its analysis is different from the confidence-event proof above. Contextual bandits add observed covariates before the action; adversarial bandits allow a non-stochastic reward sequence and compare against a fixed comparator. Their assumptions and regret guarantees should not be interchanged.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (posterior and confidence calculations).</span>
+<div class="math-statement example" id="example-posterior-and-confidence-calculations" data-result-number="18.4">
+<p><span class="statement-title"><a class="note-permalink" href="#example-posterior-and-confidence-calculations" aria-label="Link to worked example 18.4">Worked example 18.4 (posterior and confidence calculations).</a></span>
 For a Bernoulli arm with a \(\mathrm{Beta}(1,1)\) prior, one success and two failures give
 \[
  p(\mu\mid X)\propto \mu(1-\mu)^2,\qquad
@@ -127,9 +133,12 @@ For a Bernoulli arm with a \(\mathrm{Beta}(1,1)\) prior, one success and two fai
 \]
 This posterior mean differs from the empirical mean \(1/3\). A Thompson step draws from this posterior; a UCB step uses \(1/3+\sqrt{2\log t/3}\), which can exceed one without invalidating optimism.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Explain why conditioning on \(N_a(t-1)=n\) does not justify a fixed-\(n\) Hoeffding bound.</p><details><summary>Hint and solution</summary><p>That event depends on earlier rewards. Conditional on it, the first \(n\) samples need not retain their original iid distribution. Instead, bound each fixed-count deviation under the original stream law and take a union over all possible counts, as in the proof.</p></details></li>
-<li><p>For means \(0.4,0.6\), express the leading information lower bound on regret.</p><details><summary>Hint and solution</summary><p>Only the first arm is suboptimal, with gap \(0.2\). Therefore \(\liminf_T\mathcal R_T/\log T\ge0.2/\operatorname{kl}(0.4,0.6)\), where \(\operatorname{kl}(0.4,0.6)=0.2\log(3/2)\); the ratio equals \(1/\log(3/2)\approx2.466\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-18-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-18-1">Exercise 18.1.</a></strong> Explain why conditioning on \(N_a(t-1)=n\) does not justify a fixed-\(n\) Hoeffding bound.</p><details class="note-hint"><summary>Hint</summary><p>The event specifying a pull count depends on earlier rewards; compare it with a union over fixed counts.</p></details><details><summary>Solution</summary><p>That event depends on earlier rewards. Conditional on it, the first \(n\) samples need not retain their original iid distribution. Instead, bound each fixed-count deviation under the original stream law and take a union over all possible counts, as in the proof.</p></details></li>
+<li id="exercise-18-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-18-2">Exercise 18.2.</a></strong> For means \(0.4,0.6\), express the leading information lower bound on regret.</p><details class="note-hint"><summary>Hint</summary><p>Evaluate the Bernoulli divergence, then multiply the sample lower bound by the suboptimality gap.</p></details><details><summary>Solution</summary><p>Only the first arm is suboptimal, with gap \(0.2\). Therefore \(\liminf_T\mathcal R_T/\log T\ge0.2/\operatorname{kl}(0.4,0.6)\), where \(\operatorname{kl}(0.4,0.6)=0.2\log(3/2)\); the ratio equals \(1/\log(3/2)\approx2.466\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://people.eecs.berkeley.edu/~russell/classes/cs294/s11/readings/Auer%2Bal:2002.pdf">Auer–Cesa-Bianchi–Fischer, finite-time bandit analysis</a>; <a href="https://tor-lattimore.com/downloads/book/book.pdf">Lattimore–Szepesvári, <em>Bandit Algorithms</em></a>. Hoeffding and the log-sum inequality are the probability/information inputs; the adaptive counting and change-of-measure steps are shown above.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://people.eecs.berkeley.edu/~russell/classes/cs294/s11/readings/Auer%2Bal:2002.pdf">Auer–Cesa-Bianchi–Fischer, finite-time bandit analysis</a>; <a href="https://tor-lattimore.com/downloads/book/book.pdf">Lattimore–Szepesvári, <em>Bandit Algorithms</em></a>. Hoeffding and the log-sum inequality are the probability/information inputs; the adaptive counting and change-of-measure steps are shown above.</p>
+</section>

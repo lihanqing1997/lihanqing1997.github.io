@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "17. 熵正则化强化学习"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/actor-critic-methods/"
 note_next_url: "/notes/reinforcement-learning/multi-armed-bandits/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 17
 ---
 
-<p class="rl-learning-goal">Derive the Gibbs policy and soft Bellman operator, including the reference-measure convention and the zero-temperature limit.</p>
-<h3>Relative entropy fixes the convention</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive the Gibbs policy and soft Bellman operator, including the reference-measure convention and the zero-temperature limit.</p>
+<h3 id="relative-entropy-fixes-the-convention">Relative entropy fixes the convention</h3>
 <p>For each state choose a reference distribution \(\mu(a\mid s)&gt;0\), and let \(\tau&gt;0\). Define
 \[
  \mathrm{KL}(p\|\mu)=\sum_a p_a\log\frac{p_a}{\mu_a},
@@ -17,8 +20,8 @@ note_next_url: "/notes/reinforcement-learning/multi-armed-bandits/"
 \]
 We maximize discounted reward minus \(\tau\mathrm{KL}(\pi(\cdot\mid s)\|\mu(\cdot\mid s))\). For uniform \(\mu\) on \(m\) actions,
 \(-\mathrm{KL}(\pi\|\mu)=H(\pi)-\log m\). Thus adding Shannon entropy instead changes values by \(\tau\log m/(1-\gamma)\) when every state has \(m\) actions; it does not change the optimal policy in that case.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (finite Gibbs variational formula).</span>
+<div class="math-statement theorem" id="theorem-finite-gibbs-variational-formula" data-result-number="17.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-finite-gibbs-variational-formula" aria-label="Link to theorem 17.1">Theorem 17.1 (finite Gibbs variational formula).</a></span>
 For \(q\in\mathbb R^m\),
 \[
  \max_{p\in\Delta_m}\{p^\top q-\tau\mathrm{KL}(p\|\mu)\}
@@ -27,7 +30,7 @@ For \(q\in\mathbb R^m\),
 \]
 The maximizer is unique.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(Z=\sum_a\mu_a e^{q_a/\tau}&gt;0\). Then
 \(\log(p_a^*/\mu_a)=q_a/\tau-\log Z\), so for every \(p\),
@@ -43,7 +46,7 @@ For \(p_a&gt;0\), \(-\log(p_a^*/p_a)\ge1-p_a^*/p_a\). Multiplication by \(p_a\) 
 Since \(p^*\) is strictly positive, equality requires full support and equality in the logarithm inequality at every action, hence \(p=p^*\). Substitution gives the result.</p>
 </div>
 
-<h3>Soft dynamic programming</h3>
+<h3 id="soft-dynamic-programming">Soft dynamic programming</h3>
 <p>Set
 \[
  (T_\tau V)(s)=\tau\log\sum_a\mu(a\mid s)
@@ -53,7 +56,7 @@ Since \(p^*\) is strictly positive, equality requires full support and equality 
  T_{\pi,\tau}V=r_\pi-\tau\,\mathrm{KL}(\pi\|\mu)+\gamma P_\pi V.
 \]
 The variational formula gives \(T_\tau V=\max_\pi T_{\pi,\tau}V\), state by state.</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 If \(\|V-W\|_\infty\le e\), each action score differs by at most \(\gamma e\). Therefore
 \[
@@ -82,14 +85,14 @@ Passing to the limit proves optimality among these policies, with equality for \
 <p>Soft policy iteration evaluates \(V_\tau^\pi\), then takes its Gibbs policy \(\pi'\). Since
 \(T_{\pi',\tau}V_\tau^\pi=T_\tau V_\tau^\pi\ge T_{\pi,\tau}V_\tau^\pi=V_\tau^\pi\),
 monotonicity and repeated evaluation imply \(V_\tau^{\pi'}\ge V_\tau^\pi\). The KL gap above quantifies the improvement at each state.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (zero-temperature value limit).</span>
+<div class="math-statement proposition" id="proposition-zero-temperature-value-limit" data-result-number="17.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-zero-temperature-value-limit" aria-label="Link to proposition 17.2">Proposition 17.2 (zero-temperature value limit).</a></span>
 \[
  0\le V^*(s)-V_\tau(s)
  \le\frac{\tau\log(1/\mu_{\min})}{1-\gamma}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 The penalty is nonnegative, so every regularized policy value is at most its unregularized value, and \(V_\tau\le V^*\). Let \(\pi^*\) be a deterministic unregularized optimal policy. Its per-state penalty is
 \(\tau\log[1/\mu(\pi^*(s)\mid s)]\le\tau\log(1/\mu_{\min})\). Thus
@@ -102,8 +105,8 @@ The bound is uniform in states; consequently \(V_\tau\to V^*\) uniformly as \(\t
 </div>
 
 <p>Soft actor-critic combines entropy-regularized targets with approximate critics and a restricted stochastic actor. In continuous action spaces the sum becomes an integral; a reference measure and finiteness of the partition function must be specified. A Gaussian actor, sampled gradients, and neural critic errors introduce approximation issues beyond the exact finite-action contraction theorem.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (Gibbs probabilities and value).</span>
+<div class="math-statement example" id="example-gibbs-probabilities-and-value" data-result-number="17.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-gibbs-probabilities-and-value" aria-label="Link to worked example 17.3">Worked example 17.3 (Gibbs probabilities and value).</a></span>
 One state has rewards \(0,\log3\), uniform reference \((1/2,1/2)\), \(\tau=1\), and \(\gamma=1/2\). The common continuation factor cancels from the Gibbs probabilities:
 \[
  \pi_\tau=(1/4,3/4),\qquad
@@ -111,9 +114,12 @@ One state has rewards \(0,\log3\), uniform reference \((1/2,1/2)\), \(\tau=1\), 
 \]
 Hence \(V_\tau=2\log2\), whereas \(V^*=2\log3\). The gap \(2\log(3/2)\) is smaller than the bound \(2\log2\).</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Show that for a fixed score vector \(q\), Gibbs probability concentrates on its maximizers as \(\tau\downarrow0\).</p><details><summary>Hint and solution</summary><p>Write \(M=\max_a q_a\). For a suboptimal action, \(p_\tau(a)=\mu_a e^{-(M-q_a)/\tau}/\sum_b\mu_b e^{-(M-q_b)/\tau}\to0\). On the maximizing set the limiting probabilities are proportional to \(\mu_a\). This statement fixes \(q\); a temperature-dependent score needs separate analysis.</p></details></li>
-<li><p>What is the exact optimization loss from using \(p\) instead of the Gibbs policy for a fixed \(q\)?</p><details><summary>Hint and solution</summary><p>The variational identity gives \(\tau\mathrm{KL}(p\|p^*)\). This measures a one-state policy update error, not by itself the total return loss after visitation distributions change.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-17-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-17-1">Exercise 17.1.</a></strong> Show that for a fixed score vector \(q\), Gibbs probability concentrates on its maximizers as \(\tau\downarrow0\).</p><details class="note-hint"><summary>Hint</summary><p>Factor the largest exponential out of the partition function and compare each remaining exponent.</p></details><details><summary>Solution</summary><p>Write \(M=\max_a q_a\). For a suboptimal action, \(p_\tau(a)=\mu_a e^{-(M-q_a)/\tau}/\sum_b\mu_b e^{-(M-q_b)/\tau}\to0\). On the maximizing set the limiting probabilities are proportional to \(\mu_a\). This statement fixes \(q\); a temperature-dependent score needs separate analysis.</p></details></li>
+<li id="exercise-17-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-17-2">Exercise 17.2.</a></strong> What is the exact optimization loss from using \(p\) instead of the Gibbs policy for a fixed \(q\)?</p><details class="note-hint"><summary>Hint</summary><p>Use the exact KL remainder in the Gibbs variational identity.</p></details><details><summary>Solution</summary><p>The variational identity gives \(\tau\mathrm{KL}(p\|p^*)\). This measures a one-state policy update error, not by itself the total return loss after visitation distributions change.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://proceedings.mlr.press/v80/haarnoja18b.html">Haarnoja and coauthors, Soft Actor-Critic</a>. The finite Gibbs identity is proved here; continuous-action algorithmic results require their own assumptions.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://proceedings.mlr.press/v80/haarnoja18b.html">Haarnoja and coauthors, Soft Actor-Critic</a>. The finite Gibbs identity is proved here; continuous-action algorithmic results require their own assumptions.</p>
+</section>

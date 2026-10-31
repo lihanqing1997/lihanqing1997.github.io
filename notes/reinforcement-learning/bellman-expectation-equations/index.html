@@ -6,24 +6,30 @@ breadcrumb_child_label_zh: "3. 贝尔曼期望方程"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/policies-and-value-functions/"
 note_next_url: "/notes/reinforcement-learning/contraction-and-fixed-points/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 3
 ---
 
-<p class="rl-learning-goal">Derive policy evaluation as a linear equation, prove the resolvent representation, and control the tails behind reward shaping.</p>
-<h3>The policy Bellman equation</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive policy evaluation as a linear equation, prove the resolvent representation, and control the tails behind reward shaping.</p>
+<h3 id="the-policy-bellman-equation">The policy Bellman equation</h3>
+<div class="math-statement definition" id="definition-policy-bellman-operator" data-result-number="3.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-policy-bellman-operator" aria-label="Link to definition 3.1">Definition 3.1 (Policy Bellman operator).</a></span></p>
 <p>Retain the finite discounted model and use column vectors for values and rewards. For a fixed stationary policy, define
 \[
 T^\pi V=r_\pi+\gamma P_\pi V.
 \]
 The one-step identities in the previous chapter give \(V^\pi=T^\pi V^\pi\). We also write \(P_aV(s):=\sum_{s'}P(s'\mid s,a)V(s')\) for a single action backup. The operator is affine, not linear unless \(r_\pi=0\).</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (resolvent and uniqueness).</span>
+</div>
+<div class="math-statement theorem" id="theorem-resolvent-and-uniqueness" data-result-number="3.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-resolvent-and-uniqueness" aria-label="Link to theorem 3.2">Theorem 3.2 (resolvent and uniqueness).</a></span>
 \[
 (I-\gamma P_\pi)^{-1}=\sum_{t=0}^{\infty}\gamma^tP_\pi^t,
 \qquad V^\pi=\sum_{t=0}^{\infty}\gamma^tP_\pi^tr_\pi.
 \]
 The matrix series converges in the operator norm induced by \(\|\cdot\|_\infty\), and the value series converges uniformly.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For any vector \(z\),
 \[
@@ -48,7 +54,7 @@ The remainder norm is at most \(\gamma^n\to0\). Continuity of matrix multiplicat
 Finally, the Markov property gives \((P_\pi^tr_\pi)(s)=\mathbb E_s^\pi r(S_t,A_t)\), so this series agrees with the expected return already defined. Invertibility also proves uniqueness of the Bellman solution.</p>
 </div>
 
-<h3>Action values and a lifted transition matrix</h3>
+<h3 id="action-values-and-a-lifted-transition-matrix">Action values and a lifted transition matrix</h3>
 <p>Index vectors by admissible state-action pairs and set
 \[
 P_Q^\pi((s,a),(s',a'))=P(s'\mid s,a)\pi(a'\mid s').
@@ -59,11 +65,11 @@ Q^\pi=r+\gamma P_Q^\pi Q^\pi,
 \qquad Q^\pi=(I-\gamma P_Q^\pi)^{-1}r.
 \]
 In operator notation, \((\Pi_\pi Q)(s)=\sum_a\pi(a\mid s)Q(s,a)\), so \(V^\pi=\Pi_\pi Q^\pi\) and \(Q^\pi=r+\gamma PV^\pi\). The two equations describe the same prediction problem at different points in the action cycle.</p>
-<h3>Order, subsolutions, and supersolutions</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> If \(U\le T^\pi U\), then \(U\le V^\pi\). If \(U\ge T^\pi U\), then \(U\ge V^\pi\). Increasing \(r_\pi\) while keeping \(P_\pi\) fixed increases the value.</p>
+<h3 id="order-subsolutions-and-supersolutions">Order, subsolutions, and supersolutions</h3>
+<div class="math-statement proposition" id="proposition-order-subsolutions-and-supersolutions" data-result-number="3.3">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-order-subsolutions-and-supersolutions" aria-label="Link to proposition 3.3">Proposition 3.3 (Order, subsolutions, and supersolutions).</a></span> If \(U\le T^\pi U\), then \(U\le V^\pi\). If \(U\ge T^\pi U\), then \(U\ge V^\pi\). Increasing \(r_\pi\) while keeping \(P_\pi\) fixed increases the value.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(e=T^\pi U-U\). Subtract \((I-\gamma P_\pi)U=r_\pi-e\) from the equation for \(V^\pi\):
 \[
@@ -78,15 +84,15 @@ If \(e\ge0\), every term is nonnegative; if \(e\le0\), every term is nonpositive
 All series converge in sup norm by the previous theorem.</p>
 </div>
 
-<h3>Potential-based reward shaping</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> Let \(\Phi:\mathsf S\to\mathbb R\) be bounded and define the shaped reward
+<h3 id="potential-based-reward-shaping">Potential-based reward shaping</h3>
+<div class="math-statement proposition" id="proposition-potential-based-reward-shaping" data-result-number="3.4">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-potential-based-reward-shaping" aria-label="Link to proposition 3.4">Proposition 3.4 (Potential-based reward shaping).</a></span> Let \(\Phi:\mathsf S\to\mathbb R\) be bounded and define the shaped reward
 \[
 R'_{t+1}=R_{t+1}+\gamma\Phi(S_{t+1})-\Phi(S_t).
 \]
 Then \(V'^\pi(s)=V^\pi(s)-\Phi(s)\) and \(Q'^\pi(s,a)=Q^\pi(s,a)-\Phi(s)\); advantages and action rankings are unchanged.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For every path and finite \(n\),
 \[
@@ -103,8 +109,8 @@ V'^\pi=V^\pi-\Phi,\qquad Q'^\pi(s,a)=Q^\pi(s,a)-\Phi(s).
 \]
 Subtract the two identities to get \(A'^\pi=A^\pi\). The subtraction in \(Q\) is independent of the action, so it preserves each greedy set.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (solve the system and check the series).</span>
+<div class="math-statement example" id="example-solve-the-system-and-check-the-series" data-result-number="3.5">
+<p><span class="statement-title"><a class="note-permalink" href="#example-solve-the-system-and-check-the-series" aria-label="Link to worked example 3.5">Worked example 3.5 (solve the system and check the series).</a></span>
 Take \(\gamma=1/2\), \(P_\pi=\begin{pmatrix}1/2&amp;1/2\\0&amp;1\end{pmatrix}\), and \(r_\pi=(1,2)^\top\). Then
 \[
 V_2=2+\tfrac12V_2=4,\quad
@@ -117,9 +123,12 @@ Starting from state 1, the expected reward at time \(t\) is \(2-2^{-t}\). Hence
 \]
 which independently verifies the matrix solution.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>For the example, shape with \(\Phi=(1,0)^\top\). Compute the new mean reward and value.</p><details><summary>Hint and solution</summary><p>\(r'_\pi=r_\pi+\gamma P_\pi\Phi-\Phi=(1/4,2)^\top\). Thus \(V'^\pi=(5/3,4)^\top=V^\pi-\Phi\).</p></details></li>
-<li><p>If \(\|\tilde r_\pi-r_\pi\|_\infty\le\epsilon\) with the same transition matrix, bound the value change.</p><details><summary>Hint and solution</summary><p>Use the resolvent: \(\|\widetilde V^\pi-V^\pi\|_\infty\le\sum_{t\ge0}\gamma^t\epsilon=\epsilon/(1-\gamma)\). Equality is possible for a constant reward shift.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-3-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-3-1">Exercise 3.1.</a></strong> For the example, shape with \(\Phi=(1,0)^\top\). Compute the new mean reward and value.</p><details class="note-hint"><summary>Hint</summary><p>Apply the shaping transformation to the mean reward and subtract the potential from the value.</p></details><details><summary>Solution</summary><p>\(r'_\pi=r_\pi+\gamma P_\pi\Phi-\Phi=(1/4,2)^\top\). Thus \(V'^\pi=(5/3,4)^\top=V^\pi-\Phi\).</p></details></li>
+<li id="exercise-3-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-3-2">Exercise 3.2.</a></strong> If \(\|\tilde r_\pi-r_\pi\|_\infty\le\epsilon\) with the same transition matrix, bound the value change.</p><details class="note-hint"><summary>Hint</summary><p>Apply the policy resolvent to the reward difference and bound its operator norm.</p></details><details><summary>Solution</summary><p>Use the resolvent: \(\|\widetilde V^\pi-V^\pi\|_\infty\le\sum_{t\ge0}\gamma^t\epsilon=\epsilon/(1-\gamma)\). Equality is possible for a constant reward shift.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy evaluation; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 3–4. The proof uses only conditional expectation, geometric series, and finite-dimensional matrix norms.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy evaluation; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 3–4. The proof uses only conditional expectation, geometric series, and finite-dimensional matrix norms.</p>
+</section>

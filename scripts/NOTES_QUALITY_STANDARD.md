@@ -1,87 +1,142 @@
-# Notes quality standard
+# Shared standard for all notes
 
-This document is an editorial checklist. It must not be copied into detail pages
-as a repeated visible template. Page headings must name the mathematics actually
-being developed.
+`unified-v1` is the default for all new and revised notes. Optimal transport and
+reinforcement learning implement it in full. Older notes share the site's
+appearance and navigation; migrate their content structure when revising them.
+Shared CSS alone does not make an older note fully conformant.
 
-## Mathematical contract
+This is an authoring checklist, not prose to repeat on the website. Keep chapter
+length and mathematical scope appropriate to the subject. There are no quotas
+for theorems, examples, figures, or exercises.
 
-1. Introduce every symbol and object before it is used. State domains,
-   codomains, sigma-algebras, topologies, regularity, and quantifiers.
-2. State a result with all assumptions needed for the displayed conclusion.
-   Distinguish almost-everywhere, in-probability, weak, norm, and pointwise
-   claims explicitly.
-3. A block titled `Proof` must be a proof. If essential arguments are omitted,
-   title it `Proof outline`, name the imported results, and link to their proofs.
-4. Prove the core theorem chain in the note. Split long arguments into
-   mathematically named lemmas instead of compressing them into prose.
-5. Work representative examples to a conclusion. Use counterexamples to show
-   why important hypotheses cannot simply be removed.
-6. Keep explanatory prose close to the formula or theorem it explains. It
-   should expose motivation, geometry, or proof strategy rather than repeat the
-   visible heading.
-7. In the optimal transport and reinforcement learning notes, proofs must display their mathematical steps:
-   define constructed objects, show intermediate equalities and inequalities,
-   and accompany them with short justifications. For a limit, specify the
-   convergence mode, the bound or integrability hypothesis permitting passage,
-   and the order of limits. Naming a method in prose is not a substitute for
-   carrying it out. Keep scope balanced by choosing results and explicitly
-   identifying external theorem inputs, while retaining complete derivations
-   for the proofs included.
+## Shared implementation
 
-## Self-containedness
+- `_includes/note-study-style.html` owns the common appearance. Do not copy it
+  into topic-specific styles or create topic-specific versions of its classes.
+- Use the `note-index` layout for landing pages and `note-detail` for chapters.
+- Start from `scripts/templates/note-index.html`, `note-chapter.html`, or
+  `note-research.html`. Replace every `TODO` before publication. The templates
+  are excluded from the built website.
+- Set `note_template: unified-v1` on migrated pages. Detail pages also specify
+  `note_kind: chapter` or `research` and their integer `note_chapter`.
+- Set `format: unified-v1` in `_data/note_registry.yml` once the whole topic
+  conforms. The quality audit checks every linked chapter of that topic, and
+  individual marked pages during incremental migrations.
 
-A note is self-contained relative to the prerequisite notes recorded in
-`_data/note_registry.yml`. When a prerequisite result is used, link to the
-precise page where it is proved. Do not reproduce a long theorem from another
-note merely to avoid a cross-reference.
+## Landing and reading order
 
-The opening pages of a note establish its basic objects and notation. Advanced
-pages may rely on earlier numbered pages, but must identify that dependence in
-the surrounding text.
+The landing page contains the title/breadcrumb, a compact illustration when
+useful, and sequential numbered contents grouped into meaningful parts. Do not
+add an opening explanation or a competing reading route. Put necessary
+orientation and prerequisites in the first chapter.
 
-## Examples and figures
+Contents order is reading order. Establish dependencies before using them.
+Keep identical order and numbering in English, French, and Chinese, and a
+complete Back/Last page/Next page navigation chain.
 
-There is no quota for examples or figures. Add them when they perform
-mathematical work:
+## Chapter structure
 
-- geometric constructions, quotient identifications, maps, flows, and
-  projections;
-- convergence modes, stochastic paths, confidence geometry, and likelihood
-  shape;
-- meshes, stability regions, spectra, phase portraits, and transport plans;
-- commutative diagrams, lattices, filtrations, causal graphs, and state
-  transitions.
+1. Open with one short `note-learning-goal` paragraph labeled **Learning goal.**
+   State a concrete capability. Link prerequisites where they first matter.
+2. Introduce the setting, assumptions, and notation. Expose central definitions
+   in `math-statement definition` blocks; routine notation can remain in prose.
+3. Use mathematically named sections, with result, full proof, and explanatory
+   insight where useful. Place examples and counterexamples near the relevant
+   result rather than forcing them into a separate end-of-page collection.
+4. Close the development with **Exercises**. Each has a stable ID and a visible
+   chapter-local label, such as `Exercise 4.1`. Provide independent expandable
+   **Hint** and **Solution** elements, in that order. Hints suggest a first step;
+   solutions meet the main text's derivation standard.
+5. Put **Sources and further reading** last in a `note-sources` section. Retain
+   precise references, prerequisite links, theorem dependencies, and scope
+   qualifications. Keep inline citations next to the claims they support too.
 
-Prefer clean SVG figures that remain sharp at the site's full content width.
-Use labels sparingly, provide useful alternative text, and keep captions
-mathematical rather than decorative.
+Avoid generic visible headings such as “Core facts”, “Proof guide”, or a bare
+“Definition”. The standard closing labels above are intentional exceptions.
+Do not impose a fixed number of sections or results on every chapter.
 
-## Site-wide conventions
+## Mathematical contract and statement format
 
-- Use sentence case for titles and headings.
-- Use `\mathrm{d}` for differentials and integration measures.
-- Use `A^\top` for transpose and `A^*` for adjoint or conjugate transpose.
-- Keep the canonical detail-page body in English; localize breadcrumbs,
-  landing-page titles, and structural navigation.
-- Preserve the numbered breadcrumb and complete Back/Last page/Next page chain.
-- By default, retain problems as worked examples rather than adding exercise
-  sections. The optimal transport and reinforcement learning notes are explicit
-  user-requested exceptions: they include short self-study exercises with
-  expandable hints and answers.
-- Do not use generic visible headings such as `Core facts`, `Proof guide`,
-  `Definition`, `Proposition`, `Proof`, or `Remark`.
+- Number definitions, theorems, propositions, lemmas, corollaries, examples,
+  counterexamples, and remarks in one chapter-local sequence, for example
+  `Theorem 4.2 (Contraction of the Bellman operator).` Store
+  `data-result-number="4.2"` on the block and link its title to a semantic ID.
+  Keep IDs stable when inserting results; update numbers and cross-references.
+- Use **Worked example** for a computation carried to its conclusion and
+  **Example** for a shorter illustration. Both share numbering and styling.
+- A block labeled **Proof** must contain the proof. Preserve qualifications such
+  as **Proof under the stated assumptions**, **Derivation**, or **Proof outline**.
+  Record `data-proof-status="proof"`, `"qualified-proof"`, or `"derivation"`.
+  Name and cite any imported theorem; a conditional derivation must not be
+  presented as an unconditional proof. Use `note-external-input` for a separate
+  paragraph explaining an imported input when helpful.
+- Show constructed objects and intermediate equalities and inequalities, with
+  short justifications. Naming a method in English does not carry it out. Split
+  long arguments into named lemmas rather than compressing the steps into prose.
+- Introduce symbols, domains, sigma-algebras, topologies, regularity, and
+  quantifiers before use. State all hypotheses needed by a conclusion.
+- For limits, specify the convergence mode, the domination, uniform estimate,
+  or integrability condition permitting passage, and the order of limits.
+  Justify exchanges of sums, integrals, expectations, derivatives, and limits.
+  Distinguish almost-everywhere, in-probability, weak, norm, and pointwise claims.
+- Prove the core theorem chain relative to the prerequisite notes in the
+  registry. Link to precise prerequisite proofs rather than duplicating long
+  results. Keep external inputs and their assumptions explicit.
+- Number equations when referenced rather than numbering every display.
+  Preserve existing tags during formatting changes. Prefer stable semantic
+  anchors for links between pages.
+- Use sentence case for headings, `\mathrm{d}` for differentials and measures,
+  `A^\top` for transpose, and `A^*` for adjoint or conjugate transpose. Do not
+  change mathematically meaningful notation during a format-only migration.
+- Keep the canonical detail body in English; localize breadcrumbs, landing
+  contents, and navigation. Prose should explain motivation, geometry, a proof
+  step, or a limitation rather than restating labels.
 
-## Completion gate
+## Research outlook variant
 
-A note is complete only after:
+Use the same labeled learning goal, then **Research map**, **Research
+directions**, **Self-study projects**, and **Sources and further reading**, in
+that order. An additional section on interpreting research claims is fine.
 
-1. every page has received a mathematical-content review against the source
-   anchors in `_data/note_registry.yml`;
-2. every theorem dependency and symbol introduction has been checked by reading
-   the note in order;
-3. the language-policy and quality audits pass;
-4. the Jekyll build succeeds without warnings relevant to the notes;
-5. landing and detail pages have been inspected at desktop and mobile widths;
-6. internal links, figures, localized breadcrumbs, and previous/next navigation
-   have been verified.
+- The map connects selected directions to preceding chapters and gives a
+  concrete question to take into a paper. Wrap tables in `note-table-scroll`.
+- Give each direction a descriptive subsection, prerequisites, reading links,
+  and an account of what is proved versus assumed, empirical, or open. Be
+  selective rather than encyclopedic.
+- Use `note-projects` for bounded projects with expandable **Suggested checks**.
+  Open-ended projects need not pretend to have a unique complete solution.
+- Place foundational references and reading ladders in the final source section.
+  Record when current references were actually checked. Formatting alone must
+  not advance that date.
+
+## Figures and layout
+
+Use figures when they perform mathematical work: constructions, flows, state
+transitions, geometry, or convergence phenomena. Prefer sharp SVG, useful
+alternative text, and mathematical captions. Use `note-comparison` and
+`note-table-scroll` wrappers. Long equations scroll inside their display rather
+than widening the page.
+
+## Revision and completion checks
+
+For a formatting-only migration, compare against the previous published source.
+Preserve every statement body, proof body and qualification, formula, exercise
+question and solution, citation, and navigation target. Reordering sources and
+research sections is allowed when their content is retained. New wrappers,
+numbers, anchors, or hints must not silently change a mathematical claim.
+
+Before publication:
+
+1. Review changed mathematics against the registry's source anchors. For a
+   format-only change, verify preservation instead of rewriting the proofs.
+2. Read the sequence for dependencies, introduced symbols, and navigation.
+3. Run `node scripts/audit-note-quality.mjs` (includes shared-template checks),
+   `node scripts/audit-language-policy.mjs`, and
+   `node scripts/check-source-structure.mjs`.
+4. Build Jekyll, then run `node scripts/check-built-links.mjs PATH_TO_BUILD`.
+5. Inspect landing, chapter, exercise, and research pages on desktop and mobile.
+   Check mathematics, overflow, independent hints and solutions, statement links,
+   localized navigation, and the final sources section.
+6. After deployment, compare the published pages with the reviewed build.
+
+Structural checks support, but do not replace, mathematical review.

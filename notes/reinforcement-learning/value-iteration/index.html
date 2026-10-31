@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "8. 价值迭代"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/policy-iteration/"
 note_next_url: "/notes/reinforcement-learning/temporal-difference-learning/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 8
 ---
 
-<p class="rl-learning-goal">Turn a value approximation into a certified policy and establish a precise asynchronous convergence result.</p>
-<h3>Value convergence and stopping</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Turn a value approximation into a certified policy and establish a precise asynchronous convergence result.</p>
+<h3 id="value-convergence-and-stopping">Value convergence and stopping</h3>
 <p>Value iteration is \(V_{k+1}=TV_k\). The contraction theorem gives
 \[
 \|V_k-V^*\|_\infty\le\gamma^k\|V_0-V^*\|_\infty,\qquad
@@ -20,16 +23,16 @@ The residual is computable with one extra backup. With \(V_0=0\), the first boun
 k\ge\frac{\log(R_{\max}/[(1-\gamma)\epsilon])}{-\log\gamma},
 \]
 or immediately if the requested tolerance already exceeds the initial bound.</p>
-<h3>Extracting a good policy</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (greedy-policy loss).</span> If \(\pi_V\) is greedy with respect to \(V\), then
+<h3 id="extracting-a-good-policy">Extracting a good policy</h3>
+<div class="math-statement theorem" id="theorem-greedy-policy-loss" data-result-number="8.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-greedy-policy-loss" aria-label="Link to theorem 8.1">Theorem 8.1 (greedy-policy loss).</a></span> If \(\pi_V\) is greedy with respect to \(V\), then
 \[
 \|V^*-V^{\pi_V}\|_\infty
 \le\frac{2\gamma}{1-\gamma}\|V-V^*\|_\infty
 \le\frac{2\gamma}{(1-\gamma)^2}\|TV-V\|_\infty.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(e=\|V-V^*\|_\infty\) and \(L=\|V^*-V^{\pi_V}\|_\infty\). Since \(TV=T^{\pi_V}V\),
 \[
@@ -47,15 +50,15 @@ L\le\gamma e+\gamma\|V-V^{\pi_V}\|_\infty
 Thus \((1-\gamma)L\le2\gamma e\). Substitute \(e\le\|TV-V\|_\infty/(1-\gamma)\). At \(\gamma=0\), immediate-reward greediness is already optimal and the loss is zero.</p>
 </div>
 
-<h3>Asynchronous updates without delays</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (fair asynchronous iteration).</span> Update one state \(i_k\) at each step:
+<h3 id="asynchronous-updates-without-delays">Asynchronous updates without delays</h3>
+<div class="math-statement theorem" id="theorem-fair-asynchronous-iteration" data-result-number="8.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-fair-asynchronous-iteration" aria-label="Link to theorem 8.2">Theorem 8.2 (fair asynchronous iteration).</a></span> Update one state \(i_k\) at each step:
 \[
 V_{k+1}(i_k)=(TV_k)(i_k),\qquad V_{k+1}(s)=V_k(s)\quad(s\ne i_k).
 \]
 If every state is selected infinitely often, then \(V_k\to V^*\) in sup norm.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Put \(E_k=\|V_k-V^*\|_\infty\). The changed component satisfies
 \[
@@ -69,17 +72,20 @@ For all \(k\ge n_j\), \(E_k\le E_{n_j}\). Given \(\epsilon&gt;0\), choose \(j\) 
 </div>
 
 <p>Gauss–Seidel sweeps use newly updated values and satisfy this theorem. Stale parallel reads require a separate delay assumption and proof; infinite updates alone do not control arbitrarily old information. The factors \((1-\gamma)^{-1}\) in the error bounds explain why high-discount problems need especially accurate backups.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (propagating a delayed reward).</span>
+<div class="math-statement example" id="example-propagating-a-delayed-reward" data-result-number="8.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-propagating-a-delayed-reward" aria-label="Link to worked example 8.3">Worked example 8.3 (propagating a delayed reward).</a></span>
 Use the stay/go model with \(\gamma=0.9\). From \(V_0=0\), the greedy scores at \(s\) are \(1\) for stay and \(0\) for go. The first backup gives \(V_1=(1,2)\), whose scores are \(1.9\) and \(1.8\), still favoring stay. Next, \(V_2=(1.9,3.8)\), so
 \[
 1+0.9(1.9)=2.71&lt;0.9(3.8)=3.42.
 \]
 Go now becomes greedy. Each sweep propagates continuation rewards one transition farther.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>At \(\gamma=0.9\), what residual tolerance guarantees greedy-policy loss at most \(0.1\) by this theorem?</p><details><summary>Hint and solution</summary><p>Require \(2(0.9)\epsilon/(0.1)^2\le0.1\), so \(\epsilon\le1/1800\). This sufficient bound can be conservative when action gaps are large.</p></details></li>
-<li><p>Explain failure if a state is never updated.</p><details><summary>Hint and solution</summary><p>Take two absorbing states with zero reward. Initialize the unvisited state's value at \(1\), although its true value is \(0\). Updating only the other state leaves this error unchanged forever.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-8-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-8-1">Exercise 8.1.</a></strong> At \(\gamma=0.9\), what residual tolerance guarantees greedy-policy loss at most \(0.1\) by this theorem?</p><details class="note-hint"><summary>Hint</summary><p>Solve the greedy-policy residual certificate for the allowed residual.</p></details><details><summary>Solution</summary><p>Require \(2(0.9)\epsilon/(0.1)^2\le0.1\), so \(\epsilon\le1/1800\). This sufficient bound can be conservative when action gaps are large.</p></details></li>
+<li id="exercise-8-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-8-2">Exercise 8.2.</a></strong> Explain failure if a state is never updated.</p><details class="note-hint"><summary>Hint</summary><p>Use an absorbing state whose initial estimate is wrong and whose coordinate never changes.</p></details><details><summary>Solution</summary><p>Take two absorbing states with zero reward. Initialize the unvisited state's value at \(1\), although its true value is \(0\). Updating only the other state leaves this error unchanged forever.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, value iteration and policy-loss bounds; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, §4.4. The delay-free asynchronous statement is proved above; delayed distributed updates need additional hypotheses.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, value iteration and policy-loss bounds; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, §4.4. The delay-free asynchronous statement is proved above; delayed distributed updates need additional hypotheses.</p>
+</section>

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { auditNoteTemplate, auditNoteIndex } from "./check-note-template.mjs";
 
 const root = process.cwd();
 const notesRoot = path.join(root, "notes");
@@ -7,6 +8,9 @@ const registryPath = path.join(root, "_data", "note_registry.yml");
 const registrySource = fs.readFileSync(registryPath, "utf8");
 const registrySlugs = [...registrySource.matchAll(/^- slug:\s*([a-z0-9-]+)\s*$/gm)]
     .map((match) => match[1]);
+const unifiedTopics = new Set(registrySource.split(/(?=^- slug:)/m)
+    .filter(block => /^  format: unified-v1\s*$/m.test(block))
+    .map(block => block.match(/^- slug:\s*(\S+)/m)?.[1]));
 
 const failures = [];
 const warnings = [];
@@ -57,6 +61,10 @@ function orderedDetailSlugs(note) {
 
 for (const note of registrySlugs) {
     const slugs = orderedDetailSlugs(note);
+    const indexSource = read(path.join(notesRoot, note, "index.html"));
+    if (unifiedTopics.has(note) || frontMatterValue(indexSource, "note_template") === "unified-v1") {
+        failures.push(...auditNoteIndex(indexSource, note).map(message => `${note}/index: ${message}`));
+    }
     const noteRecord = {
         note,
         pages: slugs.length,
@@ -77,6 +85,9 @@ for (const note of registrySlugs) {
         }
 
         const source = read(filePath);
+        if (unifiedTopics.has(note) || frontMatterValue(source, "note_template") === "unified-v1") {
+            failures.push(...auditNoteTemplate(source, index + 1).map(message => `${relativePath}: ${message}`));
+        }
         const text = stripMarkup(source);
         const expectedPrevious = index === 0 ? null : `/notes/${note}/${slugs[index - 1]}/`;
         const expectedNext = index === slugs.length - 1 ? null : `/notes/${note}/${slugs[index + 1]}/`;

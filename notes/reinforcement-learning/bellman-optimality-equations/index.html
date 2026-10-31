@@ -6,24 +6,27 @@ breadcrumb_child_label_zh: "5. 贝尔曼最优方程"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/contraction-and-fixed-points/"
 note_next_url: "/notes/reinforcement-learning/policy-evaluation/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 5
 ---
 
-<p class="rl-learning-goal">Identify the optimal Bellman fixed point with the supremum over all policies, and derive its occupancy linear-program dual.</p>
-<h3>Verification against history-dependent policies</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Identify the optimal Bellman fixed point with the supremum over all policies, and derive its occupancy linear-program dual.</p>
+<h3 id="verification-against-history-dependent-policies">Verification against history-dependent policies</h3>
 <p>Define \(V^*(s)=\sup_\pi\mathbb E_s^\pi G\), where the supremum includes randomized history-dependent policies. The preceding chapter gives a unique fixed point \(U=TU\) and a finite bound \(\|U\|_\infty\le R_{\max}/(1-\gamma)\), since
 \[
 \|U\|_\infty=\|TU\|_\infty\le R_{\max}+\gamma\|U\|_\infty.
 \]
 The remaining issue is to show that this algebraic object is the optimal value.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Bellman verification).</span> In a finite discounted MDP, \(V^*=TV^*\). A stationary deterministic policy selecting a maximizing action at every state is optimal simultaneously from every initial state. More generally, any vector \(W\) satisfying
+<div class="math-statement theorem" id="theorem-bellman-verification" data-result-number="5.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-bellman-verification" aria-label="Link to theorem 5.1">Theorem 5.1 (Bellman verification).</a></span> In a finite discounted MDP, \(V^*=TV^*\). A stationary deterministic policy selecting a maximizing action at every state is optimal simultaneously from every initial state. More generally, any vector \(W\) satisfying
 \[
 W(s)\ge r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)W(s')
 \quad\text{for every }s,a
 \]
 is an upper bound on the value of every policy.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For any policy, average the assumed inequalities over its current conditional action law:
 \[
@@ -45,7 +48,7 @@ U\ge V^*\ge V^{\pi^*}=U.
 Thus equality holds throughout and identifies the contraction fixed point without assuming optimal continuation exists in advance.</p>
 </div>
 
-<h3>Action values and optimal action support</h3>
+<h3 id="action-values-and-optimal-action-support">Action values and optimal action support</h3>
 <p>Set
 \[
 Q^*(s,a)=r(s,a)+\gamma P_aV^*(s).
@@ -56,15 +59,15 @@ V^*(s)=\max_a Q^*(s,a),\qquad
 Q^*(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)\max_bQ^*(s',b).
 \]
 The action-value operator is a \(\gamma\)-contraction by the same maximum inequality and stochastic-row bound already proved.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (optimality on visited states).</span> Let
+<div class="math-statement proposition" id="proposition-optimality-on-visited-states" data-result-number="5.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-optimality-on-visited-states" aria-label="Link to proposition 5.2">Proposition 5.2 (optimality on visited states).</a></span> Let
 \(g(s,a)=V^*(s)-r(s,a)-\gamma P_aV^*(s)\ge0\). For every policy,
 \[
 J_\rho^*-J_\rho(\pi)=\frac{\langle d_\rho^\pi,g\rangle}{1-\gamma}.
 \]
 Consequently \(\pi\) is optimal for \(\rho\) exactly when \(d_\rho^\pi(s,a)&gt;0\) implies \(g(s,a)=0\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Multiply the occupancy flow equation by \(V^*(s')\) and sum:
 \[
@@ -79,16 +82,16 @@ Subtract \(\langle d_\rho^\pi,r\rangle=(1-\gamma)J_\rho(\pi)\) to obtain the gap
 Optimality for a single initial distribution places no restriction on actions at states that policy never visits.</p>
 </div>
 
-<h3>Linear programming and complementary slackness</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (occupancy–Bellman duality).</span> Let \(\mathcal D_\rho\) be the nonnegative arrays satisfying discounted flow. Then
+<h3 id="linear-programming-and-complementary-slackness">Linear programming and complementary slackness</h3>
+<div class="math-statement theorem" id="theorem-occupancybellman-duality" data-result-number="5.3">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-occupancybellman-duality" aria-label="Link to theorem 5.3">Theorem 5.3 (occupancy–Bellman duality).</a></span> Let \(\mathcal D_\rho\) be the nonnegative arrays satisfying discounted flow. Then
 \[
 \max_{d\in\mathcal D_\rho}\frac{\langle d,r\rangle}{1-\gamma}
 =\min_{W:\ W(s)\ge r(s,a)+\gamma P_aW(s)}\langle\rho,W\rangle
 =J_\rho^*.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For dual-feasible \(W\) and primal-feasible \(d\), use flow to calculate the exact gap:
 \[
@@ -105,16 +108,16 @@ d_\rho^{\pi^*}(s,a)[V^*(s)-r(s,a)-\gamma P_aV^*(s)]=0.
 Their gap is zero. This constructs optimizers and proves strong duality directly. For any optimal pair \((d,W)\), the same nonnegative gap sum gives complementary slackness at every positive-mass action.</p>
 </div>
 
-<h3>Finite horizons</h3>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (backward induction).</span> For stages \(h=1,\ldots,H\), terminal reward zero, and stage-dependent kernels and rewards,
+<h3 id="finite-horizons">Finite horizons</h3>
+<div class="math-statement proposition" id="proposition-backward-induction" data-result-number="5.4">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-backward-induction" aria-label="Link to proposition 5.4">Proposition 5.4 (backward induction).</a></span> For stages \(h=1,\ldots,H\), terminal reward zero, and stage-dependent kernels and rewards,
 \[
 V_{H+1}^*=0,\qquad
 V_h^*(s)=\max_a\left[r_h(s,a)+\sum_{s'}P_h(s'\mid s,a)V_{h+1}^*(s')\right].
 \]
 Stagewise maximizing actions form an optimal, generally nonstationary policy.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-4" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 At \(h=H+1\), all continuation returns equal zero. Suppose every policy tail from stage \(h+1\) has value at most \(V_{h+1}^*\), and a Markov tail attains it at all states. For any history ending in state \(s\),
 \[
@@ -124,17 +127,20 @@ At \(h=H+1\), all continuation returns equal zero. Suppose every policy tail fro
 \]
 Choose an action attaining the finite maximum and then the optimal tail. Both inequalities become equalities. Induction from \(H\) down to \(1\) proves the claim; no infinite limit or contraction is needed.</p>
 </div>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (waiting for a future payoff).</span>
+<div class="math-statement example" id="example-waiting-for-a-future-payoff" data-result-number="5.5">
+<p><span class="statement-title"><a class="note-permalink" href="#example-waiting-for-a-future-payoff" aria-label="Link to worked example 5.5">Worked example 5.5 (waiting for a future payoff).</a></span>
 At state \(s\), action stay yields reward \(1\) and returns to \(s\); action go yields \(0\) and moves to absorbing \(g\), whose reward is always \(2\). With \(\gamma=1/2\),
 \[
 V^*(g)=4,\quad V^*(s)=\max\{1+V^*(s)/2,2\}=2.
 \]
 Both actions at \(s\) are optimal. With \(\gamma=0.9\), \(V^*(g)=20\), go gives \(18\), and stay's Bellman score at \(V^*(s)=18\) is \(17.2\); go is strictly optimal. The discount changes the preferred tradeoff, not just the numerical scale.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>In the worked example with \(\gamma=0.9\) and \(\rho=\delta_s\), compute the occupancy of the policy that immediately goes.</p><details><summary>Hint and solution</summary><p>\(d(s,\mathrm{go})=1-\gamma=0.1\), \(d(g)=\gamma=0.9\). Its discounted value is \(\langle d,r\rangle/(1-\gamma)=1.8/0.1=18\).</p></details></li>
-<li><p>Why can a dual-optimal \(W\) differ from \(V^*\) at an unreachable state?</p><details><summary>Hint and solution</summary><p>The objective weights \(W\) only through \(\rho\). If a state is unreachable from \(\rho\) under every action and has a self-loop of reward zero, any nonnegative value at that state satisfies its Bellman inequality without changing the objective. The minimal feasible vector is \(V^*\), but the LP minimizer need not be unique.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-5-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-5-1">Exercise 5.1.</a></strong> In the worked example with \(\gamma=0.9\) and \(\rho=\delta_s\), compute the occupancy of the policy that immediately goes.</p><details class="note-hint"><summary>Hint</summary><p>Separate the initial visit from the absorbing-state visits, using normalized discounted weights.</p></details><details><summary>Solution</summary><p>\(d(s,\mathrm{go})=1-\gamma=0.1\), \(d(g)=\gamma=0.9\). Its discounted value is \(\langle d,r\rangle/(1-\gamma)=1.8/0.1=18\).</p></details></li>
+<li id="exercise-5-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-5-2">Exercise 5.2.</a></strong> Why can a dual-optimal \(W\) differ from \(V^*\) at an unreachable state?</p><details class="note-hint"><summary>Hint</summary><p>Consider a state that no action can reach from the initial distribution.</p></details><details><summary>Solution</summary><p>The objective weights \(W\) only through \(\rho\). If a state is unreachable from \(\rho\) under every action and has a self-loop of reward zero, any nonnegative value at that state satisfies its Bellman inequality without changing the objective. The minimal feasible vector is \(V^*\), but the LP minimizer need not be unique.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, Bellman optimality and linear programming; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 4. The fixed-point argument depends on the preceding contraction chapter; the verification inequalities cover all policy histories.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, Bellman optimality and linear programming; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 4. The fixed-point argument depends on the preceding contraction chapter; the verification inequalities cover all policy histories.</p>
+</section>

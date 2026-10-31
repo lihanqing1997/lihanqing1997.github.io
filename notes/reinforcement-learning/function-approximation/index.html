@@ -6,10 +6,13 @@ breadcrumb_child_label_zh: "12. 函数逼近"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/eligibility-traces-and-td-lambda/"
 note_next_url: "/notes/reinforcement-learning/approximate-dynamic-programming/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 12
 ---
 
-<p class="rl-learning-goal">Distinguish three approximation targets, prove on-policy stability, and derive the correct off-policy gradient-TD moments.</p>
-<h3>Projection geometry</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Distinguish three approximation targets, prove on-policy stability, and derive the correct off-policy gradient-TD moments.</p>
+<h3 id="projection-geometry">Projection geometry</h3>
 <p>Let \(\Phi\in\mathbb R^{|\mathsf S|\times d}\) have full column rank, with row \(\phi(s)^\top\). Let \(D=\operatorname{diag}(d(s))\), where \(d(s)&gt;0\), and write
 \[
 \langle u,v\rangle_D=u^\top Dv,\quad C=\Phi^\top D\Phi\succ0,\quad
@@ -22,9 +25,9 @@ Minimizing \(\|y-\Phi w\|_D^2\) gives the normal equations \(Cw=\Phi^\top Dy\); 
 \operatorname*{argmin}_{V\in\mathcal V}\|T^\pi V-V\|_D^2.
 \]
 The second is the TD target; it is generally neither of the other two.</p>
-<h3>On-policy contraction and approximation error</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> If \(d^\top P_\pi=d^\top\), then \(\Pi_DT^\pi\) is a \(\gamma\)-contraction on \(\mathcal V\). Its unique fixed point \(\widehat V=\Phi w^*\) solves
+<h3 id="on-policy-contraction-and-approximation-error">On-policy contraction and approximation error</h3>
+<div class="math-statement theorem" id="theorem-on-policy-contraction-and-approximation-error" data-result-number="12.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-on-policy-contraction-and-approximation-error" aria-label="Link to theorem 12.1">Theorem 12.1 (On-policy contraction and approximation error).</a></span> If \(d^\top P_\pi=d^\top\), then \(\Pi_DT^\pi\) is a \(\gamma\)-contraction on \(\mathcal V\). Its unique fixed point \(\widehat V=\Phi w^*\) solves
 \[
 Aw^*=b,\quad A=\Phi^\top D(I-\gamma P_\pi)\Phi,\quad b=\Phi^\top Dr_\pi,
 \]
@@ -34,7 +37,7 @@ and satisfies
 \le\frac{\|\Pi_DV^\pi-V^\pi\|_D}{\sqrt{1-\gamma^2}}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For every vector \(v\), Jensen's inequality at each transition row and stationarity give
 \[
@@ -69,7 +72,7 @@ a=\Pi_D(T^\pi\widehat V-T^\pi V^\pi)=\gamma\Pi_DP_\pi e,
 Therefore \((1-\gamma^2)\|e\|_D^2\le\|b_0\|_D^2\). Taking square roots proves the claim.</p>
 </div>
 
-<h3>Least-squares TD and consistency</h3>
+<h3 id="least-squares-td-and-consistency">Least-squares TD and consistency</h3>
 <p>For transitions generated under \(\pi\) with stationary state marginal \(d\), set
 \[
 \widehat A_n=\frac1n\sum_{t=1}^n\phi_t(\phi_t-\gamma\phi'_t)^\top,\qquad
@@ -77,10 +80,10 @@ Therefore \((1-\gamma^2)\|e\|_D^2\le\|b_0\|_D^2\). Taking square roots proves th
 \quad \widehat w_n=\widehat A_n^{-1}\widehat b_n
 \]
 whenever the inverse exists. Here \(\phi_t=\phi(S_t)\), \(\phi'_t=\phi(S'_t)\), and \(R_t\) denotes the reward in the sampled transition tuple.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (LSTD consistency).</span> For independent transition tuples with this law, or a stationary ergodic transition sequence, \(\widehat w_n\to w^*=A^{-1}b\) almost surely; the inverse exists for all sufficiently large \(n\), almost surely.</p>
+<div class="math-statement proposition" id="proposition-lstd-consistency" data-result-number="12.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-lstd-consistency" aria-label="Link to proposition 12.2">Proposition 12.2 (LSTD consistency).</a></span> For independent transition tuples with this law, or a stationary ergodic transition sequence, \(\widehat w_n\to w^*=A^{-1}b\) almost surely; the inverse exists for all sufficiently large \(n\), almost surely.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Every matrix entry is integrable because the state set, features, and rewards are bounded. The strong law, or the ergodic theorem in the second setting, gives
 \[
@@ -106,15 +109,15 @@ Finally,
 This argument establishes consistency, not an independent-sample confidence interval for dependent data.</p>
 </div>
 
-<h3>A fully specified linear-TD convergence result</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (independent on-policy transition sampling).</span> Draw independent tuples \((S_n,R_n,S'_n)\) with \(S_n\sim d\), \(S'_n\sim P_\pi(S_n,\cdot)\), and the correct conditional reward law. Under the rank and stationarity assumptions above, linear TD
+<h3 id="a-fully-specified-linear-td-convergence-result">A fully specified linear-TD convergence result</h3>
+<div class="math-statement theorem" id="theorem-independent-on-policy-transition-sampling" data-result-number="12.3">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-independent-on-policy-transition-sampling" aria-label="Link to theorem 12.3">Theorem 12.3 (independent on-policy transition sampling).</a></span> Draw independent tuples \((S_n,R_n,S'_n)\) with \(S_n\sim d\), \(S'_n\sim P_\pi(S_n,\cdot)\), and the correct conditional reward law. Under the rank and stationarity assumptions above, linear TD
 \[
 w_{n+1}=w_n+\alpha_n\phi_n[R_n+\gamma{\phi'_n}^\top w_n-\phi_n^\top w_n]
 \]
 converges almost surely to \(w^*\) from any fixed finite \(w_0\), for deterministic step sizes with \(\alpha_n&gt;0\), \(\sum_n\alpha_n=\infty\), and \(\sum_n\alpha_n^2&lt;\infty\).</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-3" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Let \(e_n=w_n-w^*\) and \(X_n=\|e_n\|_2^2\). A new tuple is independent of the preceding iterates, so the conditional mean increment is \(b-Aw_n=-Ae_n\). With \(m=(1-\gamma)\lambda_{\min}(C)&gt;0\), the quadratic-form bound gives \(e_n^\top Ae_n\ge mX_n\). Bounded features and rewards imply for some finite constant \(K\),
 \[
@@ -139,7 +142,7 @@ The nonnegative supermartingale theorem and telescoping expectations imply that 
 For one on-policy Markov trajectory, the tuple is not independent of \(w_n\), so the conditional mean used here is not \(b-Aw_n\). The corresponding finite-chain linear-TD theorem needs a Markov-noise argument; see the cited Tsitsiklis–Van Roy paper for that extension. It is not proved by silently treating a trajectory as independent tuples.</p>
 </div>
 
-<h3>Off-policy correction and gradient TD</h3>
+<h3 id="off-policy-correction-and-gradient-td">Off-policy correction and gradient TD</h3>
 <p>Let behavior \(\mu\) generate states with positive distribution \(d_\mu\), and assume \(\mu(a\mid s)&gt;0\) whenever \(\pi(a\mid s)&gt;0\). Define \(\rho_t=\pi(A_t\mid S_t)/\mu(A_t\mid S_t)\), \(D_\mu=\operatorname{diag}(d_\mu)\), and the ordinary TD error \(\delta_t=R_{t+1}+\gamma{\phi'_t}^\top w-\phi_t^\top w\). The target moments are
 \[
 A=\mathbb E_\mu[\rho_t\phi_t(\phi_t-\gamma\phi'_t)^\top]
@@ -162,8 +165,8 @@ h_{t+1}=h_t+\beta_t[\rho_t\delta_t-\phi_t^\top h_t]\phi_t,\qquad
 w_{t+1}=w_t+\alpha_t\rho_t(\phi_t-\gamma\phi'_t)(\phi_t^\top h_t).
 \]
 For fixed \(w,h\) and a fresh tuple, their mean increments are \(b-Aw-Ch\) and \(A^\top h\). At \(h=C^{-1}(b-Aw)\), the latter equals minus half the MSPBE gradient. These identities explain the algorithm; convergence of coupled recursions further requires step-size, sampling, rank, and stability assumptions.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (three different approximations).</span>
+<div class="math-statement example" id="example-three-different-approximations" data-result-number="12.4">
+<p><span class="statement-title"><a class="note-permalink" href="#example-three-different-approximations" aria-label="Link to worked example 12.4">Worked example 12.4 (three different approximations).</a></span>
 Take \(P_\pi=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), \(d=(1/2,1/2)\), \(\gamma=1/2\), \(r=(0,1)^\top\), and \(\Phi=(1,0)^\top\). Solving Bellman gives \(V^\pi=(2/3,4/3)^\top\). The best projection is \((2/3,0)^\top\). But
 \[
 A=\tfrac12,\quad b=0,\quad w_{\mathrm{TD}}=0.
@@ -177,16 +180,19 @@ For the Bellman-residual objective,
 Its minimizer is \(w=-2/5\). Thus best projection, TD, and residual minimization really are distinct.</p>
 </div>
 
-<h3>What neural approximation changes</h3>
+<h3 id="what-neural-approximation-changes">What neural approximation changes</h3>
 <p>For neural action values \(Q_w\), DQN uses replay tuples and a frozen target parameter \(w^-\):
 \[
 L(w)=\mathbb E_{\mathrm{replay}}
 \left[Q_w(S,A)-\{R+\gamma\max_bQ_{w^-}(S',b)\}\right]^2.
 \]
 For fixed \(w^-\), this is a regression objective. Updating \(w^-\) changes the target; replay changes the sampling law. Neither supplies a contraction of the parameter update. Off-policy bootstrapping can already be unstable with linear features because \(P_\pi\) need not be nonexpansive in \(L_2(d_\mu)\). Claims about optimization, statistical generalization, and policy performance therefore need separate assumptions.</p>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>One state, rewards \(0,1\), \(\gamma=1/2\), uniform behavior, and target always selecting reward \(1\): what goes wrong if the auxiliary GTD update omits \(\rho\)?</p><details><summary>Hint and solution</summary><p>With feature \(1\), the correct moments are \(A=1/2,b=1,C=1\), giving target value \(w=2\). The unweighted auxiliary mean is \(1/2-w/2-h\); coupled to mean \(w\)-update proportional to \(h\), its equilibrium is \(w=1,h=0\), the wrong value.</p></details></li>
-<li><p>Why is \(A\) invertible on-policy even though it need not be symmetric?</p><details><summary>Hint and solution</summary><p>If \(Aw=0\), then \(0=w^\top Aw\ge(1-\gamma)\lambda_{\min}(C)\|w\|^2\). Therefore its kernel is zero. A square matrix with zero kernel is invertible; symmetry was never used.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-12-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-12-1">Exercise 12.1.</a></strong> One state, rewards \(0,1\), \(\gamma=1/2\), uniform behavior, and target always selecting reward \(1\): what goes wrong if the auxiliary GTD update omits \(\rho\)?</p><details class="note-hint"><summary>Hint</summary><p>Compute the correct reward moment, then recompute the auxiliary mean without the importance ratio.</p></details><details><summary>Solution</summary><p>With feature \(1\), the correct moments are \(A=1/2,b=1,C=1\), giving target value \(w=2\). The unweighted auxiliary mean is \(1/2-w/2-h\); coupled to mean \(w\)-update proportional to \(h\), its equilibrium is \(w=1,h=0\), the wrong value.</p></details></li>
+<li id="exercise-12-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-12-2">Exercise 12.2.</a></strong> Why is \(A\) invertible on-policy even though it need not be symmetric?</p><details class="note-hint"><summary>Hint</summary><p>Apply the positive quadratic-form bound to a vector in the kernel of the moment matrix.</p></details><details><summary>Solution</summary><p>If \(Aw=0\), then \(0=w^\top Aw\ge(1-\gamma)\lambda_{\min}(C)\|w\|^2\). Therefore its kernel is zero. A square matrix with zero kernel is invertible; symmetry was never used.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 9 and 11; <a href="https://web.mit.edu/~jnt/www/Papers/J063-97-bvr-td.pdf">Tsitsiklis–Van Roy, An analysis of temporal-difference learning with function approximation (1997)</a>; <a href="https://jmlr.csail.mit.edu/papers/volume17/14-488/14-488.pdf">Sutton–Mahmood–White (2016), §3</a>, for off-policy weighting and instability. The independent-sampling theorem above is distinct from the imported Markov-trajectory extension.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 9 and 11; <a href="https://web.mit.edu/~jnt/www/Papers/J063-97-bvr-td.pdf">Tsitsiklis–Van Roy, An analysis of temporal-difference learning with function approximation (1997)</a>; <a href="https://jmlr.csail.mit.edu/papers/volume17/14-488/14-488.pdf">Sutton–Mahmood–White (2016), §3</a>, for off-policy weighting and instability. The independent-sampling theorem above is distinct from the imported Markov-trajectory extension.</p>
+</section>

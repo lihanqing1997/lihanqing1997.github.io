@@ -6,11 +6,14 @@ breadcrumb_child_label_zh: "9. 时序差分学习"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/value-iteration/"
 note_next_url: "/notes/reinforcement-learning/q-learning/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 9
 ---
 
-<p class="rl-learning-goal">Write TD as an adapted stochastic recursion and prove its tabular convergence, including the argument that accumulated noise disappears.</p>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Write TD as an adapted stochastic recursion and prove its tabular convergence, including the argument that accumulated noise disappears.</p>
 <p>Initialize the value table at a fixed finite vector.</p>
-<h3>Condition on the information actually available</h3>
+<h3 id="condition-on-the-information-actually-available">Condition on the information actually available</h3>
 <p>Fix a stationary policy \(\pi\) in the finite bounded-reward model. Let \(\mathcal F_t\) contain the trajectory through \(S_t\), before drawing \(A_t\), and the current vector \(V_t\). All estimates and step sizes used at time \(t\) are \(\mathcal F_t\)-measurable. Define
 \[
 \delta_t=R_{t+1}+\gamma V_t(S_{t+1})-V_t(S_t),\qquad
@@ -30,10 +33,10 @@ Conditioning only on \(S_t\) would still leave the data-dependent \(V_t\) random
 M_{t+1}=R_{t+1}+\gamma V_t(S_{t+1})-(T^\pi V_t)(S_t),
 \qquad \mathbb E[M_{t+1}\mid\mathcal F_t]=0.
 \]</p>
-<h3>A stochastic contraction theorem</h3>
+<h3 id="a-stochastic-contraction-theorem">A stochastic contraction theorem</h3>
 <p>The proof uses the prerequisite theorem that a nonnegative supermartingale converges almost surely to a finite limit. Its proof is in the <a href="/notes/probability-theory/doob-inequalities-martingale-convergence/">martingale-convergence chapter</a>. The rest of the argument is developed here.</p>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (bounded asynchronous stochastic contraction).</span> Let \(F:\mathbb R^d\to\mathbb R^d\) be a sup-norm \(\gamma\)-contraction with fixed point \(x^*\). At time \(n\), an \(\mathcal F_n\)-measurable coordinate \(i_n\) is updated:
+<div class="math-statement theorem" id="theorem-bounded-asynchronous-stochastic-contraction" data-result-number="9.1">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-bounded-asynchronous-stochastic-contraction" aria-label="Link to theorem 9.1">Theorem 9.1 (bounded asynchronous stochastic contraction).</a></span> Let \(F:\mathbb R^d\to\mathbb R^d\) be a sup-norm \(\gamma\)-contraction with fixed point \(x^*\). At time \(n\), an \(\mathcal F_n\)-measurable coordinate \(i_n\) is updated:
 \[
 X_{n+1}(i)=X_n(i)+a_n(i)[F(X_n)(i)-X_n(i)+M_{n+1}(i)].
 \]
@@ -49,7 +52,7 @@ the noise satisfies
 \]
 and \(\sup_n\|X_n\|_\infty&lt;\infty\) almost surely. Then \(X_n\to x^*\) almost surely.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 <strong>1. Filter out the noise.</strong> For each coordinate, define \(Z_0(i)=0\) and
 \[
@@ -102,11 +105,11 @@ L\le\gamma(L+2\epsilon).
 Finally let \(\epsilon\downarrow0\). Since \(\gamma&lt;1\), \(L=0\), so \(E_n\to0\). Together with \(Z_n\to0\), this proves \(X_n\to x^*\).</p>
 </div>
 
-<h3>Apply the theorem to tabular TD</h3>
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (on-policy TD convergence).</span> Assume bounded rewards, finite states and actions, \(0\le\gamma&lt;1\), every state visited infinitely often almost surely, and the local step-size conditions just stated. Then tabular TD converges to \(V^\pi\) almost surely.</p>
+<h3 id="apply-the-theorem-to-tabular-td">Apply the theorem to tabular TD</h3>
+<div class="math-statement theorem" id="theorem-on-policy-td-convergence" data-result-number="9.2">
+<p><span class="statement-title"><a class="note-permalink" href="#theorem-on-policy-td-convergence" aria-label="Link to theorem 9.2">Theorem 9.2 (on-policy TD convergence).</a></span> Assume bounded rewards, finite states and actions, \(0\le\gamma&lt;1\), every state visited infinitely often almost surely, and the local step-size conditions just stated. Then tabular TD converges to \(V^\pi\) almost surely.</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 Choose a deterministic
 \[
@@ -125,8 +128,8 @@ Use \(F=T^\pi\), selected coordinate \(S_t\), and set noise at unselected coordi
 </div>
 
 <p>Irreducibility of a finite policy chain is one sufficient way to obtain infinite visitation; aperiodicity is not needed for this proof. The step-size conditions concern the visits to each coordinate, not just a single global sum. Constant steps do not satisfy the theorem and generally leave persistent noise.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (deterministic TD still has gradual convergence).</span>
+<div class="math-statement example" id="example-deterministic-td-still-has-gradual-convergence" data-result-number="9.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-deterministic-td-still-has-gradual-convergence" aria-label="Link to worked example 9.3">Worked example 9.3 (deterministic TD still has gradual convergence).</a></span>
 In one state with reward \(1\), \(\gamma=1/2\), \(V_0=0\), and local step \(\alpha_k=1/k\), the first estimates are
 \[
 V_1=1,\qquad V_2=1+\tfrac12(1-\tfrac12)=\tfrac54,\qquad
@@ -139,9 +142,12 @@ e_k=(1-\alpha_k/2)e_{k-1},\qquad
 \]
 Noise is absent here; diminishing steps alone make the recursion slower than exact value iteration.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>For \(\alpha_k=k^{-p}\), which exponents satisfy both step-size requirements?</p><details><summary>Hint and solution</summary><p>The series \(\sum k^{-p}\) diverges for \(p\le1\), while \(\sum k^{-2p}\) converges for \(2p&gt;1\). Thus \(1/2&lt;p\le1\).</p></details></li>
-<li><p>At \(\gamma=0\), one state, and independent reward noise of variance \(\sigma^2\), find the limiting variance with constant step \(\alpha\in(0,1)\).</p><details><summary>Hint and solution</summary><p>The centered recursion is \(e_{n+1}=(1-\alpha)e_n+\alpha\xi_{n+1}\). Hence \(v_{n+1}=(1-\alpha)^2v_n+\alpha^2\sigma^2\), and \(v_\infty=\alpha\sigma^2/(2-\alpha)&gt;0\). A vanishing mean error does not imply almost-sure convergence of the noisy iterates.</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-9-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-9-1">Exercise 9.1.</a></strong> For \(\alpha_k=k^{-p}\), which exponents satisfy both step-size requirements?</p><details class="note-hint"><summary>Hint</summary><p>Apply the power-series convergence criterion separately to the steps and their squares.</p></details><details><summary>Solution</summary><p>The series \(\sum k^{-p}\) diverges for \(p\le1\), while \(\sum k^{-2p}\) converges for \(2p&gt;1\). Thus \(1/2&lt;p\le1\).</p></details></li>
+<li id="exercise-9-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-9-2">Exercise 9.2.</a></strong> At \(\gamma=0\), one state, and independent reward noise of variance \(\sigma^2\), find the limiting variance with constant step \(\alpha\in(0,1)\).</p><details class="note-hint"><summary>Hint</summary><p>Center the scalar recursion and derive a recurrence for its variance.</p></details><details><summary>Solution</summary><p>The centered recursion is \(e_{n+1}=(1-\alpha)e_n+\alpha\xi_{n+1}\). Hence \(v_{n+1}=(1-\alpha)^2v_n+\alpha^2\sigma^2\), and \(v_\infty=\alpha\sigma^2/(2-\alpha)&gt;0\). A vanishing mean error does not imply almost-sure convergence of the noisy iterates.</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 6; the <a href="/notes/probability-theory/doob-inequalities-martingale-convergence/">nonnegative supermartingale convergence theorem</a>. The bounded tabular stochastic-contraction argument is proved in full above; linear function approximation requires a different geometry.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 6; the <a href="/notes/probability-theory/doob-inequalities-martingale-convergence/">nonnegative supermartingale convergence theorem</a>. The bounded tabular stochastic-contraction argument is proved in full above; linear function approximation requires a different geometry.</p>
+</section>

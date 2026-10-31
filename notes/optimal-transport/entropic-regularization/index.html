@@ -6,18 +6,21 @@ breadcrumb_child_label_zh: "10. 熵正则化与辛克霍恩缩放"
 note_back_url: "/notes/optimal-transport/"
 note_prev_url: "/notes/optimal-transport/brenier-theorem/"
 note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-transport/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 10
 ---
 
-<p class="ot-learning-goal"><strong>Learning goal.</strong> Derive Sinkhorn scaling, recognize its entropy convention, and distinguish numerical convergence from regularization bias.</p>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive Sinkhorn scaling, recognize its entropy convention, and distinguish numerical convergence from regularization bias.</p>
 
 <p>Entropy makes the transport objective strictly convex; in finite dimensions the optimizer also depends smoothly on positive marginal weights. Its optimizer has a multiplicative Gibbs form, and enforcing the two marginals reduces to alternating diagonal scalings. The regularization is therefore simultaneously variational, probabilistic, and algorithmic.</p>
 
     <p>For the continuous results on this page, take compact metric spaces \(X,Y\) and finite continuous cost \(c\). For matrix scaling, discard zero-weight atoms and assume \(a_i,b_j>0\). These hypotheses keep the kernel strictly positive and bounded away from zero; unbounded costs and noncompact spaces need additional integrability assumptions.</p>
 
-    <h3>The entropic transport problem</h3>
+    <h3 id="the-entropic-transport-problem">The entropic transport problem</h3>
 
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For \(\varepsilon>0\), define
+    <div class="math-statement definition" id="definition-the-entropic-transport-problem" data-result-number="10.1">
+        <p><span class="statement-title"><a class="note-permalink" href="#definition-the-entropic-transport-problem" aria-label="Link to definition 10.1">Definition 10.1 (The entropic transport problem).</a></span> For \(\varepsilon>0\), define
         \[
         \operatorname{OT}_\varepsilon(\mu,\nu)
         =
@@ -30,11 +33,11 @@ note_next_url: "/notes/optimal-transport/sinkhorn-divergences-and-semi-discrete-
         The reference \(\mu\otimes\nu\) makes the entropy term invariant under changes of coordinates and equal to the mutual information of a coupling.</p>
     </div>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Existence and uniqueness.</span> Under the compact continuous-cost assumptions above, the entropic problem has a unique minimizer \(\pi_\varepsilon\).</p>
+    <div class="math-statement theorem" id="theorem-existence-and-uniqueness" data-result-number="10.2">
+        <p><span class="statement-title"><a class="note-permalink" href="#theorem-existence-and-uniqueness" aria-label="Link to theorem 10.2">Theorem 10.2 (Existence and uniqueness).</a></span> Under the compact continuous-cost assumptions above, the entropic problem has a unique minimizer \(\pi_\varepsilon\).</p>
     </div>
 
-    <div class="math-statement proof">
+    <div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span> Let \(R=\mu\otimes\nu\) and \(F_\varepsilon(\pi)=\int c\,\mathrm{d}\pi+\varepsilon H(\pi\mid R)\). The product plan gives a finite comparison value:
 \[
 \inf_{\Pi(\mu,\nu)}F_\varepsilon\le F_\varepsilon(R)=\int c\,\mathrm{d}R&lt;\infty.
@@ -60,10 +63,10 @@ F_\varepsilon((\pi_0+\pi_1)/2)&lt;\tfrac12F_\varepsilon(\pi_0)+\tfrac12F_\vareps
 a contradiction. Measures with infinite entropy cannot minimize the finite value.</p>
 </div>
 
-    <h3>Dual formulation</h3>
+    <h3 id="dual-formulation">Dual formulation</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Entropic duality.</span> Under the assumptions above,
+    <div class="math-statement theorem" id="theorem-entropic-duality" data-result-number="10.3">
+        <p><span class="statement-title"><a class="note-permalink" href="#theorem-entropic-duality" aria-label="Link to theorem 10.3">Theorem 10.3 (Entropic duality).</a></span> Under the assumptions above,
         \[
         \operatorname{OT}_\varepsilon(\mu,\nu)
         =
@@ -85,7 +88,7 @@ a contradiction. Measures with infinite entropy cannot minimize the finite value
         \]</p>
     </div>
 
-    <div class="math-statement proof">
+    <div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span> Put \(h(r)=r\log r-r+1\) for \(r\ge0\). Maximizing \(sr-\varepsilon h(r)\) gives the critical equation \(s-\varepsilon\log r=0\), so
 \[
 \sup_{r\ge0}\{sr-\varepsilon h(r)\}=\varepsilon(e^{s/\varepsilon}-1),
@@ -114,7 +117,7 @@ r=e^{(\varphi+\psi-c)/\varepsilon}=e^{s/\varepsilon}.
 These quantities are bounded on the compact product, and the gap integrand is identically zero. Hence primal and dual values coincide and both are attained, with the stated density formula.</p>
 </div>
 
-    <h3>The Schrödinger system</h3>
+    <h3 id="the-schrodinger-system">The Schrödinger system</h3>
     <p>Let \(K_\varepsilon(x,y)=e^{-c(x,y)/\varepsilon}\), \(u(x)=e^{\varphi_\varepsilon(x)/\varepsilon}\), and \(v(y)=e^{\psi_\varepsilon(y)/\varepsilon}\). Then
     \[
     \pi_\varepsilon(\mathrm{d}x,\mathrm{d}y)
@@ -128,7 +131,7 @@ These quantities are bounded on the compact product, and the gap integrand is id
     \]
     This pair of nonlinear integral equations is the Schrödinger system.</p>
 
-    <h3>Discrete matrix scaling</h3>
+    <h3 id="discrete-matrix-scaling">Discrete matrix scaling</h3>
     <p>For discrete marginals \(a\in\Delta_m\), \(b\in\Delta_n\), let \(K_{ij}=e^{-C_{ij}/\varepsilon}>0\). Absorbing the marginal weights into scaling vectors, the unique optimizer has form
     \[
     P_\varepsilon=\operatorname{diag}(u)K\operatorname{diag}(v),
@@ -139,8 +142,8 @@ These quantities are bounded on the compact product, and the gap integrand is id
     v\odot(K^\top u)=b.
     \]</p>
 
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Sinkhorn iterations.</span> Starting from \(v^{(0)}>0\), alternate
+    <div class="math-statement proposition" id="proposition-sinkhorn-iterations" data-result-number="10.4">
+        <p><span class="statement-title"><a class="note-permalink" href="#proposition-sinkhorn-iterations" aria-label="Link to proposition 10.4">Proposition 10.4 (Sinkhorn iterations).</a></span> Starting from \(v^{(0)}>0\), alternate
         \[
         u^{(k+1)}=a\oslash(Kv^{(k)}),
         \qquad
@@ -149,7 +152,7 @@ These quantities are bounded on the compact product, and the gap integrand is id
         where \(\oslash\) is componentwise division. Every row update enforces the first marginal exactly, and every column update enforces the second.</p>
     </div>
 
-    <h3>A practical scaling loop</h3>
+    <h3 id="a-practical-scaling-loop">A practical scaling loop</h3>
     <pre aria-label="Sinkhorn iteration pseudocode"><code>v = vector of ones
 repeat:
     u = a / (K v)             # componentwise division
@@ -160,13 +163,13 @@ until residual is below tolerance or the iteration limit is reached</code></pre>
     <p>Check both marginals after a complete sweep. Report the residual and whether the iteration limit was reached; a limit is not a convergence certificate. For small \(\varepsilon\), use the log-domain version below. A dense sweep costs \(O(mn)\) arithmetic and storing the dense kernel costs \(O(mn)\) memory; the number of sweeps depends on the kernel and accuracy.</p>
     <p>The continuous factors above were defined relative to \(\mu\otimes\nu\). The discrete vectors here absorb \(a_i,b_j\). If \(f=\varepsilon\log u\), \(g=\varepsilon\log v\) are these absorbed log-scalings, the relative-entropy dual potentials are \(\varphi_i=f_i-\varepsilon\log a_i\), \(\psi_j=g_j-\varepsilon\log b_j\), up to opposite additive constants. This distinction matters when differentiating the value with respect to marginal weights.</p>
 
-    <h3>Why Sinkhorn converges</h3>
+    <h3 id="why-sinkhorn-converges">Why Sinkhorn converges</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Sinkhorn scaling theorem.</span> If \(K\) has strictly positive entries and \(a,b\) are strictly positive probability vectors, there exist positive \(u,v\), unique up to \((u,v)\mapsto(\lambda u,\lambda^{-1}v)\), such that \(\operatorname{diag}(u)K\operatorname{diag}(v)\in U(a,b)\). Sinkhorn iterates converge to this scaled matrix.</p>
+    <div class="math-statement theorem" id="theorem-sinkhorn-scaling-theorem" data-result-number="10.5">
+        <p><span class="statement-title"><a class="note-permalink" href="#theorem-sinkhorn-scaling-theorem" aria-label="Link to theorem 10.5">Theorem 10.5 (Sinkhorn scaling theorem).</a></span> If \(K\) has strictly positive entries and \(a,b\) are strictly positive probability vectors, there exist positive \(u,v\), unique up to \((u,v)\mapsto(\lambda u,\lambda^{-1}v)\), such that \(\operatorname{diag}(u)K\operatorname{diag}(v)\in U(a,b)\). Sinkhorn iterates converge to this scaled matrix.</p>
     </div>
 
-    <div class="math-statement proof">
+    <div class="math-statement proof" id="proof-3" data-proof-status="qualified-proof">
 <p><span class="statement-title">Proof, including the continuous kernel used above.</span> Work first with a continuous kernel \(K\) on compact \(X\times Y\), with \(0&lt;k_-\le K\le k_+\). Integrals below use the probability marginals \(\mu,\nu\). Set
 \[
 (L_Kz)(x)=\log\int K(x,y)e^{z(y)}\,\mathrm{d}\nu(y),\qquad
@@ -219,17 +222,17 @@ uniformly. These are the row-updated and column-updated densities. Dividing \(v_
 <p>For matrices, interpret the integrals as sums with weights \(a_i,b_j\). If \(u^{\rm rel},v^{\rm rel}\) denote these relative factors, the absorbed factors in the algorithm are \(u_i=a_i u_i^{\rm rel}\), \(v_j=b_j v_j^{\rm rel}\). The two updates are exactly the fixed-point iteration just proved. Normalization changes neither the matrix nor the iterates' marginal residuals, so the matrices converge to the unique scaling. The contraction constant can approach one when the kernel is poorly conditioned; this proof gives convergence without a uniform small-\(\varepsilon\) iteration bound.</p>
 </div>
 
-    <h3>Small-regularization limit</h3>
+    <h3 id="small-regularization-limit">Small-regularization limit</h3>
 
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Zero-temperature limit.</span> As \(\varepsilon\downarrow0\),
+    <div class="math-statement theorem" id="theorem-zero-temperature-limit" data-result-number="10.6">
+        <p><span class="statement-title"><a class="note-permalink" href="#theorem-zero-temperature-limit" aria-label="Link to theorem 10.6">Theorem 10.6 (Zero-temperature limit).</a></span> As \(\varepsilon\downarrow0\),
         \[
         \operatorname{OT}_\varepsilon(\mu,\nu)\longrightarrow\operatorname{OT}_0(\mu,\nu).
         \]
         Every weak limit point of \(\pi_\varepsilon\) is an unregularized optimal plan. If several unregularized optimizers exist, \(\pi_\varepsilon\) selects the one minimizing \(\operatorname{KL}(\pi\,\|\,\mu\otimes\nu)\), when this selection problem is finite.</p>
     </div>
 
-    <div class="math-statement proof">
+    <div class="math-statement proof" id="proof-4" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span> Let \(C_*=\operatorname{OT}_0(\mu,\nu)\), and take an optimal \(\pi_*\). Partition \(X,Y\) into finitely many Borel cells \(A_i,B_j\) of diameter at most \(\delta\), discarding zero-mass cells. With \(a_i=\mu(A_i)\), \(b_j=\nu(B_j)\), \(p_{ij}=\pi_*(A_i\times B_j)\), put
 \[
 \pi^\delta=\sum_{ij}p_{ij}\frac{\mu|_{A_i}}{a_i}\otimes\frac{\nu|_{B_j}}{b_j}.
@@ -268,9 +271,9 @@ H(\bar\pi)\le\liminf_kH(\pi_{\varepsilon_k})\le H(\widehat\pi).
 This holds for every finite-entropy optimal competitor \(\widehat\pi\). Strict convexity of entropy on the convex optimal set makes this selected plan unique; compactness then gives convergence of the full family.</p>
 </div>
 
-    <h3>Large-regularization limit</h3>
-<div class="math-statement proposition"><p><span class="statement-title">Independence limit.</span> In the compact setting, \(\pi_\varepsilon\to\mu\otimes\nu\) in total variation and \(\operatorname{OT}_\varepsilon\to C_0=\int c\,\mathrm{d}(\mu\otimes\nu)\) as \(\varepsilon\to\infty\).</p></div>
-<div class="math-statement proof">
+    <h3 id="large-regularization-limit">Large-regularization limit</h3>
+<div class="math-statement proposition" id="proposition-independence-limit" data-result-number="10.7"><p><span class="statement-title"><a class="note-permalink" href="#proposition-independence-limit" aria-label="Link to proposition 10.7">Proposition 10.7 (Independence limit).</a></span> In the compact setting, \(\pi_\varepsilon\to\mu\otimes\nu\) in total variation and \(\operatorname{OT}_\varepsilon\to C_0=\int c\,\mathrm{d}(\mu\otimes\nu)\) as \(\varepsilon\to\infty\).</p></div>
+<div class="math-statement proof" id="proof-5" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span> Put \(R=\mu\otimes\nu\), \(C_0=\int c\,\mathrm{d}R\), \(m=\min c\). Comparison with \(R\) gives
 \[
 \int c\,\mathrm{d}\pi_\varepsilon+\varepsilon H(\pi_\varepsilon\mid R)\le C_0,
@@ -296,7 +299,7 @@ Both endpoints tend to \(C_0\), so \(\operatorname{OT}_\varepsilon\to C_0\). In 
 This establishes convergence of the penalty as well as the plan.</p>
 </div>
 
-<h3>Smooth dependence on the marginals</h3>
+<h3 id="smooth-dependence-on-the-marginals">Smooth dependence on the marginals</h3>
     <p>For fixed \(\varepsilon>0\) and positive kernels, dual potentials are unique modulo constants and vary smoothly with positive discrete marginals. The envelope theorem gives
     \[
     \nabla_a\operatorname{OT}_\varepsilon=\varphi_\varepsilon,
@@ -305,7 +308,7 @@ This establishes convergence of the penalty as well as the plan.</p>
     \]
     in normalized coordinates. This smoothness is the main statistical and optimization advantage of regularization, but it becomes poorly conditioned as \(\varepsilon\downarrow0\).</p>
 
-    <h3>Log-domain stabilization</h3>
+    <h3 id="log-domain-stabilization">Log-domain stabilization</h3>
     <p>When \(\varepsilon\) is small, entries of \(K=e^{-C/\varepsilon}\) may underflow. Writing \(u=e^{f/\varepsilon}\), \(v=e^{g/\varepsilon}\) transforms scaling into log-sum-exp updates:
     \[
     f_i=\varepsilon\log a_i-\varepsilon\log\sum_j
@@ -313,13 +316,16 @@ This establishes convergence of the penalty as well as the plan.</p>
     \]
     Subtracting additive constants from \(f,g\) preserves the plan and prevents numerical overflow. This is the stable realization of the dual gauge invariance.</p>
 
-    <h3>Regularization bias</h3>
+    <h3 id="regularization-bias">Regularization bias</h3>
     <p>\(\operatorname{OT}_\varepsilon(\mu,\mu)\) is generally positive, so the regularized cost is not a distance and is biased toward diffuse couplings. Smaller \(\varepsilon\) reduces geometric bias but slows scaling and increases statistical and numerical sensitivity. The next page studies debiasing and separates the fully discrete and semi-discrete computational geometries.</p>
 
-<p class="ot-source"><strong>Sources and proof details.</strong> <a href="https://arxiv.org/abs/1803.00567">Peyré–Cuturi, <em>Computational optimal transport</em>, Chapter 4</a>, for entropy conventions, convergence proofs for matrix scaling, and stable algorithms.</p>
-
-<h3>Practice: scaling and regularization</h3>
-<ol class="ot-exercises">
-<li><p>For \(a=b=(1/2,1/2)\), \(C=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), and \(k=e^{-1/\varepsilon}\), find the entropic optimizer.</p><details><summary>Hint and answer</summary><p>Symmetry and scaling give \(P_\varepsilon=\frac1{2(1+k)}\begin{pmatrix}1&amp;k\\k&amp;1\end{pmatrix}\). It approaches the diagonal plan as \(\varepsilon\downarrow0\) and the independent plan as \(\varepsilon\to\infty\).</p></details></li>
-<li><p>Run one row update and one column update on a positive matrix. Why must you check both marginals before stopping?</p><details><summary>Hint and answer</summary><p>The column update can disturb the row sums just enforced. A useful stopping residual is \(\|P\mathbf1-a\|_1+\|P^\top\mathbf1-b\|_1\). Small residual alone does not bound the bias from choosing positive \(\varepsilon\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<p class="note-exercise-topic">scaling and regularization</p>
+<ol class="note-exercises">
+<li id="exercise-10-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-10-1">Exercise 10.1.</a></strong> For \(a=b=(1/2,1/2)\), \(C=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), and \(k=e^{-1/\varepsilon}\), find the entropic optimizer.</p><details class="note-hint"><summary>Hint</summary><p>Use the symmetry of both marginals and the cost matrix to reduce the unknown scaling factors.</p></details><details><summary>Solution</summary><p>Symmetry and scaling give \(P_\varepsilon=\frac1{2(1+k)}\begin{pmatrix}1&amp;k\\k&amp;1\end{pmatrix}\). It approaches the diagonal plan as \(\varepsilon\downarrow0\) and the independent plan as \(\varepsilon\to\infty\).</p></details></li>
+<li id="exercise-10-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-10-2">Exercise 10.2.</a></strong> Run one row update and one column update on a positive matrix. Why must you check both marginals before stopping?</p><details class="note-hint"><summary>Hint</summary><p>Track what the second scaling operation does to the marginal corrected by the first operation.</p></details><details><summary>Solution</summary><p>The column update can disturb the row sums just enforced. A useful stopping residual is \(\|P\mathbf1-a\|_1+\|P^\top\mathbf1-b\|_1\). Small residual alone does not bound the bias from choosing positive \(\varepsilon\).</p></details></li>
 </ol>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://arxiv.org/abs/1803.00567">Peyré–Cuturi, <em>Computational optimal transport</em>, Chapter 4</a>, for entropy conventions, convergence proofs for matrix scaling, and stable algorithms.</p>
+</section>

@@ -6,10 +6,15 @@ breadcrumb_child_label_zh: "20. 离策略评估"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/exploration-and-regret/"
 note_next_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
+note_template: unified-v1
+note_kind: chapter
+note_chapter: 20
 ---
 
-<p class="rl-learning-goal">Derive importance weighting and doubly robust evaluation, and identify precisely which independence and overlap conditions they need.</p>
-<h3>Finite-horizon change of measure</h3>
+<p class="note-learning-goal"><strong>Learning goal.</strong> Derive importance weighting and doubly robust evaluation, and identify precisely which independence and overlap conditions they need.</p>
+<h3 id="finite-horizon-change-of-measure">Finite-horizon change of measure</h3>
+<div class="math-statement definition" id="definition-importance-ratios-and-overlap" data-result-number="20.1">
+<p><span class="statement-title"><a class="note-permalink" href="#definition-importance-ratios-and-overlap" aria-label="Link to definition 20.1">Definition 20.1 (Importance ratios and overlap).</a></span></p>
 <p>Use stages \(t=0,\ldots,H-1\), discount \(0\le\gamma\le1\), target policy \(\pi_t\), and known behavior policy \(\mu_t\). Initial laws and environment kernels are identical. Assume overlap:
 \(\pi_t(a\mid s)&gt;0\Rightarrow\mu_t(a\mid s)&gt;0\) on target-reachable histories. Under behavior data define
 \[
@@ -17,15 +22,16 @@ note_next_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
  W_t=\prod_{j=0}^t\rho_j,\quad W_{-1}=1.
 \]
 Policies may be history dependent if the ratios use those same histories. We display Markov notation for readability.</p>
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition (per-decision importance sampling).</span>
+</div>
+<div class="math-statement proposition" id="proposition-per-decision-importance-sampling" data-result-number="20.2">
+<p><span class="statement-title"><a class="note-permalink" href="#proposition-per-decision-importance-sampling" aria-label="Link to proposition 20.2">Proposition 20.2 (per-decision importance sampling).</a></span>
 For integrable \(f_t\) measurable through \((S_t,A_t,R_{t+1},S_{t+1})\),
 \[
  \mathbb E_\mu[W_tf_t]=\mathbb E_\pi[f_t],\qquad
  J_\pi=\mathbb E_\mu\sum_{t=0}^{H-1}\gamma^tW_tR_{t+1}.
 \]</p>
 </div>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-1" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 For a finite prefix, its probability/kernel product under \(\mu\) has factors
 \[
@@ -43,7 +49,7 @@ Multiplying by \(W_t\) cancels each behavior action factor and replaces it by \(
  =\frac{R_{\max}}{1-\gamma}&lt;\infty.
 \]
 Finite variance is a separate requirement: \(\mathbb E W_t^2\) can grow exponentially. Self-normalizing weights may reduce instability but generally sacrifices finite-sample unbiasedness.</p>
-<h3>A telescoping doubly robust estimator</h3>
+<h3 id="a-telescoping-doubly-robust-estimator">A telescoping doubly robust estimator</h3>
 <p>Choose fixed approximations \(\widehat Q_t\), set
 \(\widehat V_t(s)=\sum_a\pi_t(a\mid s)\widehat Q_t(s,a)\), and \(\widehat V_H=0\). Define
 \[
@@ -51,7 +57,7 @@ Finite variance is a separate requirement: \(\mathbb E W_t^2\) can grow exponent
  \sum_{t=0}^{H-1}\gamma^t W_t
  [R_{t+1}+\gamma\widehat V_{t+1}(S_{t+1})-\widehat Q_t(S_t,A_t)].
 \]</p>
-<div class="math-statement proof">
+<div class="math-statement proof" id="proof-2" data-proof-status="proof">
 <p><span class="statement-title">Proof.</span>
 With true weights, the change-of-measure identity and action averaging give
 \[
@@ -72,7 +78,7 @@ Every intermediate value term cancels with the adjacent time step. Alternatively
 It remains zero after multiplication by any integrable \(\mathcal F_t\)-measurable weight (with the product integrable). Therefore exact \(Q^\pi\) yields unbiasedness even for misspecified predictable weights, provided the initial value is also exact. These are the two separate robustness statements. They do not imply unbiasedness when both components are wrong.</p>
 </div>
 
-<h3>The product error in the one-step case</h3>
+<h3 id="the-product-error-in-the-one-step-case">The product error in the one-step case</h3>
 <p>For a contextual bandit let \(q(s,a)=\mathbb E[R\mid s,a]\), and use a positive fitted propensity \(\widehat\mu\). With fixed fitted functions, the conditional DR bias at state \(s\) is exactly
 \[
  \begin{aligned}
@@ -87,8 +93,8 @@ It remains zero after multiplication by any integrable \(\mathcal F_t\)-measurab
 \]
 This algebra explains the product of nuisance errors. Cauchy–Schwarz bounds its averaged magnitude by the product of the corresponding \(L^2\) norms, with the inverse propensity included in the first factor.</p>
 <p>Cross-fitting trains nuisance functions on other independent episodes and evaluates each held-out episode with those fixed functions. Conditional on training data, the preceding identities apply. Splitting transitions from one dependent trajectory does not create independent folds. Likewise, selecting the target policy on evaluation data requires additional uniform or held-out analysis. A classical iid central limit theorem needs a finite second moment; weights having mean one alone do not ensure it.</p>
-<div class="math-statement example">
-<p><span class="statement-title">Worked example (rare behavior actions).</span>
+<div class="math-statement example" id="example-rare-behavior-actions" data-result-number="20.3">
+<p><span class="statement-title"><a class="note-permalink" href="#example-rare-behavior-actions" aria-label="Link to worked example 20.3">Worked example 20.3 (rare behavior actions).</a></span>
 In a one-step problem, the target always takes action \(b\), the behavior takes it with probability \(0.1\), and its deterministic reward is one. The importance-sampling estimate is \(10\) with probability \(0.1\) and \(0\) otherwise. Thus
 \[
  \mathbb E\widehat J_{\rm IS}=1,\qquad
@@ -96,9 +102,12 @@ In a one-step problem, the target always takes action \(b\), the behavior takes 
 \]
 For \(n\) independent episodes the mean has variance \(9/n\). With exact \(\widehat q(b)=1\), the DR correction is zero and its estimate is identically one.</p>
 </div>
-<h3>Exercises</h3>
-<ol class="rl-exercises">
-<li><p>Derive the bias from clipping a nonnegative one-step weight \(W\) at \(c\), when \(|R|\le R_{\max}\).</p><details><summary>Hint and solution</summary><p>\(\mathbb E[\min(W,c)R]-J=-\mathbb E[(W-c)_+R]\). Hence the absolute bias is at most \(R_{\max}\mathbb E[(W-c)_+]\). It is downward for nonnegative rewards, but has no fixed sign for signed rewards.</p></details></li>
-<li><p>If behavior takes the target action with probability \(p\) independently at every stage, what is \(\mathbb E W_{H-1}^2\) for a deterministic target action sequence?</p><details><summary>Hint and solution</summary><p>The sequence occurs with probability \(p^H\), and its weight is \(p^{-H}\); other paths have weight zero. Thus \(\mathbb EW_{H-1}^2=p^{-H}\), exposing exponential horizon dependence despite \(\mathbb EW_{H-1}=1\).</p></details></li>
+<h3 id="exercises">Exercises</h3>
+<ol class="note-exercises">
+<li id="exercise-20-1"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-20-1">Exercise 20.1.</a></strong> Derive the bias from clipping a nonnegative one-step weight \(W\) at \(c\), when \(|R|\le R_{\max}\).</p><details class="note-hint"><summary>Hint</summary><p>Subtract the unclipped estimator and isolate the positive excess of the weight over the clipping threshold.</p></details><details><summary>Solution</summary><p>\(\mathbb E[\min(W,c)R]-J=-\mathbb E[(W-c)_+R]\). Hence the absolute bias is at most \(R_{\max}\mathbb E[(W-c)_+]\). It is downward for nonnegative rewards, but has no fixed sign for signed rewards.</p></details></li>
+<li id="exercise-20-2"><p><strong class="note-exercise-label"><a class="note-permalink" href="#exercise-20-2">Exercise 20.2.</a></strong> If behavior takes the target action with probability \(p\) independently at every stage, what is \(\mathbb E W_{H-1}^2\) for a deterministic target action sequence?</p><details class="note-hint"><summary>Hint</summary><p>List the probability and the weight of the sole action sequence that agrees with the target.</p></details><details><summary>Solution</summary><p>The sequence occurs with probability \(p^H\), and its weight is \(p^{-H}\); other paths have weight zero. Thus \(\mathbb EW_{H-1}^2=p^{-H}\), exposing exponential horizon dependence despite \(\mathbb EW_{H-1}=1\).</p></details></li>
 </ol>
-<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://proceedings.mlr.press/v48/jiang16.html">Jiang–Li, doubly robust off-policy value evaluation</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The proof uses finite-path change of measure, absolute \(L^1\) summability, and conditional expectation. Asymptotic inference requires additional moment and sampling assumptions.</p>
+
+<section class="note-sources" aria-labelledby="sources-and-further-reading"><h3 id="sources-and-further-reading">Sources and further reading</h3>
+<p><a href="https://proceedings.mlr.press/v48/jiang16.html">Jiang–Li, doubly robust off-policy value evaluation</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The proof uses finite-path change of measure, absolute \(L^1\) summability, and conditional expectation. Asymptotic inference requires additional moment and sampling assumptions.</p>
+</section>
