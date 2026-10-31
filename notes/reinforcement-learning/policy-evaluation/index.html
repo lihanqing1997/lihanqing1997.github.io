@@ -4,169 +4,94 @@ breadcrumb_child_label_en: "6. Policy evaluation"
 breadcrumb_child_label_fr: "6. Évaluation de politique"
 breadcrumb_child_label_zh: "6. 策略评估"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/contraction-and-fixed-points/"
+note_prev_url: "/notes/reinforcement-learning/bellman-optimality-equations/"
 note_next_url: "/notes/reinforcement-learning/policy-iteration/"
 ---
 
-<p>Policy evaluation estimates the value of a fixed policy. It is the prediction problem inside dynamic programming, TD learning, actor-critic methods, and off-policy evaluation.</p>
-
-    <h3>Iterative policy evaluation</h3>
-
-    <p>Repeated Bellman updates converge to the policy value in the tabular discounted case.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Starting from \(v_0\), iterative policy evaluation applies
+<p class="rl-learning-goal">Evaluate a fixed policy from a known model or independent simulated episodes, separating sampling error from return truncation.</p>
+<h3>Exact and iterative evaluation</h3>
+<p>For a stationary policy in a finite discounted MDP,
 \[
-v_{k+1}=T_\pi v_k.
-\]</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For bounded rewards and \(0\le\gamma&lt;1\),
-\[
-\|v_k-v_\pi\|_\infty\le\gamma^k\|v_0-v_\pi\|_\infty.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since \(v_\pi=T_\pi v_\pi\) and \(T_\pi\) is a \(\gamma\)-contraction,
-\[
-\|v_{k+1}-v_\pi\|_\infty\le\gamma\|v_k-v_\pi\|_\infty.
+(I-\gamma P_\pi)V^\pi=r_\pi.
 \]
-Iterating gives the result.</p>
-    </div>
-
-    <h3>Monte Carlo evaluation</h3>
-
-    <p>Monte Carlo evaluation estimates values by sample returns without bootstrapping.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For visits to state \(s\), Monte Carlo evaluation averages realized returns:
-\[
-\hat v_N(s)=\frac1{N_s}\sum_{i:S_i=s}G_i.
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If returns from state \(s\) are sampled i.i.d. with finite mean, then \(\hat v_N(s)\to v_\pi(s)\) almost surely.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Conditional on starting from \(s\), each return has expectation \(v_\pi(s)\). The strong law of large numbers applies to the return samples.</p>
-    </div>
-
-    <h3>Linear system solution</h3>
-
-    <p>In finite MDPs, exact policy evaluation can be solved by matrix inversion or iterative linear solvers.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The finite policy value solves \((I-\gamma P_\pi)v=r_\pi\), and the Neumann representation is
-\[
-v_\pi=\sum_{t=0}^\infty\gamma^tP_\pi^tr_\pi.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The Bellman equation gives the linear system. The Neumann series converges because \(\gamma P_\pi\) has spectral radius at most \(\gamma&lt;1\), and multiplying \((I-\gamma P_\pi)\) by the series gives the identity.</p>
-    </div>
-
-    <h3>Prediction error</h3>
-
-    <p>Evaluation error can be measured by value norm, Bellman residual, or downstream policy-improvement loss.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A small value-function error does not always imply a small control error unless action gaps or approximate-greedy conditions are also controlled.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Model-based evaluation</h3>
-
-<p>For a finite MDP and fixed policy,
-\[
-V^\pi=(I-\gamma P_\pi)^{-1}r_\pi.
-\]
-Direct solution costs \(O(|\mathsf S|^3)\) in dense arithmetic, while iterative
-evaluation
-\[
-V_{k+1}=r_\pi+\gamma P_\pi V_k
-\]
-has
-\[
-\|V_k-V^\pi\|_\infty
-\le\gamma^k\|V_0-V^\pi\|_\infty.
-\]
-Sparse linear solvers, Krylov methods, and multigrid ideas can exploit transition
-structure when the model is known.</p>
-
-<h3>Monte Carlo evaluation</h3>
-
-<p>From independent episodes starting at \(s\), the return
-\(G_i=\sum_{t\ge0}\gamma^tR_{i,t}\) is unbiased:
-\(E(G_i\mid S_{i,0}=s)=V^\pi(s)\). If \(|R_t|\le R_{\max}\), then
-\(|G_i|\le R_{\max}/(1-\gamma)\), and Hoeffding's inequality gives
-\[
-\mathbb P\!\left(
-\left|\frac1n\sum_{i=1}^nG_i-V^\pi(s)\right|>\varepsilon
-\right)
-\le2\exp\!\left\{
--\frac{n\varepsilon^2(1-\gamma)^2}{2R_{\max}^2}
-\right\}.
-\]
-Monte Carlo requires completed returns but avoids bootstrapping bias.</p>
-
-<h3>Linear value approximation and LSTD</h3>
-
-<p>Let \(V_w=\Phi w\), with feature row \(\phi(s)^\top\), and let
-\(D=\operatorname{diag}(d_\pi)\) for a stationary state distribution. The
-projected Bellman equation
-\[
-\Phi w=\Pi_D(r_\pi+\gamma P_\pi\Phi w)
-\]
-has normal equations
-\[
-Aw=b,\qquad
-A=\Phi^\top D(I-\gamma P_\pi)\Phi,\quad
-b=\Phi^\top Dr_\pi.
-\]
-Least-squares TD estimates these moments from transitions:
-\[
-\widehat A_n=\frac1n\sum_t
-\phi_t(\phi_t-\gamma\phi_{t+1})^\top,\qquad
-\widehat b_n=\frac1n\sum_t\phi_tR_t.
-\]</p>
-
+A direct linear solve obtains the value without explicitly computing a matrix inverse. Alternatively, iterate \(V_{k+1}=T^\pi V_k\).</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (on-policy uniqueness).</span> If
-\(d_\pi\) is stationary with positive mass on represented states and \(\Phi\)
-has full column rank, then \(A\) is positive definite in quadratic form:
+<p><span class="statement-title">Theorem (evaluation error).</span>
 \[
-w^\top Aw\ge(1-\gamma)\|\Phi w\|_D^2.
+V_k-V^\pi=\gamma^kP_\pi^k(V_0-V^\pi),\qquad
+\|V_k-V^\pi\|_\infty\le\gamma^k\|V_0-V^\pi\|_\infty.
 \]
-Hence the projected Bellman equation has a unique solution.</p>
+At any iterate, \(\|V_k-V^\pi\|_\infty\le\|T^\pi V_k-V_k\|_\infty/(1-\gamma)\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Subtract the fixed-point equation from one update:
+\[
+V_{k+1}-V^\pi
+=(r_\pi+\gamma P_\pi V_k)-(r_\pi+\gamma P_\pi V^\pi)
+=\gamma P_\pi(V_k-V^\pi).
+\]
+Induction yields the exact error identity. Since \(\|P_\pi^k\|_{\infty\to\infty}\le1\), taking norms gives the bound. For the residual,
+\[
+V^\pi-V_k=(I-\gamma P_\pi)^{-1}(T^\pi V_k-V_k).
+\]
+Its norm is at most \(\sum_{t\ge0}\gamma^t\|T^\pi V_k-V_k\|_\infty\), which equals the stated certificate.</p>
 </div>
 
-<div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Put \(v=\Phi w\). Stationarity
-and Jensen imply
+<h3>Monte Carlo with an explicit sampling law</h3>
+<p>Suppose the environment can be restarted independently at state \(s\). Generate independent episodes under the same policy, with full discounted returns \(G_i\). Then
 \[
-\|P_\pi v\|_D^2
-=E\{E(v(S_{t+1})\mid S_t)^2\}
-\le E v(S_{t+1})^2=\|v\|_D^2.
+\widehat V_n(s)=\frac1n\sum_{i=1}^nG_i,\quad
+\mathbb E G_i=V^\pi(s),\quad |G_i|\le B:=\frac{R_{\max}}{1-\gamma}.
 \]
-Thus
+The strong law gives \(\widehat V_n(s)\to V^\pi(s)\) almost surely. Returns from overlapping visits along one trajectory are generally dependent; this independent-episode statement does not cover them.</p>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (truncation and confidence).</span> Use only \(H\) rewards of each episode and set \(\widehat V_{n,H}=n^{-1}\sum_iG_i^{(H)}\). For \(0&lt;\delta&lt;1\), with probability at least \(1-\delta\),
 \[
-w^\top Aw
-=\langle v,v-\gamma P_\pi v\rangle_D
-\ge\|v\|_D^2-\gamma\|v\|_D\|P_\pi v\|_D
-\ge(1-\gamma)\|v\|_D^2.
+|\widehat V_{n,H}(s)-V^\pi(s)|
+\le B\gamma^H+B\sqrt{\frac{2\log(2/\delta)}n}.
 \]</p>
 </div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Let \(m_H=\mathbb E_s^\pi G^{(H)}\). The deterministic tail bound gives
+\[
+|m_H-V^\pi(s)|\le\mathbb E|G^{(H)}-G|\le B\gamma^H.
+\]
+The independent variables \(G_i^{(H)}\) lie in \([-B,B]\), an interval of length \(2B\). Hoeffding's inequality gives
+\[
+\mathbb P(|\widehat V_{n,H}-m_H|&gt;u)
+\le2\exp\left(-\frac{2nu^2}{(2B)^2}\right).
+\]
+Set \(u=B\sqrt{2\log(2/\delta)/n}\). On the complementary event,
+\[
+|\widehat V_{n,H}-V^\pi(s)|
+\le|\widehat V_{n,H}-m_H|+|m_H-V^\pi(s)|\le u+B\gamma^H.
+\]
+For all states simultaneously, allocate failure probability \(\delta/|\mathsf S|\) to each state and take a union bound.</p>
+</div>
 
-<h3>Dependence and uncertainty</h3>
-
-<p>A single trajectory is not iid. Consistency and confidence intervals require
-ergodicity or mixing, and asymptotic variance includes temporal
-autocovariances. Regenerative simulation, batch means, martingale bounds, or
-Markov-chain central limit theorems supply valid uncertainty. Reporting only
-the regression residual variance treats dependent targets as independent and
-is generally wrong.</p>
+<h3>What one trajectory changes</h3>
+<p>A continuing trajectory may support consistency through an ergodic theorem, but its sample size is not a count of independent returns. Finite-sample bounds need explicit mixing or martingale arguments. TD below handles dependence by conditioning on history. Least-squares TD appears after function approximation is defined.</p>
+<p>For a stationary scalar sequence \((Y_t)\) with finite second moments, expansion gives
+\[
+\operatorname{Var}\left(\frac1n\sum_{t=1}^nY_t\right)
+=\frac{\operatorname{Var}(Y_0)}n+
+\frac2{n^2}\sum_{k=1}^{n-1}(n-k)\operatorname{Cov}(Y_0,Y_k).
+\]
+Indeed, expand the variance as \(n^{-2}\sum_{i,j}\operatorname{Cov}(Y_i,Y_j)\): there are \(n\) diagonal pairs and \(2(n-k)\) ordered pairs at lag \(k\). Dropping the covariance terms requires a reason such as independence.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a computable stopping decision).</span>
+Let \(\gamma=1/2\), \(P_\pi=\begin{pmatrix}1/2&amp;1/2\\0&amp;1\end{pmatrix}\), \(r_\pi=(1,2)^\top\), and \(V_0=0\). Then
+\[
+V_1=(1,2)^\top,\quad V_2=(7/4,3)^\top,\quad
+T^\pi V_2=(35/16,7/2)^\top.
+\]
+The residual is \((7/16,1/2)^\top\), giving error certificate \(1\). The exact value \((8/3,4)^\top\) has error \(\max\{11/12,1\}=1\), so the certificate is attained.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>If rewards lie in \([0,1]\), improve the sampling constant.</p><details><summary>Hint and solution</summary><p>Returns lie in \([0,B]\), an interval of length \(B\). Hoeffding gives \(B\sqrt{\log(2/\delta)/(2n)}\), half the previous radius. Truncation is unchanged.</p></details></li>
+<li><p>For \(\gamma=1/2,R_{\max}=1\), choose \(H,n\) making the stated bound at most \(0.1\) with confidence \(0.95\), allocating half to each error.</p><details><summary>Hint and solution</summary><p>Here \(B=2\). Require \(2(1/2)^H\le0.05\), so \(H=6\). Require \(2\sqrt{2\log40/n}\le0.05\), so \(n\ge3200\log40\); \(n=11805\) suffices.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 4–5; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy evaluation. Review the <a href="/notes/probability-theory/strong-law-of-large-numbers/">strong law</a> for independent-sample consistency.</p>

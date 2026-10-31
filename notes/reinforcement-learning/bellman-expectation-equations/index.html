@@ -5,175 +5,121 @@ breadcrumb_child_label_fr: "3. Équations d’espérance de Bellman"
 breadcrumb_child_label_zh: "3. 贝尔曼期望方程"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/policies-and-value-functions/"
-note_next_url: "/notes/reinforcement-learning/bellman-optimality-equations/"
+note_next_url: "/notes/reinforcement-learning/contraction-and-fixed-points/"
 ---
 
-<p>The Bellman expectation equation is the fixed-point equation for the value of a fixed policy. It is linear in the value function once the policy is fixed.</p>
-
-    <h3>Bellman operator for a policy</h3>
-
-    <p>The one-step decomposition of return defines an operator whose fixed point is the policy value.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a policy \(\pi\), define
+<p class="rl-learning-goal">Derive policy evaluation as a linear equation, prove the resolvent representation, and control the tails behind reward shaping.</p>
+<h3>The policy Bellman equation</h3>
+<p>Retain the finite discounted model and use column vectors for values and rewards. For a fixed stationary policy, define
 \[
-(T_\pi v)(s)=r_\pi(s)+\gamma\int v(s')P_\pi(\mathrm{d}s'\mid s),
+T^\pi V=r_\pi+\gamma P_\pi V.
 \]
-where \(r_\pi(s)=\int r(s,a)\pi(\mathrm{d}a\mid s)\).</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The value function \(v_\pi\) is the unique bounded solution of
-\[
-v=T_\pi v.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The return decomposition \(G_0=R_1+\gamma G_1\) gives \(v_\pi=T_\pi v_\pi\). If \(u\) and \(v\) both solve the equation, then
-\[
-\|u-v\|_\infty=\gamma\|P_\pi(u-v)\|_\infty\le\gamma\|u-v\|_\infty.
-\]
-Since \(\gamma&lt;1\), \(\|u-v\|_\infty=0\).</p>
-    </div>
-
-    <h3>Matrix form</h3>
-
-    <p>In finite spaces, policy evaluation is a linear system.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a finite MDP,
-\[
-v_\pi=r_\pi+\gamma P_\pi v_\pi,
-\qquad
-v_\pi=(I-\gamma P_\pi)^{-1}r_\pi.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Rearrange the Bellman equation to \((I-\gamma P_\pi)v_\pi=r_\pi\). Since the spectral radius of \(P_\pi\) is at most \(1\), the Neumann series \(\sum_{k\ge0}\gamma^kP_\pi^k\) converges and equals \((I-\gamma P_\pi)^{-1}\).</p>
-    </div>
-
-    <h3>Action-value expectation equation</h3>
-
-    <p>The same fixed-point idea applies to \(q_\pi\).</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The action-value Bellman operator is
-\[
-(T_\pi^Q q)(s,a)=r(s,a)+\gamma\int\int q(s',a')\pi(\mathrm{d}a'\mid s')P(\mathrm{d}s'\mid s,a).
-\]</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The action-value function \(q_\pi\) is the unique bounded fixed point of \(T_\pi^Q\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The return split after the first fixed action gives \(q_\pi=T_\pi^Qq_\pi\). The operator is a \(\gamma\)-contraction in sup norm because the transition-policy kernel is Markov. Banach's fixed-point theorem gives uniqueness.</p>
-    </div>
-
-    <h3>Evaluation versus improvement</h3>
-
-    <p>Expectation equations answer prediction questions for one policy; optimality equations answer control questions.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Many algorithms alternate these two roles: estimate \(v_\pi\) or \(q_\pi\), then choose actions greedily or approximately greedily with respect to that estimate.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Operators and resolvents</h3>
-
-<p>For a stationary policy \(\pi\), define
-\[
-r_\pi(s)=\int r(s,a)\pi(\mathrm{d}a\mid s),\qquad
-P_\pi(\mathrm{d}s'\mid s)
-=\int P(\mathrm{d}s'\mid s,a)\pi(\mathrm{d}a\mid s),
-\]
-and
-\[
-(T^\pi V)(s)=r_\pi(s)+\gamma(P_\pi V)(s).
-\]
-The Bellman expectation equation is \(V^\pi=T^\pi V^\pi\).</p>
-
+The one-step identities in the previous chapter give \(V^\pi=T^\pi V^\pi\). We also write \(P_aV(s):=\sum_{s'}P(s'\mid s,a)V(s')\) for a single action backup. The operator is affine, not linear unless \(r_\pi=0\).</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> On bounded measurable
-functions,
+<p><span class="statement-title">Theorem (resolvent and uniqueness).</span>
 \[
-V^\pi=(I-\gamma P_\pi)^{-1}r_\pi
-=\sum_{t=0}^{\infty}\gamma^tP_\pi^tr_\pi,
+(I-\gamma P_\pi)^{-1}=\sum_{t=0}^{\infty}\gamma^tP_\pi^t,
+\qquad V^\pi=\sum_{t=0}^{\infty}\gamma^tP_\pi^tr_\pi.
 \]
-where the series converges in sup norm.</p>
+The matrix series converges in the operator norm induced by \(\|\cdot\|_\infty\), and the value series converges uniformly.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Markov kernels are sup-norm
-contractions, so
-\(\sum_t\|\gamma^tP_\pi^tr_\pi\|_\infty
-\le\|r_\pi\|_\infty/(1-\gamma)\).
-Multiplying partial sums by \(I-\gamma P_\pi\) telescopes to
-\(r_\pi-\gamma^{n+1}P_\pi^{n+1}r_\pi\), whose remainder vanishes. The series
-also equals the expected discounted reward by the Markov property.</p>
+<p><span class="statement-title">Proof.</span>
+For any vector \(z\),
+\[
+|(P_\pi z)(s)|\le\sum_{s'}P_\pi(s,s')|z(s')|
+\le\|z\|_\infty,\quad\text{so }\|P_\pi^t\|_{\infty\to\infty}\le1.
+\]
+Let \(B_n=\sum_{t=0}^{n-1}\gamma^tP_\pi^t\). For \(m&gt;n\),
+\[
+\|B_m-B_n\|_{\infty\to\infty}
+\le\sum_{t=n}^{m-1}\gamma^t\le\frac{\gamma^n}{1-\gamma}.
+\]
+Thus \(B_n\to B\) in matrix norm. Finite telescoping gives both identities
+\[
+(I-\gamma P_\pi)B_n=B_n(I-\gamma P_\pi)
+=I-\gamma^nP_\pi^n.
+\]
+The remainder norm is at most \(\gamma^n\to0\). Continuity of matrix multiplication implies \((I-\gamma P_\pi)B=B(I-\gamma P_\pi)=I\). Hence the inverse exists. Moreover,
+\[
+\left\|V^\pi-B_nr_\pi\right\|_\infty
+\le\frac{\gamma^n\|r_\pi\|_\infty}{1-\gamma}.
+\]
+Finally, the Markov property gives \((P_\pi^tr_\pi)(s)=\mathbb E_s^\pi r(S_t,A_t)\), so this series agrees with the expected return already defined. Invertibility also proves uniqueness of the Bellman solution.</p>
 </div>
 
-<h3>Action-value equations</h3>
-
-<p>Define the state-action transition kernel
+<h3>Action values and a lifted transition matrix</h3>
+<p>Index vectors by admissible state-action pairs and set
 \[
-P^\pi_Q((s',a')\mid s,a)
-=P(s'\mid s,a)\pi(a'\mid s').
+P_Q^\pi((s,a),(s',a'))=P(s'\mid s,a)\pi(a'\mid s').
 \]
-Then
+Every row sums to one. The same calculation therefore gives
 \[
-Q^\pi=r+\gamma P^\pi_QQ^\pi,
-\qquad
-Q^\pi=(I-\gamma P^\pi_Q)^{-1}r.
+Q^\pi=r+\gamma P_Q^\pi Q^\pi,
+\qquad Q^\pi=(I-\gamma P_Q^\pi)^{-1}r.
 \]
-The value and action-value equations are linked by
-\[
-V^\pi=\Pi_\pi Q^\pi,\qquad
-Q^\pi=r+\gamma P V^\pi,
-\]
-where \((\Pi_\pi Q)(s)=\int Q(s,a)\pi(\mathrm{d}a\mid s)\).</p>
-
-<h3>Monotonicity and comparison</h3>
-
+In operator notation, \((\Pi_\pi Q)(s)=\sum_a\pi(a\mid s)Q(s,a)\), so \(V^\pi=\Pi_\pi Q^\pi\) and \(Q^\pi=r+\gamma PV^\pi\). The two equations describe the same prediction problem at different points in the action cycle.</p>
+<h3>Order, subsolutions, and supersolutions</h3>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> If \(r_\pi\le\tilde r_\pi\)
-and \(V\le W\), then \(T^\pi V\le\widetilde T^\pi W\). In particular, larger
-rewards produce larger values. Moreover, if \(V\le T^\pi V\), then
-\(V\le V^\pi\); if \(V\ge T^\pi V\), then \(V\ge V^\pi\).</p>
+<p><span class="statement-title">Proposition.</span> If \(U\le T^\pi U\), then \(U\le V^\pi\). If \(U\ge T^\pi U\), then \(U\ge V^\pi\). Increasing \(r_\pi\) while keeping \(P_\pi\) fixed increases the value.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Positivity of \(P_\pi\) proves
-operator monotonicity. Iterating \(V\le T^\pi V\) gives
-\(V\le(T^\pi)^nV\), and contraction implies
-\((T^\pi)^nV\to V^\pi\). The supersolution case is identical.</p>
+<p><span class="statement-title">Proof.</span>
+Let \(e=T^\pi U-U\). Subtract \((I-\gamma P_\pi)U=r_\pi-e\) from the equation for \(V^\pi\):
+\[
+V^\pi-U=(I-\gamma P_\pi)^{-1}e
+=\sum_{t\ge0}\gamma^tP_\pi^te.
+\]
+If \(e\ge0\), every term is nonnegative; if \(e\le0\), every term is nonpositive. For rewards \(\tilde r_\pi\ge r_\pi\),
+\[
+\widetilde V^\pi-V^\pi
+=\sum_{t\ge0}\gamma^tP_\pi^t(\tilde r_\pi-r_\pi)\ge0.
+\]
+All series converge in sup norm by the previous theorem.</p>
 </div>
 
 <h3>Potential-based reward shaping</h3>
-
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> For a bounded potential
-\(\Phi\), replace reward by
+<p><span class="statement-title">Proposition.</span> Let \(\Phi:\mathsf S\to\mathbb R\) be bounded and define the shaped reward
 \[
-r'(s,a,s')=r(s,a,s')+\gamma\Phi(s')-\Phi(s).
+R'_{t+1}=R_{t+1}+\gamma\Phi(S_{t+1})-\Phi(S_t).
 \]
-Then
-\[
-V'^\pi(s)=V^\pi(s)-\Phi(s),\qquad
-Q'^\pi(s,a)=Q^\pi(s,a)-\Phi(s),
-\]
-so all advantage functions and greedy policies are unchanged.</p>
+Then \(V'^\pi(s)=V^\pi(s)-\Phi(s)\) and \(Q'^\pi(s,a)=Q^\pi(s,a)-\Phi(s)\); advantages and action rankings are unchanged.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> The shaping rewards telescope:
+<p><span class="statement-title">Proof.</span>
+For every path and finite \(n\),
 \[
-\sum_{t\ge0}\gamma^t
-\{\gamma\Phi(S_{t+1})-\Phi(S_t)\}
-=-\Phi(S_0),
+\begin{aligned}
+\sum_{t=0}^{n-1}\gamma^t(R'_{t+1}-R_{t+1})
+&amp;=\sum_{t=0}^{n-1}\gamma^{t+1}\Phi(S_{t+1})
+-\sum_{t=0}^{n-1}\gamma^t\Phi(S_t)\\
+&amp;=-\Phi(S_0)+\gamma^n\Phi(S_n).
+\end{aligned}
 \]
-because boundedness makes the terminal remainder vanish.</p>
+The last term is bounded in absolute value by \(\gamma^n\|\Phi\|_\infty\to0\), both pathwise and in \(L^1\). Taking limits and then expectations under a specified initial state or forced first action gives
+\[
+V'^\pi=V^\pi-\Phi,\qquad Q'^\pi(s,a)=Q^\pi(s,a)-\Phi(s).
+\]
+Subtract the two identities to get \(A'^\pi=A^\pi\). The subtraction in \(Q\) is independent of the action, so it preserves each greedy set.</p>
 </div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (solve the system and check the series).</span>
+Take \(\gamma=1/2\), \(P_\pi=\begin{pmatrix}1/2&amp;1/2\\0&amp;1\end{pmatrix}\), and \(r_\pi=(1,2)^\top\). Then
+\[
+V_2=2+\tfrac12V_2=4,\quad
+V_1=1+\tfrac14V_1+\tfrac14V_2,
+\quad V_1=\tfrac83.
+\]
+Starting from state 1, the expected reward at time \(t\) is \(2-2^{-t}\). Hence
+\[
+\sum_{t\ge0}2^{-t}(2-2^{-t})=4-\frac4{3}=\frac83,
+\]
+which independently verifies the matrix solution.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>For the example, shape with \(\Phi=(1,0)^\top\). Compute the new mean reward and value.</p><details><summary>Hint and solution</summary><p>\(r'_\pi=r_\pi+\gamma P_\pi\Phi-\Phi=(1/4,2)^\top\). Thus \(V'^\pi=(5/3,4)^\top=V^\pi-\Phi\).</p></details></li>
+<li><p>If \(\|\tilde r_\pi-r_\pi\|_\infty\le\epsilon\) with the same transition matrix, bound the value change.</p><details><summary>Hint and solution</summary><p>Use the resolvent: \(\|\widetilde V^\pi-V^\pi\|_\infty\le\sum_{t\ge0}\gamma^t\epsilon=\epsilon/(1-\gamma)\). Equality is possible for a constant reward shift.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy evaluation; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 3–4. The proof uses only conditional expectation, geometric series, and finite-dimensional matrix norms.</p>

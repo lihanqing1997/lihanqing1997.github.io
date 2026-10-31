@@ -8,134 +8,112 @@ note_prev_url: "/notes/reinforcement-learning/temporal-difference-learning/"
 note_next_url: "/notes/reinforcement-learning/eligibility-traces-and-td-lambda/"
 ---
 
-<p>Q-learning is an off-policy stochastic approximation method for the optimal action-value function. It learns greedy control values without following the greedy policy during data collection.</p>
-
-    <h3>Tabular update</h3>
-
-    <p>The update samples the Bellman optimality operator for action values.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a transition \((S_t,A_t,R_{t+1},S_{t+1})\), tabular Q-learning updates
+<p class="rl-learning-goal">Derive off-policy Bellman targets, prove tabular Q-learning convergence, and distinguish maximization bias from sampling-policy bias.</p>
+<p>Initialize the action-value table at a fixed finite vector.</p>
+<h3>The action-value optimality operator</h3>
+<p>For a vector on admissible state-action pairs, define
 \[
-Q_{t+1}(S_t,A_t)=Q_t(S_t,A_t)+\alpha_t\{R_{t+1}+\gamma\max_aQ_t(S_{t+1},a)-Q_t(S_t,A_t)\}.
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> Conditionally on \((S_t,A_t)=(s,a)\), the expected update target equals \((T_*^QQ_t)(s,a)\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on \((s,a)\). The reward and next-state expectation of \(R_{t+1}+\gamma\max_{a'}Q_t(S_{t+1},a')\) is \(r(s,a)+\gamma\int\max_{a'}Q_t(s',a')P(\mathrm{d}s'\mid s,a)\), which is the optimal \(Q\)-Bellman operator.</p>
-    </div>
-
-    <h3>Convergence in the tabular case</h3>
-
-    <p>The classical convergence theorem requires enough exploration and diminishing stepsizes.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In a finite discounted MDP, if every state-action pair is visited infinitely often, rewards have bounded variance, and the stepsizes for each pair satisfy Robbins-Monro conditions, tabular Q-learning converges to \(q_*\) almost surely.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The update is asynchronous stochastic approximation to the contraction \(T_*^Q\). The conditional noise is a martingale difference, the stepsizes remove persistent noise, and infinite visits ensure every coordinate is updated. Standard asynchronous stochastic approximation for contractions gives almost-sure convergence to the unique fixed point \(q_*\).</p>
-    </div>
-
-    <h3>Off-policy nature</h3>
-
-    <p>The behavior policy generates data; the target policy is greedy with respect to \(Q\).</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Q-learning can learn the greedy optimal value while taking exploratory actions, because the backup uses \(\max_aQ(S_{t+1},a)\) rather than averaging over the behavior policy's next action.</p>
-    </div>
-
-    <h3>Function approximation warning</h3>
-
-    <p>The convergence guarantee is tabular; nonlinear approximation changes the problem.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> With function approximation, bootstrapping, and off-policy data, the update may diverge. Stabilizing devices such as target networks and replay buffers are algorithmic remedies, not replacements for the tabular contraction proof.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Off-policy stochastic Bellman iteration</h3>
-
-<p>Tabular Q-learning updates
+(\mathcal TQ)(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)\max_bQ(s',b).
+\]
+Its unique fixed point is \(Q^*\). The maximum inequality proves
+\[
+\begin{aligned}
+|(\mathcal TQ-\mathcal TU)(s,a)|
+&amp;\le\gamma\sum_{s'}P(s'\mid s,a)
+ \left|\max_bQ(s',b)-\max_bU(s',b)\right|\\
+&amp;\le\gamma\|Q-U\|_\infty.
+\end{aligned}
+\]
+Thus the same stochastic-contraction theorem can act on state-action coordinates.</p>
+<h3>Behavior, information, and the update</h3>
+<p>Let \(\mathcal F_t\) contain the observed history, \(Q_t\), and the already chosen action \(A_t\). The behavior policy can depend on the past. The environment still samples from \(K(\cdot\mid S_t,A_t)\). Update only \((S_t,A_t)\):
 \[
 Q_{t+1}(S_t,A_t)
-=Q_t(S_t,A_t)+\alpha_t
-\left[
-R_{t+1}+\gamma\max_bQ_t(S_{t+1},b)-Q_t(S_t,A_t)
-\right].
+=(1-\alpha_t)Q_t(S_t,A_t)
++\alpha_t\left[R_{t+1}+\gamma\max_bQ_t(S_{t+1},b)\right].
 \]
-The behavior policy generates \((S_t,A_t)\), while the max defines the greedy
-target policy. Conditionally,
+Since \(Q_t,S_t,A_t\) are measurable at time \(t\),
 \[
-E[\text{target}-Q_t(s,a)\mid s,a]
-=(\mathcal TQ_t)(s,a)-Q_t(s,a).
-\]</p>
-
+\mathbb E[R_{t+1}+\gamma\max_bQ_t(S_{t+1},b)\mid\mathcal F_t]
+=(\mathcal TQ_t)(S_t,A_t).
+\]
+No next-action likelihood ratio is needed: the next action is maximized inside the target, not sampled from the behavior policy.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (tabular convergence).</span> In a
-finite discounted MDP with bounded reward variance, if every state-action pair
-is sampled infinitely often and its step sizes satisfy
-\[
-\sum_t\alpha_t(s,a)=\infty,\qquad
-\sum_t\alpha_t(s,a)^2&lt;\infty,
-\]
-then \(Q_t\to Q^*\) almost surely.</p>
+<p><span class="statement-title">Theorem (bounded tabular convergence).</span> Assume a finite discounted MDP with \(|R_{t+1}|\le R_{\max}\); every state-action pair is sampled infinitely often almost surely; and the step on its \(k\)-th visit is a deterministic \(\alpha_{s,a,k}\in(0,1]\) with divergent sum and square-summable squares. Then \(Q_t\to Q^*\) almost surely.</p>
 </div>
-
-<p>The proof combines asynchronous stochastic approximation with the
-\(\gamma\)-contraction of \(\mathcal T\). Exploration need not converge to the
-greedy policy during learning, but it must maintain infinite coverage. A fixed
-\(\varepsilon\)-greedy behavior policy suffices in communicating finite MDPs;
-rapidly vanishing exploration may not.</p>
-
-<h3>SARSA and expected SARSA</h3>
-
-<p>SARSA uses the sampled next action,
-\[
-R_{t+1}+\gamma Q_t(S_{t+1},A_{t+1}),
-\]
-and is on-policy for the behavior rule. Expected SARSA replaces the last term
-by
-\(\gamma\sum_a\pi_t(a\mid S_{t+1})Q_t(S_{t+1},a)\), reducing conditional
-variance. Under greedy-in-the-limit with infinite exploration, tabular SARSA
-can converge to \(Q^*\); with fixed exploration it evaluates the exploratory
-policy instead.</p>
-
-<h3>Maximization bias and double Q-learning</h3>
-
-<div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> If
-\(\widehat q_a=q_a+\varepsilon_a\) with \(E\varepsilon_a=0\), then
-\[
-E\max_a\widehat q_a\ge\max_a q_a.
-\]
-The inequality is strict in typical noisy, tied-action settings.</p>
-</div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> The maximum is convex, so Jensen
-gives
+<p><span class="statement-title">Proof.</span>
+Take \(B=\max\{\|Q_0\|_\infty,R_{\max}/(1-\gamma)\}\). If \(\|Q_t\|_\infty\le B\), then
 \[
-E\max_a(q_a+\varepsilon_a)
-\ge\max_aE(q_a+\varepsilon_a)=\max_aq_a.
-\]</p>
+\left|R_{t+1}+\gamma\max_bQ_t(S_{t+1},b)\right|
+\le R_{\max}+\gamma B\le B.
+\]
+Every updated coordinate is a convex combination of two numbers in \([-B,B]\). Hence \(\|Q_t\|_\infty\le B\) by induction. Define
+\[
+M_{t+1}=R_{t+1}+\gamma\max_bQ_t(S_{t+1},b)-(\mathcal TQ_t)(S_t,A_t).
+\]
+The conditional-mean identity implies \(\mathbb E[M_{t+1}\mid\mathcal F_t]=0\). Both target and its conditional mean lie in \([-B,B]\), so
+\[
+|M_{t+1}|\le2B,\qquad
+\mathbb E[M_{t+1}^2\mid\mathcal F_t]\le4B^2.
+\]
+Apply the stochastic-contraction theorem from TD with \(F=\mathcal T\), selected coordinate \((S_t,A_t)\), and zero noise at unselected coordinates. Boundedness, noise moments, contraction, local steps, and infinite coordinate coverage have all been checked.</p>
 </div>
 
-<p>Double Q-learning decouples selection and evaluation: choose
-\(a^*=\arg\max_aQ^A(s',a)\) and evaluate with \(Q^B(s',a^*)\), alternating
-roles. Independence is imperfect during online learning, but the construction
-substantially reduces the same-noise maximization bias.</p>
+<p>The theorem says what follows from infinite coverage; it does not supply an exploration algorithm. A behavior rule that stops visiting a relevant action invalidates the result, even if its global step-size sum diverges. Bounded-variance unbounded rewards can also be treated, but then boundedness of the iterates requires an additional argument not covered by this proof.</p>
+<h3>SARSA and expected SARSA</h3>
+<p>For a fixed policy \(\pi\), SARSA replaces the maximum by \(Q_t(S_{t+1},A_{t+1})\), where the next action is drawn from \(\pi\). Expected SARSA uses its conditional mean:
+\[
+Y_t^{\mathrm{ES}}=R_{t+1}+\gamma\sum_b\pi(b\mid S_{t+1})Q_t(S_{t+1},b).
+\]
+With fixed \(\pi\), the mean operator is \(T_Q^\pi\), whose fixed point is \(Q^\pi\). Control with an evolving policy additionally requires control of that evolving mean operator. Greedy-in-the-limit with infinite exploration is a condition on both approximation to greediness and visitation; neither condition follows from the other.</p>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (conditional variance for expected SARSA).</span> For a fixed \(Q_t\) and policy, replacing the sampled next action by its conditional average preserves the mean target and cannot increase its conditional variance.</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Let \(\mathcal G_t=\sigma(\mathcal F_t,R_{t+1},S_{t+1})\), and let \(Y_t=R_{t+1}+\gamma Q_t(S_{t+1},A_{t+1})\). Then
+\[
+\mathbb E[Y_t\mid\mathcal G_t]=Y_t^{\mathrm{ES}}.
+\]
+The tower property preserves the mean conditional on \(\mathcal F_t\). The conditional variance decomposition gives
+\[
+\operatorname{Var}(Y_t\mid\mathcal F_t)
+=\operatorname{Var}(Y_t^{\mathrm{ES}}\mid\mathcal F_t)
++\mathbb E[\operatorname{Var}(Y_t\mid\mathcal G_t)\mid\mathcal F_t]
+\ge\operatorname{Var}(Y_t^{\mathrm{ES}}\mid\mathcal F_t).
+\]
+This is a genuine conditional-expectation variance reduction with its conditioning fields specified.</p>
+</div>
 
-<h3>The function-approximation boundary</h3>
-
-<p>Convergence of tabular Q-learning does not extend automatically to
-\(Q_w\). Bootstrapping, off-policy sampling, and function approximation form
-the “deadly triad”; even linear semi-gradient methods can diverge because the
-projected optimality operator need not be a contraction in the sampling norm.
-Target networks, replay buffers, clipping, and conservative objectives improve
-practice but do not turn the tabular theorem into a general nonlinear
-convergence result.</p>
+<h3>Maximization bias and double estimation</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(\widehat q_a=q_a+\epsilon_a\) are integrable and \(\mathbb E\epsilon_a=0\), then \(\mathbb E\max_a\widehat q_a\ge\max_aq_a\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Choose \(a^*\in\arg\max_aq_a\). Pointwise, \(\max_a\widehat q_a\ge\widehat q_{a^*}\), so
+\[
+\mathbb E\max_a\widehat q_a\ge\mathbb E\widehat q_{a^*}=q_{a^*}=\max_aq_a.
+\]
+For an independent evaluation vector \(\widetilde q\) with \(\mathbb E\widetilde q_a=q_a\), and selector \(\hat a\) determined only by \(\widehat q\),
+\[
+\mathbb E[\widetilde q_{\hat a}\mid\widehat q]=q_{\hat a},
+\qquad \mathbb E\widetilde q_{\hat a}=\mathbb E q_{\hat a}\le\max_aq_a.
+\]
+Independent selection and evaluation remove this upward same-noise bias, but can introduce loss by selecting the wrong action. Online double-Q estimates are not generally independent, so this identity is an explanatory idealization, not a blanket finite-sample guarantee.</p>
+</div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (two noisy tied actions).</span>
+Let \(q_1=q_2=0\), and let the estimation errors be independent fair signs. Their maximum is \(-1\) with probability \(1/4\), and \(1\) with probability \(3/4\). Therefore
+\[
+\mathbb E\max(\widehat q_1,\widehat q_2)=-\tfrac14+\tfrac34=\tfrac12.
+\]
+Evaluating the selected action with an independent fair-sign estimate gives mean zero. In a discounted target, the upward contribution from this example is \(\gamma/2\).</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>In a one-state two-action problem, can Q-learning identify both values if one action is never sampled?</p><details><summary>Hint and solution</summary><p>No. Its untouched Q entry retains its initialization and may dominate the max target. Two reward models agreeing on the sampled action but differing on the other generate identical data, yet can have different optimal policies.</p></details></li>
+<li><p>For fixed \(\pi\), bound the mean-target difference between the max backup and the expected-SARSA backup if \(\pi\) puts mass at least \(1-\epsilon\) on greedy actions and \(\|Q\|_\infty\le B\).</p><details><summary>Hint and solution</summary><p>At each state, \(0\le\max_bQ(s,b)-\sum_b\pi(b\mid s)Q(s,b)\le2B\epsilon\). Multiplying by \(\gamma\) and averaging over the transition gives a bound \(2\gamma B\epsilon\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 6 and 11; the full convergence argument uses the preceding TD theorem. For the original result see <a href="https://doi.org/10.1007/BF00992698">Watkins–Dayan, Q-learning (1992)</a>.</p>

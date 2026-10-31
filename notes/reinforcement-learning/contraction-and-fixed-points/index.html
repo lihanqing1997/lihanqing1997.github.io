@@ -1,161 +1,133 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "5. Contraction and fixed points"
-breadcrumb_child_label_fr: "5. Contraction et points fixes"
-breadcrumb_child_label_zh: "5. 压缩映射与不动点"
+breadcrumb_child_label_en: "4. Contraction and fixed points"
+breadcrumb_child_label_fr: "4. Contraction et points fixes"
+breadcrumb_child_label_zh: "4. 压缩映射与不动点"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/bellman-optimality-equations/"
-note_next_url: "/notes/reinforcement-learning/policy-evaluation/"
+note_prev_url: "/notes/reinforcement-learning/bellman-expectation-equations/"
+note_next_url: "/notes/reinforcement-learning/bellman-optimality-equations/"
 ---
 
-<p>Discounted dynamic programming works because Bellman operators are contractions. This fixed-point geometry supplies existence, uniqueness, convergence of iteration, and perturbation bounds.</p>
-
-    <h3>Banach fixed-point theorem</h3>
-
-    <p>The contraction theorem is the basic analytic tool behind value iteration.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Let \((X,d)\) be complete and \(T:X\to X\) satisfy \(d(Tx,Ty)\le\gamma d(x,y)\) for some \(0\le\gamma&lt;1\). Then \(T\) has a unique fixed point \(x^*\), and \(T^nx\to x^*\) for every \(x\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The iterates satisfy \(d(x_{n+1},x_n)\le\gamma^nd(x_1,x_0)\), so \((x_n)\) is Cauchy and converges to some \(x^*\). Continuity of \(T\) gives \(Tx^*=x^*\). If \(y^*\) is another fixed point, \(d(x^*,y^*)\le\gamma d(x^*,y^*)\), hence \(x^*=y^*\).</p>
-    </div>
-
-    <h3>Bellman contractions</h3>
-
-    <p>Bellman operators inherit contraction from discounting and Markov averaging.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For bounded value functions,
-\[
-\|T_\pi u-T_\pi v\|_\infty\le\gamma\|u-v\|_\infty,
-\qquad
-\|T_*u-T_*v\|_\infty\le\gamma\|u-v\|_\infty.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For \(T_\pi\), Markov averaging cannot increase the sup norm and the discount contributes \(\gamma\). For \(T_*\), use the inequality \(|\sup_a f_a-\sup_a g_a|\le\sup_a|f_a-g_a|\), then apply the same Markov averaging bound.</p>
-    </div>
-
-    <h3>Residual bounds</h3>
-
-    <p>A small Bellman residual implies closeness to the fixed point.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(T\) is a \(\gamma\)-contraction with fixed point \(v^*\), then
-\[
-\|v-v^*\|\le\frac{1}{1-\gamma}\|v-Tv\|.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use
-\[
-\|v-v^*\|\le\|v-Tv\|+\|Tv-Tv^*\|
-\le\|v-Tv\|+\gamma\|v-v^*\|.
-\]
-Move the last term to the left.</p>
-    </div>
-
-    <h3>Perturbed fixed points</h3>
-
-    <p>Approximate dynamic programming repeatedly applies operators with error; perturbation bounds quantify error accumulation.</p>
-
-    <div class="math-statement corollary">
-        <p><span class="statement-title">Corollary.</span> If \(Tv^*=v^*\), \(\tilde T\tilde v=\tilde v\), and \(\|Tv-\tilde Tv\|\le\varepsilon\) for all \(v\), then
-\[
-\|v^*-\tilde v\|\le\frac{\varepsilon}{1-\gamma}.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Apply the residual bound for \(T\) at \(v=\tilde v\). Since \(T\tilde v-\tilde v=T\tilde v-\tilde T\tilde v\), the residual is at most \(\varepsilon\).</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Banach's theorem with quantitative bounds</h3>
-
+<p class="rl-learning-goal">Prove contraction convergence with its error bounds before using it to establish optimal control.</p>
+<h3>A complete proof of the contraction theorem</h3>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Banach).</span> If
-\((\mathcal X,d)\) is complete and \(F\) satisfies
-\(d(Fx,Fy)\le\gamma d(x,y)\), \(0\le\gamma&lt;1\), then \(F\) has a unique fixed
-point \(x^*\), and
+<p><span class="statement-title">Theorem (Banach).</span> Let \((\mathcal X,d)\) be a nonempty complete metric space and \(F:\mathcal X\to\mathcal X\) satisfy \(d(Fx,Fy)\le\gamma d(x,y)\), \(0\le\gamma&lt;1\). Then \(F\) has a unique fixed point \(x^*\), and for \(x_n=F^nx_0\),
 \[
-d(F^nx,x^*)\le\gamma^nd(x,x^*),
-\]
-\[
-d(F^nx,x^*)\le\frac{\gamma^n}{1-\gamma}d(Fx,x).
+d(x_n,x^*)\le\gamma^nd(x_0,x^*),\qquad
+d(x_n,x^*)\le\frac{\gamma^n}{1-\gamma}d(x_1,x_0).
 \]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Consecutive iterates satisfy
-\(d(F^{k+1}x,F^kx)\le\gamma^kd(Fx,x)\). Summing the geometric tail makes
-\((F^nx)\) Cauchy. Completeness gives a limit \(x^*\), continuity gives
-\(Fx^*=x^*\), and contraction gives uniqueness. Applying contraction to
-\(F^nx\) and \(x^*\) proves the first rate; summing consecutive increments from
-\(n\) onward proves the second.</p>
+<p><span class="statement-title">Proof.</span>
+Induction gives \(d(x_{k+1},x_k)\le\gamma^kd(x_1,x_0)\). For any \(m&gt;n\),
+\[
+d(x_m,x_n)\le\sum_{k=n}^{m-1}d(x_{k+1},x_k)
+\le\frac{\gamma^n}{1-\gamma}d(x_1,x_0).
+\]
+The upper bound tends to zero uniformly in \(m&gt;n\), so \((x_n)\) is Cauchy. Completeness supplies \(x_n\to x^*\). Rather than assuming the limit is fixed, calculate
+\[
+d(Fx^*,x^*)\le d(Fx^*,Fx_n)+d(x_{n+1},x^*)
+\le\gamma d(x^*,x_n)+d(x_{n+1},x^*)\longrightarrow0.
+\]
+Thus \(Fx^*=x^*\). If \(Fy=y\),
+\[
+d(y,x^*)=d(Fy,Fx^*)\le\gamma d(y,x^*),
+\quad(1-\gamma)d(y,x^*)\le0,
+\]
+which forces \(y=x^*\). Repeated contraction against \(x^*\) gives the first rate. Letting \(m\to\infty\) in the Cauchy bound gives the second. When \(\gamma=0\), the map is constant and all iterates after the first equal \(x^*\).</p>
 </div>
 
-<h3>Bellman contraction and residual certificates</h3>
-
+<h3>Why Bellman operators contract</h3>
+<p>In \(\mathbb R^{|\mathsf S|}\) with sup norm, define
+\[
+(TV)(s)=\max_{a\in\mathsf A(s)}\left[r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V(s')\right].
+\]
+This is a map on a complete finite-dimensional space. At this stage, its fixed point is simply a vector; the next chapter identifies it with the optimal return.</p>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> For every bounded \(V,W\),
-\[
-\|T^\pi V-T^\pi W\|_\infty\le\gamma\|V-W\|_\infty,
-\qquad
-\|TV-TW\|_\infty\le\gamma\|V-W\|_\infty.
-\]
-Consequently,
-\[
-\|V-V^\pi\|_\infty
-\le\frac{\|V-T^\pi V\|_\infty}{1-\gamma},
-\qquad
-\|V-V^*\|_\infty
-\le\frac{\|V-TV\|_\infty}{1-\gamma}.
-\]</p>
+<p><span class="statement-title">Proposition.</span> Both \(T\) and \(T^\pi\) are monotone \(\gamma\)-contractions. They satisfy \(T(V+c\mathbf1)=TV+\gamma c\mathbf1\), and similarly for \(T^\pi\).</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Markov averaging cannot increase
-sup norm, and the maximum operator is one-Lipschitz in sup norm. For the
-residual,
+<p><span class="statement-title">Proof.</span>
+For finite vectors \((f_a),(g_a)\), choose \(a_f\in\arg\max_a f_a\). Then
 \[
-\|V-V^*\|_\infty
-\le\|V-TV\|_\infty+\|TV-TV^*\|_\infty
-\le\|V-TV\|_\infty+\gamma\|V-V^*\|_\infty.
-\]</p>
-</div>
-
-<h3>Perturbed fixed points</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> If \(F,\widetilde F\) are
-\(\gamma\)-contractions with fixed points \(x^*,\tilde x^*\), then
-\[
-d(x^*,\tilde x^*)
-\le\frac{\sup_x d(Fx,\widetilde Fx)}{1-\gamma}.
+\max_a f_a-\max_a g_a=f_{a_f}-\max_a g_a
+\le f_{a_f}-g_{a_f}\le\max_a|f_a-g_a|.
 \]
-If an inexact iteration satisfies
-\(d(x_{k+1},Fx_k)\le\varepsilon_k\), then
+Exchange \(f\) and \(g\) to obtain the absolute-value inequality. Apply it to Bellman scores:
 \[
-d(x_k,x^*)\le\gamma^kd(x_0,x^*)
-+\sum_{j=0}^{k-1}\gamma^{k-1-j}\varepsilon_j.
-\]</p>
+\begin{aligned}
+|TV(s)-TW(s)|
+&amp;\le\gamma\max_a\left|\sum_{s'}P(s'\mid s,a)(V-W)(s')\right|\\
+&amp;\le\gamma\max_a\sum_{s'}P(s'\mid s,a)\|V-W\|_\infty
+=\gamma\|V-W\|_\infty.
+\end{aligned}
+\]
+For \(T^\pi\), replace the maximum by averaging over \(\pi\), which yields the same bound. If \(V\le W\), every conditional average and every action score for \(V\) is at most its counterpart for \(W\); this proves monotonicity. Finally,
+\[
+\sum_{s'}P(s'\mid s,a)(V(s')+c)=P_aV(s)+c
+\]
+because each transition row sums to one, proving the translation identity.</p>
 </div>
 
-<p>The geometric convolution shows why recent approximation errors matter more
-than old ones and why a persistent one-step error is amplified by
-\((1-\gamma)^{-1}\).</p>
-
-<h3>Beyond sup-norm contraction</h3>
-
-<p>Average-reward Bellman operators are translation equivariant rather than
-strict contractions in sup norm. Under communicating assumptions they can
-contract the span seminorm
-\(\operatorname{sp}(V)=\max_sV(s)-\min_sV(s)\). With function approximation,
-projected Bellman maps may contract in a policy-weighted \(L_2\) norm on-policy
-but fail off-policy. The norm and invariant subspace are therefore part of the
-theorem, not cosmetic details.</p>
+<h3>Residuals and perturbed iterations</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (residual certificate).</span> If \(F\) is a \(\gamma\)-contraction with fixed point \(x^*\), then
+\[
+d(x,x^*)\le\frac{d(x,Fx)}{1-\gamma}.
+\]
+If \(\widetilde F\tilde x=\tilde x\), then
+\[
+d(x^*,\tilde x)\le\frac{d(F\tilde x,\widetilde F\tilde x)}{1-\gamma}.
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The triangle inequality and contraction yield
+\[
+d(x,x^*)\le d(x,Fx)+d(Fx,Fx^*)
+\le d(x,Fx)+\gamma d(x,x^*).
+\]
+Therefore \((1-\gamma)d(x,x^*)\le d(x,Fx)\). For the second statement substitute \(x=\tilde x\) and use
+\[
+d(\tilde x,F\tilde x)=d(\widetilde F\tilde x,F\tilde x).
+\]
+No contraction assumption on \(\widetilde F\) is needed once its fixed point is supplied.</p>
+</div>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (accumulated error).</span> If \(d(x_{k+1},Fx_k)\le\epsilon_k\), then
+\[
+d(x_n,x^*)\le\gamma^nd(x_0,x^*)+
+\sum_{j=0}^{n-1}\gamma^{n-1-j}\epsilon_j.
+\]
+In particular, \(\epsilon_j\le\epsilon\) gives \(\limsup_n d(x_n,x^*)\le\epsilon/(1-\gamma)\); if \(\epsilon_j\to0\), then \(x_n\to x^*\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Set \(e_k=d(x_k,x^*)\). Then
+\[
+e_{k+1}\le d(x_{k+1},Fx_k)+d(Fx_k,Fx^*)\le\epsilon_k+\gamma e_k.
+\]
+Substitution, or induction on \(n\), gives the displayed finite convolution. A uniform \(\epsilon\) bounds it by \(\epsilon(1-\gamma^n)/(1-\gamma)\). For vanishing errors, fix \(\eta&gt;0\) and choose \(N\) with \(\epsilon_j\le\eta\) for \(j\ge N\). Split
+\[
+\sum_{j=0}^{n-1}\gamma^{n-1-j}\epsilon_j
+=\underbrace{\sum_{j=0}^{N-1}\gamma^{n-1-j}\epsilon_j}_{\longrightarrow0}
++\sum_{j=N}^{n-1}\gamma^{n-1-j}\epsilon_j
+\le o(1)+\frac\eta{1-\gamma}.
+\]
+First let \(n\to\infty\) with \(N\) fixed, and then \(\eta\downarrow0\). This order of limits proves \(e_n\to0\). For \(\gamma=0\), the direct inequality \(e_{k+1}\le\epsilon_k\) suffices.</p>
+</div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a computable error certificate).</span>
+For \(F(x)=1+0.8x\), the fixed point is \(5\). At \(x=4.9\),
+\[
+|F(x)-x|=|4.92-4.9|=0.02,\qquad
+\frac{0.02}{1-0.8}=0.1=|x-5|.
+\]
+The horizon factor is sharp. A Bellman residual of \(0.02\) cannot be read as a value error of \(0.02\).</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Give a nonexpansive map with no fixed point, and another with many fixed points.</p><details><summary>Hint and solution</summary><p>On \(\mathbb R\), \(F(x)=x+1\) has none and \(F(x)=x\) has every point fixed. Both have Lipschitz constant one. The strict inequality \(\gamma&lt;1\) is essential.</p></details></li>
+<li><p>If every backup has error at most \(10^{-3}\), compare the guaranteed asymptotic value error at discounts \(0.9\) and \(0.99\).</p><details><summary>Hint and solution</summary><p>The bounds are \(0.01\) and \(0.1\). A longer effective horizon amplifies persistent local error; it does not merely require more iterations.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, discounted dynamic programming; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 4. Completeness is automatic for finite vectors; general-state extensions require an invariant complete function space.</p>

@@ -1,150 +1,107 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "21. Partially observable problems"
-breadcrumb_child_label_fr: "21. Problèmes partiellement observables"
-breadcrumb_child_label_zh: "21. 部分可观测问题"
+breadcrumb_child_label_en: "23. Partially observable problems"
+breadcrumb_child_label_fr: "23. Problèmes partiellement observables"
+breadcrumb_child_label_zh: "23. 部分可观测问题"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/model-based-reinforcement-learning/"
 note_next_url: "/notes/reinforcement-learning/linear-quadratic-control/"
 ---
 
-<p>Partial observability breaks the ordinary Markov property at the observation level. The correct state for planning is the belief distribution over hidden states.</p>
-
-    <h3>POMDP model</h3>
-
-    <p>The agent sees observations generated from a latent Markov state.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A partially observable Markov decision process has latent states \(S_t\), actions \(A_t\), transitions \(P(S_{t+1}\mid S_t,A_t)\), observations \(O_t\) generated from an observation kernel, and rewards depending on latent states and actions. The history \(H_t=(O_0,A_0,\ldots,O_t)\) is observed; \(S_t\) is not.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A policy based only on the current observation is generally not Markov-optimal, because the observation may not contain all information about the latent state.</p>
-    </div>
-
-    <h3>Belief states</h3>
-
-    <p>The posterior distribution of the latent state is a sufficient statistic for control.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The belief state is
+<p class="rl-learning-goal">Construct the belief-state transition explicitly and prove the finite-horizon piecewise-linear value representation.</p>
+<h3>Beliefs as controlled sufficient statistics</h3>
+<p>Let the hidden state space \(\mathcal S\), action space \(\mathcal A\), and observation alphabet \(\mathcal Y\) be finite. Use a joint kernel \(K_a(s',y\mid s)\) for next state and observation, with nonnegative entries summing to one for each \((s,a)\). Let the observed reward be a bounded function \(g(a,y)\), so
+\(r(s,a)=\sum_{s',y}K_a(s',y\mid s)g(a,y)\).
+The observation includes any reward information available to the agent. If a separate reward signal is informative, it must be included in the filtering update rather than silently ignored.</p>
+<p>Before action \(A_t\), the available history is \(H_t=(Y_0,A_0,Y_1,\ldots,A_{t-1},Y_t)\), with a specified initial observation law. Define \(b_t(s)=\Pr(S_t=s\mid H_t)\). The policy uses only this observed history and independent randomization. For a candidate belief \(b\), define
 \[
-b_t(B)=P(S_t\in B\mid H_t).
+ p(y\mid b,a)=\sum_{s,s'}b(s)K_a(s',y\mid s),\qquad
+ \tau(b,a,y)(s')=
+ \frac{\sum_s b(s)K_a(s',y\mid s)}{p(y\mid b,a)}
 \]
-Bayes filtering updates \(b_t\) using the action, transition kernel, and new observation likelihood.</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The belief process is fully observed and Markov controlled: \(b_{t+1}\) depends on the past only through \((b_t,A_t,O_{t+1})\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Given \(b_t\) and \(A_t\), the predictive law of \(S_{t+1}\) is obtained by integrating the transition kernel against \(b_t\). Observing \(O_{t+1}\) applies Bayes' rule to this predictive law. The earlier history enters only through \(b_t\), so the belief update is Markov.</p>
-    </div>
-
-    <h3>Belief MDP</h3>
-
-    <p>Planning in a POMDP can be reformulated as planning in a continuous-state MDP over beliefs.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The expected reward under belief \(b\) and action \(a\) is
-\[
-\bar r(b,a)=\int r(s,a)b(\mathrm{d}s),
-\]
-and the belief transition kernel is induced by prediction and Bayes update. Thus the POMDP becomes a fully observed belief MDP.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Conditional on the history, the latent state distribution is \(b\). Taking conditional expectation of reward gives \(\bar r\). The next belief is a measurable function of the current belief, action, and random observation, which defines the belief transition kernel.</p>
-    </div>
-
-    <h3>Memory and recurrent policies</h3>
-
-    <p>Approximate solutions often replace exact beliefs by learned memory states.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Recurrent networks, filters, and predictive-state representations can be viewed as approximations to belief-state inference. Their statistical difficulty is that representation learning and control are coupled.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Hidden-state control</h3>
-
-<p>A POMDP augments an MDP with observations:
-\[
-S_{t+1}\sim P(\cdot\mid S_t,A_t),\qquad
-O_{t+1}\sim G(\cdot\mid S_{t+1},A_t).
-\]
-The controller sees
-\(H_t=(O_0,A_0,\ldots,A_{t-1},O_t)\), not \(S_t\). A policy is a kernel from
-observable histories to actions.</p>
-
-<h3>Bayesian filtering and the belief MDP</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (belief-state reduction).</span> Let
-\[
-b_t(B)=\mathbb P(S_t\in B\mid H_t)
-\]
-be the filtering distribution. Under known kernels, \(b_{t+1}\) is a
-deterministic measurable function
-\(\tau(b_t,A_t,O_{t+1})\). The process \(b_t\) is a fully observed controlled
-Markov process, and no history-dependent policy can outperform a policy that
-depends only on \(b_t\).</p>
-</div>
-
+when the denominator is positive; choose any probability vector when it is zero.</p>
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Prediction and Bayes update give
+<p><span class="statement-title">Proof.</span>
+The agent's randomized action is conditionally independent of the hidden state given its observed history. Therefore
 \[
-\bar b_{t+1}(\mathrm{d}s')
-=\int P(\mathrm{d}s'\mid s,A_t)b_t(\mathrm{d}s),
+ \begin{aligned}
+ \Pr(S_{t+1}=s',Y_{t+1}=y\mid H_t,A_t=a)
+ &amp;=\sum_s\Pr(S_t=s\mid H_t,A_t=a)K_a(s',y\mid s)\\
+ &amp;=\sum_s b_t(s)K_a(s',y\mid s).
+ \end{aligned}
 \]
+Summing over \(s'\) gives \(p(y\mid b_t,a)\); division gives Bayes' formula for \(b_{t+1}=\tau(b_t,a,y)\) on every positive-probability observation. Thus
 \[
-b_{t+1}(\mathrm{d}s')
-=\frac{G(\mathrm{d}O_{t+1}\mid s',A_t)\bar b_{t+1}(\mathrm{d}s')}
-{\int G(\mathrm{d}O_{t+1}\mid x,A_t)\bar b_{t+1}(\mathrm{d}x)}.
+ \Pr(b_{t+1}\in B\mid H_t,A_t=a)
+ =\sum_y p(y\mid b_t,a)\mathbf1_{\{\tau(b_t,a,y)\in B\}},
+ \quad
+ \mathbb E[R_{t+1}\mid H_t,A_t=a]=\sum_s b_t(s)r(s,a).
 \]
-Conditional on \(b_t,A_t\), the next observation and belief law do not depend
-on earlier history. Expected immediate reward is
-\(\bar r(b,a)=\int r(s,a)b(\mathrm{d}s)\). Markovization on the belief space
-therefore preserves every additive return.</p>
+Both quantities depend on the history only through \(b_t\). Values assigned at zero-probability observations are multiplied by zero and have no effect. This proves the controlled Markov property of the belief process.</p>
 </div>
 
-<h3>Piecewise-linear convex finite-horizon values</h3>
-
+<h3>Dynamic programming on the probability simplex</h3>
+<p>Let \(V_n(b)\) be the optimal expected discounted reward for the next \(n\) steps, with \(V_0=0\). Finite-horizon conditioning gives
+\[
+ V_{n+1}(b)=\max_a\left\{\sum_s b(s)r(s,a)+
+       \gamma\sum_y p(y\mid b,a)V_n(\tau(b,a,y))\right\}.
+\]
+For bounded functions on the simplex, this operator is a \(\gamma\)-contraction: the continuation weights are nonnegative and sum to one, and the difference of maxima is bounded by the maximum difference. Thus for \(\gamma&lt;1\) it has a unique bounded fixed point, and
+\(\|V_\infty-V_n\|_\infty\le R_{\max}\gamma^n/(1-\gamma)\).
+The finite-horizon policies achieve the truncated values, and the same uniform tail bound identifies the fixed point with the supremum over infinite observation-history policies.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> In a finite POMDP with
-finite horizon and reward maximization, the optimal value is piecewise linear
-and convex in the belief:
+<p><span class="statement-title">Theorem (finite-horizon alpha vectors).</span>
+For each finite \(n\), there is a finite set \(\Gamma_n\subset\mathbb R^{|\mathcal S|}\) such that
 \[
-V_h^*(b)=\max_{\alpha\in\Gamma_h}\alpha^\top b
+ V_n(b)=\max_{\alpha\in\Gamma_n}b^\top\alpha.
 \]
-for a finite set of alpha-vectors \(\Gamma_h\).</p>
+In particular \(V_n\) is piecewise linear and convex in the belief.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> At the terminal stage the value
-is the maximum over action-reward vectors, hence has the form. Assume the next
-stage has alpha-vectors. For each current action and each mapping from possible
-observations to next-stage alpha-vectors, expand expected reward plus next
-value before normalizing the Bayes update. The resulting expression is linear
-in the current belief. Maximizing over finitely many action/continuation plans
-produces a finite maximum of linear functions.</p>
+<p><span class="statement-title">Proof.</span>
+Take \(\Gamma_0=\{0\}\). Suppose the representation holds at \(n\). For any \(a,y\) with positive observation probability,
+\[
+ p(y\mid b,a)V_n(\tau(b,a,y))
+ =\max_{\alpha_y\in\Gamma_n}
+       \sum_{s,s'}b(s)K_a(s',y\mid s)\alpha_y(s').
+\]
+The equality also holds at zero probability because all summands
+\(b(s)K_a(s',y\mid s)\) are then zero. Since the choice of continuation vector may depend on the observed \(y\), each term can be maximized independently. For every action \(a\) and tuple \((\alpha_y)_{y\in\mathcal Y}\in\Gamma_n^{|\mathcal Y|}\), define
+\[
+ \alpha^{a,(\alpha_y)}(s)=r(s,a)+
+       \gamma\sum_{y,s'}K_a(s',y\mid s)\alpha_y(s').
+\]
+Substitution into the Bellman formula yields
+\[
+ V_{n+1}(b)=
+ \max_{a,(\alpha_y)}\sum_s b(s)\alpha^{a,(\alpha_y)}(s).
+\]
+The collection of these vectors is finite, completing the induction. For \(u\in[0,1]\),
+\[
+ \max_\alpha[ub^\top\alpha+(1-u)c^\top\alpha]
+ \le u\max_\alpha b^\top\alpha+(1-u)\max_\alpha c^\top\alpha,
+\]
+which proves convexity. Uniform convergence preserves this inequality for \(V_\infty\), but need not leave a finite alpha-vector representation at infinite horizon.</p>
 </div>
 
-<h3>Dimensional and statistical difficulty</h3>
-
-<p>The belief simplex is continuous even when hidden state and observation
-spaces are finite, and the number of alpha-vectors can grow exponentially with
-horizon. Point-based value iteration retains vectors useful on sampled beliefs;
-particle filters approximate beliefs in large models. Errors now arise from
-filtering, value approximation, and planning, and they interact.</p>
-
-<h3>Memory, predictive states, and identifiability</h3>
-
-<p>A recurrent policy compresses history into a learned state, but without
-guarantees that this state is sufficient. Predictive-state representations use
-conditional distributions of future observations as state coordinates and can
-avoid latent-state nonidentifiability. Off-policy learning is particularly
-delicate: two latent models may induce the same behavior-policy observation law
-but different target-policy values. Sequential overlap plus observability or
-identification assumptions are therefore necessary, not merely more data.</p>
+<p>The belief space is continuous even when the hidden state space is finite. Alpha-vector sets can grow combinatorially; point-based planning approximates their effect on selected reachable beliefs. A recurrent neural state is not automatically a sufficient statistic: it must retain the distinctions needed to predict controlled future rewards and observations.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (the value of observing).</span>
+The hidden state is \(L\) or \(R\), with belief \(b(L)=p\). A final guess gives reward one if correct, zero otherwise, so
+\[
+ V_{\rm guess}(p)=\max\{p,1-p\},
+ \qquad \Gamma=\{(1,0),(0,1)\}.
+\]
+At an earlier decision with exactly one future guess, compare “observe,” which costs \(c\) and perfectly reveals the state, with “wait,” which gives no information and no reward. Their values are
+\[
+ Q_{\rm observe}(p)=-c+\gamma,\qquad
+ Q_{\rm wait}(p)=\gamma\max\{p,1-p\}.
+\]
+Observing is preferred precisely when \(c&lt;\gamma\min\{p,1-p\}\). Information has the greatest value near the ambiguous belief \(p=1/2\).</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>A static hidden bit has prior probability \(1/2\) and a sensor reports the correct bit with probability \(0.8\). Compute the posterior after observing \(L\).</p><details><summary>Hint and solution</summary><p>Bayes gives \(b'(L)=(0.5\cdot0.8)/(0.5\cdot0.8+0.5\cdot0.2)=0.8\). The posterior probability of \(R\) is \(0.2\).</p></details></li>
+<li><p>Why is belief value convex for reward maximization, while analogous cost-minimization diagrams are often concave?</p><details><summary>Hint and solution</summary><p>A fixed finite policy tree has value linear in the initial belief. Maximizing over trees gives an upper envelope of linear functions, hence convexity. Minimizing their costs gives a lower envelope, hence concavity.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://doi.org/10.1287/opre.21.5.1071">Smallwood–Sondik, finite-horizon partially observable control</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. Conditional probability, finite-horizon induction, and the earlier contraction theorem provide the proof inputs.</p>

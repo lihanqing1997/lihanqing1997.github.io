@@ -1,116 +1,114 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "23. Model-based reinforcement learning"
-breadcrumb_child_label_fr: "23. Apprentissage par renforcement fondé sur un modèle"
-breadcrumb_child_label_zh: "23. 基于模型的强化学习"
+breadcrumb_child_label_en: "22. Model-based reinforcement learning"
+breadcrumb_child_label_fr: "22. Apprentissage par renforcement fondé sur un modèle"
+breadcrumb_child_label_zh: "22. 基于模型的强化学习"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/linear-quadratic-control/"
-note_next_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
+note_next_url: "/notes/reinforcement-learning/partially-observable-problems/"
 ---
 
-<p>Model-based reinforcement learning estimates or constructs a transition
-model and then plans in it. Its central question is not merely whether the model
-predicts observations well, but whether its errors remain small under the
-state-action distributions induced by planning.</p>
-
-<h3>Plug-in planning and simulation bounds</h3>
-
-<p>Let \(\widehat M=(\widehat r,\widehat P)\) approximate
-\(M=(r,P)\). If rewards lie in \([0,R_{\max}]\) and
-\[
-\|\widehat r-r\|_\infty\le\varepsilon_r,\qquad
-\sup_{s,a}\|\widehat P(\cdot\mid s,a)-P(\cdot\mid s,a)\|_{\mathrm{TV}}
-\le\varepsilon_P,
-\]
-then every policy satisfies
-\[
-\|V_M^\pi-V_{\widehat M}^\pi\|_\infty
-\le\frac{\varepsilon_r}{1-\gamma}
-+\frac{2\gamma R_{\max}\varepsilon_P}{(1-\gamma)^2}.
-\]</p>
-
+<p class="rl-learning-goal">Quantify how model error changes value and policy quality, then identify what a learned latent state must preserve.</p>
+<h3>Learning a model and planning in it</h3>
+<p>Let \(M=(r,P)\) and \(\widehat M=(\widehat r,\widehat P)\) share finite state/action spaces and \(0\le\gamma&lt;1\). Assume \(|r|,|\widehat r|\le R_{\max}\). A learned model supports simulated Bellman backups, policy search, or short model rollouts. Its usefulness depends on prediction errors at state-action pairs the planner will use.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (plug-in policy loss).</span> If
-\(\widehat\pi\) is optimal in \(\widehat M\), then
+<p><span class="statement-title">Theorem (discounted simulation bound).</span>
+If \(\|r-\widehat r\|_\infty\le\varepsilon_r\) and
+\(\sup_{s,a}\|P(\cdot\mid s,a)-\widehat P(\cdot\mid s,a)\|_1\le\varepsilon_P\),
+then every stationary policy satisfies
 \[
-\|V_M^*-V_M^{\widehat\pi}\|_\infty
-\le
-\frac{2\varepsilon_r}{1-\gamma}
-+\frac{4\gamma R_{\max}\varepsilon_P}{(1-\gamma)^2}.
+ \|V_M^\pi-V_{\widehat M}^\pi\|_\infty
+ \le\varepsilon_{\rm val}:=
+ \frac{\varepsilon_r}{1-\gamma}
+ +\frac{\gamma R_{\max}\varepsilon_P}{(1-\gamma)^2}.
 \]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Let the uniform fixed-policy
-simulation bound be \(\Delta\). Then
+<p><span class="statement-title">Proof.</span>
+Subtract the two Bellman equations, adding and subtracting \(\gamma P_\pi V_{\widehat M}^\pi\):
 \[
-V_M^*-V_M^{\widehat\pi}
-\le
-(V_M^{\pi^*}-V_{\widehat M}^{\pi^*})
-+(V_{\widehat M}^{\pi^*}-V_{\widehat M}^{\widehat\pi})
-+(V_{\widehat M}^{\widehat\pi}-V_M^{\widehat\pi}).
+ (I-\gamma P_\pi)(V_M^\pi-V_{\widehat M}^\pi)
+ =(r_\pi-\widehat r_\pi)+\gamma(P_\pi-\widehat P_\pi)V_{\widehat M}^\pi.
 \]
-The middle term is nonpositive by optimality of \(\widehat\pi\), and the other
-two are bounded by \(\Delta\).</p>
+The right-hand side has norm at most
+\(\varepsilon_r+\gamma\varepsilon_P R_{\max}/(1-\gamma)\).
+The earlier Neumann-series proof gives
+\[
+ \|(I-\gamma P_\pi)^{-1}\|_\infty
+ \le\sum_{t=0}^\infty\gamma^t\|P_\pi^t\|_\infty
+ =1/(1-\gamma).
+\]
+Multiplying proves the bound. These are uniform inequalities, so the conclusion remains valid for a policy selected from the same model-fitting data on an event where the model bounds hold simultaneously.</p>
 </div>
 
-<h3>Finite-sample model estimation</h3>
-
-<p>For a finite generative model, \(n(s,a)\) independent next-state samples
-give, with high probability,
+<p>If \(\widehat\pi\) is optimal in \(\widehat M\), or is uniformly \(\eta\)-suboptimal there, then
 \[
-\|\widehat P(\cdot\mid s,a)-P(\cdot\mid s,a)\|_1
-=O\!\left(\sqrt{\frac{S+\log(SA/\delta)}{n(s,a)}}\right).
+ \begin{aligned}
+ V_M^*-V_M^{\widehat\pi}
+ &amp;=(V_M^{\pi^*}-V_{\widehat M}^{\pi^*})
+   +(V_{\widehat M}^{\pi^*}-V_{\widehat M}^{\widehat\pi})
+   +(V_{\widehat M}^{\widehat\pi}-V_M^{\widehat\pi})\\
+ &amp;\le(2\varepsilon_{\rm val}+\eta)\mathbf1.
+ \end{aligned}
 \]
-Substitution into a uniform simulation lemma is valid but often pessimistic:
-it pays for all directions of transition error and two effective-horizon
-factors. Variance-aware analyses control
-\((\widehat P-P)V\) directly and can reach sharper minimax sample complexity.</p>
-
-<h3>Optimism and confidence sets</h3>
-
-<p>Rather than plan only in \(\widehat M\), optimistic methods construct a set
-\(\mathcal M_k\) containing the true MDP and select
+This separates estimation and planning error. It requires model accuracy beyond the fitted policy alone because the comparator policy also appears.</p>
+<h3>An occupancy-weighted error identity</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (where model error matters).</span>
+For a fixed policy, define
+\(e^\pi(s,a)=r(s,a)-\widehat r(s,a)+
+\gamma(P-\widehat P)V_{\widehat M}^\pi(s,a)\).
+Then
 \[
-(M_k,\pi_k)\in
-\arg\max_{M\in\mathcal M_k,\pi}J_M(\pi).
-\]
-On the confidence event, optimism converts regret into accumulated confidence
-widths along visited state-action pairs. Posterior sampling instead draws
-\(M_k\) from a posterior; conditionally under a correct Bayesian model, the
-sampled and true MDP have the same posterior law, yielding a posterior-sampling
-regret identity.</p>
-
-<h3>Planning with learned latent dynamics</h3>
-
-<p>In high-dimensional observations, a model may learn latent state
-\(Z_t=e(O_{\le t})\), transition \(p_\phi(z_{t+1}\mid z_t,a_t)\), and reward.
-Prediction loss alone does not ensure control sufficiency. A representation is
-value sufficient when rewards and transition expectations of all relevant
-value functions are preserved. Bisimulation metrics formalize this:
+ J_M(\pi)-J_{\widehat M}(\pi)
+ =\frac1{1-\gamma}\mathbb E_{d_{\rho,M}^\pi}[e^\pi(S,A)].
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The preceding Bellman subtraction is
+\(V_M^\pi-V_{\widehat M}^\pi=(I-\gamma P_\pi)^{-1}e_\pi^\pi\).
+Multiply by \(\rho^\top\), expand the absolutely convergent resolvent, and use occupancy:
 \[
-d(s,t)
-=\max_a\left\{
-|r(s,a)-r(t,a)|
-+\gamma W_d(P(\cdot\mid s,a),P(\cdot\mid t,a))
-\right\}.
+ \rho^\top\sum_{t=0}^\infty\gamma^tP_\pi^t e_\pi^\pi
+ =\frac1{1-\gamma}\sum_s d_{\rho,S,M}^\pi(s)
+                         \sum_a\pi(a\mid s)e^\pi(s,a).
 \]
-States at small bisimulation distance have close optimal values.</p>
+All terms are bounded by a constant times \(\gamma^t\); no uncontrolled limit exchange is required.</p>
+</div>
 
-<h3>Compounding error and model-predictive control</h3>
-
-<p>Open-loop rollout error compounds with horizon because a model is evaluated
-on states generated by itself. Model-predictive control repeatedly replans over
-a shorter horizon using the newest observation, reducing but not eliminating
-distribution shift. Ensembles, uncertainty penalties, and short synthetic
-rollouts aim to prevent planning from exploiting model errors. Their validity
-depends on calibrated uncertainty under the planner's induced distribution.</p>
-
-<h3>Identifiability versus usefulness</h3>
-
-<p>A transition model need not identify latent physical mechanisms to support
-optimal prediction or control; observationally equivalent models can have the
-same value for all policies in the data-supported class. Conversely, a model
-with excellent one-step likelihood can be useless for control if small errors
-occur in rare but decision-critical transitions. Evaluation must therefore
-include policy value, calibration, and coverage, not prediction loss alone.</p>
+<p>In a finite horizon with \(0\le r,\widehat r\le R_{\max}\), uniform row errors at every stage imply
+\[
+ \|V_{M,h}^\pi-V_{\widehat M,h}^\pi\|_\infty
+ \le(H-h+1)\varepsilon_r+
+       \frac{(H-h)(H-h+1)}2 R_{\max}\varepsilon_P.
+\]
+To verify this, write \(D_h\le\varepsilon_r+(H-h)R_{\max}\varepsilon_P+D_{h+1}\), with \(D_{H+1}=0\), and sum the arithmetic series. The quadratic horizon factor is the explicit accumulation of transition error.</p>
+<h3>Latent states and planning consistency</h3>
+<p>A representation \(z=\phi(s)\) is an exact controlled abstraction if, whenever \(\phi(s)=\phi(\widetilde s)\), for every action \(a\),
+\[
+ r(s,a)=r(\widetilde s,a),\qquad
+ \sum_{s':\phi(s')=z'}P(s'\mid s,a)
+ =\sum_{s':\phi(s')=z'}P(s'\mid\widetilde s,a)
+ \quad\text{for every }z'.
+\]
+These equalities define a well-defined latent reward and transition kernel. For any \(v\) on latent states, the ground Bellman backup of \(v\circ\phi\) equals \((T_{\rm latent}v)\circ\phi\), by substitution into the displayed sums. Iterating from zero and taking the uniform contraction limit proves \(V^*=V_{\rm latent}^*\circ\phi\), and a latent greedy policy is optimal in the original MDP. Predicting observations well does not imply these reward-and-control identities.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (small transition error, long-horizon effect).</span>
+State \(g\) gives reward one and stays in \(g\) with probability \(1-p\), otherwise entering a zero-reward absorbing state. A model incorrectly sets \(p=0\). Then
+\[
+ V_M(g)=\frac1{1-\gamma+\gamma p},\qquad
+ V_{\widehat M}(g)=\frac1{1-\gamma},
+\]
+\[
+ V_{\widehat M}(g)-V_M(g)
+ =\frac{\gamma p}{(1-\gamma)(1-\gamma+\gamma p)}.
+\]
+The row \(\ell^1\) error is \(2p\). For \(p\ll1-\gamma\), the actual value error is approximately \(\gamma p/(1-\gamma)^2\), exhibiting the squared effective-horizon dependence.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Two states share a latent label but have action rewards \((1,0)\) and \((0,1)\). Can a policy using only that label be optimal in both states?</p><details><summary>Hint and solution</summary><p>No. The first state requires the first action, the second requires the second. A shared randomized action probability \(q\) gives rewards \(q\) and \(1-q\); at least one is at most \(1/2\). The abstraction violates reward consistency.</p></details></li>
+<li><p>If \(\gamma=0.9\), \(R_{\max}=1\), \(\varepsilon_r=0.01\), and \(\varepsilon_P=0.001\), evaluate the uniform planning-loss guarantee.</p><details><summary>Hint and solution</summary><p>\(\varepsilon_{\rm val}=0.01/0.1+0.9(0.001)/0.1^2=0.19\). Exact planning gives a policy-loss bound \(2\varepsilon_{\rm val}=0.38\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://arxiv.org/abs/2301.04104">Hafner and coauthors, DreamerV3</a> as a modern learned-world-model example. Neural latent-model experiments do not inherit the exact abstraction theorem without its consistency conditions.</p>

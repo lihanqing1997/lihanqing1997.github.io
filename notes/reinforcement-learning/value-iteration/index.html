@@ -8,146 +8,78 @@ note_prev_url: "/notes/reinforcement-learning/policy-iteration/"
 note_next_url: "/notes/reinforcement-learning/temporal-difference-learning/"
 ---
 
-<p>Value iteration applies the Bellman optimality operator directly. It computes the optimal value as a fixed point and obtains policies by greedy extraction.</p>
-
-    <h3>Optimal value iteration</h3>
-
-    <p>The algorithm is the simplest fixed-point iteration for \(T_*\).</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Starting from a bounded \(v_0\), value iteration sets
+<p class="rl-learning-goal">Turn a value approximation into a certified policy and establish a precise asynchronous convergence result.</p>
+<h3>Value convergence and stopping</h3>
+<p>Value iteration is \(V_{k+1}=TV_k\). The contraction theorem gives
 \[
-v_{k+1}=T_*v_k.
-\]</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The iterates satisfy
-\[
-\|v_k-v_*\|_\infty\le\gamma^k\|v_0-v_*\|_\infty.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use \(v_*=T_*v_*\) and the contraction property:
-\[
-\|v_{k+1}-v_*\|_\infty\le\gamma\|v_k-v_*\|_\infty.
+\|V_k-V^*\|_\infty\le\gamma^k\|V_0-V^*\|_\infty,\qquad
+\|V_k-V^*\|_\infty\le\frac{\|V_{k+1}-V_k\|_\infty}{1-\gamma}.
 \]
-Iterate the inequality.</p>
-    </div>
-
-    <h3>Stopping by residual</h3>
-
-    <p>Bellman residuals give computable stopping rules.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\|v_k-T_*v_k\|_\infty\le\varepsilon\), then
+The residual is computable with one extra backup. With \(V_0=0\), the first bound is \(\gamma^kR_{\max}/(1-\gamma)\). For \(0&lt;\gamma&lt;1\), error at most \(\epsilon\) is guaranteed when
 \[
-\|v_k-v_*\|_\infty\le\frac{\varepsilon}{1-\gamma}.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> This is the residual bound for a contraction applied to \(T_*\).</p>
-    </div>
-
-    <h3>Greedy policy loss</h3>
-
-    <p>A nearly optimal value gives a nearly optimal greedy policy.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\pi\) is greedy with respect to \(v\), then
-\[
-\|v_*-v_\pi\|_\infty\le \frac{2\gamma}{1-\gamma}\|v-v_*\|_\infty.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Greediness gives \(T_\pi v=T_*v\). Compare
-\[
-v_*-v_\pi=T_*v_*-T_\pi v_\pi
+k\ge\frac{\log(R_{\max}/[(1-\gamma)\epsilon])}{-\log\gamma},
 \]
-by adding and subtracting \(T_*v\) and \(T_\pi v\). The two approximation terms are each bounded by \(\gamma\|v-v_*\|_\infty\) or \(\gamma\|v-v_\pi\|_\infty\). Rearranging yields the standard bound.</p>
-    </div>
-
-    <h3>Asynchronous updates</h3>
-
-    <p>Tabular value iteration need not update all states at once.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Asynchronous value iteration updates selected coordinates using Bellman backups. Under discounted contraction and sufficient repeated updates of every state, the tabular iterates still converge to \(v_*\).</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Geometric convergence</h3>
-
-<p>Value iteration uses \(V_{k+1}=TV_k\). For bounded rewards,
-\[
-\|V_k-V^*\|_\infty
-\le\gamma^k\|V_0-V^*\|_\infty
-\le\frac{\gamma^k}{1-\gamma}
-\|TV_0-V_0\|_\infty.
-\]
-The Bellman residual is observable when the model is known and provides a
-stopping certificate independent of \(V^*\).</p>
-
-<h3>Loss of a greedy policy</h3>
-
+or immediately if the requested tolerance already exceeds the initial bound.</p>
+<h3>Extracting a good policy</h3>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> Let \(\pi_V\) be greedy with
-respect to \(V\). Then
+<p><span class="statement-title">Theorem (greedy-policy loss).</span> If \(\pi_V\) is greedy with respect to \(V\), then
 \[
 \|V^*-V^{\pi_V}\|_\infty
-\le\frac{2\gamma}{1-\gamma}\|V-V^*\|_\infty.
-\]
-Also,
-\[
-\|V^*-V^{\pi_V}\|_\infty
+\le\frac{2\gamma}{1-\gamma}\|V-V^*\|_\infty
 \le\frac{2\gamma}{(1-\gamma)^2}\|TV-V\|_\infty.
 \]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Since
-\(T^{\pi_V}V=TV\),
+<p><span class="statement-title">Proof.</span>
+Let \(e=\|V-V^*\|_\infty\) and \(L=\|V^*-V^{\pi_V}\|_\infty\). Since \(TV=T^{\pi_V}V\),
 \[
+\begin{aligned}
 V^*-V^{\pi_V}
-=TV^*-T^{\pi_V}V^{\pi_V}.
+&amp;=TV^*-T^{\pi_V}V^{\pi_V}\\
+&amp;=(TV^*-TV)+(T^{\pi_V}V-T^{\pi_V}V^{\pi_V}).
+\end{aligned}
 \]
-Insert and subtract \(TV=T^{\pi_V}V\), take sup norms, and obtain
+Contraction and the triangle inequality imply
 \[
-\|V^*-V^{\pi_V}\|_\infty
-\le\gamma\|V^*-V\|_\infty
-+\gamma\|V-V^{\pi_V}\|_\infty.
+L\le\gamma e+\gamma\|V-V^{\pi_V}\|_\infty
+\le\gamma e+\gamma(e+L).
 \]
-Bound the second term by
-\(\|V-V^*\|+\|V^*-V^{\pi_V}\|\) and rearrange. The residual form follows from
-\(\|V-V^*\|\le\|TV-V\|/(1-\gamma)\).</p>
+Thus \((1-\gamma)L\le2\gamma e\). Substitute \(e\le\|TV-V\|_\infty/(1-\gamma)\). At \(\gamma=0\), immediate-reward greediness is already optimal and the loss is zero.</p>
 </div>
 
-<h3>Asynchronous and Gauss--Seidel updates</h3>
-
-<p>One need not update every state simultaneously. If each state is updated
-infinitely often and delays are uniformly bounded, asynchronous contractions
-still converge to \(V^*\). Using newly updated coordinates immediately gives
-Gauss--Seidel value iteration, often faster in practice. Fair visitation is
-essential: a state never updated can retain arbitrary error.</p>
-
-<h3>Relative value iteration</h3>
-
-<p>In average-reward problems, values are defined only up to an additive
-constant. Relative value iteration subtracts a reference component:
+<h3>Asynchronous updates without delays</h3>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (fair asynchronous iteration).</span> Update one state \(i_k\) at each step:
 \[
-h_{k+1}=Th_k-(Th_k)(s_0)\mathbf1.
+V_{k+1}(i_k)=(TV_k)(i_k),\qquad V_{k+1}(s)=V_k(s)\quad(s\ne i_k).
 \]
-Under unichain or communicating conditions, this can converge in span
-seminorm to the bias function. Discounted convergence proofs cannot simply be
-reused because the contraction modulus becomes one.</p>
+If every state is selected infinitely often, then \(V_k\to V^*\) in sup norm.</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Put \(E_k=\|V_k-V^*\|_\infty\). The changed component satisfies
+\[
+|V_{k+1}(i_k)-V^*(i_k)|\le\gamma E_k;
+\]
+all others retain their errors, so \(E_{k+1}\le E_k\). Set \(n_0=0\). Choose \(n_{j+1}&gt;n_j\) so every state is updated at least once in \([n_j,n_{j+1})\). These finite times exist by infinite visitation and finiteness of the state set. Every update in that interval sees error at most \(E_{n_j}\), hence leaves its coordinate with error at most \(\gamma E_{n_j}\). Therefore
+\[
+E_{n_{j+1}}\le\gamma E_{n_j}\le\gamma^{j+1}E_0.
+\]
+For all \(k\ge n_j\), \(E_k\le E_{n_j}\). Given \(\epsilon&gt;0\), choose \(j\) with \(\gamma^jE_0&lt;\epsilon\); then every \(k\ge n_j\) satisfies \(E_k&lt;\epsilon\). No uniform update frequency is needed.</p>
+</div>
 
-<h3>Numerical stability</h3>
-
-<p>When \(\gamma\) is near one, the iteration count scales like
-\((1-\gamma)^{-1}\log(1/\varepsilon)\), and residual-to-value conversion
-amplifies errors by the same effective horizon. Multistep lookahead, policy
-iteration, acceleration, and preconditioning target this poor conditioning,
-but each must preserve monotonicity or control extrapolation errors.</p>
+<p>Gauss–Seidel sweeps use newly updated values and satisfy this theorem. Stale parallel reads require a separate delay assumption and proof; infinite updates alone do not control arbitrarily old information. The factors \((1-\gamma)^{-1}\) in the error bounds explain why high-discount problems need especially accurate backups.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (propagating a delayed reward).</span>
+Use the stay/go model with \(\gamma=0.9\). From \(V_0=0\), the greedy scores at \(s\) are \(1\) for stay and \(0\) for go. The first backup gives \(V_1=(1,2)\), whose scores are \(1.9\) and \(1.8\), still favoring stay. Next, \(V_2=(1.9,3.8)\), so
+\[
+1+0.9(1.9)=2.71&lt;0.9(3.8)=3.42.
+\]
+Go now becomes greedy. Each sweep propagates continuation rewards one transition farther.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>At \(\gamma=0.9\), what residual tolerance guarantees greedy-policy loss at most \(0.1\) by this theorem?</p><details><summary>Hint and solution</summary><p>Require \(2(0.9)\epsilon/(0.1)^2\le0.1\), so \(\epsilon\le1/1800\). This sufficient bound can be conservative when action gaps are large.</p></details></li>
+<li><p>Explain failure if a state is never updated.</p><details><summary>Hint and solution</summary><p>Take two absorbing states with zero reward. Initialize the unvisited state's value at \(1\), although its true value is \(0\). Updating only the other state leaves this error unchanged forever.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, value iteration and policy-loss bounds; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, §4.4. The delay-free asynchronous statement is proved above; delayed distributed updates need additional hypotheses.</p>

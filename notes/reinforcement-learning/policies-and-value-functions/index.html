@@ -8,176 +8,159 @@ note_prev_url: "/notes/reinforcement-learning/markov-decision-processes/"
 note_next_url: "/notes/reinforcement-learning/bellman-expectation-equations/"
 ---
 
-<p>Policies define how actions are chosen, and value functions summarize the long-run consequences of those choices. The whole Bellman theory is a calculus for these functions.</p>
-
-    <h3>State and action values</h3>
-
-    <p>State values average over the policy's first action; action values keep the first action fixed.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a policy \(\pi\),
+<p class="rl-learning-goal">Relate state values, action values, advantages, and discounted occupancy measures using one consistent normalization.</p>
+<h3>Starting a process at a specified state</h3>
+<p>In the finite discounted model of the previous chapter, \(\mathbb E_s^\pi\) denotes the process initialized at \(S_0=s\), even if \(\rho(s)=0\). For a stationary policy \(\pi\), define
 \[
-v_\pi(s)=\mathbb E_\pi(G_0\mid S_0=s),
-\qquad
-q_\pi(s,a)=\mathbb E_\pi(G_0\mid S_0=s,A_0=a).
+V^\pi(s)=\mathbb E_s^\pi\sum_{t\ge0}\gamma^tR_{t+1},\qquad
+Q^\pi(s,a)=\mathbb E_{s,a}^\pi\sum_{t\ge0}\gamma^tR_{t+1}.
 \]
-The optimal values are \(v_*(s)=\sup_\pi v_\pi(s)\) and \(q_*(s,a)=\sup_\pi q_\pi(s,a)\).</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The state and action values are related by
+In \(\mathbb E_{s,a}^\pi\), the first action is forced to be \(a\); subsequent actions follow \(\pi\). This definition covers actions with \(\pi(a\mid s)=0\), where an ordinary conditional expectation would not specify a unique value. Write
 \[
-v_\pi(s)=\int q_\pi(s,a)\pi(\mathrm{d}a\mid s),
-\quad
-q_\pi(s,a)=r(s,a)+\gamma\int v_\pi(s')P(\mathrm{d}s'\mid s,a).
+A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s),\qquad
+J_\rho(\pi)=\sum_s\rho(s)V^\pi(s).
 \]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The first identity conditions on \(A_0\sim\pi(\cdot\mid s)\). The second identity splits the return into \(R_1+\gamma G_1\) and conditions on \(S_1\) after fixing \((S_0,A_0)=(s,a)\).</p>
-    </div>
-
-    <h3>Stationary deterministic policies</h3>
-
-    <p>For discounted finite MDPs, optimizing over all history-dependent randomized policies is no better than optimizing over stationary deterministic policies.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In a finite discounted MDP, there exists an optimal stationary deterministic policy \(\pi_*\) satisfying
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (one-step identities).</span>
 \[
-\pi_*(s)\in\operatorname*{argmax}_{a\in\mathcal A}q_*(s,a).
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The Bellman optimality operator has a unique fixed point \(v_*\). For each state choose an action attaining the finite maximum in the Bellman equation. The greedy policy \(\pi_*\) has Bellman expectation operator agreeing with the optimal operator at \(v_*\), so \(T_{\pi_*}v_*=T_*v_*=v_*\). By uniqueness of the fixed point of \(T_{\pi_*}\), \(v_{\pi_*}=v_*\).</p>
-    </div>
-
-    <h3>Occupancy measures</h3>
-
-    <p>A policy can also be represented by the discounted distribution of states and actions it visits.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The discounted state occupancy measure of \(\pi\) from \(\mu\) is
-\[
-d_{\mu,\pi}(B)=(1-\gamma)\sum_{t=0}^\infty \gamma^tP_\pi(S_t\in B\mid S_0\sim\mu).
+Q^\pi(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V^\pi(s'),\qquad
+V^\pi(s)=\sum_a\pi(a\mid s)Q^\pi(s,a).
 \]
-The state-action occupancy is \(d_{\mu,\pi}(\mathrm{d}s,\mathrm{d}a)=d_{\mu,\pi}(\mathrm{d}s)\pi(\mathrm{d}a\mid s)\).</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For bounded \(g\),
-\[
-\mathbb E_{\mu,\pi}\sum_{t=0}^\infty\gamma^tg(S_t,A_t)
-=\frac{1}{1-\gamma}\int g(s,a)d_{\mu,\pi}(\mathrm{d}s,\mathrm{d}a).
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Substitute the definition of \(d_{\mu,\pi}\), integrate \(g\) against the distribution of \((S_t,A_t)\) at each time, and interchange the bounded sum and integral.</p>
-    </div>
-
-    <h3>Value as a sufficient statistic for control</h3>
-
-    <p>The value function compresses all future consequences of a state under a policy.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A value function is not a model of the environment. It is a prediction of return. Dynamic programming is possible because that prediction recursively supplies the continuation value after one transition.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>State, action, and advantage values</h3>
-
-<p>For a stationary policy \(\pi\),
-\[
-V^\pi(s)=E_s^\pi\sum_{t\ge0}\gamma^t r(S_t,A_t),
-\]
-\[
-Q^\pi(s,a)=r(s,a)+\gamma\int V^\pi(s')P(\mathrm{d}s'\mid s,a),
-\qquad
-A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s).
-\]
-Since \(V^\pi(s)=\int Q^\pi(s,a)\pi(\mathrm{d}a\mid s)\),
-\[
-\int A^\pi(s,a)\pi(\mathrm{d}a\mid s)=0.
-\]
-Advantage therefore measures a one-step action deviation relative to the
-policy's own conditional mean.</p>
-
-<h3>Occupancy measures and a linear program</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (finite occupancy polytope).</span>
-For a finite discounted MDP, a nonnegative array \(d(s,a)\) is the normalized
-occupancy measure of some stationary randomized policy if and only if
-\[
-\sum_a d(s,a)
-=(1-\gamma)\rho(s)
-+\gamma\sum_{x,a}P(s\mid x,a)d(x,a)
-\quad(s\in\mathsf S).
-\]
-When \(d_S(s)>0\), a realizing policy is
-\(\pi(a\mid s)=d(s,a)/d_S(s)\).</p>
+In particular, \(\sum_a\pi(a\mid s)A^\pi(s,a)=0\).</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Necessity is the discounted flow
-equation. Conversely, define \(\pi\) by the displayed ratio, arbitrarily on
-zero-mass states. The flow equation says \(d_S\) is a fixed point of
-\((1-\gamma)\rho+\gamma d_SP_\pi\). This affine map is a contraction in total
-variation, so the fixed point is the discounted state occupancy of \(\pi\);
-then \(d=d_S\pi\).</p>
+<p><span class="statement-title">Proof.</span>
+For an \(n\)-step return after the forced action, conditioning on the first transition gives
+\[
+\mathbb E_{s,a}^\pi G^{(n+1)}
+=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)\mathbb E_{s'}^\pi G^{(n)}.
+\]
+The error in each truncated expectation is bounded uniformly by \(R_{\max}\gamma^n/(1-\gamma)\). Thus the finite sum over states converges term by term and gives the first identity. Conditioning on the first action similarly yields
+\[
+\mathbb E_s^\pi G^{(n)}
+=\sum_a\pi(a\mid s)\mathbb E_{s,a}^\pi G^{(n)}
+\longrightarrow\sum_a\pi(a\mid s)Q^\pi(s,a).
+\]
+Finally,
+\[
+\sum_a\pi(a\mid s)A^\pi(s,a)
+=V^\pi(s)-V^\pi(s)\sum_a\pi(a\mid s)=0.
+\]</p>
 </div>
 
-<p>Optimal control is therefore the linear program
+<h3>Discounted occupancy and the flow equation</h3>
+<p>For any policy, including a history-dependent one, define the normalized state-action occupancy and its state marginal by
 \[
-\max_{d\ge0}\ \frac1{1-\gamma}\sum_{s,a}d(s,a)r(s,a)
-\quad\text{subject to the flow equations}.
+d_\rho^\pi(s,a)=(1-\gamma)\sum_{t\ge0}\gamma^t\mathbb P_\rho^\pi(S_t=s,A_t=a),
+\qquad d_{\rho,S}^\pi(s)=\sum_a d_\rho^\pi(s,a).
 \]
-Its dual is
+All terms are nonnegative, so summing them in either order gives \(\sum_{s,a}d_\rho^\pi(s,a)=1\). This notation always reserves \(d_\rho^\pi\) for state-action mass and \(d_{\rho,S}^\pi\) for state mass.</p>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (occupancy identities).</span> For every bounded \(f\),
 \[
-\min_V\ \sum_s\rho(s)V(s)
-\quad\text{subject to}\quad
-V(s)\ge r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V(s').
+\mathbb E_\rho^\pi\sum_{t\ge0}\gamma^tf(S_t,A_t)
+=\frac{\langle d_\rho^\pi,f\rangle}{1-\gamma},
 \]
-Bellman inequalities are dual feasibility conditions, and complementary
-slackness says an optimal occupancy places mass only on greedy actions.</p>
+and
+\[
+d_{\rho,S}^\pi(s')=(1-\gamma)\rho(s')
++\gamma\sum_{s,a}d_\rho^\pi(s,a)P(s'\mid s,a).
+\]
+For stationary \(\pi\), \(d_\rho^\pi(s,a)=d_{\rho,S}^\pi(s)\pi(a\mid s)\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The series of absolute expected values is bounded by \(\|f\|_\infty/(1-\gamma)\). Therefore
+\[
+\begin{aligned}
+\langle d_\rho^\pi,f\rangle
+&amp;=(1-\gamma)\sum_{t\ge0}\gamma^t
+  \sum_{s,a}f(s,a)\mathbb P(S_t=s,A_t=a)\\
+&amp;=(1-\gamma)\mathbb E\sum_{t\ge0}\gamma^tf(S_t,A_t).
+\end{aligned}
+\]
+For the flow equation, isolate time zero and reindex a nonnegative series:
+\[
+\begin{aligned}
+d_{\rho,S}^\pi(s')-(1-\gamma)\rho(s')
+&amp;=(1-\gamma)\sum_{t=1}^{\infty}\gamma^t\mathbb P(S_t=s')\\
+&amp;=\gamma(1-\gamma)\sum_{u\ge0}\gamma^u
+  \sum_{s,a}\mathbb P(S_u=s,A_u=a)P(s'\mid s,a)\\
+&amp;=\gamma\sum_{s,a}d_\rho^\pi(s,a)P(s'\mid s,a).
+\end{aligned}
+\]
+Under stationarity, substitute \(\mathbb P(S_t=s,A_t=a)=\mathbb P(S_t=s)\pi(a\mid s)\) into the defining sum to obtain the factorization.</p>
+</div>
 
-<h3>The performance-difference identity</h3>
-
+<h3>Which arrays are realizable occupancies?</h3>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> For stationary policies
-\(\pi,\pi'\),
+<p><span class="statement-title">Theorem (finite occupancy polytope).</span> An array \(d\ge0\) is the occupancy of a stationary randomized policy if and only if its state marginal \(d_S\) satisfies the flow equations above. A realizing policy is \(\pi(a\mid s)=d(s,a)/d_S(s)\) whenever \(d_S(s)&gt;0\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Necessity was proved above. Conversely, summing the assumed flow equations gives
+\[
+\sum_{s,a}d(s,a)=(1-\gamma)+\gamma\sum_{s,a}d(s,a),
+\quad\text{hence }\sum_{s,a}d(s,a)=1.
+\]
+Define \(\pi\) by the ratio and choose it arbitrarily on zero-mass states. Then \(d(s,a)=d_S(s)\pi(a\mid s)\) and, using row vectors,
+\[
+d_S=(1-\gamma)\rho+\gamma d_SP_\pi.
+\]
+The actual occupancy marginal \(\tilde d_S\) for this policy satisfies the same identity. Set \(z=d_S-\tilde d_S\). Since \(P_\pi\) is stochastic,
+\[
+\begin{aligned}
+\|z\|_1&amp;=\gamma\|zP_\pi\|_1\\
+&amp;\le\gamma\sum_{s'}\sum_s|z(s)|P_\pi(s,s')
+=\gamma\|z\|_1.
+\end{aligned}
+\]
+Because \(\gamma&lt;1\), \(z=0\); hence \(d=d_\rho^\pi\). In particular, any history-dependent policy's occupancy can be realized by a stationary randomized one for the fixed initial law \(\rho\).</p>
+</div>
+
+<h3>A precise comparison between policies</h3>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (performance difference).</span> For stationary policies \(\pi,\pi'\),
 \[
 J_\rho(\pi')-J_\rho(\pi)
-=\frac1{1-\gamma}
-E_{(S,A)\sim d_\rho^{\pi'}}A^\pi(S,A).
+=\frac1{1-\gamma}\sum_{s,a}d_\rho^{\pi'}(s,a)A^\pi(s,a).
 \]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Along a trajectory from
-\(\pi'\),
+<p><span class="statement-title">Proof.</span>
+Under the trajectory law of \(\pi'\), the one-step identity gives
 \[
-A^\pi(S_t,A_t)
-=r_t+\gamma E\{V^\pi(S_{t+1})\mid S_t,A_t\}-V^\pi(S_t).
+\mathbb E A^\pi(S_t,A_t)
+=\mathbb E[R_{t+1}+\gamma V^\pi(S_{t+1})-V^\pi(S_t)].
 \]
-Multiply by \(\gamma^t\), take expectations, and sum. The value terms telescope
-to \(-E_\rho V^\pi\), while rewards sum to \(J_\rho(\pi')\). Normalize the
-discounted sum to obtain the identity.</p>
+Multiply by \(\gamma^t\) and sum only to \(n-1\):
+\[
+\begin{aligned}
+\sum_{t=0}^{n-1}\gamma^t\mathbb E A^\pi(S_t,A_t)
+&amp;=\mathbb E G^{(n)}-\mathbb E V^\pi(S_0)
++\gamma^n\mathbb E V^\pi(S_n).
+\end{aligned}
+\]
+Here \(|\gamma^n\mathbb E V^\pi(S_n)|\le\gamma^nR_{\max}/(1-\gamma)\to0\), and \(\mathbb E G^{(n)}\to J_\rho(\pi')\). Also \(|A^\pi|\le2R_{\max}/(1-\gamma)\), so the advantage series is absolutely integrable. Pass to the limit and use the occupancy identity to obtain the formula.</p>
 </div>
-
-<div class="math-statement corollary">
-<p><span class="statement-title">Corollary.</span> If
-\(\int A^\pi(s,a)\pi'(\mathrm{d}a\mid s)\ge0\) for every state, then
-\(V^{\pi'}\ge V^\pi\). Strict improvement at a state visited with positive
-discounted probability yields strict performance improvement.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (advantage and repeated improvement).</span>
+In one state, let actions \(a,b\) have rewards \(0,1\), both returning to that state, and let \(\pi(b)=p\). Then
+\[
+V^\pi=\frac p{1-\gamma},\quad
+Q^\pi(a)=\frac{\gamma p}{1-\gamma},\quad
+Q^\pi(b)=1+\frac{\gamma p}{1-\gamma}.
+\]
+Thus \(A^\pi(a)=-p\), \(A^\pi(b)=1-p\). For \(\pi'(b)=q\),
+\[
+\mathbb E_{d^{\pi'}}A^\pi=(1-q)(-p)+q(1-p)=q-p,
+\quad J(\pi')-J(\pi)=\frac{q-p}{1-\gamma}.
+\]
+The advantage measures one-step improvement; occupancy and the horizon factor accumulate its repeated effect.</p>
 </div>
-
-<h3>Deterministic optimal policies</h3>
-
-<p>In finite discounted MDPs, the occupancy polytope has an optimal extreme
-point, and extreme occupancies can be realized by stationary deterministic
-policies on states with positive mass. Equivalently, selecting one maximizer
-of \(Q^*(s,\cdot)\) in every state gives a deterministic optimal policy.
-Randomization is still useful under constraints, entropy regularization,
-partial observability, and game-theoretic objectives.</p>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>In the example, take \(p=1/4,q=3/4,\gamma=1/2\). Compute both values and the performance difference.</p><details><summary>Hint and solution</summary><p>\(V^\pi=1/2\), \(V^{\pi'}=3/2\), and the difference is \(1\). The occupancy advantage is \(q-p=1/2\), divided by \(1-\gamma=1/2\).</p></details></li>
+<li><p>Show directly from the flow equations that \(\langle d,r\rangle/(1-\gamma)\) is a linear objective over a compact polytope.</p><details><summary>Hint and solution</summary><p>The constraints are finitely many linear equalities and inequalities. Summing flow shows \(\sum d=1\), so the feasible set is closed and bounded, hence compact. Nonemptiness follows from any stationary policy. The objective is linear, so its maximum is attained. Bellman duality is established in the optimality chapter.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, occupancy measures and policy comparison; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 3. The discounted flow identities here will also be used in off-policy evaluation and constrained control.</p>

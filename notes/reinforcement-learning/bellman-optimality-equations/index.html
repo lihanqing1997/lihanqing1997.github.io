@@ -1,160 +1,140 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "4. Bellman optimality equations"
-breadcrumb_child_label_fr: "4. Équations d’optimalité de Bellman"
-breadcrumb_child_label_zh: "4. 贝尔曼最优方程"
+breadcrumb_child_label_en: "5. Bellman optimality equations"
+breadcrumb_child_label_fr: "5. Équations d’optimalité de Bellman"
+breadcrumb_child_label_zh: "5. 贝尔曼最优方程"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/bellman-expectation-equations/"
-note_next_url: "/notes/reinforcement-learning/contraction-and-fixed-points/"
+note_prev_url: "/notes/reinforcement-learning/contraction-and-fixed-points/"
+note_next_url: "/notes/reinforcement-learning/policy-evaluation/"
 ---
 
-<p>The Bellman optimality equations replace policy averaging by maximization. They characterize the best achievable value and the policies that attain it.</p>
-
-    <h3>Optimal Bellman operator</h3>
-
-    <p>The optimal operator performs the best one-step action choice plus optimal continuation.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For bounded \(v\),
+<p class="rl-learning-goal">Identify the optimal Bellman fixed point with the supremum over all policies, and derive its occupancy linear-program dual.</p>
+<h3>Verification against history-dependent policies</h3>
+<p>Define \(V^*(s)=\sup_\pi\mathbb E_s^\pi G\), where the supremum includes randomized history-dependent policies. The preceding chapter gives a unique fixed point \(U=TU\) and a finite bound \(\|U\|_\infty\le R_{\max}/(1-\gamma)\), since
 \[
-(T_*v)(s)=\sup_{a\in\mathcal A}\left\{r(s,a)+\gamma\int v(s')P(\mathrm{d}s'\mid s,a)\right\}.
+\|U\|_\infty=\|TU\|_\infty\le R_{\max}+\gamma\|U\|_\infty.
 \]
-For finite action sets, the supremum is a maximum.</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> The optimal value \(v_*\) is the unique bounded fixed point of \(T_*\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The operator \(T_*\) is a \(\gamma\)-contraction: for any \(u,v\),
-\[
-|(T_*u)(s)-(T_*v)(s)|\le\gamma\|u-v\|_\infty
-\]
-because the same action comparison bounds the difference of two suprema. Banach's theorem gives a unique fixed point. Dynamic programming shows \(v_*\) satisfies the equation by optimizing the first action and then optimizing the tail.</p>
-    </div>
-
-    <h3>Optimal action values</h3>
-
-    <p>The \(q\)-form moves the maximization to the next state.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The optimal action-value equation is
-\[
-q_*(s,a)=r(s,a)+\gamma\int \max_{a'}q_*(s',a')P(\mathrm{d}s'\mid s,a).
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The operator
-\[
-(T_*^Qq)(s,a)=r(s,a)+\gamma\int\max_{a'}q(s',a')P(\mathrm{d}s'\mid s,a)
-\]
-is a \(\gamma\)-contraction in sup norm and has unique fixed point \(q_*\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The map \(q\mapsto\max_a q(s,a)\) is nonexpansive in sup norm. Combining this with the Markov integral and the factor \(\gamma\) gives contraction. The fixed point is the optimal \(q\)-function by the same one-step optimality argument.</p>
-    </div>
-
-    <h3>Greedy policies</h3>
-
-    <p>A fixed point of the optimality equation immediately gives an optimal policy.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\pi\) is greedy with respect to \(v_*\), meaning
-\[
-\pi(s)\in\operatorname*{argmax}_{a}\left\{r(s,a)+\gamma\int v_*(s')P(\mathrm{d}s'\mid s,a)\right\},
-\]
-then \(v_\pi=v_*\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> For a greedy policy, \(T_\pi v_*=T_*v_*=v_*\). Thus \(v_*\) is a fixed point of \(T_\pi\). The policy Bellman operator has a unique bounded fixed point, so \(v_\pi=v_*\).</p>
-    </div>
-
-    <h3>Optimality and nonuniqueness</h3>
-
-    <p>The optimal value is unique, but optimal policies need not be.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> When several actions attain the Bellman maximum at a state, any measurable selection among them is optimal. This is why value functions are often better identified than policies.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Optimal operators</h3>
-
-<p>For bounded \(V\), define
-\[
-(TV)(s)
-=\sup_{a\in\mathsf A(s)}
-\left\{r(s,a)+\gamma\int V(s')P(\mathrm{d}s'\mid s,a)\right\},
-\]
-and for action values,
-\[
-(\mathcal TQ)(s,a)
-=r(s,a)+\gamma\int\sup_bQ(s',b)P(\mathrm{d}s'\mid s,a).
-\]
-Measurable-selection assumptions are needed in general spaces to replace
-suprema by measurable maximizing actions.</p>
-
+The remaining issue is to show that this algebraic object is the optimal value.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Bellman optimality).</span> In a
-finite discounted MDP, \(T\) has a unique fixed point \(V^*\), and
+<p><span class="statement-title">Theorem (Bellman verification).</span> In a finite discounted MDP, \(V^*=TV^*\). A stationary deterministic policy selecting a maximizing action at every state is optimal simultaneously from every initial state. More generally, any vector \(W\) satisfying
 \[
-V^*(s)=\max_a\{r(s,a)+\gamma P_aV^*(s)\}.
+W(s)\ge r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)W(s')
+\quad\text{for every }s,a
 \]
-Every policy greedy with respect to \(V^*\) is optimal, and every optimal
-policy chooses only actions attaining the maximum on states it visits.</p>
+is an upper bound on the value of every policy.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> The max inequality
-\(|\max_ax_a-\max_ay_a|\le\max_a|x_a-y_a|\) makes \(T\) a
-\(\gamma\)-contraction, hence it has a unique fixed point. Let \(\pi^*\) select
-a maximizing action. Then
-\(T^{\pi^*}V^*=TV^*=V^*\); uniqueness of the policy-evaluation fixed point gives
-\(V^{\pi^*}=V^*\). For any \(\pi\), \(T^\pi V\le TV\); iterating from \(V^*\)
-or using finite-horizon induction gives \(V^\pi\le V^*\).</p>
+<p><span class="statement-title">Proof.</span>
+For any policy, average the assumed inequalities over its current conditional action law:
+\[
+W(S_t)\ge\mathbb E[R_{t+1}+\gamma W(S_{t+1})\mid\mathcal H_t].
+\]
+Multiply by \(\gamma^t\), take expectations from \(S_0=s\), and sum through \(n-1\). The continuation terms cancel:
+\[
+W(s)\ge\mathbb E_s^\pi\sum_{t=0}^{n-1}\gamma^tR_{t+1}
++\gamma^n\mathbb E_s^\pi W(S_n).
+\]
+The terminal term has absolute value at most \(\gamma^n\|W\|_\infty\to0\); the reward sum converges in \(L^1\). Hence \(W(s)\ge V^\pi(s)\) for every \(\pi\), and \(W\ge V^*\).</p><p>Apply this to the fixed point \(U\). Since each action set is finite, choose
+\[
+\pi^*(s)\in\arg\max_a\{r(s,a)+\gamma P_aU(s)\}.
+\]
+Then \(T^{\pi^*}U=TU=U\). The policy Bellman equation has a unique solution, so \(U=V^{\pi^*}\). Together,
+\[
+U\ge V^*\ge V^{\pi^*}=U.
+\]
+Thus equality holds throughout and identifies the contraction fixed point without assuming optimal continuation exists in advance.</p>
 </div>
 
-<h3>Finite-horizon dynamic programming</h3>
-
-<p>With horizon \(H\), terminal value \(V_{H+1}=0\), and possibly
-time-dependent rewards and kernels,
+<h3>Action values and optimal action support</h3>
+<p>Set
 \[
-V_h^*(s)
-=\max_a\left\{r_h(s,a)+
-E[V_{h+1}^*(S_{h+1})\mid s,a]\right\},
-\quad h=H,\ldots,1.
+Q^*(s,a)=r(s,a)+\gamma P_aV^*(s).
 \]
-Backward induction proves optimality without contraction. The optimal policy
-is generally nonstationary because remaining time is part of the state.</p>
-
-<h3>Bellman inequalities and verification</h3>
-
+The upper-bound part of verification applies after a forced first action, while following \(\pi^*\) afterwards attains the bound. Therefore this \(Q^*\) is the supremum of forced-action returns, and
+\[
+V^*(s)=\max_a Q^*(s,a),\qquad
+Q^*(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)\max_bQ^*(s',b).
+\]
+The action-value operator is a \(\gamma\)-contraction by the same maximum inequality and stochastic-row bound already proved.</p>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition (verification).</span> If a bounded
-function \(U\) satisfies
+<p><span class="statement-title">Proposition (optimality on visited states).</span> Let
+\(g(s,a)=V^*(s)-r(s,a)-\gamma P_aV^*(s)\ge0\). For every policy,
 \[
-U(s)\ge r(s,a)+\gamma P_aU(s)\quad\text{for every }(s,a),
+J_\rho^*-J_\rho(\pi)=\frac{\langle d_\rho^\pi,g\rangle}{1-\gamma}.
 \]
-then \(U\ge V^*\). If a policy \(\pi\) attains equality
-\(\pi\)-almost surely at every state, then \(U=V^\pi=V^*\).</p>
+Consequently \(\pi\) is optimal for \(\rho\) exactly when \(d_\rho^\pi(s,a)&gt;0\) implies \(g(s,a)=0\).</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> The inequality is \(U\ge TU\).
-Monotonicity gives \(U\ge T^nU\to V^*\). If \(\pi\) attains equality, then
-\(U=T^\pi U\), so \(U=V^\pi\); combined with the first conclusion this policy
-is optimal.</p>
+<p><span class="statement-title">Proof.</span>
+Multiply the occupancy flow equation by \(V^*(s')\) and sum:
+\[
+\sum_{s,a}d_\rho^\pi(s,a)[V^*(s)-\gamma P_aV^*(s)]
+=(1-\gamma)\sum_s\rho(s)V^*(s).
+\]
+Subtract \(\langle d_\rho^\pi,r\rangle=(1-\gamma)J_\rho(\pi)\) to obtain the gap identity. All summands \(d_\rho^\pi(s,a)g(s,a)\) are nonnegative, and there are finitely many. Hence
+\[
+\langle d_\rho^\pi,g\rangle=0
+\iff d_\rho^\pi(s,a)g(s,a)=0\quad\text{for every }s,a.
+\]
+Optimality for a single initial distribution places no restriction on actions at states that policy never visits.</p>
 </div>
 
-<h3>Nonuniqueness</h3>
+<h3>Linear programming and complementary slackness</h3>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (occupancy–Bellman duality).</span> Let \(\mathcal D_\rho\) be the nonnegative arrays satisfying discounted flow. Then
+\[
+\max_{d\in\mathcal D_\rho}\frac{\langle d,r\rangle}{1-\gamma}
+=\min_{W:\ W(s)\ge r(s,a)+\gamma P_aW(s)}\langle\rho,W\rangle
+=J_\rho^*.
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+For dual-feasible \(W\) and primal-feasible \(d\), use flow to calculate the exact gap:
+\[
+\begin{aligned}
+\langle\rho,W\rangle-\frac{\langle d,r\rangle}{1-\gamma}
+&amp;=\frac1{1-\gamma}\sum_{s,a}d(s,a)
+ [W(s)-r(s,a)-\gamma P_aW(s)]\ge0.
+\end{aligned}
+\]
+Thus every primal value is at most every dual value. Now choose \(W=V^*\) and \(d=d_\rho^{\pi^*}\). Every action selected by \(\pi^*\) is a Bellman maximizer, so
+\[
+d_\rho^{\pi^*}(s,a)[V^*(s)-r(s,a)-\gamma P_aV^*(s)]=0.
+\]
+Their gap is zero. This constructs optimizers and proves strong duality directly. For any optimal pair \((d,W)\), the same nonnegative gap sum gives complementary slackness at every positive-mass action.</p>
+</div>
 
-<p>The optimal value is unique, but optimal actions and policies need not be.
-Ties define a set-valued greedy correspondence. This matters for
-differentiability: \(V^*\) is a pointwise maximum of smooth functions and may
-be nonsmooth when the maximizing action changes. Entropy regularization
-replaces the maximum by log-sum-exp and makes the greedy policy unique under a
-full-support reference measure.</p>
+<h3>Finite horizons</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (backward induction).</span> For stages \(h=1,\ldots,H\), terminal reward zero, and stage-dependent kernels and rewards,
+\[
+V_{H+1}^*=0,\qquad
+V_h^*(s)=\max_a\left[r_h(s,a)+\sum_{s'}P_h(s'\mid s,a)V_{h+1}^*(s')\right].
+\]
+Stagewise maximizing actions form an optimal, generally nonstationary policy.</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+At \(h=H+1\), all continuation returns equal zero. Suppose every policy tail from stage \(h+1\) has value at most \(V_{h+1}^*\), and a Markov tail attains it at all states. For any history ending in state \(s\),
+\[
+\mathbb E[\text{return from }h\mid H_h]
+\le\sum_a\pi_h(a\mid H_h)
+ [r_h(s,a)+P_{h,a}V_{h+1}^*(s)]\le V_h^*(s).
+\]
+Choose an action attaining the finite maximum and then the optimal tail. Both inequalities become equalities. Induction from \(H\) down to \(1\) proves the claim; no infinite limit or contraction is needed.</p>
+</div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (waiting for a future payoff).</span>
+At state \(s\), action stay yields reward \(1\) and returns to \(s\); action go yields \(0\) and moves to absorbing \(g\), whose reward is always \(2\). With \(\gamma=1/2\),
+\[
+V^*(g)=4,\quad V^*(s)=\max\{1+V^*(s)/2,2\}=2.
+\]
+Both actions at \(s\) are optimal. With \(\gamma=0.9\), \(V^*(g)=20\), go gives \(18\), and stay's Bellman score at \(V^*(s)=18\) is \(17.2\); go is strictly optimal. The discount changes the preferred tradeoff, not just the numerical scale.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>In the worked example with \(\gamma=0.9\) and \(\rho=\delta_s\), compute the occupancy of the policy that immediately goes.</p><details><summary>Hint and solution</summary><p>\(d(s,\mathrm{go})=1-\gamma=0.1\), \(d(g)=\gamma=0.9\). Its discounted value is \(\langle d,r\rangle/(1-\gamma)=1.8/0.1=18\).</p></details></li>
+<li><p>Why can a dual-optimal \(W\) differ from \(V^*\) at an unreachable state?</p><details><summary>Hint and solution</summary><p>The objective weights \(W\) only through \(\rho\). If a state is unreachable from \(\rho\) under every action and has a self-loop of reward zero, any nonnegative value at that state satisfies its Bellman inequality without changing the objective. The minimal feasible vector is \(V^*\), but the LP minimizer need not be unique.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, Bellman optimality and linear programming; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 4. The fixed-point argument depends on the preceding contraction chapter; the verification inequalities cover all policy histories.</p>

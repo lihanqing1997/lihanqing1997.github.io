@@ -1,146 +1,117 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "13. Baselines and variance reduction"
-breadcrumb_child_label_fr: "13. Références et réduction de variance"
-breadcrumb_child_label_zh: "13. 基线与方差缩减"
+breadcrumb_child_label_en: "15. Baselines and variance reduction"
+breadcrumb_child_label_fr: "15. Références et réduction de variance"
+breadcrumb_child_label_zh: "15. 基线与方差缩减"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/policy-gradient-theorem/"
 note_next_url: "/notes/reinforcement-learning/actor-critic-methods/"
 ---
 
-<p>Policy-gradient estimators can have high variance. Baselines reduce variance without changing the mean when they do not depend on the sampled action in a way that breaks the score identity.</p>
-
-    <h3>Unbiased baselines</h3>
-
-    <p>The baseline principle is an immediate consequence of policy normalization.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For any state-dependent baseline \(b(S_t)\),
-\[
-\mathbb E_{\pi_\theta}\left[\nabla\log\pi_\theta(A_t\mid S_t)b(S_t)\mid S_t\right]=0.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on \(S_t=s\). Then
-\[
-\int \nabla\log\pi_\theta(a\mid s)b(s)\pi_\theta(\mathrm{d}a\mid s)
-=b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)
-=b(s)\nabla1=0.
-\]</p>
-    </div>
-
-    <h3>Optimal scalar baseline</h3>
-
-    <p>For a single score vector, the variance-minimizing constant baseline has a weighted least-squares form.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For an estimator \(g=(G-b)Z\), where \(Z=\nabla\log\pi_\theta(A\mid S)\), the constant \(b\) minimizing \(\mathbb E\|g\|_2^2\) is
-\[
-b^*=\frac{\mathbb E(G\|Z\|_2^2)}{\mathbb E\|Z\|_2^2}.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Expand \(\mathbb E\|(G-b)Z\|^2=\mathbb E\{(G-b)^2\|Z\|^2\}\) as a quadratic function of \(b\). Differentiating and setting the derivative equal to zero gives the displayed ratio.</p>
-    </div>
-
-    <h3>Reward-to-go</h3>
-
-    <p>Removing past rewards from a score term lowers variance and keeps unbiasedness.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> In the likelihood-ratio gradient, the score at time \(t\) may be multiplied only by future return \(\sum_{k\ge t}\gamma^kR_{k+1}\); past reward terms have zero expectation with that score.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Past rewards are measurable with respect to the history before \(A_t\). Conditional on that history and \(S_t\), the score has mean zero by policy normalization. Therefore products with past rewards integrate to zero.</p>
-    </div>
-
-    <h3>Control variates</h3>
-
-    <p>Baselines are a special case of control variates.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> A critic, generalized advantage estimation, and learned value baselines all try to approximate the conditional expectation structure that removes avoidable return noise while preserving the policy-gradient mean.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Why state baselines are unbiased</h3>
-
-<div class="math-statement lemma">
-<p><span class="statement-title">Lemma.</span> For any integrable \(b(S)\),
-\[
-E_{d^\pi}\{b(S)\nabla_\theta\log\pi_\theta(A\mid S)\}=0.
-\]</p>
-</div>
-
-<div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Conditional on \(S=s\),
-\[
-E_\pi\nabla_\theta\log\pi_\theta(A\mid s)
-=\int\nabla_\theta\pi_\theta(a\mid s)\,\mathrm{d}a
-=\nabla_\theta1=0.
-\]
-Multiply by \(b(s)\) and average over states.</p>
-</div>
-
-<p>An action-dependent baseline is generally biased unless its expected score
-product vanishes or an analytic correction is added. This distinction matters
-for learned control variates.</p>
-
-<h3>The variance-minimizing scalar baseline</h3>
-
+<p class="rl-learning-goal">Separate preservation of the gradient mean from reduction of its variance, and compute the bias introduced by an approximate critic.</p>
+<h3>State baselines and their optimal value</h3>
+<p>At a fixed state \(s\), let \(A\sim\pi_\theta(\cdot\mid s)\), \(Z=\nabla\log\pi_\theta(A\mid s)\), and let \(Y\) be an integrable return target with \(\mathbb E[Y\mid s,A]=Q^\pi(s,A)\). Assume \(\mathbb E[\|Z\|^2Y^2\mid s]&lt;\infty\). The variance criterion below is the trace of the conditional covariance, \(\mathbb E\|X-\mathbb E X\|^2\).</p>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> Conditional on state \(s\),
-let \(Z=\nabla\log\pi(A\mid s)\) and let \(Y\) be an unbiased action-value
-target. Among scalar baselines \(b(s)\), the one minimizing
-\(E[\|Z\|^2(Y-b)^2\mid s]\) is
+<p><span class="statement-title">Proposition (optimal scalar state baseline).</span>
+For every finite \(b=b(s)\), \(\mathbb E[Z(Y-b)\mid s]=\mathbb E[ZY\mid s]\). If \(c(s)=\mathbb E[\|Z\|^2\mid s]&gt;0\), the variance-minimizing baseline is
 \[
-b^*(s)
-=\frac{E[\|Z\|^2Y\mid s]}{E[\|Z\|^2\mid s]}.
-\]</p>
-</div>
-
-<div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Differentiate the conditional
-quadratic in \(b\):
-\[
--2E[\|Z\|^2(Y-b)\mid s]=0.
+ b_*(s)=\frac{\mathbb E[\|Z\|^2Y\mid s]}{\mathbb E[\|Z\|^2\mid s]}.
 \]
-Strict convexity holds when \(E(\|Z\|^2\mid s)>0\).</p>
+If \(c(s)=0\), then \(Z=0\) almost surely and every baseline is equivalent.</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Normalization of the policy gives \(\mathbb E[Z\mid s]=\sum_a\nabla\pi_\theta(a\mid s)=0\). The mean is therefore independent of \(b\). Subtracting its squared norm from the second moment does not change the minimizer. Expand
+\[
+ \mathbb E[\|Z\|^2(Y-b)^2\mid s]
+ =\mathbb E[\|Z\|^2Y^2\mid s]
+  -2b\,\mathbb E[\|Z\|^2Y\mid s]+b^2c(s).
+\]
+Completing the square gives \(M(b)=M(b_*)+c(s)(b-b_*)^2\). This proves both optimality and the exact variance penalty for a non-optimal baseline.</p>
 </div>
 
-<p>The value baseline \(V^\pi(s)=E(Q^\pi\mid s)\) is optimal only when
-\(\|Z\|^2\) is conditionally constant or uncorrelated with \(Q^\pi\). It is
-nevertheless natural, stable, and often close to optimal.</p>
-
-<h3>Reward-to-go as Rao--Blackwellization</h3>
-
-<p>In a trajectory score estimator, multiplying the score at time \(t\) by
-rewards received before \(t\) adds zero mean noise because those rewards are
-measurable before action \(A_t\). Replacing total return by reward-to-go removes
-these causally irrelevant terms. This is a conditional-expectation
-variance reduction: it preserves the gradient while reducing second moment.</p>
+<p>In general \(b_*\ne V^\pi(s)\): the optimal baseline weights actions by squared score length. A baseline fitted using the very same action/return can also become action dependent. To preserve the displayed conditional argument, treat the fitted baseline as fixed using independent data, or condition on training data independent of the current action sample. An action-dependent \(b(s,a)\) requires the correction
+\[
+ Z(Y-b(s,A))+\sum_a\pi_\theta(a\mid s)z_\theta(s,a)b(s,a),
+\]
+whose expectation is \(\mathbb E[ZY\mid s]\); simply subtracting \(Zb(s,A)\) is generally biased.</p>
+<h3>Reward to go: unbiased does not mean universally lower variance</h3>
+<p>The policy-gradient proof removes past rewards using \(\mathbb E[Z_t\mid H_t]=0\). This establishes equality of expectations. It is not, by itself, a conditional-expectation projection of the whole gradient estimator, so a universal variance inequality does not follow.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a variance counterexample).</span>
+Take two time steps. The first action is fixed, \(R_1=-\gamma\); the second action is Bernoulli with probability \(p=\sigma(\theta)\), but \(R_2=1\) for both actions. The total discounted return is identically zero. At \(p=1/2\), the second-action score \(Z=A-1/2\) has variance \(1/4\). Thus
+\[
+ \widehat g_{\rm full}=Z(R_1+\gamma R_2)=0,\qquad
+ \widehat g_{\rm to\ go}=\gamma ZR_2=\gamma Z,
+\]
+\[
+ \mathbb E\widehat g_{\rm full}=\mathbb E\widehat g_{\rm to\ go}=0,
+ \qquad
+ \operatorname{Var}(\widehat g_{\rm to\ go})=\gamma^2/4&gt;
+ \operatorname{Var}(\widehat g_{\rm full})=0
+\]
+when \(\gamma&gt;0\). Removing irrelevant random terms often helps in practice, but covariance with retained terms matters.</p>
+</div>
 
 <h3>Generalized advantage estimation</h3>
-
-<p>For an approximate value \(V_\phi\), define
+<p>Let \(\widetilde V=V^\pi+e\), \(\|e\|_\infty\le\varepsilon\), and \(0\le\lambda\le1\). Along an on-policy trajectory set
 \[
-\delta_t^\phi=R_{t+1}+\gamma V_\phi(S_{t+1})-V_\phi(S_t),
-\qquad
-\widehat A_t^{\mathrm{GAE}(\lambda)}
-=\sum_{l\ge0}(\gamma\lambda)^l\delta_{t+l}^\phi.
+ \delta_t^{\widetilde V}=R_{t+1}+\gamma\widetilde V(S_{t+1})-\widetilde V(S_t),
+ \qquad
+ \widehat A_t^\lambda=\sum_{\ell=0}^\infty(\gamma\lambda)^\ell
+                         \delta_{t+\ell}^{\widetilde V}.
 \]
-With exact \(V^\pi\), this is an unbiased conditional advantage estimator for
-\(\lambda=1\); smaller \(\lambda\) introduces bias when \(V_\phi\ne V^\pi\)
-but shortens the noise horizon. GAE is the policy-gradient analogue of
-TD(lambda), not a universally unbiased advantage estimate.</p>
+Bounded rewards and values make this series absolutely convergent, with a deterministic summable bound. This permits conditional expectation term by term.</p>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (exact conditional GAE bias).</span>
+For \(\gamma&lt;1\),
+\[
+ \mathbb E[\widehat A_t^\lambda\mid S_t=s,A_t=a]
+ =A^\pi(s,a)-e(s)+
+ \gamma(1-\lambda)\sum_{j=1}^\infty(\gamma\lambda)^{j-1}
+       \mathbb E[e(S_{t+j})\mid s,a].
+\]
+In particular the target is conditionally unbiased for the advantage if \(e=0\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+For the exact value, \(\mathbb E[\delta_t^{V^\pi}\mid s,a]=A^\pi(s,a)\). If \(\ell\ge1\), the tower property through the history before action \(A_{t+\ell}\) gives
+\[
+ \mathbb E[\delta_{t+\ell}^{V^\pi}\mid H_{t+\ell}]
+ =(T_\pi V^\pi-V^\pi)(S_{t+\ell})=0.
+\]
+Also \(\delta_{t+\ell}^{\widetilde V}-\delta_{t+\ell}^{V^\pi}
+=\gamma e(S_{t+\ell+1})-e(S_{t+\ell})\). For a finite sum through \(n-1\), reindexing yields
+\[
+ \begin{aligned}
+ \sum_{\ell=0}^{n-1}(\gamma\lambda)^\ell
+       [\gamma e(S_{t+\ell+1})-e(S_{t+\ell})]
+ &amp;=-e(S_t)+\gamma(1-\lambda)
+       \sum_{j=1}^{n-1}(\gamma\lambda)^{j-1}e(S_{t+j})\\
+ &amp;\quad+\gamma(\gamma\lambda)^{n-1}e(S_{t+n}).
+ \end{aligned}
+\]
+The last term has magnitude at most \(\gamma\varepsilon(\gamma\lambda)^{n-1}\to0\). The middle series is absolutely bounded by \(\gamma(1-\lambda)\varepsilon/(1-\gamma\lambda)\). Taking conditional expectations and then \(n\to\infty\) proves the formula (the case \(\gamma\lambda=0\) follows directly from the first TD error).</p>
+</div>
 
-<h3>Further control variates</h3>
-
-<p>Action-dependent control variates can use reparameterization gradients,
-quadratic critics, or known conditional expectations. In off-policy settings,
-doubly robust scores combine a value model with importance weighting. The
-design principle is always the same: subtract a correlated mean-zero term whose
-expectation is known under the law that defines the gradient.</p>
+<p>The term \(-e(s)\) is a state baseline and disappears after multiplying by the policy score and averaging actions. If \(\|z\|\le L\), the bias of the normalized occupancy gradient is therefore at most
+\[
+ \frac{L\varepsilon}{1-\gamma}\,
+       \frac{\gamma(1-\lambda)}{1-\gamma\lambda}.
+\]
+At \(\lambda=1\), an infinite-horizon return minus any fixed state baseline preserves the gradient mean. Finite rollout truncation leaves a terminal term and must be analyzed separately; \(\lambda=1\) does not remove that error.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (the best baseline is not the value).</span>
+In a one-step Bernoulli bandit with reward \(Y=A\), let \(p=1/4\). The logit score is \(Z=A-p\), so
+\[
+ V=p=\tfrac14,\qquad b_*=
+ \frac{p(1-p)^2}{p(1-p)^2+(1-p)p^2}=1-p=\tfrac34.
+\]
+With \(b=b_*\), both action outcomes give \(Z(Y-b)=p(1-p)=3/16\). The gradient estimator has zero variance; using the value baseline does not attain this.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>For a single TD error (\(\lambda=0\)), identify the conditional advantage bias and the policy-gradient bias.</p><details><summary>Hint and solution</summary><p>The advantage bias is \(\gamma\mathbb E[e(S_{t+1})\mid s,a]-e(s)\). After score averaging only \(\gamma\mathbb E[z_t e(S_{t+1})]\) remains. The normalized gradient bias is bounded by \(\gamma L\varepsilon/(1-\gamma)\).</p></details></li>
+<li><p>If all actions have the same score norm at a state, show that \(b_*=V^\pi(s)\).</p><details><summary>Hint and solution</summary><p>When \(\|Z\|^2=c&gt;0\) almost surely, the common factor cancels: \(b_*=\mathbb E[Y\mid s]=\sum_a\pi(a\mid s)Q^\pi(s,a)=V^\pi(s)\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>; <a href="https://arxiv.org/abs/1506.02438">Schulman and coauthors, generalized advantage estimation</a>. The variance counterexample and the explicit critic-error formula clarify the hypotheses behind common variance-reduction descriptions.</p>

@@ -1,172 +1,119 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "20. Entropy-regularized reinforcement learning"
-breadcrumb_child_label_fr: "20. Apprentissage par renforcement régularisé par entropie"
-breadcrumb_child_label_zh: "20. 熵正则化强化学习"
+breadcrumb_child_label_en: "17. Entropy-regularized reinforcement learning"
+breadcrumb_child_label_fr: "17. Apprentissage par renforcement régularisé par entropie"
+breadcrumb_child_label_zh: "17. 熵正则化强化学习"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/approximate-dynamic-programming/"
-note_next_url: "/notes/reinforcement-learning/partially-observable-problems/"
+note_prev_url: "/notes/reinforcement-learning/actor-critic-methods/"
+note_next_url: "/notes/reinforcement-learning/multi-armed-bandits/"
 ---
 
-<p>Entropy regularization changes hard maximization into soft maximization. It encourages exploration, smooths policy improvement, and connects reinforcement learning with convex duality.</p>
-
-    <h3>Regularized objective</h3>
-
-    <p>The policy is rewarded for both external reward and entropy.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For temperature \(\alpha>0\), the entropy-regularized return includes
+<p class="rl-learning-goal">Derive the Gibbs policy and soft Bellman operator, including the reference-measure convention and the zero-temperature limit.</p>
+<h3>Relative entropy fixes the convention</h3>
+<p>For each state choose a reference distribution \(\mu(a\mid s)&gt;0\), and let \(\tau&gt;0\). Define
 \[
-\sum_{t\ge0}\gamma^t\{R_{t+1}+\alpha H(\pi(\cdot\mid S_t))\},
+ \mathrm{KL}(p\|\mu)=\sum_a p_a\log\frac{p_a}{\mu_a},
+ \qquad 0\log0=0.
 \]
-where \(H(\pi(\cdot\mid s))=-\int\pi(\mathrm{d}a\mid s)\log\pi(a\mid s)\) in the discrete or density case.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Larger \(\alpha\) favors more random policies; as \(\alpha\downarrow0\), the ordinary control objective is recovered.</p>
-    </div>
-
-    <h3>Soft Bellman operator</h3>
-
-    <p>The maximum is replaced by log-sum-exp or its continuous analogue.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For finite actions, the soft optimality operator is
-\[
-(T_\alpha v)(s)=\alpha\log\sum_a\exp\left(\frac{r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)v(s')}{\alpha}\right).
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> The soft Bellman operator is a \(\gamma\)-contraction in sup norm.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The log-sum-exp map is 1-Lipschitz with respect to the sup norm: shifting all action scores by at most \(\varepsilon\) shifts the log-sum-exp by at most \(\varepsilon\). The only dependence on \(v\) is through \(\gamma Pv\), whose sup-norm change is at most \(\gamma\|u-v\|_\infty\).</p>
-    </div>
-
-    <h3>Soft greedy policy</h3>
-
-    <p>The soft maximizer is a Gibbs distribution over action values.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For action scores \(q(s,a)\), the solution of
-\[
-\max_{\pi(\cdot\mid s)}\left\{\sum_a\pi(a\mid s)q(s,a)+\alpha H(\pi(\cdot\mid s))\right\}
-\]
-is
-\[
-\pi_\alpha(a\mid s)=\frac{\exp(q(s,a)/\alpha)}{\sum_b\exp(q(s,b)/\alpha)}.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use a Lagrange multiplier for the constraint \(\sum_a\pi(a\mid s)=1\). The first-order condition is \(q(s,a)-\alpha(1+\log\pi(a\mid s))-\lambda=0\), hence \(\pi(a\mid s)\propto e^{q(s,a)/\alpha}\).</p>
-    </div>
-
-    <h3>KL control</h3>
-
-    <p>Entropy regularization is equivalent to KL regularization relative to a reference policy in many formulations.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Replacing entropy by \(-\operatorname{KL}(\pi(\cdot\mid s)\|\rho(\cdot\mid s))\) gives soft policies tilted from the reference \(\rho\). This is the form used in trust-region and mirror-descent views of policy optimization.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Convex duality behind the soft maximum</h3>
-
+We maximize discounted reward minus \(\tau\mathrm{KL}(\pi(\cdot\mid s)\|\mu(\cdot\mid s))\). For uniform \(\mu\) on \(m\) actions,
+\(-\mathrm{KL}(\pi\|\mu)=H(\pi)-\log m\). Thus adding Shannon entropy instead changes values by \(\tau\log m/(1-\gamma)\) when every state has \(m\) actions; it does not change the optimal policy in that case.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Gibbs variational formula).</span>
-For a finite action set, reference distribution \(\mu(\cdot\mid s)>0\), and
-\(\tau>0\),
+<p><span class="statement-title">Theorem (finite Gibbs variational formula).</span>
+For \(q\in\mathbb R^m\),
 \[
-\tau\log\sum_a\mu(a\mid s)e^{q(a)/\tau}
-=\max_{\pi(\cdot\mid s)}
-\left\{\sum_a\pi(a\mid s)q(a)
--\tau D_{\mathrm{KL}}(\pi\|\mu)\right\}.
+ \max_{p\in\Delta_m}\{p^\top q-\tau\mathrm{KL}(p\|\mu)\}
+ =\tau\log\sum_a\mu_a e^{q_a/\tau},\qquad
+ p_a^*=\frac{\mu_a e^{q_a/\tau}}{\sum_b\mu_b e^{q_b/\tau}}.
 \]
-The unique maximizer is
-\[
-\pi_q(a\mid s)
-=\frac{\mu(a\mid s)e^{q(a)/\tau}}
-{\sum_b\mu(b\mid s)e^{q(b)/\tau}}.
-\]</p>
+The maximizer is unique.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Let \(Z=\sum_a\mu_ae^{q_a/\tau}\)
-and \(\pi_q=\mu e^{q/\tau}/Z\). Direct rearrangement gives
+<p><span class="statement-title">Proof.</span>
+Let \(Z=\sum_a\mu_a e^{q_a/\tau}&gt;0\). Then
+\(\log(p_a^*/\mu_a)=q_a/\tau-\log Z\), so for every \(p\),
 \[
-\sum_a\pi_aq_a-\tau D(\pi\|\mu)
-=\tau\log Z-\tau D(\pi\|\pi_q).
+ p^\top q-\tau\mathrm{KL}(p\|\mu)
+ =\tau\log Z-\tau\mathrm{KL}(p\|p^*).
 \]
-Nonnegativity of KL proves both claims.</p>
+For \(p_a&gt;0\), \(-\log(p_a^*/p_a)\ge1-p_a^*/p_a\). Multiplication by \(p_a\) and summation give
+\[
+ \mathrm{KL}(p\|p^*)\ge
+ \sum_{a:p_a&gt;0}(p_a-p_a^*)=\sum_{a:p_a=0}p_a^*\ge0.
+\]
+Since \(p^*\) is strictly positive, equality requires full support and equality in the logarithm inequality at every action, hence \(p=p^*\). Substitution gives the result.</p>
 </div>
 
-<h3>Soft Bellman equations</h3>
-
-<p>The KL-regularized optimality operator is
+<h3>Soft dynamic programming</h3>
+<p>Set
 \[
-(T_\tau V)(s)
-=\tau\log\int
-\exp\!\left\{\frac{r(s,a)+\gamma P_aV(s)}{\tau}\right\}
-\mu(\mathrm{d}a\mid s).
-\]</p>
+ (T_\tau V)(s)=\tau\log\sum_a\mu(a\mid s)
+       \exp\!\left(\frac{r(s,a)+\gamma PV(s,a)}{\tau}\right),
+\]
+\[
+ T_{\pi,\tau}V=r_\pi-\tau\,\mathrm{KL}(\pi\|\mu)+\gamma P_\pi V.
+\]
+The variational formula gives \(T_\tau V=\max_\pi T_{\pi,\tau}V\), state by state.</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+If \(\|V-W\|_\infty\le e\), each action score differs by at most \(\gamma e\). Therefore
+\[
+ e^{-\gamma e/\tau}\sum_a\mu_a e^{q_W(a)/\tau}
+ \le\sum_a\mu_a e^{q_V(a)/\tau}
+ \le e^{\gamma e/\tau}\sum_a\mu_a e^{q_W(a)/\tau}.
+\]
+Taking \(\tau\log\) proves \(\|T_\tau V-T_\tau W\|_\infty\le\gamma e\).
+Hence \(T_\tau\) has a unique fixed point \(V_\tau\). Let \(\pi_\tau\) be its Gibbs maximizer. Then
+\(T_{\pi_\tau,\tau}V_\tau=T_\tau V_\tau=V_\tau\), so policy evaluation identifies \(V_\tau=V_\tau^{\pi_\tau}\).
+For any possibly history-dependent action distribution \(p_t(\cdot\mid H_t)\), the variational inequality gives
+\[
+ V_\tau(S_t)\ge
+ \mathbb E[R_{t+1}+\gamma V_\tau(S_{t+1})\mid H_t]
+ -\tau\mathrm{KL}(p_t(\cdot\mid H_t)\|\mu(\cdot\mid S_t)).
+\]
+Iterating conditional expectations for \(H\) steps yields a bound on the regularized partial return plus \(\gamma^H\mathbb E V_\tau(S_H)\). The terminal term tends to zero because \(V_\tau\) is bounded. Also, with \(\mu_{\min}=\min_{s,a}\mu(a\mid s)&gt;0\),
+\[
+ 0\le\mathrm{KL}(p\|\mu)\le\log(1/\mu_{\min}),
+\]
+so the regularized return tails are uniformly bounded by
+\(\gamma^H[R_{\max}+\tau\log(1/\mu_{\min})]/(1-\gamma)\).
+Passing to the limit proves optimality among these policies, with equality for \(\pi_\tau\).</p>
+</div>
 
+<p>Soft policy iteration evaluates \(V_\tau^\pi\), then takes its Gibbs policy \(\pi'\). Since
+\(T_{\pi',\tau}V_\tau^\pi=T_\tau V_\tau^\pi\ge T_{\pi,\tau}V_\tau^\pi=V_\tau^\pi\),
+monotonicity and repeated evaluation imply \(V_\tau^{\pi'}\ge V_\tau^\pi\). The KL gap above quantifies the improvement at each state.</p>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> \(T_\tau\) is monotone,
-translation equivariant,
+<p><span class="statement-title">Proposition (zero-temperature value limit).</span>
 \[
-T_\tau(V+c)=T_\tau V+\gamma c,
-\]
-and a \(\gamma\)-contraction in sup norm. It therefore has a unique soft value
-\(V_\tau^*\).</p>
+ 0\le V^*(s)-V_\tau(s)
+ \le\frac{\tau\log(1/\mu_{\min})}{1-\gamma}.
+\]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> If
-\(\|V-W\|_\infty\le c\), every action score differs by at most \(\gamma c\).
-Monotonicity and translation equivariance of log-sum-exp place
-\(T_\tau V-T_\tau W\) between \(-\gamma c\) and \(\gamma c\).</p>
+<p><span class="statement-title">Proof.</span>
+The penalty is nonnegative, so every regularized policy value is at most its unregularized value, and \(V_\tau\le V^*\). Let \(\pi^*\) be a deterministic unregularized optimal policy. Its per-state penalty is
+\(\tau\log[1/\mu(\pi^*(s)\mid s)]\le\tau\log(1/\mu_{\min})\). Thus
+\[
+ V_\tau\ge V_\tau^{\pi^*}
+ \ge V^{\pi^*}-\sum_{t=0}^\infty\gamma^t\tau\log(1/\mu_{\min})\,\mathbf1
+ =V^*-\frac{\tau\log(1/\mu_{\min})}{1-\gamma}\mathbf1 .
+\]
+The bound is uniform in states; consequently \(V_\tau\to V^*\) uniformly as \(\tau\downarrow0\).</p>
 </div>
 
-<h3>Approximation to ordinary control</h3>
-
-<p>For uniform \(\mu\) on \(m\) actions,
+<p>Soft actor-critic combines entropy-regularized targets with approximate critics and a restricted stochastic actor. In continuous action spaces the sum becomes an integral; a reference measure and finiteness of the partition function must be specified. A Gaussian actor, sampled gradients, and neural critic errors introduce approximation issues beyond the exact finite-action contraction theorem.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (Gibbs probabilities and value).</span>
+One state has rewards \(0,\log3\), uniform reference \((1/2,1/2)\), \(\tau=1\), and \(\gamma=1/2\). The common continuation factor cancels from the Gibbs probabilities:
 \[
-\max_aq_a-\tau\log m
-\le\tau\log\left(\frac1m\sum_ae^{q_a/\tau}\right)
-\le\max_aq_a.
+ \pi_\tau=(1/4,3/4),\qquad
+ V_\tau=\tfrac12V_\tau+\log[(1+3)/2]=\tfrac12V_\tau+\log2.
 \]
-Consequently,
-\[
-\|V^*-V_\tau^*\|_\infty
-\le\frac{\tau\log m}{1-\gamma}.
-\]
-As \(\tau\downarrow0\), the soft policy concentrates on greedy actions; as
-\(\tau\) grows, it remains close to the reference policy.</p>
-
-<h3>Maximum entropy and KL control</h3>
-
-<p>With a uniform reference, subtracting
-\(\tau D(\pi\|\mu)\) is equivalent up to a constant to adding policy entropy.
-A nonuniform \(\mu\) encodes a prior controller, producing relative-entropy
-control. State-dependent temperatures and constraints lead to convex dual
-multipliers rather than an arbitrary exploration bonus.</p>
-
-<h3>Soft actor--critic objective</h3>
-
-<p>Soft actor--critic uses a critic for
-\[
-Q^\pi_\tau(s,a)
-=r(s,a)+\gamma E[V^\pi_\tau(S')\mid s,a],
-\]
-\[
-V^\pi_\tau(s)
-=E_{A\sim\pi}\{Q^\pi_\tau(s,A)
--\tau\log[\pi(A\mid s)/\mu(A\mid s)]\}.
-\]
-Policy improvement minimizes KL to the Gibbs law induced by \(Q\). Function
-approximation and replay make practical SAC approximate; the exact tabular
-monotonicity theorem requires accurate evaluation and unrestricted policy
-updates.</p>
+Hence \(V_\tau=2\log2\), whereas \(V^*=2\log3\). The gap \(2\log(3/2)\) is smaller than the bound \(2\log2\).</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Show that for a fixed score vector \(q\), Gibbs probability concentrates on its maximizers as \(\tau\downarrow0\).</p><details><summary>Hint and solution</summary><p>Write \(M=\max_a q_a\). For a suboptimal action, \(p_\tau(a)=\mu_a e^{-(M-q_a)/\tau}/\sum_b\mu_b e^{-(M-q_b)/\tau}\to0\). On the maximizing set the limiting probabilities are proportional to \(\mu_a\). This statement fixes \(q\); a temperature-dependent score needs separate analysis.</p></details></li>
+<li><p>What is the exact optimization loss from using \(p\) instead of the Gibbs policy for a fixed \(q\)?</p><details><summary>Hint and solution</summary><p>The variational identity gives \(\tau\mathrm{KL}(p\|p^*)\). This measures a one-state policy update error, not by itself the total return loss after visitation distributions change.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://proceedings.mlr.press/v80/haarnoja18b.html">Haarnoja and coauthors, Soft Actor-Critic</a>. The finite Gibbs identity is proved here; continuous-action algorithmic results require their own assumptions.</p>

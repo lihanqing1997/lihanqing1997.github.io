@@ -1,148 +1,123 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "14. Actor-critic methods"
-breadcrumb_child_label_fr: "14. Méthodes acteur-critique"
-breadcrumb_child_label_zh: "14. 演员-评论家方法"
+breadcrumb_child_label_en: "16. Actor-critic methods"
+breadcrumb_child_label_fr: "16. Méthodes acteur-critique"
+breadcrumb_child_label_zh: "16. 演员-评论家方法"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/baselines-and-variance-reduction/"
-note_next_url: "/notes/reinforcement-learning/exploration-and-regret/"
+note_next_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
 ---
 
-<p>Actor-critic methods combine policy optimization with value estimation. The actor updates the policy; the critic estimates value or advantage information used by the actor.</p>
-
-    <h3>Actor and critic</h3>
-
-    <p>The two time scales correspond to two coupled stochastic approximation problems.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> An actor-critic method maintains policy parameters \(\theta\) and critic parameters \(w\). A typical update is
+<p class="rl-learning-goal">Connect critic error to actor bias, derive compatible features, and distinguish a local policy surrogate from a global improvement guarantee.</p>
+<h3>Which distribution does the actor need?</h3>
+<p>For \(J_\rho(\theta)=\rho^\top V^{\pi_\theta}\), the gradient uses discounted occupancy \(d_\rho^{\pi_\theta}\), not an arbitrary replay or stationary distribution. An exact sampling construction is to draw \(T\), independently of a trajectory from \(\rho\), with \(\Pr(T=t)=(1-\gamma)\gamma^t\). Then
 \[
-w_{t+1}=w_t+\beta_t\,\widehat{\Delta}_w,
-\qquad
-\theta_{t+1}=\theta_t+\alpha_t\,\widehat{\Delta}_\theta,
+ \Pr(S_T=s,A_T=a)=\sum_{t\ge0}(1-\gamma)\gamma^t
+       \Pr(S_t=s,A_t=a)=d_\rho^{\pi_\theta}(s,a).
 \]
-where the critic estimates \(v_{\pi_\theta}\), \(q_{\pi_\theta}\), or \(A_{\pi_\theta}\), and the actor uses this estimate in a policy-gradient step.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The critic is not an objective by itself; it supplies a lower-variance approximate gradient direction for the actor.</p>
-    </div>
-
-    <h3>TD critic for policy gradient</h3>
-
-    <p>A one-step TD error can estimate an advantage under the current policy.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(v=v_\pi\), then
+Equivalently one can weight all trajectory terms by \(\gamma^t\). A continuing-chain actor sampled from the stationary law generally optimizes a different expression unless a correction is supplied.</p>
+<p>A TD actor uses \(g_t=z_\theta(S_t,A_t)\delta_t^{\widetilde V}/(1-\gamma)\). If the critic is fixed for this fresh sample, with error \(e=\widetilde V-V^\pi\), then
 \[
-\mathbb E\{R_{t+1}+\gamma v(S_{t+1})-v(S_t)\mid S_t=s,A_t=a\}=A_\pi(s,a).
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The conditional expectation of \(R_{t+1}+\gamma v_\pi(S_{t+1})\) given \((s,a)\) is \(q_\pi(s,a)\). Subtracting \(v_\pi(s)\) gives \(A_\pi(s,a)\).</p>
-    </div>
-
-    <h3>Two-time-scale convergence</h3>
-
-    <p>Classical actor-critic theory often assumes the critic equilibrates faster than the actor.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Under standard smoothness, ergodicity, boundedness, and stepsize conditions with \(\alpha_t/\beta_t\to0\), two-time-scale actor-critic tracks an ODE in which the critic is near its fixed point for the current actor.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The critic recursion evolves on the faster time scale \(\beta_t\) and converges to the stable solution of its projected Bellman equation for quasi-static \(\theta\). The actor recursion sees the critic error as asymptotically negligible and follows the mean policy-gradient ODE. This is the standard two-time-scale stochastic approximation argument.</p>
-    </div>
-
-    <h3>Bias from approximate critics</h3>
-
-    <p>A critic can reduce variance but introduce bias if it estimates the wrong quantity.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Compatible function approximation and advantage centering are designed to make the critic's approximation error orthogonal to policy-score directions, thereby reducing gradient bias.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Coupled recursions</h3>
-
-<p>An actor--critic algorithm estimates a value object \(w\) while updating
-policy parameter \(\theta\):
-\[
-w_{t+1}=w_t+\beta_t H(w_t,\theta_t,Z_{t+1}),
+ \mathbb E[g_t]-\nabla J_\rho
+ =\frac{\gamma}{1-\gamma}\mathbb E_{(S,A)\sim d_\rho^\pi}
+           [z_\theta(S,A)(P e)(S,A)].
 \]
-\[
-\theta_{t+1}
-=\theta_t+\alpha_t
-\widehat A_t(w_t)\nabla_\theta\log\pi_{\theta_t}(A_t\mid S_t).
-\]
-The critic turns delayed returns into a lower-variance approximate advantage;
-its error can bias the actor.</p>
-
-<h3>Two-time-scale principle</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (ODE limit, schematic).</span> Suppose
-the state-action chain is uniformly ergodic over a compact parameter set,
-mean fields are Lipschitz, noise has controlled second moments,
-\[
-\sum_t\alpha_t=\sum_t\beta_t=\infty,\quad
-\sum_t(\alpha_t^2+\beta_t^2)&lt;\infty,\quad
-\frac{\alpha_t}{\beta_t}\to0,
-\]
-and for each fixed \(\theta\), the critic ODE
-\(\dot w=\bar H(w,\theta)\) has a globally stable equilibrium \(w^*(\theta)\).
-Then the critic tracks \(w^*(\theta_t)\), while actor limit points follow
-\[
-\dot\theta=\bar G(\theta,w^*(\theta))
-\]
-after projection to the parameter set.</p>
-</div>
-
-<p>This theorem is an application of two-time-scale stochastic approximation.
-The condition \(\alpha_t/\beta_t\to0\) means the critic sees the actor as nearly
-fixed, while the actor sees the critic as nearly equilibrated. It is not enough
-that both step sizes merely decrease.</p>
-
-<h3>When the actor direction is exact</h3>
-
+Indeed, \(\mathbb E[\delta^{\widetilde V}\mid s,a]=A^\pi(s,a)+\gamma Pe(s,a)-e(s)\), and \(\sum_a\pi(a\mid s)z(s,a)e(s)=0\). Hence the bias norm is at most \(\gamma L\|e\|_\infty/(1-\gamma)\) when \(\|z\|\le L\). Training and evaluation on a dependent sample require conditioning on the full history; this fixed-critic identity cannot silently treat a fitted random critic as independent.</p>
+<h3>Compatible function approximation</h3>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition (compatible critic).</span> Let
-\(\phi_\theta=\nabla_\theta\log\pi_\theta\), and choose \(w\) to minimize
-\[
-E_{d^\pi}\{A^\pi(S,A)-w^\top\phi_\theta(S,A)\}^2.
-\]
+<p><span class="statement-title">Proposition (compatible least squares).</span>
+Fix \(\theta\), let \(F=\mathbb E_d[zz^\top]\), and choose any minimizer \(w\) of
+\(\mathbb E_d[(Q^\pi(s,a)-b(s)-z(s,a)^\top w)^2]\).
 Then
 \[
-E_{d^\pi}\{\phi_\theta\,w^\top\phi_\theta\}
-=E_{d^\pi}(\phi_\theta A^\pi)
-=(1-\gamma)\nabla J(\theta).
+ Fw=\mathbb E_d[zQ^\pi]=(1-\gamma)\nabla J_\rho.
 \]
-Thus replacing advantage by the fitted compatible critic preserves the exact
-policy gradient.</p>
+Thus the fitted advantage gives the exact population gradient, even if its pointwise approximation is imperfect.</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The loss is the finite quadratic
+\[
+ L(w)=\mathbb E_d[(Q^\pi-b)^2]-2w^\top\mathbb E_d[z(Q^\pi-b)]+w^\top Fw.
+\]
+Its normal equation is \(Fw=\mathbb E_d[z(Q^\pi-b)]\). The baseline term is zero. If \(u\in\ker F\), then \(u^\top z=0\) \(d\)-almost surely, so \(u^\top\mathbb E_d[z(Q^\pi-b)]=0\). The right-hand side lies in \(\operatorname{range}F\), ensuring that solutions exist even if \(F\) is singular. Therefore
+\(\mathbb E_d[z(z^\top w)]=Fw=\mathbb E_d[zQ^\pi]\), as claimed.</p>
 </div>
 
-<p>An arbitrary value network does not satisfy this orthogonality identity.
-Approximation error may introduce a nonvanishing actor bias even with infinite
-data.</p>
-
-<h3>Bias from bootstrapping and shared data</h3>
-
-<p>Actor and critic use the same evolving Markov trajectory. Valid analysis
-must control temporal dependence, nonstationarity as \(\theta_t\) changes,
-bootstrapping bias, and estimation error in \(w_t\). Experience replay changes
-the sampling distribution and usually makes updates off-policy; importance
-weights or emphatic corrections may be required for the theorem targeted by
-the algorithm.</p>
-
-<h3>Average-reward actor--critic</h3>
-
-<p>For an ergodic continuing task with average reward \(\bar r(\theta)\), the
-differential value solves a Poisson equation
+<h3>Two time scales: what must be established</h3>
+<p>A typical recursion has a critic step \(\beta_n\) and a slower actor step \(\alpha_n\):
 \[
-h^\pi=r_\pi-\bar r(\pi)\mathbf1+P_\pi h^\pi,
+ w_{n+1}=w_n+\beta_n\{h(w_n,\theta_n)+M_{n+1}\},\qquad
+ \theta_{n+1}=\theta_n+\alpha_n\{g(w_n,\theta_n)+N_{n+1}\}.
 \]
-with a normalization such as \(d_\pi^\top h^\pi=0\). Policy gradients use the
-differential action value and stationary occupancy. This is not obtained by
-substituting \(\gamma=1\) into discounted formulas because values are defined
-only up to constants and mixing controls the effective horizon.</p>
+The usual step requirements are
+\(\sum\alpha_n=\sum\beta_n=\infty\),
+\(\sum(\alpha_n^2+\beta_n^2)&lt;\infty\), and \(\alpha_n/\beta_n\to0\).
+For example, \(\beta_n=n^{-0.6}\), \(\alpha_n=n^{-0.9}\) satisfy them. These conditions alone do not prove convergence.</p>
+<p><strong>External theorem input.</strong> Two-time-scale stochastic approximation additionally needs appropriate stability of the iterates, regularity of the mean fields, controlled noise, and an attracting critic equilibrium \(w_*(\theta)\); Markov sampling needs its own mixing/Poisson-equation conditions. Under a theorem that establishes
+\(\|w_n-w_*(\theta_n)\|\to0\), a locally Lipschitz actor field satisfies, on a compact set,
+\[
+ \|g(w_n,\theta_n)-g(w_*(\theta_n),\theta_n)\|
+ \le C\|w_n-w_*(\theta_n)\|\longrightarrow0.
+\]
+This is the precise reduction to the limiting actor field. It does not identify that field with \(\nabla J_\rho\) unless the critic and sampling identities above also hold. Nor does convergence to stationary points imply global optimality for arbitrary neural policies. We use the general tracking theorem as a sourced input, rather than omit its stability hypotheses in a purported short proof.</p>
+<h3>A quantitative policy-surrogate bound</h3>
+<p>For two stationary policies define \(d=d_{\rho,S}^\pi\), \(d'=d_{\rho,S}^{\pi'}\),
+\(f(s)=\sum_a\pi'(a\mid s)A^\pi(s,a)\), and
+\[
+ \mathcal L_\pi(\pi')=J_\rho(\pi)+\frac{d^\top f}{1-\gamma},
+ \qquad \epsilon=\max_s\sum_a|\pi'(a\mid s)-\pi(a\mid s)|.
+\]</p>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (surrogate error).</span>
+\[
+ |J_\rho(\pi')-\mathcal L_\pi(\pi')|
+ \le\frac{\gamma\epsilon\|f\|_\infty}{(1-\gamma)^2}.
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Subtract the occupancy flow equations to obtain, as row vectors,
+\[
+ (d'-d)^\top=\gamma(d'-d)^\top P_{\pi'}
+             +\gamma d^\top(P_{\pi'}-P_\pi).
+\]
+A stochastic matrix does not increase the \(\ell^1\) norm of a signed row vector, and
+\[
+ \sum_{s'}|P_{\pi'}(s,s')-P_\pi(s,s')|
+ \le\sum_a|\pi'(a\mid s)-\pi(a\mid s)|
+             \sum_{s'}P(s'\mid s,a)\le\epsilon.
+\]
+Therefore \((1-\gamma)\|d'-d\|_1\le\gamma\epsilon\).
+The performance-difference identity gives
+\[
+ J_\rho(\pi')-\mathcal L_\pi(\pi')=\frac{(d'-d)^\top f}{1-\gamma},
+\]
+and Hölder's inequality proves the bound. In particular, a surrogate gain exceeding the displayed error certifies improvement. Moreover
+\(\|f\|_\infty=\|\sum_a(\pi'-\pi)A^\pi\|_\infty
+\le\epsilon\|A^\pi\|_\infty\), giving a quadratic bound in \(\epsilon\).</p>
+</div>
+
+<p>TRPO motivates a policy-distance constraint using this type of argument. PPO instead optimizes the empirical clipped expression
+\[
+ \mathbb E\!\left[\min\left\{r_\theta\widehat A,\,
+       \operatorname{clip}(r_\theta,1-\epsilon_c,1+\epsilon_c)\widehat A\right\}\right],
+ \qquad r_\theta=\frac{\pi_\theta(A\mid S)}{\pi_{\rm old}(A\mid S)}.
+\]
+Clipping this sampled objective does not enforce a uniform statewise policy-distance constraint; the preceding theorem is not automatically a monotonic-improvement theorem for PPO.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a critic can be wrong without biasing this actor).</span>
+In the one-state two-action example, let \(\widetilde V=V^\pi+c\). Since \(Pe=c\) for both actions,
+\[
+ \mathbb E[z\,\delta^{\widetilde V}]
+ =\mathbb E[zA^\pi]+(\gamma-1)c\,\mathbb E[z]
+ =\mathbb E[zA^\pi].
+\]
+The actor mean is correct for any constant \(c\), although its variance can change. In multiple states an action-dependent next-state error \(Pe(s,a)\) need not cancel.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Why does a replay buffer drawn from a different state law invalidate the exact compatible-gradient conclusion for \(J_\rho\)?</p><details><summary>Hint and solution</summary><p>The normal equation then uses the replay-weighted matrix and right-hand side, whereas the gradient theorem uses \(d_\rho^\pi\). Equality requires matching that law or a valid density-ratio correction, in addition to action corrections.</p></details></li>
+<li><p>Let \(\gamma=1/2\), \(\epsilon=0.1\), and \(\|A^\pi\|_\infty\le2\). What surrogate gain suffices to certify strict improvement?</p><details><summary>Hint and solution</summary><p>The quadratic error is at most \(\gamma\epsilon^2\|A^\pi\|_\infty/(1-\gamma)^2=0.04\). A gain strictly larger than \(0.04\) suffices.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://doi.org/10.1016/S0167-6911(97)90015-3">Borkar, stochastic approximation with two time scales</a>; <a href="https://proceedings.mlr.press/v37/schulman15.html">TRPO</a>; <a href="https://arxiv.org/abs/1707.06347">PPO</a>. The two-time-scale tracking theory is an external input, not a claim proved by the actor-bias calculation.</p>

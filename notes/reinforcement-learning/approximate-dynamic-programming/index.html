@@ -1,175 +1,137 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "19. Approximate dynamic programming"
-breadcrumb_child_label_fr: "19. Programmation dynamique approchée"
-breadcrumb_child_label_zh: "19. 近似动态规划"
+breadcrumb_child_label_en: "13. Approximate dynamic programming"
+breadcrumb_child_label_fr: "13. Programmation dynamique approchée"
+breadcrumb_child_label_zh: "13. 近似动态规划"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/function-approximation/"
-note_next_url: "/notes/reinforcement-learning/entropy-regularized-reinforcement-learning/"
+note_next_url: "/notes/reinforcement-learning/policy-gradient-theorem/"
 ---
 
-<p>Approximate dynamic programming studies how errors in Bellman backups, projections, simulations, and greedy steps propagate through control algorithms.</p>
-
-    <h3>Approximate value iteration</h3>
-
-    <p>Each Bellman backup may be followed by approximation error.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Approximate value iteration has the form
-\[
-v_{k+1}=T_*v_k+\varepsilon_k.
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(\|\varepsilon_k\|_\infty\le\varepsilon\), then
-\[
-\limsup_{k\to\infty}\|v_k-v_*\|_\infty\le\frac{\varepsilon}{1-\gamma}.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Use contraction:
-\[
-\|v_{k+1}-v_*\|_\infty\le\gamma\|v_k-v_*\|_\infty+\varepsilon.
-\]
-Iterating this scalar recursion and letting \(k\to\infty\) gives the bound.</p>
-    </div>
-
-    <h3>Approximate greedy policies</h3>
-
-    <p>Control loss depends on both value approximation and greedy-step error.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A policy \(\pi\) is \(\eta\)-greedy with respect to \(v\) if
-\[
-T_\pi v\ge T_*v-\eta\mathbf 1.
-\]</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> If \(\pi\) is \(\eta\)-greedy with respect to \(v\), then
-\[
-\|v_*-v_\pi\|_\infty
-\le \frac{2\gamma}{1-\gamma}\|v-v_*\|_\infty+\frac{\eta}{1-\gamma}.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Compare \(T_*v_*\) and \(T_\pi v_\pi\), adding and subtracting \(T_*v\) and \(T_\pi v\). The approximation terms are bounded by \(\gamma\|v-v_*\|_\infty\), the greedy error contributes \(\eta\), and the remaining \(T_\pi(v-v_\pi)\) term is absorbed by \(1-\gamma\).</p>
-    </div>
-
-    <h3>Simulation error</h3>
-
-    <p>Sampled Bellman backups introduce statistical error in addition to approximation error.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Fitted value iteration and fitted Q-iteration replace conditional expectations by regression estimates. Their analysis combines supervised-learning generalization error with Bellman error propagation.</p>
-    </div>
-
-    <h3>Error norms</h3>
-
-    <p>The norm in which approximation is small matters for control.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Sup-norm error gives clean worst-case control guarantees. \(L^2\)-type errors are often easier statistically but require concentrability coefficients to translate behavior-distribution accuracy into target-policy performance.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Approximate value iteration</h3>
-
-<p>Suppose
-\[
-V_{k+1}=TV_k+\varepsilon_k,
-\qquad
-\|\varepsilon_k\|_\infty\le\varepsilon.
-\]
-Then contraction gives
+<p class="rl-learning-goal">Quantify how backup error, imperfect greediness, and distribution mismatch affect a learned policy.</p>
+<h3>Errors in repeated Bellman backups</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> For \(V_{k+1}=TV_k+\epsilon_k\),
 \[
 \|V_k-V^*\|_\infty
-\le\gamma^k\|V_0-V^*\|_\infty
-+\sum_{j=0}^{k-1}\gamma^{k-1-j}\|\varepsilon_j\|_\infty,
+\le\gamma^k\|V_0-V^*\|_\infty+
+\sum_{j=0}^{k-1}\gamma^{k-1-j}\|\epsilon_j\|_\infty.
 \]
-so
+If \(\|\epsilon_j\|_\infty\le\epsilon\), the limiting upper error is \(\epsilon/(1-\gamma)\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Subtract \(TV^*=V^*\):
 \[
-\limsup_k\|V_k-V^*\|_\infty\le\frac{\varepsilon}{1-\gamma}.
+\|V_{k+1}-V^*\|_\infty
+\le\|TV_k-TV^*\|_\infty+\|\epsilon_k\|_\infty
+\le\gamma\|V_k-V^*\|_\infty+\|\epsilon_k\|_\infty.
 \]
-If \(\pi_k\) is greedy with respect to \(V_k\), its eventual loss can be as
-large as order \(\gamma\varepsilon/(1-\gamma)^2\).</p>
-
-<h3>Approximate policy iteration</h3>
-
-<p>Let \(\widehat V_k\) approximate \(V^{\pi_k}\), and let \(\pi_{k+1}\) be
-\(\delta_k\)-greedy:
+Iterate this scalar recursion to get the finite convolution. Its second term is bounded by
 \[
-T\widehat V_k
-\le T^{\pi_{k+1}}\widehat V_k+\delta_k\mathbf1.
+\epsilon\sum_{j=0}^{k-1}\gamma^{k-1-j}
+=\epsilon\frac{1-\gamma^k}{1-\gamma}.
 \]
-The performance-difference identity and resolvent
-\((I-\gamma P_\pi)^{-1}\) propagate evaluation and greedification errors.
-Sup-norm analysis yields effective-horizon factors; distribution-dependent
-analysis can be sharper but needs coverage coefficients.</p>
+Taking the upper limit gives the claim. Vanishing backup errors imply convergence by the finite-prefix and small-tail argument proved in the contraction chapter.</p>
+</div>
 
-<h3>Fitted value and Q iteration</h3>
+<h3>Imperfect action selection</h3>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (approximate greediness).</span> Suppose \(0\le TV-T^\pi V\le\eta\mathbf1\). Then
+\[
+\|V^*-V^\pi\|_\infty
+\le\frac{2\gamma\|V-V^*\|_\infty+\eta}{1-\gamma}.
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Insert the two approximate backups into the value difference:
+\[
+V^*-V^\pi=(TV^*-TV)+(TV-T^\pi V)+(T^\pi V-T^\pi V^\pi).
+\]
+Put \(L=\|V^*-V^\pi\|_\infty\), \(e=\|V-V^*\|_\infty\). The first term is bounded by \(\gamma e\), the second by \(\eta\), and the third by
+\[
+\gamma\|V-V^\pi\|_\infty
+\le\gamma(e+L).
+\]
+Thus \(L\le2\gamma e+\eta+\gamma L\), and division by \(1-\gamma\) proves the result.</p>
+</div>
 
-<p>Given transitions \((S_i,A_i,R_i,S_i')\), fitted Q iteration forms targets
+<p>For fitted value iteration with uniform backup error \(\epsilon\) and action-selection error \(\eta\), the two results imply an eventual policy-loss bound \(2\gamma\epsilon/(1-\gamma)^2+\eta/(1-\gamma)\). An exact greedy step cannot repair persistent error in the values it uses.</p>
+<h3>A quantified approximate policy-improvement step</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition.</span> If \(\|\widehat V-V^\pi\|_\infty\le\epsilon\) and \(\pi'\) is \(\eta\)-greedy for \(\widehat V\), then
+\[
+V^{\pi'}-V^\pi\ge-\frac{2\gamma\epsilon+\eta}{1-\gamma}\mathbf1.
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+By monotonicity and the contraction bounds,
+\[
+\begin{aligned}
+T^{\pi'}V^\pi
+&amp;\ge T^{\pi'}\widehat V-\gamma\epsilon\mathbf1\\
+&amp;\ge T\widehat V-(\eta+\gamma\epsilon)\mathbf1\\
+&amp;\ge TV^\pi-(\eta+2\gamma\epsilon)\mathbf1
+\ge V^\pi-(\eta+2\gamma\epsilon)\mathbf1.
+\end{aligned}
+\]
+Apply the exact improvement identity to this possibly negative advantage:
+\[
+V^{\pi'}-V^\pi
+=(I-\gamma P_{\pi'})^{-1}(T^{\pi'}V^\pi-V^\pi)
+\ge-(\eta+2\gamma\epsilon)\sum_{t\ge0}\gamma^tP_{\pi'}^t\mathbf1.
+\]
+Since \(P_{\pi'}^t\mathbf1=\mathbf1\), the sum is \(\mathbf1/(1-\gamma)\). This is a one-step guarantee, not a convergence theorem for arbitrary approximate policy iteration.</p>
+</div>
+
+<h3>Fitted Q iteration and statistical error</h3>
+<p>Given transition tuples, fitted Q iteration forms
 \[
 Y_i=R_i+\gamma\max_aQ_k(S_i',a)
 \]
-and regresses \(Y_i\) onto \((S_i,A_i)\) in a class \(\mathcal F\). A useful
-error decomposition is
+and regresses \(Y_i\) on \((S_i,A_i)\) in a class \(\mathcal F\). If \(\Pi_{\mathcal F}\mathcal TQ_k\) denotes a chosen population squared-loss minimizer under the data law \(\nu\), then the exact decomposition is
 \[
 \widehat Q_{k+1}-\mathcal TQ_k
-=
-\underbrace{\Pi_{\mathcal F}\mathcal TQ_k-\mathcal TQ_k}_{\text{approximation}}
-+
-\underbrace{\widehat Q_{k+1}
--\Pi_{\mathcal F}\mathcal TQ_k}_{\text{estimation/optimization}}.
+=(\Pi_{\mathcal F}\mathcal TQ_k-\mathcal TQ_k)
++(\widehat Q_{k+1}-\Pi_{\mathcal F}\mathcal TQ_k).
 \]
-Bellman propagation then converts one-step errors into policy loss.</p>
-
-<h3>Concentrability</h3>
-
-<div class="math-statement definition">
-<p><span class="statement-title">Definition.</span> A concentrability
-coefficient controls mismatch between state-action distributions generated by
-policies of interest and the data law \(\nu\), for example
+The first is representation error; the second includes estimation and optimization. If the same data determine \(Q_k\), ordinary fixed-target concentration does not automatically apply. Sample splitting, uniform bounds over the function class, or an explicit stability argument must handle that dependence.</p>
+<h3>Why the sampling norm matters</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (coverage transfer).</span> For state-action laws \(\nu,\xi\) with \(\xi\ll\nu\) and \(\|\mathrm{d}\xi/\mathrm{d}\nu\|_\infty\le C\),
 \[
-C_\infty
-=\sup_{\pi,t}
-\left\|\frac{\mathrm{d}(\rho P_\pi^t)}
-{\mathrm{d}\nu_S}\right\|_\infty.
+\|e\|_{L_2(\xi)}\le\sqrt C\,\|e\|_{L_2(\nu)},\qquad
+\mathbb E_\xi|e|\le\sqrt C\,\|e\|_{L_2(\nu)}.
 \]</p>
 </div>
-
-<p>If this is infinite, a small \(L_2(\nu)\) Bellman error can hide arbitrarily
-large error where the learned policy visits. Offline RL is therefore impossible
-without some coverage, structural extrapolation assumption, or conservative
-restriction on the learned policy.</p>
-
-<h3>Simulation lemmas</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (model perturbation).</span> If two
-discounted MDPs satisfy
-\[
-\|r-\tilde r\|_\infty\le\varepsilon_r,\qquad
-\sup_{s,a}\|P(\cdot\mid s,a)-\tilde P(\cdot\mid s,a)\|_{\mathrm{TV}}
-\le\varepsilon_P,
-\]
-and rewards are bounded by \(R_{\max}\), then for every policy,
-\[
-\|V^\pi-\tilde V^\pi\|_\infty
-\le\frac{\varepsilon_r}{1-\gamma}
-+\frac{2\gamma R_{\max}\varepsilon_P}{(1-\gamma)^2}.
-\]</p>
-</div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Subtract the two Bellman
-equations. The reward term contributes \(\varepsilon_r\); transition error
-against \(\tilde V^\pi\), whose sup norm is at most
-\(R_{\max}/(1-\gamma)\), contributes
-\(2\gamma R_{\max}\varepsilon_P/(1-\gamma)\). Move the remaining
-\(\gamma\|V^\pi-\tilde V^\pi\|\) term to the left.</p>
+<p><span class="statement-title">Proof.</span>
+Let \(w=\mathrm{d}\xi/\mathrm{d}\nu\). Since \(0\le w\le C\),
+\[
+\int e^2\,\mathrm{d}\xi=\int we^2\,\mathrm{d}\nu
+\le C\int e^2\,\mathrm{d}\nu.
+\]
+Take square roots. Cauchy–Schwarz under the probability law \(\xi\) gives
+\[
+\int|e|\,\mathrm{d}\xi
+\le\left(\int e^2\,\mathrm{d}\xi\right)^{1/2}
+\left(\int1\,\mathrm{d}\xi\right)^{1/2}.
+\]
+For control, the needed \(\xi\)'s are occupancies induced by the relevant policies or sequences of policies; specifying only a convenient training distribution is insufficient.</p>
 </div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (small training error, large policy error).</span>
+Consider a one-step problem with two actions, rewards \(r(a)=0,r(b)=1\), and data law \(\nu(a)=1\). Let \(Q(a)=0,Q(b)=-M\) for \(M&gt;0\). Then
+\[
+\|Q-Q^*\|_{L_2(\nu)}=0,
+\]
+but the greedy policy chooses \(a\) and loses reward \(1\). The missing action has zero data mass, so no finite coverage coefficient transfers the training norm to the optimal action distribution.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>At \(\gamma=0.8\), uniform backup error \(0.01\), and exact greediness, compute the eventual loss bound.</p><details><summary>Hint and solution</summary><p>The value bound is \(0.01/0.2=0.05\); the policy bound is \(2(0.8)(0.01)/(0.2)^2=0.4\). This is a worst-case guarantee, not a claim that every fitted algorithm incurs that loss.</p></details></li>
+<li><p>Modify the example to \(\nu(b)=p&gt;0\). Compute the error norm and the coverage coefficient for always choosing \(b\).</p><details><summary>Hint and solution</summary><p>The error at \(b\) is \(-M-1\), so \(\|Q-Q^*\|_{L_2(\nu)}=\sqrt p(M+1)\). For \(\xi=\delta_b\), \(C=1/p\); the transferred bound is exactly \(M+1\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, approximate dynamic programming and coverage; <a href="https://arxiv.org/abs/2510.04088">Jiang–Xie, Offline reinforcement learning in large state spaces</a>, for the distinction between realizability, Bellman completeness, and data coverage. Model perturbation bounds are proved in the later model-based chapter.</p>

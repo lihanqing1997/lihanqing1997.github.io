@@ -5,171 +5,147 @@ breadcrumb_child_label_fr: "11. Traces d’éligibilité et TD lambda"
 breadcrumb_child_label_zh: "11. 资格迹与 TD lambda"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/q-learning/"
-note_next_url: "/notes/reinforcement-learning/policy-gradient-theorem/"
+note_next_url: "/notes/reinforcement-learning/function-approximation/"
 ---
 
-<p>Eligibility traces interpolate between one-step TD and Monte Carlo returns. They assign credit backward through recently visited states or features.</p>
-
-    <h3>Lambda returns</h3>
-
-    <p>The \(\lambda\)-return averages \(n\)-step returns geometrically.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The \(n\)-step return is
+<p class="rl-learning-goal">Derive the lambda-return, its limiting cases, and the precise fixed-value forward–backward identity.</p>
+<h3>Longer returns and their limits</h3>
+<p>Fix a bounded value vector \(V\) throughout the calculation, and assume bounded rewards and \(\gamma&lt;1\). Define
 \[
-G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+\cdots+\gamma^{n-1}R_{t+n}+\gamma^nv(S_{t+n}).
+G_t^{(n)}=\sum_{k=0}^{n-1}\gamma^kR_{t+k+1}+\gamma^nV(S_{t+n}),\qquad
+G_t^\lambda=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}G_t^{(n)}
 \]
-The forward-view \(\lambda\)-return is
-\[
-G_t^\lambda=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}G_t^{(n)},\qquad 0\le\lambda&lt;1.
-\]</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> When \(\lambda=0\), \(G_t^\lambda\) is the one-step TD target. As \(\lambda\uparrow1\), it approaches the Monte Carlo return when the discounted return is finite.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> At \(\lambda=0\), only \(n=1\) has positive weight. As \(\lambda\uparrow1\), the geometric weighting shifts mass to longer horizons; with bounded discounted returns, Abelian convergence gives the full return limit.</p>
-    </div>
-
-    <h3>Backward eligibility traces</h3>
-
-    <p>The backward view computes the same credit assignment online.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For tabular TD, the accumulating trace is
-\[
-e_t(s)=\gamma\lambda e_{t-1}(s)+\mathbf 1\{S_t=s\}.
-\]
-The update is
-\[
-v_{t+1}(s)=v_t(s)+\alpha_t\delta_t e_t(s).
-\]</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The trace marks which previous states are eligible to receive the current TD error. Larger \(\lambda\) makes credit assignment more persistent.</p>
-    </div>
-
-    <h3>Forward-backward equivalence</h3>
-
-    <p>For fixed value estimates within an episode, the forward and backward views agree.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In the episodic tabular case with offline updates, summing TD errors with eligibility traces gives the same total update as using forward-view \(\lambda\)-returns.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Expand the backward update as a double sum over times and traces:
-\[
-\sum_t\delta_te_t(s)=\sum_{k:S_k=s}\sum_{t\ge k}(\gamma\lambda)^{t-k}\delta_t.
-\]
-The inner discounted sum telescopes into \(G_k^\lambda-v(S_k)\), which is precisely the forward-view error for visit \(k\).</p>
-    </div>
-
-    <h3>Bias-variance continuum</h3>
-
-    <p>The trace parameter tunes between bootstrapping and full returns.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Small \(\lambda\) uses more bootstrapping and often lower variance; large \(\lambda\) uses longer returns and often lower bootstrap bias. The best value depends on mixing, reward noise, and approximation error.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Lambda returns</h3>
-
-<p>The \(n\)-step return from time \(t\) is
-\[
-G_t^{(n)}
-=\sum_{k=0}^{n-1}\gamma^kR_{t+k+1}
-+\gamma^nV(S_{t+n}).
-\]
-For \(0\le\lambda&lt;1\), the forward lambda return is
-\[
-G_t^\lambda
-=(1-\lambda)\sum_{n=1}^{\infty}\lambda^{n-1}G_t^{(n)}.
-\]
-It interpolates between one-step TD at \(\lambda=0\) and Monte Carlo return as
-\(\lambda\uparrow1\), when episodes or discounting make the limit meaningful.</p>
-
+for \(0\le\lambda&lt;1\). At \(\lambda=0\), interpret the weights as unit mass at \(n=1\).</p>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition (lambda operator).</span> For a
-fixed policy,
+<p><span class="statement-title">Proposition (controlled Monte Carlo limit).</span> Let \(C=\|V\|_\infty+R_{\max}/(1-\gamma)\). Then
 \[
-T_\lambda^\pi V
-=(1-\lambda)\sum_{n\ge1}\lambda^{n-1}(T^\pi)^nV
+|G_t^{(n)}-G_t|\le C\gamma^n,\qquad
+|G_t^\lambda-G_t|\le
+C\frac{\gamma(1-\lambda)}{1-\gamma\lambda}.
+\]
+Consequently \(G_t^\lambda\to G_t\) uniformly over paths, and hence in \(L^1\), as \(\lambda\uparrow1\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Subtract the infinite return, leaving a bootstrap term and a discounted reward tail:
+\[
+G_t^{(n)}-G_t
+=\gamma^nV(S_{t+n})-\sum_{k=n}^\infty\gamma^kR_{t+k+1}.
+\]
+Their absolute values sum to at most \(C\gamma^n\). The lambda weights are nonnegative and sum to one, so
+\[
+\begin{aligned}
+|G_t^\lambda-G_t|
+&amp;\le(1-\lambda)\sum_{n\ge1}\lambda^{n-1}|G_t^{(n)}-G_t|\\
+&amp;\le C(1-\lambda)\sum_{n\ge1}\lambda^{n-1}\gamma^n
+=C\frac{\gamma(1-\lambda)}{1-\gamma\lambda}.
+\end{aligned}
+\]
+The denominator tends to \(1-\gamma&gt;0\). The deterministic upper bound proves both pathwise and \(L^1\) convergence, without an unspecified Abelian-limit argument.</p>
+</div>
+
+<h3>The multistep Bellman operator</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (lambda resolvent).</span> For a fixed stationary policy,
+\[
+T_\lambda^\pi V=(1-\lambda)\sum_{n\ge1}\lambda^{n-1}(T^\pi)^nV
 =V+(I-\gamma\lambda P_\pi)^{-1}(T^\pi V-V).
 \]
-Its fixed point is \(V^\pi\), and its sup-norm contraction modulus is
-\[
-\kappa_\lambda
-=\frac{\gamma(1-\lambda)}{1-\gamma\lambda}.
-\]</p>
+Its fixed point is \(V^\pi\), and its sup-norm Lipschitz constant is at most
+\(\kappa_\lambda=\gamma(1-\lambda)/(1-\gamma\lambda)&lt;1\).</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Expand
-\((T^\pi)^nV=\sum_{k=0}^{n-1}\gamma^kP_\pi^kr_\pi
-+\gamma^nP_\pi^nV\), interchange absolutely convergent sums, and recognize the
-resolvent. The reward terms cancel when taking differences, giving
+<p><span class="statement-title">Proof.</span>
+Induction on \(n\) gives
+\[
+(T^\pi)^nV-V
+=\sum_{k=0}^{n-1}\gamma^kP_\pi^k(T^\pi V-V).
+\]
+The weighted double sum of norms is bounded by
+\[
+(1-\lambda)\sum_{n\ge1}\lambda^{n-1}
+\sum_{k=0}^{n-1}\gamma^k\|T^\pi V-V\|_\infty
+\le\frac{\|T^\pi V-V\|_\infty}{1-\gamma}.
+\]
+Thus rearrangement is justified by absolute convergence. For a fixed \(k\),
+\((1-\lambda)\sum_{n=k+1}^\infty\lambda^{n-1}=\lambda^k\). Hence
+\[
+T_\lambda^\pi V-V
+=\sum_{k\ge0}(\gamma\lambda)^kP_\pi^k(T^\pi V-V).
+\]
+This is the resolvent formula. Taking differences cancels rewards:
 \[
 T_\lambda^\pi V-T_\lambda^\pi W
-=(1-\lambda)\gamma P_\pi
-(I-\lambda\gamma P_\pi)^{-1}(V-W),
+=(1-\lambda)\sum_{n\ge1}\lambda^{n-1}\gamma^nP_\pi^n(V-W).
 \]
-whose operator norm is at most the displayed geometric sum.</p>
+Its norm is at most \(\kappa_\lambda\|V-W\|_\infty\). Substituting \(V^\pi\) in the resolvent yields a fixed point; contraction proves uniqueness.</p>
 </div>
 
-<h3>Backward eligibility traces</h3>
-
-<p>For linear prediction, accumulating traces satisfy
+<h3>Forward and backward credit assignment</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (TD-error expansion).</span> For fixed \(V\), put \(\delta_t=R_{t+1}+\gamma V(S_{t+1})-V(S_t)\). Then
 \[
-z_t=\gamma\lambda z_{t-1}+\phi(S_t),
-\qquad
-w_{t+1}=w_t+\alpha_t\delta_tz_t.
-\]
-The trace records a geometrically decaying memory of past features, assigning
-the current TD error backward to recently visited states.</p>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (forward--backward equivalence).</span>
-For a fixed finite trajectory, fixed value estimates during the episode, and
-offline accumulation of updates, the total update generated by TD errors and
-eligibility traces equals
-\[
-\sum_t\alpha\{G_t^\lambda-V(S_t)\}\phi(S_t).
+G_t^\lambda-V(S_t)=\sum_{k=0}^\infty(\gamma\lambda)^k\delta_{t+k}.
 \]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> The identity
+<p><span class="statement-title">Proof.</span>
+For each finite \(n\), expand and cancel the intermediate value terms:
 \[
-G_t^\lambda-V(S_t)
-=\sum_{k=t}^{\infty}(\gamma\lambda)^{k-t}\delta_k
+\begin{aligned}
+\sum_{k=0}^{n-1}\gamma^k\delta_{t+k}
+&amp;=\sum_{k=0}^{n-1}\gamma^kR_{t+k+1}
++\sum_{k=0}^{n-1}\gamma^{k+1}V(S_{t+k+1})
+-\sum_{k=0}^{n-1}\gamma^kV(S_{t+k})\\
+&amp;=G_t^{(n)}-V(S_t).
+\end{aligned}
 \]
-follows by expanding TD errors and telescoping value terms. Substitute it into
-the forward update and interchange the two sums. The coefficient of
-\(\delta_k\) becomes
-\(\sum_{t\le k}(\gamma\lambda)^{k-t}\phi(S_t)=z_k\).</p>
+Since \(|\delta_t|\le D:=R_{\max}+(1+\gamma)\|V\|_\infty\), the weighted sum of absolute terms is at most \(D/(1-\gamma)\). Weight by \((1-\lambda)\lambda^{n-1}\), rearrange the absolutely convergent double sum, and use the same weight identity:
+\[
+(1-\lambda)\sum_{n\ge1}\lambda^{n-1}\sum_{k=0}^{n-1}\gamma^k\delta_{t+k}
+=\sum_{k\ge0}(\gamma\lambda)^k\delta_{t+k}.
+\]</p>
+</div>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (offline forward–backward equivalence).</span> For a finite episode ending at time \(H\), take terminal value zero and extend rewards and values by zero thereafter. Hold \(V\) fixed during the episode. Let features be \(\phi_t=\phi(S_t)\) and \(z_{-1}=0,\ z_t=\gamma\lambda z_{t-1}+\phi_t\). With a common step \(\alpha\), the total forward and backward updates agree:
+\[
+\alpha\sum_{t=0}^{H-1}[G_t^\lambda-V(S_t)]\phi_t
+=\alpha\sum_{k=0}^{H-1}\delta_k z_k.
+\]</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The preceding identity terminates at \(H-1\) because all later TD errors are zero. Expanding the trace recursively gives
+\[
+z_k=\sum_{t=0}^k(\gamma\lambda)^{k-t}\phi_t.
+\]
+All sums are finite, so their order can be exchanged directly:
+\[
+\begin{aligned}
+\sum_{t=0}^{H-1}[G_t^\lambda-V(S_t)]\phi_t
+&amp;=\sum_{t=0}^{H-1}\sum_{k=t}^{H-1}
+(\gamma\lambda)^{k-t}\delta_k\phi_t\\
+&amp;=\sum_{k=0}^{H-1}\delta_k
+\sum_{t=0}^k(\gamma\lambda)^{k-t}\phi_t
+=\sum_{k=0}^{H-1}\delta_kz_k.
+\end{aligned}
+\]
+If \(V\) changes within the episode, the telescoping calculation no longer uses one fixed function; ordinary online accumulating traces are then not exactly this offline forward view. True-online TD uses a corrected trace to obtain a corresponding online identity.</p>
+</div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (two rewards and two credits).</span>
+Let an episode have rewards \(R_1=0,R_2=1\), terminal state at time 2, \(V=0\), and \(\gamma=\lambda=1/2\). Then \(\delta_0=0,\delta_1=1\), and
+\[
+G_0^\lambda=(\gamma\lambda)\delta_1=\tfrac14,\qquad G_1^\lambda=1.
+\]
+For distinct state indicators \(e_0,e_1\), the last trace is \(z_1=\tfrac14e_0+e_1\). The backward update \(\alpha\delta_1z_1\) therefore assigns exactly the same credits as the two forward errors.</p>
 </div>
 
-<h3>Bias, variance, and effective horizon</h3>
-
-<p>Larger \(\lambda\) weakens bootstrapping and reduces approximation bias but
-propagates more reward noise. The effective trace horizon is roughly
-\((1-\gamma\lambda)^{-1}\). In continuing tasks with large \(\gamma\), even a
-moderate \(\lambda\) can create long memory and substantial temporal
-correlation.</p>
-
 <h3>Off-policy traces</h3>
-
-<p>Naive traces are biased off-policy. Per-decision importance sampling inserts
-ratios \(\rho_t=\pi(A_t\mid S_t)/\mu(A_t\mid S_t)\), but products can explode.
-Algorithms such as Retrace and V-trace use truncated coefficients
-\[
-c_t=\lambda\min(\bar c,\rho_t)
-\]
-to preserve a contractive multistep operator while trading exact correction
-for controlled bias. Their guarantees depend on the exact operator induced by
-the clipping rule, not on the trace recursion alone.</p>
+<p>Importance ratios \(\rho_t=\pi(A_t\mid S_t)/\mu(A_t\mid S_t)\) correct the target policy, but their products can have large variance. Retrace and V-trace truncate some coefficients. Their fixed points depend on which ratios are clipped: clipping trace propagation need not introduce the same bias as clipping the policy correction in the TD residual. Specify the entire operator before claiming either exactness or bias. The unweighted on-policy proof above does not establish an off-policy theorem.</p>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Compute \(\kappa_\lambda\) at \(\gamma=0.9\) for \(\lambda=0,1/2,0.9\).</p><details><summary>Hint and solution</summary><p>The values are \(0.9\), \(0.45/0.55=9/11\), and \(0.09/0.19=9/19\). Longer expected backups contract more strongly, although sampled returns can have more noise.</p></details></li>
+<li><p>In the two-step example, replace \(\lambda\) by 1. What are the forward credits?</p><details><summary>Hint and solution</summary><p>Define the endpoint by the Monte Carlo return. The credits are \(G_0=1/2\) and \(G_1=1\); the trace is \(z_1=(1/2)e_0+e_1\). The finite-episode identity remains valid at \(\lambda=1\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapters 7 and 12. For distinct off-policy operators see <a href="https://arxiv.org/abs/1606.02647">Munos et al., Safe and efficient off-policy reinforcement learning</a>, and <a href="https://proceedings.mlr.press/v80/espeholt18a.html">Espeholt et al., IMPALA</a>.</p>

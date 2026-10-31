@@ -1,143 +1,158 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "22. Linear-quadratic control and continuous actions"
-breadcrumb_child_label_fr: "22. Contrôle linéaire-quadratique et actions continues"
-breadcrumb_child_label_zh: "22. 线性二次控制与连续动作"
+breadcrumb_child_label_en: "24. Linear-quadratic control and continuous actions"
+breadcrumb_child_label_fr: "24. Contrôle linéaire-quadratique et actions continues"
+breadcrumb_child_label_zh: "24. 线性二次控制与连续动作"
 note_back_url: "/notes/reinforcement-learning/"
 note_prev_url: "/notes/reinforcement-learning/partially-observable-problems/"
-note_next_url: "/notes/reinforcement-learning/model-based-reinforcement-learning/"
+note_next_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control/"
 ---
 
-<p>Linear-quadratic control is the central exactly solvable continuous-state
-control problem. It exposes Riccati equations, stability, certainty
-equivalence, and the relation between dynamic programming and policy
-optimization without hiding them inside a nonlinear function approximator.</p>
-
-<h3>Finite-horizon linear-quadratic regulation</h3>
-
-<p>Consider deterministic dynamics and cost
+<p class="rl-learning-goal">Derive the discounted Riccati equation, prove the infinite-horizon limit under a stated stability assumption, and differentiate a stabilizing policy's cost.</p>
+<h3>Quadratic cost and discounted stability</h3>
+<p>Here we <em>minimize cost</em>. Let \(x_t\in\mathbb R^d\), \(u_t\in\mathbb R^m\),
 \[
-x_{t+1}=Ax_t+Bu_t,
+ x_{t+1}=Ax_t+Bu_t,\qquad
+ J(x_0;u)=\sum_{t=0}^\infty\gamma^t(x_t^\top Qx_t+u_t^\top Ru_t),
 \]
-\[
-J=\sum_{t=0}^{T-1}
-\left(x_t^\top Qx_t+u_t^\top Ru_t\right)
-+x_T^\top Q_Tx_T,
-\]
-where \(Q,Q_T\succeq0\) and \(R\succ0\).</p>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Riccati recursion).</span> The optimal
-value is \(V_t(x)=x^\top P_tx\), where
-\[
-P_T=Q_T,
-\]
-\[
-P_t
-=Q+A^\top P_{t+1}A
--A^\top P_{t+1}B
-(R+B^\top P_{t+1}B)^{-1}
-B^\top P_{t+1}A.
-\]
-The optimal action is linear,
-\[
-u_t^*=-K_tx_t,\qquad
-K_t=(R+B^\top P_{t+1}B)^{-1}B^\top P_{t+1}A.
-\]</p>
-</div>
-
-<div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Assume
-\(V_{t+1}(x)=x^\top P_{t+1}x\). The Bellman objective is
-\[
-x^\top Qx+u^\top Ru+(Ax+Bu)^\top P_{t+1}(Ax+Bu).
-\]
-Its Hessian in \(u\) is
-\(2(R+B^\top P_{t+1}B)\succ0\). Completing the square gives the minimizing
-\(u=-K_tx\); substituting it leaves the displayed quadratic form \(P_t\).
-Backward induction starts from \(P_T=Q_T\).</p>
-</div>
-
-<h3>Infinite-horizon algebraic Riccati equation</h3>
-
-<p>For discounted or undiscounted stabilizing control, the stationary matrix
-\(P\) solves the discrete algebraic Riccati equation
-\[
-P=Q+A^\top PA
--A^\top PB(R+B^\top PB)^{-1}B^\top PA.
-\]
-Under stabilizability of \((A,B)\) and detectability of
-\((Q^{1/2},A)\), there is a unique stabilizing solution \(P\succeq0\); the
-closed-loop matrix \(A-BK\) has spectral radius below one. These hypotheses
-cannot be omitted: finite one-step cost does not imply that an unstable system
-can be controlled.</p>
-
-<h3>Gaussian noise and certainty equivalence</h3>
-
+where \(0&lt;\gamma&lt;1\), \(Q\succ0\), \(R\succ0\), and all matrices are real with compatible dimensions. A feedback \(u=-Kx\) is <em>discount-stable</em> if the spectral radius
+\(\rho(\sqrt\gamma(A-BK))&lt;1\). Assume at least one such \(K_0\) exists. This is the stability hypothesis used below; undiscounted stability \(\rho(A-BK)&lt;1\) is stronger.</p>
+<h3>Complete the square before taking a limit</h3>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition.</span> If
+<p><span class="statement-title">Proposition (one Riccati step).</span>
+If the continuation cost is \(x^\top Px\), \(P\succeq0\), then
 \[
-X_{t+1}=AX_t+BU_t+W_{t+1},
-\qquad E(W_{t+1})=0,\quad
-\operatorname{Cov}(W_{t+1})=\Sigma_W,
+ \begin{aligned}
+ \min_u\{x^\top Qx+u^\top Ru+\gamma(Ax+Bu)^\top P(Ax+Bu)\}
+ &amp;=x^\top\mathcal R(P)x,\\
+ K(P)&amp;=(R+\gamma B^\top PB)^{-1}\gamma B^\top PA,\\
+ \mathcal R(P)&amp;=Q+\gamma A^\top PA-
+ \gamma^2A^\top PB(R+\gamma B^\top PB)^{-1}B^\top PA.
+ \end{aligned}
 \]
-then the finite-horizon optimal feedback gains \(K_t\) are the same as in the
-deterministic problem. Noise adds only constants to the value:
-\[
-V_t(x)=x^\top P_tx+c_t,\qquad
-c_t=c_{t+1}+\operatorname{tr}(P_{t+1}\Sigma_W).
-\]</p>
+The unique minimizing control is \(u=-K(P)x\).</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Conditional expectation of the
-next quadratic value is
+<p><span class="statement-title">Proof.</span>
+Set \(M=R+\gamma B^\top PB\succ0\), \(N=\gamma B^\top PA\). Expand the objective:
 \[
-E[(Ax+Bu+W)^\top P_{t+1}(Ax+Bu+W)]
-=(Ax+Bu)^\top P_{t+1}(Ax+Bu)
-+\operatorname{tr}(P_{t+1}\Sigma_W).
+ x^\top(Q+\gamma A^\top PA)x+2u^\top Nx+u^\top Mu.
 \]
-The added term is independent of \(u\), so completion of the square gives the
-same gain.</p>
+Since
+\[
+ u^\top Mu+2u^\top Nx
+ =(u+M^{-1}Nx)^\top M(u+M^{-1}Nx)-x^\top N^\top M^{-1}Nx,
+\]
+the nonnegative square is uniquely minimized at \(u=-M^{-1}Nx\). Substitution yields the formula, including both discount factors in the final \(\gamma^2\) term.</p>
 </div>
 
-<h3>Partial observation and the separation principle</h3>
-
-<p>For linear observations
+<h3>Existence, convergence, and verification</h3>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem (infinite-horizon discounted LQR).</span>
+Under the assumptions above, \(P_0=0,\ P_{n+1}=\mathcal R(P_n)\) converges to a positive definite matrix \(P_*\) solving \(P_*=\mathcal R(P_*)\). The feedback \(K_*=K(P_*)\) is discount-stable and has optimal cost \(x^\top P_*x\) among all control sequences.</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The square-completion result and backward induction show that \(x^\top P_nx\) is the optimal \(n\)-step cost with zero terminal cost. Nonnegative stage costs give \(P_n\preceq P_{n+1}\).
+Write \(F_0=A-BK_0\), \(C_0=Q+K_0^\top RK_0\). Discount stability implies
 \[
-Y_t=CX_t+V_t
+ P_{K_0}=\sum_{t=0}^\infty
+       (\sqrt\gamma F_0)^{t\top}C_0(\sqrt\gamma F_0)^t
 \]
-with Gaussian noises, the Kalman filter computes
-\(\widehat X_t=E(X_t\mid Y_{0:t},U_{0:t-1})\). The optimal LQG controller is
+converges in matrix norm: for any number \(r\) strictly between the spectral radius and one, finite-dimensional Jordan form gives
+\(\|(\sqrt\gamma F_0)^t\|\le Cr^t\) after increasing \(C\).
+The feasible feedback \(K_0\) bounds every finite-horizon optimum:
 \[
-U_t=-K_t\widehat X_t.
+ 0\preceq P_n\preceq P_{K_0}.
 \]
-Estimation and control Riccati equations separate because conditional
-covariance evolves independently of the realized controls. This separation is
-special; generic POMDPs do not permit an independently optimal filter and
-fully observed controller.</p>
-
-<h3>Policy optimization landscape</h3>
-
-<p>For a stabilizing linear policy \(u=-Kx\), its infinite-horizon cost is
+For each vector \(x\), \(x^\top P_nx\) is monotone and bounded. Taking \(x=e_i\) and \(x=e_i+e_j\) shows every matrix entry converges, hence \(P_n\to P_*\) in norm. Since
+\(R+\gamma B^\top P_nB\succeq R\succ0\), matrix inversion is continuous along this sequence. Passing to the limit in the finite Riccati formula yields \(P_*=\mathcal R(P_*)\), and \(P_*\succeq P_1=Q\succ0\).
+</p><p>Let \(F_*=A-BK_*\). The minimizing-square identity gives
 \[
-J(K)=\operatorname{tr}(P_K\Sigma_0),
+ P_*=Q+K_*^\top RK_*+\gamma F_*^\top P_*F_*.
 \]
-where
+For any complex eigenvector \(v\ne0\) of \(F_*\) with eigenvalue \(\lambda\),
 \[
-P_K=Q+K^\top RK+(A-BK)^\top P_K(A-BK).
+ (1-\gamma|\lambda|^2)v^*P_*v
+ =v^*(Q+K_*^\top RK_*)v&gt;0.
 \]
-On the open set of stabilizing gains, every stationary point is globally
-optimal under standard controllability conditions, and policy-gradient methods
-can converge linearly with suitable step sizes. The stability domain is
-nonconvex, however, and a step leaving it makes the cost infinite. Safe
-initialization and stability-preserving updates are substantive assumptions.</p>
+Thus \(\gamma|\lambda|^2&lt;1\) for every eigenvalue, proving discount stability. Iterating the identity along \(x_t=F_*^tx_0\) gives
+\[
+ x_0^\top P_*x_0
+ =\sum_{t=0}^{n-1}\gamma^t x_t^\top(Q+K_*^\top RK_*)x_t
+   +\gamma^n x_n^\top P_*x_n.
+\]
+The terminal term is
+\(((\sqrt\gamma F_*)^nx_0)^\top P_*((\sqrt\gamma F_*)^nx_0)\to0\).
+Therefore the feedback cost equals \(x_0^\top P_*x_0\). Any other control sequence has \(n\)-step cost at least \(x_0^\top P_nx_0\); taking \(n\to\infty\), using monotonicity of its nonnegative partial costs and \(P_n\to P_*\), proves its total cost is no smaller. No unproved terminal-limit assumption is imposed on competing controls.</p>
+</div>
 
-<h3>Beyond quadratic structure</h3>
+<h3>Policy evaluation and the policy gradient</h3>
+<p>For any discount-stable \(K\), put \(F=A-BK\), \(C=Q+K^\top RK\). Then
+\[
+ P_K=C+\gamma F^\top P_KF
+     =\sum_{t\ge0}\gamma^tF^{t\top}CF^t.
+\]
+Let \(S_0=\mathbb E[x_0x_0^\top]\) be finite, and define the unnormalized discounted state second moment
+\[
+ \Sigma_K=\sum_{t\ge0}\gamma^tF^tS_0F^{t\top}
+         =S_0+\gamma F\Sigma_KF^\top,\qquad J(K)=\operatorname{tr}(P_KS_0).
+\]</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Discount-stable matrices form an open set. On it, the linear map
+\(\mathcal A_K(X)=X-\gamma F^\top XF\) is invertible by its norm-convergent series inverse, so \(P_K\) is differentiable in \(K\). Differentiate its finite Lyapunov equation, using \(\mathrm dF=-B\,\mathrm dK\):
+\[
+ \mathrm dP_K-\gamma F^\top(\mathrm dP_K)F
+ =(\mathrm dK)^\top E_K+E_K^\top\mathrm dK,\quad
+ E_K=(R+\gamma B^\top P_KB)K-\gamma B^\top P_KA.
+\]
+Multiply by \(\Sigma_K\), take traces, and use cyclicity and
+\(\Sigma_K-\gamma F\Sigma_KF^\top=S_0\):
+\[
+ \mathrm dJ
+ =\operatorname{tr}[(\mathrm dP_K)S_0]
+ =2\operatorname{tr}(\Sigma_KE_K^\top\mathrm dK),
+ \qquad \nabla_KJ=2E_K\Sigma_K.
+\]
+If \(S_0\succ0\), then \(\Sigma_K\succeq S_0\succ0\); a stationary point satisfies \(E_K=0\), so \(K=K(P_K)\). Its Lyapunov equation is then the Riccati equation. Completing the square gives, for every control,
+\[
+ x^\top Qx+u^\top Ru+\gamma(Ax+Bu)^\top P_K(Ax+Bu)-x^\top P_Kx
+ =(u+Kx)^\top(R+\gamma B^\top P_KB)(u+Kx)\ge0.
+\]
+For any competing control of finite cost, \(Q\succ0\) implies
+\(\sum_t\gamma^t\|x_t\|^2&lt;\infty\), hence
+\(\gamma^n x_n^\top P_Kx_n\to0\). Summing the inequality and taking this limit proves that control's cost is at least \(x_0^\top P_Kx_0\). Infinite-cost controls cannot improve it. Thus a discount-stable stationary point is globally optimal under \(S_0\succ0\). This does not by itself prove that an arbitrary gradient step preserves stability.</p>
+</div>
 
-<p>Continuous-action actor--critic methods approximate the same two objects:
-a value or action-value function and a policy-improvement step. LQR shows what
-is lost in the nonlinear case: exact quadratic closure, analytic minimization,
-global stability certificates, and a finite-dimensional Riccati recursion.
-Locally linear models and iterative LQR recover these structures only along a
-nominal trajectory.</p>
+<p>With additive independent zero-mean noise \(\xi_t\) of covariance \(W\), the optimal feedback is unchanged for this fully observed quadratic problem. Substituting \(V(x)=x^\top P_*x+c\) gives
+\[
+ \begin{aligned}
+ &amp;\mathbb E[(Ax+Bu+\xi)^\top P_*(Ax+Bu+\xi)]\\
+ &amp;\qquad=(Ax+Bu)^\top P_*(Ax+Bu)+\operatorname{tr}(P_*W).
+ \end{aligned}
+\]
+The constant solves \(c=\gamma c+\gamma\operatorname{tr}(P_*W)\), hence
+\(c=\gamma\operatorname{tr}(P_*W)/(1-\gamma)\).
+Partially observed linear-Gaussian control additionally uses a Kalman filter; its separation principle is an external control-theory result, not a consequence of square completion alone.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a scalar discounted Riccati equation).</span>
+Take \(A=B=Q=R=1\), \(\gamma=1/2\). The equation becomes
+\[
+ P=1+\frac{P}{2}-\frac{P^2/4}{1+P/2}
+   =1+\frac{P}{2+P},
+ \quad P^2=2.
+\]
+The positive solution is \(P_*=\sqrt2\), with
+\[
+ K_*=\frac{P_*}{2+P_*}=\sqrt2-1,\qquad
+ F_*=2-\sqrt2,\qquad \sqrt\gamma|F_*|&lt;1.
+\]
+The first finite-horizon matrices are \(P_0=0,P_1=1,P_2=4/3,P_3=7/5\), increasing to \(\sqrt2\).</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Give a scalar system that is discount-stable but not stable without discounting.</p><details><summary>Hint and solution</summary><p>Let \(F=1.1\), \(\gamma=1/2\). Then \(|F|&gt;1\), but \(\sqrt\gamma|F|\approx0.778&lt;1\); the discounted quadratic series converges although the unscaled state grows.</p></details></li>
+<li><p>In the worked example, with scalar noise variance \(W=1\), compute the additional optimal cost.</p><details><summary>Hint and solution</summary><p>The constant is \(\gamma P_*W/(1-\gamma)=\sqrt2\). Thus \(V(x)=\sqrt2 x^2+\sqrt2\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://proceedings.mlr.press/v80/fazel18a.html">Fazel–Ge–Kakade–Mesbahi, global convergence of LQR policy-gradient methods</a>; <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The derivations here use the discounted convention explicitly. Global step-size/convergence results and LQG filtering require additional results beyond the stationary-point calculation.</p>

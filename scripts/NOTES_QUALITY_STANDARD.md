@@ -20,7 +20,7 @@ being developed.
 6. Keep explanatory prose close to the formula or theorem it explains. It
    should expose motivation, geometry, or proof strategy rather than repeat the
    visible heading.
-7. In the optimal transport note, proofs must display their mathematical steps:
+7. In the optimal transport and reinforcement learning notes, proofs must display their mathematical steps:
    define constructed objects, show intermediate equalities and inequalities,
    and accompany them with short justifications. For a limit, specify the
    convergence mode, the bound or integrability hypothesis permitting passage,
@@ -66,8 +66,9 @@ mathematical rather than decorative.
   landing-page titles, and structural navigation.
 - Preserve the numbered breadcrumb and complete Back/Last page/Next page chain.
 - By default, retain problems as worked examples rather than adding exercise
-  sections. The optimal transport note is an explicit user-requested exception:
-  it includes short self-study exercises with expandable hints and answers.
+  sections. The optimal transport and reinforcement learning notes are explicit
+  user-requested exceptions: they include short self-study exercises with
+  expandable hints and answers.
 - Do not use generic visible headings such as `Core facts`, `Proof guide`,
   `Definition`, `Proposition`, `Proof`, or `Remark`.
 

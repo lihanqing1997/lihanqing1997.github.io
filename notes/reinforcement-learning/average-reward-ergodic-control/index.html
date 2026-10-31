@@ -8,109 +8,142 @@ note_prev_url: "/notes/reinforcement-learning/constrained-risk-sensitive-control
 note_next_url: "/notes/reinforcement-learning/stochastic-games-multi-agent-learning/"
 ---
 
-<p>Average-reward control describes continuing systems without geometric
-discounting. The loss of a discount contraction makes recurrence, invariant
-measures, and Poisson equations central. It is a genuinely different regime,
-not a notational limit obtained by putting \(\gamma=1\).</p>
-
-<h3>Gain and bias</h3>
-
-<p>For a stationary policy \(\pi\), define its gain
-\[
-g^\pi(s)
-=\liminf_{T\to\infty}\frac1T
-E_s^\pi\sum_{t=0}^{T-1}r(S_t,A_t).
-\]
-If the policy chain is irreducible positive recurrent with invariant law
-\(d_\pi\), then the ergodic theorem gives a state-independent gain
-\[
-g^\pi=\sum_sd_\pi(s)r_\pi(s).
-\]
-The bias or differential value is
-\[
-h^\pi(s)
-=E_s^\pi\sum_{t=0}^{\tau-1}\{r_\pi(S_t)-g^\pi\},
-\]
-for a return time \(\tau\) to a reference state, when integrable.</p>
-
+<p class="rl-learning-goal">Replace discounted contraction by a Poisson equation, and prove average-reward control and a vanishing-discount limit under an explicit mixing condition.</p>
+<h3>A finite irreducible policy chain</h3>
+<p>Fix a stationary policy with transition matrix \(P\) and bounded mean reward vector \(r\). This chapter uses no discount in the average-reward objective. Let \(d\) be its invariant probability vector, \(d^\top P=d^\top\), and define \(g=d^\top r\). Here \(d\) is a stationary distribution, not the discounted occupancy used earlier.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Poisson equation).</span> In a finite
-irreducible Markov chain,
+<p><span class="statement-title">Theorem (Poisson equation and gain).</span>
+If \(P\) is finite and irreducible, there is \(h\in\mathbb R^S\) satisfying
 \[
-g^\pi\mathbf1+h^\pi=r_\pi+P_\pi h^\pi.
+ g\mathbf1+h=r+Ph.
 \]
-The gain is unique and \(h^\pi\) is unique up to an additive constant.</p>
+The scalar \(g\) is unique, \(h\) is unique up to constants, and for every initial state \(s\),
+\[
+ \lim_{n\to\infty}\frac1n\mathbb E_s\sum_{t=0}^{n-1}R_{t+1}=g.
+\]
+Periodicity does not obstruct this expected-average conclusion.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> First-step analysis of the
-centered reward until the reference return gives the equation. If
-\((g,h)\) and \((\tilde g,\tilde h)\) solve it, multiply by the invariant row
-vector \(d_\pi^\top\) to get \(g=\tilde g=d_\pi^\top r_\pi\). Their difference
-satisfies \(u=P_\pi u\); irreducibility makes every harmonic function constant.</p>
+<p><span class="statement-title">Proof.</span>
+First, an invariant distribution exists: the Cesàro averages
+\(d_n^\top=n^{-1}\sum_{t=0}^{n-1}e_s^\top P^t\) lie in a compact simplex, and
+\[
+ d_n^\top P-d_n^\top=(e_s^\top P^n-e_s^\top)/n\longrightarrow0.
+\]
+Every convergent subsequence therefore has an invariant limit \(d\). Irreducibility makes \(d\) strictly positive: if \(d_i&gt;0\), then for every \(j\) some \(m\) has \(P^m(i,j)&gt;0\), and \(d_j=(d^\top P^m)_j\ge d_iP^m(i,j)&gt;0\).
+If \(u=Pu\) and \(u_i=\max_j u_j\), then
+\[
+ 0=u_i-\sum_jP(i,j)u_j=\sum_jP(i,j)(u_i-u_j).
+\]
+Each term is nonnegative; every positive-probability successor has the same maximum. Following paths and using irreducibility gives \(u=c\mathbf1\). Hence \(\ker(I-P)\) is one-dimensional, its rank is \(S-1\), and its left nullspace is exactly the span of \(d\). This also proves uniqueness of the invariant probability.
+Since \(d^\top(r-g\mathbf1)=0\), the finite-dimensional range/nullspace identity implies
+\(r-g\mathbf1\in\operatorname{range}(I-P)\), proving existence of \(h\).
+Multiplication of any Poisson equation by \(d^\top\) identifies \(g\); subtraction and the harmonic-function argument identify \(h\) modulo constants.
+</p><p>Iterate \(r-g\mathbf1=h-Ph\) along the chain:
+\[
+ \mathbb E_s\sum_{t=0}^{n-1}(R_{t+1}-g)
+ =\sum_{t=0}^{n-1}e_s^\top P^t(I-P)h
+ =h(s)-\mathbb E_s h(S_n).
+\]
+The right-hand side has absolute value at most \(2\|h\|_\infty\). Division by \(n\) and passage to the limit prove the gain formula.</p>
 </div>
 
-<h3>Average-cost optimality equation</h3>
-
-<p>Under finite unichain assumptions, an optimal gain \(g^*\) and bias \(h^*\)
-satisfy
+<h3>Bias as a stopped centered return</h3>
+<p>Normalize \(h(s_0)=0\), and let \(\tau=\inf\{t\ge0:S_t=s_0\}\). Finite irreducibility supplies integers \(m\) and \(\epsilon&gt;0\) such that, from every state, the chance of hitting \(s_0\) within \(m\) steps is at least \(\epsilon\): choose a positive-probability path for each state and take the minimum of finitely many path probabilities. The Markov property gives
+\(\Pr_s(\tau&gt;km)\le(1-\epsilon)^k\), hence \(\mathbb E_s\tau&lt;\infty\).</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+For the bounded stopping time \(\tau\wedge n\), sum the conditional identity
+\(\mathbb E[h(S_t)-h(S_{t+1})\mid S_0,\ldots,S_t]=r(S_t)-g\),
+multiplied by \(\mathbf1_{\{t&lt;\tau\wedge n\}}\). Finite telescoping yields
 \[
-g^*+h^*(s)
-=\max_a\left\{r(s,a)+\sum_{s'}P(s'\mid s,a)h^*(s')\right\}.
+ \mathbb E_s\sum_{t=0}^{\tau\wedge n-1}(r(S_t)-g)
+ =h(s)-\mathbb E_s h(S_{\tau\wedge n}).
 \]
-A stationary policy selecting maximizing actions is gain optimal. Unlike
-discounted Bellman equations, adding a constant to \(h^*\) changes nothing, and
-the optimality operator is nonexpansive only in span seminorm.</p>
-
-<h3>Relative value iteration</h3>
-
-<p>Fix a reference state \(s_0\) and iterate
+The sum is dominated by \(\|r-g\mathbf1\|_\infty\tau\), which is integrable. Also \(h(S_{\tau\wedge n})\to h(s_0)=0\) almost surely and is bounded by \(\|h\|_\infty\). Dominated convergence on both sides gives
 \[
-\widetilde h_{k+1}=Th_k,\qquad
-h_{k+1}=\widetilde h_{k+1}
--\widetilde h_{k+1}(s_0)\mathbf1.
+ h(s)=\mathbb E_s\sum_{t=0}^{\tau-1}(r(S_t)-g).
 \]
-Under suitable communicating or aperiodicity conditions, \(h_k\) converges
-modulo constants and the subtracted scalar converges to \(g^*\). Periodicity can
-cause oscillation, requiring damping or modified iterations.</p>
-
-<h3>Vanishing-discount connection</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (vanishing discount, finite
-unichain form).</span> Along \(\gamma\uparrow1\),
-\[
-(1-\gamma)V_\gamma^*(s)\to g^*,
-\]
-and, after normalization at \(s_0\),
-\[
-V_\gamma^*(s)-V_\gamma^*(s_0)\to h^*(s)
-\]
-along convergent subsequences; under stronger assumptions the limit is unique.</p>
+For \(s=s_0\), \(\tau=0\) and both sides are zero. The hitting-time convention is explicit; replacing it with a positive return time without explanation changes the representation being used.</p>
 </div>
 
-<p>The divergent component \(g^*/(1-\gamma)\) is common across states, while
-relative values retain transient differences. This decomposition explains both
-the connection and the numerical ill-conditioning of highly discounted
-problems.</p>
-
-<h3>Learning the average reward</h3>
-
-<p>Differential TD estimates both gain and bias:
+<h3>Control under a uniform minorization condition</h3>
+<p>For the next results assume a finite controlled model and a common probability vector \(\nu\), with \(0&lt;\epsilon\le1\), such that
 \[
-\delta_t=R_{t+1}-\widehat g_t+h_w(S_{t+1})-h_w(S_t),
+ P(s'\mid s,a)\ge\epsilon\nu(s')\qquad\text{for every }s,a,s'.
 \]
+This is a sufficient condition, stronger than general communicating or unichain assumptions. Let
+\((Th)(s)=\max_a\{r(s,a)+Ph(s,a)\}\) and
+\(\operatorname{sp}(u)=\max_su(s)-\min_su(s)\).
+On the subspace \(\mathcal H=\{h:h(s_0)=0\}\), span is a norm.</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Write \(P_{s,a}=\epsilon\nu+(1-\epsilon)\widetilde P_{s,a}\) when \(\epsilon&lt;1\); the case \(\epsilon=1\) is immediate. For \(u=v-w\), every actionwise backup difference lies in the common interval
 \[
-\widehat g_{t+1}=\widehat g_t+\beta_t\delta_t,\qquad
-w_{t+1}=w_t+\alpha_t\delta_t\nabla_wh_w(S_t).
+ [\,\epsilon\nu^\top u+(1-\epsilon)\min u,\,
+    \epsilon\nu^\top u+(1-\epsilon)\max u\,].
 \]
-Valid convergence requires ergodicity and an identifiability normalization for
-the bias. Mixing time or diameter replaces \((1-\gamma)^{-1}\) as the
-effective horizon in concentration and regret bounds.</p>
+The difference of maxima lies between the smallest and largest actionwise differences, so all components of \(Tv-Tw\) lie in that same interval. Therefore
+\[
+ \operatorname{sp}(Tv-Tw)\le(1-\epsilon)\operatorname{sp}(v-w).
+\]
+The normalized map \(Fh=Th-(Th)(s_0)\mathbf1\) maps \(\mathcal H\) into itself and is a contraction. This finite-dimensional normed space is complete, so \(F\) has a unique fixed point \(h_*\), and \(F^nh_0\to h_*\) geometrically. Define \(g_*=(Th_*)(s_0)\). Then
+\[
+ g_*\mathbf1+h_*=Th_*.
+\]
+For any history policy, the maximizing inequality gives
+\[
+ \mathbb E[R_{t+1}-g_*+h_*(S_{t+1})-h_*(S_t)\mid H_t]\le0.
+\]
+Summing \(n\) steps and dividing by \(n\) bounds its expected average reward by
+\(g_*+[h_*(s)-\mathbb E h_*(S_n)]/n\).
+The remainder tends to zero. A stationary maximizing selector gives equality at every step, hence average reward \(g_*\). This proves optimality and supplies a convergent relative-value iteration under the stated condition.</p>
+</div>
 
-<h3>Multichain complications</h3>
+<h3>A justified vanishing-discount limit</h3>
+<p>Let \(V_\gamma^*\) be the discounted optimal value for this same uniformly minorized model, and put
+\(h_\gamma=V_\gamma^*-V_\gamma^*(s_0)\mathbf1\),
+\(g_\gamma=(1-\gamma)V_\gamma^*(s_0)\).
+With \(T_\gamma v=\max_a(r+\gamma Pv)\), the Bellman equation becomes
+\[
+ g_\gamma\mathbf1+h_\gamma=T_\gamma h_\gamma.
+\]</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The normalized discounted map has span contraction coefficient \(\gamma(1-\epsilon)\). Moreover, each difference of corresponding action scores for \(T_\gamma h_*\) and \(Th_*\) lies between
+\(-(1-\gamma)\max h_*\) and \(-(1-\gamma)\min h_*\). Thus
+\[
+ \begin{aligned}
+ \operatorname{sp}(h_\gamma-h_*)
+ &amp;\le\gamma(1-\epsilon)\operatorname{sp}(h_\gamma-h_*)
+       +(1-\gamma)\operatorname{sp}(h_*),\\
+ \operatorname{sp}(h_\gamma-h_*)
+ &amp;\le\frac{1-\gamma}{1-\gamma(1-\epsilon)}
+                \operatorname{sp}(h_*)\longrightarrow0.
+ \end{aligned}
+\]
+Both vectors vanish at \(s_0\), so their sup-norm difference is at most their span difference; hence \(h_\gamma\to h_*\) uniformly. By finite-dimensional continuity,
+\(g_\gamma=(T_\gamma h_\gamma)(s_0)\to(Th_*)(s_0)=g_*\).
+Finally
+\[
+ (1-\gamma)V_\gamma^*(s)
+ =g_\gamma+(1-\gamma)h_\gamma(s)\longrightarrow g_*
+\]
+uniformly in \(s\). This proves convergence of the entire normalized family under the stated minorization, without an unsupported compactness or subsequence assertion.</p>
+</div>
 
-<p>If a policy has multiple recurrent classes, gain may depend on the initial
-state and a single scalar average-cost equation may fail. Transient choices can
-select which recurrent class is reached. Unichain assumptions are therefore
-structural, not technical shorthand.</p>
+<p>General average-reward theory weakens this condition using recurrence classes, bias spans, and communicating structure. In multichain models the gain may depend on the initial state. Ordinary relative-value iteration may oscillate in periodic models, so the discounted contraction proof cannot simply be reused at \(\gamma=1\).</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a periodic chain and an oscillating iteration).</span>
+Let \(P=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\), \(r=(1,0)^\top\). Then \(d=(1/2,1/2)^\top\), \(g=1/2\), and with \(h(1)=0\), the Poisson equation gives \(h=(0,-1/2)^\top\). The gain exists despite periodicity. But relative iteration from zero gives
+\[
+ (0,0)\ \mapsto\ (0,-1)\ \mapsto\ (0,0)\ \mapsto\cdots .
+\]
+The common-row minorization with \(\epsilon&gt;0\) fails, so this example does not contradict the contraction theorem.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Verify the hitting-time representation of \(h(2)\) in the worked chain.</p><details><summary>Hint and solution</summary><p>Starting at state \(2\), the first hit of state \(1\) occurs at time one. The centered reward is \(r(2)-g=-1/2\), so \(h(2)=-1/2\).</p></details></li>
+<li><p>If \(P(\cdot\mid s,a)=\nu\) for every row, what does relative iteration do?</p><details><summary>Hint and solution</summary><p>Here \(\epsilon=1\). Since \(Th(s)=\max_a r(s,a)+\nu^\top h\), normalization removes the common continuation term. One iteration gives \(h_*(s)=\max_a r(s,a)-\max_a r(s_0,a)\), independently of the initial vector.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://arxiv.org/abs/2506.20904">Zurek–Zamir–Chen, average-reward offline RL and transient coverage</a> for a modern extension. The core proofs here deliberately use finite irreducibility for evaluation and common minorization for control; they do not assert the same conclusions under arbitrary recurrence assumptions.</p>

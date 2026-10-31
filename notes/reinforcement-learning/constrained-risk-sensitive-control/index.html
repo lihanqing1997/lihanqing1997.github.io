@@ -4,121 +4,129 @@ breadcrumb_child_label_en: "25. Constrained and risk-sensitive control"
 breadcrumb_child_label_fr: "25. Contrôle contraint et sensible au risque"
 breadcrumb_child_label_zh: "25. 约束与风险敏感控制"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/offline-reinforcement-learning/"
+note_prev_url: "/notes/reinforcement-learning/linear-quadratic-control/"
 note_next_url: "/notes/reinforcement-learning/average-reward-ergodic-control/"
 ---
 
-<p>Expected return is only one preference over trajectories. Safety budgets,
-tail losses, robustness, and nonlinear utility produce distinct control
-problems. Their Bellman recursions remain valid only when the objective has an
-appropriate time-consistent state representation.</p>
-
-<h3>Constrained Markov decision processes</h3>
-
-<p>Let \(r\) be reward and \(c_j\) be costs. A discounted constrained problem is
+<p class="rl-learning-goal">Distinguish expectation constraints, tail risk, and robustness; derive their finite-dimensional identities without mixing cost and reward signs.</p>
+<h3>Expected constraints and occupancy measures</h3>
+<p>Return to the finite discounted reward-maximization problem. Let \(d(s,a)\) be normalized occupancy from \(\rho\), and let \(\mathcal D\) be the flow polytope proved in the policies chapter:
 \[
-\max_\pi J_r(\pi)
-\quad\text{subject to}\quad
-J_{c_j}(\pi)\le b_j,\quad j=1,\ldots,m.
+ d\ge0,\qquad \sum_a d(s,a)=(1-\gamma)\rho(s)+
+       \gamma\sum_{x,a}d(x,a)P(s\mid x,a).
 \]
-In normalized occupancy variables this is the linear program
+For cost functions \(c_i\) and normalized budgets \(b_i\), the constrained problem is
 \[
-\max_{d\in\mathcal D_\rho}
-\frac{\langle d,r\rangle}{1-\gamma}
-\quad\text{subject to}\quad
-\frac{\langle d,c_j\rangle}{1-\gamma}\le b_j.
+ \max_{d\in\mathcal D}\langle r,d\rangle
+ \quad\text{subject to }\langle c_i,d\rangle\le b_i.
 \]
-Randomized stationary policies may be necessary because an optimum can lie on
-a face between deterministic occupancy vertices.</p>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Lagrangian duality).</span> In a finite
-discounted constrained MDP with a strictly feasible occupancy, strong duality
-holds:
+Dividing objective and budgets by \(1-\gamma\) converts to unnormalized discounted returns. Every feasible occupancy is realized by a stationary randomized policy; deterministic policies need not suffice under constraints.</p>
+<p>For \(\lambda_i\ge0\), set
 \[
-\max_{\pi:\,J_c(\pi)\le b}J_r(\pi)
-=\min_{\lambda\ge0}
-\max_\pi\{J_r(\pi)-\lambda^\top(J_c(\pi)-b)\}.
+ L(d,\lambda)=\langle r,d\rangle-\sum_i\lambda_i(\langle c_i,d\rangle-b_i),
+ \quad g(\lambda)=\max_{d\in\mathcal D}L(d,\lambda).
+\]
+For feasible \(d\), \(L(d,\lambda)\ge\langle r,d\rangle\), so \(g(\lambda)\) is an upper bound on the constrained optimum. <strong>External theorem input:</strong> finite-dimensional linear-programming strong duality gives equality with \(\min_{\lambda\ge0}g(\lambda)\) when the displayed finite LP is feasible (its objective is bounded by compactness). This is an LP theorem, not a claim of strong duality for arbitrary neural-policy parameterizations.</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+At a primal-dual optimal pair \(d_*,\lambda_*\), equality of the primal and dual values gives
+\[
+ 0=g(\lambda_*)-\langle r,d_*\rangle
+ \ge L(d_*,\lambda_*)-\langle r,d_*\rangle
+ =\sum_i\lambda_{*,i}(b_i-\langle c_i,d_*\rangle)\ge0.
+\]
+All summands are nonnegative; hence
+\(\lambda_{*,i}(b_i-\langle c_i,d_*\rangle)=0\) for every \(i\).
+This proves complementary slackness. For any maximizing \(d_\lambda\),
+\[
+ g(\lambda')\ge L(d_\lambda,\lambda')
+ =g(\lambda)+\sum_i(\lambda_i'-\lambda_i)
+                         (b_i-\langle c_i,d_\lambda\rangle),
+\]
+so \(b_i-\langle c_i,d_\lambda\rangle\) is a subgradient of \(g\).
+Projected descent therefore increases the multiplier when a cost exceeds its budget:
+\(\lambda_i^+=[\lambda_i+\eta(\langle c_i,d_\lambda\rangle-b_i)]_+\).</p>
+</div>
+
+<h3>Entropic risk: the sign of the parameter matters</h3>
+<p>Now let \(C\) denote a <em>cost</em> on a finite outcome space with probabilities \(p_i&gt;0\). For \(\eta\ne0\), define
+\(\mathcal R_\eta(C)=\eta^{-1}\log\sum_i p_i e^{\eta C_i}\).
+Positive \(\eta\) penalizes upper-tail cost; negative \(\eta\) has the opposite tilt.</p>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (entropic variational identity).</span>
+\[
+ \mathcal R_\eta(C)=
+ \begin{cases}
+ \displaystyle\sup_{q\in\Delta}\left\{\mathbb E_qC-
+                        \eta^{-1}\mathrm{KL}(q\|p)\right\},&amp;\eta&gt;0,\\[3pt]
+ \displaystyle\inf_{q\in\Delta}\left\{\mathbb E_qC-
+                        \eta^{-1}\mathrm{KL}(q\|p)\right\},&amp;\eta&lt;0.
+ \end{cases}
 \]</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> The occupancy formulation is a
-finite-dimensional linear program. Slater feasibility prevents a duality gap.
-Introducing multipliers for cost constraints changes one-step reward to
-\(r_\lambda=r-\lambda^\top c\); maximization over feasible occupancies is the
-ordinary MDP for \(r_\lambda\). Linear-program duality yields the identity.</p>
+<p><span class="statement-title">Proof.</span>
+Let \(Z=\sum_i p_i e^{\eta C_i}\) and \(q_i^*=p_i e^{\eta C_i}/Z\). For every \(q\),
+\[
+ \mathrm{KL}(q\|q^*)=\mathrm{KL}(q\|p)-\eta\mathbb E_qC+\log Z,
+\]
+hence
+\[
+ \mathbb E_qC-\eta^{-1}\mathrm{KL}(q\|p)
+ =\mathcal R_\eta(C)-\eta^{-1}\mathrm{KL}(q\|q^*).
+\]
+Nonnegativity of KL proves the supremum for \(\eta&gt;0\) and the infimum for \(\eta&lt;0\), both attained at \(q^*\). Using a supremum for both signs would reverse the second conclusion.</p>
 </div>
 
-<p>Primal--dual algorithms update a policy for \(r_\lambda\) and ascend in
-\(\lambda\) when costs exceed budgets. Finite-time safety is not guaranteed by
-asymptotic constraint satisfaction; safe exploration needs confidence sets,
-barrier policies, or robust invariant sets.</p>
-
-<h3>Entropic risk-sensitive control</h3>
-
-<div class="math-statement definition">
-<p><span class="statement-title">Definition.</span> For cumulative cost \(C\)
-and risk parameter \(\eta\ne0\), the entropic risk is
+<p>For bounded cost, the log moment-generating function is three times continuously differentiable near zero, with derivatives obtained from a finite sum (or dominated differentiation for a bounded random variable). Taylor's theorem gives
 \[
-\rho_\eta(C)=\frac1\eta\log E e^{\eta C}.
+ \mathcal R_\eta(C)=\mathbb EC+\frac\eta2\operatorname{Var}(C)+O(\eta^2),
+ \qquad \eta\to0.
 \]
-Positive \(\eta\) penalizes upper tails; as \(\eta\to0\),
+Thus \(\mathcal R_0(C)\) is defined continuously as \(\mathbb EC\). For a discounted <em>total</em> cost, the effective future exponential parameter becomes \(\eta\gamma^t\); a stationary recursion with an unchanged parameter generally represents a different, nested risk criterion. Time consistency must be specified rather than assumed.</p>
+<h3>CVaR and a finite dual representation</h3>
+<p>For upper-tail cost and \(0&lt;\alpha&lt;1\), define
 \[
-\rho_\eta(C)
-=EC+\frac{\eta}{2}\operatorname{Var}(C)+O(\eta^2)
+ \operatorname{CVaR}_\alpha(C)
+ =\min_{v\in\mathbb R}\left\{v+\frac1{1-\alpha}\mathbb E(C-v)_+\right\}.
 \]
-when exponential moments exist.</p>
+The convex objective has subgradients between
+\(1-\Pr(C\ge v)/(1-\alpha)\) and
+\(1-\Pr(C&gt;v)/(1-\alpha)\). A minimizing \(v\) therefore satisfies
+\(\Pr(C&gt;v)\le1-\alpha\le\Pr(C\ge v)\), the quantile condition.</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+For any random weight \(Z\) with \(0\le Z\le1/(1-\alpha)\) and \(\mathbb EZ=1\),
+\[
+ \mathbb E[ZC]=v+\mathbb E[Z(C-v)]
+ \le v+\frac1{1-\alpha}\mathbb E(C-v)_+.
+\]
+Choose a minimizing quantile \(v_*\). Set \(Z=1/(1-\alpha)\) on \(C&gt;v_*\), \(Z=0\) on \(C&lt;v_*\), and choose a constant on \(C=v_*\) to make \(\mathbb EZ=1\). The quantile inequalities ensure this constant lies in \([0,1/(1-\alpha)]\); if the atom has zero mass, no adjustment is needed. Every displayed inequality is then an equality. Hence
+\[
+ \operatorname{CVaR}_\alpha(C)
+ =\max_{\substack{0\le Z\le1/(1-\alpha)\\\mathbb EZ=1}}\mathbb E[ZC].
+\]
+This proof includes atoms at the quantile, where “average above the quantile” without a partial-atom convention is ambiguous.</p>
 </div>
 
-<p>For finite-horizon additive costs, exponentiating the value produces a
-multiplicative Bellman recursion:
+<h3>Rectangular robust control</h3>
+<p>For cost minimization with an adversarial transition row in a nonempty compact set \(\mathcal P_{s,a}\), define
 \[
-Z_h(s)
-=\min_a
-E\left[
-\exp\{\eta c_h(s,a,S')\}Z_{h+1}(S')
-\mid s,a
-\right],
-\qquad
-V_h=\eta^{-1}\log Z_h.
+ (T_{\rm rob}V)(s)=\min_a\{c(s,a)+
+                      \gamma\max_{p\in\mathcal P_{s,a}}p^\top V\}.
 \]
-This criterion is dynamically consistent because conditional entropic risk
-composes recursively.</p>
-
-<h3>Conditional value at risk</h3>
-
-<p>For a loss \(L\) and \(0&lt;\alpha&lt;1\),
-\[
-\operatorname{CVaR}_\alpha(L)
-=\inf_{\tau\in\mathbb R}
-\left\{\tau+\frac1{1-\alpha}E(L-\tau)_+\right\}.
-\]
-The auxiliary threshold \(\tau\) turns tail risk into an expectation, but a
-static CVaR of total return is generally time inconsistent. Dynamic programming
-requires augmenting the state with a confidence or budget variable, or using a
-nested conditional risk measure.</p>
-
-<h3>Distributional robustness</h3>
-
-<p>If a transition law lies in an ambiguity set
-\(\mathcal U(s,a)\), robust control uses
-\[
-(T_{\mathrm{rob}}V)(s)
-=\max_a\left\{
-r(s,a)+\gamma
-\inf_{Q\in\mathcal U(s,a)}E_QV(S')
-\right\}.
-\]
-Rectangular ambiguity, where uncertainty factors independently across
-state-action pairs, yields a time-consistent Bellman equation and stationary
-robust policies. Coupled ambiguity sets can destroy this recursion because
-nature's choices across time are no longer separable.</p>
-
-<h3>Risk is not uncertainty</h3>
-
-<p>Risk-sensitive objectives alter preferences under a known law; robust
-control protects against model uncertainty; constrained control enforces
-expected budgets. Combining them is possible, but their guarantees answer
-different questions. A low-variance return does not certify safety, and a
-worst-case model need not represent a tail event under the nominal model.</p>
+For all probability vectors \(p\),
+\(|p^\top(V-W)|\le\|V-W\|_\infty\); taking maxima and then minima preserves this bound. Thus \(T_{\rm rob}\) is a \(\gamma\)-contraction. Its sequential game interpretation assumes <em>rectangularity</em>: nature can choose each admissible row independently at each visited state-action pair. A single unknown model with coupled row restrictions is a different uncertainty model and need not obey this Bellman recursion.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (randomization and tail cost).</span>
+One state has actions \(a,b\) with rewards \(0,1\) and costs \(0,2\). Under normalized budget \(b_1=1\), choosing \(b\) with probability \(q\) requires \(2q\le1\), so the optimal constrained policy uses \(q=1/2\). Neither deterministic policy attains this feasible reward. Separately, a cost that is \(10\) with probability \(0.1\) and \(0\) otherwise has mean \(1\), but
+\(\operatorname{CVaR}_{0.9}=10\) and
+\(\mathcal R_\eta=\eta^{-1}\log(0.9+0.1e^{10\eta})\).
+An expectation budget and a tail-risk budget constrain different behavior.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Compute the entropic-risk derivative at \(\eta=0\) for the worked cost distribution.</p><details><summary>Hint and solution</summary><p>Its second moment is \(10\), mean is \(1\), and variance is \(9\). The Taylor coefficient is \(\operatorname{Var}(C)/2=4.5\).</p></details></li>
+<li><p>Find a multiplier certifying the constrained one-state optimum.</p><details><summary>Hint and solution</summary><p>The dual is \(g(\lambda)=\lambda+\max\{0,1-2\lambda\}\), \(\lambda\ge0\). It decreases to \(1/2\) on \([0,1/2]\) and increases afterward, so \(\lambda_*=1/2\), matching primal reward \(q=1/2\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>; <a href="https://www.sciencedirect.com/science/article/pii/S0378426602002716">Rockafellar–Uryasev, conditional value-at-risk for general loss distributions</a>. LP strong duality is imported explicitly; the risk identities and robust contraction are derived here.</p>

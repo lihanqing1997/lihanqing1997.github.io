@@ -7,189 +7,129 @@ note_back_url: "/notes/reinforcement-learning/"
 note_next_url: "/notes/reinforcement-learning/policies-and-value-functions/"
 ---
 
-<p>A Markov decision process is the mathematical object behind fully observed reinforcement learning. It separates the environment dynamics from the agent's policy and makes sequential optimization a problem about controlled Markov chains.</p>
-
-    <h3>Controlled Markov models</h3>
-
-    <p>The Markov property says that the present state and action contain all information needed to predict the next transition.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A discounted Markov decision process is a tuple \((\mathcal S,\mathcal A,P,r,\gamma,\mu)\), where \(\mathcal S\) is the state space, \(\mathcal A\) is the action space, \(P(\cdot\mid s,a)\) is a Markov kernel, \(r(s,a)=\mathbb E(R_{t+1}\mid S_t=s,A_t=a)\), \(0\le\gamma&lt;1\), and \(\mu\) is an initial distribution. A policy \(\pi(\cdot\mid s)\) is a Markov kernel from states to actions.</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For a fixed policy \(\pi\), the state process is a Markov chain with transition kernel
+<p class="rl-learning-goal">Specify the probability law behind an algorithm, distinguish the policy from the environment, and justify infinite discounted returns.</p>
+<h3>A common model and notation</h3>
+<p>The core chapters use a finite state set \(\mathsf S\), finite nonempty action sets \(\mathsf A(s)\), an initial distribution \(\rho\), and \(0\le\gamma&lt;1\). The environment is a joint kernel \(K(\mathrm{d}r,s'\mid s,a)\) for the reward \(R_{t+1}\) and next state \(S_{t+1}\). Its transition marginal and reward mean are
 \[
-P_\pi(B\mid s)=\int_{\mathcal A}P(B\mid s,a)\pi(\mathrm{d}a\mid s).
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Condition on the present state \(S_t=s\). The action is sampled from \(\pi(\cdot\mid s)\), and the next state is sampled from \(P(\cdot\mid s,A_t)\). Integrating over the action gives the displayed kernel. No earlier state or action enters the conditional law once \(S_t\) is fixed.</p>
-    </div>
-
-    <h3>Discounted return</h3>
-
-    <p>Discounting makes infinite-horizon value finite and gives Bellman operators contraction geometry.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The discounted return from time \(t\) is
-\[
-G_t=\sum_{k=0}^\infty \gamma^k R_{t+k+1}.
+P(s'\mid s,a)=\int K(\mathrm{d}r,s'\mid s,a),\qquad
+r(s,a)=\sum_{s'}\int r\,K(\mathrm{d}r,s'\mid s,a).
 \]
-When rewards are bounded by \(M\), \(|G_t|\le M/(1-\gamma)\).</p>
-    </div>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> If \(|r(s,a)|\le M\), then every policy value satisfies \(\|v_\pi\|_\infty\le M/(1-\gamma)\).</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Take absolute values inside the discounted sum:
+Unless a chapter states otherwise, \(|R_{t+1}|\le R_{\max}\) almost surely. This is a bound on realized rewards, not merely on their conditional means. Reward and next state may be dependent.</p>
+<p>Write \(H_t=(S_0,A_0,R_1,S_1,\ldots,A_{t-1},R_t,S_t)\) and \(\mathcal H_t=\sigma(H_t)\). A history-dependent policy is a sequence \(\pi_t(a\mid H_t)\). The model assumptions are
 \[
-|v_\pi(s)|=\left|\mathbb E_\pi\sum_{k\ge0}\gamma^kR_{k+1}\mid S_0=s\right|
-\le \sum_{k\ge0}\gamma^kM=\frac{M}{1-\gamma}.
-\]</p>
-    </div>
-
-    <h3>Finite and measurable cases</h3>
-
-    <p>Finite MDPs can be written in matrices; general spaces require kernels and measurability.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> In finite state-action spaces, \(P_\pi\) is a stochastic matrix and value functions are vectors. In Borel spaces, existence of optimal stationary policies requires compactness, continuity, or measurable-selection hypotheses; the formal Bellman equations remain the organizing principle, but measurability is not automatic.</p>
-    </div>
-
-    <h3>Model-free and model-based viewpoints</h3>
-
-    <p>Reinforcement learning algorithms differ in whether they estimate the transition model or estimate value and policy objects directly.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> A model-based method estimates or uses \(P\) and \(r\). A model-free method estimates \(v_\pi\), \(q_\pi\), \(v_*\), \(q_*\), or policy gradients without explicitly constructing a transition model.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The distinction is algorithmic, not mathematical: both approaches are approximating consequences of the same MDP law.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Canonical path-space construction</h3>
-
-<p>A discounted Markov decision process is a tuple
-\[
-(\mathsf S,\mathcal S,\mathsf A,\mathcal A,
-P,r,\rho,\gamma),
+\mathbb P(A_t=a\mid\mathcal H_t)=\pi_t(a\mid H_t),\qquad
+\mathbb P((R_{t+1},S_{t+1})\in C\mid\mathcal H_t,A_t)
+=K(C\mid S_t,A_t).
 \]
-where \(P(\mathrm{d}s'\mid s,a)\) is a Markov kernel,
-\(\rho\) is the initial law, \(r:\mathsf S\times\mathsf A\to\mathbb R\) is
-measurable, and \(0\le\gamma&lt;1\). A history-dependent randomized policy is a
-sequence of kernels
+For example, the law of a finite trajectory is the iterated product
 \[
-\pi_t(\mathrm{d}a_t\mid s_0,a_0,\ldots,s_t).
+\rho(s_0)\prod_{t=0}^{n-1}
+\pi_t(a_t\mid h_t)K(\mathrm{d}r_{t+1},s_{t+1}\mid s_t,a_t).
 \]
-The Ionescu--Tulcea theorem then determines a unique law on trajectories by
-\[
-\rho(\mathrm{d}s_0)
-\prod_{t\ge0}\pi_t(\mathrm{d}a_t\mid h_t)
-P(\mathrm{d}s_{t+1}\mid s_t,a_t).
-\]</p>
-
-<div class="math-statement definition">
-<p><span class="statement-title">Definition.</span> If rewards are bounded by
-\(|r|\le R_{\max}\), the discounted return and performance are
-\[
-G=\sum_{t=0}^{\infty}\gamma^t r(S_t,A_t),
-\qquad
-J_\rho(\pi)=E_\rho^\pi G.
-\]
-They are well defined and
-\(|J_\rho(\pi)|\le R_{\max}/(1-\gamma)\).</p>
-</div>
-
-<h3>Markovization</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem (Markovization).</span> For any
-history-dependent policy \(\pi\), define, whenever regular conditional laws
-exist,
-\[
-\bar\pi_t(\mathrm{d}a\mid s)
-=\mathbb P^\pi(A_t\in\mathrm{d}a\mid S_t=s).
-\]
-The time-inhomogeneous Markov policy \(\bar\pi\) has the same marginal law of
-\((S_t,A_t)\) at every \(t\), and hence the same expected additive return.</p>
-</div>
-
-<div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Induct on \(t\). The state law at
-\(t=0\) is \(\rho\). If the state laws agree at \(t\), then the definition of
-\(\bar\pi_t\) makes the joint state-action laws agree. Integrating the common
-joint law against \(P(\mathrm{d}s'\mid s,a)\) gives equal next-state laws. The
-expected reward at each time is therefore equal, and bounded convergence
-justifies summing discounted expectations.</p>
-</div>
-
-<h3>Discounted occupancy measures</h3>
-
-<div class="math-statement definition">
-<p><span class="statement-title">Definition.</span> The normalized discounted
-state-action occupancy measure is
-\[
-d_\rho^\pi(B)
-=(1-\gamma)\sum_{t=0}^{\infty}\gamma^t
-\mathbb P_\rho^\pi\{(S_t,A_t)\in B\}.
-\]
-It is a probability measure, and
-\[
-J_\rho(\pi)
-=\frac1{1-\gamma}\int r(s,a)\,d_\rho^\pi(\mathrm{d}s,\mathrm{d}a).
-\]</p>
-</div>
-
+These compatible finite laws define the infinite trajectory law by the standard extension theorem for kernels. A stationary Markov policy has \(\pi_t(a\mid H_t)=\pi(a\mid S_t)\); a deterministic one chooses a single action at each state.</p>
+<h3>From a policy to a Markov chain</h3>
 <div class="math-statement proposition">
-<p><span class="statement-title">Proposition (flow equation).</span> Its state
-marginal \(d_{\rho,S}^\pi\) satisfies
+<p><span class="statement-title">Proposition.</span> Under a stationary Markov policy,
 \[
-d_{\rho,S}^\pi(\mathrm{d}s)
-=(1-\gamma)\rho(\mathrm{d}s)
-+\gamma\int P(\mathrm{d}s\mid x,a)
-d_\rho^\pi(\mathrm{d}x,\mathrm{d}a),
+P_\pi(s,s')=\sum_a\pi(a\mid s)P(s'\mid s,a),\qquad
+r_\pi(s)=\sum_a\pi(a\mid s)r(s,a)
 \]
-and, for a stationary Markov policy,
-\(d_\rho^\pi(\mathrm{d}s,\mathrm{d}a)
-=d_{\rho,S}^\pi(\mathrm{d}s)\pi(\mathrm{d}a\mid s)\).</p>
+are the state transition matrix and expected one-step reward.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> Separate the \(t=0\) term in the
-discounted state marginal and shift the remaining sum by one. The Markov
-transition formula gives the integral term. The factorization follows from the
-conditional action law under a stationary policy.</p>
-</div>
-
-<h3>Finite, continuous, and average-reward models</h3>
-
-<p>For finite \(\mathsf S,\mathsf A\), bounded rewards and discounting ensure
-existence of an optimal stationary deterministic policy. On Borel spaces, one
-typically assumes compact action sets, upper semicontinuous rewards, and weakly
-continuous transition kernels to obtain measurable maximizers. Without such
-selection hypotheses, Bellman suprema need not be attained.</p>
-
-<p>The average-reward objective
+<p><span class="statement-title">Proof.</span>
+For every \(s'\), conditional expectation and the finite partition by actions give
 \[
-\liminf_{T\to\infty}\frac1T
-E^\pi\sum_{t=0}^{T-1}r(S_t,A_t)
+\begin{aligned}
+\mathbb P(S_{t+1}=s'\mid\mathcal H_t)
+&amp;=\sum_a\mathbb P(A_t=a\mid\mathcal H_t)
+  \mathbb P(S_{t+1}=s'\mid\mathcal H_t,A_t=a)\\
+&amp;=\sum_a\pi(a\mid S_t)P(s'\mid S_t,a)=P_\pi(S_t,s').
+\end{aligned}
 \]
-is not obtained by simply setting \(\gamma=1\): contraction disappears and
-results require recurrence or unichain conditions. Finite-horizon problems
-instead augment the state by time and use backward, time-dependent Bellman
-recursions.</p>
-
-<div class="math-statement example">
-<p><span class="statement-title">Example (inventory control).</span> With stock
-\(S_t\), order \(A_t\ge0\), demand \(D_{t+1}\), and
-\(S_{t+1}=S_t+A_t-D_{t+1}\), a reward combining sales, order cost, and holding
-cost yields an MDP. The transition kernel is induced by the demand law. State
-constraints, action-dependent support, and convex costs make this a useful
-continuous-state example where measurable-selection assumptions matter.</p>
+Thus the conditional law depends only on \(S_t\). Likewise,
+\[
+\mathbb E[R_{t+1}\mid\mathcal H_t]
+=\sum_a\pi(a\mid S_t)r(S_t,a)=r_\pi(S_t).
+\]
+Both calculations use the environment kernel; the policy does not change \(K\).</p>
 </div>
+
+<h3>Discounting and legitimate limiting operations</h3>
+<div class="math-statement proposition">
+<p><span class="statement-title">Proposition (return and truncation).</span> For every policy, define
+\[
+G^{(n)}=\sum_{t=0}^{n-1}\gamma^tR_{t+1},\qquad
+G=\sum_{t=0}^{\infty}\gamma^tR_{t+1},\qquad J_\rho(\pi)=\mathbb E_\rho^\pi G.
+\]
+Then \(G\) exists absolutely almost surely,
+\[
+|G|\le\frac{R_{\max}}{1-\gamma},\qquad
+|G-G^{(n)}|\le\frac{R_{\max}\gamma^n}{1-\gamma},
+\]
+and \(J_\rho(\pi)=\sum_{t\ge0}\gamma^t\mathbb E_\rho^\pi r(S_t,A_t)\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+The deterministic majorant gives
+\[
+\sum_{t\ge0}|\gamma^tR_{t+1}|
+\le R_{\max}\sum_{t\ge0}\gamma^t=\frac{R_{\max}}{1-\gamma}.
+\]
+For \(m&gt;n\),
+\[
+|G^{(m)}-G^{(n)}|\le R_{\max}\sum_{t=n}^{m-1}\gamma^t
+\le\frac{R_{\max}\gamma^n}{1-\gamma}.
+\]
+Hence partial sums are Cauchy and the same bound holds for the infinite tail. In particular, \(\mathbb E|G-G^{(n)}|\to0\). Finite linearity and the tower property yield
+\[
+\mathbb E G^{(n)}
+=\sum_{t=0}^{n-1}\gamma^t\mathbb E R_{t+1}
+=\sum_{t=0}^{n-1}\gamma^t\mathbb E r(S_t,A_t).
+\]
+The left side tends to \(\mathbb E G\) in \(L^1\); the right side is an absolutely convergent numerical series since \(|r|\le R_{\max}\). This proves the identity without exchanging an uncontrolled infinite sum and expectation.</p>
+</div>
+
+<h3>History dependence and Markovization</h3>
+<div class="math-statement theorem">
+<p><span class="statement-title">Theorem.</span> For any history-dependent policy \(\pi\), there is a possibly time-dependent Markov policy \(\bar\pi_t(a\mid s)\) with the same joint law of \((S_t,A_t)\) at every time. Consequently \(J_\rho(\bar\pi)=J_\rho(\pi)\).</p>
+</div>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+Set \(m_t(s,a)=\mathbb P_\rho^\pi(S_t=s,A_t=a)\) and \(m_t(s)=\sum_a m_t(s,a)\). Define
+\[
+\bar\pi_t(a\mid s)=\frac{m_t(s,a)}{m_t(s)}\quad\text{if }m_t(s)&gt;0,
+\]
+and choose any probability vector when \(m_t(s)=0\). Suppose the state law under \(\bar\pi\) is \(m_t\), as it is at \(t=0\). Then
+\[
+\mathbb P^{\bar\pi}(S_t=s,A_t=a)=m_t(s)\bar\pi_t(a\mid s)=m_t(s,a),
+\]
+including zero-mass states, and
+\[
+\mathbb P^{\bar\pi}(S_{t+1}=s')
+=\sum_{s,a}m_t(s,a)P(s'\mid s,a)=m_{t+1}(s').
+\]
+Induction proves equality of all state-action marginals. For every \(n\), the expected truncated rewards therefore agree. The previous tail bound gives
+\[
+|J_\rho(\bar\pi)-J_\rho(\pi)|
+\le\frac{2R_{\max}\gamma^n}{1-\gamma}\longrightarrow0.
+\]
+This does not make \(\bar\pi\) stationary. Stationary optimality will follow later from Bellman verification.</p>
+</div>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (a two-state reward process).</span>
+Let state \(g\) reward \(1\) and move to absorbing state \(b\) with probability \(p\); at \(b\), reward is \(0\). Starting at \(g\), \(\mathbb P(S_t=g)=(1-p)^t\), so
+\[
+J_g=\sum_{t\ge0}[\gamma(1-p)]^t=\frac1{1-\gamma(1-p)}.
+\]
+For \(p=1/2\) and \(\gamma=0.9\), this is \(20/11\), rather than the upper bound \(10\). Transition persistence and discounting both determine the effective reward horizon.</p>
+</div>
+
+<h3>Other regimes and prerequisites</h3>
+<p>Finite-horizon problems use a time index and backward recursion. Average reward requires recurrence assumptions rather than setting \(\gamma=1\) in the results above. On standard Borel spaces, sums become kernel integrals; measurable selection and integrability must be checked before asserting optimal policies. Continuous-state LQR and belief-state control appear later with their own assumptions. The general-space discussion is an extension, not an implicit hypothesis change in the finite core.</p>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>If \(R_{\max}=1\) and \(\gamma=0.9\), how many terms guarantee return truncation error at most \(0.01\)?</p><details><summary>Hint and solution</summary><p>Solve \(10(0.9)^n\le0.01\). Thus \(n\ge\log(0.001)/\log(0.9)\), and \(n=66\) suffices. This is a deterministic bound, not a confidence statement.</p></details></li>
+<li><p>Can Markovization preserve all correlations between actions at different times?</p><details><summary>Hint and solution</summary><p>No. In a one-state MDP, choose a fair bit at time zero and repeat it forever. Markovization uses a fresh fair action at each time. Both have the same one-time marginals, but the original has \(\mathbb P(A_1=A_0)=1\) and the new policy has probability \(1/2\). Additive expected returns agree despite different path laws.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, finite-MDP foundations; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, Chapter 3. Review <a href="/notes/probability-theory/conditional-expectation/">conditional expectation</a> and <a href="/notes/probability-theory/conditional-probability-regular-conditional-distributions/">conditional kernels</a>.</p>

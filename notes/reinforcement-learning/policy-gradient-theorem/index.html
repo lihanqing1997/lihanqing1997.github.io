@@ -1,188 +1,130 @@
 ---
 layout: note-detail
-breadcrumb_child_label_en: "12. Policy gradient theorem"
-breadcrumb_child_label_fr: "12. Théorème du gradient de politique"
-breadcrumb_child_label_zh: "12. 策略梯度定理"
+breadcrumb_child_label_en: "14. Policy gradient theorem"
+breadcrumb_child_label_fr: "14. Théorème du gradient de politique"
+breadcrumb_child_label_zh: "14. 策略梯度定理"
 note_back_url: "/notes/reinforcement-learning/"
-note_prev_url: "/notes/reinforcement-learning/eligibility-traces-and-td-lambda/"
+note_prev_url: "/notes/reinforcement-learning/approximate-dynamic-programming/"
 note_next_url: "/notes/reinforcement-learning/baselines-and-variance-reduction/"
 ---
 
-<p>Policy-gradient methods optimize a differentiable policy directly. The policy-gradient theorem expresses the gradient without differentiating the transition law.</p>
-
-    <h3>Objective and score identity</h3>
-
-    <p>The log-derivative trick moves differentiation from the trajectory density to the policy score.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> For a differentiable policy \(\pi_\theta\), define
+<p class="rl-learning-goal">Derive the gradient from a finite Bellman system, then justify its trajectory representation without differentiating an undefined infinite product.</p>
+<h3>A differentiable policy family</h3>
+<p>Keep the finite discounted MDP and a fixed initial distribution \(\rho\). Let \(\theta\in U\subset\mathbb R^p\), with \(U\) open, and let each \(\pi_\theta(a\mid s)&gt;0\) be continuously differentiable. The environment and \(\rho\) do not depend on \(\theta\). Write
 \[
-J(\theta)=\mathbb E_{\mu,\pi_\theta}\sum_{t=0}^\infty\gamma^tR_{t+1}.
+ z_\theta(s,a)=\nabla_\theta\log\pi_\theta(a\mid s),\qquad
+ J(\theta)=\rho^\top V_\theta,\qquad d_\theta=d_\rho^{\pi_\theta}.
 \]
-The score identity is \(\nabla_\theta p_\theta(x)=p_\theta(x)\nabla_\theta\log p_\theta(x)\) whenever \(p_\theta(x)>0\).</p>
-    </div>
-
-    <div class="math-statement lemma">
-        <p><span class="statement-title">Lemma.</span> For any trajectory functional \(F(\tau)\),
-\[
-\nabla_\theta\mathbb E_\theta F(\tau)
-=\mathbb E_\theta\{F(\tau)\nabla_\theta\log p_\theta(\tau)\},
-\]
-provided differentiation and integration may be interchanged.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Write the expectation as \(\int F(\tau)p_\theta(\tau)\mathrm{d}\tau\), differentiate under the integral, and substitute \(\nabla p_\theta=p_\theta\nabla\log p_\theta\).</p>
-    </div>
-
-    <h3>Policy-gradient theorem</h3>
-
-    <p>The gradient weights policy scores by action values under the discounted occupancy measure.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> For a discounted MDP with differentiable policy,
-\[
-\nabla J(\theta)=\frac{1}{1-\gamma}
-\int d_{\mu,\pi_\theta}(\mathrm{d}s)\int \pi_\theta(\mathrm{d}a\mid s)
-\nabla\log\pi_\theta(a\mid s)q_{\pi_\theta}(s,a).
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The trajectory density factors into the initial law, transition kernels, and policy probabilities. Transition kernels do not depend on \(\theta\), so
-\[
-\nabla\log p_\theta(\tau)=\sum_{t\ge0}\nabla\log\pi_\theta(A_t\mid S_t).
-\]
-Apply the score identity to the discounted return. Terms in which a score at time \(t\) is multiplied by rewards before time \(t\) vanish after conditioning on the past, since the conditional expectation of the score is zero. The remaining future rewards give \(q_{\pi_\theta}(S_t,A_t)\). Summing discounted state-action distributions yields the occupancy-measure form.</p>
-    </div>
-
-    <h3>Compatible baselines</h3>
-
-    <p>The theorem is unchanged when a state-dependent baseline is subtracted.</p>
-
-    <div class="math-statement proposition">
-        <p><span class="statement-title">Proposition.</span> For any bounded \(b(s)\),
-\[
-\int \pi_\theta(\mathrm{d}a\mid s)\nabla\log\pi_\theta(a\mid s)b(s)=0.
-\]</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The integrand equals \(b(s)\int\nabla\pi_\theta(\mathrm{d}a\mid s)\). Since \(\int\pi_\theta(\mathrm{d}a\mid s)=1\), differentiating the normalization gives zero.</p>
-    </div>
-
-    <h3>Advantage form</h3>
-
-    <p>Subtracting \(v_\pi(s)\) gives the advantage, often reducing variance.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> The advantage function is
-\[
-A_\pi(s,a)=q_\pi(s,a)-v_\pi(s).
-\]
-The policy gradient can use \(A_\pi\) in place of \(q_\pi\) because \(v_\pi(s)\) is a valid baseline.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Discounted objective and occupancy derivative</h3>
-
-<p>Let \(\pi_\theta(a\mid s)\) be differentiable with parameter-independent
-dynamics, and define
-\[
-J(\theta)=E_\rho^{\pi_\theta}
-\sum_{t\ge0}\gamma^tr(S_t,A_t).
-\]
-Assume bounded rewards, differentiability under the path integral, and support
-that does not change with \(\theta\).</p>
-
+Here \(d_\theta\) is the normalized <em>state-action</em> occupancy. On a sufficiently small compact neighborhood of any parameter, finiteness and positivity give a uniform bound \(\|z_\theta(s,a)\|\le L\). This is a local assumption; a softmax score need not be bounded for arbitrary feature families on infinite spaces.</p>
 <div class="math-statement theorem">
 <p><span class="statement-title">Theorem (policy gradient).</span>
 \[
-\nabla_\theta J(\theta)
-=\frac1{1-\gamma}
-E_{(S,A)\sim d_\rho^{\pi_\theta}}
-\left[
-Q^{\pi_\theta}(S,A)
-\nabla_\theta\log\pi_\theta(A\mid S)
-\right].
-\]</p>
+ \nabla J(\theta)=\frac1{1-\gamma}
+   \sum_{s,a}d_\theta(s,a)z_\theta(s,a)Q_\theta(s,a).
+\]
+The formula accounts for the dependence of the state distribution on the policy; it does not assume that distribution is fixed.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> For a finite trajectory, the
-likelihood-ratio identity gives
+<p><span class="statement-title">Proof.</span>
+Put \(P_\theta=P_{\pi_\theta}\), \(r_\theta=r_{\pi_\theta}\). Since \(\|\gamma P_\theta\|_\infty&lt;1\),
 \[
-\nabla J
-=E\left[
-\sum_{t\ge0}\gamma^tr_t
-\sum_{k=0}^t\nabla\log\pi_\theta(A_k\mid S_k)
-\right].
+ V_\theta=(I-\gamma P_\theta)^{-1}r_\theta .
 \]
-Interchange sums. Rewards before time \(k\) have conditional expectation
-independent of \(A_k\), and their score contribution vanishes. The remaining
-return from \(k\) has conditional mean \(Q^\pi(S_k,A_k)\). Thus
+The inverse is continuously differentiable wherever its determinant is nonzero (for example, by the adjugate formula). For each coordinate \(j\), differentiating the finite identity \(V_\theta=r_\theta+\gamma P_\theta V_\theta\) gives
 \[
-\nabla J
-=\sum_{k\ge0}\gamma^k
-E[Q^\pi(S_k,A_k)\nabla\log\pi(A_k\mid S_k)],
+ (I-\gamma P_\theta)\partial_j V_\theta
+  =\partial_j r_\theta+\gamma(\partial_jP_\theta)V_\theta
+  =g_j,\qquad
+ g_j(s)=\sum_a\partial_j\pi_\theta(a\mid s)Q_\theta(s,a).
 \]
-which is the occupancy form.</p>
+Consequently,
+\[
+ \begin{aligned}
+ \partial_jJ
+ &amp;=\rho^\top\sum_{t=0}^\infty\gamma^tP_\theta^t g_j\\
+ &amp;=\frac1{1-\gamma}\sum_s d_{\rho,S}^{\pi_\theta}(s)
+                    \sum_a\pi_\theta(a\mid s)z_{\theta,j}(s,a)Q_\theta(s,a).
+ \end{aligned}
+\]
+The matrix series converges in operator norm, and
+\(\sum_t\gamma^t\|\rho^\top P_\theta^t g_j\|\le\|g_j\|_\infty/(1-\gamma)\).
+Thus the multiplication and summation are justified. Finally
+\(d_\theta(s,a)=d_{\rho,S}^{\pi_\theta}(s)\pi_\theta(a\mid s)\).</p>
 </div>
 
-<div class="math-statement corollary">
-<p><span class="statement-title">Corollary (advantage form).</span> For any
-state-only baseline \(b(s)\),
+<h3>Why the likelihood-ratio derivation is legitimate</h3>
+<p>Define \(J_H=\mathbb E_\theta\sum_{t=0}^{H-1}\gamma^tR_{t+1}\). A finite state-action path has policy factor \(\prod_{k=0}^{H-1}\pi_\theta(a_k\mid s_k)\); the environment factors have zero derivative. If rewards have a non-discrete law, integrate them first conditional on the finite path. The resulting finite sum can be differentiated term by term.</p>
+<div class="math-statement proof">
+<p><span class="statement-title">Proof.</span>
+With \(z_k=z_\theta(S_k,A_k)\), finite differentiation yields
 \[
-\nabla J
-=\frac1{1-\gamma}E_{d^\pi}
-\{[Q^\pi(S,A)-b(S)]\nabla\log\pi(A\mid S)\}.
+ \nabla J_H=\mathbb E_\theta\left[
+ \sum_{t=0}^{H-1}\gamma^tR_{t+1}\sum_{k=0}^{H-1}z_k\right]
+ =\sum_{t=0}^{H-1}\sum_{k=0}^{t}\gamma^t\mathbb E_\theta[R_{t+1}z_k].
 \]
-Taking \(b=V^\pi\) gives the advantage form.</p>
+For \(k&gt;t\), \(R_{t+1}\) is measurable before action \(A_k\), and
+\[
+ \mathbb E_\theta[z_k\mid H_k]
+ =\sum_a\pi_\theta(a\mid S_k)\nabla\log\pi_\theta(a\mid S_k)
+ =\nabla\sum_a\pi_\theta(a\mid S_k)=0.
+\]
+Uniformly on the compact parameter neighborhood,
+\[
+ \sum_{t=H}^\infty\sum_{k=0}^t
+ \|\gamma^t\mathbb E_\theta[R_{t+1}z_k]\|
+ \le LR_{\max}\sum_{t=H}^\infty(t+1)\gamma^t\longrightarrow0.
+\]
+Hence \(\nabla J_H\) converges uniformly to a continuous function \(g\), while \(J_H\to J\) uniformly by the return-tail bound. On any line segment contained in the neighborhood,
+\[
+ J_H(\theta+h)-J_H(\theta)=\int_0^1\nabla J_H(\theta+uh)^\top h\,du
+ \ \longrightarrow\ \int_0^1g(\theta+uh)^\top h\,du .
+\]
+Continuity of \(g\) now gives \(J(\theta+h)-J(\theta)=g(\theta)^\top h+o(\|h\|)\). Thus \(g=\nabla J\). Absolute summability of the double series permits reordering:
+\[
+ \begin{aligned}
+ \nabla J
+ &amp;=\sum_{k=0}^\infty\gamma^k
+   \mathbb E_\theta\left[z_k\sum_{t=k}^\infty\gamma^{t-k}R_{t+1}\right]\\
+ &amp;=\sum_{k=0}^\infty\gamma^k\mathbb E_\theta[z_kQ_\theta(S_k,A_k)]
+ =\frac{\mathbb E_{d_\theta}[z_\theta Q_\theta]}{1-\gamma}.
+ \end{aligned}
+\]
+The conditional-return limit is valid in \(L^1\), since its tail is bounded by \(R_{\max}\gamma^{H-k}/(1-\gamma)\).</p>
 </div>
 
-<h3>Compatible approximation and natural gradient</h3>
-
-<p>Let the policy score be
-\(\phi_\theta(s,a)=\nabla_\theta\log\pi_\theta(a\mid s)\), and define the
-discounted Fisher matrix
+<h3>Natural and deterministic policy gradients</h3>
+<p>The occupancy-weighted Fisher matrix is \(F=\mathbb E_{d_\theta}[zz^\top]\succeq0\). If \(F\succ0\), maximizing \(g^\top v-\tfrac12v^\top Fv\) gives \(v=F^{-1}g\). When \(F\) is singular, \(g=\nabla J\) still lies in its range: for \(u\in\ker F\), \(\mathbb E(u^\top z)^2=0\), so \(u^\top g=\mathbb E[(u^\top z)Q]/(1-\gamma)=0\). The solutions are \(F^\dagger g+\ker F\); \(F^\dagger g\) is the minimum Euclidean norm solution. This is a local metric statement, not a global convergence theorem.</p>
+<p>For a deterministic policy \(\mu_\theta(s)\) with continuous actions, retain finite states, and assume \(r(s,a)\), \(P(s'\mid s,a)\), and \(\mu_\theta\) are \(C^1\) on the relevant neighborhoods. Define
+\(Q_\theta(s,a)=r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)V_\theta(s')\).
+Differentiating the finite Bellman system by the chain rule gives
 \[
-F(\theta)=E_{d^\pi}\{\phi_\theta\phi_\theta^\top\}.
+ g(s)=D_\theta\mu_\theta(s)^\top
+       \nabla_a Q_\theta(s,a)\big|_{a=\mu_\theta(s)},\qquad
+ \partial_jV_\theta(s)=g_j(s)+\gamma\sum_{s'}P_{\mu_\theta}(s,s')\partial_jV_\theta(s').
 \]
-If \(w\) is the least-squares projection of \(A^\pi\) onto
-\(w^\top\phi_\theta\), its normal equations are
+In vector form, \((I-\gamma P_{\mu_\theta})\partial_jV_\theta=g_j\).
+Multiplication by the same resolvent therefore proves
 \[
-Fw=E_{d^\pi}(\phi_\theta A^\pi)
-=(1-\gamma)\nabla J.
+ \nabla J(\theta)=\frac1{1-\gamma}\mathbb E_{s\sim d_{\rho,S}^{\mu_\theta}}[g(s)].
 \]
-Hence \(w=(1-\gamma)F^{-1}\nabla J\): compatible advantage regression
-directly estimates the natural-gradient direction.</p>
-
-<h3>Deterministic policy gradient</h3>
-
-<div class="math-statement theorem">
-<p><span class="statement-title">Theorem.</span> For a differentiable
-deterministic policy \(a=\mu_\theta(s)\), under regularity,
+Infinite state spaces require additional differentiability and domination hypotheses; this finite-state derivation does not supply them.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (one-state softmax).</span>
+Actions have rewards \(0,1\), both return to the same state, and \(p=\pi_\theta(1)=1/(1+e^{-\theta})\). Then
 \[
-\nabla_\theta J(\theta)
-=\frac1{1-\gamma}
-E_{S\sim d_{\rho,S}^{\mu_\theta}}
-\left[
-\nabla_\theta\mu_\theta(S)
-\nabla_aQ^{\mu_\theta}(S,a)|_{a=\mu_\theta(S)}
-\right].
-\]</p>
+ J=\frac p{1-\gamma},\quad z(1)=1-p,\quad z(0)=-p,\quad F=p(1-p).
+\]
+Since \(Q(1)-Q(0)=1\),
+\[
+ \frac{\mathbb E[zQ]}{1-\gamma}
+ =\frac{p(1-p)(Q(1)-Q(0))}{1-\gamma}
+ =\frac{p(1-p)}{1-\gamma}=\frac{dJ}{d\theta}.
+\]
+The natural-gradient direction is \(1/(1-\gamma)\), although the ordinary gradient vanishes as \(p\to0\) or \(1\).</p>
 </div>
-
-<p>This is obtained by differentiating the Bellman equation and unrolling the
-resulting resolvent. It avoids action-space likelihood ratios but requires a
-differentiable critic and can be sensitive to critic extrapolation outside the
-behavior distribution.</p>
-
-<h3>Optimization qualifications</h3>
-
-<p>The theorem provides an exact gradient, not global concavity. Policy
-parametrization creates stationary points, flat directions, and boundary
-effects. Trust regions and natural gradients control local distributional
-change; they do not remove nonconvexity. Convergence claims must distinguish
-exact gradients, Monte Carlo estimates, actor--critic bias, and function
-approximation.</p>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Show that any state baseline \(b(s)\) can replace \(Q\) by \(Q-b\) in the theorem.</p><details><summary>Hint and solution</summary><p>\(\sum_a\pi(a\mid s)z(s,a)b(s)=b(s)\nabla\sum_a\pi(a\mid s)=0\) at every state. On the finite state space any finite baseline is integrable.</p></details></li>
+<li><p>Bound the gradient error caused by truncating at horizon \(H\).</p><details><summary>Hint and solution</summary><p>The proof gives \[\|\nabla J-\nabla J_H\|\le LR_{\max}\gamma^H\left[\frac{H+1}{1-\gamma}+\frac{\gamma}{(1-\gamma)^2}\right].\] Obtain the sum by writing \(t=H+j\) and using \(\sum_jj\gamma^j=\gamma/(1-\gamma)^2\).</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>. The finite-state matrix proof and the uniform derivative-tail argument above are self-contained given elementary multivariable calculus and the earlier occupancy identities.</p>

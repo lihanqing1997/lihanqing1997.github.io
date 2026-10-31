@@ -8,130 +8,93 @@ note_prev_url: "/notes/reinforcement-learning/policy-evaluation/"
 note_next_url: "/notes/reinforcement-learning/value-iteration/"
 ---
 
-<p>Policy iteration alternates exact policy evaluation with greedy improvement. In finite discounted MDPs it terminates in an optimal policy after finitely many strict improvements.</p>
-
-    <h3>Policy improvement</h3>
-
-    <p>The improvement theorem is the reason greedy steps are safe.</p>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> Let \(\pi'\) be greedy with respect to \(v_\pi\), so \(T_{\pi'}v_\pi=T_*v_\pi\ge T_\pi v_\pi=v_\pi\). Then \(v_{\pi'}\ge v_\pi\) pointwise.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> Since \(T_{\pi'}\) is monotone,
-\[
-v_\pi\le T_{\pi'}v_\pi\le T_{\pi'}^2v_\pi\le\cdots.
-\]
-The iterates converge to the fixed point \(v_{\pi'}\) by contraction, so \(v_{\pi'}\ge v_\pi\).</p>
-    </div>
-
-    <h3>Exact policy iteration</h3>
-
-    <p>Exact policy iteration repeats evaluation and improvement.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Policy iteration constructs \(\pi_{k+1}\) greedy with respect to \(v_{\pi_k}\), after exactly evaluating \(v_{\pi_k}\).</p>
-    </div>
-
-    <div class="math-statement theorem">
-        <p><span class="statement-title">Theorem.</span> In a finite discounted MDP, exact policy iteration reaches an optimal policy in finitely many iterations.</p>
-    </div>
-
-    <div class="math-statement proof">
-        <p><span class="statement-title">Proof.</span> The policy improvement theorem gives monotone improvement in value. If the value does not improve, the current policy is greedy with respect to its own value, hence satisfies the optimality equation and is optimal. Otherwise at least one state action changes to yield strict improvement. There are only finitely many deterministic stationary policies.</p>
-    </div>
-
-    <h3>Modified policy iteration</h3>
-
-    <p>Practical dynamic programming often evaluates only approximately before improving.</p>
-
-    <div class="math-statement definition">
-        <p><span class="statement-title">Definition.</span> Modified policy iteration applies \(m\) evaluation sweeps \(T_{\pi_k}\) before taking a greedy policy-improvement step. Value iteration and policy iteration are limiting cases with \(m=0\) and exact evaluation.</p>
-    </div>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> The method trades computation per iteration against the number of improvement steps. Error bounds combine contraction during partial evaluation with approximate-greedy error.</p>
-    </div>
-
-    <h3>Policy oscillation</h3>
-
-    <p>Tie-breaking matters when several greedy actions have the same value.</p>
-
-    <div class="math-statement remark">
-        <p><span class="statement-title">Remark.</span> Consistent tie-breaking prevents cycling among equivalent optimal policies in exact finite policy iteration. The value sequence remains monotone even when policies are not unique.</p>
-    </div>
-
-<!-- rigorous-expansion-2026 -->
-<h3>Evaluation and greedy improvement</h3>
-
-<p>Exact policy iteration alternates
-\[
-V_k=V^{\pi_k},
-\qquad
-\pi_{k+1}(s)\in\arg\max_a
-\{r(s,a)+\gamma P_aV_k(s)\}.
-\]
-Its key fact is global policy improvement from a one-step local comparison.</p>
-
+<p class="rl-learning-goal">Prove policy improvement and finite termination, and define partial policy evaluation without conflicting conventions.</p>
+<h3>The exact improvement identity</h3>
+<p>Given \(\pi\), let \(g=T^{\pi'}V^\pi-V^\pi\). It is the advantage of changing the first action distribution while using \(V^\pi\) as continuation value.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (policy improvement).</span> If
-\(T^{\pi'}V^\pi\ge V^\pi\), then
+<p><span class="statement-title">Theorem (policy improvement).</span>
 \[
-V^{\pi'}\ge V^\pi.
+V^{\pi'}-V^\pi=(I-\gamma P_{\pi'})^{-1}g
+=\sum_{t\ge0}\gamma^tP_{\pi'}^tg.
 \]
-If the inequality is strict at a state reachable under \(\pi'\), improvement
-is strict there.</p>
+Thus \(g\ge0\) implies \(V^{\pi'}\ge V^\pi\). Under \(g\ge0\), improvement at \(s\) is strict if \(g(x)&gt;0\) and \(\gamma^tP_{\pi'}^t(s,x)&gt;0\) for some \(t,x\).</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> By monotonicity,
+<p><span class="statement-title">Proof.</span>
+Subtract \(V^\pi\) from the Bellman equation for \(\pi'\):
 \[
-V^\pi\le T^{\pi'}V^\pi
-\le(T^{\pi'})^2V^\pi\le\cdots.
+\begin{aligned}
+V^{\pi'}-V^\pi
+&amp;=r_{\pi'}+\gamma P_{\pi'}V^{\pi'}-V^\pi\\
+&amp;=g+\gamma P_{\pi'}(V^{\pi'}-V^\pi).
+\end{aligned}
 \]
-Contraction sends the right side to \(V^{\pi'}\). Strictness propagates through
-states reached with positive discounted probability.</p>
+Apply the convergent resolvent. If \(g\ge0\), all terms are nonnegative, and
+\[
+(V^{\pi'}-V^\pi)(s)\ge\gamma^tP_{\pi'}^t(s,x)g(x)&gt;0
+\]
+under the stated condition. At \(\gamma=0\), only immediate improvement matters.</p>
 </div>
 
+<h3>An algorithm that terminates</h3>
+<p>Start with a deterministic stationary policy. Evaluate \(V^{\pi_k}\) exactly and choose \(\pi_{k+1}\) greedily. Keep \(\pi_k(s)\) whenever it already maximizes the score; otherwise select a maximizer by a fixed ordering. Stop when the policy is unchanged.</p>
 <div class="math-statement theorem">
-<p><span class="statement-title">Theorem (finite termination).</span> In a
-finite discounted MDP, exact policy iteration with a deterministic tie-breaking
-rule terminates after finitely many strict policy improvements at an optimal
-policy.</p>
+<p><span class="statement-title">Theorem (finite termination).</span> This algorithm terminates after finitely many policy changes, at an optimal policy.</p>
 </div>
-
 <div class="math-statement proof">
-<p><span class="statement-title">Proof.</span> There are finitely many
-deterministic stationary policies. Policy improvement never decreases value.
-If the selected policy changes and tie-breaking avoids cycling among equal
-greedy policies, at least one reachable state's value improves. Hence no policy
-can recur. Termination means the current policy is greedy with respect to its
-own value, so \(T^\pi V^\pi=TV^\pi\); uniqueness of the optimal fixed point
-gives \(V^\pi=V^*\).</p>
+<p><span class="statement-title">Proof.</span>
+Greediness gives
+\[
+g_k=TV^{\pi_k}-V^{\pi_k}
+=T^{\pi_{k+1}}V^{\pi_k}-T^{\pi_k}V^{\pi_k}\ge0.
+\]
+A changed action was not previously maximizing, by the tie rule, so \(g_k(s)&gt;0\) at that state. The improvement identity yields
+\[
+V^{\pi_{k+1}}-V^{\pi_k}
+=\sum_{t\ge0}\gamma^tP_{\pi_{k+1}}^tg_k\ge g_k.
+\]
+Every change therefore improves some component strictly and decreases none. An earlier policy cannot recur, because its value vector would recur, contradicting monotone strict improvement. Only
+\[
+N_{\mathrm{pol}}=\prod_s|\mathsf A(s)|
+\]
+deterministic policies exist. When no change occurs,
+\[
+TV^{\pi_k}=T^{\pi_k}V^{\pi_k}=V^{\pi_k}.
+\]
+Uniqueness of the optimal fixed point proves \(V^{\pi_k}=V^*\). Without the tie rule, policies can keep alternating between equal optimal actions.</p>
 </div>
 
 <h3>Modified policy iteration</h3>
-
-<p>Exact evaluation may be expensive. Modified policy iteration applies
-\(m_k\) evaluation sweeps after improvement:
+<p>Our convention is
 \[
-V_{k+1}=(T^{\pi_{k+1}})^{m_k}V_k.
+\pi_{k+1}\in\operatorname{Greedy}(V_k),\qquad
+V_{k+1}=(T^{\pi_{k+1}})^{m_k}V_k,\quad m_k\ge1.
 \]
-\(m_k=1\) resembles value iteration; \(m_k=\infty\) is policy iteration.
-Under bounded evaluation errors, performance follows from contraction and
-approximate-greedy bounds. This continuum separates the computational cost of
-solving a linear system from the number of policy improvements.</p>
-
-<h3>Newton interpretation</h3>
-
-<p>The optimality equation is \(F(V)=V-TV=0\), a piecewise affine nonsmooth
-system. When the greedy action is locally unique, selecting that action fixes
-one affine piece:
+For \(m_k=1\), \(V_{k+1}=T^{\pi_{k+1}}V_k=TV_k\), exactly value iteration. Holding the chosen policy fixed while increasing the number of sweeps gives
 \[
-F_{\pi}(V)=(I-\gamma P_\pi)V-r_\pi.
+\|(T^{\pi_{k+1}})^{m}V_k-V^{\pi_{k+1}}\|_\infty
+\le\gamma^{m}\|V_k-V^{\pi_{k+1}}\|_\infty\longrightarrow0.
 \]
-Solving the policy-evaluation equation is the Newton step on that piece.
-Policy iteration is therefore a semismooth Newton method for Bellman's equation,
-which helps explain its often much faster local convergence than value
-iteration.</p>
+Thus exact evaluation is the infinite-sweep limit. Setting \(m_k=0\) would leave the value unchanged. Approximate-greedy error bounds will be developed later.</p>
+<h3>The Newton calculation on one greedy region</h3>
+<p>Where a single policy \(\pi\) is greedy, \(F(V)=V-TV=(I-\gamma P_\pi)V-r_\pi\). Its Jacobian is invertible and the Newton update is
+\[
+V-(I-\gamma P_\pi)^{-1}F(V)
+=(I-\gamma P_\pi)^{-1}r_\pi=V^\pi.
+\]
+This explains the relation to Newton methods on affine pieces. Across action ties, ordinary smooth differentiability need not hold.</p>
+<div class="math-statement example">
+<p><span class="statement-title">Worked example (one strict improvement).</span>
+At state \(s\), stay gives reward \(1\) and remains at \(s\); go gives reward \(0\) and moves to absorbing \(g\), with reward \(2\). For \(\gamma=0.9\), the stay policy has value \((10,20)\). Its scores are
+\[
+Q^\pi(s,\mathrm{stay})=1+0.9(10)=10,\quad
+Q^\pi(s,\mathrm{go})=0.9(20)=18.
+\]
+Switching to go gives \((18,20)\). Its stay score is \(17.2&lt;18\), so the next policy stays unchanged and is optimal.</p>
+</div>
+<h3>Exercises</h3>
+<ol class="rl-exercises">
+<li><p>Show that equal consecutive values imply optimality even without the tie rule.</p><details><summary>Hint and solution</summary><p>If \(V^{\pi'}=V^\pi\) and \(\pi'\) is greedy, then \(TV^\pi=T^{\pi'}V^\pi=T^{\pi'}V^{\pi'}=V^{\pi'}=V^\pi\). Thus \(V^\pi=V^*\), though the recorded policies might still alternate.</p></details></li>
+<li><p>Compute \(g\) and the resolvent improvement in the example.</p><details><summary>Hint and solution</summary><p>\(g=(8,0)^\top\). Under the new policy \(P_{\pi'}g=0\), since \(s\) immediately moves to \(g\). Thus the resolvent sum equals \((8,0)^\top\), precisely the value improvement.</p></details></li>
+</ol>
+<p class="rl-source"><strong>Sources and prerequisites.</strong> <a href="https://rltheorybook.github.io/">Agarwal and coauthors, <em>Reinforcement Learning: Theory and Algorithms</em></a>, policy iteration; <a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton–Barto, <em>Reinforcement Learning: An Introduction</em>, second edition</a>, §4.3. The resolvent and Bellman verification used here were proved in earlier chapters.</p>
